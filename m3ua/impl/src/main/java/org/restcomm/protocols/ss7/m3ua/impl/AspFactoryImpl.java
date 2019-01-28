@@ -28,21 +28,13 @@ import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.ReferenceCountUtil;
 
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.api.Association;
-import org.mobicents.protocols.api.AssociationListener;
-import org.mobicents.protocols.api.IpChannelType;
-import org.mobicents.protocols.api.Management;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.AspFactory;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
@@ -52,7 +44,6 @@ import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.UnknownTransitionException;
 import org.restcomm.protocols.ss7.m3ua.impl.message.M3UAMessageImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.oam.M3UAOAMMessages;
 import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.message.M3UAMessage;
 import org.restcomm.protocols.ss7.m3ua.message.MessageClass;
@@ -79,29 +70,25 @@ import org.restcomm.protocols.ss7.m3ua.message.ssnm.SignallingCongestion;
 import org.restcomm.protocols.ss7.m3ua.message.transfer.PayloadData;
 import org.restcomm.protocols.ss7.m3ua.parameter.ASPIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.ParameterFactory;
-import org.restcomm.protocols.ss7.mtp.Mtp3EndCongestionPrimitive;
-import org.restcomm.protocols.ss7.mtp.Mtp3StatusCause;
-import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
+import org.restcomm.protocols.ss7.sctp.proxy.Association;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationListener;
+import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
+import org.restcomm.protocols.ss7.sctp.proxy.Management;
+
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 /**
  *
  * @author amit bhayani
  *
  */
-public class AspFactoryImpl implements AssociationListener, XMLSerializable, AspFactory {
+public class AspFactoryImpl implements AssociationListener, AspFactory {
 
     private static final Logger logger = Logger.getLogger(AspFactoryImpl.class);
 
-    private static long ASP_ID_COUNT = 1L;
+    private static AtomicLong ASP_ID_COUNT = new AtomicLong(1L);
 
     private static final int SCTP_PAYLOAD_PROT_ID_M3UA = 3;
-
-    private static final String NAME = "name";
-    private static final String STARTED = "started";
-    private static final String ASSOCIATION_NAME = "assocName";
-    private static final String MAX_SEQUENCE_NUMBER = "maxseqnumber";
-    private static final String ASP_ID = "aspid";
-    private static final String HEART_BEAT = "heartbeat";
 
     protected String name;
 
@@ -110,9 +97,7 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
     protected Association association = null;
     protected String associationName = null;
 
-    protected FastList<Asp> aspList = new FastList<Asp>();
-
-    private ByteBuffer txBuffer = ByteBuffer.allocateDirect(8192);
+    protected ConcurrentHashMap<UUID,Asp> aspList = new ConcurrentHashMap<UUID, Asp>();
 
     // data buffer for incoming TCP data
     private CompositeByteBuf tcpIncBuffer;
@@ -147,20 +132,15 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
 
     protected HeartBeatTimer heartBeatTimer = null;
     private boolean isHeartBeatEnabled = false;
-
-    private FastMap<Integer, AtomicInteger> congDpcList = new FastMap<Integer, AtomicInteger>().shared();
-
-    public AspFactoryImpl() {
-        // clean transmission buffer
-        txBuffer.clear();
-        txBuffer.rewind();
-        txBuffer.flip();
-
+    private UUIDGenerator uuidGenerator;
+    
+    public AspFactoryImpl(UUIDGenerator uuidGenerator) {
         this.heartBeatTimer = new HeartBeatTimer(this);
+        this.uuidGenerator=uuidGenerator;
     }
 
-    public AspFactoryImpl(String name, int maxSequenceNumber, long aspId, boolean isHeartBeatEnabled) {
-        this();
+    public AspFactoryImpl(String name, int maxSequenceNumber, long aspId, boolean isHeartBeatEnabled,UUIDGenerator uuidGenerator) {
+        this(uuidGenerator);
         this.name = name;
         this.maxSequenceNumber = maxSequenceNumber;
         this.slsTable = new int[this.maxSequenceNumber];
@@ -216,8 +196,10 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
                 ASPDown aspDown = (ASPDown) this.messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE,
                         MessageType.ASP_DOWN);
                 this.write(aspDown);
-                for (FastList.Node<Asp> n = aspList.head(), end = aspList.tail(); (n = n.getNext()) != end;) {
-                    AspImpl aspImpl = (AspImpl) n.getValue();
+                
+                Iterator<Asp> iterator=aspList.values().iterator();
+                while(iterator.hasNext()) {
+                    AspImpl aspImpl = (AspImpl) iterator.next();
 
                     try {
                         FSM aspLocalFSM = aspImpl.getLocalFSM();
@@ -238,8 +220,9 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
                 aspFactoryStopTimer = new AspFactoryStopTimer(this);
                 this.m3UAManagementImpl.m3uaScheduler.execute(aspFactoryStopTimer);
             } else {
-                for (FastList.Node<Asp> n = aspList.head(), end = aspList.tail(); (n = n.getNext()) != end;) {
-                    AspImpl aspImpl = (AspImpl) n.getValue();
+            	Iterator<Asp> iterator=aspList.values().iterator();
+                while(iterator.hasNext()) {
+                    AspImpl aspImpl = (AspImpl) iterator.next();
 
                     try {
                         FSM aspLocalFSM = aspImpl.getLocalFSM();
@@ -334,21 +317,15 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
     }
 
     protected void read(M3UAMessage message) {
-        switch (message.getMessageClass()) {
+    	switch (message.getMessageClass()) {
             case MessageClass.MANAGEMENT:
                 switch (message.getMessageType()) {
                     case MessageType.ERROR:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateErrorPerAssRx(association.getName());
 
                         this.managementMessageHandler
                                 .handleError((org.restcomm.protocols.ss7.m3ua.message.mgmt.Error) message);
                         break;
                     case MessageType.NOTIFY:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateNotifyPerAssRx(association.getName());
 
                         Notify notify = (Notify) message;
                         this.managementMessageHandler.handleNotify(notify);
@@ -364,9 +341,6 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
                 switch (message.getMessageType()) {
                     case MessageType.PAYLOAD:
 
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updatePacketsPerAssRx(association.getName());
-
                         PayloadData payload = (PayloadData) message;
                         this.transferMessageHandler.handlePayload(payload);
                         break;
@@ -381,48 +355,30 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
                 switch (message.getMessageType()) {
                     case MessageType.DESTINATION_UNAVAILABLE:
 
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateDunaPerAssRx(association.getName());
-
                         DestinationUnavailable duna = (DestinationUnavailable) message;
                         this.signalingNetworkManagementHandler.handleDestinationUnavailable(duna);
                         break;
                     case MessageType.DESTINATION_AVAILABLE:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateDavaPerAssRx(association.getName());
 
                         DestinationAvailable dava = (DestinationAvailable) message;
                         this.signalingNetworkManagementHandler.handleDestinationAvailable(dava);
                         break;
                     case MessageType.DESTINATION_STATE_AUDIT:
 
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateDaudPerAssRx(association.getName());
-
                         DestinationStateAudit daud = (DestinationStateAudit) message;
                         this.signalingNetworkManagementHandler.handleDestinationStateAudit(daud);
                         break;
                     case MessageType.SIGNALING_CONGESTION:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateSconPerAssRx(association.getName());
 
                         SignallingCongestion scon = (SignallingCongestion) message;
                         this.signalingNetworkManagementHandler.handleSignallingCongestion(scon);
                         break;
                     case MessageType.DESTINATION_USER_PART_UNAVAILABLE:
 
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateDupuPerAssRx(association.getName());
-
                         DestinationUPUnavailable dupu = (DestinationUPUnavailable) message;
                         this.signalingNetworkManagementHandler.handleDestinationUPUnavailable(dupu);
                         break;
                     case MessageType.DESTINATION_RESTRICTED:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateDrstPerAssRx(association.getName());
 
                         DestinationRestricted drst = (DestinationRestricted) message;
                         this.signalingNetworkManagementHandler.handleDestinationRestricted(drst);
@@ -435,53 +391,29 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
                 break;
 
             case MessageClass.ASP_STATE_MAINTENANCE:
-                switch (message.getMessageType()) {
+            	switch (message.getMessageType()) {
                     case MessageType.ASP_UP:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled()) {
-                            m3UAManagementImpl.getCounterProviderImpl().updateAspUpPerAssRx(association.getName());
-                        }
-
                         ASPUp aspUp = (ASPUp) message;
                         this.aspStateMaintenanceHandler.handleAspUp(aspUp);
                         break;
                     case MessageType.ASP_UP_ACK:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateAspUpAckPerAssRx(association.getName());
-
                         ASPUpAck aspUpAck = (ASPUpAck) message;
                         this.aspStateMaintenanceHandler.handleAspUpAck(aspUpAck);
                         break;
                     case MessageType.ASP_DOWN:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateAspDownPerAssRx(association.getName());
-
                         ASPDown aspDown = (ASPDown) message;
                         this.aspStateMaintenanceHandler.handleAspDown(aspDown);
                         break;
                     case MessageType.ASP_DOWN_ACK:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateAspDownAckPerAssRx(association.getName());
-
                         ASPDownAck aspDownAck = (ASPDownAck) message;
                         this.aspStateMaintenanceHandler.handleAspDownAck(aspDownAck);
                         break;
                     case MessageType.HEARTBEAT:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateBeatPerAssRx(association.getName());
-
-                        Heartbeat hrtBeat = (Heartbeat) message;
+                    	Heartbeat hrtBeat = (Heartbeat) message;
                         this.aspStateMaintenanceHandler.handleHeartbeat(hrtBeat);
                         break;
                     case MessageType.HEARTBEAT_ACK:
 
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateBeatAckPerAssRx(association.getName());
-                        // Nothing to do
                         break;
                     default:
                         logger.error(String.format("Received ASPSM with invalid MessageType=%d message=%s",
@@ -495,32 +427,20 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
                 switch (message.getMessageType()) {
                     case MessageType.ASP_ACTIVE:
 
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateAspActivePerAssRx(association.getName());
-
                         ASPActive aspActive = (ASPActive) message;
                         this.aspTrafficMaintenanceHandler.handleAspActive(aspActive);
                         break;
                     case MessageType.ASP_ACTIVE_ACK:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateAspActiveAckPerAssRx(association.getName());
 
                         ASPActiveAck aspAciveAck = (ASPActiveAck) message;
                         this.aspTrafficMaintenanceHandler.handleAspActiveAck(aspAciveAck);
                         break;
                     case MessageType.ASP_INACTIVE:
 
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateAspInactivePerAssRx(association.getName());
-
                         ASPInactive aspInactive = (ASPInactive) message;
                         this.aspTrafficMaintenanceHandler.handleAspInactive(aspInactive);
                         break;
                     case MessageType.ASP_INACTIVE_ACK:
-
-                        if(m3UAManagementImpl.getStatisticsEnabled())
-                            m3UAManagementImpl.getCounterProviderImpl().updateAspInactiveAckPerAssRx(association.getName());
 
                         ASPInactiveAck aspInaciveAck = (ASPInactiveAck) message;
                         this.aspTrafficMaintenanceHandler.handleAspInactiveAck(aspInaciveAck);
@@ -567,102 +487,35 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
 
             ((M3UAMessageImpl) message).encode(byteBuf);
 
-            org.mobicents.protocols.api.PayloadData payloadData = null;
+            org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData = null;
 
-            if(m3UAManagementImpl.getStatisticsEnabled()) {
-                updateTxStatistic(message);
-            }
-
-            if (this.m3UAManagementImpl.isSctpLibNettySupport()) {
-                switch (message.getMessageClass()) {
-                    case MessageClass.ASP_STATE_MAINTENANCE:
-                    case MessageClass.MANAGEMENT:
-                    case MessageClass.ROUTING_KEY_MANAGEMENT:
-                        payloadData = new org.mobicents.protocols.api.PayloadData(byteBuf.readableBytes(), byteBuf, true, true,
-                                SCTP_PAYLOAD_PROT_ID_M3UA, 0);
-                        break;
-                    case MessageClass.TRANSFER_MESSAGES:
-                        PayloadData payload = (PayloadData) message;
-                        int seqControl = payload.getData().getSLS();
-                        payloadData = new org.mobicents.protocols.api.PayloadData(byteBuf.readableBytes(), byteBuf, true,
-                                false, SCTP_PAYLOAD_PROT_ID_M3UA, this.slsTable[seqControl]);
-                        break;
-                    default:
-                        payloadData = new org.mobicents.protocols.api.PayloadData(byteBuf.readableBytes(), byteBuf, true, true,
-                                SCTP_PAYLOAD_PROT_ID_M3UA, 0);
-                        break;
-                }
-
-                this.association.send(payloadData);
-
-                // congestion control - we will send MTP-PAUSE every 8 messages
-                int congLevel = this.association.getCongestionLevel();
-                if (message instanceof PayloadData) {
-                    PayloadData payloadData2 = (PayloadData) message;
-                    if (congLevel > 0) {
-                        sendCongestionInfoToMtp3Users(congLevel, payloadData2.getData().getDpc());
-                    } else {
-                        sendCongestionEndInfoToMtp3Users(congLevel, payloadData2.getData().getDpc());
-                    }
-                }
-            } else {
-                byte[] bf = new byte[byteBuf.readableBytes()];
-                byteBuf.readBytes(bf);
-                synchronized (txBuffer) {
-                    switch (message.getMessageClass()) {
-                        case MessageClass.ASP_STATE_MAINTENANCE:
-                        case MessageClass.MANAGEMENT:
-                        case MessageClass.ROUTING_KEY_MANAGEMENT:
-                            payloadData = new org.mobicents.protocols.api.PayloadData(byteBuf.readableBytes(), bf, true, true,
-                                    SCTP_PAYLOAD_PROT_ID_M3UA, 0);
-                            break;
-                        case MessageClass.TRANSFER_MESSAGES:
-                            PayloadData payload = (PayloadData) message;
-                            int seqControl = payload.getData().getSLS();
-                            payloadData = new org.mobicents.protocols.api.PayloadData(byteBuf.readableBytes(), bf, true, false,
-                                    SCTP_PAYLOAD_PROT_ID_M3UA, this.slsTable[seqControl]);
-                            break;
-                        default:
-                            payloadData = new org.mobicents.protocols.api.PayloadData(byteBuf.readableBytes(), bf, true, true,
-                                    SCTP_PAYLOAD_PROT_ID_M3UA, 0);
-                            break;
-                    }
-
-                    this.association.send(payloadData);
-                }
-            }
+            switch (message.getMessageClass()) {
+	            case MessageClass.ASP_STATE_MAINTENANCE:
+	            case MessageClass.MANAGEMENT:
+	            case MessageClass.ROUTING_KEY_MANAGEMENT:
+	                payloadData = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.readableBytes(), byteBuf, true, true,
+	                        SCTP_PAYLOAD_PROT_ID_M3UA, 0);
+	                break;
+	            case MessageClass.TRANSFER_MESSAGES:
+	                PayloadData payload = (PayloadData) message;
+	                int seqControl = payload.getData().getSLS();
+	                payloadData = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.readableBytes(), byteBuf, true,
+	                        false, SCTP_PAYLOAD_PROT_ID_M3UA, this.slsTable[seqControl]);
+	                break;
+	            default:
+	                payloadData = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.readableBytes(), byteBuf, true, true,
+	                        SCTP_PAYLOAD_PROT_ID_M3UA, 0);
+	                break;
+	        }
+	
+	        this.association.send(payloadData); 
         } catch (Throwable e) {
             logger.error(String.format("Error while trying to send PayloadData to SCTP layer. M3UAMessage=%s", message), e);
         }
     }
 
-    private void sendCongestionInfoToMtp3Users(int congLevel, int dpc) {
-        AtomicInteger ai = congDpcList.get(dpc);
-        if (ai == null) {
-            ai = new AtomicInteger();
-            congDpcList.put(dpc, ai);
-        }
-        if (ai.incrementAndGet() % 8 == 0) {
-            Mtp3StatusPrimitive statusPrimitive = new Mtp3StatusPrimitive(dpc, Mtp3StatusCause.SignallingNetworkCongested,
-                    congLevel, 0);
-            this.m3UAManagementImpl.sendStatusMessageToLocalUser(statusPrimitive);
-        }
-    }
-
-    private void sendCongestionEndInfoToMtp3Users(int congLevel, int dpc) {
-        AtomicInteger ai = congDpcList.get(dpc);
-        if (ai == null) {
-            return;
-        }
-
-        ai = new AtomicInteger();
-        congDpcList.remove(dpc);
-        Mtp3EndCongestionPrimitive endCongestionPrimitive = new Mtp3EndCongestionPrimitive(dpc);
-        this.m3UAManagementImpl.sendEndCongestionMessageToLocalUser(endCongestionPrimitive);
-    }
-
     protected AspImpl createAsp() {
-        AspImpl remAsp = new AspImpl(this.name, this);
+        AspImpl remAsp = new AspImpl(this.name, this, this.uuidGenerator);
 
         // We set ASP IP only if its AS or IPSP Client side
         if (this.getFunctionality() == Functionality.AS
@@ -670,22 +523,23 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
             remAsp.setASPIdentifier(aspid);
         }
 
-        this.aspList.add(remAsp);
+        this.aspList.put(remAsp.getID(), remAsp);
         return remAsp;
     }
 
     protected boolean destroyAsp(AspImpl aspImpl) {
         aspImpl.aspFactoryImpl = null;
-        return this.aspList.remove(aspImpl);
+        return this.aspList.remove(aspImpl.getID())!=null;
     }
 
-    public List<Asp> getAspList() {
-        return this.aspList.unmodifiable();
+    public Collection<Asp> getAspList() {
+        return this.aspList.values();
     }
 
     protected AspImpl getAsp(long rc) {
-        for (FastList.Node<Asp> n = aspList.head(), end = aspList.tail(); (n = n.getNext()) != end;) {
-            Asp aspImpl = n.getValue();
+    	Iterator<Asp> iterator=aspList.values().iterator();
+        while(iterator.hasNext()) {
+            Asp aspImpl = iterator.next();
             if (aspImpl.getAs().getRoutingContext() != null
                     && aspImpl.getAs().getRoutingContext().getRoutingContexts()[0] == rc) {
                 return (AspImpl) aspImpl;
@@ -703,11 +557,7 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
     }
 
     protected static long generateId() {
-        ASP_ID_COUNT++;
-        if (ASP_ID_COUNT == 4294967295L) {
-            ASP_ID_COUNT = 1L;
-        }
-        return ASP_ID_COUNT;
+        return ASP_ID_COUNT.getAndIncrement() % 4294967295L;        
     }
 
     private void handleCommDown() {
@@ -716,8 +566,9 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
             this.heartBeatTimer.cancel();
         }
 
-        for (FastList.Node<Asp> n = aspList.head(), end = aspList.tail(); (n = n.getNext()) != end;) {
-            AspImpl aspImpl = (AspImpl) n.getValue();
+        Iterator<Asp> iterator=aspList.values().iterator();
+        while(iterator.hasNext()) {
+            AspImpl aspImpl = (AspImpl) iterator.next();
             try {
                 FSM aspLocalFSM = aspImpl.getLocalFSM();
                 if (aspLocalFSM != null) {
@@ -775,8 +626,9 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
             this.sendAspUp();
         }
 
-        for (FastList.Node<Asp> n = aspList.head(), end = aspList.tail(); (n = n.getNext()) != end;) {
-            AspImpl aspImpl = (AspImpl) n.getValue();
+        Iterator<Asp> iterator=aspList.values().iterator();
+        while(iterator.hasNext()) {
+            AspImpl aspImpl = (AspImpl) iterator.next();
             try {
                 FSM aspLocalFSM = aspImpl.getLocalFSM();
                 if (aspLocalFSM != null) {
@@ -793,38 +645,6 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
             }
         }
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<AspFactoryImpl> ASP_FACTORY_XML = new XMLFormat<AspFactoryImpl>(AspFactoryImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, AspFactoryImpl aspFactoryImpl) throws XMLStreamException {
-            aspFactoryImpl.name = xml.getAttribute(NAME, "");
-            aspFactoryImpl.associationName = xml.getAttribute(ASSOCIATION_NAME, "");
-            aspFactoryImpl.started = xml.getAttribute(STARTED).toBoolean();
-            aspFactoryImpl.maxSequenceNumber = xml.getAttribute(MAX_SEQUENCE_NUMBER, M3UAManagementImpl.MAX_SEQUENCE_NUMBER);
-            aspFactoryImpl.slsTable = new int[aspFactoryImpl.maxSequenceNumber];
-
-            // For backward compatible
-            long aspIdTemp = xml.getAttribute(ASP_ID, aspFactoryImpl.generateId());
-
-            aspFactoryImpl.aspid = aspFactoryImpl.parameterFactory.createASPIdentifier(aspIdTemp);
-
-            aspFactoryImpl.isHeartBeatEnabled = xml.getAttribute(HEART_BEAT, false);
-        }
-
-        @Override
-        public void write(AspFactoryImpl aspFactoryImpl, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(NAME, aspFactoryImpl.name);
-            xml.setAttribute(ASSOCIATION_NAME, aspFactoryImpl.associationName);
-            xml.setAttribute(STARTED, aspFactoryImpl.started);
-            xml.setAttribute(MAX_SEQUENCE_NUMBER, aspFactoryImpl.maxSequenceNumber);
-            xml.setAttribute(ASP_ID, aspFactoryImpl.aspid.getAspId());
-            xml.setAttribute(HEART_BEAT, aspFactoryImpl.isHeartBeatEnabled);
-        }
-    };
 
     /**
      * AssociationListener methods
@@ -893,17 +713,10 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
     }
 
     @Override
-    public void onPayload(Association association, org.mobicents.protocols.api.PayloadData payloadData) {
+    public void onPayload(Association association, org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData) {
         try {
-            M3UAMessage m3UAMessage;
-            if (this.m3UAManagementImpl.sctpLibNettySupport) {
-                ByteBuf byteBuf = payloadData.getByteBuf();
-                processPayload(association.getIpChannelType(), byteBuf);
-            } else {
-                byte[] m3uadata = payloadData.getData();
-                ByteBuf byteBuf = Unpooled.wrappedBuffer(m3uadata);
-                processPayload(association.getIpChannelType(), byteBuf);
-            }
+        	ByteBuf byteBuf = payloadData.getByteBuf();
+            processPayload(association.getIpChannelType(), byteBuf);
         } catch (Throwable e) {
             logger.error(
                     String.format("Error while trying to process PayloadData from SCTP layer. payloadData=%s", payloadData), e);
@@ -950,7 +763,7 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
      * @see org.mobicents.protocols.api.AssociationListener#inValidStreamId(org.mobicents .protocols.api.PayloadData)
      */
     @Override
-    public void inValidStreamId(org.mobicents.protocols.api.PayloadData payloadData) {
+    public void inValidStreamId(org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData) {
         logger.error(String
                 .format("Tx : PayloadData with streamNumber=%d which is greater than or equal to maxSequenceNumber=%d. Droping PayloadData=%s",
                         payloadData.getStreamNumber(), this.maxOutboundStreams, payloadData));
@@ -965,8 +778,9 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
         sb.append(M3UAOAMMessages.NEW_LINE);
         sb.append(M3UAOAMMessages.SHOW_ASSIGNED_TO);
 
-        for (FastList.Node<Asp> n = aspList.head(), end = aspList.tail(); (n = n.getNext()) != end;) {
-            AspImpl aspImpl = (AspImpl) n.getValue();
+        Iterator<Asp> iterator=aspList.values().iterator();
+        while(iterator.hasNext()) {
+            AspImpl aspImpl = (AspImpl) iterator.next();
             sb.append(M3UAOAMMessages.TAB).append(M3UAOAMMessages.SHOW_AS_NAME).append(aspImpl.getAs().getName())
                     .append(M3UAOAMMessages.SHOW_FUNCTIONALITY).append(this.functionality).append(M3UAOAMMessages.SHOW_MODE)
                     .append(this.exchangeType);
@@ -986,87 +800,4 @@ public class AspFactoryImpl implements AssociationListener, XMLSerializable, Asp
             sb.append(M3UAOAMMessages.NEW_LINE);
         }
     }
-
-    private void updateTxStatistic(M3UAMessage message) {
-        switch (message.getMessageClass()) {
-            case MessageClass.MANAGEMENT:
-                switch (message.getMessageType()) {
-                    case MessageType.ERROR:
-                         m3UAManagementImpl.getCounterProviderImpl().updateErrorPerAssTx(association.getName());
-                        break;
-                    case MessageType.NOTIFY:
-                         m3UAManagementImpl.getCounterProviderImpl().updateNotifyPerAssTx(association.getName());
-                        break;
-                }
-                break;
-            case MessageClass.TRANSFER_MESSAGES:
-                switch (message.getMessageType()) {
-                    case MessageType.PAYLOAD:
-                         m3UAManagementImpl.getCounterProviderImpl().updatePacketsPerAssTx(association.getName());
-                        break;
-                }
-                break;
-            case MessageClass.SIGNALING_NETWORK_MANAGEMENT:
-                switch (message.getMessageType()) {
-                    case MessageType.DESTINATION_UNAVAILABLE:
-                         m3UAManagementImpl.getCounterProviderImpl().updateDunaPerAssTx(association.getName());
-                        break;
-                    case MessageType.DESTINATION_AVAILABLE:
-                         m3UAManagementImpl.getCounterProviderImpl().updateDavaPerAssTx(association.getName());
-                        break;
-                    case MessageType.DESTINATION_STATE_AUDIT:
-                         m3UAManagementImpl.getCounterProviderImpl().updateDaudPerAssTx(association.getName());
-                        break;
-                    case MessageType.SIGNALING_CONGESTION:
-                         m3UAManagementImpl.getCounterProviderImpl().updateSconPerAssTx(association.getName());
-                        break;
-                    case MessageType.DESTINATION_USER_PART_UNAVAILABLE:
-                         m3UAManagementImpl.getCounterProviderImpl().updateDupuPerAssTx(association.getName());
-                        break;
-                    case MessageType.DESTINATION_RESTRICTED:
-                         m3UAManagementImpl.getCounterProviderImpl().updateDrstPerAssTx(association.getName());
-                        break;
-                }
-                break;
-            case MessageClass.ASP_STATE_MAINTENANCE:
-                switch (message.getMessageType()) {
-                    case MessageType.ASP_UP:
-                         m3UAManagementImpl.getCounterProviderImpl().updateAspUpPerAssTx(association.getName());
-                        break;
-                    case MessageType.ASP_UP_ACK:
-                         m3UAManagementImpl.getCounterProviderImpl().updateAspUpAckPerAssTx(association.getName());
-                        break;
-                    case MessageType.ASP_DOWN:
-                         m3UAManagementImpl.getCounterProviderImpl().updateAspDownPerAssTx(association.getName());
-                        break;
-                    case MessageType.ASP_DOWN_ACK:
-                         m3UAManagementImpl.getCounterProviderImpl().updateAspDownAckPerAssTx(association.getName());
-                        break;
-                    case MessageType.HEARTBEAT:
-                         m3UAManagementImpl.getCounterProviderImpl().updateBeatPerAssTx(association.getName());
-                        break;
-                    case MessageType.HEARTBEAT_ACK:
-                         m3UAManagementImpl.getCounterProviderImpl().updateBeatAckPerAssTx(association.getName());
-                        break;
-                }
-                break;
-            case MessageClass.ASP_TRAFFIC_MAINTENANCE:
-                switch (message.getMessageType()) {
-                    case MessageType.ASP_ACTIVE:
-                         m3UAManagementImpl.getCounterProviderImpl().updateAspActivePerAssTx(association.getName());
-                        break;
-                    case MessageType.ASP_ACTIVE_ACK:
-                         m3UAManagementImpl.getCounterProviderImpl().updateAspActiveAckPerAssTx(association.getName());
-                        break;
-                    case MessageType.ASP_INACTIVE:
-                         m3UAManagementImpl.getCounterProviderImpl().updateAspInactivePerAssTx(association.getName());
-                        break;
-                    case MessageType.ASP_INACTIVE_ACK:
-                         m3UAManagementImpl.getCounterProviderImpl().updateAspInactiveAckPerAssTx(association.getName());
-                        break;
-                }
-                break;
-        }
-    }
-
 }

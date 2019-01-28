@@ -26,18 +26,10 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageID;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Tone;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InbandInfoImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InformationToSendImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDImpl;
@@ -104,7 +96,7 @@ public class InformationToSendTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         MessageID messageID = new MessageIDImpl(10);
@@ -151,5 +143,5 @@ public class InformationToSendTest {
 
         assertNull(copy.getInbandInfo());
         assertEquals(copy.getTone().getToneID(), 15);
-    }
+    }*/
 }

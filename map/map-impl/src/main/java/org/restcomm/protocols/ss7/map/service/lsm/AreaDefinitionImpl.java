@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class AreaDefinitionImpl extends SequenceBase implements AreaDefinition {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_areaList = 0;
+	private static final int _TAG_areaList = 0;
 
     private ArrayList<Area> areaList = null;
 

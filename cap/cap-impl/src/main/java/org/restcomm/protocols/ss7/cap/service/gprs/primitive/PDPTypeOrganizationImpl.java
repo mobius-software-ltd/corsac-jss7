@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class PDPTypeOrganizationImpl extends OctetStringLength1Base implements PDPTypeOrganization {
+	private static final long serialVersionUID = 1L;
 
-    public PDPTypeOrganizationImpl() {
+	public PDPTypeOrganizationImpl() {
         super("PDPTypeOrganization");
     }
 

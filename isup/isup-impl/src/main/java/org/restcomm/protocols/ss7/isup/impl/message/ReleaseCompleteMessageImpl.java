@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.isup.util.ISUPUtility;
  *
  */
 class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompleteMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.ReleaseComplete);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.ReleaseComplete);
     private static final int _MANDATORY_VAR_COUNT = 0;
 
     // mandatory fixed L
@@ -121,7 +122,7 @@ class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompl
      */
 
     public MessageType getMessageType() {
-        return this._MESSAGE_TYPE;
+        return _MESSAGE_TYPE;
     }
 
     /*

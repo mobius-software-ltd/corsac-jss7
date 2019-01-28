@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class PDNGWIdentityImpl extends SequenceBase implements PDNGWIdentity {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_pdnGwIpv4Address = 0;
+	private static final int _TAG_pdnGwIpv4Address = 0;
     private static final int _TAG_pdnGwIpv6Address = 1;
     private static final int _TAG_pdnGwName = 2;
     private static final int _TAG_extensionContainer = 3;

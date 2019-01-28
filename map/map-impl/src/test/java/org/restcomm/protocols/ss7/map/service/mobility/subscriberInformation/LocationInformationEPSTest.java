@@ -25,19 +25,12 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.EUtranCgiImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
@@ -121,7 +114,7 @@ public class LocationInformationEPSTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         EUtranCgiImpl euc = new EUtranCgiImpl(this.getEncodedDataEUtranCgi());
@@ -160,6 +153,5 @@ public class LocationInformationEPSTest {
         assertEquals(copy.getCurrentLocationRetrieved(), original.getCurrentLocationRetrieved());
         assertEquals(copy.getAgeOfLocationInformation(), original.getAgeOfLocationInformation());
         assertEquals(copy.getMmeName().getData(), original.getMmeName().getData());
-    }
-
+    }*/
 }

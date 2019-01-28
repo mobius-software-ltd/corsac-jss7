@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.TbcdStringWithFiller;
  *
  */
 public class GroupIdImpl extends TbcdStringWithFiller implements GroupId {
+	private static final long serialVersionUID = 1L;
 
-    public GroupIdImpl() {
+	public GroupIdImpl() {
         super(3, 3, "GroupId");
     }
 

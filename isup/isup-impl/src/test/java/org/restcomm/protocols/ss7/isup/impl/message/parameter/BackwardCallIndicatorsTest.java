@@ -87,9 +87,9 @@ public class BackwardCallIndicatorsTest extends ParameterHarness {
                 "getEndToEndMethodIndicator", "isInterworkingIndicator", "isEndToEndInformationIndicator",
                 "isIsdnUserPartIndicator", "isHoldingIndicator", "isIsdnAccessIndicator", "isEchoControlDeviceIndicator",
                 "getSccpMethodIndicator" };
-        Object[] expectedValues = { bci._CHARGE_INDICATOR_CHARGE, bci._CPSI_SUBSCRIBER_FREE, bci._CPCI_PAYPHONE,
-                bci._ETEMI_SCCP, bci._II_IE, bci._ETEII_NO_IA, bci._ISDN_UPI_UATW, bci._HI_REQUESTED, bci._ISDN_AI_TA_ISDN,
-                bci._ECDI_IECD_NOT_INCLUDED, bci._SCCP_MI_CONNECTION_ORIENTED };
+        Object[] expectedValues = { BackwardCallIndicatorsImpl._CHARGE_INDICATOR_CHARGE, BackwardCallIndicatorsImpl._CPSI_SUBSCRIBER_FREE, BackwardCallIndicatorsImpl._CPCI_PAYPHONE,
+        		BackwardCallIndicatorsImpl._ETEMI_SCCP, BackwardCallIndicatorsImpl._II_IE, BackwardCallIndicatorsImpl._ETEII_NO_IA, BackwardCallIndicatorsImpl._ISDN_UPI_UATW, BackwardCallIndicatorsImpl._HI_REQUESTED, BackwardCallIndicatorsImpl._ISDN_AI_TA_ISDN,
+        		BackwardCallIndicatorsImpl._ECDI_IECD_NOT_INCLUDED, BackwardCallIndicatorsImpl._SCCP_MI_CONNECTION_ORIENTED };
         super.testValues(bci, methodNames, expectedValues);
     }
 
@@ -123,9 +123,9 @@ public class BackwardCallIndicatorsTest extends ParameterHarness {
                 "getEndToEndMethodIndicator", "isInterworkingIndicator", "isEndToEndInformationIndicator",
                 "isIsdnUserPartIndicator", "isHoldingIndicator", "isIsdnAccessIndicator", "isEchoControlDeviceIndicator",
                 "getSccpMethodIndicator" };
-        Object[] expectedValues = { bci._CHARGE_INDICATOR_NOCHARGE, bci._CPSI_CONNECT_WHEN_FREE, bci._CPCI_PAYPHONE,
-                bci._ETEMI_SCCP_AND_PASSALONG, bci._II_IE, bci._ETEII_NO_IA, bci._ISDN_UPI_UATW, bci._HI_REQUESTED,
-                bci._ISDN_AI_TA_ISDN, bci._ECDI_IECD_INCLUDED, bci._SCCP_MI_CONNECTION_ORIENTED };
+        Object[] expectedValues = { BackwardCallIndicatorsImpl._CHARGE_INDICATOR_NOCHARGE, BackwardCallIndicatorsImpl._CPSI_CONNECT_WHEN_FREE, BackwardCallIndicatorsImpl._CPCI_PAYPHONE,
+        		BackwardCallIndicatorsImpl._ETEMI_SCCP_AND_PASSALONG, BackwardCallIndicatorsImpl._II_IE, BackwardCallIndicatorsImpl._ETEII_NO_IA, BackwardCallIndicatorsImpl._ISDN_UPI_UATW, BackwardCallIndicatorsImpl._HI_REQUESTED,
+        		BackwardCallIndicatorsImpl._ISDN_AI_TA_ISDN, BackwardCallIndicatorsImpl._ECDI_IECD_INCLUDED, BackwardCallIndicatorsImpl._SCCP_MI_CONNECTION_ORIENTED };
         super.testValues(bci, methodNames, expectedValues);
     }
 

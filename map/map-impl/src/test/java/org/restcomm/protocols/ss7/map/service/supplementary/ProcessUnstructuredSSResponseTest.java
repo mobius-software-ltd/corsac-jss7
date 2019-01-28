@@ -67,7 +67,7 @@ public class ProcessUnstructuredSSResponseTest {
                 (byte) 0xd9, 0x61, (byte) 0xf7, (byte) 0xb8, 0x0c, (byte) 0xea, (byte) 0x81, 0x66, 0x35, 0x18 };
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         ProcessUnstructuredSSResponseImpl addNum = new ProcessUnstructuredSSResponseImpl();
         addNum.decodeAll(asn);

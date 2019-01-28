@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -43,13 +40,9 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSsErrorStatus;
  * @author amit bhayani
  */
 public class MAPErrorMessageSsErrorStatusImpl extends MAPErrorMessageImpl implements MAPErrorMessageSsErrorStatus {
-    private static final String DATA = "data";
-    private static final String Q_BIT = "qBit";
-    private static final String P_BIT = "pBit";
-    private static final String R_BIT = "rBit";
-    private static final String A_BIT = "aBit";
+	private static final long serialVersionUID = 1L;
 
-    public static final int _mask_QBit = 0x08;
+	public static final int _mask_QBit = 0x08;
     public static final int _mask_PBit = 0x04;
     public static final int _mask_RBit = 0x02;
     public static final int _mask_ABit = 0x01;
@@ -259,34 +252,4 @@ public class MAPErrorMessageSsErrorStatusImpl extends MAPErrorMessageImpl implem
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageSsErrorStatusImpl> MAP_ERROR_MESSAGE_SS_ERROR_STATUS_XML = new XMLFormat<MAPErrorMessageSsErrorStatusImpl>(
-            MAPErrorMessageSsErrorStatusImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageSsErrorStatusImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-            errorMessage.data = xml.get(DATA, Integer.class);
-            xml.get(Q_BIT, Boolean.class);
-            xml.get(P_BIT, Boolean.class);
-            xml.get(R_BIT, Boolean.class);
-            xml.get(A_BIT, Boolean.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageSsErrorStatusImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            xml.add(errorMessage.data, DATA, Integer.class);
-            xml.add(errorMessage.getQBit(), Q_BIT, Boolean.class);
-            xml.add(errorMessage.getPBit(), P_BIT, Boolean.class);
-            xml.add(errorMessage.getRBit(), R_BIT, Boolean.class);
-            xml.add(errorMessage.getABit(), A_BIT, Boolean.class);
-        }
-    };
-
 }

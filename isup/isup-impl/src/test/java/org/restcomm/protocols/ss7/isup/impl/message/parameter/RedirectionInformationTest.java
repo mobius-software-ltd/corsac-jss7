@@ -25,14 +25,9 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
@@ -99,7 +94,7 @@ public class RedirectionInformationTest extends ParameterHarness {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "parameter" })
+    /*@Test(groups = { "functional.xml.serialize", "parameter" })
     public void testXMLSerialize() throws Exception {
 
         RedirectionInformationImpl original = new RedirectionInformationImpl(RedirectionInformation._RI_CALL_D,
@@ -126,7 +121,7 @@ public class RedirectionInformationTest extends ParameterHarness {
         assertEquals(copy.getOriginalRedirectionReason(), original.getOriginalRedirectionReason());
         assertEquals(copy.getRedirectionCounter(), original.getRedirectionCounter());
         assertEquals(copy.getRedirectionReason(), original.getRedirectionReason());
-    }
+    }*/
 
     public RedirectionInformationTest() {
         super();

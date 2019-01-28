@@ -47,7 +47,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Basi
 *
 */
 public class SSDataImpl extends SequenceBase implements SSData {
-    public static final int _TAG_ss_Status = 4;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _TAG_ss_Status = 4;
     public static final int _TAG_nbrUser = 5;
 
     private SSCode ssCode;

@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -72,7 +67,7 @@ public class VariablePartDateTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         VariablePartDateImpl original = new VariablePartDateImpl(2015, 12, 3);
@@ -96,5 +91,5 @@ public class VariablePartDateTest {
         assertEquals(copy.getYear(), original.getYear());
         assertEquals(copy.getMonth(), original.getMonth());
         assertEquals(copy.getDay(), original.getDay());
-    }
+    }*/
 }

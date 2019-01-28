@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartPrice;
 import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
 
@@ -34,11 +31,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
  *
  */
 public class VariablePartPriceImpl extends OctetStringBase implements VariablePartPrice {
+	private static final long serialVersionUID = 1L;
 
-    private static final String PRICE_INTEGER_PART = "priceIntegerPart";
-    private static final String PRICE_HUNDREDTH_PART = "priceHundredthPart";
-
-    public VariablePartPriceImpl() {
+	public VariablePartPriceImpl() {
         super(4, 4, "VariablePartPrice");
     }
 
@@ -148,25 +143,4 @@ public class VariablePartPriceImpl extends OctetStringBase implements VariablePa
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<VariablePartPriceImpl> VARIABLE_PART_PRICE_XML = new XMLFormat<VariablePartPriceImpl>(
-            VariablePartPriceImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, VariablePartPriceImpl variablePartPrice)
-                throws XMLStreamException {
-            variablePartPrice.setPriceIntegerHundredthPart(xml.getAttribute(PRICE_INTEGER_PART, 0),
-                    xml.getAttribute(PRICE_HUNDREDTH_PART, 0));
-        }
-
-        @Override
-        public void write(VariablePartPriceImpl variablePartPrice, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(PRICE_INTEGER_PART, variablePartPrice.getPriceIntegerPart());
-            xml.setAttribute(PRICE_HUNDREDTH_PART, variablePartPrice.getPriceHundredthPart());
-        }
-    };
 }

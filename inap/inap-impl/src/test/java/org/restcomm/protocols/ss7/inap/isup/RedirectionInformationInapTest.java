@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.inap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,7 +56,7 @@ public class RedirectionInformationInapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         RedirectionInformationInapImpl elem = new RedirectionInformationInapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         RedirectionInformation ri = elem.getRedirectionInformation();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
@@ -88,7 +83,7 @@ public class RedirectionInformationInapTest {
         // int redirectingIndicator, int originalRedirectionReason, int redirectionCounter, int redirectionReason
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         RedirectionInformationImpl prim = new RedirectionInformationImpl(RedirectionInformation._RI_CALL_D,
@@ -121,5 +116,5 @@ public class RedirectionInformationInapTest {
         assertEquals(copy.getRedirectionInformation().getRedirectionReason(), original.getRedirectionInformation()
                 .getRedirectionReason());
 
-    }
+    }*/
 }

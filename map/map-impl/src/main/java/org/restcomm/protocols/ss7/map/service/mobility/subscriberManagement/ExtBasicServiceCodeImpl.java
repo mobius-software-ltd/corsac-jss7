@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,11 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class ExtBasicServiceCodeImpl implements ExtBasicServiceCode, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String EXT_BEARER_SERVICE = "extBearerService";
-    private static final String EXT_TELE_SERVICE = "extTeleservice";
-
-    public static final int _ID_ext_BearerService = 2;
+	public static final int _ID_ext_BearerService = 2;
     public static final int _ID_ext_Teleservice = 3;
 
     public static final String _PrimitiveName = "ExtBasicServiceCode";
@@ -193,34 +188,4 @@ public class ExtBasicServiceCodeImpl implements ExtBasicServiceCode, MAPAsnPrimi
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ExtBasicServiceCodeImpl> EXT_BASIC_SERVICE_CODE_XML = new XMLFormat<ExtBasicServiceCodeImpl>(
-            ExtBasicServiceCodeImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ExtBasicServiceCodeImpl extBasicServiceCode)
-                throws XMLStreamException {
-            extBasicServiceCode.extBearerService = xml.get(EXT_BEARER_SERVICE, ExtBearerServiceCodeImpl.class);
-            extBasicServiceCode.extTeleservice = xml.get(EXT_TELE_SERVICE, ExtTeleserviceCodeImpl.class);
-
-        }
-
-        @Override
-        public void write(ExtBasicServiceCodeImpl extBasicServiceCode, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            if (extBasicServiceCode.extBearerService != null) {
-                xml.add(((ExtBearerServiceCodeImpl) extBasicServiceCode.extBearerService), EXT_BEARER_SERVICE,
-                        ExtBearerServiceCodeImpl.class);
-            }
-
-            if (extBasicServiceCode.extTeleservice != null) {
-                xml.add(((ExtTeleserviceCodeImpl) extBasicServiceCode.extTeleservice), EXT_TELE_SERVICE,
-                        ExtTeleserviceCodeImpl.class);
-            }
-        }
-    };
 }

@@ -47,8 +47,9 @@ import java.io.IOException;
  *
  */
 public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements SendRoutingInfoForSMResponse {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_LocationInfoWithLMSI = 0;
+	protected static final int _TAG_LocationInfoWithLMSI = 0;
     protected static final int _TAG_mwdSet = 2;
     protected static final int _TAG_ExtensionContainer = 4;
     protected static final int _TAG_IpSmGwGuidance = 5;

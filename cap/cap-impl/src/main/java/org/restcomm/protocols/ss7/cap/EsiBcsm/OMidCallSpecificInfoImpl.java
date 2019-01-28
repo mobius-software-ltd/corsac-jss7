@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 *
 */
 public class OMidCallSpecificInfoImpl extends SequenceBase implements OMidCallSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    public static final String MID_CALL_EVENTS = "midCallEvents";
+	public static final String MID_CALL_EVENTS = "midCallEvents";
 
     public static final int _ID_midCallEvents = 1;
 
@@ -130,26 +128,4 @@ public class OMidCallSpecificInfoImpl extends SequenceBase implements OMidCallSp
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<OMidCallSpecificInfoImpl> O_MID_CALL_SPECIFIC_INFO_XML = new XMLFormat<OMidCallSpecificInfoImpl>(
-            OMidCallSpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, OMidCallSpecificInfoImpl oMidCallSpecificInfo)
-                throws XMLStreamException {
-            oMidCallSpecificInfo.midCallEvents = xml.get(MID_CALL_EVENTS, MidCallEventsImpl.class);
-        }
-
-        @Override
-        public void write(OMidCallSpecificInfoImpl oMidCallSpecificInfo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (oMidCallSpecificInfo.midCallEvents != null) {
-                xml.add(((MidCallEventsImpl) oMidCallSpecificInfo.midCallEvents), MID_CALL_EVENTS, MidCallEventsImpl.class);
-            }
-        }
-    };
-
 }

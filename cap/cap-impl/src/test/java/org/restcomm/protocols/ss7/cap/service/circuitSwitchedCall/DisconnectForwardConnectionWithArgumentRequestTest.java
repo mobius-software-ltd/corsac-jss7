@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -54,7 +49,7 @@ public class DisconnectForwardConnectionWithArgumentRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         DisconnectForwardConnectionWithArgumentRequestImpl elem = new DisconnectForwardConnectionWithArgumentRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals((int)elem.getCallSegmentID(), 40);
@@ -72,7 +67,7 @@ public class DisconnectForwardConnectionWithArgumentRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         DisconnectForwardConnectionWithArgumentRequestImpl original = new DisconnectForwardConnectionWithArgumentRequestImpl(40,
@@ -99,6 +94,5 @@ public class DisconnectForwardConnectionWithArgumentRequestTest {
         assertEquals((int) original.getCallSegmentID(), (int) copy.getCallSegmentID());
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(original.getExtensions()));
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-    }
-
+    }*/
 }

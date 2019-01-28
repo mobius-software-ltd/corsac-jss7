@@ -24,15 +24,9 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -103,7 +97,7 @@ public class CollectedDigitsTest {
         // Boolean voiceBack
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         CollectedDigitsImpl original = new CollectedDigitsImpl(15, 30, getEndOfReplyDigit(), getCancelDigit(), getStartDigit(),
@@ -168,5 +162,5 @@ public class CollectedDigitsTest {
         assertNull(copy.getVoiceInformation());
         assertNull(copy.getVoiceBack());
 
-    }
+    }*/
 }

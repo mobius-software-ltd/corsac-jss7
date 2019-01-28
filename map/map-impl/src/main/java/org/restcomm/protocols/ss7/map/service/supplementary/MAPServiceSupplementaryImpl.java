@@ -138,6 +138,8 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
             }
+		default:
+			break;
         }
 
         return new ServingCheckDataImpl(ServingCheckResult.AC_NotServing);

@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class LocationAreaImpl implements LocationArea, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_laiFixedLength = 0;
+	public static final int _TAG_laiFixedLength = 0;
     public static final int _TAG_lac = 1;
 
     public static final String _PrimitiveName = "LocationArea";

@@ -40,7 +40,9 @@ import java.util.ArrayList;
  * Created by vsubbotin on 24/05/16.
  */
 public class CallForwardingDataImpl extends SequenceBase implements CallForwardingData {
-    private static final int _TAG_extensionContainer = 0;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_extensionContainer = 0;
 
     private ArrayList<ExtForwFeature> forwardingFeatureList;
     private boolean isNotificationToCSE;

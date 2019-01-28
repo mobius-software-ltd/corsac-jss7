@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -44,10 +41,9 @@ import org.restcomm.protocols.ss7.cap.api.errors.TaskRefusedParameter;
  *
  */
 public class CAPErrorMessageTaskRefusedImpl extends CAPErrorMessageImpl implements CAPErrorMessageTaskRefused {
+	private static final long serialVersionUID = 1L;
 
-    private static final String TASK_REFUSED_PARAMETER = "taskRefusedParameter";
-
-    public static final String _PrimitiveName = "CAPErrorMessageTaskRefused";
+	public static final String _PrimitiveName = "CAPErrorMessageTaskRefused";
 
     private TaskRefusedParameter taskRefusedParameter;
 
@@ -175,31 +171,4 @@ public class CAPErrorMessageTaskRefusedImpl extends CAPErrorMessageImpl implemen
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CAPErrorMessageTaskRefusedImpl> CAP_ERROR_MESSAGE_TASK_REFUSED_XML = new XMLFormat<CAPErrorMessageTaskRefusedImpl>(
-            CAPErrorMessageTaskRefusedImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CAPErrorMessageTaskRefusedImpl errorMessage)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-
-            String str = xml.get(TASK_REFUSED_PARAMETER, String.class);
-            if (str != null)
-                errorMessage.taskRefusedParameter = Enum.valueOf(TaskRefusedParameter.class, str);
-        }
-
-        @Override
-        public void write(CAPErrorMessageTaskRefusedImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-
-            if (errorMessage.taskRefusedParameter != null)
-                xml.add((String) errorMessage.taskRefusedParameter.toString(), TASK_REFUSED_PARAMETER, String.class);
-        }
-    };
-
 }

@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.cap.primitives.SequenceBase;
  *
  */
 public class EndUserAddressImpl extends SequenceBase implements EndUserAddress {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_pdpTypeOrganization = 0;
+	public static final int _ID_pdpTypeOrganization = 0;
     public static final int _ID_pdpTypeNumber = 1;
     public static final int _ID_pdpAddress = 2;
 

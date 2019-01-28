@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -44,14 +41,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
  *
  */
 public class ProblemImpl implements Problem {
+	private static final long serialVersionUID = 1L;
 
-    private static final String PROBLEM_TYPE = "problemType";
-    private static final String PROBLEM_GENERAL = "problemGeneral";
-    private static final String PROBLEM_INVOKE = "problemInvoke";
-    private static final String PROBLEM_RETURN_ERROR = "problemReturnError";
-    private static final String PROBLEM_RETURN_RESULT = "problemReturnResult";
-
-    private ProblemType type;
+	private ProblemType type;
 
     private GeneralProblemType generalProblemType;
     private InvokeProblemType invokeProblemType;
@@ -259,59 +251,4 @@ public class ProblemImpl implements Problem {
         }
 
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ProblemImpl> PROBLEM_BARRED_XML = new XMLFormat<ProblemImpl>(
-            ProblemImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ProblemImpl problem)
-                throws XMLStreamException {
-            String val = xml.getAttribute(PROBLEM_TYPE, "");
-            problem.type = Enum.valueOf(ProblemType.class, val);
-
-            switch (problem.type) {
-            case General:
-                val = xml.get(PROBLEM_GENERAL, String.class);
-                problem.generalProblemType = Enum.valueOf(GeneralProblemType.class, val);
-                break;
-            case Invoke:
-                val = xml.get(PROBLEM_INVOKE, String.class);
-                problem.invokeProblemType = Enum.valueOf(InvokeProblemType.class, val);
-                break;
-            case ReturnResult:
-                val = xml.get(PROBLEM_RETURN_RESULT, String.class);
-                problem.returnResultProblemType = Enum.valueOf(ReturnResultProblemType.class, val);
-                break;
-            case ReturnError:
-                val = xml.get(PROBLEM_RETURN_ERROR, String.class);
-                problem.returnErrorProblemType = Enum.valueOf(ReturnErrorProblemType.class, val);
-                break;
-            }
-        }
-
-        @Override
-        public void write(ProblemImpl problem, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(PROBLEM_TYPE, problem.type.toString());
-
-            switch (problem.type) {
-            case General:
-                xml.add(problem.generalProblemType.toString(), PROBLEM_GENERAL, String.class);
-                break;
-            case Invoke:
-                xml.add(problem.invokeProblemType.toString(), PROBLEM_INVOKE, String.class);
-                break;
-            case ReturnResult:
-                xml.add(problem.returnResultProblemType.toString(), PROBLEM_RETURN_RESULT, String.class);
-                break;
-            case ReturnError:
-                xml.add(problem.returnErrorProblemType.toString(), PROBLEM_RETURN_ERROR, String.class);
-                break;
-            }
-        }
-    };
-
 }

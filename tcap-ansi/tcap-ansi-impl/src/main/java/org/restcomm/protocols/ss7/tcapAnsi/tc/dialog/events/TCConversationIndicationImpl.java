@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIn
  *
  */
 public class TCConversationIndicationImpl extends DialogIndicationImpl implements TCConversationIndication {
+	private static final long serialVersionUID = 1L;
 
-    private SccpAddress originatingAddress;
+	private SccpAddress originatingAddress;
 
     // fields
     private ApplicationContext applicationContextName;

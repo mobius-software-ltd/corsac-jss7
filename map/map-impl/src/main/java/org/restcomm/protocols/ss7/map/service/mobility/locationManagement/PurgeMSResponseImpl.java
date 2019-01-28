@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class PurgeMSResponseImpl extends MobilityMessageImpl implements PurgeMSResponse {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_freezeTMSI = 0;
+	protected static final int _TAG_freezeTMSI = 0;
     protected static final int _TAG_freezePTMSI = 1;
     protected static final int _TAG_freezeMTMSI = 2;
 

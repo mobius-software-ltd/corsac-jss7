@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class LSAInformationImpl extends SequenceBase implements LSAInformation {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_lsaOnlyAccessIndicator = 1;
+	public static final int _TAG_lsaOnlyAccessIndicator = 1;
     public static final int _TAG_lsaDataList = 2;
     public static final int _TAG_extensionContainer = 3;
 

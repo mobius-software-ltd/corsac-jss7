@@ -48,8 +48,12 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class CheckImeiRequestImpl extends MobilityMessageImpl implements CheckImeiRequest {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "CheckImeiRequest";
+	public static final String _PrimitiveName = "CheckImeiRequest";
 
     private IMEI imei = null;
     private RequestedEquipmentInfo requestedEquipmentInfo = null;

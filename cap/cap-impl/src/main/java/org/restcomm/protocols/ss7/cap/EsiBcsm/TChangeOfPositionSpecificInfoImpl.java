@@ -25,14 +25,10 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OChangeOfPositionSpecificInfoImpl.OChangeOfPositionSpecificInfo_MetDPCriterion;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion;
@@ -50,11 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
 *
 */
 public class TChangeOfPositionSpecificInfoImpl extends SequenceBase implements TChangeOfPositionSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final String LOCATION_INFORMATION = "locationInformation";
-    private static final String MET_DP_CRITERIA_LIST = "metDPCriteriaList";
-
-    public static final int _ID_locationInformation = 50;
+	public static final int _ID_locationInformation = 50;
     public static final int _ID_metDPCriteriaList = 51;
 
     private LocationInformation locationInformation;
@@ -184,34 +178,4 @@ public class TChangeOfPositionSpecificInfoImpl extends SequenceBase implements T
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<TChangeOfPositionSpecificInfoImpl> T_CHANGE_OF_POSITION_SPECIFIC_INFO_XML = new XMLFormat<TChangeOfPositionSpecificInfoImpl>(
-            TChangeOfPositionSpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, TChangeOfPositionSpecificInfoImpl tChangeOfPositionSpecificInfo) throws XMLStreamException {
-            tChangeOfPositionSpecificInfo.locationInformation = xml.get(LOCATION_INFORMATION, LocationInformationImpl.class);
-
-            OChangeOfPositionSpecificInfo_MetDPCriterion al = xml.get(MET_DP_CRITERIA_LIST, OChangeOfPositionSpecificInfo_MetDPCriterion.class);
-            if (al != null) {
-                tChangeOfPositionSpecificInfo.metDPCriteriaList = al.getData();
-            }
-        }
-
-        @Override
-        public void write(TChangeOfPositionSpecificInfoImpl tChangeOfPositionSpecificInfo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (tChangeOfPositionSpecificInfo.locationInformation != null)
-                xml.add((LocationInformationImpl) tChangeOfPositionSpecificInfo.locationInformation, LOCATION_INFORMATION, LocationInformationImpl.class);
-
-            if (tChangeOfPositionSpecificInfo.metDPCriteriaList != null) {
-                OChangeOfPositionSpecificInfo_MetDPCriterion al = new OChangeOfPositionSpecificInfo_MetDPCriterion(tChangeOfPositionSpecificInfo.metDPCriteriaList);
-                xml.add(al, MET_DP_CRITERIA_LIST, OChangeOfPositionSpecificInfo_MetDPCriterion.class);
-            }
-        }
-    };
-
 }

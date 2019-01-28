@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.gap.*;
@@ -32,17 +29,11 @@ import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.cap.gap.BasicGapCriteriaImpl;
 import org.restcomm.protocols.ss7.cap.gap.CalledAddressAndServiceImpl;
-import org.restcomm.protocols.ss7.cap.gap.CallingAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.cap.gap.CompoundCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapOnServiceImpl;
 import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import static org.testng.Assert.assertEquals;
@@ -75,7 +66,7 @@ public class CompoundCriteriaTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         CompoundCriteriaImpl elem = new CompoundCriteriaImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
@@ -101,7 +92,7 @@ public class CompoundCriteriaTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "gap" })
+    /*@Test(groups = { "functional.xml.serialize", "gap" })
     public void testXMLSerialize() throws Exception {
 
         GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
@@ -174,7 +165,5 @@ public class CompoundCriteriaTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
-
-
+    }*/
 }

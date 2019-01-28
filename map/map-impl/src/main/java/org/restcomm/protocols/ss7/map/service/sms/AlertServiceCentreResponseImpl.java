@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.service.sms.AlertServiceCentreResponse;
 
 public class AlertServiceCentreResponseImpl extends SmsMessageImpl implements AlertServiceCentreResponse {
+	private static final long serialVersionUID = 1L;
 
-    public int getTag() throws MAPException {
+	public int getTag() throws MAPException {
 
         throw new MAPException("AlertServiceCentreResponse has no MAP message primitive");
     }

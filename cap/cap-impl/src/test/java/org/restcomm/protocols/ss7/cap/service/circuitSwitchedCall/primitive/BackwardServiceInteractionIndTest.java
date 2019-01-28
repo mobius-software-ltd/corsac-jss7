@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -56,7 +51,7 @@ public class BackwardServiceInteractionIndTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         BackwardServiceInteractionIndImpl elem = new BackwardServiceInteractionIndImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         assertEquals(ais.getTag(), Tag.SEQUENCE);
         assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
 
@@ -78,7 +73,7 @@ public class BackwardServiceInteractionIndTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         BackwardServiceInteractionIndImpl original = new BackwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.rejectConferenceRequest,
@@ -103,6 +98,5 @@ public class BackwardServiceInteractionIndTest {
 
         assertEquals(original.getConferenceTreatmentIndicator(), copy.getConferenceTreatmentIndicator());
         assertEquals(original.getCallCompletionTreatmentIndicator(), copy.getCallCompletionTreatmentIndicator());
-    }
-
+    }*/
 }

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ClosedUserGroupInterloc
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ClosedUserGroupInterlockCodeImpl extends AbstractISUPParameter implements ClosedUserGroupInterlockCode {
+	private static final long serialVersionUID = 1L;
 
-    // XXX: this parameter is weird, it does not follow general convention of
+	// XXX: this parameter is weird, it does not follow general convention of
     // parameters :/
     private byte[] niDigits = null;
     private int binaryCode = 0;

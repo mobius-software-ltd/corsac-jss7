@@ -163,9 +163,7 @@ public class InitialDPSMSRequestTest {
         CallReferenceNumber smsReferenceNumber = prim.getSmsReferenceNumber();
         ISDNAddressString mscAddress = prim.getMscAddress();
         ISDNAddressString sgsnNumber = prim.getSgsnNumber();
-        MSClassmark2 mSClassmark2 = prim.getMSClassmark2();
         GPRSMSClass gprsMSClass = prim.getGPRSMSClass();
-        IMEI imei = prim.getImei();
         ISDNAddressString calledPartyNumber = prim.getCalledPartyNumber();
 
         assertEquals(serviceKey, 2);

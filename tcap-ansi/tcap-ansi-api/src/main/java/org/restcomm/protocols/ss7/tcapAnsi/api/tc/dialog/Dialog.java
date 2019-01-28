@@ -23,7 +23,6 @@
 package org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog;
 
 import java.io.Serializable;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
@@ -310,10 +309,4 @@ public interface Dialog extends Serializable {
      * @return Returns if a dialog works in preview mode
      */
     boolean getPreviewMode();
-
-    /**
-     * @return This ReentrantLock object should for synchronizing of Dialog using in multithread environment
-     */
-    ReentrantLock getDialogLock();
-
 }

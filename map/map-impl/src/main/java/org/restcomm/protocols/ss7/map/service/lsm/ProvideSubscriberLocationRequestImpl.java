@@ -63,8 +63,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl implements ProvideSubscriberLocationRequest {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_LCS_CLIENT_ID = 0;
+	private static final int _TAG_LCS_CLIENT_ID = 0;
     private static final int _TAG_PRIVACY_OVERRIDE = 1;
     private static final int _TAG_IMSI = 2;
     private static final int _TAG_MSISDN = 3;

@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityIns
  *
  */
 public class MessageCompatibilityInformationImpl extends AbstractISUPParameter implements MessageCompatibilityInformation {
+	private static final long serialVersionUID = 1L;
 
-    private List<MessageCompatibilityInstructionIndicator> indicators = new LinkedList<MessageCompatibilityInstructionIndicator>();
+	private List<MessageCompatibilityInstructionIndicator> indicators = new LinkedList<MessageCompatibilityInstructionIndicator>();
 
     public MessageCompatibilityInformationImpl() {
         // TODO Auto-generated constructor stub

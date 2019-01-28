@@ -25,29 +25,19 @@ package org.restcomm.protocols.ss7.cap.errors;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorCode;
 import org.restcomm.protocols.ss7.cap.api.errors.CancelProblem;
 import org.restcomm.protocols.ss7.cap.api.errors.RequestedInfoErrorParameter;
 import org.restcomm.protocols.ss7.cap.api.errors.TaskRefusedParameter;
 import org.restcomm.protocols.ss7.cap.api.errors.UnavailableNetworkResource;
 import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageCancelFailedImpl;
-import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageParameterlessImpl;
 import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageRequestedInfoErrorImpl;
 import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageSystemFailureImpl;
 import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageTaskRefusedImpl;
-import org.restcomm.protocols.ss7.cap.isup.BearerCapImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.testng.annotations.Test;
 
 /**
@@ -135,7 +125,7 @@ public class ErrorMessageEncodingTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getDataCancelFailed()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "errors.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "errors.primitive" })
     public void testXMLSerialize_CancelFailed() throws Exception {
 
         CAPErrorMessageCancelFailedImpl original = new CAPErrorMessageCancelFailedImpl(CancelProblem.tooLate);
@@ -269,5 +259,5 @@ public class ErrorMessageEncodingTest {
         assertEquals((long) copy.getErrorCode(), (long) original.getErrorCode());
         assertEquals(copy.getTaskRefusedParameter(), original.getTaskRefusedParameter());
 
-    }
+    }*/
 }

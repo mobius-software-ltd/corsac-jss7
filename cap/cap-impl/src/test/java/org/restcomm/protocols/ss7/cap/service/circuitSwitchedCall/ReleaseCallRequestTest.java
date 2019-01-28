@@ -22,15 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -59,7 +53,7 @@ public class ReleaseCallRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ReleaseCallRequestImpl elem = new ReleaseCallRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(Arrays.equals(elem.getCause().getData(), getDataIntData()));
     }
@@ -75,7 +69,7 @@ public class ReleaseCallRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         CauseCapImpl cause = new CauseCapImpl(getDataIntData());
@@ -101,5 +95,5 @@ public class ReleaseCallRequestTest {
 
         assertEquals(copy.getInvokeId(), original.getInvokeId());
         assertEquals(copy.getCause().getData(), original.getCause().getData());
-    }
+    }*/
 }

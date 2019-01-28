@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class LCSClientExternalIDImpl implements LCSClientExternalID, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_EXTERNAL_ADDRESS = 0;
+	private static final int _TAG_EXTERNAL_ADDRESS = 0;
     private static final int _TAG_EXTENSION_CONTAINER = 1;
 
     public static final String _PrimitiveName = "LCSClientExternalID";

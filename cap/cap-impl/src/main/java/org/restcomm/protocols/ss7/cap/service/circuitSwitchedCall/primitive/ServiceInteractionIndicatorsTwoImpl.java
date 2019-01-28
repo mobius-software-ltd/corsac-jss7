@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -50,8 +47,9 @@ import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionIn
  *
  */
 public class ServiceInteractionIndicatorsTwoImpl extends SequenceBase implements ServiceInteractionIndicatorsTwo {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_forwardServiceInteractionInd = 0;
+	public static final int _ID_forwardServiceInteractionInd = 0;
     public static final int _ID_backwardServiceInteractionInd = 1;
     public static final int _ID_bothwayThroughConnectionInd = 2;
     public static final int _ID_connectedNumberTreatmentInd = 4;
@@ -59,15 +57,6 @@ public class ServiceInteractionIndicatorsTwoImpl extends SequenceBase implements
     public static final int _ID_holdTreatmentIndicator = 50;
     public static final int _ID_cwTreatmentIndicator = 51;
     public static final int _ID_ectTreatmentIndicator = 52;
-
-    private static final String FORWARD_SERVICE_INTERACTION_IND = "forwardServiceInteractionInd";
-    private static final String BACKWARD_SERVICE_INTERACTION_IND = "backwardServiceInteractionInd";
-    private static final String BOTHWAY_THROUGH_CONNECTION_IND = "bothwayThroughConnectionInd";
-    private static final String CONNECTED_NUMBER_TREATMENT_IND = "connectedNumberTreatmentInd";
-    private static final String NON_CUG_CALL = "nonCUGCall";
-    private static final String HOLD_TREATMENT_INDICATOR = "holdTreatmentIndicator";
-    private static final String CW_TREATMENT_INDICATOR = "cwTreatmentIndicator";
-    private static final String ECT_TREATMENT_INDICATOR = "ectTreatmentIndicator";
 
     private ForwardServiceInteractionInd forwardServiceInteractionInd;
     private BackwardServiceInteractionInd backwardServiceInteractionInd;
@@ -272,70 +261,6 @@ public class ServiceInteractionIndicatorsTwoImpl extends SequenceBase implements
             throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
         }
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ServiceInteractionIndicatorsTwoImpl> SERVICE_INTERACTION_INDICATORS_TWO_XML = new XMLFormat<ServiceInteractionIndicatorsTwoImpl>(
-            ServiceInteractionIndicatorsTwoImpl.class) {
-
-        public void read(javolution.xml.XMLFormat.InputElement xml, ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo)
-                throws XMLStreamException {
-            serviceInteractionIndicatorsTwo.nonCUGCall = xml.get(NON_CUG_CALL, Boolean.class);
-
-            serviceInteractionIndicatorsTwo.forwardServiceInteractionInd = xml.get(FORWARD_SERVICE_INTERACTION_IND, ForwardServiceInteractionIndImpl.class);
-            serviceInteractionIndicatorsTwo.backwardServiceInteractionInd = xml.get(BACKWARD_SERVICE_INTERACTION_IND, BackwardServiceInteractionIndImpl.class);
-
-            String vals = xml.get(BOTHWAY_THROUGH_CONNECTION_IND, String.class);
-            if (vals != null) {
-                try {
-                    serviceInteractionIndicatorsTwo.bothwayThroughConnectionInd = Enum.valueOf(BothwayThroughConnectionInd.class, vals);
-                } catch (Exception e) {
-                }
-            }
-            vals = xml.get(CONNECTED_NUMBER_TREATMENT_IND, String.class);
-            if (vals != null) {
-                try {
-                    serviceInteractionIndicatorsTwo.connectedNumberTreatmentInd = Enum.valueOf(ConnectedNumberTreatmentInd.class, vals);
-                } catch (Exception e) {
-                }
-            }
-
-            String str = xml.get(HOLD_TREATMENT_INDICATOR, String.class);
-            if (str != null)
-                serviceInteractionIndicatorsTwo.holdTreatmentIndicator = Enum.valueOf(HoldTreatmentIndicator.class, str);
-            str = xml.get(CW_TREATMENT_INDICATOR, String.class);
-            if (str != null)
-                serviceInteractionIndicatorsTwo.cwTreatmentIndicator = Enum.valueOf(CwTreatmentIndicator.class, str);
-            str = xml.get(ECT_TREATMENT_INDICATOR, String.class);
-            if (str != null)
-                serviceInteractionIndicatorsTwo.ectTreatmentIndicator = Enum.valueOf(EctTreatmentIndicator.class, str);
-        }
-
-        public void write(ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.add(serviceInteractionIndicatorsTwo.nonCUGCall, NON_CUG_CALL, Boolean.class);
-
-            if (serviceInteractionIndicatorsTwo.forwardServiceInteractionInd != null)
-                xml.add((ForwardServiceInteractionIndImpl) serviceInteractionIndicatorsTwo.forwardServiceInteractionInd, FORWARD_SERVICE_INTERACTION_IND,
-                        ForwardServiceInteractionIndImpl.class);
-            if (serviceInteractionIndicatorsTwo.backwardServiceInteractionInd != null)
-                xml.add((BackwardServiceInteractionIndImpl) serviceInteractionIndicatorsTwo.backwardServiceInteractionInd, BACKWARD_SERVICE_INTERACTION_IND,
-                        BackwardServiceInteractionIndImpl.class);
-
-            if (serviceInteractionIndicatorsTwo.bothwayThroughConnectionInd != null)
-                xml.add(serviceInteractionIndicatorsTwo.bothwayThroughConnectionInd.toString(), BOTHWAY_THROUGH_CONNECTION_IND, String.class);
-            if (serviceInteractionIndicatorsTwo.connectedNumberTreatmentInd != null)
-                xml.add(serviceInteractionIndicatorsTwo.connectedNumberTreatmentInd.toString(), CONNECTED_NUMBER_TREATMENT_IND, String.class);
-
-            if (serviceInteractionIndicatorsTwo.holdTreatmentIndicator != null)
-                xml.add(serviceInteractionIndicatorsTwo.holdTreatmentIndicator.toString(), HOLD_TREATMENT_INDICATOR, String.class);
-            if (serviceInteractionIndicatorsTwo.cwTreatmentIndicator != null)
-                xml.add(serviceInteractionIndicatorsTwo.cwTreatmentIndicator.toString(), CW_TREATMENT_INDICATOR, String.class);
-            if (serviceInteractionIndicatorsTwo.ectTreatmentIndicator != null)
-                xml.add(serviceInteractionIndicatorsTwo.ectTreatmentIndicator.toString(), ECT_TREATMENT_INDICATOR, String.class);
-        }
-    };
 
     @Override
     public String toString() {

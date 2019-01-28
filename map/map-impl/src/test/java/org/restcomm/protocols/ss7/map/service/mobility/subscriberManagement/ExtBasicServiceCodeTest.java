@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -73,7 +68,7 @@ public class ExtBasicServiceCodeTest {
 
         byte[] rawData = getEncodedData1();
         AsnInputStream asn = new AsnInputStream(rawData);
-        int tag = asn.readTag();
+        asn.readTag();
         ExtBasicServiceCodeImpl impl = new ExtBasicServiceCodeImpl();
         impl.decodeAll(asn);
         assertTrue(Arrays.equals(impl.getExtBearerService().getData(), this.getData1()));
@@ -81,7 +76,7 @@ public class ExtBasicServiceCodeTest {
 
         rawData = getEncodedData2();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new ExtBasicServiceCodeImpl();
         impl.decodeAll(asn);
         assertTrue(Arrays.equals(impl.getExtTeleservice().getData(), this.getData2()));
@@ -89,7 +84,7 @@ public class ExtBasicServiceCodeTest {
 
         rawData = getEncodedData3();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new ExtBasicServiceCodeImpl();
         impl.decodeAll(asn);
         assertEquals(impl.getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allSpeechTransmissionServices);
@@ -130,7 +125,7 @@ public class ExtBasicServiceCodeTest {
         }
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives.extBasic" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives.extBasic" })
     public void testXMLSerializaionExtBasic() throws Exception {
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(this.getData1());
         ExtBasicServiceCodeImpl original = new ExtBasicServiceCodeImpl(b);
@@ -183,5 +178,5 @@ public class ExtBasicServiceCodeTest {
 
         assertEquals(copy.getExtTeleservice().getTeleserviceCodeValue(), original.getExtTeleservice().getTeleserviceCodeValue());
         assertNull(copy.getExtBearerService());
-    }
+    }*/
 }

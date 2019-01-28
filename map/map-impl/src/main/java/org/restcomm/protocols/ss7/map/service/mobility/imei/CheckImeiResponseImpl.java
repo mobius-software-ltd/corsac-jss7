@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class CheckImeiResponseImpl extends MobilityMessageImpl implements CheckImeiResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_extensionContainer = 0;
+	public static final int _ID_extensionContainer = 0;
 
     public static final String _PrimitiveName = "CheckImeiResponse";
 
@@ -132,7 +133,6 @@ public class CheckImeiResponseImpl extends MobilityMessageImpl implements CheckI
 
         if (mapProtocolVersion >= 3) {
             AsnInputStream ais = ansIS.readSequenceStreamData(length);
-            int num = 0;
             while (true) {
                 if (ais.available() == 0) {
                     break;
@@ -183,8 +183,6 @@ public class CheckImeiResponseImpl extends MobilityMessageImpl implements CheckI
                 } else {
                     ais.advanceElement();
                 }
-
-                num++;
             }
         } else {
             int i1 = (int) ansIS.readIntegerData(length);

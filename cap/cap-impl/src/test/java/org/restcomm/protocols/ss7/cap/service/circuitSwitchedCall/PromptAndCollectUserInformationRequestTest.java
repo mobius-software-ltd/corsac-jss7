@@ -27,20 +27,11 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigits;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Tone;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.PromptAndCollectUserInformationRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CollectedDigitsImpl;
@@ -117,7 +108,7 @@ public class PromptAndCollectUserInformationRequestTest {
         // requestAnnouncementStartedNotification }
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         CollectedDigits collectedDigits = new CollectedDigitsImpl(11, 12, null, null, null, null, null, null, null, null, null);
@@ -187,5 +178,5 @@ public class PromptAndCollectUserInformationRequestTest {
         assertNull(copy.getExtensions());
         assertNull(copy.getCallSegmentID());
         assertNull(copy.getRequestAnnouncementStartedNotification());
-    }
+    }*/
 }

@@ -23,7 +23,6 @@
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.Util;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
@@ -45,12 +44,11 @@ import static org.testng.Assert.assertNotNull;
 public class SccpConnErrMessageTest {
 
     private Logger logger;
-    private SccpStackImpl stack = new SccpStackImpl("SccpConnErrMessageTestStack", null);
+    private SccpStackImpl stack = new SccpStackImpl("SccpConnErrMessageTestStack");
     private MessageFactoryImpl messageFactory;
 
     @BeforeMethod
     public void setUp() {
-        this.stack.setPersistDir(Util.getTmpTestDir());
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = Logger.getLogger(SccpStackImpl.class.getCanonicalName());
     }

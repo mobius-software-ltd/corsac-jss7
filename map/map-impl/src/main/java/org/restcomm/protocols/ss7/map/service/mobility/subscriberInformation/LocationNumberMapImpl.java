@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
@@ -38,10 +35,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class LocationNumberMapImpl extends OctetStringBase implements LocationNumberMap {
+	private static final long serialVersionUID = 1L;
 
-    private static final String LOCATION_NUMBER = "locationNumber";
-
-    public LocationNumberMapImpl() {
+	public LocationNumberMapImpl() {
         super(2, 10, "LocationNumberMap");
     }
 
@@ -110,34 +106,4 @@ public class LocationNumberMapImpl extends OctetStringBase implements LocationNu
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<LocationNumberMapImpl> LOCATION_NUMBER_MAP_XML = new XMLFormat<LocationNumberMapImpl>(
-            LocationNumberMapImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, LocationNumberMapImpl locationNumberMap)
-                throws XMLStreamException {
-            try {
-                locationNumberMap.setLocationNumber(xml.get(LOCATION_NUMBER, LocationNumberImpl.class));
-            } catch (MAPException e) {
-                throw new XMLStreamException("MAPException when deserializing LocationNumberMapImpl", e);
-            }
-        }
-
-        @Override
-        public void write(LocationNumberMapImpl locationNumberMap, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            try {
-                if (locationNumberMap.getLocationNumber() != null) {
-                    xml.add((LocationNumberImpl) locationNumberMap.getLocationNumber(), LOCATION_NUMBER,
-                            LocationNumberImpl.class);
-                }
-            } catch (MAPException e) {
-                throw new XMLStreamException("MAPException when serializing LocationNumberMapImpl", e);
-            }
-        }
-    };
 }

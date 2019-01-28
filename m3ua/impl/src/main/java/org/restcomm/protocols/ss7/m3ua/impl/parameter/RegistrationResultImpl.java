@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import javolution.text.TextBuilder;
 
 import org.restcomm.protocols.ss7.m3ua.parameter.LocalRKIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
@@ -115,7 +114,7 @@ public class RegistrationResultImpl extends ParameterImpl implements Registratio
 
     @Override
     public String toString() {
-        TextBuilder tb = TextBuilder.newInstance();
+        StringBuilder tb = new StringBuilder();
         tb.append("RegistrationResult(");
         if (localRKId != null) {
             tb.append(localRKId.toString());

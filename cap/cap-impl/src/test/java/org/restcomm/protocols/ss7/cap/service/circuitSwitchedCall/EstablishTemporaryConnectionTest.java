@@ -97,7 +97,7 @@ public class EstablishTemporaryConnectionTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         EstablishTemporaryConnectionRequestImpl elem = new EstablishTemporaryConnectionRequestImpl(false);
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNatureOfAddressIndicator(), 1);
@@ -124,7 +124,7 @@ public class EstablishTemporaryConnectionTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new EstablishTemporaryConnectionRequestImpl(true);
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNatureOfAddressIndicator(), 1);
@@ -151,7 +151,7 @@ public class EstablishTemporaryConnectionTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new EstablishTemporaryConnectionRequestImpl(true);
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNatureOfAddressIndicator(), 1);

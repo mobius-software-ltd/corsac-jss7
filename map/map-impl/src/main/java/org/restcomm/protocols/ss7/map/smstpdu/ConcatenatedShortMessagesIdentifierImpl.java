@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
  *
  */
 public class ConcatenatedShortMessagesIdentifierImpl implements ConcatenatedShortMessagesIdentifier {
+	private static final long serialVersionUID = 1L;
 
-    private boolean referenceIs16bit;
+	private boolean referenceIs16bit;
     private int reference;
     private int mesageSegmentCount;
     private int mesageSegmentNumber;

@@ -24,13 +24,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -88,7 +83,7 @@ public class ContinueWithArgumentRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ContinueWithArgumentRequestImpl elem = new ContinueWithArgumentRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getAlertingPattern().getAlertingPattern().getAlertingLevel(), AlertingLevel.Level2);
@@ -111,7 +106,7 @@ public class ContinueWithArgumentRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new ContinueWithArgumentRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getAlertingPattern().getAlertingPattern().getAlertingLevel(), AlertingLevel.Level2);
@@ -182,7 +177,7 @@ public class ContinueWithArgumentRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         CallingPartyCategoryImpl callingPartyCategory = new CallingPartyCategoryImpl();
@@ -247,5 +242,5 @@ public class ContinueWithArgumentRequestTest {
         assertEquals(original.getSuppressOCsi(), copy.getSuppressOCsi());
         assertEquals(original.getContinueWithArgumentArgExtension().getSuppressDCsi(), copy.getContinueWithArgumentArgExtension().getSuppressDCsi());
         assertEquals(original.getContinueWithArgumentArgExtension().getSuppressNCsi(), copy.getContinueWithArgumentArgExtension().getSuppressNCsi());
-    }
+    }*/
 }

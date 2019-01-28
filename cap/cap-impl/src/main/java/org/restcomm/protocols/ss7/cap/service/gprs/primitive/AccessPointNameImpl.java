@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
  *
  */
 public class AccessPointNameImpl extends OctetStringBase implements AccessPointName {
+	private static final long serialVersionUID = 1L;
 
-    public AccessPointNameImpl() {
+	public AccessPointNameImpl() {
         super(3, 102, "AccessPointName");
     }
 

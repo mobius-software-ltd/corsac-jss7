@@ -10,8 +10,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
 */
 
 public class SipUriImpl extends OctetStringBase implements SipUri {
+	private static final long serialVersionUID = 1L;
 
-    @Override
+	@Override
     public byte[] getData() {
         return data;
     }

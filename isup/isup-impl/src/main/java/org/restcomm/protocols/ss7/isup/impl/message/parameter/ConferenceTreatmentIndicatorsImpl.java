@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ConferenceTreatmentIndi
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ConferenceTreatmentIndicatorsImpl extends AbstractISUPParameter implements ConferenceTreatmentIndicators {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] conferenceAcceptance = null;
+	private byte[] conferenceAcceptance = null;
 
     public ConferenceTreatmentIndicatorsImpl(byte[] b) throws ParameterException {
         super();

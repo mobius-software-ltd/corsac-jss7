@@ -156,6 +156,8 @@ public class MAPServiceSmsImpl extends MAPServiceBaseImpl implements MAPServiceS
                 } else {
                     return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
                 }
+			default:
+				break;
         }
 
         return new ServingCheckDataImpl(ServingCheckResult.AC_NotServing);

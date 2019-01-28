@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class CUGInfoImpl extends SequenceBase implements CUGInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_extensionContainer = 0;
+	private static final int _TAG_extensionContainer = 0;
 
     private ArrayList<CUGSubscription> cugSubscriptionList = null;
     private ArrayList<CUGFeature> cugFeatureList = null;

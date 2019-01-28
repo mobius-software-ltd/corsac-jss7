@@ -28,7 +28,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.Util;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
@@ -57,8 +56,7 @@ public class SccpRemoveSpcTest {
 
     @BeforeMethod
     public void setUp() {
-        this.stack = new SccpStackImpl("SccpRemoveSpcTest", null);
-        this.stack.setPersistDir(Util.getTmpTestDir());
+        this.stack = new SccpStackImpl("SccpRemoveSpcTest");
         this.stack.start();
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = Logger.getLogger(SccpStackImpl.class.getCanonicalName());

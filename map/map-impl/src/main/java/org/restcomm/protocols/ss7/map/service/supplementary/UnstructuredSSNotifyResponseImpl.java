@@ -21,9 +21,6 @@
  */
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -42,8 +39,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  */
 public class UnstructuredSSNotifyResponseImpl extends SupplementaryMessageImpl implements UnstructuredSSNotifyResponse,
         MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public MAPDialogSupplementary getMAPDialog() {
+	public MAPDialogSupplementary getMAPDialog() {
         return (MAPDialogSupplementary) super.getMAPDialog();
     }
 
@@ -143,20 +141,4 @@ public class UnstructuredSSNotifyResponseImpl extends SupplementaryMessageImpl i
 
         return sb.toString();
     }
-
-    protected static final XMLFormat<UnstructuredSSNotifyResponseImpl> UNSTRUCTURED_SS_NOTIFY_RESPONSE_XML = new XMLFormat<UnstructuredSSNotifyResponseImpl>(
-            UnstructuredSSNotifyResponseImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, UnstructuredSSNotifyResponseImpl ussdMessage)
-                throws XMLStreamException {
-            USSD_MESSAGE_XML.read(xml, ussdMessage);
-        }
-
-        @Override
-        public void write(UnstructuredSSNotifyResponseImpl ussdMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            USSD_MESSAGE_XML.write(ussdMessage, xml);
-        }
-    };
 }

@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class SMSCSIImpl extends SequenceBase implements SMSCSI {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_smsCamelTdpDataList = 0;
+	public static final int _TAG_smsCamelTdpDataList = 0;
     public static final int _TAG_camelCapabilityHandling = 1;
     public static final int _TAG_extensionContainer = 2;
     public static final int _TAG_notificationToCSE = 3;

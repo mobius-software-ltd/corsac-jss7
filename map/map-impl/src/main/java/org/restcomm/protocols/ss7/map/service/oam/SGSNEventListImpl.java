@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class SGSNEventListImpl extends BitStringBase implements SGSNEventList {
-    static final int _ID_pdpContext = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_pdpContext = 0;
     static final int _ID_moMtSms = 1;
     static final int _ID_rauGprsAttachGprsDetach = 2;
     static final int _ID_mbmsContext = 3;

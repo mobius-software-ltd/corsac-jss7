@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class GeranGANSSpositioningDataImpl extends OctetStringBase implements GeranGANSSpositioningData {
+	private static final long serialVersionUID = 1L;
 
-    public GeranGANSSpositioningDataImpl() {
+	public GeranGANSSpositioningDataImpl() {
         super(2, 10, "GeranGANSSpositioningData");
     }
 

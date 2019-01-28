@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,10 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class BearerCapabilityImpl implements BearerCapability, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_bearerCap = 0;
-
-    private static final String BEARER_CAP_XML = "bearerCap";
+	public static final int _ID_bearerCap = 0;
 
     public static final String _PrimitiveName = "BearerCap";
 
@@ -186,22 +182,4 @@ public class BearerCapabilityImpl implements BearerCapability, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<BearerCapabilityImpl> BEARER_CAPABILITY_XML = new XMLFormat<BearerCapabilityImpl>(
-            BearerCapabilityImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, BearerCapabilityImpl bearerCap) throws XMLStreamException {
-            bearerCap.setBearerCap(xml.get(BEARER_CAP_XML, BearerCapImpl.class));
-        }
-
-        @Override
-        public void write(BearerCapabilityImpl bearerCap, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (bearerCap.getBearerCap() != null)
-                xml.add(((BearerCapImpl) bearerCap.getBearerCap()), BEARER_CAP_XML, BearerCapImpl.class);
-        }
-    };
 }

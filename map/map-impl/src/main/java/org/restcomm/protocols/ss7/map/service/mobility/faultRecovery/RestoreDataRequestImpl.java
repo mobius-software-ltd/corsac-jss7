@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.VLRCap
 *
 */
 public class RestoreDataRequestImpl extends MobilityMessageImpl implements RestoreDataRequest {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_vlr_Capability = 6;
+	protected static final int _TAG_vlr_Capability = 6;
     protected static final int _TAG_restorationIndicator = 7;
 
     public static final String _PrimitiveName = "RestoreDataRequest";

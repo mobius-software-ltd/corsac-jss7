@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.CommandData;
  *
  */
 public class CommandDataImpl implements CommandData {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] encodedData;
+	private byte[] encodedData;
     private String decodedMessage;
 
     private boolean isDecoded;

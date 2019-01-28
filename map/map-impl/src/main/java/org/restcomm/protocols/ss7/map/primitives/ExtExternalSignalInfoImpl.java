@@ -42,7 +42,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
  *
  */
 public class ExtExternalSignalInfoImpl implements ExtExternalSignalInfo, MAPAsnPrimitive {
-    private SignalInfo signalInfo = null;
+	private static final long serialVersionUID = 1L;
+
+	private SignalInfo signalInfo = null;
     private ExtProtocolId extProtocolId = null;
     private MAPExtensionContainer extensionContainer = null;
 

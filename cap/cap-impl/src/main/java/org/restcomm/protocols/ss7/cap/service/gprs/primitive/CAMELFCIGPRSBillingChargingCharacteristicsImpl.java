@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  */
 public class CAMELFCIGPRSBillingChargingCharacteristicsImpl extends SequenceBase implements
         CAMELFCIGPRSBillingChargingCharacteristics {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_fcIBCCCAMELsequence1 = 0;
+	public static final int _ID_fcIBCCCAMELsequence1 = 0;
 
     private FCIBCCCAMELsequence1Gprs fcIBCCCAMELsequence1;
 

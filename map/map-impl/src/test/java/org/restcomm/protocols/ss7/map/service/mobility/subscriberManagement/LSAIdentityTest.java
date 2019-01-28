@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -101,7 +96,7 @@ public class LSAIdentityTest {
         assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
+    /*@Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
     public void testXMLSerialize() throws Exception {
 
         LSAIdentityImpl original = new LSAIdentityImpl(this.getLSAIdentityData());
@@ -125,6 +120,5 @@ public class LSAIdentityTest {
 
         assertEquals(copy.getData(), original.getData());
 
-    }
-
+    }*/
 }

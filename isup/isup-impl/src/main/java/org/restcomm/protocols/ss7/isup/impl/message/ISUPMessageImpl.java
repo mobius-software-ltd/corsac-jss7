@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public abstract class ISUPMessageImpl extends AbstractISUPMessage {
+	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
      * To use one when encoding, created, possibly when decoding
      */
     protected static final EndOfOptionalParametersImpl _END_OF_OPTIONAL_PARAMETERS = new EndOfOptionalParametersImpl();

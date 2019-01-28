@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 
@@ -39,16 +36,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
  * @author sergey vetyutnev
  */
 public class CauseIndicatorsImpl extends AbstractISUPParameter implements CauseIndicators {
+	private static final long serialVersionUID = 1L;
 
-    private static final String LOCATION = "location";
-    private static final String CAUSE_VALUE = "causeValue";
-    private static final String CODING_STANDARD = "codingStandard";
-    private static final String RECOMMENDATION = "recommendation";
-    private static final String DIAGNOSTICS = "diagnostics";
-
-    private static final int DEFAULT_VALUE = 0;
-
-    private int location = 0;
+	private int location = 0;
     private int causeValue = 0;
     private int codingStandard = 0;
     private int recommendation = 0;
@@ -227,39 +217,4 @@ public class CauseIndicatorsImpl extends AbstractISUPParameter implements CauseI
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CauseIndicatorsImpl> ISUP_CAUSE_INDICATORS_XML = new XMLFormat<CauseIndicatorsImpl>(
-            CauseIndicatorsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CauseIndicatorsImpl causeIndicators)
-                throws XMLStreamException {
-            causeIndicators.location = xml.getAttribute(LOCATION, DEFAULT_VALUE);
-            causeIndicators.causeValue = xml.getAttribute(CAUSE_VALUE, DEFAULT_VALUE);
-            causeIndicators.codingStandard = xml.getAttribute(CODING_STANDARD, DEFAULT_VALUE);
-            causeIndicators.recommendation = xml.getAttribute(RECOMMENDATION, DEFAULT_VALUE);
-
-            ByteArrayContainer bc = xml.get(DIAGNOSTICS, ByteArrayContainer.class);
-            if (bc != null) {
-                causeIndicators.diagnostics = bc.getData();
-            }
-        }
-
-        @Override
-        public void write(CauseIndicatorsImpl causeIndicators, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(LOCATION, causeIndicators.location);
-            xml.setAttribute(CAUSE_VALUE, causeIndicators.causeValue);
-            xml.setAttribute(CODING_STANDARD, causeIndicators.codingStandard);
-            xml.setAttribute(RECOMMENDATION, causeIndicators.recommendation);
-
-            if (causeIndicators.diagnostics != null) {
-                ByteArrayContainer bac = new ByteArrayContainer(causeIndicators.diagnostics);
-                xml.add(bac, DIAGNOSTICS, ByteArrayContainer.class);
-            }
-        }
-    };
 }

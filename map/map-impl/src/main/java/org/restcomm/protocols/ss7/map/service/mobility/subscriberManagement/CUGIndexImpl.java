@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -43,8 +40,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 *
 */
 public class CUGIndexImpl implements MAPAsnPrimitive, CUGIndex {
+	private static final long serialVersionUID = 1L;
 
-    protected String _PrimitiveName = "CUGIndex";
+	protected String _PrimitiveName = "CUGIndex";
 
     private int data;
 
@@ -136,20 +134,6 @@ public class CUGIndexImpl implements MAPAsnPrimitive, CUGIndex {
             throw new MAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
         }
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CUGIndexImpl> CUG_INDEX_XML = new XMLFormat<CUGIndexImpl>(CUGIndexImpl.class) {
-
-        public void read(javolution.xml.XMLFormat.InputElement xml, CUGIndexImpl cugIndex) throws XMLStreamException {
-            cugIndex.data = xml.get("value", Integer.class);
-        }
-
-        public void write(CUGIndexImpl cugIndex, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.add(cugIndex.data, "value", Integer.class);
-        }
-    };
 
     @Override
     public String toString() {

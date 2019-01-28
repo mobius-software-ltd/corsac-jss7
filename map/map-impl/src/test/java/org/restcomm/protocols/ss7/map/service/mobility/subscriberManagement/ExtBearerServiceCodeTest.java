@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -59,7 +54,7 @@ public class ExtBearerServiceCodeTest {
 
         byte[] rawData = getEncodedData1();
         AsnInputStream asn = new AsnInputStream(rawData);
-        int tag = asn.readTag();
+        asn.readTag();
         ExtBearerServiceCodeImpl impl = new ExtBearerServiceCodeImpl();
         impl.decodeAll(asn);
         assertTrue(Arrays.equals(impl.getData(), this.getData1()));
@@ -84,7 +79,7 @@ public class ExtBearerServiceCodeTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerializaion() throws Exception {
         ExtBearerServiceCodeImpl original = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
 
@@ -105,5 +100,5 @@ public class ExtBearerServiceCodeTest {
         ExtBearerServiceCodeImpl copy = reader.read("extBearerServiceCode", ExtBearerServiceCodeImpl.class);
 
         assertEquals(copy.getBearerServiceCodeValue(), original.getBearerServiceCodeValue());
-    }
+    }*/
 }

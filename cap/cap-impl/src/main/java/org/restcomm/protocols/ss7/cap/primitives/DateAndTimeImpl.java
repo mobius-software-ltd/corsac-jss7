@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTime;
  *
  */
 public class DateAndTimeImpl implements DateAndTime, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "DateAndTime";
+	public static final String _PrimitiveName = "DateAndTime";
 
     private byte[] data;
 

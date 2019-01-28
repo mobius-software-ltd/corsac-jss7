@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
 *
 */
 public class TraceTypeImpl extends OctetStringLength1Base implements TraceType {
+	private static final long serialVersionUID = 1L;
 
-    public TraceTypeImpl() {
+	public TraceTypeImpl() {
         super("TraceType");
     }
 

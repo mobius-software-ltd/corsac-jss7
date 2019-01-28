@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
  *
  */
 public class ProtocolIdentifierImpl implements ProtocolIdentifier {
+	private static final long serialVersionUID = 1L;
 
-    private int code;
+	private int code;
 
     public ProtocolIdentifierImpl(int code) {
         this.code = code;

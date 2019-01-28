@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class SupportedFeaturesImpl extends BitStringBase implements SupportedFeatures {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_odbAllApn = 0;
+	private static final int _INDEX_odbAllApn = 0;
     private static final int _INDEX_odbHPLMNApn = 1;
     private static final int _INDEX_odbVPLMNApn = 2;
     private static final int _INDEX_odbAllOg = 3;

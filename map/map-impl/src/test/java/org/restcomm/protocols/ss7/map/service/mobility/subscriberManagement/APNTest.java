@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -119,7 +113,7 @@ public class APNTest {
         assertEquals(asn.toByteArray(), this.getData3());
     }
 
-    @Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
+    /*@Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
     public void testXMLSerialize() throws Exception {
 
         APNImpl original = new APNImpl("eee.com");
@@ -142,6 +136,5 @@ public class APNTest {
         APNImpl copy = reader.read("apn", APNImpl.class);
 
         assertEquals(copy.getApn(), original.getApn());
-    }
-
+    }*/
 }

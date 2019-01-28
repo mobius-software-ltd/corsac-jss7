@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class GSMSecurityContextDataImpl extends SequenceBase implements GSMSecurityContextData {
+	private static final long serialVersionUID = 1L;
 
-    private Kc kc;
+	private Kc kc;
     private Cksn cksn;
 
     public GSMSecurityContextDataImpl() {

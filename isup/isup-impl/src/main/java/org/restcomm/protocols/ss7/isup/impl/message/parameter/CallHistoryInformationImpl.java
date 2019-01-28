@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallHistoryInformation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallHistoryInformationImpl extends AbstractISUPParameter implements CallHistoryInformation {
+	private static final long serialVersionUID = 1L;
 
-    // XXX: again this goes aganist usuall way.
+	// XXX: again this goes aganist usuall way.
     private int callHistory;
 
     public CallHistoryInformationImpl(byte[] b) throws ParameterException {

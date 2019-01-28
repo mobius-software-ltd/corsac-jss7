@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -63,7 +58,7 @@ public class LAIFixedLengthTest {
         byte[] data = this.getData();
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         LAIFixedLengthImpl prim = new LAIFixedLengthImpl();
         prim.decodeAll(asn);
@@ -78,7 +73,7 @@ public class LAIFixedLengthTest {
         data = this.getData2();
 
         asn = new AsnInputStream(data);
-        tag = asn.readTag();
+        asn.readTag();
 
         prim = new LAIFixedLengthImpl();
         prim.decodeAll(asn);
@@ -115,7 +110,7 @@ public class LAIFixedLengthTest {
         assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         LAIFixedLengthImpl original = new LAIFixedLengthImpl(250, 1, 4444);
@@ -141,5 +136,5 @@ public class LAIFixedLengthTest {
         assertEquals(copy.getMNC(), original.getMNC());
         assertEquals(copy.getLac(), original.getLac());
 
-    }
+    }*/
 }

@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
@@ -117,7 +112,7 @@ public class OriginalCalledNumberTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "parameter" })
+    /*@Test(groups = { "functional.xml.serialize", "parameter" })
     public void testXMLSerialize() throws Exception {
 
         OriginalCalledNumberImpl original = new OriginalCalledNumberImpl(OriginalCalledNumber._NAI_NATIONAL_SN, "12345",
@@ -144,6 +139,5 @@ public class OriginalCalledNumberTest {
         assertEquals(copy.getAddress(), original.getAddress());
         assertEquals(copy.getNumberingPlanIndicator(), original.getNumberingPlanIndicator());
         assertEquals(copy.getAddressRepresentationRestrictedIndicator(), original.getAddressRepresentationRestrictedIndicator());
-    }
-
+    }*/
 }

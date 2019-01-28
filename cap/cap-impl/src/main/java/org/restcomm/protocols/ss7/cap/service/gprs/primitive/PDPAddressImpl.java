@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
  *
  */
 public class PDPAddressImpl extends OctetStringBase implements PDPAddress {
+	private static final long serialVersionUID = 1L;
 
-    public PDPAddressImpl() {
+	public PDPAddressImpl() {
         super(1, 63, "PDPAddress");
     }
 

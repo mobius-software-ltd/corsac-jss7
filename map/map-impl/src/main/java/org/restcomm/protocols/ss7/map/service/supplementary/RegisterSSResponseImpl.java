@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
 *
 */
 public class RegisterSSResponseImpl extends SupplementaryMessageImpl implements RegisterSSResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "RegisterSSResponse";
+	public static final String _PrimitiveName = "RegisterSSResponse";
 
     private SSInfo ssInfo;
 

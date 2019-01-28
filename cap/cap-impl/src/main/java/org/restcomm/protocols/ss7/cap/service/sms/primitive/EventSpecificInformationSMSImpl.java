@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class EventSpecificInformationSMSImpl implements EventSpecificInformationSMS, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EventSpecificInformationSMS";
+	public static final String _PrimitiveName = "EventSpecificInformationSMS";
 
     public static final int _ID_oSmsFailureSpecificInfo = 0;
     public static final int _ID_oSmsSubmissionSpecificInfo = 1;

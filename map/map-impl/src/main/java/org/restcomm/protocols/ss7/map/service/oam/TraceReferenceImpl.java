@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class TraceReferenceImpl extends OctetStringBase implements TraceReference {
+	private static final long serialVersionUID = 1L;
 
-    public TraceReferenceImpl() {
+	public TraceReferenceImpl() {
         super(1, 2, "TraceReference");
     }
 

@@ -22,11 +22,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import javolution.text.CharArray;
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.sccp.RemoteSubSystem;
 
 /**
@@ -34,12 +29,7 @@ import org.restcomm.protocols.ss7.sccp.RemoteSubSystem;
  * @author amit bhayani
  *
  */
-public class RemoteSubSystemImpl implements XMLSerializable, RemoteSubSystem {
-    private static final String REMOTE_SPC = "remoteSpc";
-    private static final String REMOTE_SSN = "remoteSsn";
-    private static final String REMOTE_SSN_FLAG = "remoteSsnFlag";
-    private static final String MARK_PROHIBITED_WHEN_SPC_RESUMING = "markProhibitedWhenSpcResuming";
-
+public class RemoteSubSystemImpl implements RemoteSubSystem {
     private int remoteSpc;
     private int remoteSsn;
     private int remoteSsnFlag;
@@ -143,27 +133,4 @@ public class RemoteSubSystemImpl implements XMLSerializable, RemoteSubSystem {
             return false;
         return true;
     }
-
-    protected static final XMLFormat<RemoteSubSystemImpl> XML = new XMLFormat<RemoteSubSystemImpl>(RemoteSubSystemImpl.class) {
-
-        public void write(RemoteSubSystemImpl ai, OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(REMOTE_SPC, ai.remoteSpc);
-            xml.setAttribute(REMOTE_SSN, ai.remoteSsn);
-            xml.setAttribute(REMOTE_SSN_FLAG, ai.remoteSsnFlag);
-            xml.setAttribute(MARK_PROHIBITED_WHEN_SPC_RESUMING, ai.markProhibitedWhenSpcResuming);
-
-        }
-
-        public void read(InputElement xml, RemoteSubSystemImpl ai) throws XMLStreamException {
-            ai.remoteSpc = xml.getAttribute(REMOTE_SPC).toInt();
-            ai.remoteSsn = xml.getAttribute(REMOTE_SSN).toInt();
-            ai.remoteSsnFlag = xml.getAttribute(REMOTE_SSN_FLAG).toInt();
-            CharArray charArray = xml.getAttribute(MARK_PROHIBITED_WHEN_SPC_RESUMING);
-            if (charArray == null) {
-                ai.markProhibitedWhenSpcResuming = false;
-            } else {
-                ai.markProhibitedWhenSpcResuming = charArray.toBoolean();
-            }
-        }
-    };
 }

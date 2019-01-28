@@ -23,29 +23,18 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTime;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariableMessageImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.testng.annotations.Test;
 
 /**
@@ -93,7 +82,7 @@ public class VariableMessageTest {
         // int elementaryMessageID, ArrayList<VariablePart> variableParts
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         int elementaryMessageID = 2;
@@ -132,5 +121,5 @@ public class VariableMessageTest {
         VariablePart vp2 = vps.get(1);
         assertEquals(vp2.getTime().getHour(), hour);
         assertEquals(vp2.getTime().getMinute(), minute);
-    }
+    }*/
 }

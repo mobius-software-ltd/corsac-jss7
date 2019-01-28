@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class GPRSCauseImpl extends OctetStringLength1Base implements GPRSCause {
+	private static final long serialVersionUID = 1L;
 
-    public GPRSCauseImpl() {
+	public GPRSCauseImpl() {
         super("GPRSCause");
     }
 

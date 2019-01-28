@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
  *
  */
 public class SmsDeliverTpduImpl extends SmsTpduImpl implements SmsDeliverTpdu {
+	private static final long serialVersionUID = 1L;
 
-    private boolean moreMessagesToSend;
+	private boolean moreMessagesToSend;
     private boolean forwardedOrSpawned;
     private boolean replyPathExists;
     private boolean userDataHeaderIndicator;

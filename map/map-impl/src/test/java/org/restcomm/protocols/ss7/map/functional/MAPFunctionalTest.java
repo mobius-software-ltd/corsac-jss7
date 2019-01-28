@@ -22,9 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.functional;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
@@ -52,18 +50,14 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
-import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
@@ -74,7 +68,6 @@ import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.AllowedServices;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CCBSIndicators;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.InterrogationType;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.IstCommandRequest;
@@ -124,7 +117,6 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.Ca
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancelLocationResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancellationType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSI;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PurgeMSRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PurgeMSResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationRequest;
@@ -287,11 +279,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -377,24 +367,6 @@ public class MAPFunctionalTest extends SccpHarness {
         super.tearDown();
     }
 
-    private void setupLog4j() {
-
-        InputStream inStreamLog4j = getClass().getResourceAsStream("/log4j.properties");
-
-        Properties propertiesLog4j = new Properties();
-
-        try {
-            propertiesLog4j.load(inStreamLog4j);
-            PropertyConfigurator.configure(propertiesLog4j);
-        } catch (Exception e) {
-            e.printStackTrace();
-            BasicConfigurator.configure();
-        }
-
-        logger.debug("log4j configured");
-
-    }
-
     /**
      * Below are test for MAP Dialog normal and abnormal actions
      */
@@ -417,7 +389,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 try {
                     String ussdString = unstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = unstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = unstrReqInd.getMSISDNAddressString();
                     this.debug("Received UnstructuredSSRequestIndication " + ussdString);
 
                     assertEquals(MAPFunctionalTest.USSD_MENU, ussdString);
@@ -466,7 +438,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
@@ -607,7 +579,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 try {
                     String ussdString = unstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = unstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = unstrReqInd.getMSISDNAddressString();
                     this.debug("Received UnstructuredSSRequestIndication " + ussdString);
 
                     assertEquals(MAPFunctionalTest.USSD_MENU, ussdString);
@@ -656,7 +628,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
@@ -797,7 +769,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 String ussdString;
                 try {
                     ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                 } catch (MAPException e) {
@@ -929,7 +901,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 String ussdString;
                 try {
                     ussdString = unstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = unstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = unstrReqInd.getMSISDNAddressString();
                     this.debug("Received UnstructuredSSRequestIndication " + ussdString);
 
                     assertEquals(MAPFunctionalTest.USSD_MENU, ussdString);
@@ -962,7 +934,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
@@ -1127,7 +1099,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 String ussdString;
                 try {
                     ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                 } catch (MAPException e) {
@@ -1312,7 +1284,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
@@ -1411,7 +1383,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
@@ -1538,7 +1510,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 String ussdString;
                 try {
                     ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                 } catch (MAPException e1) {
@@ -1699,7 +1671,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
@@ -1802,7 +1774,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
@@ -1906,7 +1878,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
@@ -2006,10 +1978,10 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
-                    MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
+                    //MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
                 } catch (MAPException e) {
                     this.error("Error while trying to add Duplicate InvokeId Component", e);
                     fail("Error while trying to add Duplicate InvokeId Component");
@@ -2109,10 +2081,10 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onProcessUnstructuredSSRequest(procUnstrReqInd);
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
-                    MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
+                    //MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
                 } catch (MAPException e) {
                     this.error("Error while trying to add Duplicate InvokeId Component", e);
                     fail("Error while trying to add Duplicate InvokeId Component");
@@ -2230,8 +2202,7 @@ public class MAPFunctionalTest extends SccpHarness {
             private int step = 0;
             private int stepRej = 0;
             private long invokeId1;
-            private long invokeId2;
-
+            
             @Override
             public void onSendRoutingInfoForSMRequest(SendRoutingInfoForSMRequest ind) {
                 super.onSendRoutingInfoForSMRequest(ind);
@@ -2241,7 +2212,6 @@ public class MAPFunctionalTest extends SccpHarness {
             @Override
             public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest ind) {
                 super.onReportSMDeliveryStatusRequest(ind);
-                invokeId2 = ind.getInvokeId();
             }
 
             @Override
@@ -2455,10 +2425,10 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 try {
                     String ussdString = procUnstrReqInd.getUSSDString().getString(null);
-                    AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
+                    //AddressString msisdn = procUnstrReqInd.getMSISDNAddressString();
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
-                    MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
+                    //MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
                 } catch (MAPException e) {
                     this.error("Error while trying to add Duplicate InvokeId Component", e);
                     fail("Error while trying to add Duplicate InvokeId Component");
@@ -3083,7 +3053,7 @@ public class MAPFunctionalTest extends SccpHarness {
             @Override
             public void onForwardShortMessageRequest(ForwardShortMessageRequest forwSmInd) {
                 super.onForwardShortMessageRequest(forwSmInd);
-                MAPDialogSms d = forwSmInd.getMAPDialog();
+                //MAPDialogSms d = forwSmInd.getMAPDialog();
 
                 SM_RP_DA sm_RP_DA = forwSmInd.getSM_RP_DA();
                 SM_RP_OA sm_RP_OA = forwSmInd.getSM_RP_OA();
@@ -4307,7 +4277,7 @@ public class MAPFunctionalTest extends SccpHarness {
             SM_RP_DA sm_RP_DA = moForwSmInd.getSM_RP_DA();
             SM_RP_OA sm_RP_OA = moForwSmInd.getSM_RP_OA();
             SmsSignalInfo sm_RP_UI = moForwSmInd.getSM_RP_UI();
-            MAPExtensionContainer extensionContainer = moForwSmInd.getExtensionContainer();
+            //MAPExtensionContainer extensionContainer = moForwSmInd.getExtensionContainer();
             IMSI imsi2 = moForwSmInd.getIMSI();
 
             Assert.assertNotNull(sm_RP_DA);
@@ -4922,10 +4892,12 @@ TC-END + anyTimeInterrogationResponse
                 // send response
                 ISDNAddressString gsmSCFAddress = mapProvider.getMAPParameterFactory()
                         .createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "123456789");
-                final OBcsmCamelTDPData tdpData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3,
+                final OBcsmCamelTDPData data = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3,
                         gsmSCFAddress, DefaultCallHandling.continueCall, null);
 
-                OCSI ocsi = new OCSIImpl(new ArrayList<OBcsmCamelTDPData>() {{add(tdpData);}}, null, null, false, true);
+                ArrayList<OBcsmCamelTDPData> dataList=new ArrayList<OBcsmCamelTDPData>();
+                dataList.add(data);
+                OCSI ocsi = new OCSIImpl( dataList, null, null, false, true);
                 CAMELSubscriptionInfo camelSubscriptionInfo = new CAMELSubscriptionInfoImpl(ocsi, null, null, null, null,
                         null, null, false, false, null, null, null, null, null, null, null, null, null, null, null, null,
                         null, null);
@@ -5894,9 +5866,7 @@ TC-END + provideSubscriberInfoResponse
      */
     @Test(groups = { "functional.flow", "dialog" })
     public void testDelayedClosePrearranged() throws Exception {
-        Client client = new Client(stack1, this, peer1Address, peer2Address) {
-
-            int dialogStep = 0;
+        Client client = new Client(stack1, this, peer1Address, peer2Address) {            
         };
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
@@ -6234,8 +6204,8 @@ TC-END + provideSubscriberInfoResponse
                 super.onProvideRoamingNumberResponse(ind);
                 ISDNAddressString roamingNumber = ind.getRoamingNumber();
                 MAPExtensionContainer extensionContainer = ind.getExtensionContainer();
-                boolean releaseResourcesSupported = ind.getReleaseResourcesSupported();
-                ISDNAddressString vmscAddress = ind.getVmscAddress();
+                //boolean releaseResourcesSupported = ind.getReleaseResourcesSupported();
+                //ISDNAddressString vmscAddress = ind.getVmscAddress();
                 long mapProtocolVersion = ind.getMapProtocolVersion();
 
                 assertNotNull(roamingNumber);
@@ -6264,24 +6234,24 @@ TC-END + provideSubscriberInfoResponse
                 ExternalSignalInfo networkSignalInfo = ind.getNetworkSignalInfo();
                 boolean suppressionOfAnnouncement = ind.getSuppressionOfAnnouncement();
                 ISDNAddressString gmscAddress = ind.getGmscAddress();
-                CallReferenceNumber callReferenceNumber = ind.getCallReferenceNumber();
-                boolean orInterrogation = ind.getOrInterrogation();
+                //CallReferenceNumber callReferenceNumber = ind.getCallReferenceNumber();
+                //boolean orInterrogation = ind.getOrInterrogation();
                 MAPExtensionContainer extensionContainer = ind.getExtensionContainer();
-                AlertingPattern alertingPattern = ind.getAlertingPattern();
-                boolean ccbsCall = ind.getCcbsCall();
-                SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = ind.getSupportedCamelPhasesInInterrogatingNode();
-                ExtExternalSignalInfo additionalSignalInfo = ind.getAdditionalSignalInfo();
-                boolean orNotSupportedInGMSC = ind.getOrNotSupportedInGMSC();
-                boolean prePagingSupported = ind.getPrePagingSupported();
-                boolean longFTNSupported = ind.getLongFTNSupported();
-                boolean suppressVtCsi = ind.getSuppressVtCsi();
-                OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode = ind.getOfferedCamel4CSIsInInterrogatingNode();
-                boolean mtRoamingRetrySupported = ind.getMtRoamingRetrySupported();
-                PagingArea pagingArea = ind.getPagingArea();
-                EMLPPPriority callPriority = ind.getCallPriority();
-                boolean mtrfIndicator = ind.getMtrfIndicator();
-                ISDNAddressString oldMSCNumber = ind.getOldMSCNumber();
-                long mapProtocolVersion = ind.getMapProtocolVersion();
+                //AlertingPattern alertingPattern = ind.getAlertingPattern();
+                //boolean ccbsCall = ind.getCcbsCall();
+                //SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = ind.getSupportedCamelPhasesInInterrogatingNode();
+                //ExtExternalSignalInfo additionalSignalInfo = ind.getAdditionalSignalInfo();
+                //boolean orNotSupportedInGMSC = ind.getOrNotSupportedInGMSC();
+                //boolean prePagingSupported = ind.getPrePagingSupported();
+                //boolean longFTNSupported = ind.getLongFTNSupported();
+                //boolean suppressVtCsi = ind.getSuppressVtCsi();
+                //OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode = ind.getOfferedCamel4CSIsInInterrogatingNode();
+                //boolean mtRoamingRetrySupported = ind.getMtRoamingRetrySupported();
+                //PagingArea pagingArea = ind.getPagingArea();
+                //EMLPPPriority callPriority = ind.getCallPriority();
+                //boolean mtrfIndicator = ind.getMtrfIndicator();
+                //ISDNAddressString oldMSCNumber = ind.getOldMSCNumber();
+                //long mapProtocolVersion = ind.getMapProtocolVersion();
 
                 assertNotNull(imsi);
                 assertEquals(imsi.getData(), "011220200198227");
@@ -6419,27 +6389,27 @@ TC-END + provideSubscriberInfoResponse
                 ISDNAddressString mscNumber = ind.getMscNumber();
                 ISDNAddressString msisdn = ind.getMsisdn();
                 LMSI lmsi = ind.getLmsi();
-                ExternalSignalInfo gsmBearerCapability = ind.getGsmBearerCapability();
-                ExternalSignalInfo networkSignalInfo = ind.getNetworkSignalInfo();
+                //ExternalSignalInfo gsmBearerCapability = ind.getGsmBearerCapability();
+                //ExternalSignalInfo networkSignalInfo = ind.getNetworkSignalInfo();
                 boolean suppressionOfAnnouncement = ind.getSuppressionOfAnnouncement();
                 ISDNAddressString gmscAddress = ind.getGmscAddress();
-                CallReferenceNumber callReferenceNumber = ind.getCallReferenceNumber();
-                boolean orInterrogation = ind.getOrInterrogation();
+                //CallReferenceNumber callReferenceNumber = ind.getCallReferenceNumber();
+                //boolean orInterrogation = ind.getOrInterrogation();
                 MAPExtensionContainer extensionContainer = ind.getExtensionContainer();
-                AlertingPattern alertingPattern = ind.getAlertingPattern();
-                boolean ccbsCall = ind.getCcbsCall();
-                SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = ind.getSupportedCamelPhasesInInterrogatingNode();
-                ExtExternalSignalInfo additionalSignalInfo = ind.getAdditionalSignalInfo();
-                boolean orNotSupportedInGMSC = ind.getOrNotSupportedInGMSC();
-                boolean prePagingSupported = ind.getPrePagingSupported();
-                boolean longFTNSupported = ind.getLongFTNSupported();
-                boolean suppressVtCsi = ind.getSuppressVtCsi();
-                OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode = ind.getOfferedCamel4CSIsInInterrogatingNode();
-                boolean mtRoamingRetrySupported = ind.getMtRoamingRetrySupported();
-                PagingArea pagingArea = ind.getPagingArea();
-                EMLPPPriority callPriority = ind.getCallPriority();
-                boolean mtrfIndicator = ind.getMtrfIndicator();
-                ISDNAddressString oldMSCNumber = ind.getOldMSCNumber();
+                //AlertingPattern alertingPattern = ind.getAlertingPattern();
+                //boolean ccbsCall = ind.getCcbsCall();
+                //SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = ind.getSupportedCamelPhasesInInterrogatingNode();
+                //ExtExternalSignalInfo additionalSignalInfo = ind.getAdditionalSignalInfo();
+                //boolean orNotSupportedInGMSC = ind.getOrNotSupportedInGMSC();
+                //boolean prePagingSupported = ind.getPrePagingSupported();
+                //boolean longFTNSupported = ind.getLongFTNSupported();
+                //boolean suppressVtCsi = ind.getSuppressVtCsi();
+                //OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode = ind.getOfferedCamel4CSIsInInterrogatingNode();
+                //boolean mtRoamingRetrySupported = ind.getMtRoamingRetrySupported();
+                //PagingArea pagingArea = ind.getPagingArea();
+                //EMLPPPriority callPriority = ind.getCallPriority();
+                //boolean mtrfIndicator = ind.getMtrfIndicator();
+                //ISDNAddressString oldMSCNumber = ind.getOldMSCNumber();
                 long mapProtocolVersion = ind.getMapProtocolVersion();
 
                 assertNotNull(imsi);
@@ -7268,7 +7238,7 @@ TC-END + SendRoutingInformationResponse
                     boolean cugSubscriptionFlag = false;
                     CellGlobalIdOrServiceAreaIdFixedLength cellGlobalIdOrServiceAreaIdFixedLength = this.mapParameterFactory
                             .createCellGlobalIdOrServiceAreaIdFixedLength(250, 1, 1111, 222);
-                    LAIFixedLength laiFixedLength = this.mapParameterFactory.createLAIFixedLength(250, 1, 1111);
+                    //LAIFixedLength laiFixedLength = this.mapParameterFactory.createLAIFixedLength(250, 1, 1111);
                     CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI = this.mapParameterFactory
                             .createCellGlobalIdOrServiceAreaIdOrLAI(cellGlobalIdOrServiceAreaIdFixedLength);
                     LocationInformationGPRS locationInformationGPRS = this.mapParameterFactory.createLocationInformationGPRS(
@@ -7449,7 +7419,7 @@ TC-CONTINUE
             public void onSendRoutingInformationRequest(SendRoutingInformationRequest request) {
                 super.onSendRoutingInformationRequest(request);
 
-                MAPDialogCallHandling d = request.getMAPDialog();
+                //MAPDialogCallHandling d = request.getMAPDialog();
                 SendRoutingInformationRequestImpl ind = (SendRoutingInformationRequestImpl) request;
                 invokeId = ind.getInvokeId();
 
@@ -9836,7 +9806,7 @@ TC-END + SendRoutingInformationResponse
 
     private void waitForEnd() {
         try {
-            Thread.currentThread().sleep(_WAIT_TIMEOUT);
+            Thread.sleep(_WAIT_TIMEOUT);
         } catch (InterruptedException e) {
             fail("Interrupted on wait!");
         }

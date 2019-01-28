@@ -28,8 +28,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectReason;
  *
  */
 public class RedirectReasonImpl implements RedirectReason {
+	private static final long serialVersionUID = 1L;
 
-    private byte redirectReason;
+	private byte redirectReason;
     //we need to know if that one was set.
     private Byte redirectPossibleAtPerformingExchange;
     public RedirectReasonImpl() {

@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
  *
  */
 public class TbcdStringWithFiller extends TbcdString {
+	private static final long serialVersionUID = 1L;
 
-    protected static int DIGIT_MASK = 0xFF;
+	protected static int DIGIT_MASK = 0xFF;
 
     public TbcdStringWithFiller(int minLength, int maxLength, String _PrimitiveName) {
         super(minLength, maxLength, _PrimitiveName);

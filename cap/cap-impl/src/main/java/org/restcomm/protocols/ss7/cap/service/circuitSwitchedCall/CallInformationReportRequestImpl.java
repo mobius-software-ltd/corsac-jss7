@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.Requ
  *
  */
 public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessageImpl implements CallInformationReportRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_requestedInformationList = 0;
+	public static final int _ID_requestedInformationList = 0;
     public static final int _ID_extensions = 2;
     public static final int _ID_legID = 3;
 

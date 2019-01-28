@@ -119,8 +119,8 @@ public class TCAPComponentsTest extends SccpHarness {
         peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
         peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-        this.tcapStack1 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider1, 8);
-        this.tcapStack2 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider2, 8);
+        this.tcapStack1 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider1, 8, 4);
+        this.tcapStack2 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider2, 8, 4);
 
         this.tcapStack1.start();
         this.tcapStack2.start();
@@ -256,7 +256,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 super.onTCBegin(ind);
 
                 // waiting for Invoke timeout at a client side
-                client.waitFor(MINI_WAIT_TIME);
+                EventTestHarness.waitFor(MINI_WAIT_TIME);
 
                 try {
 
@@ -273,7 +273,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 super.onTCContinue(ind);
 
                 // waiting for Invoke timeout at a client side
-                client.waitFor(MINI_WAIT_TIME);
+                EventTestHarness.waitFor(MINI_WAIT_TIME);
 
                 step++;
 
@@ -448,7 +448,7 @@ public class TCAPComponentsTest extends SccpHarness {
         client.addNewInvoke(1L, 5L);
         client.sendBegin();
 
-        client.waitFor(WAIT_TIME * 2);
+        EventTestHarness.waitFor(WAIT_TIME * 2);
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
@@ -532,12 +532,15 @@ public class TCAPComponentsTest extends SccpHarness {
         client.startClientDialog();
 
         Component badComp = new BadComponentUnrecognizedComponent();
+        if(client.dialog==null)
+        	System.out.println("CLIENT DIALOG IS NULL");
+        
         client.dialog.sendComponent(badComp);
 
         client.addNewInvoke(1L, 10000L);
         client.sendBegin();
 
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
@@ -627,7 +630,7 @@ public class TCAPComponentsTest extends SccpHarness {
         client.addNewInvoke(2L, 10000L);
         client.sendBegin();
 
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
@@ -717,7 +720,7 @@ public class TCAPComponentsTest extends SccpHarness {
         client.addNewInvoke(2L, 10000L);
         client.sendBegin();
 
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
@@ -727,8 +730,7 @@ public class TCAPComponentsTest extends SccpHarness {
     public class ClientComponent extends EventTestHarness {
 
         protected int step = 0;
-        private Invoke lastSentInvoke;
-
+        
         public ClientComponent(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress, final SccpAddress remoteAddress) {
             super(stack, parameterFactory, thisAddress, remoteAddress);
 
@@ -812,16 +814,12 @@ public class TCAPComponentsTest extends SccpHarness {
             this.observerdEvents.add(te);
 
             this.dialog.sendComponent(invoke);
-
-            lastSentInvoke = invoke;
         }
     }
 
     public class ServerComponent extends EventTestHarness {
 
         protected int step = 0;
-
-        private Component[] components;
 
         /**
          * @param stack
@@ -926,8 +924,9 @@ public class TCAPComponentsTest extends SccpHarness {
      *
      */
     class BadComponentUnrecognizedComponent implements Component {
+		private static final long serialVersionUID = 1L;
 
-        @Override
+		@Override
         public void encode(AsnOutputStream aos) throws EncodeException {
             try {
                 aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, 20);
@@ -975,8 +974,9 @@ public class TCAPComponentsTest extends SccpHarness {
      *
      */
     class BadComponentMistypedComponent extends InvokeImpl {
+		private static final long serialVersionUID = 1L;
 
-        @Override
+		@Override
         public void encode(AsnOutputStream aos) throws EncodeException {
             try {
                 aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG);
@@ -1007,8 +1007,9 @@ public class TCAPComponentsTest extends SccpHarness {
      *
      */
     class BadComponentBadlyStructuredComponent extends InvokeImpl {
+		private static final long serialVersionUID = 1L;
 
-        @Override
+		@Override
         public void encode(AsnOutputStream aos) throws EncodeException {
             try {
                 aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG);

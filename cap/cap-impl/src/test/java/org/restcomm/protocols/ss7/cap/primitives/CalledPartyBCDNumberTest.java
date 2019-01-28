@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -66,7 +61,7 @@ public class CalledPartyBCDNumberTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         CalledPartyBCDNumberImpl elem = new CalledPartyBCDNumberImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertTrue(Arrays.equals(elem.getData(), this.getIntData1()));
@@ -78,7 +73,7 @@ public class CalledPartyBCDNumberTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new CalledPartyBCDNumberImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getAddressNature(), AddressNature.international_number);
@@ -107,7 +102,7 @@ public class CalledPartyBCDNumberTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         CalledPartyBCDNumberImpl original = new CalledPartyBCDNumberImpl(AddressNature.international_number,
@@ -134,6 +129,5 @@ public class CalledPartyBCDNumberTest {
         assertEquals(copy.getNumberingPlan(), original.getNumberingPlan());
         assertEquals(copy.getAddress(), original.getAddress());
         assertEquals(copy.isExtension(), original.isExtension());
-
-    }
+    }*/
 }

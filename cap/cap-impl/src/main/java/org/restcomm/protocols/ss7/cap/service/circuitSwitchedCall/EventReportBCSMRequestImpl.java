@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -56,14 +53,9 @@ import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
  *
  */
 public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl implements EventReportBCSMRequest {
+	private static final long serialVersionUID = 1L;
 
-    private static final String EVENT_TYPE_BCSM = "eventTypeBCSM";
-    private static final String EVENT_SPECIFIC_INFO_BCSM = "eventSpecificInformationBCSM";
-    private static final String LEG_ID = "legID";
-    private static final String MISC_CALL_INFO = "miscCallInfo";
-    private static final String EXTENSIONS = "extensions";
-
-    public static final int _ID_eventTypeBCSM = 0;
+	public static final int _ID_eventTypeBCSM = 0;
     public static final int _ID_eventSpecificInformationBCSM = 2;
     public static final int _ID_legID = 3;
     public static final int _ID_miscCallInfo = 4;
@@ -320,52 +312,4 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
 
         return sb.toString();
     }
-
-    protected static final XMLFormat<EventReportBCSMRequestImpl> EVENT_REPORT_BCSM_REQUEST_XML = new XMLFormat<EventReportBCSMRequestImpl>(
-            EventReportBCSMRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, EventReportBCSMRequestImpl eventReportBCSMRequest)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, eventReportBCSMRequest);
-
-            String str = xml.get(EVENT_TYPE_BCSM, String.class);
-            if (str != null)
-                eventReportBCSMRequest.eventTypeBCSM = Enum.valueOf(EventTypeBCSM.class, str);
-
-            eventReportBCSMRequest.eventSpecificInformationBCSM = xml.get(EVENT_SPECIFIC_INFO_BCSM,
-                    EventSpecificInformationBCSMImpl.class);
-
-            eventReportBCSMRequest.legID = xml.get(LEG_ID, ReceivingSideIDImpl.class);
-
-            eventReportBCSMRequest.miscCallInfo = xml.get(MISC_CALL_INFO, MiscCallInfoImpl.class);
-            eventReportBCSMRequest.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-        }
-
-        @Override
-        public void write(EventReportBCSMRequestImpl eventReportBCSMRequest, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(eventReportBCSMRequest, xml);
-
-            if (eventReportBCSMRequest.eventTypeBCSM != null) {
-                xml.add(eventReportBCSMRequest.eventTypeBCSM.toString(), EVENT_TYPE_BCSM, String.class);
-            }
-
-            if (eventReportBCSMRequest.eventSpecificInformationBCSM != null) {
-                xml.add((EventSpecificInformationBCSMImpl) eventReportBCSMRequest.eventSpecificInformationBCSM,
-                        EVENT_SPECIFIC_INFO_BCSM, EventSpecificInformationBCSMImpl.class);
-            }
-
-            if (eventReportBCSMRequest.legID != null) {
-                xml.add((ReceivingSideIDImpl) eventReportBCSMRequest.legID, LEG_ID, ReceivingSideIDImpl.class);
-            }
-
-            if (eventReportBCSMRequest.miscCallInfo != null) {
-                xml.add((MiscCallInfoImpl) eventReportBCSMRequest.miscCallInfo, MISC_CALL_INFO, MiscCallInfoImpl.class);
-            }
-
-            if (eventReportBCSMRequest.getExtensions() != null)
-                xml.add((CAPExtensionsImpl) eventReportBCSMRequest.getExtensions(), EXTENSIONS, CAPExtensionsImpl.class);
-        }
-    };
 }

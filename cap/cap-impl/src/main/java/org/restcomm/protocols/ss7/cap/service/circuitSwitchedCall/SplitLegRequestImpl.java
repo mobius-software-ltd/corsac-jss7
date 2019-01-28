@@ -21,9 +21,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -51,10 +48,6 @@ public class SplitLegRequestImpl extends CircuitSwitchedCallMessageImpl implemen
     public static final int _ID_legToBeSplit = 0;
     public static final int _ID_newCallSegment = 1;
     public static final int _ID_extensions = 2;
-
-    private static final String LEG_TO_BE_SPLIT = "legToBeSplit";
-    private static final String NEW_CALL_SEGMENT = "newCallSegment";
-    private static final String EXTENSIONS = "extensions";
 
     public static final String _PrimitiveName = "SplitLegRequest";
 
@@ -240,34 +233,4 @@ public class SplitLegRequestImpl extends CircuitSwitchedCallMessageImpl implemen
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<SplitLegRequestImpl> SPLIT_LEG_XML = new XMLFormat<SplitLegRequestImpl>(
-            SplitLegRequestImpl.class) {
-
-        public void read(javolution.xml.XMLFormat.InputElement xml, SplitLegRequestImpl splitLegRequest)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, splitLegRequest);
-
-            splitLegRequest.legToBeSplit = xml.get(LEG_TO_BE_SPLIT, LegIDImpl.class);
-            if (splitLegRequest.legToBeSplit == null)
-                throw new XMLStreamException("Error while decoding " + _PrimitiveName
-                        + ": legToBeSplit is mandatory but not found ");
-
-            splitLegRequest.newCallSegment = xml.get(NEW_CALL_SEGMENT, Integer.class);
-            splitLegRequest.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-        }
-
-        public void write(SplitLegRequestImpl splitLegRequest, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(splitLegRequest, xml);
-
-            xml.add((LegIDImpl) splitLegRequest.getLegToBeSplit(), LEG_TO_BE_SPLIT, LegIDImpl.class);
-            xml.add(splitLegRequest.newCallSegment, NEW_CALL_SEGMENT, Integer.class);
-            xml.add((CAPExtensionsImpl) splitLegRequest.getExtensions(), EXTENSIONS, CAPExtensionsImpl.class);
-        }
-    };
-
 }

@@ -43,8 +43,8 @@ public class EncodingData {
         byte[] b1 = s1.getBytes(ucs2Charset);
         byte[] b2 = s1.getBytes(utf8Charset);
 
-        String sa = this.toByteArray(b1);
-        String sb = this.toByteArray(b2);
+        this.toByteArray(b1);
+        this.toByteArray(b2);
     }
 
     private String toByteArray(byte[] b1) {

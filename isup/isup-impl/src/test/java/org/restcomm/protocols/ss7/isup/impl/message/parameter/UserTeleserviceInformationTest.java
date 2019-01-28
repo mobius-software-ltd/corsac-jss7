@@ -26,14 +26,10 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
@@ -151,7 +147,7 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "parameter" })
+    /*@Test(groups = { "functional.xml.serialize", "parameter" })
     public void testXMLSerialize() throws Exception {
 
         UserTeleserviceInformationImpl original = new UserTeleserviceInformationImpl(
@@ -213,7 +209,7 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
         assertEquals(copy.isEVideoTelephonyCharIdentificationPresent(), original.isEVideoTelephonyCharIdentificationPresent());
         assertEquals(copy.getEHighLayerCharIdentification(), original.getEHighLayerCharIdentification());
         assertEquals(copy.getEVideoTelephonyCharIdentification(), original.getEVideoTelephonyCharIdentification());
-    }
+    }*/
 
     // before is old style tests
     public UserTeleserviceInformationTest() {

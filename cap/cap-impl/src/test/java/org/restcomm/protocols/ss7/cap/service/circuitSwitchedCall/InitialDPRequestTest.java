@@ -27,12 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -65,16 +60,8 @@ import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
@@ -190,7 +177,7 @@ public class InitialDPRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         InitialDPRequestImpl elem = new InitialDPRequestImpl(false);
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getServiceKey(), 110);
         assertTrue(Arrays.equals(elem.getCalledPartyNumber().getData(), getDataCalledPartyNumber()));
@@ -230,7 +217,7 @@ public class InitialDPRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new InitialDPRequestImpl(false);
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getServiceKey(), 110);
         assertTrue(Arrays.equals(elem.getCalledPartyNumber().getData(), getDataCalledPartyNumber()));
@@ -286,7 +273,7 @@ public class InitialDPRequestTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new InitialDPRequestImpl(false);
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getServiceKey(), 110);
 
@@ -433,7 +420,7 @@ public class InitialDPRequestTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         CalledPartyNumberCapImpl calledPartyNumber = new CalledPartyNumberCapImpl(getDataCalledPartyNumber());
@@ -625,5 +612,5 @@ public class InitialDPRequestTest {
         assertEquals(copy.getCugIndex().getData(), original.getCugIndex().getData());
         assertEquals(copy.getCugInterlock().getData(), original.getCugInterlock().getData());
         assertEquals(copy.getCugOutgoingAccess(), original.getCugOutgoingAccess());
-    }
+    }*/
 }

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
  *
  */
 public class LMSIImpl implements LMSI, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] data;
+	private byte[] data;
 
     public LMSIImpl() {
     }

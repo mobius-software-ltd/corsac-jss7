@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,8 +44,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
 *
 */
 public class OTermSeizedSpecificInfoImpl extends SequenceBase implements OTermSeizedSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    public static final String LOCATION_INFORMATION = "locationInformation";
+	public static final String LOCATION_INFORMATION = "locationInformation";
 
     public static final int _ID_locationInformation = 50;
 
@@ -128,27 +126,4 @@ public class OTermSeizedSpecificInfoImpl extends SequenceBase implements OTermSe
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<OTermSeizedSpecificInfoImpl> O_TERM_SEIZED_SPECIFIC_INFO_XML = new XMLFormat<OTermSeizedSpecificInfoImpl>(
-            OTermSeizedSpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, OTermSeizedSpecificInfoImpl oTermSeizedSpecificInfo)
-                throws XMLStreamException {
-            oTermSeizedSpecificInfo.locationInformation = xml.get(LOCATION_INFORMATION, LocationInformationImpl.class);
-        }
-
-        @Override
-        public void write(OTermSeizedSpecificInfoImpl oTermSeizedSpecificInfo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            if (oTermSeizedSpecificInfo.locationInformation != null) {
-                xml.add(((LocationInformationImpl) oTermSeizedSpecificInfo.locationInformation), LOCATION_INFORMATION, LocationInformationImpl.class);
-            }
-        }
-    };
-
 }

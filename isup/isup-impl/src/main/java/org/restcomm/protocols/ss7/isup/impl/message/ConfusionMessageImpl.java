@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class ConfusionMessageImpl extends ISUPMessageImpl implements ConfusionMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Confusion);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Confusion);
     private static final int _MANDATORY_VAR_COUNT = 1;
 
     static final int _INDEX_F_MessageType = 0;

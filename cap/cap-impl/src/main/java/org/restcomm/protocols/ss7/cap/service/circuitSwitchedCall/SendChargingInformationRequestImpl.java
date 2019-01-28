@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.SCIB
  */
 public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessageImpl implements
         SendChargingInformationRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_sCIBillingChargingCharacteristics = 0;
+	public static final int _ID_sCIBillingChargingCharacteristics = 0;
     public static final int _ID_partyToCharge = 1;
     public static final int _ID_extensions = 2;
 

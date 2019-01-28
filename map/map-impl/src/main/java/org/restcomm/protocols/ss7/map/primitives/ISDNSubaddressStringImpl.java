@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressString;
  *
  */
 public class ISDNSubaddressStringImpl extends OctetStringBase implements ISDNSubaddressString {
+	private static final long serialVersionUID = 1L;
 
-    // TODO: implement SubAddress octets and check address format
+	// TODO: implement SubAddress octets and check address format
     /*
      * -- It is composed of -- a) one octet for type of subaddress and odd/even indicator. -- b) 20 octets for subaddress
      * information.

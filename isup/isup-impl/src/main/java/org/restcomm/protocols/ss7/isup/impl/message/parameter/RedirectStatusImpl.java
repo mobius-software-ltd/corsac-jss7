@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectStatus;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RedirectStatusImpl extends AbstractISUPParameter implements RedirectStatus {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] status;
+	private byte[] status;
 
     public RedirectStatusImpl() {
         super();

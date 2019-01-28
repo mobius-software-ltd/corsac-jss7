@@ -1,6 +1,7 @@
 package org.restcomm.protocols.ss7.cap;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -9,7 +10,6 @@ import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPDialogListener;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessage;
-import org.restcomm.protocols.ss7.cap.api.CAPParameterFactory;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGeneralAbortReason;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
@@ -69,7 +69,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitchedCallListener {
 
     private CAPProvider capProvider;
-    private CAPParameterFactory paramFact;
     private CAPDialogCircuitSwitchedCall currentCapDialog;
     private CallContent cc;
 
@@ -81,9 +80,8 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
         } finally {
             ctx.close();
         }
-        paramFact = capProvider.getCAPParameterFactory();
-
-        capProvider.addCAPDialogListener(this);
+        
+        capProvider.addCAPDialogListener(UUID.randomUUID(),this);
         capProvider.getCAPServiceCircuitSwitchedCall().addCAPServiceListener(this);
     }
 
@@ -105,7 +103,6 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     @Override
     public void onInitialDPRequest(InitialDPRequest ind) {
         this.cc = new CallContent();
-        this.cc.idp = ind;
         this.cc.step = Step.initialDPRecieved;
 
         ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
@@ -123,6 +120,8 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
                 case oDisconnect:
                     this.cc.step = Step.disconnected;
                     break;
+				default:
+					break;
             }
         }
 
@@ -179,9 +178,6 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
                                     .createDestinationRoutingAddress(calledPartyNumber);
                             currentCapDialog.addConnectRequest(destinationRoutingAddress, null, null, null, null, null, null,
                                     null, null, null, null, null, null, false, false, false, null, false, false);
-                        } else {
-                            // sending Continue to use the original calledPartyAddress
-                            currentCapDialog.addContinueRequest();
                         }
 
                         currentCapDialog.send();
@@ -191,6 +187,8 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
                         // the call is terminated - close dialog
                         currentCapDialog.close(false);
                         break;
+					default:
+						break;
                 }
             }
         } catch (CAPException e) {
@@ -428,7 +426,6 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
 
     private class CallContent {
         public Step step;
-        public InitialDPRequest idp;
         public ArrayList<EventReportBCSMRequest> eventList = new ArrayList<EventReportBCSMRequest>();
         public Long activityTestInvokeId;
     }

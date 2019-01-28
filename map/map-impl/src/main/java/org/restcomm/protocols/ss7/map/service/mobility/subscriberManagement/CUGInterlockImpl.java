@@ -22,11 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import javax.xml.bind.DatatypeConverter;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
 import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
 
@@ -36,12 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class CUGInterlockImpl extends OctetStringBase implements CUGInterlock {
+	private static final long serialVersionUID = 1L;
 
-    private static final String DATA = "data";
-
-    private static final String DEFAULT_VALUE = null;
-
-    public CUGInterlockImpl() {
+	public CUGInterlockImpl() {
         super(4, 4, "CUGInterlock");
     }
 
@@ -52,26 +44,4 @@ public class CUGInterlockImpl extends OctetStringBase implements CUGInterlock {
     public byte[] getData() {
         return data;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CUGInterlockImpl> CARRIER_XML = new XMLFormat<CUGInterlockImpl>(CUGInterlockImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CUGInterlockImpl cugInterlock) throws XMLStreamException {
-            String s = xml.getAttribute(DATA, DEFAULT_VALUE);
-            if (s != null) {
-                cugInterlock.data = DatatypeConverter.parseHexBinary(s);
-            }
-        }
-
-        @Override
-        public void write(CUGInterlockImpl cugInterlock, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (cugInterlock.data != null) {
-                xml.setAttribute(DATA, DatatypeConverter.printHexBinary(cugInterlock.data));
-            }
-        }
-    };
-
 }

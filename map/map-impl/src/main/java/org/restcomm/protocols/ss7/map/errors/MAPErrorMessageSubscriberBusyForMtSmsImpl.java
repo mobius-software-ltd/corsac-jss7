@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,11 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  */
 public class MAPErrorMessageSubscriberBusyForMtSmsImpl extends MAPErrorMessageImpl implements
         MAPErrorMessageSubscriberBusyForMtSms {
+	private static final long serialVersionUID = 1L;
 
-    private static final String GPRS_CONNECTION_SUSPENDED = "gprsConnectionSuspended";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
-
-    private MAPExtensionContainer extensionContainer;
+	private MAPExtensionContainer extensionContainer;
     private Boolean gprsConnectionSuspended;
 
     public MAPErrorMessageSubscriberBusyForMtSmsImpl(MAPExtensionContainer extensionContainer, Boolean gprsConnectionSuspended) {
@@ -221,28 +216,4 @@ public class MAPErrorMessageSubscriberBusyForMtSmsImpl extends MAPErrorMessageIm
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageSubscriberBusyForMtSmsImpl> MAP_ERROR_MESSAGE_SUBSCRIBER_BUSY_FOR_MT_SMS_XML = new XMLFormat<MAPErrorMessageSubscriberBusyForMtSmsImpl>(
-            MAPErrorMessageSubscriberBusyForMtSmsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageSubscriberBusyForMtSmsImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-            errorMessage.gprsConnectionSuspended = xml.get(GPRS_CONNECTION_SUSPENDED, Boolean.class);
-            errorMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageSubscriberBusyForMtSmsImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            xml.add(errorMessage.getGprsConnectionSuspended(), GPRS_CONNECTION_SUSPENDED, Boolean.class);
-            xml.add((MAPExtensionContainerImpl) errorMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
 }

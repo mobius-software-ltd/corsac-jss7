@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class ResultSourceDiagnosticImpl implements ResultSourceDiagnostic {
+	private static final long serialVersionUID = 1L;
 
-    private DialogServiceProviderType providerType;
+	private DialogServiceProviderType providerType;
     private DialogServiceUserType userType;
 
     /*

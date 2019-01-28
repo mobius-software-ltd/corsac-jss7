@@ -22,11 +22,8 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
+import java.util.UUID;
 
-import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.As;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
@@ -37,14 +34,14 @@ import org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.message.MessageFactory;
 import org.restcomm.protocols.ss7.m3ua.parameter.ASPIdentifier;
 
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
+
 /**
  *
  * @author amit bhayani
  *
  */
-public class AspImpl implements XMLSerializable, Asp {
-
-    private static final Logger logger = Logger.getLogger(AspImpl.class);
+public class AspImpl implements Asp {
 
     protected static final String NAME = "name";
 
@@ -70,18 +67,20 @@ public class AspImpl implements XMLSerializable, Asp {
 
     protected State state = AspState.DOWN;
 
-    public AspImpl() {
-
+    private UUID uniqueID;
+    
+    public AspImpl(UUIDGenerator uuidGenerator) {
+    	this.uniqueID=uuidGenerator.GenerateTimeBasedGuid(System.currentTimeMillis());
     }
 
-    public AspImpl(String name, AspFactoryImpl aspFactroy) {
-        this.name = name;
+    public AspImpl(String name, AspFactoryImpl aspFactroy, UUIDGenerator uuidGenerator) {
+    	this.uniqueID=uuidGenerator.GenerateTimeBasedGuid(System.currentTimeMillis());
+    	this.name = name;
         this.aspFactoryImpl = aspFactroy;
         this.init();
     }
 
-    private void init() {
-
+    private void init() {    	
         switch (this.aspFactoryImpl.functionality) {
             case IPSP:
                 if (this.aspFactoryImpl.exchangeType == ExchangeType.SE) {
@@ -305,6 +304,10 @@ public class AspImpl implements XMLSerializable, Asp {
                 AspState.INACTIVE.toString());
     }
 
+    public UUID getID() {
+        return this.uniqueID;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -356,20 +359,4 @@ public class AspImpl implements XMLSerializable, Asp {
     public MessageFactory getMessageFactory() {
         return messageFactory;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<AspImpl> ASP_XML = new XMLFormat<AspImpl>(AspImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, AspImpl aspImpl) throws XMLStreamException {
-            aspImpl.name = xml.getAttribute(NAME, "");
-        }
-
-        @Override
-        public void write(AspImpl aspImpl, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(NAME, aspImpl.name);
-        }
-    };
 }

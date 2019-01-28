@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
  *
  */
 public class MOLRClassImpl extends SequenceBase implements MOLRClass {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_extensionContainer = 0;
+	public static final int _TAG_extensionContainer = 0;
 
     private SSCode ssCode;
     private ExtSSStatus ssStatus;

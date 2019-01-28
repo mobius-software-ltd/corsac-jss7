@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
@@ -39,7 +38,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 public class BaseSccpListener implements SccpListener {
-    public BaseSccpListener() {
+	private static final long serialVersionUID = 1L;
+
+	public BaseSccpListener() {
     }
 
     @Override
@@ -64,11 +65,6 @@ public class BaseSccpListener implements SccpListener {
 
     @Override
     public void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel, RemoteSccpStatus remoteSccpStatus) {
-
-    }
-
-    @Override
-    public void onNetworkIdState(int networkId, NetworkIdState networkIdState) {
 
     }
 

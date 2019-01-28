@@ -55,7 +55,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 *
 */
 public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl implements DeleteSubscriberDataRequest {
-    protected static final int _TAG_imsi = 0;
+	private static final long serialVersionUID = 1L;
+
+	protected static final int _TAG_imsi = 0;
     protected static final int _TAG_basicServiceList = 1;
     protected static final int _TAG_ss_List = 2;
     protected static final int _TAG_roamingRestrictionDueToUnsupportedFeature = 4;

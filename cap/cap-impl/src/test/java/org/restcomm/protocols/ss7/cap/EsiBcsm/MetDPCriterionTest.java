@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -291,7 +285,7 @@ public class MetDPCriterionTest {
         assertEquals(aos.toByteArray(), this.getData11());
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         CellGlobalIdOrServiceAreaIdFixedLength value = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(201, 1, 22000, 55);
         // int mcc, int mnc, int lac, int cellIdOrServiceAreaCode
@@ -526,6 +520,5 @@ public class MetDPCriterionTest {
         copy = reader.read("metDPCriterion", MetDPCriterionImpl.class);
 
         assertNotNull(copy.getMetDPCriterionAlt());
-    }
-
+    }*/
 }

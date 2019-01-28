@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Supp
  *
  */
 public class VLRCapabilityImpl implements VLRCapability, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_supportedCamelPhases = 0;
+	public static final int _TAG_supportedCamelPhases = 0;
     public static final int _TAG_solsaSupportIndicator = 2;
     public static final int _TAG_istSupportIndicator = 1;
     public static final int _TAG_superChargerSupportedInServingNetworkEntity = 3;

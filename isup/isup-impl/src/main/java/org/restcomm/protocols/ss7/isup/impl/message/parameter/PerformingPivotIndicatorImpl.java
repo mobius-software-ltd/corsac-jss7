@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class PerformingPivotIndicatorImpl extends AbstractInformationImpl implements PerformingPivotIndicator {
+	private static final long serialVersionUID = 1L;
 
-    private List<PivotReason> reasons = new ArrayList<PivotReason>();
+	private List<PivotReason> reasons = new ArrayList<PivotReason>();
 
     public PerformingPivotIndicatorImpl() {
         super(InformationType.PerformingPivotIndicator);

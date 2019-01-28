@@ -49,7 +49,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingOptionsImp
  *
  */
 public class ForwardingDataImpl implements ForwardingData, MAPAsnPrimitive {
-    private ISDNAddressString forwardedToNumber;
+	private static final long serialVersionUID = 1L;
+
+	private ISDNAddressString forwardedToNumber;
     private ISDNSubaddressString forwardedToSubaddress;
     private ForwardingOptions forwardingOptions;
     private MAPExtensionContainer extensionContainer;

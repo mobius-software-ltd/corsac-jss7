@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ParameterIndicator;
  *
  */
 public class ParameterIndicatorImpl implements ParameterIndicator {
+	private static final long serialVersionUID = 1L;
 
-    private static int _MASK_TP_UDL = 0x04;
+	private static int _MASK_TP_UDL = 0x04;
     private static int _MASK_TP_DCS = 0x02;
     private static int _MASK_TP_PID = 0x01;
 

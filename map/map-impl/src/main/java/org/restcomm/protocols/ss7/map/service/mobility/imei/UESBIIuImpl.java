@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class UESBIIuImpl extends SequenceBase implements UESBIIu {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_UESBI_IuA = 0;
+	private static final int _TAG_UESBI_IuA = 0;
     private static final int _TAG_UESBI_IuB = 1;
 
     private UESBIIuA uesbiIuA;

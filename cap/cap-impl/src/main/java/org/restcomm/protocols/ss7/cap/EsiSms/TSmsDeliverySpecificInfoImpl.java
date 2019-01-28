@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class TSmsDeliverySpecificInfoImpl extends SequenceBase implements TSmsDeliverySpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    public TSmsDeliverySpecificInfoImpl() {
+	public TSmsDeliverySpecificInfoImpl() {
         super("TSmsDeliverySpecificInfo");
     }
 

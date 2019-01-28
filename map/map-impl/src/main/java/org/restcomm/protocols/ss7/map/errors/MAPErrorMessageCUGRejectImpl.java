@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,11 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  * @author amit bhayani
  */
 public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements MAPErrorMessageCUGReject {
+	private static final long serialVersionUID = 1L;
 
-    private static final String CUG_REJECT_CAUSE = "cugRejectCause";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
-
-    private CUGRejectCause cugRejectCause;
+	private CUGRejectCause cugRejectCause;
     private MAPExtensionContainer extensionContainer;
 
     protected String _PrimitiveName = "MAPErrorMessageCUGReject";
@@ -231,34 +226,4 @@ public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageCUGRejectImpl> MAP_ERROR_MESSAGE_CALL_BARRED_XML = new XMLFormat<MAPErrorMessageCUGRejectImpl>(
-            MAPErrorMessageCUGRejectImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageCUGRejectImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-
-            String str = xml.get(CUG_REJECT_CAUSE, String.class);
-            if (str != null)
-                errorMessage.cugRejectCause = Enum.valueOf(CUGRejectCause.class, str);
-
-            errorMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageCUGRejectImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            if (errorMessage.getCUGRejectCause() != null)
-                xml.add((String) errorMessage.getCUGRejectCause().toString(), CUG_REJECT_CAUSE, String.class);
-            xml.add((MAPExtensionContainerImpl) errorMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
-
 }

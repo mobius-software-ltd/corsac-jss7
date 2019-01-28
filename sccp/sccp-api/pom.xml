@@ -4,13 +4,13 @@
 
 	<parent>
 		<artifactId>sccp-parent</artifactId>
-		<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+		<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sccp-api</artifactId>
 
-	<name>Restcomm jSS7 :: SCCP :: Api :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: SCCP :: Api :: ${project.artifactId}</name>
 
 	<properties>
 		<maven.test.skip>false</maven.test.skip>
@@ -18,14 +18,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 			<artifactId>mtp-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.restcomm.protocols.ss7.ss7ext</groupId>
-			<artifactId>ss7-ext-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>junit</groupId>
@@ -36,11 +30,6 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javolution</groupId>
-			<artifactId>javolution</artifactId>
 		</dependency>		
 	</dependencies>
 

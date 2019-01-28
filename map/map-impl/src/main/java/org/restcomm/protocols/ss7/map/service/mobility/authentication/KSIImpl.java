@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class KSIImpl extends OctetStringLength1Base implements KSI {
+	private static final long serialVersionUID = 1L;
 
-    public KSIImpl() {
+	public KSIImpl() {
         super("KSI");
     }
 

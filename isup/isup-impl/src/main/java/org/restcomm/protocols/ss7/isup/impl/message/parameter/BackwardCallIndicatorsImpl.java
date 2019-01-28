@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.BackwardCallIndicators;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class BackwardCallIndicatorsImpl extends AbstractISUPParameter implements BackwardCallIndicators {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TURN_ON = 1;
+	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
     private int chargeIndicator = 0;

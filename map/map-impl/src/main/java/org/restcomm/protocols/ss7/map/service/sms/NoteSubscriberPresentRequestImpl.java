@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 *
 */
 public class NoteSubscriberPresentRequestImpl extends SmsMessageImpl implements NoteSubscriberPresentRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "NoteSubscriberPresentRequest";
+	public static final String _PrimitiveName = "NoteSubscriberPresentRequest";
 
     private IMSI imsi;
 

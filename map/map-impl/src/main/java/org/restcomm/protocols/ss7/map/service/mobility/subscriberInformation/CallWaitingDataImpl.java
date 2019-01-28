@@ -37,7 +37,9 @@ import java.util.ArrayList;
  * Created by vsubbotin on 26/05/16.
  */
 public class CallWaitingDataImpl extends SequenceBase implements CallWaitingData {
-    private static final int _TAG_CW_FEATURE_LIST = 1;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_CW_FEATURE_LIST = 1;
     private static final int _TAG_NOTIFICATION_TO_CSE = 2;
 
     private ArrayList<ExtCwFeature> cwFeatureList;

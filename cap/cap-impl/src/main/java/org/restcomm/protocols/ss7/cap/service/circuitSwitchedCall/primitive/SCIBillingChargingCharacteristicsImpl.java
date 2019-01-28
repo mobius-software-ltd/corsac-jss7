@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  *
  */
 public class SCIBillingChargingCharacteristicsImpl implements SCIBillingChargingCharacteristics, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_aOCBeforeAnswer = 0;
+	public static final int _ID_aOCBeforeAnswer = 0;
     public static final int _ID_aOCAfterAnswer = 1;
     public static final int _ID_aOC_extension = 2;
 

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.functional;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.MAPProvider;
@@ -39,9 +41,9 @@ public class Server extends EventTestHarness {
 
     private static Logger logger = Logger.getLogger(Server.class);
 
-    private MAPFunctionalTest runningTestCase;
-    private SccpAddress thisAddress;
-    private SccpAddress remoteAddress;
+    //private MAPFunctionalTest runningTestCase;
+    //private SccpAddress thisAddress;
+    //private SccpAddress remoteAddress;
 
     private MAPStack mapStack;
     protected MAPProvider mapProvider;
@@ -52,15 +54,15 @@ public class Server extends EventTestHarness {
     Server(MAPStack mapStack, MAPFunctionalTest runningTestCase, SccpAddress thisAddress, SccpAddress remoteAddress) {
         super(logger);
         this.mapStack = mapStack;
-        this.runningTestCase = runningTestCase;
-        this.thisAddress = thisAddress;
-        this.remoteAddress = remoteAddress;
+        //this.runningTestCase = runningTestCase;
+        //this.thisAddress = thisAddress;
+        //this.remoteAddress = remoteAddress;
         this.mapProvider = this.mapStack.getMAPProvider();
 
         this.mapParameterFactory = this.mapProvider.getMAPParameterFactory();
         this.mapErrorMessageFactory = this.mapProvider.getMAPErrorMessageFactory();
 
-        this.mapProvider.addMAPDialogListener(this);
+        this.mapProvider.addMAPDialogListener(UUID.randomUUID(),this);
         this.mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
         this.mapProvider.getMAPServiceSms().addMAPServiceListener(this);
         this.mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
@@ -79,11 +81,11 @@ public class Server extends EventTestHarness {
     }
 
     public void debug(String message) {
-        this.logger.debug(message);
+        logger.debug(message);
     }
 
     public void error(String message, Exception e) {
-        this.logger.error(message, e);
+        logger.error(message, e);
     }
 
 }

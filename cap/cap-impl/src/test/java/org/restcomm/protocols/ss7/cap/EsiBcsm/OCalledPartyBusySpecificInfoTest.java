@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -78,7 +72,7 @@ public class OCalledPartyBusySpecificInfoTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
 
         CauseIndicators causeIndicators = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_NATIONAL, CauseIndicators._LOCATION_TRANSIT_NETWORK, 0, 0,
@@ -112,6 +106,5 @@ public class OCalledPartyBusySpecificInfoTest {
         assertEquals(copy.getBusyCause().getCauseIndicators().getCodingStandard(), original.getBusyCause().getCauseIndicators()
                 .getCodingStandard());
 
-    }
-
+    }*/
 }

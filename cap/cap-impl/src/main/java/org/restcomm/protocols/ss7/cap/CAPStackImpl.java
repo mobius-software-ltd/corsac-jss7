@@ -44,30 +44,20 @@ public class CAPStackImpl implements CAPStack {
 
     private final String name;
 
-    private CAPStackConfigurationManagement capStackCfgManagement;
-
-    private String persistDir = null;
-
-    public CAPStackImpl(String name, SccpProvider sccpPprovider, int ssn) {
+    public CAPStackImpl(String name, SccpProvider sccpPprovider, int ssn,int threads) {
         this.name = name;
-        this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn);
+        this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, threads);
         TCAPProvider tcapProvider = tcapStack.getProvider();
         capProvider = new CAPProviderImpl(name, tcapProvider);
 
-        this.state = State.CONFIGURED;
-
-        this.capStackCfgManagement = CAPStackConfigurationManagement.getInstance();
-        this.capStackCfgManagement.setConfigFileName(this.name);
+        this.state = State.CONFIGURED;       
     }
 
     public CAPStackImpl(String name, TCAPProvider tcapProvider) {
         this.name = name;
         capProvider = new CAPProviderImpl(name, tcapProvider);
         this.tcapStack = tcapProvider.getStack();
-        this.state = State.CONFIGURED;
-
-        this.capStackCfgManagement = CAPStackConfigurationManagement.getInstance();
-        this.capStackCfgManagement.setConfigFileName(this.name);
+        this.state = State.CONFIGURED;        
     }
 
     @Override
@@ -82,9 +72,6 @@ public class CAPStackImpl implements CAPStack {
 
     @Override
     public void start() throws Exception {
-        this.capStackCfgManagement.setPersistDir(this.persistDir);
-        this.capStackCfgManagement.load();
-
         if (state != State.CONFIGURED) {
             throw new IllegalStateException("Stack has not been configured or is already running!");
         }
@@ -109,16 +96,11 @@ public class CAPStackImpl implements CAPStack {
         }
 
         this.state = State.CONFIGURED;
-        this.capStackCfgManagement.store();
     }
 
     @Override
     public TCAPStack getTCAPStack() {
         return this.tcapStack;
-    }
-
-    public void setPersistDir(String persistDir) {
-        this.persistDir = persistDir;
     }
 
     private enum State {

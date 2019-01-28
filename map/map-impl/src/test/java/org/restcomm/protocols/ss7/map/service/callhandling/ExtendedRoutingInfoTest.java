@@ -96,7 +96,7 @@ public class ExtendedRoutingInfoTest {
         // 4 = 00|0|00100, 7 = length
         // Option 1
         AsnInputStream asn = new AsnInputStream(this.getData1());
-        int tag = asn.readTag();
+        asn.readTag();
 
         ExtendedRoutingInfoImpl extRouteInfo = new ExtendedRoutingInfoImpl();
         extRouteInfo.decodeAll(asn);
@@ -111,7 +111,7 @@ public class ExtendedRoutingInfoTest {
 
         // Option 2
         asn = new AsnInputStream(this.getData2());
-        tag = asn.readTag();
+        asn.readTag();
 
         extRouteInfo = new ExtendedRoutingInfoImpl();
         extRouteInfo.decodeAll(asn);

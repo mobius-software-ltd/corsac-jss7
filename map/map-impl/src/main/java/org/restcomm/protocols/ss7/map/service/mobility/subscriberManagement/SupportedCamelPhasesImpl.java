@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 
@@ -34,18 +31,12 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class SupportedCamelPhasesImpl extends BitStringBase implements SupportedCamelPhases {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_Phase1 = 0;
+	private static final int _INDEX_Phase1 = 0;
     private static final int _INDEX_Phase2 = 1;
     private static final int _INDEX_Phase3 = 2;
     private static final int _INDEX_Phase4 = 3;
-
-    private static final String PHASE1 = "phase1";
-    private static final String PHASE2 = "phase2";
-    private static final String PHASE3 = "phase3";
-    private static final String PHASE4 = "phase4";
-
-    private static final boolean DEFAULT_BOOLEAN_VALUE = false;
 
     public SupportedCamelPhasesImpl() {
         super(1, 16, 4, "SupportedCamelPhases");
@@ -94,51 +85,6 @@ public class SupportedCamelPhasesImpl extends BitStringBase implements Supported
     public boolean getPhase3Supported() {
         return this.bitString.get(_INDEX_Phase3);
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<SupportedCamelPhasesImpl> SUPPORTED_CAMEL_PHASES_XML = new XMLFormat<SupportedCamelPhasesImpl>(SupportedCamelPhasesImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, SupportedCamelPhasesImpl supportedCamelPhases) throws XMLStreamException {
-
-            boolean phase1 = false;
-            boolean phase2 = false;
-            boolean phase3 = false;
-            boolean phase4 = false;
-            Boolean bval = xml.getAttribute(PHASE1, DEFAULT_BOOLEAN_VALUE);
-            if (bval != null) {
-                phase1 = bval;
-            }
-            bval = xml.getAttribute(PHASE2, DEFAULT_BOOLEAN_VALUE);
-            if (bval != null) {
-                phase2 = bval;
-            }
-            bval = xml.getAttribute(PHASE3, DEFAULT_BOOLEAN_VALUE);
-            if (bval != null) {
-                phase3 = bval;
-            }
-            bval = xml.getAttribute(PHASE4, DEFAULT_BOOLEAN_VALUE);
-            if (bval != null) {
-                phase4 = bval;
-            }
-
-            supportedCamelPhases.setData(phase1, phase2, phase3, phase4);
-        }
-
-        @Override
-        public void write(SupportedCamelPhasesImpl supportedCamelPhases, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (supportedCamelPhases.getPhase1Supported())
-                xml.setAttribute(PHASE1, true);
-            if (supportedCamelPhases.getPhase2Supported())
-                xml.setAttribute(PHASE2, true);
-            if (supportedCamelPhases.getPhase3Supported())
-                xml.setAttribute(PHASE3, true);
-            if (supportedCamelPhases.getPhase4Supported())
-                xml.setAttribute(PHASE4, true);
-        }
-    };
 
     /*
      * (non-Javadoc)

@@ -22,15 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -54,7 +48,7 @@ public class OAbandonSpecificInfoTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         OAbandonSpecificInfoImpl elem = new OAbandonSpecificInfoImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(elem.getRouteNotPermitted());
     }
@@ -68,7 +62,7 @@ public class OAbandonSpecificInfoTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         OAbandonSpecificInfoImpl original = new OAbandonSpecificInfoImpl(true);
 
@@ -91,6 +85,5 @@ public class OAbandonSpecificInfoTest {
         OAbandonSpecificInfoImpl copy = reader.read("oAbandonSpecificInfo", OAbandonSpecificInfoImpl.class);
 
         assertEquals(copy.getRouteNotPermitted(), original.getRouteNotPermitted());
-    }
-
+    }*/
 }

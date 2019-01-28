@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -39,15 +36,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaId
  *
  */
 public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends OctetStringBase implements CellGlobalIdOrServiceAreaIdFixedLength {
+	private static final long serialVersionUID = 1L;
 
-    private static final String MCC = "mcc";
-    private static final String MNC = "mnc";
-    private static final String LAC = "lac";
-    private static final String CELL_ID = "cellId";
-
-    private static final int DEFAULT_INT_VALUE = 0;
-
-    public CellGlobalIdOrServiceAreaIdFixedLengthImpl() {
+	public CellGlobalIdOrServiceAreaIdFixedLengthImpl() {
         super(7, 7, "CellGlobalIdOrServiceAreaIdFixedLength");
     }
 
@@ -219,39 +210,4 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends OctetStringBase 
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CellGlobalIdOrServiceAreaIdFixedLengthImpl> CELL_GLOBAL_ID_OR_SERVICE_AREA_ID_FIXED_LENGTH_XML = new XMLFormat<CellGlobalIdOrServiceAreaIdFixedLengthImpl>(
-            CellGlobalIdOrServiceAreaIdFixedLengthImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml,
-                CellGlobalIdOrServiceAreaIdFixedLengthImpl cellGlobalIdOrServiceAreaIdFixedLength) throws XMLStreamException {
-            int mcc = xml.getAttribute(MCC, DEFAULT_INT_VALUE);
-            int mnc = xml.getAttribute(MNC, DEFAULT_INT_VALUE);
-            int lac = xml.getAttribute(LAC, DEFAULT_INT_VALUE);
-            int cellId = xml.getAttribute(CELL_ID, DEFAULT_INT_VALUE);
-
-            try {
-                cellGlobalIdOrServiceAreaIdFixedLength.setData(mcc, mnc, lac, cellId);
-            } catch (MAPException e) {
-                throw new XMLStreamException("MAPException when deserializing CellGlobalIdOrServiceAreaIdFixedLengthImpl", e);
-            }
-        }
-
-        @Override
-        public void write(CellGlobalIdOrServiceAreaIdFixedLengthImpl cellGlobalIdOrServiceAreaIdFixedLength,
-                javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            try {
-                xml.setAttribute(MCC, cellGlobalIdOrServiceAreaIdFixedLength.getMCC());
-                xml.setAttribute(MNC, cellGlobalIdOrServiceAreaIdFixedLength.getMNC());
-                xml.setAttribute(LAC, cellGlobalIdOrServiceAreaIdFixedLength.getLac());
-                xml.setAttribute(CELL_ID, cellGlobalIdOrServiceAreaIdFixedLength.getCellIdOrServiceAreaCode());
-            } catch (MAPException e) {
-                throw new XMLStreamException("MAPException when serializing CellGlobalIdOrServiceAreaIdFixedLengthImpl", e);
-            }
-        }
-    };
 }

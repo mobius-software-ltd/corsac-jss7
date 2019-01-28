@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -106,7 +100,7 @@ public class MidCallEventsTest {
         assertEquals(aos.toByteArray(), this.getData2());
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         GenericDigits genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, getDigitsData());
         Digits dtmfDigits = new DigitsImpl(genericDigits);
@@ -154,6 +148,5 @@ public class MidCallEventsTest {
         assertEquals(copy.getDTMFDigitsTimeOut().getGenericDigits().getEncodingScheme(), original.getDTMFDigitsTimeOut().getGenericDigits().getEncodingScheme());
         assertEquals(copy.getDTMFDigitsTimeOut().getGenericDigits().getEncodedDigits(), original.getDTMFDigitsTimeOut().getGenericDigits().getEncodedDigits());
         assertNull(copy.getDTMFDigitsCompleted());
-    }
-
+    }*/
 }

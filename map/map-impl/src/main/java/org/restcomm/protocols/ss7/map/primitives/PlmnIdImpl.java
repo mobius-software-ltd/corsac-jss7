@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
  *
  */
 public class PlmnIdImpl extends OctetStringBase implements PlmnId {
+	private static final long serialVersionUID = 1L;
 
-    public PlmnIdImpl() {
+	public PlmnIdImpl() {
         super(3, 3, "PlmnId");
     }
 

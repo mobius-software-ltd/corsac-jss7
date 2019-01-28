@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -206,7 +200,7 @@ public class ChangeOfLocationTest {
         assertEquals(aos.toByteArray(), this.getData7());
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
         CellGlobalIdOrServiceAreaIdFixedLength value = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(201, 1, 22000, 55);
         // int mcc, int mnc, int lac, int cellIdOrServiceAreaCode
@@ -357,6 +351,5 @@ public class ChangeOfLocationTest {
         copy = reader.read("changeOfLocation", ChangeOfLocationImpl.class);
 
         assertNotNull(copy.getChangeOfLocationAlt());
-    }
-
+    }*/
 }

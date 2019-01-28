@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class ResultImpl implements Result {
+	private static final long serialVersionUID = 1L;
 
-    private ResultType resultType;
+	private ResultType resultType;
 
     /*
      * (non-Javadoc)

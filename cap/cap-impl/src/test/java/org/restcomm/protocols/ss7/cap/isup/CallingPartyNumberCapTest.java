@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -38,7 +33,6 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.testng.annotations.Test;
 
 /**
@@ -62,7 +56,7 @@ public class CallingPartyNumberCapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         CallingPartyNumberCapImpl elem = new CallingPartyNumberCapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         CallingPartyNumber cpn = elem.getCallingPartyNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
@@ -94,7 +88,7 @@ public class CallingPartyNumberCapTest {
         // int screeningIndicator
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         CallingPartyNumberCapImpl original = new CallingPartyNumberCapImpl(new CallingPartyNumberImpl(
@@ -129,6 +123,5 @@ public class CallingPartyNumberCapTest {
                 .getCallingPartyNumber().getAddressRepresentationRestrictedIndicator());
         assertEquals(copy.getCallingPartyNumber().getScreeningIndicator(), original.getCallingPartyNumber()
                 .getScreeningIndicator());
-
-    }
+    }*/
 }

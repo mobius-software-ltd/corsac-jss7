@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class UMTSSecurityContextDataImpl extends SequenceBase implements UMTSSecurityContextData {
+	private static final long serialVersionUID = 1L;
 
-    private CK ck;
+	private CK ck;
     private IK ik;
     private KSI ksi;
 

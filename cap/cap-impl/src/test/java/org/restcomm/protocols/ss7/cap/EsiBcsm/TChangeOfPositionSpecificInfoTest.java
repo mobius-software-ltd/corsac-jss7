@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -111,7 +106,7 @@ public class TChangeOfPositionSpecificInfoTest {
         assertEquals(aos.toByteArray(), this.getData2());
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         LocationInformation locationInformation = new LocationInformationImpl(200, null, null, null, null, null, null, null, null, false, false, null, null);
         TChangeOfPositionSpecificInfoImpl original = new TChangeOfPositionSpecificInfoImpl(locationInformation, null);
@@ -165,6 +160,5 @@ public class TChangeOfPositionSpecificInfoTest {
         assertEquals(copy.getMetDPCriteriaList().get(0).getLeavingLocationAreaId().getLac(), original.getMetDPCriteriaList().get(0).getLeavingLocationAreaId()
                 .getLac());
         assertEquals(copy.getMetDPCriteriaList().get(1).getInterSystemHandOverToGSM(), original.getMetDPCriteriaList().get(1).getInterSystemHandOverToGSM());
-    }
-
+    }*/
 }

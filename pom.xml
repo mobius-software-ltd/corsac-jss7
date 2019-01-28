@@ -1,58 +1,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.mobicents</groupId>
-		<artifactId>restcomm-parent</artifactId>
-		<version>2.27.32</version> <!-- parent pom version -->
-	</parent>
-
+	<groupId>com.mobius-software.telco.protocols.ss7</groupId>
 	<artifactId>ss7-parent</artifactId>
-	<groupId>org.restcomm.protocols.ss7</groupId>
 	<version>8.0.0-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
-	<name>RestComm jSS7 :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: ${project.artifactId}</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- maven.test.skip>false</maven.test.skip -->
-		<restcomm.tools.mavenplugin.eclipse.version>
-			1.0.0.FINAL
-		</restcomm.tools.mavenplugin.eclipse.version>
-		<!-- <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version> -->
-		<telscale.checkstyle.version>1.0.0.FINAL</telscale.checkstyle.version>
-		<checkstyle.plugin.version>2.9.1</checkstyle.plugin.version> <!-- 2.17 -->
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version> <!-- 2.4.2 -->
 		<concurrent.version>1.3.4</concurrent.version>
 		<log4j.version>1.2.14</log4j.version>
 		<junit.version>3.8.1</junit.version>
 		<testng.version>6.2</testng.version>
-		<javolution.version>5.5.1</javolution.version>
 		<compiler.plugin.version>2.0.2</compiler.plugin.version>
 		<compile.source>1.7</compile.source>
-		<!-- restcomm but not strictly ss7 -->
 		<asn.version>2.2.0-143</asn.version>
 		<stream.version>1.0.0.CR1</stream.version>
-		<sctp.version>2.0.0-166</sctp.version>
 		<commons.version>1.0.0.CR1</commons.version>
-		<netty.version>4.0.33.Final</netty.version>
-
-
-		<version.wildfly.as>10.1.0.Final</version.wildfly.as>
-		<version.wildfly.core>2.2.0.Final</version.wildfly.core>
-
-		<!-- lic dep -->
+		<netty.version>4.1.33.Final</netty.version>		
 	</properties>
 
 	<modules>
-		<module>scheduler</module>
-		<module>congestion</module>
-		<module>statistics</module>
-		<module>management</module>
-		<module>ss7-ext</module>
+		<module>common</module>
 		<module>mtp</module>
 		<module>m3ua</module>
 		<module>isup</module>
@@ -62,10 +36,6 @@
 		<module>map</module>
 		<module>inap</module>
 		<module>cap</module>
-
-		<module>service</module>
-
-		<module>tools</module>
 	</modules>
 
 	<!-- declare our babies -->
@@ -88,168 +58,123 @@
 				<groupId>org.mobicents.commons</groupId>
 				<artifactId>commons</artifactId>
 				<version>${commons.version}</version>
-			</dependency>
-			<!-- SCTP -->
+			</dependency>			
+			<!-- Common -->
 			<dependency>
-				<groupId>org.mobicents.protocols.sctp</groupId>
-				<artifactId>sctp-api</artifactId>
-				<version>${sctp.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.mobicents.protocols.sctp</groupId>
-				<artifactId>sctp-impl</artifactId>
-				<version>${sctp.version}</version>
-			</dependency>
-			<!-- Scheduler -->
-			<dependency>
-				<groupId>org.restcomm.protocols.ss7.scheduler</groupId>
-				<artifactId>scheduler</artifactId>
+				<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
+				<artifactId>common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- Clock -->
 			<dependency>
-				<groupId>org.restcomm.protocols.ss7.clock</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.clock</groupId>
 				<artifactId>clock</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<!-- Management Shell -->
-			<dependency>
-				<artifactId>shell-transport</artifactId>
-				<groupId>org.restcomm.protocols.ss7.management</groupId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<artifactId>shell-client</artifactId>
-				<groupId>org.restcomm.protocols.ss7.management</groupId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<artifactId>shell-server-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.management</groupId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<artifactId>shell-server-impl</artifactId>
-				<groupId>org.restcomm.protocols.ss7.management</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- MTP -->
 			<dependency>
 				<artifactId>mtp</artifactId>
-				<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>mtp-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- M3UA -->
 			<dependency>
 				<artifactId>m3ua-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.m3ua</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.m3ua</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>m3ua-impl</artifactId>
-				<groupId>org.restcomm.protocols.ss7.m3ua</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.m3ua</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- ISUP -->
 			<dependency>
 				<artifactId>isup-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.isup</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>isup-impl</artifactId>
-				<groupId>org.restcomm.protocols.ss7.isup</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- SCCP -->
 			<dependency>
 				<artifactId>sccp-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>sccp-impl</artifactId>
-				<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+				<artifactId>sccp-impl</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+				<scope>test</scope>
+			</dependency>
+				
 
 			<!-- TCAP -->
 			<dependency>
 				<artifactId>tcap-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.tcap</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>tcap-impl</artifactId>
-				<groupId>org.restcomm.protocols.ss7.tcap</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- MAP -->
 			<dependency>
 				<artifactId>map-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.map</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>map-impl</artifactId>
-				<groupId>org.restcomm.protocols.ss7.map</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- INAP -->
 			<dependency>
 				<artifactId>inap-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.inap</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.inap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>inap-impl</artifactId>
-				<groupId>org.restcomm.protocols.ss7.inap</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.inap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- CAP -->
 			<dependency>
 				<artifactId>cap-api</artifactId>
-				<groupId>org.restcomm.protocols.ss7.cap</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.cap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>cap-impl</artifactId>
-				<groupId>org.restcomm.protocols.ss7.cap</groupId>
+				<groupId>com.mobius-software.telco.protocols.ss7.cap</groupId>
 				<version>${project.version}</version>
 			</dependency>
-
-			<!-- Statistics -->
-			<dependency>
-				<groupId>org.restcomm.protocols.ss7.statistics</groupId>
-				<artifactId>statistics-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.restcomm.protocols.ss7.statistics</groupId>
-				<artifactId>statistics-impl</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			
-			<!-- Congestion -->
-			<dependency>
-				<groupId>org.restcomm.protocols.ss7.congestion</groupId>
-				<artifactId>congestion</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-
 
 			<!-- 3rd PARTY -->
 			<dependency>
@@ -274,11 +199,6 @@
 				<artifactId>concurrent</artifactId>
 				<scope>provided</scope>
 				<version>${concurrent.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javolution</groupId>
-				<artifactId>javolution</artifactId>
-				<version>${javolution.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -411,67 +331,6 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${checkstyle.plugin.version}</version>
-				<configuration>
-					<configLocation>/checkstyle/checkstyle.xml</configLocation>
-					<consoleOutput>true</consoleOutput>
-					<failsOnError>true</failsOnError>
-					<useFile />
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.mobicents</groupId>
-						<artifactId>checkstyle</artifactId>
-						<version>${telscale.checkstyle.version}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<id>check-style</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>checkstyle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>
-					${maven-checkstyle-plugin.version}
-				</version>
-			</plugin>
--->
-
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<groupId>org.mobicents.tools</groupId>
-				<version>
-					${restcomm.tools.mavenplugin.eclipse.version}
-				</version>
-				<inherited>false</inherited>
-				<executions />
-				<configuration>
-					<classpathExcludes>
-						<exclude>xml-apis:xml-apis</exclude>
-						<exclude>jtidy:jtidy</exclude>
-					</classpathExcludes>
-					<resolveTransitiveDependencies>
-						true
-					</resolveTransitiveDependencies>
-					<eclipseProjectName>
-						restcomm-jss7
-					</eclipseProjectName>
-					<generateProjectsForModules>false</generateProjectsForModules>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${compiler.plugin.version}</version>
 				<configuration>
@@ -485,44 +344,17 @@
 	</build>
 
 	<scm>
-		<connection>scm:git:https://github.com/Restcomm/jss7/</connection>
-		<developerConnection>scm:git:https://github.com/Restcomm/jss7/</developerConnection>
-		<url>https://github.com/Restcomm/jss7/</url>
+		<connection>scm:git:https://github.com/mobius-software-ltd/async-jss7/</connection>
+		<developerConnection>scm:git:https://github.com/mobius-software-ltd/async-jss7/</developerConnection>
+		<url>https://github.com/mobius-software-ltd/async-jss7/</url>
 	</scm>
 	<!-- repositories -->
 	<repositories>
 		<repository>
-			<id>restcomm-public-repository-group</id>
-			<name>Restcomm Public Maven Repository Group</name>
+			<id>mobius-public-repository-group</id>
+			<name>Mobius Public Maven Repository Group</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>java.net-Public</id>
-			<name>Maven Java Net Snapshots and Releases</name>
-			<url>http://download.java.net/maven/2/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<!-- for com.sun.jdmk.jmxtools jar -->
-		<repository>
-			<id>datanucleus</id>
-			<name>DataNucleus Releases</name>
-			<url>http://www.datanucleus.org/downloads/maven2</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>

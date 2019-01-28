@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -78,7 +73,7 @@ public class CUGIndexTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "service.subscriberManagement" })
+    /*@Test(groups = { "functional.xml.serialize", "service.subscriberManagement" })
     public void testXMLSerialize() throws Exception {
 
         CUGIndexImpl original = new CUGIndexImpl(100);
@@ -101,6 +96,5 @@ public class CUGIndexTest {
         CUGIndexImpl copy = reader.read("cugIndex", CUGIndexImpl.class);
 
         assertEquals(original.getData(), copy.getData());
-    }
-
+    }*/
 }

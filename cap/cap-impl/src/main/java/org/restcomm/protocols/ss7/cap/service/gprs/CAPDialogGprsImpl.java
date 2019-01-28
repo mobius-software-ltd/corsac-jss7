@@ -73,8 +73,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
  *
  */
 public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
+	private static final long serialVersionUID = 1L;
 
-    protected CAPDialogGprsImpl(CAPApplicationContext appCntx, Dialog tcapDialog, CAPProviderImpl capProviderImpl,
+	protected CAPDialogGprsImpl(CAPApplicationContext appCntx, Dialog tcapDialog, CAPProviderImpl capProviderImpl,
             CAPServiceBase capService) {
         super(appCntx, tcapDialog, capProviderImpl, capService);
     }

@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.cap.primitives.SequenceBase;
  *
  */
 public class ROTimeGPRSIfTariffSwitchImpl extends SequenceBase implements ROTimeGPRSIfTariffSwitch {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_roTimeGPRSSinceLastTariffSwitch = 0;
+	public static final int _ID_roTimeGPRSSinceLastTariffSwitch = 0;
     public static final int _ID_roTimeGPRSTariffSwitchInterval = 1;
 
     public static final int _ID_ROTimeGPRSIfTariffSwitch = 1;

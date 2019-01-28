@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.isup;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
 import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
@@ -39,10 +36,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
  *
  */
 public class OriginalCalledNumberCapImpl extends OctetStringBase implements OriginalCalledNumberCap {
+	private static final long serialVersionUID = 1L;
 
-    private static final String ISUP_ORIGINAL_CALLED_NUMBER_XML = "isupOriginalCalledNumber";
-
-    public OriginalCalledNumberCapImpl() {
+	public OriginalCalledNumberCapImpl() {
         super(2, 12, "OriginalCalledNumberCap");
     }
 
@@ -107,33 +103,4 @@ public class OriginalCalledNumberCapImpl extends OctetStringBase implements Orig
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<OriginalCalledNumberCapImpl> ORIGINAL_CALLED_NUMBER_CAP_XML = new XMLFormat<OriginalCalledNumberCapImpl>(
-            OriginalCalledNumberCapImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, OriginalCalledNumberCapImpl originalCalledNumber)
-                throws XMLStreamException {
-            try {
-                originalCalledNumber.setOriginalCalledNumber(xml.get(ISUP_ORIGINAL_CALLED_NUMBER_XML,
-                        OriginalCalledNumberImpl.class));
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-
-        @Override
-        public void write(OriginalCalledNumberCapImpl originalCalledNumber, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            try {
-                xml.add(((OriginalCalledNumberImpl) originalCalledNumber.getOriginalCalledNumber()),
-                        ISUP_ORIGINAL_CALLED_NUMBER_XML, OriginalCalledNumberImpl.class);
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-    };
 }

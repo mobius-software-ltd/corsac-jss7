@@ -63,8 +63,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
  *
  */
 public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
+	private static final long serialVersionUID = 1L;
 
-    protected MAPDialogSmsImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
+	protected MAPDialogSmsImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
             MAPServiceSms mapService, AddressString origReference, AddressString destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }

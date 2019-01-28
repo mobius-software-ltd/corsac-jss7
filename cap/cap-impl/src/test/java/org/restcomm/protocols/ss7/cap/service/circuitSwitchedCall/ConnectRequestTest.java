@@ -24,13 +24,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -130,7 +125,7 @@ public class ConnectRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ConnectRequestImpl elem = new ConnectRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
@@ -154,7 +149,7 @@ public class ConnectRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new ConnectRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
@@ -180,7 +175,7 @@ public class ConnectRequestTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new ConnectRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
@@ -214,7 +209,7 @@ public class ConnectRequestTest {
         data = this.getData4();
         ais = new AsnInputStream(data);
         elem = new ConnectRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
@@ -315,7 +310,7 @@ public class ConnectRequestTest {
         // borInterrogationRequested
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         ArrayList<CalledPartyNumberCap> calledPartyNumbers = new ArrayList<CalledPartyNumberCap>();
@@ -441,5 +436,5 @@ public class ConnectRequestTest {
         assertEquals(copy.getCugOutgoingAccess(), original.getCugOutgoingAccess());
         assertEquals(copy.getBorInterrogationRequested(), original.getBorInterrogationRequested());
         assertEquals(copy.getSuppressNCSI(), original.getSuppressNCSI());
-    }
+    }*/
 }

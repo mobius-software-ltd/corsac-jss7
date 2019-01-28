@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  *
  */
 public class CAPGprsReferenceNumberImpl implements CAPGprsReferenceNumber, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int DESTINATION_REF_TAG = 0;
+	protected static final int DESTINATION_REF_TAG = 0;
     protected static final int ORIGINATION_REF_TAG = 1;
 
     public static final String _PrimitiveName = "CAPGprsReferenceNumber";

@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
  *
  */
 public class SignalInfoImpl extends OctetStringBase implements SignalInfo {
+	private static final long serialVersionUID = 1L;
 
-    public SignalInfoImpl() {
+	public SignalInfoImpl() {
         super(1, 200, "SignalInfo");
     }
 

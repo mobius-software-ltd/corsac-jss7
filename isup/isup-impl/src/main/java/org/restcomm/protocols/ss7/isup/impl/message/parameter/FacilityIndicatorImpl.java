@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.FacilityIndicator;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class FacilityIndicatorImpl extends AbstractISUPParameter implements FacilityIndicator {
+	private static final long serialVersionUID = 1L;
 
-    private byte facilityIndicator = 0;
+	private byte facilityIndicator = 0;
 
     public FacilityIndicatorImpl(byte[] b) throws ParameterException {
         super();

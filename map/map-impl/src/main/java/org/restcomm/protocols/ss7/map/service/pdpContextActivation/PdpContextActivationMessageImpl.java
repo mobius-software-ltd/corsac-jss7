@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  */
 public abstract class PdpContextActivationMessageImpl extends MessageImpl implements PdpContextActivationMessage,
         MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public MAPDialogPdpContextActivation getMAPDialog() {
+	public MAPDialogPdpContextActivation getMAPDialog() {
         return (MAPDialogPdpContextActivation) super.getMAPDialog();
     }
 

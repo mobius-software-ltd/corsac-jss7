@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.map.api.dialog.ResourceUnavailableReason;
  *
  */
 public class MAPUserAbortChoiceImpl implements MAPUserAbortChoice {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int USER_SPECIFIC_REASON_TAG = 0;
+	protected static final int USER_SPECIFIC_REASON_TAG = 0;
     protected static final int USER_RESOURCE_LIMITATION_TAG = 1;
     protected static final int RESOURCE_UNAVAILABLE = 2;
     protected static final int APPLICATION_PROCEDURE_CANCELLATION = 3;

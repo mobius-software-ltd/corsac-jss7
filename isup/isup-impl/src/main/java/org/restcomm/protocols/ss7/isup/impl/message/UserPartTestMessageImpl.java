@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class UserPartTestMessageImpl extends ISUPMessageImpl implements UserPartTestMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.UserPartTest);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.UserPartTest);
     private static final int _MANDATORY_VAR_COUNT = 0;
     private static final boolean _HAS_MANDATORY = true;
     private static final boolean _OPTIONAL_POSSIBLE = true;

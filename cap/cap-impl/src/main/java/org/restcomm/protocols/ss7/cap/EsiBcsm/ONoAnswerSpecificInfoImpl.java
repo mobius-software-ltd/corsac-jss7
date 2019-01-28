@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -43,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ONoAnswerSpecificInfoImpl extends SequenceBase implements ONoAnswerSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    public ONoAnswerSpecificInfoImpl() {
+	public ONoAnswerSpecificInfoImpl() {
         super("ONoAnswerSpecificInfo");
     }
 
@@ -56,8 +54,7 @@ public class ONoAnswerSpecificInfoImpl extends SequenceBase implements ONoAnswer
             if (ais.available() == 0)
                 break;
 
-            int tag = ais.readTag();
-
+            ais.readTag();
             ais.advanceElement();
         }
     }
@@ -76,22 +73,4 @@ public class ONoAnswerSpecificInfoImpl extends SequenceBase implements ONoAnswer
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ONoAnswerSpecificInfoImpl> O_NO_ANSWER_SPECIFIC_INFO_XML = new XMLFormat<ONoAnswerSpecificInfoImpl>(
-            ONoAnswerSpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ONoAnswerSpecificInfoImpl oNoAnswerSpecificInfo)
-                throws XMLStreamException {
-        }
-
-        @Override
-        public void write(ONoAnswerSpecificInfoImpl oNoAnswerSpecificInfo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-        }
-    };
 }

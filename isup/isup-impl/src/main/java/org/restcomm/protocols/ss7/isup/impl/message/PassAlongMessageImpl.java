@@ -46,7 +46,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class PassAlongMessageImpl extends ISUPMessageImpl implements PassAlongMessage {
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.PassAlong);
+	private static final long serialVersionUID = 1L;
+
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.PassAlong);
 
     static final int _INDEX_F_MessageType = 0;
     private ISUPMessage embedded;

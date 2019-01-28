@@ -57,7 +57,11 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
  */
 public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implements ProvideSubscriberLocationResponse {
 
-    private static final int _TAG_AGE_OF_LOCATION_ESTIMATE = 0;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final int _TAG_AGE_OF_LOCATION_ESTIMATE = 0;
     private static final int _TAG_EXTENSIONCONTAINER = 1;
     private static final int _TAG_ADD_LOCATION_ESTIMATE = 2;
     private static final int _TAG_DEFERRED_MT_LR_RESPONSE_IND = 3;

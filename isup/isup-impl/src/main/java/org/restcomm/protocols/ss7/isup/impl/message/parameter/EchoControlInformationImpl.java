@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.EchoControlInformation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class EchoControlInformationImpl extends AbstractISUPParameter implements EchoControlInformation {
+	private static final long serialVersionUID = 1L;
 
-    private int outgoingEchoControlDeviceInformationIndicator;
+	private int outgoingEchoControlDeviceInformationIndicator;
     private int incomingEchoControlDeviceInformationIndicator;
     private int outgoingEchoControlDeviceInformationRequestIndicator;
     private int incomingEchoControlDeviceInformationRequestIndicator;

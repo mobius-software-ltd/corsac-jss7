@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class MAPUserAbortInfoImpl implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int MAP_USER_ABORT_INFO_TAG = 0x04;
+	public static final int MAP_USER_ABORT_INFO_TAG = 0x04;
 
     protected static final int USER_ABORT_TAG_CLASS = Tag.CLASS_CONTEXT_SPECIFIC;
     protected static final boolean USER_ABORT_TAG_PC_CONSTRUCTED = false;

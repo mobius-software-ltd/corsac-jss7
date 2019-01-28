@@ -15,23 +15,11 @@ public class SccpConnectionImpl extends SccpConnectionWithCouplingImpl implement
     }
 
     public void receiveMessage(SccpConnMessage message) throws Exception {
-        try {
-            connectionLock.lock();
-            super.receiveMessage(message);
-
-        } finally {
-            connectionLock.unlock();
-        }
+    	super.receiveMessage(message);
     }
 
     protected void sendMessage(SccpConnMessage message) throws Exception {
-        try {
-            connectionLock.lock();
-            super.sendMessage(message);
-
-        } finally {
-            connectionLock.unlock();
-        }
+    	super.sendMessage(message);
     }
 
     protected void callListenerOnData(byte[] data) {
@@ -50,7 +38,9 @@ public class SccpConnectionImpl extends SccpConnectionWithCouplingImpl implement
     }
 
     public static class ConnectionNotAvailableException extends IllegalStateException {
-        public ConnectionNotAvailableException(String message) {
+		private static final long serialVersionUID = 1L;
+
+		public ConnectionNotAvailableException(String message) {
             super(message);
         }
     }

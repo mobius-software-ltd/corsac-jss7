@@ -28,8 +28,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperation;
  *
  */
 public abstract class AbstractRemoteOperation extends AbstractAsnEncodable implements RemoteOperation{
+	private static final long serialVersionUID = 1L;
 
-    private final OperationType operationType;
+	private final OperationType operationType;
 
     public AbstractRemoteOperation(OperationType operationType) {
         super();

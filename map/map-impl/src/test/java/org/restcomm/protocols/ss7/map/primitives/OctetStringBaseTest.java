@@ -173,13 +173,12 @@ public class OctetStringBaseTest {
         assertTrue(imp1.equals(imp2));
         assertFalse(imp1.equals(imp3));
         assertFalse(imp2.equals(imp3));
-
-        int i1 = imp1.hashCode();
     }
 
     private class TestOctetStringImpl extends OctetStringBase {
+		private static final long serialVersionUID = 1L;
 
-        public TestOctetStringImpl(byte[] data) {
+		public TestOctetStringImpl(byte[] data) {
             super(2, 7, "Test OctetString primitive", data);
         }
 

@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSI
  *
  */
 public class GmscCamelSubscriptionInfoImpl extends SequenceBase implements GmscCamelSubscriptionInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_t_CSI = 0;
+	private static final int _TAG_t_CSI = 0;
     private static final int _TAG_o_CSI = 1;
     private static final int _TAG_extensionContainer = 2;
     private static final int _TAG_o_BcsmCamelTDP_CriteriaList = 3;

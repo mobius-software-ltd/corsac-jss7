@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class OverloadMessageImpl extends ISUPMessageImpl implements OverloadMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Overload);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Overload);
 
     private static final int _MANDATORY_VAR_COUNT = 0;
 
@@ -98,7 +99,7 @@ public class OverloadMessageImpl extends ISUPMessageImpl implements OverloadMess
      */
 
     public MessageType getMessageType() {
-        return this._MESSAGE_TYPE;
+        return _MESSAGE_TYPE;
     }
 
     /*

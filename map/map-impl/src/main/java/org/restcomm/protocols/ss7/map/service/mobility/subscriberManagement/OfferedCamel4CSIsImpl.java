@@ -37,8 +37,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class OfferedCamel4CSIsImpl extends BitStringBase implements OfferedCamel4CSIs {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _ID_o_csi = 0;
+	private static final int _ID_o_csi = 0;
     private static final int _ID_d_csi = 1;
     private static final int _ID_vt_csi = 2;
     private static final int _ID_t_csi = 3;
@@ -137,7 +138,7 @@ public class OfferedCamel4CSIsImpl extends BitStringBase implements OfferedCamel
             // we mark this primitive as bad decoded
             this.bitString = new BitSetStrictLength(0);
             this.badDecoded = true;
-            int dataByte = ansIS.read();
+            ansIS.read();
         } else {
             super._decode(ansIS, length);
         }

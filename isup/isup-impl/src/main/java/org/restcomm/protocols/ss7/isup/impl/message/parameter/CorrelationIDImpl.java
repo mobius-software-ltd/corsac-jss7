@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CorrelationID;
  *
  */
 public class CorrelationIDImpl extends GenericDigitsImpl implements CorrelationID {
+	private static final long serialVersionUID = 1L;
 
-    public CorrelationIDImpl() {
+	public CorrelationIDImpl() {
         super();
 
     }

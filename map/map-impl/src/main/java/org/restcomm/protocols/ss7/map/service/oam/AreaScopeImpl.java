@@ -53,7 +53,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TAI
 *
 */
 public class AreaScopeImpl extends SequenceBase implements AreaScope {
-    public static final int _ID_cgiList = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_cgiList = 0;
     public static final int _ID_eUtranCgiList = 1;
     public static final int _ID_routingAreaIdList = 2;
     public static final int _ID_locationAreaIdList = 3;

@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
 *
 */
 public class CallBarringInfoImpl extends SequenceBase implements CallBarringInfo {
+	private static final long serialVersionUID = 1L;
 
-    private SSCode ssCode;
+	private SSCode ssCode;
     private ArrayList<CallBarringFeature> callBarringFeatureList;
 
     public CallBarringInfoImpl() {

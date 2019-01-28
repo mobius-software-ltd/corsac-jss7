@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -57,7 +52,7 @@ public class InitiateCallAttemptResponseTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         InitiateCallAttemptResponseImpl elem = new InitiateCallAttemptResponseImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertTrue(elem.getSupportedCamelPhases().getPhase1Supported());
@@ -87,7 +82,7 @@ public class InitiateCallAttemptResponseTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, false);
@@ -124,6 +119,5 @@ public class InitiateCallAttemptResponseTest {
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(original.getExtensions()));
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
 
-    }
-
+    }*/
 }

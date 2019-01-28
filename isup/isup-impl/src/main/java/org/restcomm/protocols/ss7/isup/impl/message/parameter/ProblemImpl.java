@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnResultProblemType
  *
  */
 public class ProblemImpl extends AbstractAsnEncodable implements Problem {
+	private static final long serialVersionUID = 1L;
 
-    private ProblemType type;
+	private ProblemType type;
 
     private GeneralProblemType generalProblemType;
     private InvokeProblemType invokeProblemType;

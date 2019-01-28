@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.AutomaticCongestionLeve
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class AutomaticCongestionLevelImpl extends AbstractISUPParameter implements AutomaticCongestionLevel {
+	private static final long serialVersionUID = 1L;
 
-    private int automaticCongestionLevel = 0;
+	private int automaticCongestionLevel = 0;
 
     public AutomaticCongestionLevelImpl() {
         super();

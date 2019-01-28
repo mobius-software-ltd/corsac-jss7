@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class MoForwardShortMessageRequestImpl extends SmsMessageImpl implements MoForwardShortMessageRequest {
+	private static final long serialVersionUID = 1L;
 
-    private SM_RP_DA sm_RP_DA;
+	private SM_RP_DA sm_RP_DA;
     private SM_RP_OA sm_RP_OA;
     private SmsSignalInfoImpl sm_RP_UI;
     private MAPExtensionContainer extensionContainer;

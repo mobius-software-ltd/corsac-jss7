@@ -353,7 +353,7 @@ public abstract class EventTestHarness implements TCListener {
         }
     }
 
-    protected static String doStringCompare(List lst1, List lst2) {
+    protected static String doStringCompare(List<TestEvent> lst1, List<TestEvent> lst2) {
         StringBuilder sb = new StringBuilder();
         int size1 = lst1.size();
         int size2 = lst2.size();
@@ -372,7 +372,7 @@ public abstract class EventTestHarness implements TCListener {
 
     public static void waitFor(long v) {
         try {
-            Thread.currentThread().sleep(v);
+            Thread.sleep(v);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

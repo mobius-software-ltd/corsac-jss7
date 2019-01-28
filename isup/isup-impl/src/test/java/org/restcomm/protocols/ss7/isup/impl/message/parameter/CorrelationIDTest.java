@@ -30,7 +30,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -57,7 +56,7 @@ public class CorrelationIDTest extends ParameterHarness {
         // super.goodBodies.add(getBody2());
     }
 
-    private byte[] getBody1() throws IOException {
+    /*private byte[] getBody1() throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // we will use odd number of digits, so we leave zero as MSB
 
@@ -70,7 +69,7 @@ public class CorrelationIDTest extends ParameterHarness {
 
         bos.write(super.getFiveDigits());
         return bos.toByteArray();
-    }
+    }*/
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,

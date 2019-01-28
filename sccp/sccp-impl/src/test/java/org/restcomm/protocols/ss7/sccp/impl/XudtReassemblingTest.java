@@ -3,7 +3,6 @@ package org.restcomm.protocols.ss7.sccp.impl;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.RoutingLabelFormat;
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.SignallingPointStatus;
@@ -42,7 +41,7 @@ public class XudtReassemblingTest {
 
     @Test
     public void testA() throws Exception {
-        SccpStackImpl sccpStack = new SccpStackImpl("TestUudt", null);
+        SccpStackImpl sccpStack = new SccpStackImpl("TestUudt");
         sccpStack.start();
 
         SccpListenerProxy listenerProxy = new SccpListenerProxy();
@@ -63,8 +62,9 @@ public class XudtReassemblingTest {
     }
 
     private class SccpListenerProxy extends BaseSccpListener implements SccpListener {
+		private static final long serialVersionUID = 1L;
 
-        @Override
+		@Override
         public void onMessage(SccpDataMessage message) {
             // TODO Auto-generated method stub
             
@@ -92,10 +92,6 @@ public class XudtReassemblingTest {
         public void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel,
                 RemoteSccpStatus remoteSccpStatus) {
             // TODO Auto-generated method stub
-        }
-
-        @Override
-        public void onNetworkIdState(int networkId, NetworkIdState networkIdState) {
         }
     }
 

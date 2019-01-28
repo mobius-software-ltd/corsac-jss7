@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -51,16 +48,15 @@ import org.restcomm.protocols.ss7.map.primitives.ArrayListSerializingBase;
  *
  */
 public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessageImpl implements RequestReportBCSMEventRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_bcsmEvents = 0;
+	public static final int _ID_bcsmEvents = 0;
     public static final int _ID_extensions = 2;
 
     public static final String _PrimitiveName = "RequestReportBCSMEventRequest";
 
-    private static final String EXTENSIONS = "extensions";
     private static final String BCSM_EVENT = "bcsmEvent";
-    private static final String BCSM_EVENT_LIST = "bcsmEventList";
-
+    
     private ArrayList<BCSMEvent> bcsmEventList;
     private CAPExtensions extensions;
 
@@ -269,42 +265,6 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<RequestReportBCSMEventRequestImpl> REQUEST_REPORT_BCSM_EVENT_REQUEST_XML = new XMLFormat<RequestReportBCSMEventRequestImpl>(
-            RequestReportBCSMEventRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml,
-                RequestReportBCSMEventRequestImpl requestReportBCSMEventRequest) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, requestReportBCSMEventRequest);
-
-            RequestReportBCSMEventRequest_BCSMEvent al = xml
-                    .get(BCSM_EVENT_LIST, RequestReportBCSMEventRequest_BCSMEvent.class);
-            if (al != null) {
-                requestReportBCSMEventRequest.bcsmEventList = al.getData();
-            }
-
-            requestReportBCSMEventRequest.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-        }
-
-        @Override
-        public void write(RequestReportBCSMEventRequestImpl requestReportBCSMEventRequest,
-                javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(requestReportBCSMEventRequest, xml);
-
-            if (requestReportBCSMEventRequest.getBCSMEventList() != null) {
-                RequestReportBCSMEventRequest_BCSMEvent al = new RequestReportBCSMEventRequest_BCSMEvent(
-                        requestReportBCSMEventRequest.getBCSMEventList());
-                xml.add(al, BCSM_EVENT_LIST, RequestReportBCSMEventRequest_BCSMEvent.class);
-            }
-
-            if (requestReportBCSMEventRequest.getExtensions() != null)
-                xml.add((CAPExtensionsImpl) requestReportBCSMEventRequest.getExtensions(), EXTENSIONS, CAPExtensionsImpl.class);
-        }
-    };
 
     public static class RequestReportBCSMEventRequest_BCSMEvent extends ArrayListSerializingBase<BCSMEvent> {
 

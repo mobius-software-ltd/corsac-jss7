@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public abstract class SmsMessageImpl extends MessageImpl implements SmsMessage, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    @Override
+	@Override
     public MAPDialogSms getMAPDialog() {
         return (MAPDialogSms) super.getMAPDialog();
     }

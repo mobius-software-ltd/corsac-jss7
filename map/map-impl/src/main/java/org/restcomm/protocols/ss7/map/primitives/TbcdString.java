@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
  *
  */
 public abstract class TbcdString implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    protected static int DIGIT_1_MASK = 0x0F;
+	protected static int DIGIT_1_MASK = 0x0F;
     protected static int DIGIT_2_MASK = 0xF0;
 
     protected String data;

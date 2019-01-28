@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 *
 */
 public class LSAInformationWithdrawImpl implements LSAInformationWithdraw, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "LSAInformationWithdraw";
+	public static final String _PrimitiveName = "LSAInformationWithdraw";
 
     private boolean allLSAData;
     private ArrayList<LSAIdentity> lsaIdentityList;

@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
  *
  */
 public class ForwardShortMessageRequestImpl extends SmsMessageImpl implements ForwardShortMessageRequest {
+	private static final long serialVersionUID = 1L;
 
-    private SM_RP_DA sM_RP_DA;
+	private SM_RP_DA sM_RP_DA;
     private SM_RP_OA sM_RP_OA;
     private SmsSignalInfoImpl sM_RP_UI;
     private boolean moreMessagesToSend;

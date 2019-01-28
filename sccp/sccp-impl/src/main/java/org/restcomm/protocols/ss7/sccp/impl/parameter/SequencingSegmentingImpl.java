@@ -33,8 +33,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class SequencingSegmentingImpl extends AbstractParameter implements SequencingSegmenting {
+	private static final long serialVersionUID = 1L;
 
-    private SequenceNumber sendSequenceNumber = new SequenceNumberImpl(0);
+	private SequenceNumber sendSequenceNumber = new SequenceNumberImpl(0);
     private SequenceNumber receiveSequenceNumber = new SequenceNumberImpl(0);
     private boolean moreData;
 

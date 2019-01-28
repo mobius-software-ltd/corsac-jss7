@@ -66,7 +66,7 @@ public class SCIBillingChargingCharacteristicsTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         SCIBillingChargingCharacteristicsImpl elem = new SCIBillingChargingCharacteristicsImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         this.testCAI_GSM0224(elem.getAOCBeforeAnswer().getAOCInitial());
         this.testCAI_GSM0224(elem.getAOCBeforeAnswer().getAOCSubsequent().getCAI_GSM0224());
@@ -75,7 +75,7 @@ public class SCIBillingChargingCharacteristicsTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new SCIBillingChargingCharacteristicsImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         this.testCAI_GSM0224(elem.getAOCSubsequent().getCAI_GSM0224());
         assertEquals((int) elem.getAOCSubsequent().getTariffSwitchInterval(), 100);
@@ -83,7 +83,7 @@ public class SCIBillingChargingCharacteristicsTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new SCIBillingChargingCharacteristicsImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNotNull(elem.getAOCExtension());
     }

@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  *
  */
 public class ReturnToInvokingExchangeDurationImpl extends AbstractInformationImpl implements ReturnToInvokingExchangeDuration {
+	private static final long serialVersionUID = 1L;
 
-    private int duration;
+	private int duration;
 
     public ReturnToInvokingExchangeDurationImpl() {
         super(InformationType.ReturnToInvokingExchangeDuration);

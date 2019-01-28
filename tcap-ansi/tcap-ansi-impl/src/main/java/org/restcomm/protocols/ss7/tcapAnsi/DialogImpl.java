@@ -23,13 +23,14 @@
 package org.restcomm.protocols.ss7.tcapAnsi;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -49,7 +50,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
@@ -64,10 +64,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortRequest;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.ApplicationContextImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.InvokeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.ReturnResultNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCAbortMessageImpl;
@@ -93,18 +90,17 @@ import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCUserAbortIndicatio
  */
 public class DialogImpl implements Dialog {
 
-    // timeout of remove task after TC_END
-    private static final int _REMOVE_TIMEOUT = 30000;
+	private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger(DialogImpl.class);
+    // timeout of remove task after TC_END
+    //private static final int _REMOVE_TIMEOUT = 30000;
+
+	private static final Logger logger = Logger.getLogger(DialogImpl.class);
 
     private Object userObject;
 
-    // lock... ech
-    protected ReentrantLock dialogLock = new ReentrantLock();
-
     // values for timer timeouts
-    private long removeTaskTimeout = _REMOVE_TIMEOUT;
+    //private long removeTaskTimeout = _REMOVE_TIMEOUT;
     private long idleTaskTimeout;
 
     // sent/received acn, holds last acn/ui.
@@ -121,10 +117,10 @@ public class DialogImpl implements Dialog {
     private SccpAddress remoteAddress;
     private int localSsn;
 
-    private Future idleTimerFuture;
-    private boolean idleTimerActionTaken = false;
-    private boolean idleTimerInvoked = false;
-    private TRPseudoState state = TRPseudoState.Idle;
+    private AtomicReference<Future<?>> idleTimerFuture=new AtomicReference<Future<?>>();
+    private AtomicBoolean idleTimerActionTaken = new AtomicBoolean(false);
+    private AtomicBoolean idleTimerInvoked = new AtomicBoolean(false);
+    private AtomicReference<TRPseudoState> state = new AtomicReference<TRPseudoState>(TRPseudoState.Idle);
     private boolean structured = true;
     // invokde ID space :)
     private static final boolean _INVOKEID_TAKEN = true;
@@ -138,7 +134,7 @@ public class DialogImpl implements Dialog {
     // only originating side keeps FSM, see: Q.771 - 3.1.5
     protected InvokeImpl[] operationsSent = new InvokeImpl[invokeIDTable.length];
     protected InvokeImpl[] operationsSentA = new InvokeImpl[invokeIDTable.length];
-    private Set<Long> incomingInvokeList = new HashSet<Long>();
+    private ConcurrentHashMap<Long,Long> incomingInvokeList = new ConcurrentHashMap<Long,Long>();
     private ScheduledExecutorService executor;
 
     // scheduled components list
@@ -153,7 +149,6 @@ public class DialogImpl implements Dialog {
 
     private boolean previewMode = false;
     protected PreviewDialogData prevewDialogData;
-    private long startDialogTime;
     private int networkId;
     private boolean isSwapTcapIdBytes;
 
@@ -198,8 +193,6 @@ public class DialogImpl implements Dialog {
         TCAPStack stack = this.provider.getStack();
         this.idleTaskTimeout = stack.getDialogIdleTimeout();
         this.isSwapTcapIdBytes = stack.getSwapTcapIdBytes();
-
-        startDialogTime = System.currentTimeMillis();
 
         // start
         startIdleTimer();
@@ -266,11 +259,6 @@ public class DialogImpl implements Dialog {
             }
         }
 
-        if (this.isStructured() && this.provider.getStack().getStatisticsEnabled()) {
-            long lg = System.currentTimeMillis() - this.startDialogTime;
-            this.provider.getStack().getCounterProviderImpl().updateAllDialogsDuration(lg);
-        }
-
         this.setState(TRPseudoState.Expunged);
     }
 
@@ -301,27 +289,21 @@ public class DialogImpl implements Dialog {
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#getNewInvokeId()
      */
     public Long getNewInvokeId() throws TCAPException {
-        try {
-            this.dialogLock.lock();
-            if (this.freeCount == 0) {
+    	if (this.freeCount == 0) {
+            throw new TCAPException("No free invokeId");
+        }
+
+        int tryCnt = 0;
+        while (true) {
+            if (++this.lastInvokeIdIndex >= this.invokeIDTable.length)
+                this.lastInvokeIdIndex = 0;
+            if (this.invokeIDTable[this.lastInvokeIdIndex] == _INVOKEID_FREE) {
+                freeCount--;
+                this.invokeIDTable[this.lastInvokeIdIndex] = _INVOKEID_TAKEN;
+                return getInvokeIdFromIndex(this.lastInvokeIdIndex);
+            }
+            if (++tryCnt >= 256)
                 throw new TCAPException("No free invokeId");
-            }
-
-            int tryCnt = 0;
-            while (true) {
-                if (++this.lastInvokeIdIndex >= this.invokeIDTable.length)
-                    this.lastInvokeIdIndex = 0;
-                if (this.invokeIDTable[this.lastInvokeIdIndex] == _INVOKEID_FREE) {
-                    freeCount--;
-                    this.invokeIDTable[this.lastInvokeIdIndex] = _INVOKEID_TAKEN;
-                    return getInvokeIdFromIndex(this.lastInvokeIdIndex);
-                }
-                if (++tryCnt >= 256)
-                    throw new TCAPException("No free invokeId");
-            }
-
-        } finally {
-            this.dialogLock.unlock();
         }
     }
 
@@ -342,41 +324,31 @@ public class DialogImpl implements Dialog {
         if (this.previewMode)
             return false;
 
-        try {
-            this.dialogLock.lock();
-            int index = getIndexFromInvokeId(invokeId);
-            if (index < 0 || index >= this.operationsSent.length) {
-                throw new TCAPException("Wrong invoke id passed.");
-            }
-
-            // lookup through send buffer.
-            for (index = 0; index < this.scheduledComponentList.size(); index++) {
-                Component cr = this.scheduledComponentList.get(index);
-                if ((cr.getType() == ComponentType.InvokeNotLast || cr.getType() == ComponentType.InvokeLast)
-                        && cr.getCorrelationId().equals(invokeId)) {
-                    this.scheduledComponentList.remove(index);
-                    ((InvokeImpl) cr).stopTimer();
-                    ((InvokeImpl) cr).setState(OperationState.Idle);
-                    return true;
-                }
-            }
-
-            return false;
-        } finally {
-            this.dialogLock.unlock();
+        int index = getIndexFromInvokeId(invokeId);
+        if (index < 0 || index >= this.operationsSent.length) {
+            throw new TCAPException("Wrong invoke id passed.");
         }
+
+        // lookup through send buffer.
+        for (index = 0; index < this.scheduledComponentList.size(); index++) {
+            Component cr = this.scheduledComponentList.get(index);
+            if ((cr.getType() == ComponentType.InvokeNotLast || cr.getType() == ComponentType.InvokeLast)
+                    && cr.getCorrelationId().equals(invokeId)) {
+                this.scheduledComponentList.remove(index);
+                ((InvokeImpl) cr).stopTimer();
+                ((InvokeImpl) cr).setState(OperationState.Idle);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void freeInvokeId(Long l) {
-        try {
-            this.dialogLock.lock();
-            int index = getIndexFromInvokeId(l);
-            if (this.invokeIDTable[index] == _INVOKEID_TAKEN)
-                this.freeCount++;
-            this.invokeIDTable[index] = _INVOKEID_FREE;
-        } finally {
-            this.dialogLock.unlock();
-        }
+    	int index = getIndexFromInvokeId(l);
+        if (this.invokeIDTable[index] == _INVOKEID_TAKEN)
+            this.freeCount++;
+        this.invokeIDTable[index] = _INVOKEID_FREE;
     }
 
     /*
@@ -419,8 +391,7 @@ public class DialogImpl implements Dialog {
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#isEstabilished()
      */
     public boolean isEstabilished() {
-
-        return this.state == TRPseudoState.Active;
+        return this.state.get() == TRPseudoState.Active;
     }
 
     /*
@@ -434,24 +405,12 @@ public class DialogImpl implements Dialog {
     }
 
     public void keepAlive() {
-        if (this.previewMode)
+    	if (this.previewMode)
             return;
 
-        try {
-            this.dialogLock.lock();
-            if (this.idleTimerInvoked) {
-                this.idleTimerActionTaken = true;
-            }
-
-        } finally {
-            this.dialogLock.unlock();
+        if (this.idleTimerInvoked.get()) {
+            this.idleTimerActionTaken.set(true);
         }
-
-    }
-
-    @Override
-    public ReentrantLock getDialogLock() {
-        return this.dialogLock;
     }
 
     /**
@@ -475,20 +434,13 @@ public class DialogImpl implements Dialog {
      * @return false: failure - this invokeId already present in the list
      */
     private boolean addIncomingInvokeId(Long invokeId) {
-        synchronized (this.incomingInvokeList) {
-            if (this.incomingInvokeList.contains(invokeId))
-                return false;
-            else {
-                this.incomingInvokeList.add(invokeId);
-                return true;
-            }
-        }
+    	Long oldValue=this.incomingInvokeList.putIfAbsent(invokeId, invokeId);
+        return (oldValue==null);
     }
 
     private void removeIncomingInvokeId(Long invokeId) {
-        synchronized (this.incomingInvokeList) {
-            this.incomingInvokeList.remove(invokeId);
-        }
+    	if(invokeId!=null)
+    		this.incomingInvokeList.remove(invokeId);        
     }
 
     /*
@@ -502,76 +454,59 @@ public class DialogImpl implements Dialog {
         if (this.previewMode)
             return;
 
-        if (this.state != TRPseudoState.Idle) {
+        if (this.state.get()!=TRPseudoState.Idle) {
             throw new TCAPSendException("Can not send Begin in this state: " + this.state);
         }
 
         if (!this.isStructured()) {
             throw new TCAPSendException("Unstructured dialogs do not use Begin");
         }
+        
+        this.idleTimerActionTaken.set(true);
+        restartIdleTimer();
+        TCQueryMessageImpl tcbm = (TCQueryMessageImpl) TcapFactory.createTCQueryMessage();
+
+        // build DP
+        tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
+        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
+
+        if (event.getApplicationContextName() != null || event.getConfidentiality() != null
+                || event.getSecurityContext() != null || event.getUserInformation() != null) {
+            this.dpSentInBegin = true;
+            this.lastACN = event.getApplicationContextName();
+            if (event.getUserInformation() != null) {
+                this.lastUI = event.getUserInformation();
+            }
+
+            DialogPortion dp = TcapFactory.createDialogPortion();
+            dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
+            dp.setApplicationContext(event.getApplicationContextName());
+            dp.setUserInformation(event.getUserInformation());
+            dp.setSecurityContext(event.getSecurityContext());
+            dp.setConfidentiality(event.getConfidentiality());
+
+            tcbm.setDialogPortion(dp);
+        }
+
+        // now comps
+        if (this.scheduledComponentList.size() > 0) {
+            Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
+            this.prepareComponents(componentsToSend);
+            tcbm.setComponent(componentsToSend);
+        }
+
+        AsnOutputStream aos = new AsnOutputStream();
         try {
-            this.dialogLock.lock();
-            this.idleTimerActionTaken = true;
-            restartIdleTimer();
-            TCQueryMessageImpl tcbm = (TCQueryMessageImpl) TcapFactory.createTCQueryMessage();
-
-            // build DP
-            tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
-            tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
-
-            if (event.getApplicationContextName() != null || event.getConfidentiality() != null
-                    || event.getSecurityContext() != null || event.getUserInformation() != null) {
-                this.dpSentInBegin = true;
-                this.lastACN = event.getApplicationContextName();
-                if (event.getUserInformation() != null) {
-                    this.lastUI = event.getUserInformation();
-                }
-
-                DialogPortion dp = TcapFactory.createDialogPortion();
-                dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
-                dp.setApplicationContext(event.getApplicationContextName());
-                dp.setUserInformation(event.getUserInformation());
-                dp.setSecurityContext(event.getSecurityContext());
-                dp.setConfidentiality(event.getConfidentiality());
-
-                tcbm.setDialogPortion(dp);
-
-                if (this.provider.getStack().getStatisticsEnabled()) {
-                    if (event.getApplicationContextName() != null) {
-                        String acn = ((ApplicationContextImpl) event.getApplicationContextName()).getStringValue();
-                        this.provider.getStack().getCounterProviderImpl().updateOutgoingDialogsPerApplicatioContextName(acn);
-                    } else {
-                        this.provider.getStack().getCounterProviderImpl().updateOutgoingDialogsPerApplicatioContextName("");
-                    }
-                }
+            tcbm.encode(aos);
+            this.setState(TRPseudoState.InitialSent);
+            this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+                    this.seqControl, this.getNetworkId(), this.localSsn);
+            this.scheduledComponentList.clear();
+        } catch (Throwable e) {
+            if (logger.isEnabledFor(Level.ERROR)) {
+                logger.error("Failed to send message: ", e);
             }
-
-            // now comps
-            if (this.scheduledComponentList.size() > 0) {
-                Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
-                this.prepareComponents(componentsToSend);
-                tcbm.setComponent(componentsToSend);
-            }
-
-            AsnOutputStream aos = new AsnOutputStream();
-            try {
-                tcbm.encode(aos);
-                this.setState(TRPseudoState.InitialSent);
-                if (this.provider.getStack().getStatisticsEnabled()) {
-                    this.provider.getStack().getCounterProviderImpl().updateTcQuerySentCount(this);
-                }
-                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-                        this.seqControl, this.getNetworkId(), this.localSsn);
-                this.scheduledComponentList.clear();
-            } catch (Throwable e) {
-                if (logger.isEnabledFor(Level.ERROR)) {
-                    logger.error("Failed to send message: ", e);
-                }
-                throw new TCAPSendException("Failed to send TC-Query message: " + e.getMessage(), e);
-            }
-
-        } finally {
-            this.dialogLock.unlock();
+            throw new TCAPSendException("Failed to send TC-Query message: " + e.getMessage(), e);
         }
     }
 
@@ -589,96 +524,85 @@ public class DialogImpl implements Dialog {
         if (!this.isStructured()) {
             throw new TCAPSendException("Unstructured dialogs do not use Continue");
         }
-        try {
-            this.dialogLock.lock();
-            if (this.state == TRPseudoState.InitialReceived) {
-                this.idleTimerActionTaken = true;
-                restartIdleTimer();
-                TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage();
+        
+        if (this.state.get() == TRPseudoState.InitialReceived) {
+            this.idleTimerActionTaken.set(true);
+            restartIdleTimer();
+            TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage();
 
-                tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
-                tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
-                tcbm.setDestinationTransactionId(this.remoteTransactionId);
-                // local address may change, lets check it;
-                if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress)) {
-                    this.localAddress = event.getOriginatingAddress();
-                }
-
-                if (event.getApplicationContextName() != null || event.getConfidentiality() != null
-                        || event.getSecurityContext() != null || event.getUserInformation() != null) {
-                    // set dialog portion
-                    DialogPortion dp = TcapFactory.createDialogPortion();
-                    dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
-                    dp.setApplicationContext(event.getApplicationContextName());
-                    dp.setUserInformation(event.getUserInformation());
-                    dp.setSecurityContext(event.getSecurityContext());
-                    dp.setConfidentiality(event.getConfidentiality());
-
-                    tcbm.setDialogPortion(dp);
-                }
-                if (this.scheduledComponentList.size() > 0) {
-                    Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
-                    this.prepareComponents(componentsToSend);
-                    tcbm.setComponent(componentsToSend);
-
-                }
-
-                AsnOutputStream aos = new AsnOutputStream();
-                try {
-                    tcbm.encode(aos);
-                    if (this.provider.getStack().getStatisticsEnabled()) {
-                        this.provider.getStack().getCounterProviderImpl().updateTcConversationSentCount(this);
-                    }
-                    this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
-                            this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
-                    this.setState(TRPseudoState.Active);
-                    this.scheduledComponentList.clear();
-                } catch (Exception e) {
-                    // FIXME: remove freshly added invokes to free invoke ID??
-                    if (logger.isEnabledFor(Level.ERROR)) {
-                        logger.error("Failed to send message: ", e);
-                    }
-                    throw new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e);
-                }
-
-            } else if (state == TRPseudoState.Active) {
-                this.idleTimerActionTaken = true;
-                restartIdleTimer();
-                // in this we ignore acn and passed args(except qos)
-                TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage();
-
-                tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
-                tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
-                tcbm.setDestinationTransactionId(this.remoteTransactionId);
-                if (this.scheduledComponentList.size() > 0) {
-                    Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
-                    this.prepareComponents(componentsToSend);
-                    tcbm.setComponent(componentsToSend);
-
-                }
-
-                AsnOutputStream aos = new AsnOutputStream();
-                try {
-                    tcbm.encode(aos);
-                    if (this.provider.getStack().getStatisticsEnabled()) {
-                        this.provider.getStack().getCounterProviderImpl().updateTcConversationSentCount(this);
-                    }
-                    this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
-                            this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
-                    this.scheduledComponentList.clear();
-                } catch (Exception e) {
-                    // FIXME: remove freshly added invokes to free invoke ID??
-                    if (logger.isEnabledFor(Level.ERROR)) {
-                        logger.error("Failed to send message: ", e);
-                    }
-                    throw new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e);
-                }
-            } else {
-                throw new TCAPSendException("Wrong state: " + this.state);
+            tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
+            tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
+            tcbm.setDestinationTransactionId(this.remoteTransactionId);
+            // local address may change, lets check it;
+            if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress)) {
+                this.localAddress = event.getOriginatingAddress();
             }
 
-        } finally {
-            this.dialogLock.unlock();
+            if (event.getApplicationContextName() != null || event.getConfidentiality() != null
+                    || event.getSecurityContext() != null || event.getUserInformation() != null) {
+                // set dialog portion
+                DialogPortion dp = TcapFactory.createDialogPortion();
+                dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
+                dp.setApplicationContext(event.getApplicationContextName());
+                dp.setUserInformation(event.getUserInformation());
+                dp.setSecurityContext(event.getSecurityContext());
+                dp.setConfidentiality(event.getConfidentiality());
+
+                tcbm.setDialogPortion(dp);
+            }
+            if (this.scheduledComponentList.size() > 0) {
+                Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
+                this.prepareComponents(componentsToSend);
+                tcbm.setComponent(componentsToSend);
+
+            }
+
+            AsnOutputStream aos = new AsnOutputStream();
+            try {
+                tcbm.encode(aos);
+                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
+                        this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
+                this.setState(TRPseudoState.Active);
+                this.scheduledComponentList.clear();
+            } catch (Exception e) {
+                // FIXME: remove freshly added invokes to free invoke ID??
+                if (logger.isEnabledFor(Level.ERROR)) {
+                    logger.error("Failed to send message: ", e);
+                }
+                throw new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e);
+            }
+
+        } else if (state.get() == TRPseudoState.Active) {
+            this.idleTimerActionTaken.set(true);
+            restartIdleTimer();
+            // in this we ignore acn and passed args(except qos)
+            TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage();
+
+            tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
+            tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
+            tcbm.setDestinationTransactionId(this.remoteTransactionId);
+            if (this.scheduledComponentList.size() > 0) {
+                Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
+                this.prepareComponents(componentsToSend);
+                tcbm.setComponent(componentsToSend);
+
+            }
+
+            AsnOutputStream aos = new AsnOutputStream();
+            try {
+                tcbm.encode(aos);
+                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
+                        this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
+                this.scheduledComponentList.clear();
+            } catch (Exception e) {
+                // FIXME: remove freshly added invokes to free invoke ID??
+                if (logger.isEnabledFor(Level.ERROR)) {
+                    logger.error("Failed to send message: ", e);
+                }
+                throw new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e);
+            }
+        } else {
+            throw new TCAPSendException("Wrong state: " + this.state);
         }
     }
 
@@ -697,79 +621,71 @@ public class DialogImpl implements Dialog {
             throw new TCAPSendException("Unstructured dialogs do not use Response");
         }
 
+        TCResponseMessageImpl tcbm = null;
+
+        if (state.get() == TRPseudoState.InitialReceived) {
+            // TC-END request primitive issued in response to a TC-BEGIN
+            // indication primitive
+            this.idleTimerActionTaken.set(true);
+            stopIdleTimer();
+            tcbm = (TCResponseMessageImpl) TcapFactory.createTCResponseMessage();
+            tcbm.setDestinationTransactionId(this.remoteTransactionId);
+            // local address may change, lets check it;
+            if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress)) {
+                this.localAddress = event.getOriginatingAddress();
+            }
+
+            if (event.getApplicationContextName() != null || event.getConfidentiality() != null
+                    || event.getSecurityContext() != null || event.getUserInformation() != null) {
+                // set dialog portion
+                DialogPortion dp = TcapFactory.createDialogPortion();
+                dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
+                dp.setApplicationContext(event.getApplicationContextName());
+                dp.setUserInformation(event.getUserInformation());
+                dp.setSecurityContext(event.getSecurityContext());
+                dp.setConfidentiality(event.getConfidentiality());
+
+                tcbm.setDialogPortion(dp);
+            }
+            if (this.scheduledComponentList.size() > 0) {
+                Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
+                this.prepareComponents(componentsToSend);
+                tcbm.setComponent(componentsToSend);
+            }
+
+        } else if (state.get() == TRPseudoState.Active) {
+            restartIdleTimer();
+            tcbm = (TCResponseMessageImpl) TcapFactory.createTCResponseMessage();
+
+            tcbm.setDestinationTransactionId(this.remoteTransactionId);
+            if (this.scheduledComponentList.size() > 0) {
+                Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
+                this.prepareComponents(componentsToSend);
+                tcbm.setComponent(componentsToSend);
+            }
+
+        } else {
+            throw new TCAPSendException(String.format("State is not %s or %s: it is %s", TRPseudoState.Active,
+                    TRPseudoState.InitialReceived, this.state));
+        }
+
+        AsnOutputStream aos = new AsnOutputStream();
         try {
-            dialogLock.lock();
-            TCResponseMessageImpl tcbm = null;
+            tcbm.encode(aos);
+            this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+                    this.seqControl, this.getNetworkId(), this.localSsn);
 
-            if (state == TRPseudoState.InitialReceived) {
-                // TC-END request primitive issued in response to a TC-BEGIN
-                // indication primitive
-                this.idleTimerActionTaken = true;
-                stopIdleTimer();
-                tcbm = (TCResponseMessageImpl) TcapFactory.createTCResponseMessage();
-                tcbm.setDestinationTransactionId(this.remoteTransactionId);
-                // local address may change, lets check it;
-                if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress)) {
-                    this.localAddress = event.getOriginatingAddress();
-                }
-
-                if (event.getApplicationContextName() != null || event.getConfidentiality() != null
-                        || event.getSecurityContext() != null || event.getUserInformation() != null) {
-                    // set dialog portion
-                    DialogPortion dp = TcapFactory.createDialogPortion();
-                    dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
-                    dp.setApplicationContext(event.getApplicationContextName());
-                    dp.setUserInformation(event.getUserInformation());
-                    dp.setSecurityContext(event.getSecurityContext());
-                    dp.setConfidentiality(event.getConfidentiality());
-
-                    tcbm.setDialogPortion(dp);
-                }
-                if (this.scheduledComponentList.size() > 0) {
-                    Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
-                    this.prepareComponents(componentsToSend);
-                    tcbm.setComponent(componentsToSend);
-                }
-
-            } else if (state == TRPseudoState.Active) {
-                restartIdleTimer();
-                tcbm = (TCResponseMessageImpl) TcapFactory.createTCResponseMessage();
-
-                tcbm.setDestinationTransactionId(this.remoteTransactionId);
-                if (this.scheduledComponentList.size() > 0) {
-                    Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
-                    this.prepareComponents(componentsToSend);
-                    tcbm.setComponent(componentsToSend);
-                }
-
-            } else {
-                throw new TCAPSendException(String.format("State is not %s or %s: it is %s", TRPseudoState.Active,
-                        TRPseudoState.InitialReceived, this.state));
+            this.scheduledComponentList.clear();
+        } catch (Exception e) {
+            // FIXME: remove freshly added invokes to free invoke ID??
+            if (logger.isEnabledFor(Level.ERROR)) {
+                logger.error("Failed to send message: ", e);
             }
-
-            AsnOutputStream aos = new AsnOutputStream();
-            try {
-                tcbm.encode(aos);
-                if (this.provider.getStack().getStatisticsEnabled()) {
-                    this.provider.getStack().getCounterProviderImpl().updateTcResponseSentCount(this);
-                }
-                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-                        this.seqControl, this.getNetworkId(), this.localSsn);
-
-                this.scheduledComponentList.clear();
-            } catch (Exception e) {
-                // FIXME: remove freshly added invokes to free invoke ID??
-                if (logger.isEnabledFor(Level.ERROR)) {
-                    logger.error("Failed to send message: ", e);
-                }
-                throw new TCAPSendException("Failed to send TC-Response message: " + e.getMessage(), e);
-            } finally {
-                // FIXME: is this proper place - should we not release in case
-                // of error ?
-                release();
-            }
+            throw new TCAPSendException("Failed to send TC-Response message: " + e.getMessage(), e);
         } finally {
-            dialogLock.unlock();
+            // FIXME: is this proper place - should we not release in case
+            // of error ?
+            release();
         }
     }
 
@@ -787,49 +703,41 @@ public class DialogImpl implements Dialog {
             throw new TCAPSendException("Structured dialogs do not use Uni");
         }
 
+        TCUniMessageImpl msg = (TCUniMessageImpl) TcapFactory.createTCUniMessage();
+
+        if (event.getApplicationContextName() != null || event.getConfidentiality() != null
+                || event.getSecurityContext() != null || event.getUserInformation() != null) {
+            // set dialog portion
+            DialogPortion dp = TcapFactory.createDialogPortion();
+            dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
+            dp.setApplicationContext(event.getApplicationContextName());
+            dp.setUserInformation(event.getUserInformation());
+            dp.setSecurityContext(event.getSecurityContext());
+            dp.setConfidentiality(event.getConfidentiality());
+
+            msg.setDialogPortion(dp);
+        }
+
+        if (this.scheduledComponentList.size() > 0) {
+            Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
+            this.prepareComponents(componentsToSend);
+            msg.setComponent(componentsToSend);
+
+        }
+
+        AsnOutputStream aos = new AsnOutputStream();
         try {
-            this.dialogLock.lock();
-            TCUniMessageImpl msg = (TCUniMessageImpl) TcapFactory.createTCUniMessage();
-
-            if (event.getApplicationContextName() != null || event.getConfidentiality() != null
-                    || event.getSecurityContext() != null || event.getUserInformation() != null) {
-                // set dialog portion
-                DialogPortion dp = TcapFactory.createDialogPortion();
-                dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
-                dp.setApplicationContext(event.getApplicationContextName());
-                dp.setUserInformation(event.getUserInformation());
-                dp.setSecurityContext(event.getSecurityContext());
-                dp.setConfidentiality(event.getConfidentiality());
-
-                msg.setDialogPortion(dp);
+            msg.encode(aos);
+            this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+                    this.seqControl, this.getNetworkId(), this.localSsn);
+            this.scheduledComponentList.clear();
+        } catch (Exception e) {
+            if (logger.isEnabledFor(Level.ERROR)) {
+                logger.error("Failed to send message: ", e);
             }
-
-            if (this.scheduledComponentList.size() > 0) {
-                Component[] componentsToSend = new Component[this.scheduledComponentList.size()];
-                this.prepareComponents(componentsToSend);
-                msg.setComponent(componentsToSend);
-
-            }
-
-            AsnOutputStream aos = new AsnOutputStream();
-            try {
-                msg.encode(aos);
-                if (this.provider.getStack().getStatisticsEnabled()) {
-                    this.provider.getStack().getCounterProviderImpl().updateTcUniSentCount(this);
-                }
-                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-                        this.seqControl, this.getNetworkId(), this.localSsn);
-                this.scheduledComponentList.clear();
-            } catch (Exception e) {
-                if (logger.isEnabledFor(Level.ERROR)) {
-                    logger.error("Failed to send message: ", e);
-                }
-                throw new TCAPSendException("Failed to send TC-Uni message: " + e.getMessage(), e);
-            } finally {
-                release();
-            }
+            throw new TCAPSendException("Failed to send TC-Uni message: " + e.getMessage(), e);
         } finally {
-            this.dialogLock.unlock();
+            release();
         }
     }
 
@@ -843,60 +751,51 @@ public class DialogImpl implements Dialog {
             throw new TCAPSendException("Unstructured dialog can not be aborted!");
         }
 
-        try {
-            this.dialogLock.lock();
+        if (this.state.get() == TRPseudoState.InitialReceived || this.state.get() == TRPseudoState.Active) {
 
-            if (this.state == TRPseudoState.InitialReceived || this.state == TRPseudoState.Active) {
+            TCAbortMessageImpl msg = (TCAbortMessageImpl) TcapFactory.createTCAbortMessage();
+            msg.setDestinationTransactionId(this.remoteTransactionId);
 
-                TCAbortMessageImpl msg = (TCAbortMessageImpl) TcapFactory.createTCAbortMessage();
-                msg.setDestinationTransactionId(this.remoteTransactionId);
+            if (event.getApplicationContextName() != null || event.getConfidentiality() != null
+                    || event.getSecurityContext() != null || event.getUserInformation() != null) {
+                // set dialog portion
+                DialogPortion dp = TcapFactory.createDialogPortion();
+                dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
+                dp.setApplicationContext(event.getApplicationContextName());
+                dp.setUserInformation(event.getUserInformation());
+                dp.setSecurityContext(event.getSecurityContext());
+                dp.setConfidentiality(event.getConfidentiality());
 
-                if (event.getApplicationContextName() != null || event.getConfidentiality() != null
-                        || event.getSecurityContext() != null || event.getUserInformation() != null) {
-                    // set dialog portion
-                    DialogPortion dp = TcapFactory.createDialogPortion();
-                    dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
-                    dp.setApplicationContext(event.getApplicationContextName());
-                    dp.setUserInformation(event.getUserInformation());
-                    dp.setSecurityContext(event.getSecurityContext());
-                    dp.setConfidentiality(event.getConfidentiality());
+                msg.setDialogPortion(dp);
+            }
+            msg.setUserAbortInformation(event.getUserAbortInformation());
 
-                    msg.setDialogPortion(dp);
+            if (state.get() == TRPseudoState.InitialReceived) {
+                // local address may change, lets check it
+                if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress)) {
+                    this.localAddress = event.getOriginatingAddress();
                 }
-                msg.setUserAbortInformation(event.getUserAbortInformation());
+            }
 
-                if (state == TRPseudoState.InitialReceived) {
-                    // local address may change, lets check it
-                    if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress)) {
-                        this.localAddress = event.getOriginatingAddress();
-                    }
+            AsnOutputStream aos = new AsnOutputStream();
+            try {
+                msg.encode(aos);
+                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
+                        this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
+
+                this.scheduledComponentList.clear();
+            } catch (Exception e) {
+                // FIXME: remove freshly added invokes to free invoke ID??
+                if (logger.isEnabledFor(Level.ERROR)) {
+                    e.printStackTrace();
+                    logger.error("Failed to send message: ", e);
                 }
-
-                AsnOutputStream aos = new AsnOutputStream();
-                try {
-                    msg.encode(aos);
-                    if (this.provider.getStack().getStatisticsEnabled()) {
-                        this.provider.getStack().getCounterProviderImpl().updateTcUserAbortSentCount(this);
-                    }
-                    this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
-                            this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
-
-                    this.scheduledComponentList.clear();
-                } catch (Exception e) {
-                    // FIXME: remove freshly added invokes to free invoke ID??
-                    if (logger.isEnabledFor(Level.ERROR)) {
-                        e.printStackTrace();
-                        logger.error("Failed to send message: ", e);
-                    }
-                    throw new TCAPSendException("Failed to send TC-U-Abort message: " + e.getMessage(), e);
-                } finally {
-                    release();
-                }
-            } else if (this.state == TRPseudoState.InitialSent) {
+                throw new TCAPSendException("Failed to send TC-U-Abort message: " + e.getMessage(), e);
+            } finally {
                 release();
             }
-        } finally {
-            this.dialogLock.unlock();
+        } else if (this.state.get() == TRPseudoState.InitialSent) {
+            release();
         }
     }
 
@@ -911,88 +810,32 @@ public class DialogImpl implements Dialog {
         if (this.previewMode)
             return;
 
-        if (this.provider.getStack().getStatisticsEnabled()) {
-            switch (componentRequest.getType()) {
-                case InvokeNotLast:
-                    this.provider.getStack().getCounterProviderImpl().updateInvokeNotLastSentCount(this,
-                            (Invoke) componentRequest);
+        if (componentRequest.getType() == ComponentType.InvokeNotLast
+                || componentRequest.getType() == ComponentType.InvokeLast) {
+            InvokeImpl invoke = (InvokeImpl) componentRequest;
 
-                    Invoke inv = (Invoke) componentRequest;
-                    OperationCodeImpl oc = (OperationCodeImpl) inv.getOperationCode();
-                    if (oc != null) {
-                        this.provider.getStack().getCounterProviderImpl()
-                                .updateOutgoingInvokesPerOperationCode(oc.getStringValue());
-                    }
-                    break;
-                case InvokeLast:
-                    this.provider.getStack().getCounterProviderImpl().updateInvokeLastSentCount(this,
-                            (Invoke) componentRequest);
+            // check if its taken!
+            int invokeIndex = getIndexFromInvokeId(invoke.getInvokeId());
+            if (this.operationsSent[invokeIndex] != null) {
+                throw new TCAPSendException("There is already operation with such invoke id!");
+            }
 
-                    inv = (Invoke) componentRequest;
-                    oc = (OperationCodeImpl) inv.getOperationCode();
-                    if (oc != null) {
-                        this.provider.getStack().getCounterProviderImpl()
-                                .updateOutgoingInvokesPerOperationCode(oc.getStringValue());
-                    }
-                    break;
-                case ReturnResultNotLast:
-                    this.provider.getStack().getCounterProviderImpl().updateReturnResultNotLastSentCount(this);
-                    break;
-                case ReturnResultLast:
-                    this.provider.getStack().getCounterProviderImpl().updateReturnResultLastSentCount(this);
-                    break;
-                case ReturnError:
-                    this.provider.getStack().getCounterProviderImpl().updateReturnErrorSentCount(this);
+            invoke.setState(OperationState.Pending);
+            invoke.setDialog(this);
 
-                    ReturnError re = (ReturnError) componentRequest;
-                    ErrorCodeImpl ec = (ErrorCodeImpl) re.getErrorCode();
-                    if (ec != null) {
-                        this.provider.getStack().getCounterProviderImpl().updateOutgoingErrorsPerErrorCode(ec.getStringValue());
-                    }
-                    break;
-                case Reject:
-                    this.provider.getStack().getCounterProviderImpl().updateRejectSentCount(this);
-
-                    Reject rej = (Reject) componentRequest;
-                    RejectProblem prob = (RejectProblem) rej.getProblem();
-                    if (prob != null) {
-                        this.provider.getStack().getCounterProviderImpl().updateOutgoingRejectPerProblem(prob.toString());
-                    }
-                    break;
+            // if the Invoke timeout value has not be reset by TCAP-User
+            // for this invocation we are setting it to the the TCAP stack
+            // default value
+            if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
+                invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
+        } else {
+            if (componentRequest.getType() != ComponentType.ReturnResultNotLast) {
+                // we are sending a response and removing invokeId from
+                // incomingInvokeList
+                this.removeIncomingInvokeId(componentRequest.getCorrelationId());
             }
         }
-
-        try {
-            this.dialogLock.lock();
-            if (componentRequest.getType() == ComponentType.InvokeNotLast
-                    || componentRequest.getType() == ComponentType.InvokeLast) {
-                InvokeImpl invoke = (InvokeImpl) componentRequest;
-
-                // check if its taken!
-                int invokeIndex = getIndexFromInvokeId(invoke.getInvokeId());
-                if (this.operationsSent[invokeIndex] != null) {
-                    throw new TCAPSendException("There is already operation with such invoke id!");
-                }
-
-                invoke.setState(OperationState.Pending);
-                invoke.setDialog(this);
-
-                // if the Invoke timeout value has not be reset by TCAP-User
-                // for this invocation we are setting it to the the TCAP stack
-                // default value
-                if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
-                    invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
-            } else {
-                if (componentRequest.getType() != ComponentType.ReturnResultNotLast) {
-                    // we are sending a response and removing invokeId from
-                    // incomingInvokeList
-                    this.removeIncomingInvokeId(componentRequest.getCorrelationId());
-                }
-            }
-            this.scheduledComponentList.add(componentRequest);
-        } finally {
-            this.dialogLock.unlock();
-        }
+        this.scheduledComponentList.add(componentRequest);
     }
 
     public void processInvokeWithoutAnswer(Long invokeId) {
@@ -1118,7 +961,7 @@ public class DialogImpl implements Dialog {
             tcbm.setComponent(componentsToSend);
         }
 
-        if (state == TRPseudoState.InitialReceived) {
+        if (state.get() == TRPseudoState.InitialReceived) {
             if (event.getApplicationContextName() != null || event.getConfidentiality() != null
                     || event.getSecurityContext() != null || event.getUserInformation() != null) {
                 // set dialog portion
@@ -1223,43 +1066,36 @@ public class DialogImpl implements Dialog {
     void processUni(TCUniMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
 
         // TCUniIndicationImpl tcUniIndication = null;
-        try {
-            try {
-                this.dialogLock.lock();
-                this.setRemoteAddress(remoteAddress);
-                this.setLocalAddress(localAddress);
+    	try {
+            this.setRemoteAddress(remoteAddress);
+            this.setLocalAddress(localAddress);
 
-                // no dialog portion!
-                // convert to indications
-                TCUniIndicationImpl tcUniIndication = (TCUniIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
-                        .getDialogPrimitiveFactory()).createUniIndication(this);
+            // no dialog portion!
+            // convert to indications
+            TCUniIndicationImpl tcUniIndication = (TCUniIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                    .getDialogPrimitiveFactory()).createUniIndication(this);
 
-                tcUniIndication.setDestinationAddress(localAddress);
-                tcUniIndication.setOriginatingAddress(remoteAddress);
-                // now comps
-                Component[] comps = msg.getComponent();
-                tcUniIndication.setComponents(comps);
+            tcUniIndication.setDestinationAddress(localAddress);
+            tcUniIndication.setOriginatingAddress(remoteAddress);
+            // now comps
+            Component[] comps = msg.getComponent();
+            tcUniIndication.setComponents(comps);
 
-                processRcvdComp(comps);
-
-                if (msg.getDialogPortion() != null) {
-                    DialogPortion dp = msg.getDialogPortion();
-                    this.lastACN = dp.getApplicationContext();
-                    this.lastUI = dp.getUserInformation();
-                    tcUniIndication.setApplicationContextName(this.lastACN);
-                    tcUniIndication.setUserInformation(this.lastUI);
-                    tcUniIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
-                    tcUniIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
-                }
-
-                // lets deliver to provider, this MUST not throw anything
-                this.provider.deliver(this, tcUniIndication);
-
-            } finally {
-                this.release();
+            if (msg.getDialogPortion() != null) {
+                DialogPortion dp = msg.getDialogPortion();
+                this.lastACN = dp.getApplicationContext();
+                this.lastUI = dp.getUserInformation();
+                tcUniIndication.setApplicationContextName(this.lastACN);
+                tcUniIndication.setUserInformation(this.lastUI);
+                tcUniIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
+                tcUniIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
             }
+
+            // lets deliver to provider, this MUST not throw anything
+            this.provider.deliver(this, tcUniIndication);
+
         } finally {
-            this.dialogLock.unlock();
+            this.release();
         }
     }
 
@@ -1267,78 +1103,88 @@ public class DialogImpl implements Dialog {
             boolean dialogTermitationPermission) {
 
         TCQueryIndicationImpl tcBeginIndication = null;
-        try {
-            this.dialogLock.lock();
-
-            if (!this.previewMode) {
-                // this is invoked ONLY for server.
-                if (state != TRPseudoState.Idle) {
-                    // should we terminate dialog here?
-                    if (logger.isEnabledFor(Level.ERROR)) {
-                        logger.error("Received Begin primitive, but state is not: " + TRPseudoState.Idle + ". Dialog: " + this);
-                    }
-                    this.sendAbnormalDialog();
-                    return;
+        if (!this.previewMode) {
+            // this is invoked ONLY for server.
+            if (state.get() != TRPseudoState.Idle) {
+                // should we terminate dialog here?
+                if (logger.isEnabledFor(Level.ERROR)) {
+                    logger.error("Received Begin primitive, but state is not: " + TRPseudoState.Idle + ". Dialog: " + this);
                 }
-                restartIdleTimer();
+                this.sendAbnormalDialog();
+                return;
             }
-
-            // lets setup
-            this.setRemoteAddress(remoteAddress);
-            this.setLocalAddress(localAddress);
-            this.setRemoteTransactionId(msg.getOriginatingTransactionId());
-            // convert to indications
-            tcBeginIndication = (TCQueryIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider.getDialogPrimitiveFactory())
-                    .createQueryIndication(this, dialogTermitationPermission);
-
-            tcBeginIndication.setDestinationAddress(localAddress);
-            tcBeginIndication.setOriginatingAddress(remoteAddress);
-
-            // if APDU and context data present, lets store it
-            DialogPortion dialogPortion = msg.getDialogPortion();
-
-            if (dialogPortion != null) {
-                this.lastACN = dialogPortion.getApplicationContext();
-                this.lastUI = dialogPortion.getUserInformation();
-                tcBeginIndication.setApplicationContextName(this.lastACN);
-                tcBeginIndication.setUserInformation(this.lastUI);
-                tcBeginIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
-                tcBeginIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
-            }
-
-            if (this.provider.getStack().getStatisticsEnabled()) {
-                if (tcBeginIndication.getApplicationContextName() != null) {
-                    String acn = ((ApplicationContextImpl) tcBeginIndication.getApplicationContextName()).getStringValue();
-                    this.provider.getStack().getCounterProviderImpl().updateIncomingDialogsPerApplicatioContextName(acn);
-                } else {
-                    this.provider.getStack().getCounterProviderImpl().updateIncomingDialogsPerApplicatioContextName("");
-                }
-            }
-
-            tcBeginIndication.setComponents(processOperationsState(msg.getComponent()));
-            if (!this.previewMode) {
-                // change state - before we deliver
-                this.setState(TRPseudoState.InitialReceived);
-            }
-            // lets deliver to provider
-            this.provider.deliver(this, tcBeginIndication);
-
-        } finally {
-            this.dialogLock.unlock();
+            restartIdleTimer();
         }
+
+        // lets setup
+        this.setRemoteAddress(remoteAddress);
+        this.setLocalAddress(localAddress);
+        this.setRemoteTransactionId(msg.getOriginatingTransactionId());
+        // convert to indications
+        tcBeginIndication = (TCQueryIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider.getDialogPrimitiveFactory())
+                .createQueryIndication(this, dialogTermitationPermission);
+
+        tcBeginIndication.setDestinationAddress(localAddress);
+        tcBeginIndication.setOriginatingAddress(remoteAddress);
+
+        // if APDU and context data present, lets store it
+        DialogPortion dialogPortion = msg.getDialogPortion();
+
+        if (dialogPortion != null) {
+            this.lastACN = dialogPortion.getApplicationContext();
+            this.lastUI = dialogPortion.getUserInformation();
+            tcBeginIndication.setApplicationContextName(this.lastACN);
+            tcBeginIndication.setUserInformation(this.lastUI);
+            tcBeginIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
+            tcBeginIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
+        }
+
+        tcBeginIndication.setComponents(processOperationsState(msg.getComponent()));
+        if (!this.previewMode) {
+            // change state - before we deliver
+            this.setState(TRPseudoState.InitialReceived);
+        }
+        // lets deliver to provider
+        this.provider.deliver(this, tcBeginIndication);
     }
 
     protected void processConversation(TCConversationMessage msg, SccpAddress localAddress, SccpAddress remoteAddressm,
             boolean dialogTermitationPermission) {
 
         TCConversationIndicationImpl tcContinueIndication = null;
-        try {
-            this.dialogLock.lock();
+        if (this.previewMode) {
+            tcContinueIndication = (TCConversationIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                    .getDialogPrimitiveFactory()).createConversationIndication(this, dialogTermitationPermission);
+            this.setRemoteTransactionId(msg.getOriginatingTransactionId());
 
-            if (this.previewMode) {
+            // here we will receive DialogResponse APDU - if request was
+            // present!
+            DialogPortion dialogPortion = msg.getDialogPortion();
+            if (dialogPortion != null) {
+                this.lastACN = dialogPortion.getApplicationContext();
+                this.lastUI = dialogPortion.getUserInformation();
+                tcContinueIndication.setApplicationContextName(this.lastACN);
+                tcContinueIndication.setUserInformation(this.lastUI);
+                tcContinueIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
+                tcContinueIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
+            }
+            tcContinueIndication.setOriginatingAddress(remoteAddress);
+            // now comps
+            tcContinueIndication.setComponents(processOperationsState(msg.getComponent()));
+
+            // lets deliver to provider
+            this.provider.deliver(this, tcContinueIndication);
+        } else {
+
+            if (state.get() == TRPseudoState.InitialSent) {
+                restartIdleTimer();
                 tcContinueIndication = (TCConversationIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
                         .getDialogPrimitiveFactory()).createConversationIndication(this, dialogTermitationPermission);
+                // in continue remote address MAY change be changed, so lets
+                // update!
+                this.setRemoteAddress(remoteAddress);
                 this.setRemoteTransactionId(msg.getOriginatingTransactionId());
+                tcContinueIndication.setOriginatingAddress(remoteAddress);
 
                 // here we will receive DialogResponse APDU - if request was
                 // present!
@@ -1350,180 +1196,133 @@ public class DialogImpl implements Dialog {
                     tcContinueIndication.setUserInformation(this.lastUI);
                     tcContinueIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
                     tcContinueIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
+                } else if (this.dpSentInBegin) {
+                    sendAbnormalDialog();
+                    return;
+
                 }
                 tcContinueIndication.setOriginatingAddress(remoteAddress);
+                // now comps
+                tcContinueIndication.setComponents(processOperationsState(msg.getComponent()));
+                // change state
+                this.setState(TRPseudoState.Active);
+
+                // lets deliver to provider
+                this.provider.deliver(this, tcContinueIndication);
+
+            } else if (state.get() == TRPseudoState.Active) {
+                restartIdleTimer();
+                // XXX: here NO APDU will be present, hence, no ACN/UI change
+                tcContinueIndication = (TCConversationIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                        .getDialogPrimitiveFactory()).createConversationIndication(this, dialogTermitationPermission);
+
+                tcContinueIndication.setOriginatingAddress(remoteAddress);
+
                 // now comps
                 tcContinueIndication.setComponents(processOperationsState(msg.getComponent()));
 
                 // lets deliver to provider
                 this.provider.deliver(this, tcContinueIndication);
+
             } else {
-
-                if (state == TRPseudoState.InitialSent) {
-                    restartIdleTimer();
-                    tcContinueIndication = (TCConversationIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
-                            .getDialogPrimitiveFactory()).createConversationIndication(this, dialogTermitationPermission);
-                    // in continue remote address MAY change be changed, so lets
-                    // update!
-                    this.setRemoteAddress(remoteAddress);
-                    this.setRemoteTransactionId(msg.getOriginatingTransactionId());
-                    tcContinueIndication.setOriginatingAddress(remoteAddress);
-
-                    // here we will receive DialogResponse APDU - if request was
-                    // present!
-                    DialogPortion dialogPortion = msg.getDialogPortion();
-                    if (dialogPortion != null) {
-                        this.lastACN = dialogPortion.getApplicationContext();
-                        this.lastUI = dialogPortion.getUserInformation();
-                        tcContinueIndication.setApplicationContextName(this.lastACN);
-                        tcContinueIndication.setUserInformation(this.lastUI);
-                        tcContinueIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
-                        tcContinueIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
-                    } else if (this.dpSentInBegin) {
-                        sendAbnormalDialog();
-                        return;
-
-                    }
-                    tcContinueIndication.setOriginatingAddress(remoteAddress);
-                    // now comps
-                    tcContinueIndication.setComponents(processOperationsState(msg.getComponent()));
-                    // change state
-                    this.setState(TRPseudoState.Active);
-
-                    // lets deliver to provider
-                    this.provider.deliver(this, tcContinueIndication);
-
-                } else if (state == TRPseudoState.Active) {
-                    restartIdleTimer();
-                    // XXX: here NO APDU will be present, hence, no ACN/UI change
-                    tcContinueIndication = (TCConversationIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
-                            .getDialogPrimitiveFactory()).createConversationIndication(this, dialogTermitationPermission);
-
-                    tcContinueIndication.setOriginatingAddress(remoteAddress);
-
-                    // now comps
-                    tcContinueIndication.setComponents(processOperationsState(msg.getComponent()));
-
-                    // lets deliver to provider
-                    this.provider.deliver(this, tcContinueIndication);
-
-                } else {
-                    if (logger.isEnabledFor(Level.ERROR)) {
-                        logger.error(
-                                "Received Continue primitive, but state is not proper: " + this.state + ", Dialog: " + this);
-                    }
-                    this.sendAbnormalDialog();
-                    return;
+                if (logger.isEnabledFor(Level.ERROR)) {
+                    logger.error(
+                            "Received Continue primitive, but state is not proper: " + this.state + ", Dialog: " + this);
                 }
+                this.sendAbnormalDialog();
+                return;
             }
-
-        } finally {
-            this.dialogLock.unlock();
         }
     }
 
     protected void processResponse(TCResponseMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
         TCResponseIndicationImpl tcEndIndication = null;
         try {
-            this.dialogLock.lock();
+            if (this.previewMode) {
+                tcEndIndication = (TCResponseIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                        .getDialogPrimitiveFactory()).createResponseIndication(this);
 
-            try {
-                if (this.previewMode) {
-                    tcEndIndication = (TCResponseIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
-                            .getDialogPrimitiveFactory()).createResponseIndication(this);
-
-                    DialogPortion dialogPortion = msg.getDialogPortion();
-                    if (dialogPortion != null) {
-                        this.lastACN = dialogPortion.getApplicationContext();
-                        this.lastUI = dialogPortion.getUserInformation();
-                        tcEndIndication.setApplicationContextName(this.lastACN);
-                        tcEndIndication.setUserInformation(this.lastUI);
-                        tcEndIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
-                        tcEndIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
-                    }
-                    // now comps
-                    tcEndIndication.setComponents(processOperationsState(msg.getComponent()));
-
-                    this.provider.deliver(this, tcEndIndication);
-                } else {
-                    restartIdleTimer();
-                    tcEndIndication = (TCResponseIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
-                            .getDialogPrimitiveFactory()).createResponseIndication(this);
-
-                    if (state == TRPseudoState.InitialSent) {
-                        // in end remote address MAY change be changed, so lets
-                        // update!
-                        this.setRemoteAddress(remoteAddress);
-                        tcEndIndication.setOriginatingAddress(remoteAddress);
-                    }
-
-                    DialogPortion dialogPortion = msg.getDialogPortion();
-                    if (dialogPortion != null) {
-                        this.lastACN = dialogPortion.getApplicationContext();
-                        this.lastUI = dialogPortion.getUserInformation();
-                        tcEndIndication.setApplicationContextName(this.lastACN);
-                        tcEndIndication.setUserInformation(this.lastUI);
-                        tcEndIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
-                        tcEndIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
-                    }
-                    // now comps
-                    tcEndIndication.setComponents(processOperationsState(msg.getComponent()));
-
-                    this.provider.deliver(this, tcEndIndication);
+                DialogPortion dialogPortion = msg.getDialogPortion();
+                if (dialogPortion != null) {
+                    this.lastACN = dialogPortion.getApplicationContext();
+                    this.lastUI = dialogPortion.getUserInformation();
+                    tcEndIndication.setApplicationContextName(this.lastACN);
+                    tcEndIndication.setUserInformation(this.lastUI);
+                    tcEndIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
+                    tcEndIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
                 }
-            } finally {
-                release();
+                // now comps
+                tcEndIndication.setComponents(processOperationsState(msg.getComponent()));
+
+                this.provider.deliver(this, tcEndIndication);
+            } else {
+                restartIdleTimer();
+                tcEndIndication = (TCResponseIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                        .getDialogPrimitiveFactory()).createResponseIndication(this);
+
+                if (state.get() == TRPseudoState.InitialSent) {
+                    // in end remote address MAY change be changed, so lets
+                    // update!
+                    this.setRemoteAddress(remoteAddress);
+                    tcEndIndication.setOriginatingAddress(remoteAddress);
+                }
+
+                DialogPortion dialogPortion = msg.getDialogPortion();
+                if (dialogPortion != null) {
+                    this.lastACN = dialogPortion.getApplicationContext();
+                    this.lastUI = dialogPortion.getUserInformation();
+                    tcEndIndication.setApplicationContextName(this.lastACN);
+                    tcEndIndication.setUserInformation(this.lastUI);
+                    tcEndIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
+                    tcEndIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
+                }
+                // now comps
+                tcEndIndication.setComponents(processOperationsState(msg.getComponent()));
+
+                this.provider.deliver(this, tcEndIndication);
             }
         } finally {
-            this.dialogLock.unlock();
+            release();
         }
     }
 
     protected void processAbort(TCAbortMessage msg, SccpAddress localAddress2, SccpAddress remoteAddress2) {
+    	try {
 
-        try {
-            this.dialogLock.lock();
+            PAbortCause type = msg.getPAbortCause();
+            if (type != null) {
 
-            try {
+                // its TC-P-Abort
+                TCPAbortIndicationImpl tcAbortIndication = (TCPAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                        .getDialogPrimitiveFactory()).createPAbortIndication(this);
+                tcAbortIndication.setPAbortCause(type);
 
-                PAbortCause type = msg.getPAbortCause();
-                if (type != null) {
+                this.provider.deliver(this, tcAbortIndication);
 
-                    // its TC-P-Abort
-                    TCPAbortIndicationImpl tcAbortIndication = (TCPAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
-                            .getDialogPrimitiveFactory()).createPAbortIndication(this);
-                    tcAbortIndication.setPAbortCause(type);
-
-                    this.provider.deliver(this, tcAbortIndication);
-
-                } else {
-                    // its TC-U-Abort
-                    TCUserAbortIndicationImpl tcUAbortIndication = (TCUserAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
-                            .getDialogPrimitiveFactory()).createUAbortIndication(this);
-                    DialogPortion dp = msg.getDialogPortion();
-                    if (dp != null) {
-                        tcUAbortIndication.setApplicationContextName(dp.getApplicationContext());
-                        tcUAbortIndication.setUserInformation(dp.getUserInformation());
-                        tcUAbortIndication.setSecurityContext(dp.getSecurityContext());
-                        tcUAbortIndication.setConfidentiality(dp.getConfidentiality());
-                    }
-                    tcUAbortIndication.setUserAbortInformation(msg.getUserAbortInformation());
-
-                    if (state == TRPseudoState.InitialSent) {
-                        // in userAbort remote address MAY change be changed, so lets
-                        // update!
-                        this.setRemoteAddress(remoteAddress);
-                        tcUAbortIndication.setOriginatingAddress(remoteAddress);
-                    }
-
-                    this.provider.deliver(this, tcUAbortIndication);
+            } else {
+                // its TC-U-Abort
+                TCUserAbortIndicationImpl tcUAbortIndication = (TCUserAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                        .getDialogPrimitiveFactory()).createUAbortIndication(this);
+                DialogPortion dp = msg.getDialogPortion();
+                if (dp != null) {
+                    tcUAbortIndication.setApplicationContextName(dp.getApplicationContext());
+                    tcUAbortIndication.setUserInformation(dp.getUserInformation());
+                    tcUAbortIndication.setSecurityContext(dp.getSecurityContext());
+                    tcUAbortIndication.setConfidentiality(dp.getConfidentiality());
                 }
-            } finally {
-                release();
-            }
+                tcUAbortIndication.setUserAbortInformation(msg.getUserAbortInformation());
 
+                if (state.get() == TRPseudoState.InitialSent) {
+                    // in userAbort remote address MAY change be changed, so lets
+                    // update!
+                    this.setRemoteAddress(remoteAddress);
+                    tcUAbortIndication.setOriginatingAddress(remoteAddress);
+                }
+
+                this.provider.deliver(this, tcUAbortIndication);
+            }
         } finally {
-            this.dialogLock.unlock();
+            release();
         }
     }
 
@@ -1534,35 +1333,29 @@ public class DialogImpl implements Dialog {
 
         TCPAbortIndicationImpl tcAbortIndication = null;
         try {
-            this.dialogLock.lock();
-
-            try {
-                if (this.remoteTransactionId == null) {
-                    // no remoteTransactionId - we can not send back TC-ABORT
-                    return;
-                }
-
-                // sending to the remote side
-                if (this.getProtocolVersion() != null) {
-                    this.provider.sendProviderAbort(PAbortCause.InconsistentDialoguePortion, remoteTransactionId, remoteAddress,
-                            localAddress, seqControl, this.getNetworkId());
-                } else {
-                    this.provider.sendRejectAsProviderAbort(PAbortCause.InconsistentDialoguePortion, remoteTransactionId,
-                            remoteAddress, localAddress, seqControl, this.getNetworkId());
-                }
-
-                // sending to the local side
-                tcAbortIndication = (TCPAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
-                        .getDialogPrimitiveFactory()).createPAbortIndication(this);
-                tcAbortIndication.setDialog(this);
-                tcAbortIndication.setPAbortCause(PAbortCause.InconsistentDialoguePortion);
-
-                this.provider.deliver(this, tcAbortIndication);
-            } finally {
-                this.release();
+            if (this.remoteTransactionId == null) {
+                // no remoteTransactionId - we can not send back TC-ABORT
+                return;
             }
+
+            // sending to the remote side
+            if (this.getProtocolVersion() != null) {
+                this.provider.sendProviderAbort(PAbortCause.InconsistentDialoguePortion, remoteTransactionId, remoteAddress,
+                        localAddress, seqControl, this.getNetworkId());
+            } else {
+                this.provider.sendRejectAsProviderAbort(PAbortCause.InconsistentDialoguePortion, remoteTransactionId,
+                        remoteAddress, localAddress, seqControl, this.getNetworkId());
+            }
+
+            // sending to the local side
+            tcAbortIndication = (TCPAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                    .getDialogPrimitiveFactory()).createPAbortIndication(this);
+            tcAbortIndication.setDialog(this);
+            tcAbortIndication.setPAbortCause(PAbortCause.InconsistentDialoguePortion);
+
+            this.provider.deliver(this, tcAbortIndication);
         } finally {
-            this.dialogLock.unlock();
+            this.release();
         }
     }
 
@@ -1703,67 +1496,8 @@ public class DialogImpl implements Dialog {
         components = new Component[resultingIndications.size()];
         components = resultingIndications.toArray(components);
 
-        processRcvdComp(components);
-
         return components;
 
-    }
-
-    private void processRcvdComp(Component[] components) {
-        if (this.provider.getStack().getStatisticsEnabled()) {
-            for (Component comp : components) {
-                switch (comp.getType()) {
-                    case InvokeLast:
-                        this.provider.getStack().getCounterProviderImpl().updateInvokeLastReceivedCount(this, (Invoke) comp);
-
-                        Invoke inv = (Invoke) comp;
-                        OperationCodeImpl oc = (OperationCodeImpl) inv.getOperationCode();
-                        if (oc != null) {
-                            this.provider.getStack().getCounterProviderImpl()
-                                    .updateIncomingInvokesPerOperationCode(oc.getStringValue());
-                        }
-                        break;
-                    case InvokeNotLast:
-                        this.provider.getStack().getCounterProviderImpl().updateInvokeNotLastReceivedCount(this, (Invoke) comp);
-
-                        inv = (Invoke) comp;
-                        oc = (OperationCodeImpl) inv.getOperationCode();
-                        if (oc != null) {
-                            this.provider.getStack().getCounterProviderImpl()
-                                    .updateIncomingInvokesPerOperationCode(oc.getStringValue());
-                        }
-                        break;
-                    case ReturnResultNotLast:
-                        this.provider.getStack().getCounterProviderImpl().updateReturnResultNotLastReceivedCount(this);
-                        break;
-                    case ReturnResultLast:
-                        this.provider.getStack().getCounterProviderImpl().updateReturnResultLastReceivedCount(this);
-                        break;
-                    case ReturnError:
-                        this.provider.getStack().getCounterProviderImpl().updateReturnErrorReceivedCount(this);
-
-                        ReturnError re = (ReturnError) comp;
-                        ErrorCodeImpl ec = (ErrorCodeImpl) re.getErrorCode();
-                        if (ec != null) {
-                            this.provider.getStack().getCounterProviderImpl()
-                                    .updateIncomingErrorsPerErrorCode(ec.getStringValue());
-                        }
-                        break;
-                    case Reject:
-                        Reject rej = (Reject) comp;
-                        if (!rej.isLocalOriginated()) {
-                            this.provider.getStack().getCounterProviderImpl().updateRejectReceivedCount(this);
-
-                            RejectProblem prob = (RejectProblem) rej.getProblem();
-                            if (prob != null) {
-                                this.provider.getStack().getCounterProviderImpl()
-                                        .updateIncomingRejectPerProblem(prob.toString());
-                            }
-                        }
-                        break;
-                }
-            }
-        }
     }
 
     private void addReject(List<Component> resultingIndications, Long invokeId, RejectProblem p) {
@@ -1783,21 +1517,16 @@ public class DialogImpl implements Dialog {
     }
 
     protected void setState(TRPseudoState newState) {
-        try {
-            this.dialogLock.lock();
-            // add checks?
-            if (this.state == TRPseudoState.Expunged) {
-                return;
-            }
-            this.state = newState;
-            if (newState == TRPseudoState.Expunged) {
-                stopIdleTimer();
-                provider.release(this);
-            }
-        } finally {
-            this.dialogLock.unlock();
+    	if(this.state.get()==TRPseudoState.Expunged)
+    		return;
+    	
+    	if(this.state.getAndSet(newState)==TRPseudoState.Expunged)
+    		this.state.set(TRPseudoState.Expunged);
+    	
+        if (newState == TRPseudoState.Expunged) {
+            stopIdleTimer();
+            provider.release(this);
         }
-
     }
 
     private void startIdleTimer() {
@@ -1806,34 +1535,24 @@ public class DialogImpl implements Dialog {
         if (this.previewMode)
             return;
 
-        try {
-            this.dialogLock.lock();
-            if (this.idleTimerFuture != null) {
-                throw new IllegalStateException();
-            }
-
-            IdleTimerTask t = new IdleTimerTask();
-            t.d = this;
-            this.idleTimerFuture = this.executor.schedule(t, this.idleTaskTimeout, TimeUnit.MILLISECONDS);
-
-        } finally {
-            this.dialogLock.unlock();
+        IdleTimerTask t = new IdleTimerTask();
+        t.d = this;
+        FutureTask<Void> dummyTask=new FutureTask<Void>(t,null);
+        
+        if (!this.idleTimerFuture.compareAndSet(null, dummyTask)) {
+            throw new IllegalStateException();
         }
+
+        this.idleTimerFuture.set(this.executor.schedule(t, this.idleTaskTimeout, TimeUnit.MILLISECONDS));
     }
 
     private void stopIdleTimer() {
         if (!this.structured)
             return;
 
-        try {
-            this.dialogLock.lock();
-            if (this.idleTimerFuture != null) {
-                this.idleTimerFuture.cancel(false);
-                this.idleTimerFuture = null;
-            }
-
-        } finally {
-            this.dialogLock.unlock();
+        Future<?> original=this.idleTimerFuture.getAndSet(null);
+        if (original != null) {
+        	original.cancel(false);                
         }
     }
 
@@ -1846,27 +1565,23 @@ public class DialogImpl implements Dialog {
         DialogImpl d;
 
         public void run() {
-            try {
-                dialogLock.lock();
-                d.idleTimerFuture = null;
+        	d.idleTimerFuture.set(null);
 
-                d.idleTimerActionTaken = false;
-                d.idleTimerInvoked = true;
-                provider.timeout(d);
-                // send abort
-                if (d.idleTimerActionTaken) {
-                    startIdleTimer();
-                } else {
-                    if (remoteTransactionId != null)
-                        sendAbnormalDialog();
-                    else
-                        release();
-                }
-
-            } finally {
-                d.idleTimerInvoked = false;
-                dialogLock.unlock();
+        	d.idleTimerActionTaken.set(false);
+            d.idleTimerInvoked.set(true);
+            provider.timeout(d);
+            // send abort
+            if (d.idleTimerActionTaken.get()) {
+                startIdleTimer();
+            } else {
+            	if (remoteTransactionId != null) {
+            		sendAbnormalDialog();
+            	}
+                else
+                    release();
             }
+            
+            d.idleTimerInvoked.set(false);            
         }
 
     }
@@ -1875,17 +1590,12 @@ public class DialogImpl implements Dialog {
     // IND like methods //
     // ///////////////////
     public void operationEnded(InvokeImpl tcInvokeRequestImpl) {
-        try {
-            this.dialogLock.lock();
-            // this op died cause of timeout, TC-L-CANCEL!
-            int index = getIndexFromInvokeId(tcInvokeRequestImpl.getInvokeId());
-            freeInvokeId(tcInvokeRequestImpl.getInvokeId());
-            this.operationsSent[index] = null;
-            // lets call listener
-            // This is done actually with COmponentIndication ....
-        } finally {
-            this.dialogLock.unlock();
-        }
+    	// this op died cause of timeout, TC-L-CANCEL!
+        int index = getIndexFromInvokeId(tcInvokeRequestImpl.getInvokeId());
+        freeInvokeId(tcInvokeRequestImpl.getInvokeId());
+        this.operationsSent[index] = null;
+        // lets call listener
+        // This is done actually with COmponentIndication ....
     }
 
     /*
@@ -1896,37 +1606,25 @@ public class DialogImpl implements Dialog {
      */
     public void operationTimedOut(InvokeImpl invoke) {
         // this op died cause of timeout, TC-L-CANCEL!
-        try {
-            this.dialogLock.lock();
-            int index = getIndexFromInvokeId(invoke.getInvokeId());
-            freeInvokeId(invoke.getInvokeId());
-            this.operationsSent[index] = null;
-            // lets call listener
-
-        } finally {
-            this.dialogLock.unlock();
-
-        }
+    	int index = getIndexFromInvokeId(invoke.getInvokeId());
+        freeInvokeId(invoke.getInvokeId());
+        this.operationsSent[index] = null;
+        // lets call listener
         this.provider.operationTimedOut(invoke);
     }
 
     // TC-TIMER-RESET
     public void resetTimer(Long invokeId) throws TCAPException {
-        try {
-            this.dialogLock.lock();
-            int index = getIndexFromInvokeId(invokeId);
-            InvokeImpl invoke = operationsSent[index];
-            if (invoke == null) {
-                throw new TCAPException("No operation with this ID");
-            }
-            invoke.startTimer();
-        } finally {
-            this.dialogLock.unlock();
+    	int index = getIndexFromInvokeId(invokeId);
+        InvokeImpl invoke = operationsSent[index];
+        if (invoke == null) {
+            throw new TCAPException("No operation with this ID");
         }
+        invoke.startTimer();
     }
 
     public TRPseudoState getState() {
-        return this.state;
+        return this.state.get();
     }
 
     public Object getUserObject() {

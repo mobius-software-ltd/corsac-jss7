@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class ExtForwOptionsImpl extends OctetStringBase implements ExtForwOptions {
+	private static final long serialVersionUID = 1L;
 
-    private static int _MASK_NotificationToForwardingParty = 0x80;
+	private static int _MASK_NotificationToForwardingParty = 0x80;
     private static int _MASK_RedirectingPresentation = 0x40;
     private static int _MASK_NotificationToCallingParty = 0x20;
     private static int _MASK_ForwardingReason = 0x0C;

@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,18 +44,14 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGI
  *
  */
 public class UserCSGInformationImpl implements UserCSGInformation, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String _PrimitiveName = "UserCSGInformation";
+	private static final String _PrimitiveName = "UserCSGInformation";
 
     public static final int _ID_csgId = 0;
     public static final int _ID_extensionContainer = 1;
     public static final int _ID_accessMode = 2;
     public static final int _ID_cmi = 3;
-
-    private static final String CSG_ID = "csgId";
-    private static final String EXTENSION_CONTAINER = "extensionContainer";
-    private static final String ACCESS_MODE = "accessMode";
-    private static final String CMI = "cmi";
 
     private CSGId csgId;
     private MAPExtensionContainer extensionContainer;
@@ -333,39 +326,4 @@ public class UserCSGInformationImpl implements UserCSGInformation, MAPAsnPrimiti
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<UserCSGInformationImpl> USER_CSG_INFORMATION_XML = new XMLFormat<UserCSGInformationImpl>(
-            UserCSGInformationImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, UserCSGInformationImpl userCSGInformation)
-                throws XMLStreamException {
-            userCSGInformation.csgId = xml.get(CSG_ID, CSGIdImpl.class);
-            userCSGInformation.extensionContainer = xml.get(EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-            userCSGInformation.accessMode = xml.get(ACCESS_MODE, Integer.class);
-            userCSGInformation.cmi = xml.get(CMI, Integer.class);
-        }
-
-        @Override
-        public void write(UserCSGInformationImpl userCSGInformation, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (userCSGInformation.csgId != null) {
-                xml.add((CSGIdImpl) userCSGInformation.csgId, CSG_ID, CSGIdImpl.class);
-            }
-            if (userCSGInformation.extensionContainer != null) {
-                xml.add((MAPExtensionContainerImpl) userCSGInformation.extensionContainer, EXTENSION_CONTAINER,
-                        MAPExtensionContainerImpl.class);
-            }
-            if (userCSGInformation.accessMode != null) {
-                xml.add((Integer) userCSGInformation.accessMode, ACCESS_MODE, Integer.class);
-            }
-            if (userCSGInformation.cmi != null) {
-                xml.add((Integer) userCSGInformation.cmi, CMI, Integer.class);
-            }
-        }
-    };
-
 }

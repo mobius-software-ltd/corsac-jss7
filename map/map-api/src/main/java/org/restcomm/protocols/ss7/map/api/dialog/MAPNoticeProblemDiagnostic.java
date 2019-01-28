@@ -44,4 +44,8 @@ public enum MAPNoticeProblemDiagnostic {
     private MAPNoticeProblemDiagnostic(int code) {
         this.code = code;
     }
+    
+    public int getCode() {
+    	return code;
+    }
 }

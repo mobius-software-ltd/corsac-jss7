@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MLPPPrecedence;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class MLPPPrecedenceImpl extends AbstractISUPParameter implements MLPPPrecedence {
+	private static final long serialVersionUID = 1L;
 
-    private int lfb;
+	private int lfb;
     private int precedenceLevel;
     private int mllpServiceDomain;
     // FIXME: ensure zero in first digit.?

@@ -22,15 +22,9 @@
 package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -82,7 +76,7 @@ public class FCIBCCCAMELsequence1SMSTest {
 		assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
 	}
 
-	@Test(groups = {"functional.xml.serialize", "primitives"})
+	/*@Test(groups = {"functional.xml.serialize", "primitives"})
 	public void testXMLSerialize() throws Exception {
 
 		FreeFormatDataSMS freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
@@ -127,5 +121,5 @@ public class FCIBCCCAMELsequence1SMSTest {
 
 		assertEquals(copy.getFreeFormatData().getData(), this.getFreeFormatData());
 		assertNull(copy.getAppendFreeFormatData());
-	}
+	}*/
 }

@@ -24,19 +24,14 @@ package org.restcomm.protocols.ss7.m3ua.impl;
 
 import static org.testng.Assert.assertEquals;
 
-import javolution.util.FastList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.api.IpChannelType;
-import org.mobicents.protocols.api.Management;
-import org.mobicents.protocols.sctp.netty.NettySctpManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.IPSPType;
-import org.restcomm.protocols.ss7.m3ua.Util;
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.AsState;
-import org.restcomm.protocols.ss7.m3ua.impl.AspFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.AspImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.AspState;
 import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
@@ -50,12 +45,16 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
+import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
+import org.restcomm.protocols.ss7.sctp.proxy.Management;
+import org.restcomm.protocols.ss7.sctp.proxy.SctpManagementImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 import com.sun.nio.sctp.SctpChannel;
 
 /**
@@ -83,11 +82,9 @@ public class GatewayTest {
 
     private AsImpl remAs;
     private AspImpl remAsp;
-    private AspFactoryImpl remAspFactory;
 
     private AsImpl localAs;
     private AspImpl localAsp;
-    private AspFactoryImpl localAspFactory;
 
     private Server server;
     private Client client;
@@ -109,16 +106,14 @@ public class GatewayTest {
         client = new Client();
         server = new Server();
 
-        this.sctpManagement = new NettySctpManagementImpl("GatewayTest");
-        this.sctpManagement.setPersistDir(Util.getTmpTestDir());
-        this.sctpManagement.setSingleThread(true);
+        this.sctpManagement = new SctpManagementImpl("GatewayTest",4,4,4);
         this.sctpManagement.start();
         this.sctpManagement.setConnectDelay(1000 * 5);// setting connection
                                                       // delay to 5 secs
         this.sctpManagement.removeAllResourses();
 
-        this.m3uaMgmt = new M3UAManagementImpl("GatewayTest", null, null);
-        this.m3uaMgmt.setPersistDir(Util.getTmpTestDir());
+        UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
+        this.m3uaMgmt = new M3UAManagementImpl("GatewayTest", null, uuidGenerator);
         this.m3uaMgmt.setTransportManagement(this.sctpManagement);
         this.m3uaMgmt.addMtp3UserPartListener(mtp3UserPartListener);
         this.m3uaMgmt.start();
@@ -147,7 +142,7 @@ public class GatewayTest {
         Thread.sleep(12000); // 12000
 
         // Both AS and ASP should be ACTIVE now
-        AspState st = AspState.getState(remAsp.getPeerFSM().getState().getName());
+        AspState.getState(remAsp.getPeerFSM().getState().getName());
         assertEquals(AspState.getState(remAsp.getPeerFSM().getState().getName()), AspState.ACTIVE);
         assertEquals(AsState.getState(remAs.getLocalFSM().getState().getName()), AsState.ACTIVE);
 
@@ -224,7 +219,7 @@ public class GatewayTest {
             // 3. Create ASP
             // m3ua asp create ip <local-ip> port <local-port> remip <remip>
             // remport <remport> <asp-name>
-            localAspFactory = (AspFactoryImpl) m3uaMgmt.createAspFactory("client-testasp", CLIENT_ASSOCIATION_NAME, false);
+            m3uaMgmt.createAspFactory("client-testasp", CLIENT_ASSOCIATION_NAME, false);
 
             // 4. Assign ASP to AS
             localAsp = m3uaMgmt.assignAspToAs("client-testas", "client-testasp");
@@ -264,10 +259,10 @@ public class GatewayTest {
         }
 
         public void sendPayload() throws Exception {
-            Mtp3TransferPrimitiveFactory factory = m3uaMgmt.getMtp3TransferPrimitiveFactory();
+        	Mtp3TransferPrimitiveFactory factory = m3uaMgmt.getMtp3TransferPrimitiveFactory();
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 123, 1408, 1,
                     new byte[] { 1, 2, 3, 4 });
-            m3uaMgmt.sendMessage(mtp3TransferPrimitive);
+            m3uaMgmt.sendMessage(mtp3TransferPrimitive);            
         }
     }
 
@@ -302,7 +297,7 @@ public class GatewayTest {
 
             // 5. Create RASP
             // m3ua rasp create <asp-name> <assoc-name>"
-            remAspFactory = (AspFactoryImpl) m3uaMgmt.createAspFactory("server-testasp", SERVER_ASSOCIATION_NAME, false);
+            m3uaMgmt.createAspFactory("server-testasp", SERVER_ASSOCIATION_NAME, false);
 
             // 6. Assign ASP to AS
             remAsp = m3uaMgmt.assignAspToAs("server-testas", "server-testasp");
@@ -347,9 +342,9 @@ public class GatewayTest {
 
     private class Mtp3UserPartListenerImpl implements Mtp3UserPartListener {
 
-        private FastList<Mtp3TransferPrimitive> receivedData = new FastList<Mtp3TransferPrimitive>();
+        private ConcurrentLinkedQueue<Mtp3TransferPrimitive> receivedData = new ConcurrentLinkedQueue<Mtp3TransferPrimitive>();
 
-        public FastList<Mtp3TransferPrimitive> getReceivedData() {
+        public ConcurrentLinkedQueue<Mtp3TransferPrimitive> getReceivedData() {
             return receivedData;
         }
 
@@ -373,7 +368,7 @@ public class GatewayTest {
 
         @Override
         public void onMtp3TransferMessage(Mtp3TransferPrimitive value) {
-            receivedData.add(value);
+            receivedData.offer(value);
         }
 
         @Override

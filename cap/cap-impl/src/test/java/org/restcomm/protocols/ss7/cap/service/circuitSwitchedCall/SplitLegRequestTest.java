@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -57,7 +52,7 @@ public class SplitLegRequestTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         SplitLegRequestImpl elem = new SplitLegRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(elem.getLegToBeSplit().getSendingSideID().equals(LegType.leg1));
         assertEquals(elem.getNewCallSegment(), new Integer(1));
@@ -76,7 +71,7 @@ public class SplitLegRequestTest {
         
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         LegID legIDToMove = new LegIDImpl(true, LegType.leg1);
@@ -104,5 +99,5 @@ public class SplitLegRequestTest {
         assertEquals(copy.getExtensions().getExtensionFields().get(1).getCriticalityType(), original.getExtensions().getExtensionFields().get(1).getCriticalityType());
         assertEquals(copy.getLegToBeSplit().getSendingSideID(), original.getLegToBeSplit().getSendingSideID());
         assertEquals(copy.getNewCallSegment(), original.getNewCallSegment());
-    }
+    }*/
 }

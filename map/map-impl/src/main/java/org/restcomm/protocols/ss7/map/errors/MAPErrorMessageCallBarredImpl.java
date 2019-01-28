@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,13 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  * @author amit bhayani
  */
 public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implements MAPErrorMessageCallBarred {
+	private static final long serialVersionUID = 1L;
 
-    private static final String MAP_PROTOCOL_VERSION = "mapProtocolVersion";
-    private static final String CALL_BARRING_CAUSE = "callBarringCause";
-    private static final String UNAUTHORISED_MESSAGE_ORIGINATOR = "unauthorisedMessageOriginator";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
-
-    public static final int unauthorisedMessageOriginator_TAG = 1;
+	public static final int unauthorisedMessageOriginator_TAG = 1;
 
     private long mapProtocolVersion;
     private CallBarringCause callBarringCause;
@@ -316,37 +309,4 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageCallBarredImpl> MAP_ERROR_MESSAGE_CALL_BARRED_XML = new XMLFormat<MAPErrorMessageCallBarredImpl>(
-            MAPErrorMessageCallBarredImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageCallBarredImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-            errorMessage.mapProtocolVersion = xml.get(MAP_PROTOCOL_VERSION, Long.class);
-
-            String str = xml.get(CALL_BARRING_CAUSE, String.class);
-            if (str != null)
-                errorMessage.callBarringCause = Enum.valueOf(CallBarringCause.class, str);
-
-            errorMessage.unauthorisedMessageOriginator = xml.get(UNAUTHORISED_MESSAGE_ORIGINATOR, Boolean.class);
-            errorMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageCallBarredImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            xml.add(errorMessage.getMapProtocolVersion(), MAP_PROTOCOL_VERSION, Long.class);
-            if (errorMessage.getCallBarringCause() != null)
-                xml.add((String) errorMessage.getCallBarringCause().toString(), CALL_BARRING_CAUSE, String.class);
-            xml.add(errorMessage.getUnauthorisedMessageOriginator(), UNAUTHORISED_MESSAGE_ORIGINATOR, Boolean.class);
-            xml.add((MAPExtensionContainerImpl) errorMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
 }

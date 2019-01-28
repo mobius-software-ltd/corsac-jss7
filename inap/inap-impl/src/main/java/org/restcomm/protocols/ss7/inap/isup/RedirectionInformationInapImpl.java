@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.inap.isup;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,10 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
  *
  */
 public class RedirectionInformationInapImpl implements RedirectionInformationInap, INAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "RedirectionInformationInap";
-
-    private static final String ISUP_REDIRECTION_INFORMATION_XML = "isupRedirectionInformation";
+	public static final String _PrimitiveName = "RedirectionInformationInap";
 
     private byte[] data;
 
@@ -207,33 +203,4 @@ public class RedirectionInformationInapImpl implements RedirectionInformationIna
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<RedirectionInformationInapImpl> REDIRECTION_INFORMATION_INAP_XML = new XMLFormat<RedirectionInformationInapImpl>(
-            RedirectionInformationInapImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, RedirectionInformationInapImpl redirectionInformationInap)
-                throws XMLStreamException {
-            try {
-                redirectionInformationInap.setRedirectionInformation(xml.get(ISUP_REDIRECTION_INFORMATION_XML,
-                        RedirectionInformationImpl.class));
-            } catch (INAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-
-        @Override
-        public void write(RedirectionInformationInapImpl redirectionInformationInap, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            try {
-                xml.add(((RedirectionInformationImpl) redirectionInformationInap.getRedirectionInformation()),
-                        ISUP_REDIRECTION_INFORMATION_XML, RedirectionInformationImpl.class);
-            } catch (INAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-    };
 }

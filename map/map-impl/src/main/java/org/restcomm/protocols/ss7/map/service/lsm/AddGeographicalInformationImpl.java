@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
  *
  */
 public class AddGeographicalInformationImpl extends ExtGeographicalInformationImpl implements AddGeographicalInformation {
+	private static final long serialVersionUID = 1L;
 
-    public AddGeographicalInformationImpl() {
+	public AddGeographicalInformationImpl() {
         super(1, 91, "AddGeographicalInformation");
     }
 

@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.primitives;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,10 +44,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 *
 */
 public class AChChargingAddressImpl implements AChChargingAddress, CAPAsnPrimitive {
-    private static final String LEG_ID = "legID";
-    private static final String SRF_CONNECTION = "srfConnection";
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_legID = 2;
+	public static final int _ID_legID = 2;
     public static final int _ID_srfConnection = 50;
 
     public static final String _PrimitiveName = "AChChargingAddress";
@@ -243,26 +239,4 @@ public class AChChargingAddressImpl implements AChChargingAddress, CAPAsnPrimiti
 
         return sb.toString();
     }
-
-    protected static final XMLFormat<AChChargingAddressImpl> A_CH_CHARGING_ADDRESS_XML = new XMLFormat<AChChargingAddressImpl>(AChChargingAddressImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, AChChargingAddressImpl aChChargingAddress) throws XMLStreamException {
-            aChChargingAddress.legID = xml.get(LEG_ID, LegIDImpl.class);
-            Integer i1 = xml.get(SRF_CONNECTION, Integer.class);
-            if (i1 != null)
-                aChChargingAddress.srfConnection = i1;
-        }
-
-        @Override
-        public void write(AChChargingAddressImpl aChChargingAddress, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (aChChargingAddress.legID != null) {
-                xml.add((LegIDImpl) aChChargingAddress.legID, LEG_ID, LegIDImpl.class);
-            }
-            if (aChChargingAddress.srfConnection != 0) {
-                xml.add((Integer) aChChargingAddress.srfConnection, SRF_CONNECTION, Integer.class);
-            }
-        }
-    };
-
 }

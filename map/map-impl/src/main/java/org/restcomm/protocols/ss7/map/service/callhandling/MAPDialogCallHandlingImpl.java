@@ -79,7 +79,9 @@ import java.util.ArrayList;
  *
  */
 public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialogCallHandling {
-    // Include these constants in MAPApplicationContextName and MAPOperationCode
+	private static final long serialVersionUID = 1L;
+
+	// Include these constants in MAPApplicationContextName and MAPOperationCode
     // sendRoutingInfo_Request: add constant to MAPMessageType
     // sendRoutingInfo_Response: add constant to MAPMessageType
     protected static final int locationInfoRetrievalContext = 5;

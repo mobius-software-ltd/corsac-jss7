@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 
@@ -36,17 +33,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformat
  * @author sergey vetyutnev
  */
 public class UserTeleserviceInformationImpl extends AbstractISUPParameter implements UserTeleserviceInformation {
+	private static final long serialVersionUID = 1L;
 
-    private static final String CODING_STANDARD = "codingStandard";
-    private static final String INTERPRETATION = "interpretation";
-    private static final String PRESENTATION_METHOD = "presentationMethod";
-    private static final String HIGHLAYER_CHAR_IDENTIFICATION = "highLayerCharIdentification";
-    private static final String E_HIGH_LAYER_CHAR_IDENTIFICATION = "eHighLayerCharIdentification";
-    private static final String E_VIDEO_TELEPHONY_CHAR_IDENTIFICATION = "eVideoTelephonyCharIdentification";
-
-    private static final int DEFAULT_INT_VALUE = 0;
-
-    private int codingStandard;
+	private int codingStandard;
     private int interpretation;
     private int presentationMethod;
     private int highLayerCharIdentification;
@@ -277,45 +266,4 @@ public class UserTeleserviceInformationImpl extends AbstractISUPParameter implem
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<UserTeleserviceInformationImpl> ISUP_USER_TELESERVICE_INFORMATION_XML = new XMLFormat<UserTeleserviceInformationImpl>(
-            UserTeleserviceInformationImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, UserTeleserviceInformationImpl userTeleserviceInformation)
-                throws XMLStreamException {
-            userTeleserviceInformation.codingStandard = xml.getAttribute(CODING_STANDARD, DEFAULT_INT_VALUE);
-            userTeleserviceInformation.interpretation = xml.getAttribute(INTERPRETATION, DEFAULT_INT_VALUE);
-            userTeleserviceInformation.presentationMethod = xml.getAttribute(PRESENTATION_METHOD, DEFAULT_INT_VALUE);
-            userTeleserviceInformation.highLayerCharIdentification = xml.getAttribute(HIGHLAYER_CHAR_IDENTIFICATION,
-                    DEFAULT_INT_VALUE);
-
-            int val = xml.getAttribute(E_HIGH_LAYER_CHAR_IDENTIFICATION, Integer.MIN_VALUE);
-            if (val != Integer.MIN_VALUE)
-                userTeleserviceInformation.setEHighLayerCharIdentification(val);
-
-            val = xml.getAttribute(E_VIDEO_TELEPHONY_CHAR_IDENTIFICATION, Integer.MIN_VALUE);
-            if (val != Integer.MIN_VALUE)
-                userTeleserviceInformation.setEVideoTelephonyCharIdentification(val);
-        }
-
-        @Override
-        public void write(UserTeleserviceInformationImpl userTeleserviceInformation, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(CODING_STANDARD, userTeleserviceInformation.codingStandard);
-            xml.setAttribute(INTERPRETATION, userTeleserviceInformation.interpretation);
-            xml.setAttribute(PRESENTATION_METHOD, userTeleserviceInformation.presentationMethod);
-            xml.setAttribute(HIGHLAYER_CHAR_IDENTIFICATION, userTeleserviceInformation.highLayerCharIdentification);
-
-            if (userTeleserviceInformation.eHighLayerCharIdentificationPresent)
-                xml.setAttribute(E_HIGH_LAYER_CHAR_IDENTIFICATION, userTeleserviceInformation.eHighLayerCharIdentification);
-
-            if (userTeleserviceInformation.eVideoTelephonyCharIdentificationPresent)
-                xml.setAttribute(E_VIDEO_TELEPHONY_CHAR_IDENTIFICATION,
-                        userTeleserviceInformation.eVideoTelephonyCharIdentification);
-        }
-    };
 }

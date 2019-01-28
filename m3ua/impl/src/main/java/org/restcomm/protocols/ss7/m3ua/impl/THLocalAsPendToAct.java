@@ -21,7 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
@@ -75,10 +76,10 @@ public class THLocalAsPendToAct implements TransitionHandler {
 
                 // Iterate through ASP's and send AS_ACTIVE to ASP's who
                 // are INACTIVE or ACTIVE
-                for (FastList.Node<Asp> n = this.asImpl.appServerProcs.head(), end = this.asImpl.appServerProcs.tail(); (n = n
-                        .getNext()) != end;) {
-                    AspImpl remAspImpl = (AspImpl) n.getValue();
-
+            	Iterator<Entry<String, Asp>> iterator=this.asImpl.appServerProcs.entrySet().iterator();
+                while(iterator.hasNext()) {
+                    AspImpl remAspImpl = (AspImpl) iterator.next().getValue();
+                    
                     FSM aspPeerFSM = remAspImpl.getPeerFSM();
                     AspState aspState = AspState.getState(aspPeerFSM.getState().getName());
 

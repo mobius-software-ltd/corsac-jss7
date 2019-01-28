@@ -50,7 +50,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
 *
 */
 public class MDTConfigurationImpl extends SequenceBase implements MDTConfiguration {
-    public static final int _ID_reportingTrigger = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_reportingTrigger = 0;
     public static final int _ID_reportAmount = 1;
     public static final int _ID_eventThresholdRSRQ = 2;
     public static final int _ID_loggingInterval = 3;

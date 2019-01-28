@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
 *
 */
 public class ApplicationPortAddressing16BitAddressImpl implements ApplicationPortAddressing16BitAddress {
+	private static final long serialVersionUID = 1L;
 
-    private int destinationPort;
+	private int destinationPort;
     private int originatorPort;
 
     /**

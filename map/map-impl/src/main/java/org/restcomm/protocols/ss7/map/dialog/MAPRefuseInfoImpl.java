@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
  *
  */
 public class MAPRefuseInfoImpl implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int MAP_REFUSE_INFO_TAG = 0x03;
+	public static final int MAP_REFUSE_INFO_TAG = 0x03;
 
     protected static final int REFUSE_TAG_CLASS = Tag.CLASS_CONTEXT_SPECIFIC;
     protected static final boolean REFUSE_TAG_PC_CONSTRUCTED = false;

@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.HTRInformation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class HTRInformationImpl extends AbstractNAINumber implements HTRInformation {
+	private static final long serialVersionUID = 1L;
 
-    private int numberingPlanIndicator;
+	private int numberingPlanIndicator;
 
     public HTRInformationImpl(byte[] representation) throws ParameterException {
         super(representation);

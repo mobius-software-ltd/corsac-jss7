@@ -28,8 +28,9 @@ package org.restcomm.protocols.ss7.map.api;
  *
  */
 public class MAPException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-    public MAPException() {
+	public MAPException() {
         // TODO Auto-generated constructor stub
     }
 

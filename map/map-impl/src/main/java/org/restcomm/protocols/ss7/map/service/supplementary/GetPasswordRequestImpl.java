@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 *
 */
 public class GetPasswordRequestImpl extends SupplementaryMessageImpl implements GetPasswordRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "GetPasswordRequest";
+	public static final String _PrimitiveName = "GetPasswordRequest";
 
     private GuidanceInfo guidanceInfo;
 

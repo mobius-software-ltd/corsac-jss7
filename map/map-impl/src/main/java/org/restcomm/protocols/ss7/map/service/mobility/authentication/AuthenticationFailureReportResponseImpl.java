@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 public class AuthenticationFailureReportResponseImpl extends MobilityMessageImpl implements AuthenticationFailureReportResponse {
 
 //    protected static final int _TAG_imsi = 0;
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "AuthenticationFailureReportResponse";
+	public static final String _PrimitiveName = "AuthenticationFailureReportResponse";
 
     private MAPExtensionContainer extensionContainer;
 

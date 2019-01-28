@@ -39,7 +39,6 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
 import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
@@ -152,7 +151,7 @@ public class TcBeginTest {
 
         tcm.encode(aos);
 
-        byte[] encodedData = aos.toByteArray();
+        //byte[] encodedData = aos.toByteArray();
 
         // Add more here?
 
@@ -205,7 +204,6 @@ public class TcBeginTest {
         DialogAPDU dapdu = dp.getDialogAPDU();
         assertNotNull(dapdu, "APDU should not be null");
         assertEquals(DialogAPDUType.Request, dapdu.getType(), "Wrong APDU type");
-        DialogRequestAPDU dr = (DialogRequestAPDU) dapdu;
         // rest is checked in dialog portion type!
         AsnOutputStream aos = new AsnOutputStream();
         tcm.encode(aos);
@@ -257,7 +255,6 @@ public class TcBeginTest {
         DialogAPDU dapdu = dp.getDialogAPDU();
         assertNotNull(dapdu, "APDU should not be null");
         assertEquals(DialogAPDUType.Request, dapdu.getType(), "Wrong APDU type");
-        DialogRequestAPDU dr = (DialogRequestAPDU) dapdu;
         // rest is checked in dialog portion type!
         AsnOutputStream aos = new AsnOutputStream();
         tcm.encode(aos);
@@ -633,7 +630,7 @@ public class TcBeginTest {
         AsnInputStream ais = new AsnInputStream(TCAP);
         int tag = ais.readTag();
         assertEquals(TCBeginMessage._TAG, tag, "Expected TCBegin");
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage(ais);
+        TcapFactory.createTCBeginMessage(ais);
     }
 
     public static final String dump(byte[] buff, int size, boolean asBits) {
@@ -745,7 +742,7 @@ public class TcBeginTest {
 
         tcm.encode(aos);
 
-        byte[] encodedData = aos.toByteArray();
+        //byte[] encodedData = aos.toByteArray();
 
         // Add more here?
     }

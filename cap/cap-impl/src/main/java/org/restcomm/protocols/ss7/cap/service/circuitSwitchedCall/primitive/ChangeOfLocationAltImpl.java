@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -44,12 +41,13 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 *
 */
 public class ChangeOfLocationAltImpl extends SequenceBase implements ChangeOfLocationAlt {
+	private static final long serialVersionUID = 1L;
 
-//    private static final String O_SERVICE_CHANGE_SPECIFIC_INFO = "oServiceChangeSpecificInfo";
+//  private static final String O_SERVICE_CHANGE_SPECIFIC_INFO = "oServiceChangeSpecificInfo";
 //
-//    public static final int _ID_oServiceChangeSpecificInfo = 0;
+//  public static final int _ID_oServiceChangeSpecificInfo = 0;
 
-    public ChangeOfLocationAltImpl() {
+	public ChangeOfLocationAltImpl() {
         super("ChangeOfLocationAlt");
     }
 
@@ -107,23 +105,4 @@ public class ChangeOfLocationAltImpl extends SequenceBase implements ChangeOfLoc
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ChangeOfLocationAltImpl> CHANGE_OF_LOCATION_ALT_XML = new XMLFormat<ChangeOfLocationAltImpl>(ChangeOfLocationAltImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ChangeOfLocationAltImpl changeOfLocationAlt) throws XMLStreamException {
-//            dpSpecificInfoAlt.oServiceChangeSpecificInfo = xml.get(O_SERVICE_CHANGE_SPECIFIC_INFO, OServiceChangeSpecificInfoImpl.class);
-        }
-
-        @Override
-        public void write(ChangeOfLocationAltImpl changeOfLocationAlt, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-//            if (dpSpecificInfoAlt.oServiceChangeSpecificInfo != null)
-//                xml.add((OServiceChangeSpecificInfoImpl) dpSpecificInfoAlt.oServiceChangeSpecificInfo, O_SERVICE_CHANGE_SPECIFIC_INFO,
-//                        OServiceChangeSpecificInfoImpl.class);
-        }
-    };
-
 }

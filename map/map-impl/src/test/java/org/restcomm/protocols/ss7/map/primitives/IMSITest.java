@@ -32,9 +32,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -108,7 +105,7 @@ public class IMSITest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         IMSIImpl original = new IMSIImpl("1357");
@@ -132,6 +129,5 @@ public class IMSITest {
 
         assertEquals(copy.getData(), original.getData());
 
-    }
-
+    }*/
 }

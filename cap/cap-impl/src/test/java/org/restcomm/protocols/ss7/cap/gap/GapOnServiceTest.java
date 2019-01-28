@@ -22,16 +22,11 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.gap.GapOnServiceImpl;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import static org.testng.Assert.assertEquals;
@@ -60,7 +55,7 @@ public class GapOnServiceTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         GapOnServiceImpl elem = new GapOnServiceImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getServiceKey(), SERVICE_KEY);
@@ -78,7 +73,7 @@ public class GapOnServiceTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "gap" })
+    /*@Test(groups = { "functional.xml.serialize", "gap" })
     public void testXMLSerialize() throws Exception {
 
         GapOnServiceImpl original = new GapOnServiceImpl(SERVICE_KEY);
@@ -113,6 +108,5 @@ public class GapOnServiceTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
-
+    }*/
 }

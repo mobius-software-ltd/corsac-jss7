@@ -22,16 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -40,7 +34,6 @@ import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -75,7 +68,7 @@ public class CellGlobalIdOrServiceAreaIdOrLAITest {
         byte[] data = new byte[] { (byte) 0x80, 0x07, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b };
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl();
         cellGlobalIdOrServiceAreaIdOrLAI.decodeAll(asn);
@@ -103,7 +96,7 @@ public class CellGlobalIdOrServiceAreaIdOrLAITest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "service.lsm" })
+    /*@Test(groups = { "functional.xml.serialize", "service.lsm" })
     public void testSerialization() throws Exception {
         CellGlobalIdOrServiceAreaIdFixedLength par = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(250, 1, 4444, 3333);
         CellGlobalIdOrServiceAreaIdOrLAIImpl original = new CellGlobalIdOrServiceAreaIdOrLAIImpl(par);
@@ -158,5 +151,5 @@ public class CellGlobalIdOrServiceAreaIdOrLAITest {
         assertEquals(copy.getLAIFixedLength().getMCC(), original.getLAIFixedLength().getMCC());
         assertEquals(copy.getLAIFixedLength().getMNC(), original.getLAIFixedLength().getMNC());
         assertEquals(copy.getLAIFixedLength().getLac(), original.getLAIFixedLength().getLac());
-    }
+    }*/
 }

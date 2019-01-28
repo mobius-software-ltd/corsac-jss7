@@ -27,13 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -44,7 +38,6 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateChoice;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
@@ -198,7 +191,7 @@ public class SubscriberInfoTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         ISDNAddressStringImpl vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "554433221100");
@@ -248,5 +241,5 @@ public class SubscriberInfoTest {
         assertEquals(copy.getGPRSMSClass().getMSNetworkCapability(), original.getGPRSMSClass().getMSNetworkCapability());
 
         assertEquals(copy.getMNPInfoRes().getIMSI(), original.getMNPInfoRes().getIMSI());
-    }
+    }*/
 }

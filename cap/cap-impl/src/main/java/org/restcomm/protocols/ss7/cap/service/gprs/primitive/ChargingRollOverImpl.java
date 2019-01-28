@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ChargingRollOverImpl implements ChargingRollOver, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ChargingRollOver";
+	public static final String _PrimitiveName = "ChargingRollOver";
 
     public static final int _ID_transferredVolumeRollOver = 0;
     public static final int _ID_elapsedTimeRollOver = 1;

@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public abstract class MobilityMessageImpl extends MessageImpl implements MobilityMessage, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public MAPDialogMobility getMAPDialog() {
+	public MAPDialogMobility getMAPDialog() {
         return (MAPDialogMobility) super.getMAPDialog();
     }
 

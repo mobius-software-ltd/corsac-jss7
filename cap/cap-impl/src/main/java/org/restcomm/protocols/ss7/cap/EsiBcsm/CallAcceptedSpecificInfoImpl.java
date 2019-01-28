@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,10 +44,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
 *
 */
 public class CallAcceptedSpecificInfoImpl extends SequenceBase implements CallAcceptedSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final String LOCATION_INFORMATION = "locationInformation";
-
-    public static final int _ID_locationInformation = 50;
+	public static final int _ID_locationInformation = 50;
 
     private LocationInformation locationInformation;
 
@@ -125,27 +121,4 @@ public class CallAcceptedSpecificInfoImpl extends SequenceBase implements CallAc
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CallAcceptedSpecificInfoImpl> CALL_ACCEPTED_SPECIFIC_INFO_XML = new XMLFormat<CallAcceptedSpecificInfoImpl>(
-            CallAcceptedSpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CallAcceptedSpecificInfoImpl callAcceptedSpecificInfo)
-                throws XMLStreamException {
-            callAcceptedSpecificInfo.locationInformation = xml.get(LOCATION_INFORMATION, LocationInformationImpl.class);
-        }
-
-        @Override
-        public void write(CallAcceptedSpecificInfoImpl callAcceptedSpecificInfo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            if (callAcceptedSpecificInfo.locationInformation != null) {
-                xml.add((LocationInformationImpl) callAcceptedSpecificInfo.locationInformation, LOCATION_INFORMATION, LocationInformationImpl.class);
-            }
-        }
-    };
-
 }

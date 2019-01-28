@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
  *
  */
 public class TCUnidentifiedMessage implements Encodable {
+	private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger(TCUnidentifiedMessage.class);
+	private static final Logger logger = Logger.getLogger(TCUnidentifiedMessage.class);
 
     private byte[] originatingTransactionId;
     private byte[] destinationTransactionId;

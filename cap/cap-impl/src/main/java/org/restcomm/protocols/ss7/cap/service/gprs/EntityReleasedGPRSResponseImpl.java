@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.EntityReleasedGPRSRespons
  *
  */
 public class EntityReleasedGPRSResponseImpl extends GprsMessageImpl implements EntityReleasedGPRSResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EntityReleasedGPRSResponse";
+	public static final String _PrimitiveName = "EntityReleasedGPRSResponse";
 
     @Override
     public CAPMessageType getMessageType() {

@@ -29,6 +29,8 @@
 package org.restcomm.protocols.ss7.isup.impl;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.isup.CircuitManager;
@@ -38,15 +40,14 @@ import org.restcomm.protocols.ss7.isup.ISUPProvider;
 import org.restcomm.protocols.ss7.isup.ISUPStack;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
-import org.restcomm.protocols.ss7.mtp.Mtp3;
 import org.restcomm.protocols.ss7.mtp.Mtp3EndCongestionPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3PausePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPart;
+import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
-import org.restcomm.protocols.ss7.scheduler.Scheduler;
 
 /**
  * Start time:12:14:57 2009-09-04<br>
@@ -67,20 +68,19 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
     private ISUPMessageFactory messageFactory;
     private ISUPParameterFactory parameterFactory;
 
-    private Scheduler scheduler;
-
-    public ISUPStackImpl(final Scheduler scheduler, final int localSpc, final int ni, final boolean automaticTimerMessages) {
+    private ScheduledExecutorService scheduledExecutorService;
+    public ISUPStackImpl(final int localSpc, final int ni, final boolean automaticTimerMessages,int localThreads) {
         super();
-        this.scheduler = scheduler;
-        this.provider = new ISUPProviderImpl(this, scheduler, ni, localSpc, automaticTimerMessages);
+        this.provider = new ISUPProviderImpl(this, ni, localSpc, automaticTimerMessages);
         this.parameterFactory = this.provider.getParameterFactory();
         this.messageFactory = this.provider.getMessageFactory();
 
         this.state = State.CONFIGURED;
+        this.scheduledExecutorService=Executors.newScheduledThreadPool(localThreads);
     }
 
-    public ISUPStackImpl(Scheduler scheduler, int localSpc, int ni) {
-        this(scheduler, localSpc, ni, true);
+    public ISUPStackImpl(int localSpc, int ni,int localThreads) {
+        this(localSpc, ni, true, localThreads);
     }
 
     public ISUPProvider getIsupProvider() {
@@ -124,6 +124,7 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
 
         this.mtp3UserPart.removeMtp3UserPartListener(this);
 
+        this.scheduledExecutorService.shutdown();
         // this.executor.shutdown();
         // this.layer3exec.shutdown();
         this.provider.stop();
@@ -155,6 +156,9 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
         return this.circuitManager;
     }
 
+    public ScheduledExecutorService getExecutorService() {
+    	return this.scheduledExecutorService;
+    }
     // ---------------- private methods and class defs
 
     /**
@@ -212,7 +216,7 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
             return;
 
         // process only ISUP messages
-        if (mtpMsg.getSi() != Mtp3._SI_SERVICE_ISUP)
+        if (mtpMsg.getSi() != Mtp3UserPartBaseImpl._SI_SERVICE_ISUP)
             return;
 
         // 2(CIC) + 1(CODE)
@@ -230,111 +234,4 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
         // should take here OPC or DPC????? since come in different direction looks like opc
         provider.receive(msg, mtpMsg.getOpc());
     }
-
-    // private class MtpStreamHandler implements Runnable {
-    // ByteBuffer rxBuffer = ByteBuffer.allocateDirect(1000);
-    // ByteBuffer txBuffer = ByteBuffer.allocateDirect(1000);
-    // int rxBytes = 0;
-    // @SuppressWarnings("unused")
-    // int txBytes = 0;
-    //
-    // public void run() {
-    // // Execute only till state is Running
-    // while (state == State.RUNNING) {
-    //
-    // try {
-    // //Execute the MTP3UserPart
-    // mtp3UserPart.execute();
-    //
-    // rxBytes = 0;
-    // rxBuffer.clear();
-    // try {
-    // rxBytes = mtp3UserPart.read(rxBuffer);
-    // if (rxBytes != 0) {
-    // byte[] data = new byte[rxBytes];
-    // rxBuffer.flip();
-    // rxBuffer.get(data);
-    // MessageHandler handler = new MessageHandler(data);
-    // executor.execute(handler);
-    // }
-    // } catch (IOException e) {
-    // logger.error("Error while readig data from Mtp3UserPart", e);
-    // }
-    //
-    // // Iterate till we send all data
-    // while (!txDataQueue.isEmpty()) {
-    // txBuffer.clear();
-    // txBuffer.put(txDataQueue.poll());
-    // txBuffer.flip();
-    // try {
-    // txBytes = mtp3UserPart.write(txBuffer);
-    // } catch (IOException e) {
-    // logger.error("Error while writting data to Mtp3UserPart", e);
-    // }
-    // }// while txDataQueue
-    // } catch (IOException e1) {
-    // // TODO Auto-generated catch block
-    // e1.printStackTrace();
-    // }
-    // }// end of while
-    // }
-    // }
-    //
-    // private class MessageHandler implements Runnable {
-    // // MSU as input stream
-    // private byte[] msu;
-    // private ISUPMessage message;
-    //
-    // protected MessageHandler(byte[] msu) {
-    // this.msu = msu;
-    //
-    // }
-    //
-    // private ISUPMessage parse() throws IOException {
-    // try {
-    // // FIXME: change this, dont copy over and over?
-    //
-    // int commandCode = msu[7];// 1(SIO) + 3(RL) + 1(SLS) + 2(CIC) + 1(CODE)
-    // // http://pt.com/page/tutorials/ss7-tutorial/mtp
-    // byte[] payload = new byte[msu.length - 5];
-    // System.arraycopy(msu, 5, payload, 0, payload.length);
-    // byte sls = msu[5];
-    // // for post processing
-    // AbstractISUPMessage msg = (AbstractISUPMessage)
-    // messageFactory.createCommand(commandCode);
-    // msg.decode(payload, parameterFactory);
-    // msg.setSls(sls); //store SLS...
-    // return msg;
-    //
-    // } catch (Exception e) {
-    // // FIXME: what should we do here? send back?
-    // e.printStackTrace();
-    // logger.error("Failed on data: " + Utils.hexDump(null, msu));
-    // }
-    // return null;
-    // }
-    //
-    // public void run() {
-    // if (message == null) {
-    // try {
-    // message = parse();
-    // } catch (IOException e) {
-    // logger.warn("Corrupted message received");
-    // return;
-    // }
-    // }
-    // // deliver to provider, so it can check up on circuit, play with
-    // // timers and deliver.
-    // if(message!=null)
-    // {
-    // try{
-    // provider.receive(message);
-    // }catch(Exception e)
-    // {
-    // //TODO: add proper answer?
-    // }
-    // }
-    // }
-    // }
-
 }

@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class GPRSCamelTDPDataImpl extends SequenceBase implements GPRSCamelTDPData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_gprsTriggerDetectionPoint = 0;
+	private static final int _TAG_gprsTriggerDetectionPoint = 0;
     private static final int _TAG_serviceKey = 1;
     private static final int _TAG_gsmSCFAddress = 2;
     private static final int _TAG_defaultSessionHandling = 3;

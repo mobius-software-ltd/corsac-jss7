@@ -29,8 +29,9 @@ import java.io.Serializable;
  *
  */
 public class TestEvent implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    private EventType eventType;
+	private EventType eventType;
     private boolean sent;
     private long timestamp;
     private Object event;

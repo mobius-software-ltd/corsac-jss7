@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class UtranGANSSpositioningDataImpl extends OctetStringBase implements UtranGANSSpositioningData {
+	private static final long serialVersionUID = 1L;
 
-    public UtranGANSSpositioningDataImpl() {
+	public UtranGANSSpositioningDataImpl() {
         super(1, 9, "UtranGANSSpositioningData");
     }
 

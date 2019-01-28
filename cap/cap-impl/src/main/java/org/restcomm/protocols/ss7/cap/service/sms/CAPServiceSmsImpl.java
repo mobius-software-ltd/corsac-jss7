@@ -101,9 +101,11 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
     @Override
     public ServingCheckData isServingService(CAPApplicationContext dialogApplicationContext) {
         switch (dialogApplicationContext) {
-        case CapV3_cap3_sms:
-        case CapV4_cap4_sms:
-            return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
+	        case CapV3_cap3_sms:
+	        case CapV4_cap4_sms:
+	            return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
+			default:
+				break;
         }
 
         return new ServingCheckDataImpl(ServingCheckResult.AC_NotServing);

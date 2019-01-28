@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class OBcsmCamelTdpCriteriaImpl extends SequenceBase implements OBcsmCamelTdpCriteria {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_destinationNumberCriteria = 0;
+	private static final int _TAG_destinationNumberCriteria = 0;
     private static final int _TAG_basicServiceCriteria = 1;
     private static final int _TAG_callTypeCriteria = 2;
     private static final int _TAG_oCauseValueCriteria = 3;

@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodFormat;
  *
  */
 public class ValidityPeriodImpl implements ValidityPeriod {
+	private static final long serialVersionUID = 1L;
 
-    private Integer relativeFormatValue;
+	private Integer relativeFormatValue;
     private AbsoluteTimeStamp absoluteFormatValue;
     private ValidityEnhancedFormatData enhancedFormatValue;
 

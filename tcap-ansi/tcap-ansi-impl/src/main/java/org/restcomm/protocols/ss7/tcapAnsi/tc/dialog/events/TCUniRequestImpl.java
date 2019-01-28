@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniRequest;
  *
  */
 public class TCUniRequestImpl extends DialogRequestImpl implements TCUniRequest {
+	private static final long serialVersionUID = 1L;
 
-    private SccpAddress originatingAddress, destinationAddress;
+	private SccpAddress originatingAddress, destinationAddress;
 
     private ApplicationContext applicationContextName;
     private UserInformation userInformation;

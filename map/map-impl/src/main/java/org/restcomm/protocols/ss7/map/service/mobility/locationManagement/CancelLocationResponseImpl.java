@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class CancelLocationResponseImpl extends MobilityMessageImpl implements CancelLocationResponse {
+	private static final long serialVersionUID = 1L;
 
-    private MAPExtensionContainer extensionContainer;
+	private MAPExtensionContainer extensionContainer;
     public static final String _PrimitiveName = "CancelLocationResponse";
 
     public CancelLocationResponseImpl() {

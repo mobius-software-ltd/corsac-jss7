@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,14 +56,14 @@ public class TimeInformationTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         TimeInformationImpl elem = new TimeInformationImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals((int) elem.getTimeIfNoTariffSwitch(), 26);
 
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new TimeInformationImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getTimeIfTariffSwitch().getTimeSinceTariffSwitch(), 1000);
         assertNull(elem.getTimeIfTariffSwitch().getTariffSwitchInterval());
@@ -89,7 +84,7 @@ public class TimeInformationTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerializaion() throws Exception {
         TimeInformationImpl original = new TimeInformationImpl(26);
 
@@ -138,5 +133,5 @@ public class TimeInformationTest {
         assertEquals(copy.getTimeIfTariffSwitch().getTariffSwitchInterval(), original.getTimeIfTariffSwitch()
                 .getTariffSwitchInterval());
         assertNull(copy.getTimeIfNoTariffSwitch());
-    }
+    }*/
 }

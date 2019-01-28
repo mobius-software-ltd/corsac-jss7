@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class VelocityEstimateImpl extends OctetStringBase implements VelocityEstimate {
+	private static final long serialVersionUID = 1L;
 
-    public VelocityEstimateImpl() {
+	public VelocityEstimateImpl() {
         super(4, 7, "VelocityEstimate");
     }
 
@@ -125,6 +126,8 @@ public class VelocityEstimateImpl extends OctetStringBase implements VelocityEst
             case HorizontalWithVerticalVelocityAndUncertainty:
                 int res = (data[4] & 0xFF);
                 return res;
+			default:
+				break;
         }
 
         return 0;
@@ -143,6 +146,8 @@ public class VelocityEstimateImpl extends OctetStringBase implements VelocityEst
             case HorizontalWithVerticalVelocityAndUncertainty:
                 res = (data[5] & 0xFF);
                 return res;
+			default:
+				break;
         }
 
         return 0;
@@ -158,6 +163,8 @@ public class VelocityEstimateImpl extends OctetStringBase implements VelocityEst
             case HorizontalWithVerticalVelocityAndUncertainty:
                 int res = (data[6] & 0xFF);
                 return res;
+			default:
+				break;
         }
 
         return 0;

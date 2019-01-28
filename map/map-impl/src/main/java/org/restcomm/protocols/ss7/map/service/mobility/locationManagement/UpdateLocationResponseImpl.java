@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class UpdateLocationResponseImpl extends MobilityMessageImpl implements UpdateLocationResponse {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_pagingArea_Capability = 0;
+	protected static final int _TAG_pagingArea_Capability = 0;
 
     public static final String _PrimitiveName = "UpdateLocationResponse";
 

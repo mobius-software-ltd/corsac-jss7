@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.service.sms.ForwardShortMessageResponse;
 
 public class ForwardShortMessageResponseImpl extends SmsMessageImpl implements ForwardShortMessageResponse {
+	private static final long serialVersionUID = 1L;
 
-    public MAPMessageType getMessageType() {
+	public MAPMessageType getMessageType() {
         return MAPMessageType.forwardSM_Response;
     }
 

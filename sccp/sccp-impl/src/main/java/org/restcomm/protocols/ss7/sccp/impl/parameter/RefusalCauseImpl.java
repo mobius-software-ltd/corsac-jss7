@@ -33,7 +33,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class RefusalCauseImpl extends AbstractParameter implements RefusalCause {
-    private RefusalCauseValue value;
+	private static final long serialVersionUID = 1L;
+
+	private RefusalCauseValue value;
     private int digValue;
 
     public RefusalCauseImpl() {

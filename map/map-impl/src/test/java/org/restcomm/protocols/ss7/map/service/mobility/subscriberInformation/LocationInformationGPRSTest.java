@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -39,7 +34,6 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
 import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
@@ -202,7 +196,7 @@ public class LocationInformationGPRSTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl(250, 1, 4444);
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
@@ -254,6 +248,5 @@ public class LocationInformationGPRSTest {
         assertEquals(copy.isCurrentLocationRetrieved(), original.isCurrentLocationRetrieved());
         assertEquals(copy.getAgeOfLocationInformation(), original.getAgeOfLocationInformation());
         
-    }
-
+    }*/
 }

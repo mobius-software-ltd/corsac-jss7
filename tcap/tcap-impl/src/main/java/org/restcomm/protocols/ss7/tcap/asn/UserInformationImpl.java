@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class UserInformationImpl implements UserInformation {
+	private static final long serialVersionUID = 1L;
 
-    private External ext = new External();
+	private External ext = new External();
 
     /*
      * (non-Javadoc)

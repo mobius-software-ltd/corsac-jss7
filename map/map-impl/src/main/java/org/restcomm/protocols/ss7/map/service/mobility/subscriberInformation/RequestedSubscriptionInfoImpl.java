@@ -41,7 +41,9 @@ import java.io.IOException;
  * Created by vsubbotin on 24/05/16.
  */
 public class RequestedSubscriptionInfoImpl extends SequenceBase implements RequestedSubscriptionInfo {
-    public static final int _ID_requested_SS_info = 1;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_requested_SS_info = 1;
     public static final int _ID_odb = 2;
     public static final int _ID_requested_CAMEL_subscription_info = 3;
     public static final int _ID_supported_VLR_CAMEL_phases = 4;

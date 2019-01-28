@@ -109,7 +109,7 @@ public class USSDStringTest {
         byte[] data = getDataGSM7();
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         USSDStringImpl ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7,
                 CharacterSet.GSM7, null, null, false));
@@ -119,7 +119,7 @@ public class USSDStringTest {
 
         data = getDataUcs2();
         asn = new AsnInputStream(data);
-        tag = asn.readTag();
+        asn.readTag();
         ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralDataCodingIndication,
                 CharacterSet.UCS2, null, null, false));
         ussdStr.decodeAll(asn);
@@ -127,7 +127,7 @@ public class USSDStringTest {
 
         data = getDataUcs2Lang();
         asn = new AsnInputStream(data);
-        tag = asn.readTag();
+        asn.readTag();
         ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication,
                 CharacterSet.UCS2, null, null, false));
         ussdStr.decodeAll(asn);
@@ -135,7 +135,7 @@ public class USSDStringTest {
 
         data = getDataGsm7Lang();
         asn = new AsnInputStream(data);
-        tag = asn.readTag();
+        asn.readTag();
         ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication,
                 CharacterSet.GSM7, null, null, false));
         ussdStr.decodeAll(asn);
@@ -143,7 +143,7 @@ public class USSDStringTest {
 
         data = getDataGsm7LangArabic();
         asn = new AsnInputStream(data);
-        tag = asn.readTag();
+        asn.readTag();
         ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7,
                 CBSNationalLanguage.Arabic, null, false));
         ussdStr.decodeAll(asn);

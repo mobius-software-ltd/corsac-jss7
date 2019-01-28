@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,10 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class OCalledPartyBusySpecificInfoImpl extends SequenceBase implements OCalledPartyBusySpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final String BUSY_CAUSE = "busyCause";
-
-    public static final int _ID_busyCause = 0;
+	public static final int _ID_busyCause = 0;
 
     private CauseCap busyCause;
 
@@ -118,26 +114,4 @@ public class OCalledPartyBusySpecificInfoImpl extends SequenceBase implements OC
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<OCalledPartyBusySpecificInfoImpl> ROUTE_SELECT_FAILURE_SPECIFIC_INFO_XML = new XMLFormat<OCalledPartyBusySpecificInfoImpl>(
-            OCalledPartyBusySpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml,
-                OCalledPartyBusySpecificInfoImpl oCalledPartyBusySpecificInfo) throws XMLStreamException {
-            oCalledPartyBusySpecificInfo.busyCause = xml.get(BUSY_CAUSE, CauseCapImpl.class);
-        }
-
-        @Override
-        public void write(OCalledPartyBusySpecificInfoImpl oCalledPartyBusySpecificInfo,
-                javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-
-            if (oCalledPartyBusySpecificInfo.busyCause != null) {
-                xml.add(((CauseCapImpl) oCalledPartyBusySpecificInfo.busyCause), BUSY_CAUSE, CauseCapImpl.class);
-            }
-        }
-    };
 }

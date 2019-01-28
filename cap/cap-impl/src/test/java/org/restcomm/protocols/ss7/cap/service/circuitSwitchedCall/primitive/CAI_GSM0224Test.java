@@ -50,7 +50,7 @@ public class CAI_GSM0224Test {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         CAI_GSM0224Impl elem = new CAI_GSM0224Impl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals((int) elem.getE1(), 1);
         assertEquals((int) elem.getE2(), 2);

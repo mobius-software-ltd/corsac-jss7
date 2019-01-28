@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class TSmsFailureSpecificInfoImpl extends SequenceBase implements TSmsFailureSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_failureCause = 0;
+	public static final int _ID_failureCause = 0;
 
     private MTSMSCause failureCause;
 

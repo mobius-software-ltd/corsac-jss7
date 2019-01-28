@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.SubsequentNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class SubsequentNumberImpl extends AbstractNumber implements SubsequentNumber {
+	private static final long serialVersionUID = 1L;
 
-    public SubsequentNumberImpl() {
+	public SubsequentNumberImpl() {
         super();
 
     }

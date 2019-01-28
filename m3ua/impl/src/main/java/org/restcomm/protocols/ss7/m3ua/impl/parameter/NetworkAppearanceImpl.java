@@ -22,10 +22,6 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -33,11 +29,8 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
  * @author amit bhayani
  * @author kulikov
  */
-public class NetworkAppearanceImpl extends ParameterImpl implements NetworkAppearance, XMLSerializable {
+public class NetworkAppearanceImpl extends ParameterImpl implements NetworkAppearance {
 
-    private static final String VALUE = "value";
-
-    private static final long UNSIGNED_INT_MAX_VALUE = 0xFFFFFFFF;
     private long value;
 
     public NetworkAppearanceImpl() {
@@ -80,23 +73,4 @@ public class NetworkAppearanceImpl extends ParameterImpl implements NetworkAppea
     public String toString() {
         return String.format("NetworkAppearance value=%d", value);
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<NetworkAppearanceImpl> RC_XML = new XMLFormat<NetworkAppearanceImpl>(
-            NetworkAppearanceImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, NetworkAppearanceImpl localRkId) throws XMLStreamException {
-            localRkId.value = xml.getAttribute(VALUE).toLong();
-        }
-
-        @Override
-        public void write(NetworkAppearanceImpl localRkId, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(VALUE, localRkId.value);
-        }
-    };
-
 }

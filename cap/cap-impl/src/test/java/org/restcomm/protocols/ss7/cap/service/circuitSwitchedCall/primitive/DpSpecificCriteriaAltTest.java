@@ -24,13 +24,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -80,7 +75,7 @@ public class DpSpecificCriteriaAltTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         ArrayList<ChangeOfLocation> changeOfPositionControlInfo = new ArrayList<ChangeOfLocation>();
@@ -107,6 +102,5 @@ public class DpSpecificCriteriaAltTest {
         assertEquals(copy.getChangeOfPositionControlInfo().size(), original.getChangeOfPositionControlInfo().size());
         assertEquals(copy.getChangeOfPositionControlInfo().get(0).isInterPLMNHandOver(), original.getChangeOfPositionControlInfo().get(0).isInterPLMNHandOver());
         assertEquals((int) copy.getNumberOfDigits(), (int) original.getNumberOfDigits());
-    }
-
+    }*/
 }

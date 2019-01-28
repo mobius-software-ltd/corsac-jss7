@@ -45,8 +45,9 @@ import java.io.IOException;
  *
  */
 public class IstCommandRequestImpl extends CallHandlingMessageImpl implements IstCommandRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "IstCommandRequest";
+	public static final String _PrimitiveName = "IstCommandRequest";
 
     private static final int TAG_imsi = 0;
     private static final int TAG_extensionContainer = 1;

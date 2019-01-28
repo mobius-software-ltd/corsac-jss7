@@ -51,8 +51,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class VlrCamelSubscriptionInfoImpl extends SequenceBase implements VlrCamelSubscriptionInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_oCsi = 0;
+	private static final int _TAG_oCsi = 0;
     private static final int _TAG_extensionContainer = 1;
     private static final int _TAG_ssCsi = 2;
     private static final int _TAG_oBcsmCamelTDPCriteriaList = 4;

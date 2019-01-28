@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -123,7 +117,7 @@ public class TAnswerSpecificInfoTest {
         assertEquals(aos.toByteArray(), this.getData2());
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
         CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(0, "111222333", 1, 1);
         CalledPartyNumberCapImpl forwardingDestinationNumber = new CalledPartyNumberCapImpl(calledPartyNumber);
@@ -189,6 +183,5 @@ public class TAnswerSpecificInfoTest {
         assertEquals(copy.getChargeIndicator().getChargeIndicatorValue(), original.getChargeIndicator().getChargeIndicatorValue());
         assertNull(copy.getExtBasicServiceCode());
         assertNull(copy.getExtBasicServiceCode2());
-    }
-
+    }*/
 }

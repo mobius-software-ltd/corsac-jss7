@@ -24,8 +24,6 @@ package org.restcomm.protocols.ss7.sccp.impl.parameter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import javolution.xml.XMLSerializable;
-
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
 import org.restcomm.protocols.ss7.sccp.parameter.EncodingScheme;
@@ -35,9 +33,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 /**
  * @author baranowb
  */
-public abstract class AbstractGlobalTitle extends AbstractParameter implements GlobalTitle, XMLSerializable {
+public abstract class AbstractGlobalTitle extends AbstractParameter implements GlobalTitle {
+	private static final long serialVersionUID = 1L;
 
-    protected String digits;
+	protected String digits;
 
     //not codable, just used to encode/decode digits in a common way.
     protected EncodingScheme encodingScheme;

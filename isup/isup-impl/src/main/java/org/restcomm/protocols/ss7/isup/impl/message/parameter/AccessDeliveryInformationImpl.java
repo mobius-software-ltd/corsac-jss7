@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.AccessDeliveryInformati
  *
  */
 public class AccessDeliveryInformationImpl extends AbstractISUPParameter implements AccessDeliveryInformation {
+	private static final long serialVersionUID = 1L;
 
-    private int accessDeliveryIndicator;
+	private int accessDeliveryIndicator;
 
     public AccessDeliveryInformationImpl(int accessDeliveryIndicator) {
         super();

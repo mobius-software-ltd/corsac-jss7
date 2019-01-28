@@ -102,6 +102,8 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
             case CapV3_gprsSSF_gsmSCF:
             case CapV3_gsmSCF_gprsSSF:
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
+			default:
+				break;
         }
 
         return new ServingCheckDataImpl(ServingCheckResult.AC_NotServing);

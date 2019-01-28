@@ -22,10 +22,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.sccp.RemoteSignalingPointCode;
 
 /**
@@ -33,11 +29,7 @@ import org.restcomm.protocols.ss7.sccp.RemoteSignalingPointCode;
  * @author sergey vetyutnev
  *
  */
-public class RemoteSignalingPointCodeImpl implements XMLSerializable, RemoteSignalingPointCode {
-    private static final String REMOTE_SPC = "remoteSpc";
-    private static final String REMOTE_SPC_FLAG = "remoteSpcFlag";
-    private static final String MASK = "mask";
-
+public class RemoteSignalingPointCodeImpl implements RemoteSignalingPointCode {
     private int remoteSpc;
     private int remoteSpcFlag;
     private int mask;
@@ -46,9 +38,7 @@ public class RemoteSignalingPointCodeImpl implements XMLSerializable, RemoteSign
 
     protected int rl;
     protected int rsl;
-
-    private RemoteSignalingPointCodeExt remoteSignalingPointCodeExt;
-
+    
     public RemoteSignalingPointCodeImpl() {
     }
 
@@ -58,14 +48,6 @@ public class RemoteSignalingPointCodeImpl implements XMLSerializable, RemoteSign
         this.mask = mask;
         this.remoteSccpProhibited = isProhibited;
         this.remoteSpcProhibited = isProhibited;
-    }
-
-    public void createRemoteSignalingPointCodeExt(Ss7ExtSccpDetailedInterface ss7ExtSccpDetailedInterface) {
-        remoteSignalingPointCodeExt = ss7ExtSccpDetailedInterface.createRemoteSignalingPointCodeExt(this);
-    }
-
-    public RemoteSignalingPointCodeExt getRemoteSignalingPointCodeExt() {
-        return remoteSignalingPointCodeExt;
     }
 
     public int getRemoteSpc() {
@@ -131,30 +113,14 @@ public class RemoteSignalingPointCodeImpl implements XMLSerializable, RemoteSign
         return rsl;
     }
 
-    void clearCongLevel() {
-        remoteSignalingPointCodeExt.clearCongLevel();
-    }
-
-    void increaseCongLevel(int level) {
-        remoteSignalingPointCodeExt.increaseCongLevel(level);
-    }
-
     /**
      * Do not use this method directly except of debugging. Use clearCongLevel(), increaseCongLevel(), decreaseCongLevel()
      *
      * @param value
      */
-    public void setCurrentRestrictionLevel(int value) {
+    protected void setCurrentRestrictionLevel(int value) {
         this.rl = value;
         this.rsl = 0;
-    }
-
-    public void setRl(int val) {
-        rl = val;
-    }
-
-    public void setRsl(int val) {
-        rsl = val;
     }
 
     @Override
@@ -165,22 +131,4 @@ public class RemoteSignalingPointCodeImpl implements XMLSerializable, RemoteSign
                 .append(this.remoteSccpProhibited).append(" rl=").append(rl).append(" rsl=").append(rsl);
         return sb.toString();
     }
-
-    protected static final XMLFormat<RemoteSignalingPointCodeImpl> XML = new XMLFormat<RemoteSignalingPointCodeImpl>(
-            RemoteSignalingPointCodeImpl.class) {
-
-        public void write(RemoteSignalingPointCodeImpl ai, OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(REMOTE_SPC, ai.remoteSpc);
-            xml.setAttribute(REMOTE_SPC_FLAG, ai.remoteSpcFlag);
-            xml.setAttribute(MASK, ai.mask);
-
-        }
-
-        public void read(InputElement xml, RemoteSignalingPointCodeImpl ai) throws XMLStreamException {
-            ai.remoteSpc = xml.getAttribute(REMOTE_SPC).toInt();
-            ai.remoteSpcFlag = xml.getAttribute(REMOTE_SPC_FLAG).toInt();
-            ai.mask = xml.getAttribute(MASK).toInt();
-        }
-    };
-
 }

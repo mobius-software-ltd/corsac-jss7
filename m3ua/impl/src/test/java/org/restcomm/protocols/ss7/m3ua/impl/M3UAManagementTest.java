@@ -26,41 +26,37 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import io.netty.buffer.ByteBufAllocator;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-import javolution.util.FastMap;
-
-import org.mobicents.protocols.api.Association;
-import org.mobicents.protocols.api.AssociationListener;
-import org.mobicents.protocols.api.AssociationType;
-import org.mobicents.protocols.api.CongestionListener;
-import org.mobicents.protocols.api.IpChannelType;
-import org.mobicents.protocols.api.Management;
-import org.mobicents.protocols.api.ManagementEventListener;
-import org.mobicents.protocols.api.PayloadData;
-import org.mobicents.protocols.api.Server;
-import org.mobicents.protocols.api.ServerListener;
 import org.restcomm.protocols.ss7.m3ua.As;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.RouteAs;
-import org.restcomm.protocols.ss7.m3ua.Util;
+import org.restcomm.protocols.ss7.m3ua.RoutingKey;
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.AspFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
+import org.restcomm.protocols.ss7.sctp.proxy.Association;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationListener;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationType;
+import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
+import org.restcomm.protocols.ss7.sctp.proxy.Management;
+import org.restcomm.protocols.ss7.sctp.proxy.ManagementEventListener;
+import org.restcomm.protocols.ss7.sctp.proxy.PayloadData;
+import org.restcomm.protocols.ss7.sctp.proxy.Server;
+import org.restcomm.protocols.ss7.sctp.proxy.ServerListener;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 /**
  * Test the serialization/de-serialization
@@ -93,8 +89,8 @@ public class M3UAManagementTest {
     public void setUp() throws Exception {
         this.transportManagement = new NettyTransportManagement();
 
-        this.m3uaMgmt = new M3UAManagementImpl("M3UAManagementTest", null, null);
-        this.m3uaMgmt.setPersistDir(Util.getTmpTestDir());
+        UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
+        this.m3uaMgmt = new M3UAManagementImpl("M3UAManagementTest", null, uuidGenerator);
         this.m3uaMgmt.setTransportManagement(this.transportManagement);
         this.m3uaMgmt.start();
         this.m3uaMgmt.removeAllResourses();
@@ -106,118 +102,55 @@ public class M3UAManagementTest {
     }
 
     @Test
-    public void testSerialization() throws Exception {
+    public void testManagement() throws Exception {
 
         Association association = this.transportManagement.addAssociation(null, 0, null, 0, "ASPAssoc1");
 
         RoutingContext rc = factory.createRoutingContext(new long[] { 1 });
         NetworkAppearance na = factory.createNetworkAppearance(12l);
-        AsImpl as1 = (AsImpl) this.m3uaMgmt.createAs("AS1", Functionality.AS, ExchangeType.SE, null, rc, null, 1, na);
+        this.m3uaMgmt.createAs("AS1", Functionality.AS, ExchangeType.SE, null, rc, null, 1, na);
 
-        AspFactoryImpl aspFactoryImpl = (AspFactoryImpl) this.m3uaMgmt.createAspFactory("ASP1", "ASPAssoc1", false);
+        this.m3uaMgmt.createAspFactory("ASP1", "ASPAssoc1", false);
 
         this.m3uaMgmt.assignAspToAs("AS1", "ASP1");
 
         this.m3uaMgmt.addRoute(123, 1, 1, "AS1");
 
-        this.m3uaMgmt.startAsp("ASP1");
+        this.m3uaMgmt.startAsp("ASP1");        
 
-        this.m3uaMgmt.stop();
-
-        M3UAManagementImpl m3uaMgmt1 = new M3UAManagementImpl("M3UAManagementTest", null, null);
-        m3uaMgmt1.setPersistDir(Util.getTmpTestDir());
-        m3uaMgmt1.setTransportManagement(this.transportManagement);
-        m3uaMgmt1.start();
-
-        assertEquals(1, m3uaMgmt1.getAppServers().size());
-        assertEquals(1, m3uaMgmt1.getAspfactories().size());
-        Map<String, RouteAs> route = m3uaMgmt1.getRoute();
+        assertEquals(1, m3uaMgmt.getAppServers().size());
+        assertEquals(1, m3uaMgmt.getAspfactories().size());
+        Map<RoutingKey, RouteAs> route = m3uaMgmt.getRoute();
         assertEquals(1, route.size());
 
         // Make sure AS is not null
-        RouteAs routeAs1 = route.get("123:1:1");
+        RouteAs routeAs1 = route.get(new RoutingKey(123,1,1));
         As[] asList = routeAs1.getAsArray();
         As routeAs = asList[0];
         assertNotNull(routeAs);
 
-        AsImpl managementAs = (AsImpl) m3uaMgmt1.getAppServers().get(0);
+        AsImpl managementAs = (AsImpl) m3uaMgmt.getAppServers().iterator().next();
 
         // Make sure both m3uamanagament and route are pointing to same AS instance
         assertEquals(routeAs, managementAs);
 
-        assertEquals(2, ((TestAssociation) association).getNoOfTimeStartCalled());
+        assertEquals(1, ((TestAssociation) association).getNoOfTimeStartCalled());
 
-        m3uaMgmt1.stopAsp("ASP1");
+        m3uaMgmt.stopAsp("ASP1");
 
-        m3uaMgmt1.unassignAspFromAs("AS1", "ASP1");
+        m3uaMgmt.unassignAspFromAs("AS1", "ASP1");
 
-        m3uaMgmt1.removeRoute(123, 1, 1, "AS1");
+        m3uaMgmt.removeRoute(123, 1, 1, "AS1");
 
-        m3uaMgmt1.destroyAspFactory("ASP1");
+        m3uaMgmt.destroyAspFactory("ASP1");
 
-        m3uaMgmt1.destroyAs("AS1");
-
-    }
-
-    @Test
-    public void testSerializationFromOldVerToNewVers() throws Exception {
-        // Prepare path for file
-        
-        String M3UA_PERSIST_DIR_KEY = "m3ua.persist.dir";
-        String USER_DIR_KEY = "user.dir";
-        String PERSIST_FILE_NAME = "m3ua.xml";
-        String name = this.m3uaMgmt.getName()+"_OldVerToNewVers";
-
-        String persistDir = this.m3uaMgmt.getPersistDir();
-        StringBuffer persistFile = new StringBuffer();
-        
-        if (persistDir != null) {
-            persistFile.append(persistDir).append(File.separator).append(name).append("_").append(PERSIST_FILE_NAME);
-        } else {
-            persistFile.append(System.getProperty(M3UA_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
-                    .append(File.separator).append(name).append("_").append(PERSIST_FILE_NAME);
-        }
-
-        String oldXmlData = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><heartbeattime value=\"10000\"/><aspFactoryList><aspFactory name=\"testasp\" assocName=\"test\" started=\"false\" maxseqnumber=\"256\" aspid=\"2\" heartbeat=\"false\"/><aspFactory name=\"testasp1\" assocName=\"test1\" started=\"false\" maxseqnumber=\"256\" aspid=\"3\" heartbeat=\"false\"/></aspFactoryList><asList><as name=\"testAs\" minAspActiveForLb=\"0\" functionality=\"AS\" exchangeType=\"SE\" ipspType=\"CLIENT\"><trafficMode mode=\"2\"/><defTrafficMode mode=\"2\"/><asps><asp name=\"testasp\"/></asps></as><as name=\"testAs1\" minAspActiveForLb=\"0\" functionality=\"AS\" exchangeType=\"SE\" ipspType=\"CLIENT\"><trafficMode mode=\"2\"/><defTrafficMode mode=\"2\"/><asps><asp name=\"testasp1\"/></asps></as></asList><route><key value=\"2:-1:-1\"/><value value=\"testAs,testAs1\"/></route>";
-        File f = new File(persistFile.toString());
-        if(f.exists()){
-            f.delete();
-        }
-        
-        //write to old file
-        f.createNewFile();
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
-        bw.write(oldXmlData);
-        bw.close();
-        
-        Association association = this.transportManagement.addAssociation(null, 0, null, 0, "test");
-        association = this.transportManagement.addAssociation(null, 0, null, 0, "test1");
-        
-        //now start M3UA again and it should read from old data file
-        M3UAManagementImpl m3uaMgmt1 = new M3UAManagementImpl(name, null, null);
-        m3uaMgmt1.setPersistDir(Util.getTmpTestDir());
-        m3uaMgmt1.setTransportManagement(this.transportManagement);
-        m3uaMgmt1.start();
-        
-        assertEquals(m3uaMgmt1.getAppServers().size(), 2 );
-        assertEquals(m3uaMgmt1.getAspfactories().size(), 2);
-        Map<String, RouteAs> route = m3uaMgmt1.getRoute();
-        assertEquals(1, route.size());
-
-        // Make sure AS is not null
-        RouteAs routeAs1 = route.get("2:-1:-1");
-        As[] asList = routeAs1.getAsArray();
-        As routeAs = asList[0];
-        assertNotNull(routeAs);
-        
-        //Now stop M3UA management and check new file created
-        m3uaMgmt1.stop();
-        
+        m3uaMgmt.destroyAs("AS1");
     }
 
     @Test
     public void testPersistFileName() throws Exception {
-        M3UAManagementImpl m3ua = new M3UAManagementImpl("test", null, null);
+    	UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
+        M3UAManagementImpl m3ua = new M3UAManagementImpl("test", null,uuidGenerator);
         m3ua.setMaxAsForRoute(10);
 
     }
@@ -360,17 +293,11 @@ public class M3UAManagementTest {
             return null;
         }
 
-        @Override
-        public int getCongestionLevel() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
     }
 
     class NettyTransportManagement implements Management {
 
-        private FastMap<String, TestAssociation> associations = new FastMap<String, TestAssociation>();
+        private ConcurrentHashMap<String, TestAssociation> associations = new ConcurrentHashMap<String, TestAssociation>();
 
         @Override
         public Association addAssociation(String hostAddress, int hostPort, String peerAddress, int peerPort, String assocName)
@@ -419,16 +346,6 @@ public class M3UAManagementTest {
         }
 
         @Override
-        public int getWorkerThreads() {
-            return 0;
-        }
-
-        @Override
-        public boolean isSingleThread() {
-            return false;
-        }
-
-        @Override
         public void removeAssociation(String assocName) throws Exception {
 
         }
@@ -440,18 +357,6 @@ public class M3UAManagementTest {
 
         @Override
         public void setConnectDelay(int connectDelay) {
-
-        }
-
-        @Override
-        public void setSingleThread(boolean arg0) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void setWorkerThreads(int arg0) {
-            // TODO Auto-generated method stub
 
         }
 
@@ -492,18 +397,6 @@ public class M3UAManagementTest {
         }
 
         @Override
-        public String getPersistDir() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void setPersistDir(String arg0) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
         public Association addAssociation(String arg0, int arg1, String arg2, int arg3, String arg4, IpChannelType arg5,
                 String[] extraHostAddresses) throws Exception {
             // TODO Auto-generated method stub
@@ -531,7 +424,7 @@ public class M3UAManagementTest {
         }
 
         @Override
-        public void addManagementEventListener(ManagementEventListener arg0) {
+        public void addManagementEventListener(UUID key,ManagementEventListener arg0) {
             // TODO Auto-generated method stub
 
         }
@@ -550,7 +443,7 @@ public class M3UAManagementTest {
         }
 
         @Override
-        public void removeManagementEventListener(ManagementEventListener arg0) {
+        public void removeManagementEventListener(UUID key) {
             // TODO Auto-generated method stub
 
         }
@@ -570,78 +463,6 @@ public class M3UAManagementTest {
         public boolean isStarted() {
             // TODO Auto-generated method stub
             return false;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_1() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_2() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_3() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_1() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_2() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_3() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_1(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_2(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_3(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_1(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_2(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_3(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
         }
 
         @Override
@@ -736,18 +557,6 @@ public class M3UAManagementTest {
 
         @Override
         public void setOptionSctpInitMaxstreams_MaxOutStreams(Integer arg0) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void addCongestionListener(CongestionListener arg0) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void removeCongestionListener(CongestionListener arg0) {
             // TODO Auto-generated method stub
             
         }

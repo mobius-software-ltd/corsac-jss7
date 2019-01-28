@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RedirectionNumberImpl extends AbstractNAINumber implements RedirectionNumber {
+	private static final long serialVersionUID = 1L;
 
-    protected int numberingPlanIndicator;
+	protected int numberingPlanIndicator;
 
     protected int internalNetworkNumberIndicator;
 

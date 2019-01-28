@@ -31,22 +31,12 @@ import io.netty.buffer.ByteBufAllocator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import javolution.util.FastList;
-import javolution.util.FastMap;
-
-import org.mobicents.protocols.api.Association;
-import org.mobicents.protocols.api.AssociationListener;
-import org.mobicents.protocols.api.AssociationType;
-import org.mobicents.protocols.api.CongestionListener;
-import org.mobicents.protocols.api.IpChannelType;
-import org.mobicents.protocols.api.Management;
-import org.mobicents.protocols.api.ManagementEventListener;
-import org.mobicents.protocols.api.PayloadData;
-import org.mobicents.protocols.api.Server;
-import org.mobicents.protocols.api.ServerListener;
 import org.restcomm.protocols.ss7.m3ua.As;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.AspFactory;
@@ -54,7 +44,6 @@ import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.M3UAManagementEventListener;
 import org.restcomm.protocols.ss7.m3ua.State;
-import org.restcomm.protocols.ss7.m3ua.Util;
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.AsState;
 import org.restcomm.protocols.ss7.m3ua.impl.AspFactoryImpl;
@@ -77,7 +66,6 @@ import org.restcomm.protocols.ss7.m3ua.parameter.DestinationPointCode;
 import org.restcomm.protocols.ss7.m3ua.parameter.ErrorCode;
 import org.restcomm.protocols.ss7.m3ua.parameter.LocalRKIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
-import org.restcomm.protocols.ss7.m3ua.parameter.RoutingKey;
 import org.restcomm.protocols.ss7.m3ua.parameter.ServiceIndicators;
 import org.restcomm.protocols.ss7.m3ua.parameter.Status;
 import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
@@ -89,11 +77,22 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
+import org.restcomm.protocols.ss7.sctp.proxy.Association;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationListener;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationType;
+import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
+import org.restcomm.protocols.ss7.sctp.proxy.Management;
+import org.restcomm.protocols.ss7.sctp.proxy.ManagementEventListener;
+import org.restcomm.protocols.ss7.sctp.proxy.PayloadData;
+import org.restcomm.protocols.ss7.sctp.proxy.Server;
+import org.restcomm.protocols.ss7.sctp.proxy.ServerListener;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 /**
  * This test is for FSM for SGW side ASP and AS
@@ -113,6 +112,8 @@ public class SgFSMTest {
 
     private M3UAManagementEventListenerImpl m3uaManagementEventListenerImpl = null;
 
+    private UUID listenerUUID;
+    
     public SgFSMTest() {
     }
 
@@ -129,10 +130,10 @@ public class SgFSMTest {
         semaphore = new Semaphore(0);
         this.m3uaManagementEventListenerImpl = new M3UAManagementEventListenerImpl();
         this.transportManagement = new NettyTransportManagement();
-        this.transportManagement.setPersistDir(Util.getTmpTestDir());
-        this.serverM3UAMgmt = new M3UAManagementImpl("SgFSMTest", null, null);
-        this.serverM3UAMgmt.setPersistDir(Util.getTmpTestDir());
-        this.serverM3UAMgmt.addM3UAManagementEventListener(this.m3uaManagementEventListenerImpl);
+        UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
+        this.serverM3UAMgmt = new M3UAManagementImpl("SgFSMTest", null, uuidGenerator);
+        listenerUUID=uuidGenerator.GenerateTimeBasedGuid(System.currentTimeMillis());
+        this.serverM3UAMgmt.addM3UAManagementEventListener(listenerUUID, this.m3uaManagementEventListenerImpl);
         this.serverM3UAMgmt.setTransportManagement(this.transportManagement);
         this.mtp3UserPartListener = new Mtp3UserPartListenerimpl();
         this.serverM3UAMgmt.addMtp3UserPartListener(this.mtp3UserPartListener);
@@ -505,18 +506,47 @@ public class SgFSMTest {
 
         assertEquals(AspState.INACTIVE, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspInactive, System
-                .currentTimeMillis(), new Object[] { remAsp1 }, m3uaManagementEventsSeq++)));
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AsInactive, System
-                .currentTimeMillis(), new Object[] { remAs1 }, m3uaManagementEventsSeq++)));
-
         assertEquals(AspState.INACTIVE, this.getAspState(asp2PeerFSM));
         assertEquals(remAsp2.getState().getName(), State.STATE_INACTIVE);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspInactive, System
-                .currentTimeMillis(), new Object[] { remAsp2 }, m3uaManagementEventsSeq++)));
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AsInactive, System
-                .currentTimeMillis(), new Object[] { remAs2 }, m3uaManagementEventsSeq++)));
+        
+        int[] sequences=new int[4];
+        sequences[0]=m3uaManagementEventsSeq++;
+        sequences[1]=m3uaManagementEventsSeq++;
+        sequences[2]=m3uaManagementEventsSeq++;
+        sequences[3]=m3uaManagementEventsSeq++;
+        
+        TestEvent[] firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { remAsp1 }, sequences[0]);
+        
+        TestEvent[] secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { remAsp2 }, sequences[0]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
 
+        firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AsInactive, System.currentTimeMillis(), new Object[] { remAs1 }, sequences[1]);
+        
+        secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AsInactive, System.currentTimeMillis(), new Object[] { remAs2 }, sequences[1]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
+        
+        firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { remAsp1 }, sequences[2]);
+        
+        secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { remAsp2 }, sequences[2]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
+
+        firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AsInactive, System.currentTimeMillis(), new Object[] { remAs1 }, sequences[3]);
+        
+        secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AsInactive, System.currentTimeMillis(), new Object[] { remAs2 }, sequences[3]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
+        
         assertTrue(validateMessage(testAssociation, MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK, -1, -1));
 
         // also both the AS should be INACTIVE now
@@ -595,13 +625,32 @@ public class SgFSMTest {
 
         assertEquals(AspState.DOWN, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_DOWN);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspDown, System
-                .currentTimeMillis(), new Object[] { remAsp1 }, m3uaManagementEventsSeq++)));
-
         assertEquals(AspState.DOWN, this.getAspState(asp2PeerFSM));
         assertEquals(remAsp2.getState().getName(), State.STATE_DOWN);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspDown, System
-                .currentTimeMillis(), new Object[] { remAsp2 }, m3uaManagementEventsSeq++)));
+        
+        sequences=new int[2];
+        sequences[0]=m3uaManagementEventsSeq++;
+        sequences[1]=m3uaManagementEventsSeq++;
+        
+        firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { remAsp1 }, sequences[0]);
+        
+        secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { remAsp2 }, sequences[0]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
+
+        firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { remAsp1 }, sequences[1]);
+        
+        secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { remAsp2 }, sequences[1]);
+        
+        //in case asp2 goes first we may get pending here
+        TestEvent[] thirdPath=new TestEvent[1];
+        thirdPath[0]=new TestEvent(TestEventType.AsPending, System.currentTimeMillis(), new Object[] { remAs2 }, sequences[1]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath,thirdPath}));
 
         assertTrue(validateMessage(testAssociation, MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN_ACK, -1, -1));
 
@@ -1135,9 +1184,7 @@ public class SgFSMTest {
         int dpc = 2;
         int opc = 1;
         int si = 3;
-        int ni = 1;
-        int mp = 0;
-
+        
         Mtp3TransferPrimitiveFactory factory = serverM3UAMgmt.getMtp3TransferPrimitiveFactory();
 
         TestAssociation testAssociation1 = (TestAssociation) this.transportManagement.addAssociation(null, 0, null, 0,
@@ -1153,7 +1200,7 @@ public class SgFSMTest {
 
         TrafficModeType trModType = parmFactory.createTrafficModeType(TrafficModeType.Loadshare);
         LocalRKIdentifier lRkId = parmFactory.createLocalRKIdentifier(1);
-        RoutingKey rKey = parmFactory.createRoutingKey(lRkId, rc, null, null, dpcObj, servInds, null);
+        parmFactory.createRoutingKey(lRkId, rc, null, null, dpcObj, servInds, null);
 
         // As remAs = sgw.createAppServer("testas", rc, rKey, trModType);
         AsImpl remAs = (AsImpl) serverM3UAMgmt.createAs("testas", Functionality.SGW, ExchangeType.SE, null, rc, trModType, 1,
@@ -1378,7 +1425,7 @@ public class SgFSMTest {
 
         TrafficModeType trModType = parmFactory.createTrafficModeType(TrafficModeType.Override);
         LocalRKIdentifier lRkId = parmFactory.createLocalRKIdentifier(1);
-        RoutingKey rKey = parmFactory.createRoutingKey(lRkId, rc, null, null, dpc, servInds, null);
+        parmFactory.createRoutingKey(lRkId, rc, null, null, dpc, servInds, null);
 
         // As remAs = sgw.createAppServer("testas", rc, rKey, trModType);
 
@@ -1459,7 +1506,7 @@ public class SgFSMTest {
 
         TrafficModeType trModType = parmFactory.createTrafficModeType(TrafficModeType.Override);
         LocalRKIdentifier lRkId = parmFactory.createLocalRKIdentifier(1);
-        RoutingKey rKey = parmFactory.createRoutingKey(lRkId, rc, null, null, dpc, servInds, null);
+        parmFactory.createRoutingKey(lRkId, rc, null, null, dpc, servInds, null);
 
         AsImpl remAs = (AsImpl) serverM3UAMgmt.createAs("testas", Functionality.SGW, ExchangeType.SE, null, rc, trModType, 1,
                 null);
@@ -1635,11 +1682,10 @@ public class SgFSMTest {
     class TestAssociation implements Association {
 
         private AssociationListener associationListener = null;
-        private String name = null;
         private LinkedList<M3UAMessage> messageRxFromUserPart = new LinkedList<M3UAMessage>();
 
         TestAssociation(String name) {
-            this.name = name;
+            //this.name = name;
         }
 
         M3UAMessage txPoll() {
@@ -1772,18 +1818,11 @@ public class SgFSMTest {
             // TODO Auto-generated method stub
             return null;
         }
-
-        @Override
-        public int getCongestionLevel() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
     }
 
     class NettyTransportManagement implements Management {
 
-        private FastMap<String, Association> associations = new FastMap<String, Association>();
+        private ConcurrentHashMap<String, Association> associations = new ConcurrentHashMap<String, Association>();
 
         @Override
         public Association addAssociation(String hostAddress, int hostPort, String peerAddress, int peerPort, String assocName)
@@ -1813,7 +1852,7 @@ public class SgFSMTest {
 
         @Override
         public Map<String, Association> getAssociations() {
-            return associations.unmodifiable();
+            return associations;
         }
 
         @Override
@@ -1832,16 +1871,6 @@ public class SgFSMTest {
         }
 
         @Override
-        public int getWorkerThreads() {
-            return 0;
-        }
-
-        @Override
-        public boolean isSingleThread() {
-            return false;
-        }
-
-        @Override
         public void removeAssociation(String assocName) throws Exception {
 
         }
@@ -1853,18 +1882,6 @@ public class SgFSMTest {
 
         @Override
         public void setConnectDelay(int connectDelay) {
-
-        }
-
-        @Override
-        public void setSingleThread(boolean arg0) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void setWorkerThreads(int arg0) {
-            // TODO Auto-generated method stub
 
         }
 
@@ -1901,19 +1918,6 @@ public class SgFSMTest {
         @Override
         public void stopServer(String arg0) throws Exception {
             // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public String getPersistDir() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void setPersistDir(String arg0) {
-            // TODO Auto-generated method stub
-
         }
 
         @Override
@@ -1944,7 +1948,7 @@ public class SgFSMTest {
         }
 
         @Override
-        public void addManagementEventListener(ManagementEventListener arg0) {
+        public void addManagementEventListener(UUID key,ManagementEventListener arg0) {
             // TODO Auto-generated method stub
 
         }
@@ -1963,7 +1967,7 @@ public class SgFSMTest {
         }
 
         @Override
-        public void removeManagementEventListener(ManagementEventListener arg0) {
+        public void removeManagementEventListener(UUID key) {
             // TODO Auto-generated method stub
 
         }
@@ -1983,78 +1987,6 @@ public class SgFSMTest {
         public boolean isStarted() {
             // TODO Auto-generated method stub
             return false;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_1() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_2() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_3() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_1() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_2() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_3() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_1(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_2(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_3(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_1(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_2(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_3(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
         }
 
         @Override
@@ -2149,20 +2081,7 @@ public class SgFSMTest {
 
         @Override
         public void setOptionSctpInitMaxstreams_MaxOutStreams(Integer arg0) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void addCongestionListener(CongestionListener arg0) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void removeCongestionListener(CongestionListener arg0) {
-            // TODO Auto-generated method stub
-            
+            // TODO Auto-generated method stub   
         }
 
         @Override
@@ -2245,123 +2164,123 @@ public class SgFSMTest {
 
     private class M3UAManagementEventListenerImpl implements M3UAManagementEventListener {
 
-        private FastList<TestEvent> testEvents = new FastList<TestEvent>();
+        private ConcurrentLinkedQueue<TestEvent> testEvents = new ConcurrentLinkedQueue<TestEvent>();
         private int sequence = 0;
 
         @Override
         public void onAsCreated(As as) {
             TestEvent testEvent = new TestEvent(TestEventType.AsCreated, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsDestroyed(As as) {
             TestEvent testEvent = new TestEvent(TestEventType.AsDestroyed, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspFactoryCreated(AspFactory aspFactory) {
             TestEvent testEvent = new TestEvent(TestEventType.AspFactoryCreated, System.currentTimeMillis(),
                     new Object[] { aspFactory }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspFactoryDestroyed(AspFactory aspFactory) {
             TestEvent testEvent = new TestEvent(TestEventType.AspFactoryDestroyed, System.currentTimeMillis(),
                     new Object[] { aspFactory }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspAssignedToAs(As as, Asp asp) {
             TestEvent testEvent = new TestEvent(TestEventType.AspAssignedToAs, System.currentTimeMillis(), new Object[] { as,
                     asp }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspUnassignedFromAs(As as, Asp asp) {
             TestEvent testEvent = new TestEvent(TestEventType.AspUnassignedFromAs, System.currentTimeMillis(), new Object[] {
                     as, asp }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onRemoveAllResources() {
             TestEvent testEvent = new TestEvent(TestEventType.RemoveAllResources, System.currentTimeMillis(), null, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspFactoryStarted(AspFactory aspFactory) {
             TestEvent testEvent = new TestEvent(TestEventType.AspFactoryStarted, System.currentTimeMillis(),
                     new Object[] { aspFactory }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspFactoryStopped(AspFactory aspFactory) {
             TestEvent testEvent = new TestEvent(TestEventType.AspFactoryStopped, System.currentTimeMillis(),
                     new Object[] { aspFactory }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspActive(Asp asp, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AspActive, System.currentTimeMillis(), new Object[] { asp },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspInactive(Asp asp, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { asp },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspDown(Asp asp, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { asp },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsActive(As as, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AsActive, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsPending(As as, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AsPending, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsInactive(As as, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AsInactive, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsDown(As as, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AsDown, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         public boolean validateEvent(TestEvent testEventExpected) {
 
-            TestEvent testEventActual = this.testEvents.removeFirst();
+            TestEvent testEventActual = this.testEvents.poll();
 
             if (testEventActual == null) {
                 return false;
@@ -2369,6 +2288,42 @@ public class SgFSMTest {
 
             return testEventExpected.equals(testEventActual);
 
+        }
+        
+        public boolean validateEvents(TestEvent[][] testEventExpected) {
+        	TestEvent[] testEventActual=new TestEvent[testEventExpected[0].length];
+        	for(int i=0;i<testEventExpected[0].length;i++) {
+        		TestEvent currEvent = this.testEvents.poll();
+    	
+        		if (currEvent == null) {
+    	                return false;
+        		}
+        		
+        	    testEventActual[i]=currEvent;    	       
+        	}
+        	
+        	for(int l=0;l<testEventExpected.length;l++) {
+        		Boolean overallValid=true;        		
+        		for(int i=0;i<testEventExpected[l].length;i++) {
+        			Boolean hasValid=false;
+        			for(int j=0;j<testEventActual.length;j++) {
+		            	if(testEventActual[j].equals(testEventExpected[l][i])) {
+		            		hasValid=true;
+		            		break;
+		            	}
+		            }
+    	            
+    	            if(!hasValid) {
+    	            	overallValid=false;
+    	            	break;
+    	            }
+	        	}
+	            
+	            if(overallValid)
+	            	return true;	            
+        	}
+        	
+        	return false;
         }
 
         @Override

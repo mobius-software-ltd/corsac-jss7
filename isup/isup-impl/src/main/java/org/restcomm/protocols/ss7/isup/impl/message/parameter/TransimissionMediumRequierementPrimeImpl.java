@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TransimissionMediumRequ
  */
 public class TransimissionMediumRequierementPrimeImpl extends AbstractISUPParameter implements
         TransimissionMediumRequierementPrime {
+	private static final long serialVersionUID = 1L;
 
-    public TransimissionMediumRequierementPrimeImpl() {
+	public TransimissionMediumRequierementPrimeImpl() {
         super();
 
     }

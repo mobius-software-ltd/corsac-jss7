@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class CurrentSecurityContextImpl implements CurrentSecurityContext, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_gsmSecurityContextData = 0;
+	public static final int _TAG_gsmSecurityContextData = 0;
     public static final int _TAG_umtsSecurityContextData = 1;
 
     public static final String _PrimitiveName = "CurrentSecurityContext";

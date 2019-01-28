@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -64,7 +59,7 @@ public class TBusySpecificInfoTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         EventSpecificInformationBCSMImpl elem = new EventSpecificInformationBCSMImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         CauseIndicators ci = elem.getTBusySpecificInfo().getBusyCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
@@ -99,7 +94,7 @@ public class TBusySpecificInfoTest {
         // CalledPartyNumberCap forwardingDestinationNumber
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
         CauseIndicators causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
         CauseCap busyCause = new CauseCapImpl(causeIndicators);
@@ -131,5 +126,5 @@ public class TBusySpecificInfoTest {
         assertEquals(copy.getRouteNotPermitted(), original.getRouteNotPermitted());
         assertEquals(copy.getBusyCause().getCauseIndicators().getCauseValue(), original.getBusyCause().getCauseIndicators()
                 .getCauseValue());
-    }
+    }*/
 }

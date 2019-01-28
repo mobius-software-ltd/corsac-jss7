@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -39,8 +36,6 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import static org.testng.Assert.assertEquals;
@@ -189,7 +184,7 @@ public class BasicGapCriteriaTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "gap" })
+    /*@Test(groups = { "functional.xml.serialize", "gap" })
     public void testXMLSerialize() throws Exception {
 
         GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
@@ -258,6 +253,5 @@ public class BasicGapCriteriaTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
-
+    }*/
 }

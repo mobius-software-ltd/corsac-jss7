@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javolution.xml.XMLSerializable;
-
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
 import org.restcomm.protocols.ss7.sccp.parameter.EncodingScheme;
 import org.restcomm.protocols.ss7.sccp.parameter.EncodingSchemeType;
@@ -36,7 +34,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.EncodingSchemeType;
  * @author baranowb
  * @author sergey vetyutnev
  */
-public class DefaultEncodingScheme implements EncodingScheme, XMLSerializable {
+public class DefaultEncodingScheme implements EncodingScheme {
     public static final EncodingScheme INSTANCE = new DefaultEncodingScheme();
     public static final int SCHEMA_CODE = 0;
 

@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
  *
  */
 public class ISUPEvent extends EventObject {
+	private static final long serialVersionUID = 1L;
 
-    protected final ISUPMessage message;
+	protected final ISUPMessage message;
     private int dpc;
 
     /**

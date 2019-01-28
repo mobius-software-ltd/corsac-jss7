@@ -21,12 +21,12 @@
  */
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import javolution.util.FastMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author amit bhayani
  *
  */
-public class RemoteSubSystemMap<Integer, RemoteSubSystemImpl> extends FastMap<Integer, RemoteSubSystemImpl> {
-
+public class RemoteSubSystemMap extends ConcurrentHashMap<Integer, RemoteSubSystemImpl> {
+	private static final long serialVersionUID = 1L;
 }

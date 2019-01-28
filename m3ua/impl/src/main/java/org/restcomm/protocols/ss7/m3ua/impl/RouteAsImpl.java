@@ -21,10 +21,6 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.m3ua.As;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
@@ -38,10 +34,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
  * @author amit bhayani
  *
  */
-public class RouteAsImpl implements XMLSerializable, RouteAs {
-
-    private static final String TRAFFIC_MODE_TYPE = "trafficModeType";
-    private static final String AS_ARRAY = "as";
+public class RouteAsImpl implements RouteAs {
 
     private M3UAManagementImpl m3uaManagement;
     private As[] asArray = null;
@@ -95,7 +88,6 @@ public class RouteAsImpl implements XMLSerializable, RouteAs {
         for (int count = 0; count < asArray.length; count++) {
             if (asArray[count] == null) {
                 asArray[count] = asImpl;
-                this.m3uaManagement.store();
                 return;
             }
         }
@@ -188,43 +180,6 @@ public class RouteAsImpl implements XMLSerializable, RouteAs {
     public As[] getAsArray() {
         return this.asArray;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<RouteAsImpl> AS_XML = new XMLFormat<RouteAsImpl>(RouteAsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, RouteAsImpl routeAs) throws XMLStreamException {
-            int trafficMode = xml.getAttribute(TRAFFIC_MODE_TYPE, TrafficModeType.Loadshare);
-            routeAs.trafficModeType = new TrafficModeTypeImpl(trafficMode);
-            routeAs.asArraytemp = xml.getAttribute(AS_ARRAY, "");
-        }
-
-        @Override
-        public void write(RouteAsImpl routeAs, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(TRAFFIC_MODE_TYPE, routeAs.trafficModeType.getMode());
-
-            As[] asList = routeAs.asArray;
-            StringBuffer sb = new StringBuffer();
-            for (int count = 0; count < asList.length; count++) {
-                AsImpl asImpl = (AsImpl) asList[count];
-                if (asImpl != null) {
-                    sb.append(asImpl.getName()).append(",");
-                }
-            }
-
-            String value = sb.toString();
-
-            if (!value.equals("")) {
-                // remove last comma
-                value = value.substring(0, (value.length() - 1));
-            }
-
-            xml.setAttribute(AS_ARRAY, value);
-
-        }
-    };
 
     protected void reset() {
         AsImpl[] asList = new AsImpl[this.m3uaManagement.getMaxAsForRoute()];

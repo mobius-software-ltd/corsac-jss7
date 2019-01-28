@@ -23,16 +23,13 @@
 package org.restcomm.protocols.ss7.sccp.impl.router;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-
-import javolution.util.FastMap;
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
+import java.util.Map.Entry;
 
 import org.restcomm.protocols.ss7.sccp.Mtp3Destination;
 import org.restcomm.protocols.ss7.sccp.Mtp3ServiceAccessPoint;
-import org.restcomm.protocols.ss7.sccp.impl.oam.SccpOAMMessage;
+import org.restcomm.protocols.ss7.sccp.impl.SccpOAMMessage;
 
 /**
  *
@@ -40,15 +37,7 @@ import org.restcomm.protocols.ss7.sccp.impl.oam.SccpOAMMessage;
  * @author Amit Bhayani
  *
  */
-public class Mtp3ServiceAccessPointImpl implements Mtp3ServiceAccessPoint, XMLSerializable {
-    private static final String MTP3_ID = "mtp3Id";
-    private static final String OPC = "opc";
-    private static final String NI = "ni";
-    private static final String NETWORK_ID = "networkId";
-    private static final String LOCAL_GT_DIGITS = "localGtDigits";
-
-    private static final String STRING_EMPTY = null;
-
+public class Mtp3ServiceAccessPointImpl implements Mtp3ServiceAccessPoint {
     private int mtp3Id;
     private int opc;
     private int ni;
@@ -56,7 +45,7 @@ public class Mtp3ServiceAccessPointImpl implements Mtp3ServiceAccessPoint, XMLSe
     private int networkId;
     private String localGtDigits;
 
-    private Mtp3DestinationMap<Integer, Mtp3Destination> dpcList = new Mtp3DestinationMap<Integer, Mtp3Destination>();
+    private Mtp3DestinationMap dpcList = new Mtp3DestinationMap();
 
     public Mtp3ServiceAccessPointImpl() {
     }
@@ -120,13 +109,7 @@ public class Mtp3ServiceAccessPointImpl implements Mtp3ServiceAccessPoint, XMLSe
         }
 
         Mtp3DestinationImpl dest = new Mtp3DestinationImpl(firstDpc, lastDpc, firstSls, lastSls, slsMask);
-
-        synchronized (this) {
-            Mtp3DestinationMap<Integer, Mtp3Destination> newDpcList = new Mtp3DestinationMap<Integer, Mtp3Destination>();
-            newDpcList.putAll(this.dpcList);
-            newDpcList.put(destId, dest);
-            this.dpcList = newDpcList;
-        }
+        this.dpcList.put(destId, dest);        
     }
 
     public void modifyMtp3Destination(int destId, int firstDpc, int lastDpc, int firstSls, int lastSls, int slsMask)
@@ -136,13 +119,7 @@ public class Mtp3ServiceAccessPointImpl implements Mtp3ServiceAccessPoint, XMLSe
         }
 
         Mtp3DestinationImpl dest = new Mtp3DestinationImpl(firstDpc, lastDpc, firstSls, lastSls, slsMask);
-
-        synchronized (this) {
-            Mtp3DestinationMap<Integer, Mtp3Destination> newDpcList = new Mtp3DestinationMap<Integer, Mtp3Destination>();
-            newDpcList.putAll(this.dpcList);
-            newDpcList.put(destId, dest);
-            this.dpcList = newDpcList;
-        }
+        this.dpcList.put(destId, dest);
     }
 
     public void removeMtp3Destination(int destId) throws Exception {
@@ -151,25 +128,22 @@ public class Mtp3ServiceAccessPointImpl implements Mtp3ServiceAccessPoint, XMLSe
             throw new Exception(String.format(SccpOAMMessage.DEST_DOESNT_EXIST, this.stackName));
         }
 
-        synchronized (this) {
-            Mtp3DestinationMap<Integer, Mtp3Destination> newDpcList = new Mtp3DestinationMap<Integer, Mtp3Destination>();
-            newDpcList.putAll(this.dpcList);
-            newDpcList.remove(destId);
-            this.dpcList = newDpcList;
-        }
+        this.dpcList.remove(destId);
     }
 
     public boolean matches(int dpc, int sls) {
-        for (FastMap.Entry<Integer, Mtp3Destination> e = this.dpcList.head(), end = this.dpcList.tail(); (e = e.getNext()) != end;) {
-            if (e.getValue().match(dpc, sls))
+    	Iterator<Mtp3Destination> iterator=this.dpcList.values().iterator();
+        while(iterator.hasNext()) {
+            if (iterator.next().match(dpc, sls))
                 return true;
         }
         return false;
     }
 
     public boolean matches(int dpc) {
-        for (FastMap.Entry<Integer, Mtp3Destination> e = this.dpcList.head(), end = this.dpcList.tail(); (e = e.getNext()) != end;) {
-            if (e.getValue().match(dpc))
+    	Iterator<Mtp3Destination> iterator=this.dpcList.values().iterator();
+        while(iterator.hasNext()) {
+            if (iterator.next().match(dpc))
                 return true;
         }
         return false;
@@ -183,9 +157,11 @@ public class Mtp3ServiceAccessPointImpl implements Mtp3ServiceAccessPoint, XMLSe
                 .append(", dpcList=[");
 
         boolean isFirst = true;
-        for (FastMap.Entry<Integer, Mtp3Destination> e = this.dpcList.head(), end = this.dpcList.tail(); (e = e.getNext()) != end;) {
-            Integer id = e.getKey();
-            Mtp3Destination dest = e.getValue();
+        Iterator<Entry<Integer,Mtp3Destination>> iterator=this.dpcList.entrySet().iterator();
+        while(iterator.hasNext()) {
+        	Entry<Integer,Mtp3Destination> currEntry=iterator.next();
+            Integer id = currEntry.getKey();
+            Mtp3Destination dest = currEntry.getValue();
             if (isFirst)
                 isFirst = false;
             else
@@ -200,31 +176,4 @@ public class Mtp3ServiceAccessPointImpl implements Mtp3ServiceAccessPoint, XMLSe
 
         return sb.toString();
     }
-
-    protected static final XMLFormat<Mtp3ServiceAccessPointImpl> XML = new XMLFormat<Mtp3ServiceAccessPointImpl>(
-            Mtp3ServiceAccessPointImpl.class) {
-
-        public void write(Mtp3ServiceAccessPointImpl sap, OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(MTP3_ID, sap.mtp3Id);
-            xml.setAttribute(OPC, sap.opc);
-            xml.setAttribute(NI, sap.ni);
-            xml.setAttribute(NETWORK_ID, sap.networkId);
-            if (sap.localGtDigits != null)
-                xml.setAttribute(LOCAL_GT_DIGITS, sap.localGtDigits);
-
-            xml.add(sap.dpcList);
-        }
-
-        public void read(InputElement xml, Mtp3ServiceAccessPointImpl sap) throws XMLStreamException {
-            sap.mtp3Id = xml.getAttribute(MTP3_ID).toInt();
-            sap.opc = xml.getAttribute(OPC).toInt();
-            sap.ni = xml.getAttribute(NI).toInt();
-            sap.networkId = xml.getAttribute(NETWORK_ID, 0);
-            String vals = xml.getAttribute(LOCAL_GT_DIGITS, STRING_EMPTY);
-            if (vals != null)
-                sap.localGtDigits = vals;
-
-            sap.dpcList = xml.getNext();
-        }
-    };
 }

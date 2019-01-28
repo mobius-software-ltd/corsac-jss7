@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledNumber;
 
@@ -39,14 +36,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledNumber;
  *
  */
 public abstract class CalledNumberImpl extends AbstractNAINumber implements CalledNumber {
+	private static final long serialVersionUID = 1L;
 
-    private static final String NUMBERING_PLAN_INDICATOR = "numberingPlanIndicator";
-    private static final String ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR = "addressRepresentationRestrictedIndicator";
-
-    private static final int DEFAULT_NUMBERING_PLAN_INDICATOR = 0;
-    private static final int DEFAULT_ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR = 0;
-
-    protected int numberingPlanIndicator;
+	protected int numberingPlanIndicator;
     protected int addressRepresentationRestrictedIndicator;
 
     public CalledNumberImpl(byte[] representation) throws ParameterException {
@@ -147,29 +139,4 @@ public abstract class CalledNumberImpl extends AbstractNAINumber implements Call
                 + ", natureOfAddresIndicator=" + natureOfAddresIndicator + ", oddFlag=" + oddFlag + ", address=" + address
                 + "]";
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CalledNumberImpl> ISUP_CALLED_NUMBER_XML = new XMLFormat<CalledNumberImpl>(
-            CalledNumberImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CalledNumberImpl calledNumber) throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.read(xml, calledNumber);
-
-            calledNumber.numberingPlanIndicator = xml.getAttribute(NUMBERING_PLAN_INDICATOR, DEFAULT_NUMBERING_PLAN_INDICATOR);
-            calledNumber.addressRepresentationRestrictedIndicator = xml.getAttribute(
-                    ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR, DEFAULT_ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR);
-        }
-
-        @Override
-        public void write(CalledNumberImpl calledNumber, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.write(calledNumber, xml);
-
-            xml.setAttribute(NUMBERING_PLAN_INDICATOR, calledNumber.numberingPlanIndicator);
-            xml.setAttribute(ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR, calledNumber.addressRepresentationRestrictedIndicator);
-        }
-    };
-
 }

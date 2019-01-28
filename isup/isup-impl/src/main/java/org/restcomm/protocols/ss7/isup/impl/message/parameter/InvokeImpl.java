@@ -40,7 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Parameter;
  *
  */
 public class InvokeImpl extends AbstractRemoteOperation implements Invoke {
-    // mandatory
+	private static final long serialVersionUID = 1L;
+
+	// mandatory
     private Long invokeId;
     // optional
     private Long linkedId;

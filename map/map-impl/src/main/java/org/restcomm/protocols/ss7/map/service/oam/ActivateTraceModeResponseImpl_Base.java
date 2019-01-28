@@ -45,7 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 *
 */
 public class ActivateTraceModeResponseImpl_Base extends MessageImpl implements ActivateTraceModeResponse_Base, MAPAsnPrimitive {
-    public static final int _ID_extensionContainer = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_extensionContainer = 0;
     public static final int _ID_traceSupportIndicator = 1;
 
     public static final String _PrimitiveName = "ActivateTraceModeResponse";

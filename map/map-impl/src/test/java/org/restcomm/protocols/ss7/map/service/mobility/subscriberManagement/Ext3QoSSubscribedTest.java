@@ -24,16 +24,9 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext3QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateExtendedImpl;
@@ -108,7 +101,7 @@ public class Ext3QoSSubscribedTest {
         assertEquals(asn.toByteArray(), this.getData2());
     }
     
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(16000, false);
@@ -134,5 +127,5 @@ public class Ext3QoSSubscribedTest {
         assertEquals(copy.getGuaranteedBitRateForUplinkExtended().getBitRate(), original.getGuaranteedBitRateForUplinkExtended().getBitRate());
         assertEquals(copy.getMaximumBitRateForUplinkExtended().getBitRate(), original.getMaximumBitRateForUplinkExtended().getBitRate());
 
-    }
+    }*/
 }

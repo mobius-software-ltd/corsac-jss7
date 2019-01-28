@@ -43,7 +43,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Basi
 *
 */
 public class CallBarringFeatureImpl extends SequenceBase implements CallBarringFeature {
-    public static final int _ID_ssStatus = 4;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_ssStatus = 4;
 
     private BasicServiceCode basicService;
     private SSStatus ssStatus;

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.BackwardGVNS;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class BackwardGVNSImpl extends AbstractISUPParameter implements BackwardGVNS {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] backwardGVNS = null;
+	private byte[] backwardGVNS = null;
 
     public BackwardGVNSImpl(byte[] backwardGVNS) throws ParameterException {
         super();

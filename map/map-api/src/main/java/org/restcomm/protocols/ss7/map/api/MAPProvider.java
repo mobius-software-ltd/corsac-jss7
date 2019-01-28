@@ -23,8 +23,7 @@
 package org.restcomm.protocols.ss7.map.api;
 
 import java.io.Serializable;
-
-import javolution.util.FastMap;
+import java.util.UUID;
 
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageFactory;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.MAPServiceCallHandling;
@@ -34,7 +33,6 @@ import org.restcomm.protocols.ss7.map.api.service.oam.MAPServiceOam;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.MAPServicePdpContextActivation;
 import org.restcomm.protocols.ss7.map.api.service.sms.MAPServiceSms;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPServiceSupplementary;
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 
 /**
  *
@@ -50,14 +48,14 @@ public interface MAPProvider extends Serializable {
      *
      * @param mapDialogListener
      */
-    void addMAPDialogListener(MAPDialogListener mapDialogListener);
+    void addMAPDialogListener(UUID key,MAPDialogListener mapDialogListener);
 
     /**
      * Remove MAP DIalog Listener from the stack
      *
      * @param mapDialogListener
      */
-    void removeMAPDialogListener(MAPDialogListener mapDialogListener);
+    void removeMAPDialogListener(UUID key);
 
     /**
      * Get the {@link MAPParameterFactory}
@@ -100,51 +98,6 @@ public interface MAPProvider extends Serializable {
     MAPServiceSms getMAPServiceSms();
 
     MAPServiceLsm getMAPServiceLsm();
-
-    /**
-     * The collection of netwokIds that are marked as prohibited or congested.
-     *
-     * @return The collection of pairs: netwokId value - NetworkIdState (prohibited / congested state)
-     */
-    FastMap<Integer, NetworkIdState> getNetworkIdStateList();
-
-    /**
-     * Returns the state of availability / congestion for a networkId subnetwork. Returns null if there is no info (we need to
-     * treat it as available)
-     *
-     * @param networkId
-     * @return
-     */
-    NetworkIdState getNetworkIdState(int networkId);
-
-    /**
-     * Setting of a congestion level for a TCAP user "congObject"
-     *
-     * @param congObject a String with the name of an object
-     * @param level a congestion level for this object
-     */
-    void setUserPartCongestionLevel(String congObject, int level);
-
-    /**
-     * Returns a congestion level of a Memory congestion monitor
-     *
-     * @return
-     */
-    int getMemoryCongestionLevel();
-
-    /**
-     * Returns a congestion level of thread Executors for processing of incoming messages
-     *
-     * @return
-     */
-    int getExecutorCongestionLevel();
-
-    /**
-     * Returns a max congestion level for UserPartCongestion, MemoryCongestion and ExecutorCongestionLevel
-     *
-     * @return
-     */
-    int getCumulativeCongestionLevel();
 
     /**
      * @return current count of active TCAP dialogs

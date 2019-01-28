@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 
@@ -36,15 +33,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
  * @author sergey vetyutnev
  */
 public class RedirectionInformationImpl extends AbstractISUPParameter implements RedirectionInformation {
+	private static final long serialVersionUID = 1L;
 
-    private static final String REDIRECTING_INDICATOR = "redirectingIndicator";
-    private static final String ORIGINAL_REDIRECTION_REASON = "originalRedirectionReason";
-    private static final String REDIRECTION_COUNTER = "redirectionCounter";
-    private static final String REDIRECTION_REASON = "redirectionReason";
-
-    private static final int DEFAULT_INT_VALUE = 0;
-
-    private int redirectingIndicator;
+	private int redirectingIndicator;
     private int originalRedirectionReason;
     private int redirectionCounter;
     private int redirectionReason;
@@ -136,29 +127,4 @@ public class RedirectionInformationImpl extends AbstractISUPParameter implements
 
         return _PARAMETER_CODE;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<RedirectionInformationImpl> ISUP_REDIRECTION_INFORMATION_XML = new XMLFormat<RedirectionInformationImpl>(
-            RedirectionInformationImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, RedirectionInformationImpl redirectionInformation)
-                throws XMLStreamException {
-            redirectionInformation.redirectingIndicator = xml.getAttribute(REDIRECTING_INDICATOR, DEFAULT_INT_VALUE);
-            redirectionInformation.originalRedirectionReason = xml.getAttribute(ORIGINAL_REDIRECTION_REASON, DEFAULT_INT_VALUE);
-            redirectionInformation.redirectionCounter = xml.getAttribute(REDIRECTION_COUNTER, DEFAULT_INT_VALUE);
-            redirectionInformation.redirectionReason = xml.getAttribute(REDIRECTION_REASON, DEFAULT_INT_VALUE);
-        }
-
-        @Override
-        public void write(RedirectionInformationImpl redirectionInformation, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(REDIRECTING_INDICATOR, redirectionInformation.redirectingIndicator);
-            xml.setAttribute(ORIGINAL_REDIRECTION_REASON, redirectionInformation.originalRedirectionReason);
-            xml.setAttribute(REDIRECTION_COUNTER, redirectionInformation.redirectionCounter);
-            xml.setAttribute(REDIRECTION_REASON, redirectionInformation.redirectionReason);
-        }
-    };
 }

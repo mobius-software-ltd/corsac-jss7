@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -113,7 +108,7 @@ public class UUDataTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         UUIndicator uuIndicator = new UUIndicatorImpl(140);
@@ -165,6 +160,5 @@ public class UUDataTest {
         assertEquals(copy.getUUI().getData(), original.getUUI().getData());
         assertEquals(copy.getUusCFInteraction(), original.getUusCFInteraction());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(copy.getExtensionContainer()));
-    }
-
+    }*/
 }

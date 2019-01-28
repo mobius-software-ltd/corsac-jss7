@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,14 +42,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
  *
  */
 public class AddressStringImpl implements AddressString, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String NAI = "nai";
-    private static final String NPI = "npi";
-    private static final String NUMBER = "number";
-
-    private static final String DEFAULT_STRING_VALUE = null;
-
-    protected int NO_EXTENSION_MASK = 0x80;
+	protected int NO_EXTENSION_MASK = 0x80;
     protected int NATURE_OF_ADD_IND_MASK = 0x70;
     protected int NUMBERING_PLAN_IND_MASK = 0x0F;
 
@@ -243,35 +235,4 @@ public class AddressStringImpl implements AddressString, MAPAsnPrimitive {
             return false;
         return true;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<AddressStringImpl> ADDRESS_STRING_XML = new XMLFormat<AddressStringImpl>(
-            AddressStringImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, AddressStringImpl addressStringImpl)
-                throws XMLStreamException {
-            addressStringImpl.address = xml.getAttribute(NUMBER, "");
-
-            String nai = xml.getAttribute(NAI, DEFAULT_STRING_VALUE);
-            String npi = xml.getAttribute(NPI, DEFAULT_STRING_VALUE);
-            if (nai != null) {
-                addressStringImpl.addressNature = Enum.valueOf(AddressNature.class, nai);
-            }
-            if (npi != null) {
-                addressStringImpl.numberingPlan = Enum.valueOf(NumberingPlan.class, npi);
-            }
-        }
-
-        @Override
-        public void write(AddressStringImpl addressStringImpl, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            xml.setAttribute(NUMBER, addressStringImpl.address);
-            xml.setAttribute(NAI, addressStringImpl.addressNature.toString());
-            xml.setAttribute(NPI, addressStringImpl.numberingPlan.toString());
-        }
-    };
 }

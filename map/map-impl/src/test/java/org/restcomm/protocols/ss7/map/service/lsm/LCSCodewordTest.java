@@ -76,7 +76,7 @@ public class LCSCodewordTest {
                 (byte) 0x86, (byte) 0xc3, 0x65, 0x6e, 0x72, (byte) 0xfb, 0x1c, (byte) 0x86, (byte) 0xc3, 0x65 };
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         LCSCodewordImpl lcsCodeword = new LCSCodewordImpl();
         lcsCodeword.decodeAll(asn);

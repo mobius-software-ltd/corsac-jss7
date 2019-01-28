@@ -48,7 +48,9 @@ import java.io.InputStream;
  *
  */
 public class MessageFactoryImpl implements MessageFactory {
-    private static final Logger logger = Logger.getLogger(MessageFactoryImpl.class);
+	private static final long serialVersionUID = 1L;
+
+	private static final Logger logger = Logger.getLogger(MessageFactoryImpl.class);
 
     private transient SccpStackImpl sccpStackImpl;
 

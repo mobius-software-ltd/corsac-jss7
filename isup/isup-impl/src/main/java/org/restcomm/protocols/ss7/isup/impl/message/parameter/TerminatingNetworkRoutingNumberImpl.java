@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TerminatingNetworkRouti
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class TerminatingNetworkRoutingNumberImpl extends AbstractNumber implements TerminatingNetworkRoutingNumber {
+	private static final long serialVersionUID = 1L;
 
-    // FIXME: shoudl we add max octets ?
+	// FIXME: shoudl we add max octets ?
     private int tnrnLengthIndicator;
     private int numberingPlanIndicator;
     private int natureOfAddressIndicator;

@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class LCSPrivacyCheckImpl extends SequenceBase implements LCSPrivacyCheck {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_CALL_SESSION_UNRELATED = 0;
+	private static final int _TAG_CALL_SESSION_UNRELATED = 0;
     private static final int _TAG_CALL_SESSION_RELATED = 1;
 
     private PrivacyCheckRelatedAction callSessionUnrelated;

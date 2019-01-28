@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.sccp;
 
 import java.io.IOException;
 import java.io.Serializable;
-
-import javolution.util.FastMap;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.sccp.message.MessageFactory;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
@@ -34,7 +34,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.ss7.congestion.ExecutorCongestionMonitor;
 
 /**
  *
@@ -70,9 +69,9 @@ public interface SccpProvider extends Serializable {
      */
     void deregisterSccpListener(int ssn);
 
-    void registerManagementEventListener(SccpManagementEventListener listener);
+    void registerManagementEventListener(UUID key,SccpManagementEventListener listener);
 
-    void deregisterManagementEventListener(SccpManagementEventListener listener);
+    void deregisterManagementEventListener(UUID key);
 
     /**
      * Sends message.
@@ -107,33 +106,12 @@ public interface SccpProvider extends Serializable {
      */
     void coordRequest(int ssn);
 
-    /**
-     * The collection of netwokIds that are marked as prohibited or congested.
-     *
-     * @return The collection of pairs: netwokId value - NetworkIdState (prohibited / congested state)
-     */
-    FastMap<Integer, NetworkIdState> getNetworkIdStateList();
-
-    /**
-     * @return ExecutorCongestionMonitor list that are responsible for measuring of congestion of the thread Executor that
-     *         processes incoming messages at mtp3 levels
-     */
-    ExecutorCongestionMonitor[] getExecutorCongestionMonitorList();
-
     SccpConnection newConnection(int localSsn, ProtocolClass protocolClass) throws MaxConnectionCountReached;
 
-    FastMap<LocalReference, SccpConnection> getConnections();
+    ConcurrentHashMap<LocalReference, SccpConnection> getConnections();
 
     /**
      * @return SCCP stack
      */
     SccpStack getSccpStack();
-    /**
-     * Update Signaling Point congestion status
-     * @return
-     */
-
-    void updateSPCongestion(Integer ssn, Integer congestionLevel);
-
-
 }

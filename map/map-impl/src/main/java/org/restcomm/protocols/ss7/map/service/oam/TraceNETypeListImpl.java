@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class TraceNETypeListImpl extends BitStringBase implements TraceNETypeList {
-    static final int _ID_mscS = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_mscS = 0;
     static final int _ID_mgw = 1;
     static final int _ID_sgsn = 2;
     static final int _ID_ggsn = 3;

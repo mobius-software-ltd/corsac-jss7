@@ -49,7 +49,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Basi
 *
 */
 public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements RegisterSSRequest {
-    protected static final int _TAG_forwardedToNumber = 4;
+	private static final long serialVersionUID = 1L;
+
+	protected static final int _TAG_forwardedToNumber = 4;
     protected static final int _TAG_forwardedToSubaddress = 6;
     protected static final int _TAG_noReplyConditionTime = 5;
     protected static final int _TAG_defaultPriority = 7;

@@ -40,10 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Reject;
  *
  */
 public class RejectImpl extends AbstractRemoteOperation implements Reject {
+	private static final long serialVersionUID = 1L;
 
-    // all are mandatory
-
-    // this can actaully be null in this case.
+	// this can actaully be null in this case.
     private Long invokeId;
 
     private Problem problem;

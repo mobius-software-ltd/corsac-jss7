@@ -48,7 +48,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  */
 public class RedirectBackwardInformationImpl extends AbstractInformationParameterBaseImpl implements
         RedirectBackwardInformation {
-    private static final Map<Integer, Class<? extends AbstractInformationImpl>> tagMapping;
+	private static final long serialVersionUID = 1L;
+
+	private static final Map<Integer, Class<? extends AbstractInformationImpl>> tagMapping;
 
     static{
         Map<Integer, Class<? extends AbstractInformationImpl>> tmp = new HashMap<Integer, Class<? extends AbstractInformationImpl>>();

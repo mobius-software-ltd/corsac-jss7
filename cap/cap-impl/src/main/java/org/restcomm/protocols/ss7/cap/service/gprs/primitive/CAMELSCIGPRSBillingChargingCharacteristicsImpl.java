@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  */
 public class CAMELSCIGPRSBillingChargingCharacteristicsImpl extends SequenceBase implements
         CAMELSCIGPRSBillingChargingCharacteristics {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_aocGPRS = 0;
+	public static final int _ID_aocGPRS = 0;
     public static final int _ID_pdpID = 1;
 
     private AOCGPRS aocGPRS;

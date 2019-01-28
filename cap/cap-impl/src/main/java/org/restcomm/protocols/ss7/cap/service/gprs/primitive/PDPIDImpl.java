@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class PDPIDImpl extends OctetStringLength1Base implements PDPID {
+	private static final long serialVersionUID = 1L;
 
-    public PDPIDImpl() {
+	public PDPIDImpl() {
         super("PDPID");
     }
 

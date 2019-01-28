@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author kulikov
  */
 public class TxQueue {
-    private ArrayList<byte[]> queue = new ArrayList();
+    private ArrayList<byte[]> queue = new ArrayList<byte[]>();
 
     public boolean isEmpty() {
         return queue.isEmpty();

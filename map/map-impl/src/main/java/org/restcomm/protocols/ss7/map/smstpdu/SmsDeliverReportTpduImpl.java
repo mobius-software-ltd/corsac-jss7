@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
  *
  */
 public class SmsDeliverReportTpduImpl extends SmsTpduImpl implements SmsDeliverReportTpdu {
+	private static final long serialVersionUID = 1L;
 
-    private boolean userDataHeaderIndicator;
+	private boolean userDataHeaderIndicator;
     private FailureCause failureCause;
     private ParameterIndicator parameterIndicator;
     private ProtocolIdentifier protocolIdentifier;
@@ -191,7 +192,14 @@ public class SmsDeliverReportTpduImpl extends SmsTpduImpl implements SmsDeliverR
             res.write(this.userData.getEncodedData());
         }
 
-        return res.toByteArray();
+        byte[] output=res.toByteArray();
+        try {
+        	res.close();
+        }
+        catch(IOException ex) {
+        	
+        }
+        return output;
     }
 
     @Override

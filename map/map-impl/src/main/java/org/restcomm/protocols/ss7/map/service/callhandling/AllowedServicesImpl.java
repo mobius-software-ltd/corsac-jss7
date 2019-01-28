@@ -41,7 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class AllowedServicesImpl implements AllowedServices, MAPAsnPrimitive {
-    private static final int _INDEX_FirstServiceAllowed = 0;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _INDEX_FirstServiceAllowed = 0;
     private static final int _INDEX_SecondServiceAllowed = 1;
 
     private static final String _PrimitiveName = "AllowedServices";

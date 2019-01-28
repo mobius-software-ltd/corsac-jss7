@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,8 +58,9 @@ import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberIm
  */
 public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageImpl implements
         InitiateCallAttemptRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_destinationRoutingAddress = 0;
+	public static final int _ID_destinationRoutingAddress = 0;
     public static final int _ID_extensions = 4;
     public static final int _ID_legToBeCreated = 5;
     public static final int _ID_newCallSegment = 6;
@@ -70,15 +68,6 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     public static final int _ID_callReferenceNumber = 51;
     public static final int _ID_gsmSCFAddress = 52;
     public static final int _ID_suppressTCsi = 53;
-
-    private static final String DESTINATION_ROUTING_ADDRESS = "destinationRoutingAddress";
-    private static final String EXTENSIONS = "extensions";
-    private static final String LEG_TO_BECREATED = "legToBeCreated";
-    private static final String NEW_CALL_SEGMENT = "newCallSegment";
-    private static final String CALLING_PARTY_NUMBER = "callingPartyNumber";
-    private static final String CALL_REFERENCE_NUMBER = "callReferenceNumber";
-    private static final String GSM_SCF_ADDRESS = "gsmSCFAddress";
-    private static final String SUPPRESS_TCSI = "suppressTCsi";
 
     public static final String _PrimitiveName = "InitiateCallAttemptIndication";
 
@@ -340,59 +329,6 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<InitiateCallAttemptRequestImpl> CONNECT_REQUEST_XML = new XMLFormat<InitiateCallAttemptRequestImpl>(
-            InitiateCallAttemptRequestImpl.class) {
-
-        public void read(javolution.xml.XMLFormat.InputElement xml,
-                InitiateCallAttemptRequestImpl initiateCallAttemptRequest) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, initiateCallAttemptRequest);
-
-            initiateCallAttemptRequest.destinationRoutingAddress = xml.get(DESTINATION_ROUTING_ADDRESS,
-                    DestinationRoutingAddressImpl.class);
-            initiateCallAttemptRequest.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-            initiateCallAttemptRequest.legToBeCreated = xml.get(LEG_TO_BECREATED, LegIDImpl.class);
-            initiateCallAttemptRequest.newCallSegment = xml.get(NEW_CALL_SEGMENT, Integer.class);
-            initiateCallAttemptRequest.callingPartyNumber = xml.get(CALLING_PARTY_NUMBER,
-                    CallingPartyNumberCapImpl.class);
-            initiateCallAttemptRequest.callReferenceNumber = xml.get(CALL_REFERENCE_NUMBER,
-                    CallReferenceNumberImpl.class);
-            initiateCallAttemptRequest.gsmSCFAddress = xml.get(GSM_SCF_ADDRESS, ISDNAddressStringImpl.class);
-            Boolean bval = xml.get(SUPPRESS_TCSI, Boolean.class);
-            if (bval != null)
-                initiateCallAttemptRequest.suppressTCsi = bval;
-        }
-
-        public void write(InitiateCallAttemptRequestImpl initiateCallAttemptRequest,
-                javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(initiateCallAttemptRequest, xml);
-
-            if (initiateCallAttemptRequest.getDestinationRoutingAddress() != null)
-                xml.add((DestinationRoutingAddressImpl) initiateCallAttemptRequest.getDestinationRoutingAddress(),
-                        DESTINATION_ROUTING_ADDRESS, DestinationRoutingAddressImpl.class);
-            if (initiateCallAttemptRequest.getExtensions() != null)
-                xml.add((CAPExtensionsImpl) initiateCallAttemptRequest.getExtensions(), EXTENSIONS,
-                        CAPExtensionsImpl.class);
-            if (initiateCallAttemptRequest.getLegToBeCreated() != null)
-                xml.add((LegIDImpl) initiateCallAttemptRequest.getLegToBeCreated(), LEG_TO_BECREATED, LegIDImpl.class);
-            if (initiateCallAttemptRequest.getNewCallSegment() != null)
-                xml.add((Integer) initiateCallAttemptRequest.getNewCallSegment(), NEW_CALL_SEGMENT, Integer.class);
-            if (initiateCallAttemptRequest.getCallingPartyNumber() != null)
-                xml.add((CallingPartyNumberCapImpl) initiateCallAttemptRequest.getCallingPartyNumber(),
-                        CALLING_PARTY_NUMBER, CallingPartyNumberCapImpl.class);
-            if (initiateCallAttemptRequest.getCallReferenceNumber() != null)
-                xml.add((CallReferenceNumberImpl) initiateCallAttemptRequest.getCallReferenceNumber(),
-                        CALL_REFERENCE_NUMBER, CallReferenceNumberImpl.class);
-            if (initiateCallAttemptRequest.getGsmSCFAddress() != null)
-                xml.add((ISDNAddressStringImpl) initiateCallAttemptRequest.getGsmSCFAddress(), GSM_SCF_ADDRESS,
-                        ISDNAddressStringImpl.class);
-            if (initiateCallAttemptRequest.getSuppressTCsi())
-                xml.add(true, SUPPRESS_TCSI, Boolean.class);
-        }
-    };
 
     @Override
     public DestinationRoutingAddress getDestinationRoutingAddress() {

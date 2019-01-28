@@ -46,7 +46,9 @@ public class AccessTransportImpl extends AbstractISUPParameter implements Access
 
     // FIXME: Q763 3.3
 
-    public AccessTransportImpl() {
+    private static final long serialVersionUID = 1L;
+
+	public AccessTransportImpl() {
         super();
 
     }

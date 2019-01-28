@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.Time;
  *
  */
 public class TimeImpl extends OctetStringBase implements Time {
+	private static final long serialVersionUID = 1L;
 
-    private static final long msbZero = 2085978496000L;
+	private static final long msbZero = 2085978496000L;
 
     private static final long msbOne = -2208988800000L;
 

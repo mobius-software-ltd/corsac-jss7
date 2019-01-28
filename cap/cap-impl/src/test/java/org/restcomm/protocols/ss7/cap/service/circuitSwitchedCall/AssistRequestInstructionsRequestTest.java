@@ -57,7 +57,7 @@ public class AssistRequestInstructionsRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         AssistRequestInstructionsRequestImpl elem = new AssistRequestInstructionsRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getCorrelationID().getGenericNumber().getNatureOfAddressIndicator(), 0);

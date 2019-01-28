@@ -33,8 +33,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ErrorCauseImpl extends AbstractParameter  implements ErrorCause {
+	private static final long serialVersionUID = 1L;
 
-    private ErrorCauseValue value;
+	private ErrorCauseValue value;
     private int digValue;
 
     public ErrorCauseImpl() {

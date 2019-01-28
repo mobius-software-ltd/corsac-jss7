@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
  *
  */
 public class ParseException extends Exception {
-
-    private PAbortCause pAbortCauseType;
+	private static final long serialVersionUID = 1L;
+	
+	private PAbortCause pAbortCauseType;
     private RejectProblem problem;
     private Long invokeId;
 

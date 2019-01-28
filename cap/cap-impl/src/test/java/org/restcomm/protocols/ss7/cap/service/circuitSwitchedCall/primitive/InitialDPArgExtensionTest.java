@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -255,7 +250,7 @@ public class InitialDPArgExtensionTest {
         // isCAPVersion3orLater
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
@@ -362,5 +357,5 @@ public class InitialDPArgExtensionTest {
         assertEquals(copy.getUUData().getUUIndicator().getData(), original.getUUData().getUUIndicator().getData());
         assertEquals(copy.getCollectInformationAllowed(), original.getCollectInformationAllowed());
         assertEquals(copy.getReleaseCallArgExtensionAllowed(), original.getReleaseCallArgExtensionAllowed());
-    }
+    }*/
 }

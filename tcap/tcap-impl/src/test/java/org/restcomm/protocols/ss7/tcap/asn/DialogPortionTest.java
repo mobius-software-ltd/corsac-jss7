@@ -36,7 +36,6 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogPortionImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
@@ -186,9 +185,7 @@ public class DialogPortionTest {
 
         DialogAPDU _apid = dpi.getDialogAPDU();
         assertEquals(DialogAPDUType.Request, _apid.getType());
-        assertFalse(_apid.isUniDirectional());
-        DialogRequestAPDU apdu = (DialogRequestAPDU) _apid;
-
+        assertFalse(_apid.isUniDirectional());        
         // no idea how to check rest...?
 
     }
@@ -234,8 +231,7 @@ public class DialogPortionTest {
 
         DialogAPDU _apid = dpi.getDialogAPDU();
         assertEquals(DialogAPDUType.Abort, _apid.getType());
-        assertFalse(_apid.isUniDirectional());
-        DialogAbortAPDU apdu = (DialogAbortAPDU) _apid;
+        assertFalse(_apid.isUniDirectional());        
     }
 
     // @Test

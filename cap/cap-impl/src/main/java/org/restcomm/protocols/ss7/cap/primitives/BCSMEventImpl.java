@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.primitives;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -51,18 +48,13 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class BCSMEventImpl extends SequenceBase implements BCSMEvent {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_eventTypeBCSM = 0;
+	public static final int _ID_eventTypeBCSM = 0;
     public static final int _ID_monitorMode = 1;
     public static final int _ID_legID = 2;
     public static final int _ID_dpSpecificCriteria = 30;
     public static final int _ID_automaticRearm = 50;
-
-    private static final String EVENT_TYPE_BCSM = "eventTypeBCSM";
-    private static final String MONITOR_MODE = "monitorMode";
-    private static final String LEG_ID = "legID";
-    private static final String DP_SPECIFIC_CRITERIA = "dpSpecificCriteria";
-    private static final String AUTOMATIC_REARM = "automaticRearm";
 
     private EventTypeBCSM eventTypeBCSM;
     private MonitorMode monitorMode;
@@ -236,40 +228,4 @@ public class BCSMEventImpl extends SequenceBase implements BCSMEvent {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<BCSMEventImpl> BCSM_EVENT_XML = new XMLFormat<BCSMEventImpl>(BCSMEventImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, BCSMEventImpl bcsmEvent) throws XMLStreamException {
-            String str = xml.get(EVENT_TYPE_BCSM, String.class);
-            if (str != null)
-                bcsmEvent.eventTypeBCSM = Enum.valueOf(EventTypeBCSM.class, str);
-            str = xml.get(MONITOR_MODE, String.class);
-            if (str != null)
-                bcsmEvent.monitorMode = Enum.valueOf(MonitorMode.class, str);
-            bcsmEvent.legID = xml.get(LEG_ID, LegIDImpl.class);
-            bcsmEvent.dpSpecificCriteria = xml.get(DP_SPECIFIC_CRITERIA, DpSpecificCriteriaImpl.class);
-            Boolean bval = xml.get(AUTOMATIC_REARM, Boolean.class);
-            if (bval != null)
-                bcsmEvent.automaticRearm = bval;
-        }
-
-        @Override
-        public void write(BCSMEventImpl bcsmEvent, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (bcsmEvent.getEventTypeBCSM() != null)
-                xml.add((String) bcsmEvent.getEventTypeBCSM().toString(), EVENT_TYPE_BCSM, String.class);
-            if (bcsmEvent.getMonitorMode() != null)
-                xml.add((String) bcsmEvent.getMonitorMode().toString(), MONITOR_MODE, String.class);
-            if (bcsmEvent.getLegID() != null)
-                xml.add((LegIDImpl) bcsmEvent.getLegID(), LEG_ID, LegIDImpl.class);
-            if (bcsmEvent.getDpSpecificCriteria() != null)
-                xml.add((DpSpecificCriteriaImpl) bcsmEvent.getDpSpecificCriteria(), DP_SPECIFIC_CRITERIA,
-                        DpSpecificCriteriaImpl.class);
-            if (bcsmEvent.getAutomaticRearm())
-                xml.add((Boolean) bcsmEvent.getAutomaticRearm(), AUTOMATIC_REARM, Boolean.class);
-        }
-    };
 }

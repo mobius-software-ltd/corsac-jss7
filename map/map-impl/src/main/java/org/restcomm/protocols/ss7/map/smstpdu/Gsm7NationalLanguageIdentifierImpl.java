@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.Gsm7NationalLanguageIdentifier
  *
  */
 public abstract class Gsm7NationalLanguageIdentifierImpl implements Gsm7NationalLanguageIdentifier {
+	private static final long serialVersionUID = 1L;
 
-    private NationalLanguageIdentifier nationalLanguageCode;
+	private NationalLanguageIdentifier nationalLanguageCode;
 
     public Gsm7NationalLanguageIdentifierImpl(NationalLanguageIdentifier nationalLanguageCode) {
         this.nationalLanguageCode = nationalLanguageCode;

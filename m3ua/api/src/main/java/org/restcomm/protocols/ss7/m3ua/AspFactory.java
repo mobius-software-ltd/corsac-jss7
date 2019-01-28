@@ -21,9 +21,9 @@
  */
 package org.restcomm.protocols.ss7.m3ua;
 
-import java.util.List;
+import java.util.Collection;
 
-import org.mobicents.protocols.api.Association;
+import org.restcomm.protocols.ss7.sctp.proxy.Association;
 import org.restcomm.protocols.ss7.m3ua.parameter.ASPIdentifier;
 
 /**
@@ -37,7 +37,7 @@ public interface AspFactory {
 
     Association getAssociation();
 
-    List<Asp> getAspList();
+    Collection<Asp> getAspList();
 
     boolean getStatus();
 

@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.map.service.lsm.AdditionalNumberImpl;
  *
  */
 public class LocationInfoWithLMSIImpl extends SequenceBase implements LocationInfoWithLMSI {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_NetworkNodeNumber = 1;
+	private static final int _TAG_NetworkNodeNumber = 1;
     private static final int _TAG_GprsNodeIndicator = 5;
     private static final int _TAG_AdditionalNumber = 6;
 

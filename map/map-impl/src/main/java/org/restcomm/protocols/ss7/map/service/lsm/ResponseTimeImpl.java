@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class ResponseTimeImpl implements ResponseTime, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ResponseTime";
+	public static final String _PrimitiveName = "ResponseTime";
 
     private ResponseTimeCategory responseTimeCategory = null;
 

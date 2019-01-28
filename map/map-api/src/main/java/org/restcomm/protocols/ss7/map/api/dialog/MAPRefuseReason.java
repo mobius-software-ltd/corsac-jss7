@@ -74,4 +74,8 @@ public enum MAPRefuseReason {
     private MAPRefuseReason(int code) {
         this.code = code;
     }
+    
+    public int getCode() {
+    	return code;
+    }
 }

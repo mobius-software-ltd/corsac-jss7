@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -69,7 +63,7 @@ public class ServiceInteractionIndicatorsTwoTest {
         AsnInputStream ais = new AsnInputStream(data);
         ServiceInteractionIndicatorsTwoImpl elem = new ServiceInteractionIndicatorsTwoImpl();
 
-        int tag = ais.readTag();
+        ais.readTag();
         assertEquals(ais.getTag(), Tag.SEQUENCE);
         assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
         elem.decodeAll(ais);
@@ -89,7 +83,7 @@ public class ServiceInteractionIndicatorsTwoTest {
         ais = new AsnInputStream(data);
         elem = new ServiceInteractionIndicatorsTwoImpl();
 
-        tag = ais.readTag();
+        ais.readTag();
         assertEquals(ais.getTag(), Tag.SEQUENCE);
         assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
         elem.decodeAll(ais);
@@ -134,7 +128,7 @@ public class ServiceInteractionIndicatorsTwoTest {
         // TODO: implement full testing for CAP V4
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         ForwardServiceInteractionInd forwardServiceInteractionInd = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.acceptConferenceRequest,
@@ -170,5 +164,5 @@ public class ServiceInteractionIndicatorsTwoTest {
         assertEquals(original.getHoldTreatmentIndicator(), copy.getHoldTreatmentIndicator());
         assertEquals(original.getCwTreatmentIndicator(), copy.getCwTreatmentIndicator());
         assertEquals(original.getEctTreatmentIndicator(), copy.getEctTreatmentIndicator());
-    }
+    }*/
 }

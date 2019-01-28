@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class OCSIImpl extends SequenceBase implements OCSI {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAGcamelCapabilityHandling = 0;
+	public static final int _TAGcamelCapabilityHandling = 0;
     public static final int _TAGnotificationToCSE = 1;
     public static final int _TAGcsi_Active = 2;
 

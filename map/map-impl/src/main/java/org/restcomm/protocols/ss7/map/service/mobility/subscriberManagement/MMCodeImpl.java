@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class MMCodeImpl extends OctetStringLength1Base implements MMCode {
+	private static final long serialVersionUID = 1L;
 
-    public MMCodeImpl() {
+	public MMCodeImpl() {
         super("MMCode");
     }
 

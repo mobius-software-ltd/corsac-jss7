@@ -55,8 +55,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
  *
  */
 public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implements InsertSubscriberDataResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "InsertSubscriberDataResponse";
+	public static final String _PrimitiveName = "InsertSubscriberDataResponse";
 
     // MAP V1 & V2 & V3:
     protected static final int _TAG_teleserviceList = 1;

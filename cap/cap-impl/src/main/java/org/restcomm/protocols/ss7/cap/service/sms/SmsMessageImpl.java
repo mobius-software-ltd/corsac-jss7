@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  *
  */
 public abstract class SmsMessageImpl extends MessageImpl implements SmsMessage, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public CAPDialogSms getCAPDialog() {
+	public CAPDialogSms getCAPDialog() {
         return (CAPDialogSms) super.getCAPDialog();
     }
 

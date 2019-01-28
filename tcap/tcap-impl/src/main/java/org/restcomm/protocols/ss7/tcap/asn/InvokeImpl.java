@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
@@ -47,12 +48,13 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
  *
  */
 public class InvokeImpl implements Invoke {
+	private static final long serialVersionUID = 1L;
 
-    // local to stack
+	// local to stack
     private InvokeClass invokeClass = InvokeClass.Class1;
     private long invokeTimeout = TCAPStackImpl._EMPTY_INVOKE_TIMEOUT;
     private OperationState state = OperationState.Idle;
-    private Future timerFuture;
+    private AtomicReference<Future<?>> timerFuture=new AtomicReference<Future<?>>();
     private OperationTimerTask operationTimerTask = new OperationTimerTask(this);
     private TCAPProviderImpl provider;
     private DialogImpl dialog;
@@ -359,6 +361,8 @@ public class InvokeImpl implements Invoke {
                 case Reject_W:
                     this.stopTimer();
                     dialog.operationEnded(this);
+				default:
+					break;
             }
             if (state == OperationState.Sent) {
 
@@ -383,20 +387,19 @@ public class InvokeImpl implements Invoke {
         this.setState(OperationState.Idle);
     }
 
-    public synchronized void startTimer() {
+    public void startTimer() {
         if (this.dialog == null || this.dialog.getPreviewMode())
             return;
 
         this.stopTimer();
-        if (this.invokeTimeout > 0)
-            this.timerFuture = this.provider.createOperationTimer(this.operationTimerTask, this.invokeTimeout);
+        if (this.invokeTimeout > 0) 
+            this.timerFuture.set(this.provider.createOperationTimer(this.operationTimerTask, this.invokeTimeout));
     }
 
-    public synchronized void stopTimer() {
-
-        if (this.timerFuture != null) {
-            this.timerFuture.cancel(false);
-            this.timerFuture = null;
+    public void stopTimer() {
+    	Future<?> curr=this.timerFuture.getAndSet(null);
+        if (curr != null) {
+        	curr.cancel(false);            
         }
 
     }
@@ -425,18 +428,11 @@ public class InvokeImpl implements Invoke {
         }
 
         public void run() {
-
-            try {
-                dialog.getDialogLock().lock();
-
-                // op failed, we must delete it from dialog and notify!
-                timerFuture = null;
-                setState(OperationState.Idle);
-                // TC-L-CANCEL
-                ((DialogImpl) invoke.dialog).operationTimedOut(invoke);
-            } finally {
-                dialog.getDialogLock().unlock();
-            }
+        	// op failed, we must delete it from dialog and notify!
+            timerFuture.set(null);
+            setState(OperationState.Idle);
+            // TC-L-CANCEL
+            ((DialogImpl) invoke.dialog).operationTimedOut(invoke);
         }
 
     }

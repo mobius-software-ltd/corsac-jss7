@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
  *
  */
 public class FreeFormatDataGprsImpl extends OctetStringBase implements FreeFormatDataGprs {
+	private static final long serialVersionUID = 1L;
 
-    public FreeFormatDataGprsImpl() {
+	public FreeFormatDataGprsImpl() {
         super(1, 160, "FreeFormatDataGprs");
     }
 

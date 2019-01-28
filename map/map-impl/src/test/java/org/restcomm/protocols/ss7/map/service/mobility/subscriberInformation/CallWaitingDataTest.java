@@ -54,7 +54,10 @@ public class CallWaitingDataTest {
     public void testEncode() throws Exception {
         ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl(new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allTeleservices));
         final ExtCwFeatureImpl extCwFeature = new ExtCwFeatureImpl(extBasicServiceCode, new ExtSSStatusImpl(true, true, true, true));
-        CallWaitingDataImpl callWaitingData = new CallWaitingDataImpl(new ArrayList<ExtCwFeature>(){{add(extCwFeature);}}, true);
+        
+        ArrayList<ExtCwFeature> extCwFeatureList=new ArrayList<ExtCwFeature>();
+        extCwFeatureList.add(extCwFeature);
+        CallWaitingDataImpl callWaitingData = new CallWaitingDataImpl(extCwFeatureList, true);
 
         AsnOutputStream asnOS = new AsnOutputStream();
         callWaitingData.encodeAll(asnOS);

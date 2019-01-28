@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
  *
  */
 public class TCContinueRequestImpl extends DialogRequestImpl implements TCContinueRequest {
+	private static final long serialVersionUID = 1L;
 
-    private boolean returnMessageOnError;
+	private boolean returnMessageOnError;
     private SccpAddress originatingAddress;
 
     // fields

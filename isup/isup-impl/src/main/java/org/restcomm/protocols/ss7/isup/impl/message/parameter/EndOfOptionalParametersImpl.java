@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.EndOfOptionalParameters
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class EndOfOptionalParametersImpl extends AbstractISUPParameter implements EndOfOptionalParameters {
+	private static final long serialVersionUID = 1L;
 
-    public EndOfOptionalParametersImpl() {
+	public EndOfOptionalParametersImpl() {
         super();
 
     }

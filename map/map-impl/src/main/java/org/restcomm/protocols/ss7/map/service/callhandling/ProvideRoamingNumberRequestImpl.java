@@ -63,8 +63,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Supp
  *
  */
 public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl implements ProvideRoamingNumberRequest {
+	private static final long serialVersionUID = 1L;
 
-    private static final int TAG_imsi = 0;
+	private static final int TAG_imsi = 0;
     private static final int TAG_mscNumber = 1;
     private static final int TAG_msisdn = 2;
     private static final int TAG_lmsi = 4;
@@ -898,7 +899,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this._PrimitiveName);
+        sb.append(_PrimitiveName);
         sb.append(" [");
 
         if (this.imsi != null) {

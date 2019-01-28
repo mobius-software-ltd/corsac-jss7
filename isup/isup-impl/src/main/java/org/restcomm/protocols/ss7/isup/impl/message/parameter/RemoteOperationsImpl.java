@@ -52,8 +52,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnResult;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RemoteOperationsImpl extends AbstractISUPParameter implements RemoteOperations {
+	private static final long serialVersionUID = 1L;
 
-    private List<RemoteOperation> remoteOperations = new ArrayList<RemoteOperation>();
+	private List<RemoteOperation> remoteOperations = new ArrayList<RemoteOperation>();
     private byte protocol = RemoteOperations.PROTOCOL_REMOTE_OPERATIONS;
 
     // FIXME: XXX
@@ -142,7 +143,7 @@ public class RemoteOperationsImpl extends AbstractISUPParameter implements Remot
 
     @Override
     public void setProtocol(byte protocol) {
-        this.protocol = this.protocol;
+        this.protocol = protocol;
     }
 
     @Override

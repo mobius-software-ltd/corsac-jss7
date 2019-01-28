@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TransmissionMediumRequi
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class TransmissionMediumRequirementImpl extends AbstractISUPParameter implements TransmissionMediumRequirement {
+	private static final long serialVersionUID = 1L;
 
-    public TransmissionMediumRequirementImpl(int transimissionMediumRequirement) {
+	public TransmissionMediumRequirementImpl(int transimissionMediumRequirement) {
         super();
         this.transimissionMediumRequirement = transimissionMediumRequirement;
     }

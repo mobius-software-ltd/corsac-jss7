@@ -86,15 +86,6 @@ public interface SccpListener extends Serializable {
      */
     void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel, RemoteSccpStatus remoteSccpStatus);
 
-    /**
-     * Reporting of changing of availability / congestion state for a networkId
-     *
-     * @param networkId
-     * @param networkIdState
-     */
-    void onNetworkIdState(int networkId, NetworkIdState networkIdState);
-
-
     // N-CONNECT
     // can call conn.confirm() or conn.disconnect(...) with refuse reason and data
     void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress,

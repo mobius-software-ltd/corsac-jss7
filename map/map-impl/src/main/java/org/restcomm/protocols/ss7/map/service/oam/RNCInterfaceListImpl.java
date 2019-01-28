@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class RNCInterfaceListImpl extends BitStringBase implements RNCInterfaceList {
-    static final int _ID_iu = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_iu = 0;
     static final int _ID_iur = 1;
     static final int _ID_iub = 2;
     static final int _ID_uu = 3;

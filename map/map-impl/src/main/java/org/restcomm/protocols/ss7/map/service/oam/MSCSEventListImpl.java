@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class MSCSEventListImpl extends BitStringBase implements MSCSEventList {
-    static final int _ID_moMtCall = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_moMtCall = 0;
     static final int _ID_moMtSms = 1;
     static final int _ID_luImsiAttachImsiDetach = 2;
     static final int _ID_handovers = 3;

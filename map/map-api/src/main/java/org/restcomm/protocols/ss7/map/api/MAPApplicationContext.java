@@ -24,8 +24,7 @@ package org.restcomm.protocols.ss7.map.api;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
-import javolution.util.FastMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -34,11 +33,11 @@ import javolution.util.FastMap;
  *
  */
 public class MAPApplicationContext implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    private static long[] oidTemplate = new long[] { 0, 4, 0, 0, 1, 0, 0, 0 };
+	private static long[] oidTemplate = new long[] { 0, 4, 0, 0, 1, 0, 0, 0 };
 
-    private static FastMap<MAPApplicationContextName, FastMap<MAPApplicationContextVersion, MAPApplicationContext>> appContextCache = new FastMap<MAPApplicationContextName, FastMap<MAPApplicationContextVersion, MAPApplicationContext>>()
-            .shared();
+    private static ConcurrentHashMap<MAPApplicationContextName, ConcurrentHashMap<MAPApplicationContextVersion, MAPApplicationContext>> appContextCache = new ConcurrentHashMap<MAPApplicationContextName, ConcurrentHashMap<MAPApplicationContextVersion, MAPApplicationContext>>();
 
     private MAPApplicationContextName contextName;
     private MAPApplicationContextVersion contextVersion;
@@ -68,10 +67,10 @@ public class MAPApplicationContext implements Serializable {
 
     private static MAPApplicationContext getMAPApplicationContext(MAPApplicationContextName contextName,
             MAPApplicationContextVersion contextVersion) {
-        FastMap<MAPApplicationContextVersion, MAPApplicationContext> verCache = appContextCache.get(contextName);
+        ConcurrentHashMap<MAPApplicationContextVersion, MAPApplicationContext> verCache = appContextCache.get(contextName);
 
         if (verCache == null) {
-            verCache = new FastMap<MAPApplicationContextVersion, MAPApplicationContext>();
+            verCache = new ConcurrentHashMap<MAPApplicationContextVersion, MAPApplicationContext>();
             appContextCache.put(contextName, verCache);
         }
 

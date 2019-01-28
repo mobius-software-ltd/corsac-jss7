@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TransmissionMediumUsed;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class TransmissionMediumUsedImpl extends AbstractISUPParameter implements TransmissionMediumUsed {
+	private static final long serialVersionUID = 1L;
 
-    public TransmissionMediumUsedImpl(int transimissionMediumUsed) {
+	public TransmissionMediumUsedImpl(int transimissionMediumUsed) {
         super();
         this.transimissionMediumUsed = transimissionMediumUsed;
     }

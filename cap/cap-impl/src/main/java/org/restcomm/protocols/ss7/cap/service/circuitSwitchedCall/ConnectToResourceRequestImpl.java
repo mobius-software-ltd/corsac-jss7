@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -50,20 +47,15 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.Serv
  *
  */
 public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl implements ConnectToResourceRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_resourceAddress_ipRoutingAddress = 0;
+	public static final int _ID_resourceAddress_ipRoutingAddress = 0;
     public static final int _ID_resourceAddress_none = 3;
     public static final int _ID_extensions = 4;
     public static final int _ID_serviceInteractionIndicatorsTwo = 7;
     public static final int _ID_callSegmentID = 50;
 
     public static final String _PrimitiveName = "ConnectToResourceIndication";
-
-    private static final String RESOURCE_ADDRESS_IP_ROUTING_ADDRESS = "resourceAddress_IPRoutingAddress";
-    private static final String RESOURCE_ADDRESS_NULL = "resourceAddress_Null";
-    private static final String EXTENSIONS = "extensions";
-    private static final String SERVICE_INTERACTION_INDICATORS_TWO = "serviceInteractionIndicatorsTwo";
-    private static final String CALL_SEGMENT_ID = "callSegmentID";
 
     private CalledPartyNumberCap resourceAddress_IPRoutingAddress;
     private boolean resourceAddress_Null;
@@ -304,64 +296,4 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ConnectToResourceRequestImpl> CONNECT_TO_RESOURCE_REQUEST_XML = new XMLFormat<ConnectToResourceRequestImpl>(
-            ConnectToResourceRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ConnectToResourceRequestImpl connectToResourceRequest)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, connectToResourceRequest);
-
-            int vali = xml.getAttribute(CALL_SEGMENT_ID, -1);
-            if (vali != -1)
-                connectToResourceRequest.callSegmentID = vali;
-
-            connectToResourceRequest.resourceAddress_IPRoutingAddress = xml.get(RESOURCE_ADDRESS_IP_ROUTING_ADDRESS,
-                    CalledPartyNumberCapImpl.class);
-            Boolean valb = xml.get(RESOURCE_ADDRESS_NULL, Boolean.class);
-            if (valb != null)
-                connectToResourceRequest.resourceAddress_Null = valb;
-            else
-                connectToResourceRequest.resourceAddress_Null = false;
-
-            int choiceCount = 0;
-            if (connectToResourceRequest.resourceAddress_IPRoutingAddress != null)
-                choiceCount++;
-            if (connectToResourceRequest.resourceAddress_Null)
-                choiceCount++;
-
-            if (choiceCount != 1)
-                throw new XMLStreamException(
-                        "ConnectToResourceRequest decoding error: there must be one choice selected, found: " + choiceCount);
-
-            connectToResourceRequest.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-            connectToResourceRequest.serviceInteractionIndicatorsTwo = xml.get(SERVICE_INTERACTION_INDICATORS_TWO,
-                    ServiceInteractionIndicatorsTwoImpl.class);
-        }
-
-        @Override
-        public void write(ConnectToResourceRequestImpl connectToResourceRequest, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(connectToResourceRequest, xml);
-
-            if (connectToResourceRequest.callSegmentID != null)
-                xml.setAttribute(CALL_SEGMENT_ID, connectToResourceRequest.callSegmentID);
-
-            if (connectToResourceRequest.resourceAddress_IPRoutingAddress != null)
-                xml.add((CalledPartyNumberCapImpl) connectToResourceRequest.resourceAddress_IPRoutingAddress,
-                        RESOURCE_ADDRESS_IP_ROUTING_ADDRESS, CalledPartyNumberCapImpl.class);
-            if (connectToResourceRequest.resourceAddress_Null)
-                xml.add(connectToResourceRequest.resourceAddress_Null, RESOURCE_ADDRESS_NULL, Boolean.class);
-
-            if (connectToResourceRequest.getExtensions() != null)
-                xml.add((CAPExtensionsImpl) connectToResourceRequest.getExtensions(), EXTENSIONS, CAPExtensionsImpl.class);
-            if (connectToResourceRequest.serviceInteractionIndicatorsTwo != null)
-                xml.add((ServiceInteractionIndicatorsTwoImpl) connectToResourceRequest.serviceInteractionIndicatorsTwo,
-                        SERVICE_INTERACTION_INDICATORS_TWO, ServiceInteractionIndicatorsTwoImpl.class);
-        }
-    };
 }

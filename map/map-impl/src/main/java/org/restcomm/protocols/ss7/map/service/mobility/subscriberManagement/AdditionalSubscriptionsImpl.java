@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class AdditionalSubscriptionsImpl extends BitStringBase implements AdditionalSubscriptions {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_PrivilegedUplinkRequest = 0;
+	private static final int _INDEX_PrivilegedUplinkRequest = 0;
     private static final int _INDEX_EmergencyUplinkRequest = 1;
     private static final int _INDEX_EmergencyReset = 2;
 

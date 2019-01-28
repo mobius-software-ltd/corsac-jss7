@@ -45,7 +45,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 *
 */
 public class DeleteSubscriberDataResponseImpl extends MobilityMessageImpl implements DeleteSubscriberDataResponse {
-    protected static final int _TAG_regionalSubscriptionResponse = 0;
+	private static final long serialVersionUID = 1L;
+
+	protected static final int _TAG_regionalSubscriptionResponse = 0;
 
     public static final String _PrimitiveName = "DeleteSubscriberDataResponse";
 
@@ -210,7 +212,7 @@ public class DeleteSubscriberDataResponseImpl extends MobilityMessageImpl implem
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this._PrimitiveName);
+        sb.append(_PrimitiveName);
         sb.append(" [");
 
         if (this.regionalSubscriptionResponse != null) {

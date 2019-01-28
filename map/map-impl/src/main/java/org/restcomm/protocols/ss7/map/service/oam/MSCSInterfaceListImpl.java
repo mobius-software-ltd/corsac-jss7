@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class MSCSInterfaceListImpl extends BitStringBase implements MSCSInterfaceList {
-    static final int _ID_a = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_a = 0;
     static final int _ID_iu = 1;
     static final int _ID_mc = 2;
     static final int _ID_mapG = 3;

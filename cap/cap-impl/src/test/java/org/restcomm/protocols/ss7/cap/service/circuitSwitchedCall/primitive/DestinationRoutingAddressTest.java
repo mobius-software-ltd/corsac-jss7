@@ -26,13 +26,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -63,7 +58,7 @@ public class DestinationRoutingAddressTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         DestinationRoutingAddressImpl elem = new DestinationRoutingAddressImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNotNull(elem.getCalledPartyNumber());
         assertEquals(elem.getCalledPartyNumber().size(), 1);
@@ -84,7 +79,7 @@ public class DestinationRoutingAddressTest {
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         ArrayList<CalledPartyNumberCap> cpnl = new ArrayList<CalledPartyNumberCap>();
@@ -112,5 +107,5 @@ public class DestinationRoutingAddressTest {
         assertEquals(copy.getCalledPartyNumber().size(), original.getCalledPartyNumber().size());
         assertEquals(copy.getCalledPartyNumber().get(0).getData(), original.getCalledPartyNumber().get(0).getData());
 
-    }
+    }*/
 }

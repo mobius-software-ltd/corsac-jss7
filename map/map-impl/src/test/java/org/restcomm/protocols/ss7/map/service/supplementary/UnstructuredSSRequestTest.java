@@ -71,7 +71,7 @@ public class UnstructuredSSRequestTest {
                 (byte) 0xd2, 0x72, 0x3b, (byte) 0x9c, 0x76, (byte) 0xa7, (byte) 0xdd, 0x67 };
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         UnstructuredSSRequestImpl addNum = new UnstructuredSSRequestImpl();
         addNum.decodeAll(asn);

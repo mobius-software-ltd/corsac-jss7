@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.mtp.Mtp3;
 import org.restcomm.protocols.ss7.mtp.Mtp3EndCongestionPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3PausePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
@@ -53,7 +52,7 @@ public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
     SccpHarness sccpHarness;
 
     public Mtp3UserPartImpl(SccpHarness sccpHarness) {
-        super(null, null);
+        super(null);
         this.sccpHarness = sccpHarness;
         try {
             this.start();
@@ -68,10 +67,6 @@ public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
     }
 
     public void sendMessage(Mtp3TransferPrimitive msg) throws IOException {
-        if (sccpHarness != null && sccpHarness.saveTrafficInFile) {
-            sccpHarness.saveTrafficFile(msg);
-        }
-
         if (!this.otherParts.isEmpty()) {
             if (otherParts.size() == 1) {
                 this.otherParts.iterator().next().sendTransferMessageToLocalUser(msg, msg.getSls());
@@ -87,7 +82,7 @@ public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
     }
 
     public void sendTransferMessageToLocalUser(int opc, int dpc, byte[] data) {
-        int si = Mtp3._SI_SERVICE_SCCP;
+        int si = Mtp3UserPartBaseImpl._SI_SERVICE_SCCP;
         int ni = 2;
         int mp = 0;
         int sls = 0;

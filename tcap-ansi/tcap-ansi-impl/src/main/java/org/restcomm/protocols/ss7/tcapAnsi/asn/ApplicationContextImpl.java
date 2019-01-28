@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
  *
  */
 public class ApplicationContextImpl implements ApplicationContext {
+	private static final long serialVersionUID = 1L;
 
-    // object identifier value
+	// object identifier value
     private long[] oidVal;
     private long integerVal;
     private ACType acType;

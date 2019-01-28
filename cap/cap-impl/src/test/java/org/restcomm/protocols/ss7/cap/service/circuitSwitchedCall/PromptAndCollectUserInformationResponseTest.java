@@ -25,21 +25,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.PromptAndCollectUserInformationResponseImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
 
 /**
@@ -84,7 +76,7 @@ public class PromptAndCollectUserInformationResponseTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         GenericNumber genericNumber = new GenericNumberImpl(1, "987", 0, 2, 3, true, 0);
@@ -117,5 +109,5 @@ public class PromptAndCollectUserInformationResponseTest {
         assertEquals(copy.getDigitsResponse().getGenericNumber().getAddress(), "987");
         assertEquals(copy.getDigitsResponse().getGenericNumber().getNumberQualifierIndicator(), 0);
         assertEquals(copy.getDigitsResponse().getGenericNumber().getNumberingPlanIndicator(), 2);
-    }
+    }*/
 }

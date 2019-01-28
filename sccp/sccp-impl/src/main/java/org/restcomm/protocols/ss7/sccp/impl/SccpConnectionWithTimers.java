@@ -79,23 +79,18 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
     }
 
     public void setState(SccpConnectionState state) {
-        try {
-            connectionLock.lock();
-            super.setState(state);
+    	super.setState(state);
 
-            if (state == RSR_SENT) {
-                resetProcess.startTimer();
+        if (state == RSR_SENT) {
+            resetProcess.startTimer();
 
-            } else if (state == DISCONNECT_INITIATED) {
-                relProcess.startTimer();
-                iasInactivitySendProcess.stopTimer();
-                iarInactivityReceiveProcess.stopTimer();
+        } else if (state == DISCONNECT_INITIATED) {
+            relProcess.startTimer();
+            iasInactivitySendProcess.stopTimer();
+            iarInactivityReceiveProcess.stopTimer();
 
-            } else if (state == CONNECTION_INITIATED) {
-                connEstProcess.startTimer();
-            }
-        } finally {
-            connectionLock.unlock();
+        } else if (state == CONNECTION_INITIATED) {
+            connEstProcess.startTimer();
         }
     }
 
@@ -107,7 +102,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
         @Override
         public void run() {
             try {
-                connectionLock.lock();
                 if (getState() == CLOSED) {
                     return;
                 }
@@ -116,8 +110,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
             } catch (Exception e) {
                 logger.error(e);
-            } finally {
-                connectionLock.unlock();
             }
         }
     }
@@ -130,7 +122,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
         @Override
         public void run() {
             try {
-                connectionLock.lock();
                 if (getState() == CLOSED || getState() == CONNECTION_INITIATED) {
                     return;
                 }
@@ -149,8 +140,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
             } catch (Exception e) {
                 logger.error(e);
-            } finally {
-                connectionLock.unlock();
             }
         }
     }
@@ -163,7 +152,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
         @Override
         public void run() {
             try {
-                connectionLock.lock();
                 if (getState() == CLOSED) {
                     return;
                 }
@@ -172,8 +160,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
             } catch (Exception e) {
                 logger.error(e);
-            } finally {
-                connectionLock.unlock();
             }
         }
     }
@@ -185,22 +171,15 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
         @Override
         public void startTimer() {
-            try {
-                connectionLock.lock();
-                if (this.isStarted()) {
-                    return; // ignore if already started
-                }
-                super.startTimer();
-
-            } finally {
-                connectionLock.unlock();
+        	if (this.isStarted()) {
+                return; // ignore if already started
             }
+            super.startTimer();
         }
 
         @Override
         public void run() {
             try {
-                connectionLock.lock();
                 if (getState() == CLOSED) {
                     return;
                 }
@@ -211,8 +190,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
             } catch (Exception e) {
                 logger.error(e);
-            } finally {
-                connectionLock.unlock();
             }
         }
     }
@@ -224,22 +201,15 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
         @Override
         public void startTimer() {
-            try {
-                connectionLock.lock();
-                if (this.isStarted()) {
-                    return; // ignore if already started
-                }
-                super.startTimer();
-
-            } finally {
-                connectionLock.unlock();
+        	if (this.isStarted()) {
+                return; // ignore if already started
             }
+            super.startTimer();
         }
 
         @Override
         public void run() {
             try {
-                connectionLock.lock();
                 if (getState() == CLOSED) {
                     return;
                 }
@@ -249,8 +219,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
             } catch (Exception e) {
                 logger.error(e);
-            } finally {
-                connectionLock.unlock();
             }
         }
     }
@@ -262,37 +230,25 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
         @Override
         public void startTimer() {
-            try {
-                connectionLock.lock();
-                if (this.isStarted()) {
-                    return; // ignore if already started
-                }
-                super.startTimer();
-
-            } finally {
-                connectionLock.unlock();
+        	if (this.isStarted()) {
+                return; // ignore if already started
             }
+            super.startTimer();
         }
 
         @Override
         public void run() {
-            try {
-                connectionLock.lock();
-                if (getState() == CLOSED) {
-                    return;
-                }
-
-                repeatRelProcess.stopTimer();
-
-                SccpListener listener = getListener();
-                if (listener != null) {
-                    listener.onDisconnectIndication((SccpConnection) SccpConnectionWithTimers.this, new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), new byte[] {});
-                }
-                stack.removeConnection(getLocalReference());
-
-            } finally {
-                connectionLock.unlock();
+        	if (getState() == CLOSED) {
+                return;
             }
+
+            repeatRelProcess.stopTimer();
+
+            SccpListener listener = getListener();
+            if (listener != null) {
+                listener.onDisconnectIndication((SccpConnection) SccpConnectionWithTimers.this, new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), new byte[] {});
+            }
+            stack.removeConnection(getLocalReference());
         }
     }
 
@@ -303,15 +259,8 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
         @Override
         public void run() {
-            try {
-                connectionLock.lock();
-                if (getState() == CLOSED) {
-                    return;
-                }
-                // do smt...
-
-            } finally {
-                connectionLock.unlock();
+        	if (getState() == CLOSED) {
+                return;
             }
         }
     }
@@ -324,7 +273,6 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
         @Override
         public void run() {
             try {
-                connectionLock.lock();
                 if (getState() == CLOSED) {
                     return;
                 }
@@ -334,39 +282,25 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
             } catch (Exception e) {
                 logger.error(e);
-            } finally {
-                connectionLock.unlock();
             }
         }
     }
 
     private class BaseProcess implements Runnable {
         protected long delay = stack.getConnEstTimerDelay();
-        private Future future;
+        private Future<?> future;
 
         public void startTimer() {
-            try {
-                connectionLock.lock();
-                if (this.future != null) { // need to lock because otherwise this check won't ensure safety
-                    logger.error(new IllegalStateException(String.format("Already started %s timer", getClass())));
-                }
-                this.future = stack.timerExecutors.schedule(this, delay, TimeUnit.MILLISECONDS);
-
-            } finally {
-                connectionLock.unlock();
+        	if (this.future != null) { // need to lock because otherwise this check won't ensure safety
+                logger.error(new IllegalStateException(String.format("Already started %s timer", getClass())));
             }
+            this.future = stack.msgDeliveryExecutors.schedule(this, delay, TimeUnit.MILLISECONDS);
         }
 
         public void stopTimer() {
-            try {
-                connectionLock.lock();
-                if (this.future != null) { // need to lock because otherwise this check won't ensure safety
-                    this.future.cancel(false);
-                    this.future = null;
-                }
-
-            } finally {
-                connectionLock.unlock();
+        	if (this.future != null) { // need to lock because otherwise this check won't ensure safety
+                this.future.cancel(false);
+                this.future = null;
             }
         }
 

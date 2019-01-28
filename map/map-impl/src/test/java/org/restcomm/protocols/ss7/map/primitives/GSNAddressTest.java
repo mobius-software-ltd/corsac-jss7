@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.map.primitives;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -120,7 +115,7 @@ public class GSNAddressTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         GSNAddressImpl original = new GSNAddressImpl(GSNAddressAddressType.IPv4, getData());
@@ -145,6 +140,5 @@ public class GSNAddressTest {
         assertEquals(copy.getGSNAddressData(), original.getGSNAddressData());
         assertEquals(copy.getGSNAddressAddressType(), original.getGSNAddressAddressType());
 
-    }
-
+    }*/
 }

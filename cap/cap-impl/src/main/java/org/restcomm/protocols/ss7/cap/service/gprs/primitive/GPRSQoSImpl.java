@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSS
  *
  */
 public class GPRSQoSImpl implements GPRSQoS, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "GPRSQoS";
+	public static final String _PrimitiveName = "GPRSQoS";
 
     public static final int _ID_shortQoSFormat = 0;
     public static final int _ID_longQoSFormat = 1;

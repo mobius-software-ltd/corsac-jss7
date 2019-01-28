@@ -201,7 +201,7 @@ public class SendRoutingInformationResponseTest {
 
         // :::::::::::::::::::::::::::::::::
         AsnInputStream asn_ = new AsnInputStream(data_);
-        int tag_ = asn_.readTag();
+        asn_.readTag();
 
         SendRoutingInformationResponseImpl sri_ = new SendRoutingInformationResponseImpl();
         sri_.decodeAll(asn_);

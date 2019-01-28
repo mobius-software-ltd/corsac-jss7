@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,11 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class BasicServiceCodeImpl implements BasicServiceCode, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String BEARER_SERVICE = "bearerService";
-    private static final String TELE_SERVICE = "teleservice";
-
-    public static final int _TAG_bearerService = 2;
+	public static final int _TAG_bearerService = 2;
     public static final int _TAG_teleservice = 3;
 
     public static final String _PrimitiveName = "BasicServiceCode";
@@ -238,24 +233,4 @@ public class BasicServiceCodeImpl implements BasicServiceCode, MAPAsnPrimitive {
             return false;
         return true;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<BasicServiceCodeImpl> BASIC_SERVICE_CODE_XMLS = new XMLFormat<BasicServiceCodeImpl>(
-            BasicServiceCodeImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, BasicServiceCodeImpl ssCode) throws XMLStreamException {
-            ssCode.bearerService = xml.get(BEARER_SERVICE, BearerServiceCodeImpl.class);
-            ssCode.teleservice = xml.get(TELE_SERVICE, TeleserviceCodeImpl.class);
-        }
-
-        @Override
-        public void write(BasicServiceCodeImpl ssCode, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.add((BearerServiceCodeImpl) ssCode.getBearerService(), BEARER_SERVICE, BearerServiceCodeImpl.class);
-            xml.add((TeleserviceCodeImpl) ssCode.getTeleservice(), TELE_SERVICE, TeleserviceCodeImpl.class);
-        }
-    };
-
 }

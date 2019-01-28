@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
  *
  */
 public class ImportanceImpl extends AbstractParameter implements Importance {
+	private static final long serialVersionUID = 1L;
 
-    // default is lowest priority :)
+	// default is lowest priority :)
     private byte importance = 0;
 
     public ImportanceImpl() {

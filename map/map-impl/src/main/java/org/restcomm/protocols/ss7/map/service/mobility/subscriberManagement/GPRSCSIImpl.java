@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class GPRSCSIImpl extends SequenceBase implements GPRSCSI {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_gprsCamelTDPDataList = 0;
+	public static final int _TAG_gprsCamelTDPDataList = 0;
     public static final int _TAG_camelCapabilityHandling = 1;
     public static final int _TAG_extensionContainer = 2;
     public static final int _TAG_notificationToCSE = 3;
@@ -106,7 +107,6 @@ public class GPRSCSIImpl extends SequenceBase implements GPRSCSI {
 
         AsnInputStream ais = asnIS.readSequenceStreamData(length);
 
-        int num = 0;
         while (true) {
             if (ais.available() == 0)
                 break;

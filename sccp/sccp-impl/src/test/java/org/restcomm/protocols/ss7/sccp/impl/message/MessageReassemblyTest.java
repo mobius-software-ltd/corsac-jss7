@@ -27,7 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.Util;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
@@ -38,7 +37,6 @@ import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpNoticeMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.ss7ext.Ss7ExtInterface;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -69,23 +67,19 @@ public class MessageReassemblyTest extends SccpHarness {
 
     @Override
     protected void createStack1() {
-        this.sccpStack1 = createStack(sccpStack1Name, null);
+        this.sccpStack1 = createStack(sccpStack1Name);
         this.sccpProvider1 = sccpStack1.getSccpProvider();
     }
 
     @Override
     protected void createStack2() {
-        this.sccpStack2 = createStack(sccpStack2Name, null);
+        this.sccpStack2 = createStack(sccpStack2Name);
         this.sccpProvider2 = sccpStack2.getSccpProvider();
     }
 
     @Override
-    protected SccpStackImpl createStack(String name, Ss7ExtInterface ss7ExtInterface) {
-        SccpStackImpl stack = new SccpStackImplProxy(name, ss7ExtInterface);
-        final String dir = Util.getTmpTestDir();
-        if (dir != null) {
-            stack.setPersistDir(dir);
-        }
+    protected SccpStackImpl createStack(String name) {
+        SccpStackImpl stack = new SccpStackImplProxy(name);
         return stack;
     }
 
@@ -223,8 +217,5 @@ public class MessageReassemblyTest extends SccpHarness {
         assertTrue(Arrays.equals(dMsg.getData(), MessageSegmentationTest.getDataA()));
         assertTrue(Arrays.equals(nMsg.getData(), MessageSegmentationTest.getDataA()));
         assertEquals(u2.getMessages().size(), 1);
-
-        int i = 1;
-        i++;
     }
 }

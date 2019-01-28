@@ -28,12 +28,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -173,7 +168,7 @@ public class EventSpecificInformationBCSMTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         EventSpecificInformationBCSMImpl elem = new EventSpecificInformationBCSMImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         CauseIndicators ci = elem.getRouteSelectFailureSpecificInfo().getFailureCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
@@ -183,7 +178,7 @@ public class EventSpecificInformationBCSMTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         ci = elem.getOCalledPartyBusySpecificInfo().getBusyCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
@@ -193,21 +188,21 @@ public class EventSpecificInformationBCSMTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNotNull(elem.getONoAnswerSpecificInfo());
 
         data = this.getData4();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNotNull(elem.getOAnswerSpecificInfo());
 
         data = this.getData5();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         ci = elem.getODisconnectSpecificInfo().getReleaseCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
@@ -217,7 +212,7 @@ public class EventSpecificInformationBCSMTest {
         data = this.getData6();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         ci = elem.getTBusySpecificInfo().getBusyCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
@@ -230,7 +225,7 @@ public class EventSpecificInformationBCSMTest {
         data = this.getData7();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(elem.getTNoAnswerSpecificInfo().getCallForwarded());
         CalledPartyNumber cpn = elem.getTNoAnswerSpecificInfo().getForwardingDestinationNumber().getCalledPartyNumber();
@@ -243,14 +238,14 @@ public class EventSpecificInformationBCSMTest {
         data = this.getData8();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNotNull(elem.getTAnswerSpecificInfo());
 
         data = this.getData9();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         ci = elem.getTDisconnectSpecificInfo().getReleaseCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
@@ -260,56 +255,56 @@ public class EventSpecificInformationBCSMTest {
         data = this.getData10();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(elem.getOAbandonSpecificInfo().getRouteNotPermitted());
 
         data = this.getData11();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getOMidCallSpecificInfo().getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits(), getDigitsData());
 
         data = this.getData12();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getTMidCallSpecificInfo().getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits(), getDigitsData());
 
         data = this.getData13();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals((int) elem.getOTermSeizedSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
 
         data = this.getData14();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals((int) elem.getCallAcceptedSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
 
         data = this.getData15();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals((int) elem.getOChangeOfPositionSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
 
         data = this.getData16();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals((int) elem.getTChangeOfPositionSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
 
         data = this.getData17();
         ais = new AsnInputStream(data);
         elem = new EventSpecificInformationBCSMImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getDpSpecificInfoAlt().getOServiceChangeSpecificInfo().getExtBasicServiceCode().getExtBearerService().getBearerServiceCodeValue(),
                 BearerServiceCodeValue.padAccessCA_9600bps);
@@ -443,7 +438,7 @@ public class EventSpecificInformationBCSMTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData17()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
         CauseIndicators causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
         CauseCap failureCause = new CauseCapImpl(causeIndicators);
@@ -878,5 +873,5 @@ public class EventSpecificInformationBCSMTest {
         assertEquals(copy.getDpSpecificInfoAlt().getOServiceChangeSpecificInfo().getExtBasicServiceCode().getExtBearerService().getBearerServiceCodeValue(),
                 original.getDpSpecificInfoAlt().getOServiceChangeSpecificInfo().getExtBasicServiceCode().getExtBearerService().getBearerServiceCodeValue());
 
-    }
+    }*/
 }

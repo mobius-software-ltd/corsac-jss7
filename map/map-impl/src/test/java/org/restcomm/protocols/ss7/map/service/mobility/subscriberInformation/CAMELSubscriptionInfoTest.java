@@ -450,7 +450,10 @@ public class CAMELSubscriptionInfoTest {
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567890");
         final OBcsmCamelTDPData oBcsmCamelTDPData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
-        OCSIImpl ocsi = new OCSIImpl(new ArrayList<OBcsmCamelTDPData>(){{add(oBcsmCamelTDPData);}}, null, 4, true, true);
+        
+        ArrayList<OBcsmCamelTDPData> obcsmCamelTDPDataList=new ArrayList<OBcsmCamelTDPData>();
+        obcsmCamelTDPDataList.add(oBcsmCamelTDPData);
+        OCSIImpl ocsi = new OCSIImpl(obcsmCamelTDPDataList, null, 4, true, true);
 
         final OBcsmCamelTdpCriteria oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, null, null,
                 CallTypeCriteria.forwarded, null, null);
@@ -458,33 +461,52 @@ public class CAMELSubscriptionInfoTest {
         ISDNAddressStringImpl dialedNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "123456789");
         final DPAnalysedInfoCriterium dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialedNumber, 2, gsmSCFAddress,
                 DefaultCallHandling.continueCall, null);
-        DCSIImpl dcsi = new DCSIImpl(new ArrayList<DPAnalysedInfoCriterium>(){{add(dpAnalysedInfoCriterium);}}, 4, null, true, true);
+        
+        ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriumList=new ArrayList<DPAnalysedInfoCriterium>();
+        dpAnalysedInfoCriteriumList.add(dpAnalysedInfoCriterium);
+        DCSIImpl dcsi = new DCSIImpl(dpAnalysedInfoCriteriumList, 4, null, true, true);
 
         final TBcsmCamelTDPData tBcsmCamelTDPData = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.tBusy, 5, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
-        TCSIImpl tcsi = new TCSIImpl(new ArrayList<TBcsmCamelTDPData>(){{add(tBcsmCamelTDPData);}}, null, 4, true, true);
+        
+        ArrayList<TBcsmCamelTDPData> tbcsmCamelTDPDataList=new ArrayList<TBcsmCamelTDPData>();
+        tbcsmCamelTDPDataList.add(tBcsmCamelTDPData);
+        TCSIImpl tcsi = new TCSIImpl(tbcsmCamelTDPDataList, null, 4, true, true);
 
         final GPRSCamelTDPData gprsCamelTDPData = new GPRSCamelTDPDataImpl(GPRSTriggerDetectionPoint.attach, 6, gsmSCFAddress,
                 DefaultGPRSHandling.continueTransaction, null);
-        GPRSCSIImpl gprscsi = new GPRSCSIImpl(new ArrayList<GPRSCamelTDPData>(){{add(gprsCamelTDPData);}}, 4, null, false, false);
+        
+        ArrayList<GPRSCamelTDPData> gprsCamelTDPDataList=new ArrayList<GPRSCamelTDPData>();
+        gprsCamelTDPDataList.add(gprsCamelTDPData);
+        GPRSCSIImpl gprscsi = new GPRSCSIImpl(gprsCamelTDPDataList, 4, null, false, false);
 
         final SMSCAMELTDPData smscameltdpData = new SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint.smsDeliveryRequest, 7, gsmSCFAddress,
                 DefaultSMSHandling.continueTransaction, null);
-        SMSCSIImpl smscsi = new SMSCSIImpl(new ArrayList<SMSCAMELTDPData>(){{add(smscameltdpData);}}, 4, null, true, true);
+        
+        ArrayList<SMSCAMELTDPData> smsCAMELTDPDataList=new ArrayList<SMSCAMELTDPData>();
+        smsCAMELTDPDataList.add(smscameltdpData);
+        SMSCSIImpl smscsi = new SMSCSIImpl(smsCAMELTDPDataList, 4, null, true, true);
 
         final SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allAdditionalInfoTransferSS);
-        SSCamelDataImpl ssCamelData = new SSCamelDataImpl(new ArrayList<SSCode>(){{add(ssCode);}}, gsmSCFAddress, null);
+        
+        ArrayList<SSCode> ssCodeList=new ArrayList<SSCode>();
+        ssCodeList.add(ssCode);
+        SSCamelDataImpl ssCamelData = new SSCamelDataImpl(ssCodeList, gsmSCFAddress, null);
         SSCSIImpl sscsi = new SSCSIImpl(ssCamelData, null, false, false);
 
         final MMCodeImpl mmCode = new MMCodeImpl(MMCodeValue.GPRSAttach);
-        MCSIImpl mcsi = new MCSIImpl(new ArrayList<MMCode>() {{add(mmCode);}}, 8, gsmSCFAddress, null, false, false);
+        ArrayList<MMCode> mmCodeList=new ArrayList<MMCode>();
+        mmCodeList.add(mmCode);
+        MCSIImpl mcsi = new MCSIImpl(mmCodeList, 8, gsmSCFAddress, null, false, false);
 
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         SpecificCSIWithdrawImpl specificCSIWithdraw = new SpecificCSIWithdrawImpl(true, true, true, true, true, true, true, false, false, false,
                 false, false, false, false);
 
-        CAMELSubscriptionInfoImpl camelSubscriptionInfo = new CAMELSubscriptionInfoImpl(ocsi, new ArrayList<OBcsmCamelTdpCriteria>(){{add(oBcsmCamelTdpCriteria);}},
+        ArrayList<OBcsmCamelTdpCriteria> obcsmCamelTdpCriteriaList=new ArrayList<OBcsmCamelTdpCriteria>();
+        obcsmCamelTdpCriteriaList.add(oBcsmCamelTdpCriteria);
+        CAMELSubscriptionInfoImpl camelSubscriptionInfo = new CAMELSubscriptionInfoImpl(ocsi, obcsmCamelTdpCriteriaList,
                 dcsi, tcsi, null, null, null, true, true, gprscsi, smscsi, sscsi, mcsi, extensionContainer, specificCSIWithdraw,
                 null, null, null, null, null, null, null, null);
 
@@ -497,29 +519,48 @@ public class CAMELSubscriptionInfoTest {
     @Test(groups = {"functional.encode", "subscriberInformation"})
     public void testEncode1() throws Exception {
         final ExtBasicServiceCode basicServiceCode = new ExtBasicServiceCodeImpl(new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allShortMessageServices));
-        final TBcsmCamelTdpCriteriaImpl tBcsmCamelTdpCriteria = new TBcsmCamelTdpCriteriaImpl(TBcsmTriggerDetectionPoint.tBusy,
-                new ArrayList<ExtBasicServiceCode>(){{add(basicServiceCode);}},
-                new ArrayList<CauseValue>(){{add(new CauseValueImpl(CauseValueCodeValue.ASuspendedCallExists));}});
-        ArrayList<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList = new ArrayList<TBcsmCamelTdpCriteria>() {{add(tBcsmCamelTdpCriteria);}};
+        ArrayList<ExtBasicServiceCode> extBasicServiceCodeList=new ArrayList<ExtBasicServiceCode>();
+        extBasicServiceCodeList.add(basicServiceCode);
+        
+        ArrayList<CauseValue> causeValueList=new ArrayList<CauseValue>();
+        causeValueList.add(new CauseValueImpl(CauseValueCodeValue.ASuspendedCallExists));
+
+        final TBcsmCamelTdpCriteriaImpl tBcsmCamelTdpCriteria = new TBcsmCamelTdpCriteriaImpl(TBcsmTriggerDetectionPoint.tBusy,extBasicServiceCodeList,causeValueList);
+        
+        ArrayList<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList = new ArrayList<TBcsmCamelTdpCriteria>();
+        tBcsmCamelTdpCriteriaList.add(tBcsmCamelTdpCriteria);
 
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567890");
         final TBcsmCamelTDPData tBcsmCamelTDPData = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.tBusy, 5, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
-        TCSIImpl tcsi = new TCSIImpl(new ArrayList<TBcsmCamelTDPData>(){{add(tBcsmCamelTDPData);}}, null, 4, true, true);
+        
+        ArrayList<TBcsmCamelTDPData> tbcsmCamelTDPDataList=new ArrayList<TBcsmCamelTDPData>();
+        tbcsmCamelTDPDataList.add(tBcsmCamelTDPData);
+        TCSIImpl tcsi = new TCSIImpl(tbcsmCamelTDPDataList, null, 4, true, true);
 
         final SMSCAMELTDPData smscameltdpData = new SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint.smsDeliveryRequest, 7, gsmSCFAddress,
                 DefaultSMSHandling.continueTransaction, null);
-        SMSCSIImpl smscsi = new SMSCSIImpl(new ArrayList<SMSCAMELTDPData>(){{add(smscameltdpData);}}, 4, null, true, true);
+        
+        ArrayList<SMSCAMELTDPData> smscAMELTDPDataList=new ArrayList<SMSCAMELTDPData>();
+        smscAMELTDPDataList.add(smscameltdpData);
+        SMSCSIImpl smscsi = new SMSCSIImpl(smscAMELTDPDataList, 4, null, true, true);
 
-        final MTsmsCAMELTDPCriteria mTsmsCAMELTDPCriteria = new MTsmsCAMELTDPCriteriaImpl(SMSTriggerDetectionPoint.smsCollectedInfo,
-                new ArrayList<MTSMSTPDUType>(){{add(MTSMSTPDUType.smsDELIVER);}});
-        ArrayList<MTsmsCAMELTDPCriteria> mTsmsCAMELTDPCriteriaList = new ArrayList<MTsmsCAMELTDPCriteria>(){{add(mTsmsCAMELTDPCriteria);}};
+        ArrayList<MTSMSTPDUType> mtSMSTPDUTypeList=new ArrayList<MTSMSTPDUType>();
+        mtSMSTPDUTypeList.add(MTSMSTPDUType.smsDELIVER);
+        final MTsmsCAMELTDPCriteria mTsmsCAMELTDPCriteria = new MTsmsCAMELTDPCriteriaImpl(SMSTriggerDetectionPoint.smsCollectedInfo,mtSMSTPDUTypeList);
+        ArrayList<MTsmsCAMELTDPCriteria> mTsmsCAMELTDPCriteriaList = new ArrayList<MTsmsCAMELTDPCriteria>();
+        mTsmsCAMELTDPCriteriaList.add(mTsmsCAMELTDPCriteria);
 
-        MGCSIImpl mgcsi = new MGCSIImpl(new ArrayList<MMCode>() {{add(new MMCodeImpl(MMCodeValue.GPRSAttach));}}, 10, gsmSCFAddress, null, false, true);
+        ArrayList<MMCode> mmCodeList=new ArrayList<MMCode>();
+        mmCodeList.add(new MMCodeImpl(MMCodeValue.GPRSAttach));        
+        MGCSIImpl mgcsi = new MGCSIImpl(mmCodeList, 10, gsmSCFAddress, null, false, true);
 
         final OBcsmCamelTDPData oBcsmCamelTDPData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
-        OCSIImpl ocsi = new OCSIImpl(new ArrayList<OBcsmCamelTDPData>(){{add(oBcsmCamelTDPData);}}, null, 4, true, true);
+        
+        ArrayList<OBcsmCamelTDPData> obcsmCamelTDPDataList=new ArrayList<OBcsmCamelTDPData>();
+        obcsmCamelTDPDataList.add(oBcsmCamelTDPData);
+        OCSIImpl ocsi = new OCSIImpl(obcsmCamelTDPDataList, null, 4, true, true);
 
         final OBcsmCamelTdpCriteria oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, null, null,
                 CallTypeCriteria.forwarded, null, null);
@@ -527,11 +568,16 @@ public class CAMELSubscriptionInfoTest {
         ISDNAddressStringImpl dialedNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "123456789");
         final DPAnalysedInfoCriterium dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialedNumber, 2, gsmSCFAddress,
                 DefaultCallHandling.continueCall, null);
-        DCSIImpl dcsi = new DCSIImpl(new ArrayList<DPAnalysedInfoCriterium>(){{add(dpAnalysedInfoCriterium);}}, 4, null, true, true);
+        
+        ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriumList=new ArrayList<DPAnalysedInfoCriterium>();
+        dpAnalysedInfoCriteriumList.add(dpAnalysedInfoCriterium);
+        DCSIImpl dcsi = new DCSIImpl(dpAnalysedInfoCriteriumList, 4, null, true, true);
 
+        ArrayList<OBcsmCamelTdpCriteria> obcsmCamelTdpCriteriaList=new ArrayList<OBcsmCamelTdpCriteria>();
+        obcsmCamelTdpCriteriaList.add(oBcsmCamelTdpCriteria);
         CAMELSubscriptionInfoImpl camelSubscriptionInfo = new CAMELSubscriptionInfoImpl(null, null, null, null, tBcsmCamelTdpCriteriaList, tcsi,
                 tBcsmCamelTdpCriteriaList, false, false, null, null, null, null, null, null, smscsi, mTsmsCAMELTDPCriteriaList, mgcsi, ocsi,
-                new ArrayList<OBcsmCamelTdpCriteria>(){{add(oBcsmCamelTdpCriteria);}}, dcsi, tcsi, tBcsmCamelTdpCriteriaList);
+                obcsmCamelTdpCriteriaList, dcsi, tcsi, tBcsmCamelTdpCriteriaList);
 
         AsnOutputStream asnOS = new AsnOutputStream();
         camelSubscriptionInfo.encodeAll(asnOS);

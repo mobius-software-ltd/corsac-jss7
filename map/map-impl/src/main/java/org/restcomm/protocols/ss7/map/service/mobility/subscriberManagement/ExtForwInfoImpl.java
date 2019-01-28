@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
  *
  */
 public class ExtForwInfoImpl extends SequenceBase implements ExtForwInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_extensionContainer = 0;
+	private static final int _TAG_extensionContainer = 0;
 
     private SSCode ssCode = null;
     private ArrayList<ExtForwFeature> forwardingFeatureList = null;

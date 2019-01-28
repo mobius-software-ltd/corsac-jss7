@@ -106,7 +106,7 @@ public class ProvideRoamingNumberResponseTest {
     public void testDecode() throws Exception {
 
         AsnInputStream asn = new AsnInputStream(getEncodedData());
-        int tag = asn.readTag();
+        asn.readTag();
 
         ProvideRoamingNumberResponseImpl prn = new ProvideRoamingNumberResponseImpl(3);
         prn.decodeAll(asn);
@@ -131,7 +131,7 @@ public class ProvideRoamingNumberResponseTest {
         assertEquals(mapProtocolVersion, 3);
 
         asn = new AsnInputStream(getEncodedDataFull());
-        tag = asn.readTag();
+        asn.readTag();
 
         prn = new ProvideRoamingNumberResponseImpl(3);
         prn.decodeAll(asn);
@@ -156,7 +156,7 @@ public class ProvideRoamingNumberResponseTest {
         assertEquals(mapProtocolVersion, 3);
 
         asn = new AsnInputStream(getEncodedData1());
-        tag = asn.readTag();
+        asn.readTag();
 
         prn = new ProvideRoamingNumberResponseImpl(2);
         prn.decodeAll(asn);

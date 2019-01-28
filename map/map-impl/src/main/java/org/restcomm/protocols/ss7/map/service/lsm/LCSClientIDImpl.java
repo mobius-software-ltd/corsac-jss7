@@ -48,7 +48,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNI
  *
  */
 public class LCSClientIDImpl implements LCSClientID, MAPAsnPrimitive {
-    private static final int _TAG_LCS_CLIENT_TYPE = 0;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_LCS_CLIENT_TYPE = 0;
     private static final int _TAG_LCS_CLIENT_EXTERNAL_ID = 1;
     private static final int _TAG_LCS_CLIENT_DIALED_BY_MS = 2;
     private static final int _TAG_LCS_CLIENT_INTERNAL_ID = 3;

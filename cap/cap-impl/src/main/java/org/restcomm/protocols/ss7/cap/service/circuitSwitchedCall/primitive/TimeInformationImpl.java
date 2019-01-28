@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,11 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class TimeInformationImpl implements TimeInformation, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String TIME_IF_NO_TARIFF_SWITCH = "timeIfNoTariffSwitch";
-    private static final String TIME_IF_TARIFF_SWITCH = "timeIfTariffSwitch";
-
-    public static final int _ID_timeIfNoTariffSwitch = 0;
+	public static final int _ID_timeIfNoTariffSwitch = 0;
     public static final int _ID_timeIfTariffSwitch = 1;
 
     public static final String _PrimitiveName = "TimeInformation";
@@ -222,32 +217,4 @@ public class TimeInformationImpl implements TimeInformation, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<TimeInformationImpl> TIME_INFORMATION_XML = new XMLFormat<TimeInformationImpl>(
-            TimeInformationImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, TimeInformationImpl timeInformation)
-                throws XMLStreamException {
-            timeInformation.timeIfNoTariffSwitch = xml.get(TIME_IF_NO_TARIFF_SWITCH, Integer.class);
-            timeInformation.timeIfTariffSwitch = xml.get(TIME_IF_TARIFF_SWITCH, TimeIfTariffSwitchImpl.class);
-        }
-
-        @Override
-        public void write(TimeInformationImpl timeInformation, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            if (timeInformation.timeIfNoTariffSwitch != null) {
-                xml.add(timeInformation.timeIfNoTariffSwitch, TIME_IF_NO_TARIFF_SWITCH, Integer.class);
-            }
-
-            if (timeInformation.timeIfTariffSwitch != null) {
-                xml.add((TimeIfTariffSwitchImpl) timeInformation.timeIfTariffSwitch, TIME_IF_TARIFF_SWITCH,
-                        TimeIfTariffSwitchImpl.class);
-            }
-        }
-    };
 }

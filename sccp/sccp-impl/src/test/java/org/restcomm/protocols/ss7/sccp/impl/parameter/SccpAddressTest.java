@@ -27,11 +27,7 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
@@ -224,7 +220,7 @@ public class SccpAddressTest {
         assertEquals(a1.hashCode(), a2.hashCode());
     }
 
-    @Test
+    /*@Test
     public void testSerialization() throws Exception {
 
         GlobalTitle gt = factory.createGlobalTitle("79023700271",0,NumberingPlan.ISDN_TELEPHONY,null,NatureOfAddress.INTERNATIONAL); 
@@ -285,6 +281,5 @@ public class SccpAddressTest {
         assertEquals(8, aiOut.getSubsystemNumber());
 
         assertNull(aiOut.getGlobalTitle());
-    }
-
+    }*/
 }

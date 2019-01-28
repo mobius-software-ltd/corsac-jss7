@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.map.primitives.TbcdString;
  *
  */
 public class AreaIdentificationImpl extends OctetStringBase implements AreaIdentification {
+	private static final long serialVersionUID = 1L;
 
-    public AreaIdentificationImpl() {
+	public AreaIdentificationImpl() {
         super(2, 7, "AreaIdentification");
     }
 

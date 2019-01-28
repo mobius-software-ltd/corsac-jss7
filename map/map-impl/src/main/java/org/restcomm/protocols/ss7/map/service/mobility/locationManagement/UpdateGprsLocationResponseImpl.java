@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class UpdateGprsLocationResponseImpl extends MobilityMessageImpl implements UpdateGprsLocationResponse {
+	private static final long serialVersionUID = 1L;
 
-    private static final int TAG_sgsnMmeSeparationSupported = 0;
+	private static final int TAG_sgsnMmeSeparationSupported = 0;
 
     public static final String _PrimitiveName = "UpdateGprsLocationResponse";
 

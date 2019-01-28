@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,10 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  * @author amit bhayani
  */
 public class MAPErrorMessageUnknownSubscriberImpl extends MAPErrorMessageImpl implements MAPErrorMessageUnknownSubscriber {
-    private static final String UNKNOWN_SUBSCRIBER_DIAGNOSTIC = "unknownSubscriberDiagnostic";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
+ 	private static final long serialVersionUID = 1L;
 
-    private MAPExtensionContainer extensionContainer;
+ 	private MAPExtensionContainer extensionContainer;
     private UnknownSubscriberDiagnostic unknownSubscriberDiagnostic;
 
     public MAPErrorMessageUnknownSubscriberImpl(MAPExtensionContainer extensionContainer,
@@ -219,34 +215,4 @@ public class MAPErrorMessageUnknownSubscriberImpl extends MAPErrorMessageImpl im
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageUnknownSubscriberImpl> MAP_ERROR_MESSAGE_UNKNOWN_SUBSCRIBER_XML = new XMLFormat<MAPErrorMessageUnknownSubscriberImpl>(
-            MAPErrorMessageUnknownSubscriberImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageUnknownSubscriberImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-            String str = xml.get(UNKNOWN_SUBSCRIBER_DIAGNOSTIC, String.class);
-            if (str != null)
-                errorMessage.unknownSubscriberDiagnostic = Enum.valueOf(UnknownSubscriberDiagnostic.class, str);
-
-            errorMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageUnknownSubscriberImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            if (errorMessage.getUnknownSubscriberDiagnostic() != null)
-                xml.add((String) errorMessage.getUnknownSubscriberDiagnostic().toString(), UNKNOWN_SUBSCRIBER_DIAGNOSTIC,
-                        String.class);
-
-            xml.add((MAPExtensionContainerImpl) errorMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
 }

@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class ServingNodeAddressImpl implements ServingNodeAddress, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_mscNumber = 0;
+	public static final int _TAG_mscNumber = 0;
     public static final int _TAG_sgsnNumber = 1;
     public static final int _TAG_mmeNumber = 2;
 

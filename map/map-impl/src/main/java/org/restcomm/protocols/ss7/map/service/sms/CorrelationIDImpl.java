@@ -22,8 +22,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
 */
 
 public class CorrelationIDImpl extends SequenceBase implements CorrelationID {
+	private static final long serialVersionUID = 1L;
 
-    public static final String PRIMITIVE_NAME = "CorrelationID";
+	public static final String PRIMITIVE_NAME = "CorrelationID";
 
     private static final int _TAG_HlrId = 0;
     private static final int _TAG_SipUriA = 1;

@@ -1,6 +1,6 @@
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -9,6 +9,6 @@ import javolution.util.FastMap;
  * @param <K>
  * @param <V>
  */
-public class RouteMap<K, V> extends FastMap<K, V> {
-
+public class RouteMap<K, V> extends ConcurrentHashMap<K, V> {
+	private static final long serialVersionUID = 1L;
 }

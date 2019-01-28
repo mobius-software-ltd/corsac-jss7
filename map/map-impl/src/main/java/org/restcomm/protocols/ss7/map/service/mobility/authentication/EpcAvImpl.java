@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class EpcAvImpl implements EpcAv, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EpcAv";
+	public static final String _PrimitiveName = "EpcAv";
 
     private byte[] rand;
     private byte[] xres;

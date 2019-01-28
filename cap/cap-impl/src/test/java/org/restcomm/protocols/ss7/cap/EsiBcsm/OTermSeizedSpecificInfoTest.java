@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -74,7 +68,7 @@ public class OTermSeizedSpecificInfoTest {
         assertEquals(aos.toByteArray(), this.getData1());
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         LocationInformation locationInformation = new LocationInformationImpl(200, null, null, null, null, null, null, null, null, false, false, null, null);
         OTermSeizedSpecificInfoImpl original = new OTermSeizedSpecificInfoImpl(locationInformation);
@@ -96,6 +90,5 @@ public class OTermSeizedSpecificInfoTest {
         OTermSeizedSpecificInfoImpl copy = reader.read("oTermSeizedSpecificInfo", OTermSeizedSpecificInfoImpl.class);
 
         assertEquals((int) copy.getLocationInformation().getAgeOfLocationInformation(), (int) original.getLocationInformation().getAgeOfLocationInformation());
-    }
-
+    }*/
 }

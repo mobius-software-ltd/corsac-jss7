@@ -24,24 +24,14 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.MoveLegRequestImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
 
 /**
@@ -62,7 +52,7 @@ public class MoveLegRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         MoveLegRequestImpl elem = new MoveLegRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getLegIDToMove().getReceivingSideID(), LegType.leg6);
@@ -80,7 +70,7 @@ public class MoveLegRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         LegIDImpl legIDToMove = new LegIDImpl(false, LegType.leg6);
@@ -107,6 +97,5 @@ public class MoveLegRequestTest {
         assertEquals(original.getLegIDToMove().getReceivingSideID(), copy.getLegIDToMove().getReceivingSideID());
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(original.getExtensions()));
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-    }
-
+    }*/
 }

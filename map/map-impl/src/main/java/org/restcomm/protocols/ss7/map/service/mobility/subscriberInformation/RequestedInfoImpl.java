@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class RequestedInfoImpl implements RequestedInfo, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_locationInformation = 0;
+	public static final int _ID_locationInformation = 0;
     public static final int _ID_subscriberState = 1;
     public static final int _ID_extensionContainer = 2;
     public static final int _ID_currentLocation = 3;

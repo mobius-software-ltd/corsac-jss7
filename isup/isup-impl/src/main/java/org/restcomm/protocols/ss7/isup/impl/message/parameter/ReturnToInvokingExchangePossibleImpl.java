@@ -41,7 +41,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ReturnToInvokingExchangePossibleImpl extends AbstractInformationImpl implements ReturnToInvokingExchangePossible {
-    //its empty param, its existence is information.
+	private static final long serialVersionUID = 1L;
+
+	//its empty param, its existence is information.
     private static final byte[] DATA = new byte[]{};
     public ReturnToInvokingExchangePossibleImpl() {
         super(InformationType.ReturnToInvokingExchangePossible);

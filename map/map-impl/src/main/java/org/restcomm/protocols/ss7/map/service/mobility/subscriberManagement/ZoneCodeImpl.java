@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class ZoneCodeImpl extends OctetStringBase implements ZoneCode {
+	private static final long serialVersionUID = 1L;
 
-    public ZoneCodeImpl() {
+	public ZoneCodeImpl() {
         super(2, 2, "ZoneCode");
     }
 

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.HopCounter;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class HopCounterImpl extends AbstractISUPParameter implements HopCounter {
+	private static final long serialVersionUID = 1L;
 
-    private int hopCounter;
+	private int hopCounter;
 
     public HopCounterImpl(byte[] b) throws ParameterException {
         super();

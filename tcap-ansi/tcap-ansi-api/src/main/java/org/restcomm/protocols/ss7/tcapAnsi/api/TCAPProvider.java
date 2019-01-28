@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.tcapAnsi.api;
 
 import java.io.Serializable;
 
-import javolution.util.FastMap;
-
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
@@ -87,51 +84,6 @@ public interface TCAPProvider extends Serializable {
     void removeTCListener(TCListener lst);
 
     boolean getPreviewMode();
-
-    /**
-     * The collection of netwokIds that are marked as prohibited or congested.
-     *
-     * @return The collection of pairs: netwokId value - NetworkIdState (prohibited / congested state)
-     */
-    FastMap<Integer, NetworkIdState> getNetworkIdStateList();
-
-    /**
-     * Returns the state of availability / congestion for a networkId subnetwork. Returns null if there is no info (we need to
-     * treat it as available)
-     *
-     * @param networkId
-     * @return
-     */
-    NetworkIdState getNetworkIdState(int networkId);
-
-    /**
-     * Setting of a congestion level for a TCAP user "congObject"
-     *
-     * @param congObject a String with the name of an object
-     * @param level a congestion level for this object
-     */
-    void setUserPartCongestionLevel(String congObject, int level);
-
-    /**
-     * Returns a congestion level of a Memory congestion monitor
-     *
-     * @return
-     */
-    int getMemoryCongestionLevel();
-
-    /**
-     * Returns a congestion level of thread Executors for processing of incoming messages
-     *
-     * @return
-     */
-    int getExecutorCongestionLevel();
-
-    /**
-     * Returns a max congestion level for UserPartCongestion, MemoryCongestion and ExecutorCongestionLevel
-     *
-     * @return
-     */
-    int getCumulativeCongestionLevel();
 
     /**
      * @return current count of active TCAP dialogs

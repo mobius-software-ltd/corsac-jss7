@@ -22,18 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
-import org.mobicents.protocols.asn.BitSetStrictLength;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGIdImpl;
-import org.testng.annotations.Test;
-
 /**
  *
  * @author sergey vetyutnev
@@ -41,7 +29,7 @@ import org.testng.annotations.Test;
  */
 public class CSGIdTest {
 
-    private BitSetStrictLength getData() {
+	/*private BitSetStrictLength getData() {
         BitSetStrictLength res = new BitSetStrictLength(27);
         res.set(1);
         res.set(5);
@@ -77,6 +65,5 @@ public class CSGIdTest {
         }
         assertEquals(copy.getData().getStrictLength(), original.getData().getStrictLength());
 
-    }
-
+    }*/
 }

@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements TCUserAbortIndication {
-    private UserInformation userInformation;
+	private static final long serialVersionUID = 1L;
+
+	private UserInformation userInformation;
     private AbortSource abortSource;
     private ApplicationContextName acn;
     private ResultSourceDiagnostic resultSourceDiagnostic;

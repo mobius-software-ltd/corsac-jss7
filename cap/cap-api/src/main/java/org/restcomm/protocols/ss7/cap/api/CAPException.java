@@ -28,8 +28,9 @@ package org.restcomm.protocols.ss7.cap.api;
  *
  */
 public class CAPException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-    public CAPException() {
+	public CAPException() {
     }
 
     public CAPException(String message) {

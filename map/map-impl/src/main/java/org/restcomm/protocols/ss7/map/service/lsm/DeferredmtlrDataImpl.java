@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class DeferredmtlrDataImpl extends SequenceBase implements DeferredmtlrData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_TERMINATION_CAUSE = 0;
+	private static final int _TAG_TERMINATION_CAUSE = 0;
     private static final int _TAG_LCS_LOCATION_INFO = 1;
 
     private DeferredLocationEventType deferredLocationEventType;

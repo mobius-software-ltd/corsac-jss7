@@ -67,7 +67,7 @@ public abstract class DoubleTimers extends EventTestHarness {
 
     @AfterClass
     public void tearDown() throws Exception {
-        super.provider.removeListener(this);
+        super.provider.removeListener(listenerUUID);
         super.tearDown();
     }
 

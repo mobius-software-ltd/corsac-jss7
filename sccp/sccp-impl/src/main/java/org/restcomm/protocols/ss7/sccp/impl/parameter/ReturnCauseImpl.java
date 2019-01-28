@@ -38,8 +38,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
  * @author sergey vetyutnev
  */
 public class ReturnCauseImpl extends AbstractParameter implements ReturnCause {
+	private static final long serialVersionUID = 1L;
 
-    private ReturnCauseValue value;
+	private ReturnCauseValue value;
     private int digValue;
 
     public ReturnCauseImpl() {

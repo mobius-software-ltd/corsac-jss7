@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TransitNetworkSelection
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class TransitNetworkSelectionImpl extends AbstractISUPParameter implements TransitNetworkSelection {
+	private static final long serialVersionUID = 1L;
 
-    protected static final Logger logger = Logger.getLogger(TransitNetworkSelectionImpl.class);
+	protected static final Logger logger = Logger.getLogger(TransitNetworkSelectionImpl.class);
 
     // FIXME: Oleg is this correct?
     private String address;

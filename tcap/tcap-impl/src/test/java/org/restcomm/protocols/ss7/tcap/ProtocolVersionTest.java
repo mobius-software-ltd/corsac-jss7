@@ -29,7 +29,6 @@ import java.io.IOException;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
@@ -51,7 +50,6 @@ import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersion;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
-import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -66,14 +64,12 @@ import org.testng.annotations.Test;
  */
 public class ProtocolVersionTest extends SccpHarness {
     public static final long WAIT_TIME = 500;
-    private static final int _WAIT_TIMEOUT = 90000;
     public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
     private TCAPStackImpl tcapStack1;
     private TCAPStackImpl tcapStack2;
     private SccpAddress peer1Address;
     private SccpAddress peer2Address;
     private Client client;
-    private Server server;
     private TestSccpListener sccpListener;
     private ProtocolVersion pv;
 
@@ -108,8 +104,8 @@ public class ProtocolVersionTest extends SccpHarness {
 
         sccpListener = new TestSccpListener();
         this.sccpProvider2.registerSccpListener(8, sccpListener);
-        this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8);
-        this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7);
+        this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, 4);
+        this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, 4);
 
         this.tcapStack1.start();
         this.tcapStack2.start();
@@ -118,7 +114,7 @@ public class ProtocolVersionTest extends SccpHarness {
         this.tcapStack2.setInvokeTimeout(0);
         // create test classes
         this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-        this.server = new Server(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address);
+        //this.server = new Server(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address);
 
     }
 
@@ -140,10 +136,10 @@ public class ProtocolVersionTest extends SccpHarness {
 
         client.startClientDialog();
         client.dialog.setDoNotSendProtocolVersion(true);
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         
         client.sendBegin();
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         assertNull(pv);
     }
     
@@ -152,10 +148,10 @@ public class ProtocolVersionTest extends SccpHarness {
 
         client.startClientDialog();
         client.dialog.setDoNotSendProtocolVersion(false);
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         
         client.sendBegin();
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         assertNotNull(pv);
     }
     
@@ -163,9 +159,9 @@ public class ProtocolVersionTest extends SccpHarness {
     public void doNotSendProtocolVersionStackTest() throws Exception {
         this.tcapStack1.setDoNotSendProtocolVersion(true);
         client.startClientDialog();
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         client.sendBegin();
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         assertNull(pv);
     }
 
@@ -173,9 +169,9 @@ public class ProtocolVersionTest extends SccpHarness {
     public void sendProtocolVersionStackTest() throws Exception {
         this.tcapStack1.setDoNotSendProtocolVersion(false);
         client.startClientDialog();
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         client.sendBegin();
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         assertNotNull(pv);
     }
 
@@ -186,7 +182,6 @@ public class ProtocolVersionTest extends SccpHarness {
         @Override
         public void onMessage(SccpDataMessage message) {
             AsnInputStream ais = new AsnInputStream(message.getData());
-            TCContinueMessage tcm = null;
             int tag;
             try
             {
@@ -247,10 +242,6 @@ public class ProtocolVersionTest extends SccpHarness {
 
         @Override
         public void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel, RemoteSccpStatus remoteSccpStatus) {
-        }
-
-        @Override
-        public void onNetworkIdState(int networkId, NetworkIdState networkIdState) {
         }
 
         @Override

@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class ProvideRoamingNumberResponseImpl extends CallHandlingMessageImpl implements ProvideRoamingNumberResponse {
+	private static final long serialVersionUID = 1L;
 
-    public ISDNAddressString roamingNumber;
+	public ISDNAddressString roamingNumber;
     public MAPExtensionContainer extensionContainer;
     public boolean releaseResourcesSupported;
     public ISDNAddressString vmscAddress;

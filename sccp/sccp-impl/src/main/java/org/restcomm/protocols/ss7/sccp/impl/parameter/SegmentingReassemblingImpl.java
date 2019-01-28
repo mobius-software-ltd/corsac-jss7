@@ -32,8 +32,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class SegmentingReassemblingImpl extends AbstractParameter implements SegmentingReassembling {
+	private static final long serialVersionUID = 1L;
 
-    private byte value;
+	private byte value;
 
     public SegmentingReassemblingImpl() {
     }

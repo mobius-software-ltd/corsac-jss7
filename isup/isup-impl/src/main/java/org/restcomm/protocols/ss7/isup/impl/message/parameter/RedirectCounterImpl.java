@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectCounter;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RedirectCounterImpl extends AbstractISUPParameter implements RedirectCounter {
+	private static final long serialVersionUID = 1L;
 
-    private int counter;
+	private int counter;
 
     public RedirectCounterImpl(byte[] b) throws ParameterException {
         super();

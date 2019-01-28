@@ -28,12 +28,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -79,26 +74,8 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.FailureCause;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageAbsentSubscriberImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageAbsentSubscriberSMImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageBusySubscriberImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageCUGRejectImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageCallBarredImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageFacilityNotSupImpl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageFactoryImpl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageParameterlessImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessagePositionMethodFailureImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessagePwRegistrationFailureImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageRoamingNotAllowedImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSMDeliveryFailureImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSsErrorStatusImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSsIncompatibilityImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSubscriberBusyForMtSmsImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSystemFailureImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageUnauthorizedLCSClientImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageUnknownSubscriberImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
@@ -865,7 +842,7 @@ public class MAPErrorMessageTest {
         assertParameter(getDataPwRegistrationFailureFull(), p);
     }
 
-    @Test(groups = { "functional.xml.serialize", "dialog.message" })
+    /*@Test(groups = { "functional.xml.serialize", "dialog.message" })
     public void testXMLSerialize() throws Exception {
         MAPErrorMessageFactoryImpl fact = new MAPErrorMessageFactoryImpl();
 
@@ -1350,7 +1327,7 @@ public class MAPErrorMessageTest {
         assertEquals(copy17.getErrorCode(), em17.getErrorCode());
         assertEquals(copy17.getUnknownSubscriberDiagnostic(), em17.getUnknownSubscriberDiagnostic());
         assertEquals(copy17.getExtensionContainer(), em17.getExtensionContainer());
-    }
+    }*/
 
     private void assertParameter(Parameter p2, Parameter p1) {
         assertNotNull(p1);

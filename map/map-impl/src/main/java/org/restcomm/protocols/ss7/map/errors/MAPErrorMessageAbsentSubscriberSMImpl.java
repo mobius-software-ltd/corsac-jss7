@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,12 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  * @author amit bhayani
  */
 public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl implements MAPErrorMessageAbsentSubscriberSM {
+	private static final long serialVersionUID = 1L;
 
-    private static final String ABSENT_SUBSCRIBER_DIAGNOSTIC_SM = "absentSubscriberDiagnosticSM";
-    private static final String ADDITIONAL_ABSENT_SUBSCRIBER_DIAGNOSTIC_SM = "additionalAbsentSubscriberDiagnosticSM";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
-
-    public static final int additionalAbsentSubscriberDiagnosticSM_TAG = 0x00;
+	public static final int additionalAbsentSubscriberDiagnosticSM_TAG = 0x00;
 
     private AbsentSubscriberDiagnosticSM absentSubscriberDiagnosticSM;
     private MAPExtensionContainer extensionContainer;
@@ -253,44 +247,4 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageAbsentSubscriberSMImpl> MAP_ERROR_MESSAGE_ABSENT_SUBSCRIBER_XML = new XMLFormat<MAPErrorMessageAbsentSubscriberSMImpl>(
-            MAPErrorMessageAbsentSubscriberSMImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageAbsentSubscriberSMImpl ussdMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, ussdMessage);
-
-            String str = xml.get(ABSENT_SUBSCRIBER_DIAGNOSTIC_SM, String.class);
-            if (str != null)
-                ussdMessage.absentSubscriberDiagnosticSM = Enum.valueOf(AbsentSubscriberDiagnosticSM.class, str);
-
-            str = xml.get(ADDITIONAL_ABSENT_SUBSCRIBER_DIAGNOSTIC_SM, String.class);
-            if (str != null)
-                ussdMessage.additionalAbsentSubscriberDiagnosticSM = Enum.valueOf(AbsentSubscriberDiagnosticSM.class, str);
-
-            ussdMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageAbsentSubscriberSMImpl ussdMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(ussdMessage, xml);
-
-            if (ussdMessage.getAbsentSubscriberDiagnosticSM() != null)
-                xml.add((String) ussdMessage.getAbsentSubscriberDiagnosticSM().toString(), ABSENT_SUBSCRIBER_DIAGNOSTIC_SM,
-                        String.class);
-
-            if (ussdMessage.getAdditionalAbsentSubscriberDiagnosticSM() != null)
-                xml.add((String) ussdMessage.getAdditionalAbsentSubscriberDiagnosticSM().toString(),
-                        ADDITIONAL_ABSENT_SUBSCRIBER_DIAGNOSTIC_SM, String.class);
-
-            xml.add((MAPExtensionContainerImpl) ussdMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
 }

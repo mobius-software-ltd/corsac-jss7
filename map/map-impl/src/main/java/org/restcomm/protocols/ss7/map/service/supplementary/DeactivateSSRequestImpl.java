@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
 *
 */
 public class DeactivateSSRequestImpl extends SupplementaryMessageImpl implements DeactivateSSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "DeactivateSSRequest";
+	public static final String _PrimitiveName = "DeactivateSSRequest";
 
     private SSForBSCode ssForBSCode;
 

@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -38,8 +33,6 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.EsiBcsm.ODisconnectSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
 
 /**
@@ -81,7 +74,7 @@ public class ODisconnectSpecificInfoTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
 
         CauseIndicatorsImpl prim = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_ITUT,
@@ -114,6 +107,5 @@ public class ODisconnectSpecificInfoTest {
                 .getCauseIndicators().getCauseValue());
         assertEquals(copy.getReleaseCause().getCauseIndicators().getCodingStandard(), original.getReleaseCause()
                 .getCauseIndicators().getCodingStandard());
-    }
-
+    }*/
 }

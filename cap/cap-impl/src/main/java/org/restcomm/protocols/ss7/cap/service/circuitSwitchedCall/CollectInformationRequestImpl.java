@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
@@ -40,8 +37,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CollectInf
 *
 */
 public class CollectInformationRequestImpl extends CircuitSwitchedCallMessageImpl implements CollectInformationRequest {
-
-    public static final String _PrimitiveName = "CollectInformationRequest";
+	private static final long serialVersionUID = 1L;
+	
+	public static final String _PrimitiveName = "CollectInformationRequest";
 
     @Override
     public CAPMessageType getMessageType() {
@@ -107,22 +105,4 @@ public class CollectInformationRequestImpl extends CircuitSwitchedCallMessageImp
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CollectInformationRequestImpl> COLLECT_INFORMATION_REQUEST_XML = new XMLFormat<CollectInformationRequestImpl>(
-            CollectInformationRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CollectInformationRequestImpl collectInformationRequest) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, collectInformationRequest);
-        }
-
-        @Override
-        public void write(CollectInformationRequestImpl collectInformationRequest, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(collectInformationRequest, xml);
-        }
-    };
-
 }

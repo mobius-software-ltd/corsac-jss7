@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
 *
 */
 public class ActivateTraceModeResponseImpl_Oam extends ActivateTraceModeResponseImpl_Base implements ActivateTraceModeResponse_Oam {
+	private static final long serialVersionUID = 1L;
 
-    public ActivateTraceModeResponseImpl_Oam() {
+	public ActivateTraceModeResponseImpl_Oam() {
         super();
     }
 

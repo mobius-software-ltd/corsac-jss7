@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGI
  *
  */
 public class CUGCheckInfoImpl extends SequenceBase implements CUGCheckInfo {
+	private static final long serialVersionUID = 1L;
 
-    private CUGInterlock cugInterlock;
+	private CUGInterlock cugInterlock;
     private boolean cugOutgoingAccess;
     private MAPExtensionContainer extensionContainer;
 

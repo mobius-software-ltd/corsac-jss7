@@ -37,8 +37,9 @@ import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
  *
  */
 public class SM_RP_SMEAImpl extends OctetStringBase implements SM_RP_SMEA {
+	private static final long serialVersionUID = 1L;
 
-    public SM_RP_SMEAImpl() {
+	public SM_RP_SMEAImpl() {
         super(1, 12, "SM_RP_SMEA");
     }
 

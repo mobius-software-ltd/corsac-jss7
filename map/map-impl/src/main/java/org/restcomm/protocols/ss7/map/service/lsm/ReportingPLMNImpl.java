@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
  *
  */
 public class ReportingPLMNImpl implements ReportingPLMN, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_plmn_Id = 0;
+	public static final int _ID_plmn_Id = 0;
     public static final int _ID_ran_Technology = 1;
     public static final int _ID_ran_PeriodicLocationSupport = 2;
 

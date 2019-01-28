@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
  *
  */
 public class TCUniMessageImpl implements TCUniMessage {
+	private static final long serialVersionUID = 1L;
 
-    private DialogPortion dp;
+	private DialogPortion dp;
     private Component[] component;
 
     /*

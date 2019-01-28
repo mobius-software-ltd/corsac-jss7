@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
  *
  */
 public class RejectImpl implements Reject {
+	private static final long serialVersionUID = 1L;
 
-    protected Long correlationId;
+	protected Long correlationId;
     private RejectProblem rejectProblem;
     private boolean localOriginated = false;
 

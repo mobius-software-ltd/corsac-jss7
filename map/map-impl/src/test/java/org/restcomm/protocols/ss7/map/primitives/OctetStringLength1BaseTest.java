@@ -106,13 +106,12 @@ public class OctetStringLength1BaseTest {
         assertTrue(imp1.equals(imp2));
         assertFalse(imp1.equals(imp3));
         assertFalse(imp2.equals(imp3));
-
-        int i1 = imp1.hashCode();
     }
 
     private class TestOctetStringLength1Impl extends OctetStringLength1Base {
+		private static final long serialVersionUID = 1L;
 
-        public TestOctetStringLength1Impl(int data) {
+		public TestOctetStringLength1Impl(int data) {
             super("Test OctetStringLength1 primitive", data);
         }
 

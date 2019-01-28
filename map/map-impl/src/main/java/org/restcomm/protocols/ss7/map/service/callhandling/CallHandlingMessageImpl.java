@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public abstract class CallHandlingMessageImpl extends MessageImpl implements CallHandlingMessage, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    @Override
+	@Override
     public MAPDialogCallHandling getMAPDialog() {
         return (MAPDialogCallHandling) super.getMAPDialog();
     }

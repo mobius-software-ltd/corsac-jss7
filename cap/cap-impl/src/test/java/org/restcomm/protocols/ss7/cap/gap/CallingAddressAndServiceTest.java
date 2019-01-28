@@ -22,20 +22,13 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.gap.CallingAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import static org.testng.Assert.assertEquals;
@@ -64,7 +57,7 @@ public class CallingAddressAndServiceTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         CallingAddressAndServiceImpl elem = new CallingAddressAndServiceImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getCallingAddressValue().getData(), getDigitsData());
@@ -83,7 +76,7 @@ public class CallingAddressAndServiceTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "gap" })
+    /*@Test(groups = { "functional.xml.serialize", "gap" })
     public void testXMLSerialize() throws Exception {
 
         GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
@@ -123,6 +116,5 @@ public class CallingAddressAndServiceTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
-
+    }*/
 }

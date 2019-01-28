@@ -38,11 +38,9 @@ public class THPeerAsActToActNtfyAltAspAct implements TransitionHandler {
 
     private static final Logger logger = Logger.getLogger(THPeerAsActToActNtfyAltAspAct.class);
 
-    private AsImpl asImpl = null;
     private FSM fsm;
 
     public THPeerAsActToActNtfyAltAspAct(AsImpl asImpl, FSM fsm) {
-        this.asImpl = asImpl;
         this.fsm = fsm;
     }
 

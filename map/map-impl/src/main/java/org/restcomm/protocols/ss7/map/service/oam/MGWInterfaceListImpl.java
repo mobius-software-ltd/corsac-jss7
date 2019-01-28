@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class MGWInterfaceListImpl extends BitStringBase implements MGWInterfaceList {
-    static final int _ID_mc = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_mc = 0;
     static final int _ID_nbUp = 1;
     static final int _ID_iuUp = 2;
 

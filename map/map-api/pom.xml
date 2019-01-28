@@ -3,13 +3,13 @@
 
 	<parent>
 		<artifactId>map-parent</artifactId>
-		<groupId>org.restcomm.protocols.ss7.map</groupId>
+		<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>map-api</artifactId>
 
-	<name>Restcomm jSS7 :: MAP :: Api :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: MAP :: Api :: ${project.artifactId}</name>
 
 	<dependencies>
 		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
@@ -18,14 +18,13 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>provided</scope>
-			<version>${junit.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.tcap</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
 			<artifactId>tcap-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 			<artifactId>sccp-api</artifactId>
 		</dependency>
 		<dependency>
@@ -33,11 +32,7 @@
 			<artifactId>asn</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.congestion</groupId>
-			<artifactId>congestion</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.restcomm.protocols.ss7.isup</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
 			<artifactId>isup-api</artifactId>
 		</dependency>
 	</dependencies>

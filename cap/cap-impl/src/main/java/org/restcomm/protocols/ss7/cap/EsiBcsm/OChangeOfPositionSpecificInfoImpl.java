@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -50,10 +47,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
 *
 */
 public class OChangeOfPositionSpecificInfoImpl extends SequenceBase implements OChangeOfPositionSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final String LOCATION_INFORMATION = "locationInformation";
-    private static final String MET_DP_CRITERIA_LIST = "metDPCriteriaList";
-    private static final String MET_DP_CRITERIA = "metDPCriteria";
+	private static final String MET_DP_CRITERIA = "metDPCriteria";
 
     public static final int _ID_locationInformation = 50;
     public static final int _ID_metDPCriteriaList = 51;
@@ -185,35 +181,6 @@ public class OChangeOfPositionSpecificInfoImpl extends SequenceBase implements O
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<OChangeOfPositionSpecificInfoImpl> O_CHANGE_OF_POSITION_SPECIFIC_INFO_XML = new XMLFormat<OChangeOfPositionSpecificInfoImpl>(
-            OChangeOfPositionSpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, OChangeOfPositionSpecificInfoImpl oChangeOfPositionSpecificInfo) throws XMLStreamException {
-            oChangeOfPositionSpecificInfo.locationInformation = xml.get(LOCATION_INFORMATION, LocationInformationImpl.class);
-
-            OChangeOfPositionSpecificInfo_MetDPCriterion al = xml.get(MET_DP_CRITERIA_LIST, OChangeOfPositionSpecificInfo_MetDPCriterion.class);
-            if (al != null) {
-                oChangeOfPositionSpecificInfo.metDPCriteriaList = al.getData();
-            }
-        }
-
-        @Override
-        public void write(OChangeOfPositionSpecificInfoImpl oChangeOfPositionSpecificInfo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (oChangeOfPositionSpecificInfo.locationInformation != null)
-                xml.add((LocationInformationImpl) oChangeOfPositionSpecificInfo.locationInformation, LOCATION_INFORMATION, LocationInformationImpl.class);
-
-            if (oChangeOfPositionSpecificInfo.metDPCriteriaList != null) {
-                OChangeOfPositionSpecificInfo_MetDPCriterion al = new OChangeOfPositionSpecificInfo_MetDPCriterion(oChangeOfPositionSpecificInfo.metDPCriteriaList);
-                xml.add(al, MET_DP_CRITERIA_LIST, OChangeOfPositionSpecificInfo_MetDPCriterion.class);
-            }
-        }
-    };
 
     public static class OChangeOfPositionSpecificInfo_MetDPCriterion extends ArrayListSerializingBase<MetDPCriterion> {
 

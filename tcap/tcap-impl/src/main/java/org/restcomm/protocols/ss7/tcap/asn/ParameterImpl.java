@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
  *
  */
 public class ParameterImpl implements Parameter {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] data;
+	private byte[] data;
     private Parameter[] parameters;
     private boolean primitive = true;
     private int tag;

@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class SupportedGADShapesImpl extends BitStringBase implements SupportedGADShapes {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_ELLIPSOID_POINT = 0;
+	private static final int _INDEX_ELLIPSOID_POINT = 0;
     private static final int _INDEX_ELLIPSOID_POINT_WITH_UNCERTAINTY_CIRCLE = 1;
     private static final int _INDEX_ELLIPSOID_POINT_WITH_UNCERTAINTY_ELLIPSE = 2;
     private static final int _INDEX_POLYGON = 3;

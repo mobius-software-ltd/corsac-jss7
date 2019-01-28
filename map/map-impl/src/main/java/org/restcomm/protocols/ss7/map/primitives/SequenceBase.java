@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
  *
  */
 public abstract class SequenceBase implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    protected String _PrimitiveName;
+	protected String _PrimitiveName;
 
     public SequenceBase(String _PrimitiveName) {
         this._PrimitiveName = _PrimitiveName;

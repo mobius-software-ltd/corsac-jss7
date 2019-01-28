@@ -1,6 +1,5 @@
 package org.restcomm.protocols.ss7.tcap;
 
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
@@ -45,13 +44,8 @@ public class TestSccpListener implements SccpListener {
 
 	@Override
 	public void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel, RemoteSccpStatus remoteSccpStatus) {
-		if(status.equals(status.CONGESTED))
+		if(status.equals(SignallingPointStatus.CONGESTED))
 		    congestedStatusReceived = true;
-	}
-
-	@Override
-	public void onNetworkIdState(int networkId, NetworkIdState networkIdState) {
-		
 	}
 
 	public boolean isCongestedStatusReceived() {

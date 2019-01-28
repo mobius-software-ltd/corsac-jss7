@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
  *
  */
 public abstract class BitStringBase implements CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    protected BitSetStrictLength bitString;
+	protected BitSetStrictLength bitString;
 
     protected int minLength;
     protected int maxLength;

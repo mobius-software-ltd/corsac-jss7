@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -63,7 +58,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         byte[] data = this.getData();
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         CellGlobalIdOrServiceAreaIdFixedLengthImpl prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl();
         prim.decodeAll(asn);
@@ -79,7 +74,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         data = this.getData2();
 
         asn = new AsnInputStream(data);
-        tag = asn.readTag();
+        asn.readTag();
 
         prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl();
         prim.decodeAll(asn);
@@ -117,7 +112,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         CellGlobalIdOrServiceAreaIdFixedLengthImpl original = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(250, 1, 4444, 3333);
@@ -145,5 +140,5 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         assertEquals(copy.getLac(), original.getLac());
         assertEquals(copy.getCellIdOrServiceAreaCode(), original.getCellIdOrServiceAreaCode());
 
-    }
+    }*/
 }

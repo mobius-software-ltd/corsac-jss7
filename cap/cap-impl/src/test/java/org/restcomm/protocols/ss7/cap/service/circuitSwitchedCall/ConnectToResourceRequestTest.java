@@ -27,12 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -67,7 +62,7 @@ public class ConnectToResourceRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ConnectToResourceRequestImpl elem = new ConnectToResourceRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getResourceAddress_IPRoutingAddress().getCalledPartyNumber().getNatureOfAddressIndicator(), 3);
         assertTrue(elem.getResourceAddress_IPRoutingAddress().getCalledPartyNumber().getAddress().endsWith("98765"));
@@ -82,7 +77,7 @@ public class ConnectToResourceRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new ConnectToResourceRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNull(elem.getResourceAddress_IPRoutingAddress());
         assertTrue(elem.getResourceAddress_Null());
@@ -118,7 +113,7 @@ public class ConnectToResourceRequestTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(3, "98765", 2, 1);
@@ -185,5 +180,5 @@ public class ConnectToResourceRequestTest {
         assertNull(copy.getExtensions());
         assertNull(copy.getServiceInteractionIndicatorsTwo());
         assertNull(copy.getCallSegmentID());
-    }
+    }*/
 }

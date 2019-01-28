@@ -30,7 +30,9 @@ package org.restcomm.protocols.ss7.tcap.api;
  *
  */
 public class TCAPSendException extends Exception {
-    // FIXME: should this be runtime exception?
+	private static final long serialVersionUID = 1L;
+
+	// FIXME: should this be runtime exception?
     public TCAPSendException() {
         super();
         // TODO Auto-generated constructor stub

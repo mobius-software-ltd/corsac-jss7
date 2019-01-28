@@ -21,8 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
-import javolution.util.FastSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
@@ -77,10 +77,10 @@ public class RemAsStatePenTimeout implements FSMStateEventHandler {
 
         // check if there are any ASP's who are INACTIVE, transition to
         // INACTIVE else DOWN
-        for (FastList.Node<Asp> n = this.asImpl.appServerProcs.head(), end = this.asImpl.appServerProcs.tail(); (n = n
-                .getNext()) != end;) {
-            AspImpl remAspImpl = (AspImpl) n.getValue();
-
+        Iterator<Entry<String, Asp>> iterator=this.asImpl.appServerProcs.entrySet().iterator();
+        while(iterator.hasNext()) {
+            AspImpl remAspImpl = (AspImpl) iterator.next().getValue();
+        
             FSM aspPeerFSM = remAspImpl.getPeerFSM();
             AspState aspState = AspState.getState(aspPeerFSM.getState().getName());
 
@@ -115,9 +115,9 @@ public class RemAsStatePenTimeout implements FSMStateEventHandler {
 
         // We want to pass MTP3 PAUSE only for SE. If its DE the peer transition handler will take care of MTP3 PAUSE
         if (asImpl.getExchangeType() == ExchangeType.SE) {
-            FastSet<AsStateListener> asStateListeners = this.asImpl.getAsStateListeners();
-            for (FastSet.Record r = asStateListeners.head(), end = asStateListeners.tail(); (r = r.getNext()) != end;) {
-                AsStateListener asAsStateListener = asStateListeners.valueOf(r);
+            Iterator<AsStateListener> asStateListeners = this.asImpl.getAsStateListeners().iterator();
+            while(asStateListeners.hasNext()) {
+                AsStateListener asAsStateListener = asStateListeners.next();
                 try {
                     asAsStateListener.onAsInActive(this.asImpl);
                 } catch (Exception e) {

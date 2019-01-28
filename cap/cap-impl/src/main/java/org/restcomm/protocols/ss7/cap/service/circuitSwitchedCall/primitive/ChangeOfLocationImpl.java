@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -50,16 +47,9 @@ import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 *
 */
 public class ChangeOfLocationImpl implements ChangeOfLocation, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String CELL_GLOBAL_ID = "cellGlobalId";
-    private static final String SERVICE_AREA_ID = "serviceAreaId";
-    private static final String LOCATION_AREA_ID = "locationAreaId";
-    private static final String INTER_SYSTEM_HAND_OVER = "interSystemHandOver";
-    private static final String INTER_PLMN_HAND_OVER = "interPLMNHandOver";
-    private static final String INTER_MSC_HAND_OVER = "interMSCHandOver";
-    private static final String CHANGE_OF_LOCATION_ALT = "changeOfLocationAlt";
-
-    public static final int _ID_cellGlobalId = 0;
+	public static final int _ID_cellGlobalId = 0;
     public static final int _ID_serviceAreaId = 1;
     public static final int _ID_locationAreaId = 2;
     public static final int _ID_interSystemHandOver = 3;
@@ -360,54 +350,6 @@ public class ChangeOfLocationImpl implements ChangeOfLocation, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    protected static final XMLFormat<ChangeOfLocationImpl> CHANGE_OF_LOCATION_XML = new XMLFormat<ChangeOfLocationImpl>(ChangeOfLocationImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ChangeOfLocationImpl changeOfLocation) throws XMLStreamException {
-            changeOfLocation.cellGlobalId = xml.get(CELL_GLOBAL_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            changeOfLocation.serviceAreaId = xml.get(SERVICE_AREA_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-
-            changeOfLocation.locationAreaId = xml.get(LOCATION_AREA_ID, LAIFixedLengthImpl.class);
-
-            Boolean bval = xml.get(INTER_SYSTEM_HAND_OVER, Boolean.class);
-            if (bval != null)
-                changeOfLocation.interSystemHandOver = bval;
-            bval = xml.get(INTER_PLMN_HAND_OVER, Boolean.class);
-            if (bval != null)
-                changeOfLocation.interPLMNHandOver = bval;
-            bval = xml.get(INTER_MSC_HAND_OVER, Boolean.class);
-            if (bval != null)
-                changeOfLocation.interMSCHandOver = bval;
-
-            changeOfLocation.changeOfLocationAlt = xml.get(CHANGE_OF_LOCATION_ALT, ChangeOfLocationAltImpl.class);
-        }
-
-        @Override
-        public void write(ChangeOfLocationImpl changeOfLocation, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (changeOfLocation.cellGlobalId != null) {
-                xml.add((CellGlobalIdOrServiceAreaIdFixedLengthImpl) changeOfLocation.cellGlobalId, CELL_GLOBAL_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            }
-            if (changeOfLocation.serviceAreaId != null) {
-                xml.add((CellGlobalIdOrServiceAreaIdFixedLengthImpl) changeOfLocation.serviceAreaId, SERVICE_AREA_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            }
-
-            if (changeOfLocation.locationAreaId != null) {
-                xml.add((LAIFixedLengthImpl) changeOfLocation.locationAreaId, LOCATION_AREA_ID, LAIFixedLengthImpl.class);
-            }
-
-            if (changeOfLocation.interSystemHandOver)
-                xml.add(changeOfLocation.interSystemHandOver, INTER_SYSTEM_HAND_OVER, Boolean.class);
-            if (changeOfLocation.interPLMNHandOver)
-                xml.add(changeOfLocation.interPLMNHandOver, INTER_PLMN_HAND_OVER, Boolean.class);
-            if (changeOfLocation.interMSCHandOver)
-                xml.add(changeOfLocation.interMSCHandOver, INTER_MSC_HAND_OVER, Boolean.class);
-
-            if (changeOfLocation.changeOfLocationAlt != null) {
-                xml.add((ChangeOfLocationAltImpl) changeOfLocation.changeOfLocationAlt, CHANGE_OF_LOCATION_ALT, ChangeOfLocationAltImpl.class);
-            }
-        }
-    };
 
     public enum CellGlobalIdOrServiceAreaIdFixedLength_Option {
         cellGlobalId, serviceAreaId;

@@ -40,7 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnResult;
  *
  */
 public class ReturnResultImpl extends AbstractRemoteOperation implements ReturnResult {
-    // mandatory
+	private static final long serialVersionUID = 1L;
+
+	// mandatory
     private Long invokeId;
     // optional
     private List<OperationCode> operationCodes = new ArrayList<OperationCode>();

@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLast;
  *
  */
 public class ReturnResultNotLastImpl extends ReturnImpl implements ReturnResultNotLast {
+	private static final long serialVersionUID = 1L;
 
-    public ComponentType getType() {
+	public ComponentType getType() {
         return ComponentType.ReturnResultNotLast;
     }
 

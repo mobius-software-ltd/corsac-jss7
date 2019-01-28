@@ -21,7 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
@@ -50,9 +51,10 @@ public class SEHPeerAsStateEnterPen extends SEHAsStateEnterPen {
         super.onEvent(state);
 
         // If there is even one ASP in INACTIVE state for this AS, ACTIVATE it
-        for (FastList.Node<Asp> n = asImpl.appServerProcs.head(), end = asImpl.appServerProcs.tail(); (n = n.getNext()) != end;) {
-            AspImpl aspImpl = (AspImpl) n.getValue();
-
+        Iterator<Entry<String, Asp>> iterator=this.asImpl.appServerProcs.entrySet().iterator();
+        while(iterator.hasNext()) {
+            AspImpl aspImpl = (AspImpl) iterator.next().getValue();
+            
             FSM aspLocalFSM = aspImpl.getLocalFSM();
 
             if (AspState.getState(aspLocalFSM.getState().getName()) == AspState.INACTIVE) {

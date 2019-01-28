@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ResetTimerGPRSRequestImpl extends GprsMessageImpl implements ResetTimerGPRSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ResetTimerGPRSRequest";
+	public static final String _PrimitiveName = "ResetTimerGPRSRequest";
 
     public static final int _ID_timerID = 0;
     public static final int _ID_timerValue = 1;

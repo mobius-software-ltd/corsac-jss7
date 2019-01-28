@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
@@ -35,11 +32,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class ExtTeleserviceCodeImpl extends OctetStringBase implements ExtTeleserviceCode {
+	private static final long serialVersionUID = 1L;
 
-    private static final String TELE_SERVICE_CODE_VALUE = "teleserviceCodeValue";
-    private static final String DEFAULT_STRING_VALUE = null;
-
-    public ExtTeleserviceCodeImpl() {
+	public ExtTeleserviceCodeImpl() {
         super(1, 5, "ExtTeleserviceCode");
     }
 
@@ -90,38 +85,4 @@ public class ExtTeleserviceCodeImpl extends OctetStringBase implements ExtTelese
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ExtTeleserviceCodeImpl> EXT_BEARER_SERVICE_CODE_XML = new XMLFormat<ExtTeleserviceCodeImpl>(
-            ExtTeleserviceCodeImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ExtTeleserviceCodeImpl extTeleserviceCode)
-                throws XMLStreamException {
-            String val = xml.getAttribute(TELE_SERVICE_CODE_VALUE, DEFAULT_STRING_VALUE);
-            if (val != null) {
-                extTeleserviceCode.setTeleserviceCode(Enum.valueOf(TeleserviceCodeValue.class, val));
-            }
-
-            // Byte integ = xml.get(TELE_SERVICE_CODE_VALUE, Byte.class);
-            // if (integ != null) {
-            // extTeleserviceCode.data = new byte[] { integ };
-            // }
-        }
-
-        @Override
-        public void write(ExtTeleserviceCodeImpl extTeleserviceCode, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            TeleserviceCodeValue val = extTeleserviceCode.getTeleserviceCodeValue();
-            if (val != null)
-                xml.setAttribute(TELE_SERVICE_CODE_VALUE, val.toString());
-
-            // TeleserviceCodeValue bearerServiceCodeValue = extTeleserviceCode.getTeleserviceCodeValue();
-            // if (bearerServiceCodeValue != null) {
-            // xml.add((byte) bearerServiceCodeValue.getCode(), TELE_SERVICE_CODE_VALUE, Byte.class);
-            // }
-        }
-    };
 }

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ConnectionRequest;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ConnectionRequestImpl extends AbstractISUPParameter implements ConnectionRequest {
+	private static final long serialVersionUID = 1L;
 
-    private int localReference;
+	private int localReference;
     // should we use here SignalingPointCode class? XXx
     private int signalingPointCode;
     private boolean protocolClassSet = false;

@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class ServiceTypeImpl extends SequenceBase implements ServiceType {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_gmlcRestriction = 0;
+	private static final int _TAG_gmlcRestriction = 0;
     private static final int _TAG_notificationToMSUser = 1;
     private static final int _TAG_extensionContainer = 2;
 

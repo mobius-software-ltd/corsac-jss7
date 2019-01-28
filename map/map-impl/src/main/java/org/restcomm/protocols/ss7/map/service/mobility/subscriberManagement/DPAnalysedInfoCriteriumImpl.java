@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class DPAnalysedInfoCriteriumImpl extends SequenceBase implements DPAnalysedInfoCriterium {
+	private static final long serialVersionUID = 1L;
 
-    private ISDNAddressString dialledNumber;
+	private ISDNAddressString dialledNumber;
     private long serviceKey;
     private ISDNAddressString gsmSCFAddress;
     private DefaultCallHandling defaultCallHandling;

@@ -45,7 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
 *
 */
 public class GenericServiceInfoImpl extends SequenceBase implements GenericServiceInfo {
-    public static final int _ID_maximumEntitledPriority = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_maximumEntitledPriority = 0;
     public static final int _ID_defaultPriority = 1;
     public static final int _ID_ccbsFeatureList = 2;
     public static final int _ID_nbrSB = 3;

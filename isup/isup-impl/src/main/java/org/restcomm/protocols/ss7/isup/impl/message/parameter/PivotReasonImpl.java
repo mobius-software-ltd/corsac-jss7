@@ -28,8 +28,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
  *
  */
 public class PivotReasonImpl implements PivotReason {
+	private static final long serialVersionUID = 1L;
 
-    private byte pivotReason;
+	private byte pivotReason;
     //we need to know if that one was set.
     private Byte pivotPossibleAtPerformingExchange;
     public PivotReasonImpl() {

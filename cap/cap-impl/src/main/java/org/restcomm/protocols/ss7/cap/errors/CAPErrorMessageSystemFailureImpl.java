@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -44,10 +41,9 @@ import org.restcomm.protocols.ss7.cap.api.errors.UnavailableNetworkResource;
  *
  */
 public class CAPErrorMessageSystemFailureImpl extends CAPErrorMessageImpl implements CAPErrorMessageSystemFailure {
+	private static final long serialVersionUID = 1L;
 
-    private static final String UNAVAILABLE_NETWORK_RESOURCE = "unavailableNetworkResource";
-
-    public static final String _PrimitiveName = "CAPErrorMessageSystemFailure";
+	public static final String _PrimitiveName = "CAPErrorMessageSystemFailure";
 
     private UnavailableNetworkResource unavailableNetworkResource;
 
@@ -177,31 +173,4 @@ public class CAPErrorMessageSystemFailureImpl extends CAPErrorMessageImpl implem
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CAPErrorMessageSystemFailureImpl> CAP_ERROR_MESSAGE_SYSTEM_FAILURE_XML = new XMLFormat<CAPErrorMessageSystemFailureImpl>(
-            CAPErrorMessageSystemFailureImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CAPErrorMessageSystemFailureImpl errorMessage)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-
-            String str = xml.get(UNAVAILABLE_NETWORK_RESOURCE, String.class);
-            if (str != null)
-                errorMessage.unavailableNetworkResource = Enum.valueOf(UnavailableNetworkResource.class, str);
-        }
-
-        @Override
-        public void write(CAPErrorMessageSystemFailureImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-
-            if (errorMessage.unavailableNetworkResource != null)
-                xml.add((String) errorMessage.unavailableNetworkResource.toString(), UNAVAILABLE_NETWORK_RESOURCE, String.class);
-        }
-    };
-
 }

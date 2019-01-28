@@ -23,20 +23,13 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageID;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ToneImpl;
 import org.testng.annotations.Test;
 
@@ -73,7 +66,7 @@ public class ToneTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         ToneImpl original = new ToneImpl(5, null);
@@ -118,5 +111,5 @@ public class ToneTest {
 
         assertEquals(copy.getToneID(), 5);
         assertEquals((int) copy.getDuration(), 6);
-    }
+    }*/
 }

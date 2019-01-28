@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class GPRSEventImpl extends SequenceBase implements GPRSEvent {
-
-    public static final int _ID_gprsEventType = 0;
+	private static final long serialVersionUID = 1L;
+	
+	public static final int _ID_gprsEventType = 0;
     public static final int _ID_monitorMode = 1;
 
     private GPRSEventType gprsEventType;

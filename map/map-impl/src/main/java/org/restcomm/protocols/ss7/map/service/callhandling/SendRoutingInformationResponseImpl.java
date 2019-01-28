@@ -69,7 +69,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
  *
  */
 public class SendRoutingInformationResponseImpl extends CallHandlingMessageImpl implements SendRoutingInformationResponse {
-    private IMSI imsi;
+	private static final long serialVersionUID = 1L;
+
+	private IMSI imsi;
     private ExtendedRoutingInfo extRoutingInfo;
     private CUGCheckInfo cugCheckInfo;
     private boolean cugSubscriptionFlag;

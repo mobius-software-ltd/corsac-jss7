@@ -32,7 +32,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class CreditImpl extends AbstractParameter implements Credit {
-    private byte value;
+	private static final long serialVersionUID = 1L;
+
+	private byte value;
 
     public CreditImpl() {
     }

@@ -37,8 +37,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
  *
  */
 public class OperationCodeImpl implements OperationCode {
+	private static final long serialVersionUID = 1L;
 
-    private Long localOperationCode;
+	private Long localOperationCode;
     private long[] globalOperationCode;
     private OperationCodeType type;
 

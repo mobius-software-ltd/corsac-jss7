@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.SubsequentNumber;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class SubsequentAddressMessageImpl extends ISUPMessageImpl implements SubsequentAddressMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.SubsequentAddress);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.SubsequentAddress);
     private static final int _MANDATORY_VAR_COUNT = 1;
 
     static final int _INDEX_F_MessageType = 0;
@@ -135,7 +136,7 @@ public class SubsequentAddressMessageImpl extends ISUPMessageImpl implements Sub
     }
 
     public MessageType getMessageType() {
-        return this._MESSAGE_TYPE;
+        return _MESSAGE_TYPE;
     }
 
 }

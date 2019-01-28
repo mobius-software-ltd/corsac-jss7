@@ -38,7 +38,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnError;
  *
  */
 public class ReturnErrorImpl extends AbstractRemoteOperation implements ReturnError {
-    // mandatory
+	private static final long serialVersionUID = 1L;
+
+	// mandatory
     private Long invokeId;
     // optional
     private ErrorCode errorCode;

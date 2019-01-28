@@ -39,10 +39,7 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.PivotRoutingBackwa
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ReturnToInvokingExchangeCallIdentifierImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ReturnToInvokingExchangeDurationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingPivotReason;
-import org.restcomm.protocols.ss7.isup.message.parameter.InvokingRedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectBackwardInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeCallIdentifier;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeDuration;
 import org.testng.Assert;

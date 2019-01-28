@@ -86,4 +86,8 @@ public enum MAPAbortProviderReason {
     private MAPAbortProviderReason(int code) {
         this.code = code;
     }
+    
+    public int getCode() {
+    	return code;
+    } 
 }

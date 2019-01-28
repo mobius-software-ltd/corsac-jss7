@@ -25,13 +25,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -77,7 +72,7 @@ public class RequestReportBCSMEventRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         RequestReportBCSMEventRequestImpl elem = new RequestReportBCSMEventRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getBCSMEventList().size(), 7);
         assertEquals(elem.getBCSMEventList().get(0).getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
@@ -105,7 +100,7 @@ public class RequestReportBCSMEventRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new RequestReportBCSMEventRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getBCSMEventList().size(), 7);
         assertEquals(elem.getBCSMEventList().get(0).getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
@@ -171,7 +166,7 @@ public class RequestReportBCSMEventRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         ArrayList<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
@@ -225,5 +220,5 @@ public class RequestReportBCSMEventRequestTest {
         assertEquals(copy.getBCSMEventList().get(0).getEventTypeBCSM(), original.getBCSMEventList().get(0).getEventTypeBCSM());
 
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-    }
+    }*/
 }

@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -80,7 +75,7 @@ public class EventReportBCSMRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         EventReportBCSMRequestImpl elem = new EventReportBCSMRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.oDisconnect);
         assertEquals(elem.getLegID().getReceivingSideID(), LegType.leg1);
@@ -91,7 +86,7 @@ public class EventReportBCSMRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new EventReportBCSMRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
         assertTrue(Arrays.equals(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
@@ -103,7 +98,7 @@ public class EventReportBCSMRequestTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new EventReportBCSMRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
         assertTrue(Arrays.equals(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
@@ -147,7 +142,7 @@ public class EventReportBCSMRequestTest {
         // MiscCallInfo miscCallInfo, CAPExtensions extensions
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerializaion() throws Exception {
         CauseCapImpl failureCause = new CauseCapImpl(getDataFailureCause());
         RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo = new RouteSelectFailureSpecificInfoImpl(failureCause);
@@ -187,5 +182,5 @@ public class EventReportBCSMRequestTest {
         assertEquals(copy.getLegID().getReceivingSideID(), original.getLegID().getReceivingSideID());
 
         assertEquals(copy.getMiscCallInfo().getMessageType(), original.getMiscCallInfo().getMessageType());
-    }
+    }*/
 }

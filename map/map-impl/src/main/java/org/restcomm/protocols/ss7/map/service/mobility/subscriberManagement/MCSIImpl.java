@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class MCSIImpl extends SequenceBase implements MCSI {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_gsmSCFAddress = 0;
+	private static final int _TAG_gsmSCFAddress = 0;
     private static final int _TAG_extensionContainer = 1;
     private static final int _TAG_notificationToCSE = 2;
     private static final int _TAG_csiActive = 3;

@@ -56,8 +56,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
  */
 public class PDPContextEstablishmentAcknowledgementSpecificInformationImpl extends SequenceBase implements
         PDPContextEstablishmentAcknowledgementSpecificInformation {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_accessPointName = 0;
+	public static final int _ID_accessPointName = 0;
     public static final int _ID_chargingID = 1;
     public static final int _ID_locationInformationGPRS = 2;
     public static final int _ID_endUserAddress = 3;

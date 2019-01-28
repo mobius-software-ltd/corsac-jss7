@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
  *
  */
 public class UserDataHeaderImpl implements UserDataHeader {
+	private static final long serialVersionUID = 1L;
 
-    private Map<Integer, byte[]> data = new HashMap<Integer, byte[]>();
+	private Map<Integer, byte[]> data = new HashMap<Integer, byte[]>();
 
     public UserDataHeaderImpl() {
     }

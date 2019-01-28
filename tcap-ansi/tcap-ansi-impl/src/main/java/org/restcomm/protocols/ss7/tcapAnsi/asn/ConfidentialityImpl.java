@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 *
 */
 public class ConfidentialityImpl implements Confidentiality {
+	private static final long serialVersionUID = 1L;
 
-    private Long integerConfidentialityId;
+	private Long integerConfidentialityId;
     private long[] objectConfidentialityId;
 
     @Override

@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -68,7 +63,7 @@ public class GeographicalInformationTest {
 
         AsnInputStream asn = new AsnInputStream(rawData);
 
-        int tag = asn.readTag();
+        asn.readTag();
         GeographicalInformationImpl impl = new GeographicalInformationImpl();
         impl.decodeAll(asn);
 
@@ -79,7 +74,7 @@ public class GeographicalInformationTest {
 
         rawData = getEncodedData02();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new GeographicalInformationImpl();
         impl.decodeAll(asn);
 
@@ -90,7 +85,7 @@ public class GeographicalInformationTest {
 
         rawData = getEncodedData();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new GeographicalInformationImpl();
         impl.decodeAll(asn);
 
@@ -101,7 +96,7 @@ public class GeographicalInformationTest {
 
         rawData = getEncodedData2();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new GeographicalInformationImpl();
         impl.decodeAll(asn);
 
@@ -146,7 +141,7 @@ public class GeographicalInformationTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         GeographicalInformationImpl original = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle,
@@ -174,6 +169,5 @@ public class GeographicalInformationTest {
         assertEquals(copy.getLongitude(), original.getLongitude());
         assertEquals(copy.getUncertainty(), original.getUncertainty());
 
-    }
-
+    }*/
 }

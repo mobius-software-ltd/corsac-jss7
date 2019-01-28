@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class SendChargingInformationGPRSRequestImpl extends GprsMessageImpl implements SendChargingInformationGPRSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_sciGPRSBillingChargingCharacteristics = 0;
+	public static final int _ID_sciGPRSBillingChargingCharacteristics = 0;
 
     public static final String _PrimitiveName = "SendChargingInformationGPRSRequest";
 

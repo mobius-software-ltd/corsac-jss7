@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class SM_RP_OAImpl implements SM_RP_OA, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_Msisdn = 2;
+	private static final int _TAG_Msisdn = 2;
     private static final int _TAG_ServiceCentreAddressOA = 4;
     private static final int _TAG_noSM_RP_OA = 5;
 

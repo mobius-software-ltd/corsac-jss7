@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class TPProtocolIdentifierImpl extends OctetStringLength1Base implements TPProtocolIdentifier {
+	private static final long serialVersionUID = 1L;
 
-    public TPProtocolIdentifierImpl() {
+	public TPProtocolIdentifierImpl() {
         super("TPProtocolIdentifier");
     }
 

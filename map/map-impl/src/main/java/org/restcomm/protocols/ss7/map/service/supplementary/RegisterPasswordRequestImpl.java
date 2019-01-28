@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 *
 */
 public class RegisterPasswordRequestImpl extends SupplementaryMessageImpl implements RegisterPasswordRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "RegisterPasswordRequest";
+	public static final String _PrimitiveName = "RegisterPasswordRequest";
 
     private SSCode ssCode;
 

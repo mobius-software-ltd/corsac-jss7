@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
 *
 */
 public class DeactivateSSResponseImpl extends SupplementaryMessageImpl implements DeactivateSSResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "DeactivateSSResponse";
+	public static final String _PrimitiveName = "DeactivateSSResponse";
 
     private SSInfo ssInfo;
 

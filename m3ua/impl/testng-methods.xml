@@ -21,7 +21,6 @@
   		 	<class name="org.restcomm.protocols.ss7.m3ua.impl.AspTransitionStateTest"></class>
   		 	<class name="org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryTest"></class>
   		 	<class name="org.restcomm.protocols.ss7.m3ua.impl.message.MessageTest"></class>
-  		 	<class name="org.restcomm.protocols.ss7.m3ua.impl.oam.M3UAShellExecutorTest"></class>
   		 	<class name="org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterTest"></class>
   		 </classes>
 	</test>

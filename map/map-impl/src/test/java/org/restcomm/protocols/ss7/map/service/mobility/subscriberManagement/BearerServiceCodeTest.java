@@ -50,7 +50,7 @@ public class BearerServiceCodeTest {
 
         byte[] rawData = getEncodedData1();
         AsnInputStream asn = new AsnInputStream(rawData);
-        int tag = asn.readTag();
+        asn.readTag();
         BearerServiceCodeImpl impl = new BearerServiceCodeImpl();
         impl.decodeAll(asn);
         assertEquals(impl.getData(), 38);

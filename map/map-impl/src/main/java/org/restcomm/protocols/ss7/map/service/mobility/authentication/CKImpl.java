@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class CKImpl extends OctetStringBase implements CK {
+	private static final long serialVersionUID = 1L;
 
-    public CKImpl(byte[] data) {
+	public CKImpl(byte[] data) {
         super(16, 16, "CK", data);
     }
 

@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Parameter;
  *
  */
 public class ParameterImpl extends AbstractAsnEncodable implements Parameter {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] data;
+	private byte[] data;
     private Parameter[] parameters;
     private boolean primitive = true;
     private int tag;

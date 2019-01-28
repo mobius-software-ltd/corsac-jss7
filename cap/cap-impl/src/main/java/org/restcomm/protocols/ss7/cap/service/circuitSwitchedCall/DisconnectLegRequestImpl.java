@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -53,14 +50,11 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class DisconnectLegRequestImpl extends CircuitSwitchedCallMessageImpl implements DisconnectLegRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_legToBeReleased = 0;
+	public static final int _ID_legToBeReleased = 0;
     public static final int _ID_releaseCause = 1;
     public static final int _ID_extensions = 2;
-
-    private static final String LEG_TO_BE_RELEASED = "legToBeReleased";
-    private static final String RELEASE_CAUSE = "releaseCause";
-    private static final String EXTENSIONS = "extensions";
 
     public static final String _PrimitiveName = "DisconnectlegRequestIndication";
 
@@ -256,34 +250,4 @@ public class DisconnectLegRequestImpl extends CircuitSwitchedCallMessageImpl imp
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<DisconnectLegRequestImpl> CONNECT_REQUEST_XML = new XMLFormat<DisconnectLegRequestImpl>(
-            DisconnectLegRequestImpl.class) {
-
-        public void read(javolution.xml.XMLFormat.InputElement xml, DisconnectLegRequestImpl disconnectLegRequest)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, disconnectLegRequest);
-
-            disconnectLegRequest.legToBeReleased = xml.get(LEG_TO_BE_RELEASED, LegIDImpl.class);
-            disconnectLegRequest.releaseCause = xml.get(RELEASE_CAUSE, CauseCapImpl.class);
-            disconnectLegRequest.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-
-        }
-
-        public void write(DisconnectLegRequestImpl disconnectLegRequest, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(disconnectLegRequest, xml);
-
-            if (disconnectLegRequest.getLegToBeReleased() != null)
-                xml.add((LegIDImpl) disconnectLegRequest.getLegToBeReleased(), LEG_TO_BE_RELEASED, LegIDImpl.class);
-            if (disconnectLegRequest.getReleaseCause() != null)
-                xml.add((CauseCapImpl) disconnectLegRequest.getReleaseCause(), RELEASE_CAUSE, CauseCapImpl.class);
-            if (disconnectLegRequest.getExtensions() != null)
-                xml.add((CAPExtensionsImpl) disconnectLegRequest.getExtensions(), EXTENSIONS, CAPExtensionsImpl.class);
-        }
-    };
-
 }

@@ -27,8 +27,8 @@ import org.restcomm.protocols.ss7.sccp.SccpProvider;
 
 public class CAPStackImplWrapper extends CAPStackImpl {
 
-    public CAPStackImplWrapper(SccpProvider sccpPprovider, int ssn) {
-        super("Test", sccpPprovider, ssn);
+    public CAPStackImplWrapper(SccpProvider sccpPprovider, int ssn,int threads) {
+        super("Test", sccpPprovider, ssn, threads);
         this.capProvider = new CAPProviderImplWrapper(this.tcapStack.getProvider());
     }
 }

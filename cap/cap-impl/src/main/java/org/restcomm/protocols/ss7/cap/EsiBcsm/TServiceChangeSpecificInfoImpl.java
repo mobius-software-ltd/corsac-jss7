@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,8 +44,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtB
 *
 */
 public class TServiceChangeSpecificInfoImpl extends SequenceBase implements TServiceChangeSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    public static final String EXT_BASIC_SERVICE_CODE = "extBasicServiceCode";
+	public static final String EXT_BASIC_SERVICE_CODE = "extBasicServiceCode";
 
     public static final int _ID_extBasicServiceCode = 0;
 
@@ -135,27 +133,4 @@ public class TServiceChangeSpecificInfoImpl extends SequenceBase implements TSer
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<TServiceChangeSpecificInfoImpl> T_SERVICE_CHANGE_SPECIFIC_INFO_XML = new XMLFormat<TServiceChangeSpecificInfoImpl>(
-            TServiceChangeSpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, TServiceChangeSpecificInfoImpl tServiceChangeSpecificInfo)
-                throws XMLStreamException {
-            tServiceChangeSpecificInfo.extBasicServiceCode = xml.get(EXT_BASIC_SERVICE_CODE, ExtBasicServiceCodeImpl.class);
-        }
-
-        @Override
-        public void write(TServiceChangeSpecificInfoImpl tServiceChangeSpecificInfo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            if (tServiceChangeSpecificInfo.extBasicServiceCode != null) {
-                xml.add(((ExtBasicServiceCodeImpl) tServiceChangeSpecificInfo.extBasicServiceCode), EXT_BASIC_SERVICE_CODE, ExtBasicServiceCodeImpl.class);
-            }
-        }
-    };
-
 }

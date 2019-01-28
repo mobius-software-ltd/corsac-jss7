@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
  *
  */
 public class NAEAPreferredCIImpl extends SequenceBase implements NAEAPreferredCI {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_naeaPreferredCIC = 0;
+	public static final int _TAG_naeaPreferredCIC = 0;
     public static final int _TAG_extensionContainer = 1;
 
     private NAEACIC naeaPreferredCIC;

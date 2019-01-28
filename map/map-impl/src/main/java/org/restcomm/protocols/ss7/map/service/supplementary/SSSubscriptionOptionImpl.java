@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class SSSubscriptionOptionImpl implements SSSubscriptionOption, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "SSSubscriptionOption";
+	public static final String _PrimitiveName = "SSSubscriptionOption";
 
     public static final int _TAG_cliRestrictionOption = 2;
     public static final int _TAG_overrideCategory = 1;

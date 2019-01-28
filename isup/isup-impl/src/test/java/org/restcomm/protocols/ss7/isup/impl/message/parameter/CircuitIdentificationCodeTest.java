@@ -30,7 +30,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -59,14 +58,14 @@ public class CircuitIdentificationCodeTest extends ParameterHarness {
     }
 
     private byte[] getBody1() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        //ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // we will use odd number of digits, so we leave zero as MSB
 
         return new byte[] { (byte) 0xFF, 0x0F };
     }
 
     private byte[] getBody2() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        //ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // we will use odd number of digits, so we leave zero as MSB
 
         return new byte[] { (byte) 0xAB, 0x0C };

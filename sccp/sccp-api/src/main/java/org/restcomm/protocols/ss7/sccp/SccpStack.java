@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.sccp;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPart;
-import org.restcomm.protocols.ss7.ss7ext.Ss7ExtSccpInterface;
 
 /**
  * @author amit bhayani
@@ -36,12 +36,6 @@ import org.restcomm.protocols.ss7.ss7ext.Ss7ExtSccpInterface;
 public interface SccpStack {
     int UDT_ONLY = 1;
     int XUDT_ONLY = 2;
-
-    /**
-     * Returns SCCP stack extensions implementation
-     * @return
-     */
-    Ss7ExtSccpInterface getSs7ExtSccpInterface();
 
     /**
      * Starts SCCP stack.
@@ -73,20 +67,6 @@ public interface SccpStack {
      * @return SCCP provider object.
      */
     SccpProvider getSccpProvider();
-
-    /**
-     * Set the persist directory to store the xml files
-     *
-     * @return
-     */
-    String getPersistDir();
-
-    /**
-     * Get the persist directory from which to read the xml files
-     *
-     * @param persistDir
-     */
-    void setPersistDir(String persistDir);
 
     /**
      * If set, the signaling point code from SCCP called/calling address will be removed if corresponding routing is based on GT
@@ -388,7 +368,7 @@ public interface SccpStack {
      *
      * @param mtp3UserPartsTemp
      */
-    void setMtp3UserParts(Map<Integer, Mtp3UserPart> mtp3UserPartsTemp);
+    void setMtp3UserParts(ConcurrentHashMap<Integer, Mtp3UserPart> mtp3UserPartsTemp);
 
     /**
      * Retrieve the underlying MTP3 layer
@@ -411,54 +391,4 @@ public interface SccpStack {
      * @return
      */
     Router getRouter();
-
-    /**
-     * @return Timer Ta value - started at next MTP-STATUS(cong) primitive coming; during this timer no more MTP-STATUS(cong)
-     *         are accepted
-     */
-    int getCongControlTIMER_A();
-
-    /**
-     * @param value Timer Ta value - started at next MTP-STATUS(cong) primitive coming; during this timer no more
-     *        MTP-STATUS(cong) are accepted
-     */
-    void setCongControlTIMER_A(int value) throws Exception;
-
-    /**
-     * @return Timer Td value - started after last MTP-STATUS(cong) primitive coming; after end of this timer (without new
-     *         coming MTP-STATUS(cong)) RSLM will be reduced
-     */
-    int getCongControlTIMER_D();
-
-    /**
-     * @param value Timer Td value - started after last MTP-STATUS(cong) primitive coming; after end of this timer (without new
-     *        coming MTP-STATUS(cong)) RSLM will be reduced
-     */
-    void setCongControlTIMER_D(int value) throws Exception;
-
-    /**
-     * @return getting sccp congestion control international: international algorithm - only one level is provided by MTP3 level
-     *         (in MTP-STATUS primitive). Each MTP-STATUS increases N / M levels levelDepended: MTP3 level (MTP-STATUS
-     *         primitive) provides 3 levels of a congestion (1-3) and SCCP congestion will increase to the next level after
-     *         MTP-STATUS next level increase (MTP-STATUS 1 to N up to 3, MTP-STATUS 2 to N up to 5, MTP-STATUS 3 to N up to 7)
-     */
-    SccpCongestionControlAlgo getCongControl_Algo();
-
-    /**
-     * @param value setting sccp congestion control
-     */
-    void setCongControl_Algo(SccpCongestionControlAlgo value) throws Exception;
-
-    /**
-     * @return getting if true outgoing SCCP messages will be blocked (depending on message type, UDP messages from level N=6)
-     */
-    boolean isCongControl_blockingOutgoungSccpMessages();
-
-    /**
-     * @param value setting if true outgoing SCCP messages will be blocked (depending on message type, UDP messages from level
-     *        N=6)
-     */
-    void setCongControl_blockingOutgoungSccpMessages(boolean value) throws Exception;
-
-
 }

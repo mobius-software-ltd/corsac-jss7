@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferNumber;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class CallTransferNumberImpl extends AbstractNAINumber implements CallTransferNumber {
+	private static final long serialVersionUID = 1L;
 
-    protected int numberingPlanIndicator;
+	protected int numberingPlanIndicator;
 
     protected int addressRepresentationREstrictedIndicator;
 
@@ -173,7 +174,7 @@ public class CallTransferNumberImpl extends AbstractNAINumber implements CallTra
      * @see org.restcomm.protocols.ss7.isup.message.parameter.ISUPParameter#getCode()
      */
     public int getCode() {
-        return this._PARAMETER_CODE;
+        return _PARAMETER_CODE;
     }
 
 }

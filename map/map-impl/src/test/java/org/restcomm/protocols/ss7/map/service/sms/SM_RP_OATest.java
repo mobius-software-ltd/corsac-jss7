@@ -148,7 +148,7 @@ public class SM_RP_OATest {
 
     @Test(groups = { "functional.serialize", "service.sms" })
     public void testSerialization() throws Exception {
-        AddressStringImpl astr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "18017011111");
+        //AddressStringImpl astr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "18017011111");
         SM_RP_OAImpl original = new SM_RP_OAImpl();
 
         // serialize

@@ -171,8 +171,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
  *
  */
 public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMobility {
+	private static final long serialVersionUID = 1L;
 
-    protected MAPDialogMobilityImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
+	protected MAPDialogMobilityImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
             MAPServiceMobility mapService, AddressString origReference, AddressString destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
@@ -1814,7 +1815,7 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         oc.setLocalOperationCode((long) MAPOperationCode.forwardCheckSsIndication);
         invoke.setOperationCode(oc);
 
-        ForwardCheckSSIndicationRequestImpl req = new ForwardCheckSSIndicationRequestImpl();
+        new ForwardCheckSSIndicationRequestImpl();
 
         Long invokeId;
         try {

@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,12 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  * @author amit bhayani
  */
 public class MAPErrorMessageAbsentSubscriberImpl extends MAPErrorMessageImpl implements MAPErrorMessageAbsentSubscriber {
+	private static final long serialVersionUID = 1L;
 
-    private static final String MWD_SET = "mwdSet";
-    private static final String ABSENT_SUBSCRIBER_REASON = "absentSubscriberReason";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
-
-    public static final int AbsentSubscriberReason_TAG = 0;
+	public static final int AbsentSubscriberReason_TAG = 0;
 
     private MAPExtensionContainer extensionContainer;
     private AbsentSubscriberReason absentSubscriberReason;
@@ -295,38 +289,4 @@ public class MAPErrorMessageAbsentSubscriberImpl extends MAPErrorMessageImpl imp
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageAbsentSubscriberImpl> MAP_ERROR_MESSAGE_ABSENT_SUBSCRIBER_XML = new XMLFormat<MAPErrorMessageAbsentSubscriberImpl>(
-            MAPErrorMessageAbsentSubscriberImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageAbsentSubscriberImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-            errorMessage.mwdSet = xml.get(MWD_SET, Boolean.class);
-
-            String str = xml.get(ABSENT_SUBSCRIBER_REASON, String.class);
-            if (str != null)
-                errorMessage.absentSubscriberReason = Enum.valueOf(AbsentSubscriberReason.class, str);
-
-            errorMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageAbsentSubscriberImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            xml.add(errorMessage.getMwdSet(), MWD_SET, Boolean.class);
-
-            if (errorMessage.getAbsentSubscriberReason() != null)
-                xml.add((String) errorMessage.getAbsentSubscriberReason().toString(), ABSENT_SUBSCRIBER_REASON, String.class);
-
-            xml.add((MAPExtensionContainerImpl) errorMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
-
 }

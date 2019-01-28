@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class SMSEventImpl extends SequenceBase implements SMSEvent {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_eventTypeSMS = 0;
+	public static final int _ID_eventTypeSMS = 0;
     public static final int _ID_monitorMode = 1;
 
     private EventTypeSMS eventTypeSMS;

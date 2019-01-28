@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext2
  *
  */
 public class GPRSQoSExtensionImpl extends SequenceBase implements GPRSQoSExtension {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_supplementToLongQoSFormat = 0;
+	public static final int _ID_supplementToLongQoSFormat = 0;
 
     private Ext2QoSSubscribed supplementToLongQoSFormat;
 

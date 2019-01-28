@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class AuthenticationTripletImpl implements AuthenticationTriplet, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "AuthenticationTriplet";
+	public static final String _PrimitiveName = "AuthenticationTriplet";
 
     private byte[] rand;
     private byte[] sres;

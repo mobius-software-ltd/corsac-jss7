@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNotificationIndi
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class GenericNotificationIndicatorImpl extends AbstractISUPParameter implements GenericNotificationIndicator {
+	private static final long serialVersionUID = 1L;
 
-    private int[] notificationIndicator;
+	private int[] notificationIndicator;
 
     public GenericNotificationIndicatorImpl(byte[] b) throws ParameterException {
         super();

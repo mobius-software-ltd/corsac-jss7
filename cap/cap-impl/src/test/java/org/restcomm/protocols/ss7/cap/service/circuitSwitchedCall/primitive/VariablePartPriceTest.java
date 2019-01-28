@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -93,7 +88,7 @@ public class VariablePartPriceTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         VariablePartPriceImpl original = new VariablePartPriceImpl(345.2);
@@ -116,5 +111,5 @@ public class VariablePartPriceTest {
 
         assertEquals(copy.getPriceIntegerPart(), original.getPriceIntegerPart());
         assertEquals(copy.getPriceHundredthPart(), original.getPriceHundredthPart());
-    }
+    }*/
 }

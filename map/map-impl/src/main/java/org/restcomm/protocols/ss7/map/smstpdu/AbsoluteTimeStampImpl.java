@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
  *
  */
 public class AbsoluteTimeStampImpl implements AbsoluteTimeStamp {
-
-    private int year;
+	private static final long serialVersionUID = 1L;
+	
+	private int year;
     private int month;
     private int day;
     private int hour;

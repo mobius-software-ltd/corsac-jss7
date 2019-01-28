@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class UnblockingMessageImpl extends ISUPMessageImpl implements UnblockingMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Unblocking);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Unblocking);
 
     private static final int _MANDATORY_VAR_COUNT = 0;
 
@@ -98,7 +99,7 @@ public class UnblockingMessageImpl extends ISUPMessageImpl implements Unblocking
      */
 
     public MessageType getMessageType() {
-        return this._MESSAGE_TYPE;
+        return _MESSAGE_TYPE;
     }
 
     /*

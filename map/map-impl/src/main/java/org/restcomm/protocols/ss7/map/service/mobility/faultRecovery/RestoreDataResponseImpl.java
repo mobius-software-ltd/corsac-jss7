@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 *
 */
 public class RestoreDataResponseImpl extends MobilityMessageImpl implements RestoreDataResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "RestoreDataResponse";
+	public static final String _PrimitiveName = "RestoreDataResponse";
 
     private ISDNAddressString hlrNumber;
     private boolean msNotReachable;

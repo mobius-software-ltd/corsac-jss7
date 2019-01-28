@@ -40,10 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.DisplayInformation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class DisplayInformationImpl extends AbstractISUPParameter implements DisplayInformation {
+	private static final long serialVersionUID = 1L;
 
-    // FIXME: Q.931 4.5.16 Display - Oleg is this correct?
-
-    private byte[] info;
+	private byte[] info;
 
     public DisplayInformationImpl(byte[] info) throws ParameterException {
         super();

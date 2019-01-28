@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDNG
  *
  */
 public class PDNGWUpdateImpl extends SequenceBase implements PDNGWUpdate {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_apn = 0;
+	public static final int _TAG_apn = 0;
     public static final int _TAG_pdnGwIdentity = 1;
     public static final int _TAG_contextId = 2;
     public static final int _TAG_extensionContainer = 3;

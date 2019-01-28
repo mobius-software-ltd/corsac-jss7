@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAndStatus {
+	private static final long serialVersionUID = 1L;
 
-    private byte range;
+	private byte range;
     private byte[] status;
 
     // FIXME:

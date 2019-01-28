@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -120,7 +114,7 @@ public class PDPTypeTest {
         assertEquals(asn.toByteArray(), this.getData3());
     }
 
-    @Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
+    /*@Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
     public void testXMLSerialize() throws Exception {
 
         PDPTypeImpl original = new PDPTypeImpl(PDPTypeValue.IPv4);
@@ -143,6 +137,5 @@ public class PDPTypeTest {
         PDPTypeImpl copy = reader.read("pdpType", PDPTypeImpl.class);
 
         assertEquals(copy.getPDPTypeValue(), original.getPDPTypeValue());
-    }
-
+    }*/
 }

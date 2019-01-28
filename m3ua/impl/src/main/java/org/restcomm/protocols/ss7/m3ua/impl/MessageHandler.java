@@ -63,8 +63,6 @@ public abstract class MessageHandler {
         // We know if null RC, ASP cannot be shared and AspFactory will
         // have only one ASP
 
-        AspImpl aspImpl = (AspImpl) this.aspFactoryImpl.aspList.get(0);
-
         if (this.aspFactoryImpl.aspList.size() > 1) {
             // verify that AS to which this ASP is added is also having null
             // RC or this asp is not shared by any other AS in which case we
@@ -75,6 +73,7 @@ public abstract class MessageHandler {
             return null;
         }
 
+        AspImpl aspImpl = (AspImpl) this.aspFactoryImpl.aspList.values().iterator().next();
         return aspImpl;
     }
 

@@ -43,7 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class RoutingInfoImpl implements RoutingInfo, MAPAsnPrimitive {
-    private ISDNAddressString roamingNumber = null;
+	private static final long serialVersionUID = 1L;
+
+	private ISDNAddressString roamingNumber = null;
     private ForwardingData forwardingData = null;
 
     private static final String _PrimitiveName = "RoutingInfo";

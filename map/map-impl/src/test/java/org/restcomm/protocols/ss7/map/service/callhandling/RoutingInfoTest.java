@@ -78,7 +78,7 @@ public class RoutingInfoTest {
         // 4 = 00|0|00100, 7 = length
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         RoutingInfoImpl routeInfo = new RoutingInfoImpl();
         routeInfo.decodeAll(asn);
@@ -92,7 +92,7 @@ public class RoutingInfoTest {
 
         // :::::::::::::::::::::::::::::
         AsnInputStream _asn = new AsnInputStream(_data);
-        int _tag = _asn.readTag();
+        _asn.readTag();
 
         RoutingInfoImpl _routeInfo = new RoutingInfoImpl();
         _routeInfo.decodeAll(_asn);

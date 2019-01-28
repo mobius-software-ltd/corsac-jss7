@@ -22,10 +22,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.router;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.sccp.LongMessageRule;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 
@@ -35,11 +31,7 @@ import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
  * @author Amit Bhayani
  *
  */
-public class LongMessageRuleImpl implements LongMessageRule, XMLSerializable {
-    private static final String FIRST_SPC = "firstSpc";
-    private static final String LAST_SPC = "lastSpc";
-    private static final String RULE_TYPE = "ruleType";
-
+public class LongMessageRuleImpl implements LongMessageRule {
     private int firstSpc;
     private int lastSpc;
     private LongMessageRuleType ruleType;
@@ -79,20 +71,4 @@ public class LongMessageRuleImpl implements LongMessageRule, XMLSerializable {
                 .append(this.ruleType);
         return sb.toString();
     }
-
-    protected static final XMLFormat<LongMessageRuleImpl> XML = new XMLFormat<LongMessageRuleImpl>(LongMessageRuleImpl.class) {
-
-        public void write(LongMessageRuleImpl ai, OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(FIRST_SPC, ai.firstSpc);
-            xml.setAttribute(LAST_SPC, ai.lastSpc);
-            xml.setAttribute(RULE_TYPE, ai.ruleType.toString());
-        }
-
-        public void read(InputElement xml, LongMessageRuleImpl ai) throws XMLStreamException {
-            ai.firstSpc = xml.getAttribute(FIRST_SPC).toInt();
-            ai.lastSpc = xml.getAttribute(LAST_SPC).toInt();
-            String ruleT = xml.getAttribute(RULE_TYPE).toString();
-            ai.ruleType = LongMessageRuleType.valueOf(ruleT);
-        }
-    };
 }

@@ -51,8 +51,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class ExtForwFeatureImpl extends SequenceBase implements ExtForwFeature {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_ss_Status = 4;
+	private static final int _TAG_ss_Status = 4;
     private static final int _TAG_forwardedToNumber = 5;
     private static final int _TAG_forwardedToSubaddress = 8;
     private static final int _TAG_forwardingOptions = 6;

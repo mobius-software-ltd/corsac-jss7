@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.SCFID;
  *
  */
 public class SCFIDImpl extends NetworkRoutingNumberImpl implements SCFID {
+	private static final long serialVersionUID = 1L;
 
-    // FIXME: Q.1218 - oleg is this correct? :
+	// FIXME: Q.1218 - oleg is this correct? :
     // http://www.itu.int/ITU-T/asn1/database/itu-t/q/q1238.2/2000/IN-CS3-SSF-SCF-datatypes.html
     public SCFIDImpl() {
         super();

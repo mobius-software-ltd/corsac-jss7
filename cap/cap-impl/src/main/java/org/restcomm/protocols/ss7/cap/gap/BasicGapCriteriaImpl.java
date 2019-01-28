@@ -23,9 +23,6 @@ package org.restcomm.protocols.ss7.cap.gap;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,16 +43,12 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  * @author <a href="mailto:bartosz.krok@pro-ids.com"> Bartosz Krok (ProIDS sp. z o.o.)</a>
  */
 public class BasicGapCriteriaImpl implements BasicGapCriteria, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_calledAddressValue = 0;
+	public static final int _ID_calledAddressValue = 0;
     public static final int _ID_gapOnService = 2;
     public static final int _ID_calledAddressAndService = 29;
     public static final int _ID_callingAddressAndService = 30;
-
-    private static final String CALLED_ADDRESS_VALUE = "calledAddressValue";
-    private static final String GAP_ON_SERVICE = "gapOnService";
-    private static final String CALLED_ADDRESS_AND_SERVICE = "calledAddressAndService";
-    private static final String CALLIING_ADDRESS_AND_SERVICE = "callingAddressAndService";
 
     public static final String _PrimitiveName = "BasicGapCriteria";
 
@@ -241,33 +234,6 @@ public class BasicGapCriteriaImpl implements BasicGapCriteria, CAPAsnPrimitive {
             throw new CAPException("CAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
         }
     }
-
-    protected static final XMLFormat<BasicGapCriteriaImpl> BASIC_GAP_CRITERIA_XML = new XMLFormat<BasicGapCriteriaImpl>(BasicGapCriteriaImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, BasicGapCriteriaImpl basicGapCriteria) throws XMLStreamException {
-            basicGapCriteria.calledAddressValue = xml.get(CALLED_ADDRESS_VALUE, DigitsImpl.class);
-            basicGapCriteria.gapOnService = xml.get(GAP_ON_SERVICE, GapOnServiceImpl.class);
-            basicGapCriteria.calledAddressAndService = xml.get(CALLED_ADDRESS_AND_SERVICE, CalledAddressAndServiceImpl.class);
-            basicGapCriteria.callingAddressAndService = xml.get(CALLIING_ADDRESS_AND_SERVICE, CallingAddressAndServiceImpl.class);
-        }
-
-        @Override
-        public void write(BasicGapCriteriaImpl basicGapCriteria, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (basicGapCriteria.calledAddressValue != null) {
-                xml.add((DigitsImpl) basicGapCriteria.calledAddressValue, CALLED_ADDRESS_VALUE, DigitsImpl.class);
-            }
-            if (basicGapCriteria.gapOnService != null) {
-                xml.add((GapOnServiceImpl) basicGapCriteria.gapOnService, GAP_ON_SERVICE, GapOnServiceImpl.class);
-            }
-            if (basicGapCriteria.calledAddressAndService != null) {
-                xml.add((CalledAddressAndServiceImpl) basicGapCriteria.calledAddressAndService, CALLED_ADDRESS_AND_SERVICE, CalledAddressAndServiceImpl.class);
-            }
-            if (basicGapCriteria.callingAddressAndService != null) {
-                xml.add((CallingAddressAndServiceImpl) basicGapCriteria.callingAddressAndService, CALLIING_ADDRESS_AND_SERVICE, CallingAddressAndServiceImpl.class);
-            }
-        }
-    };
 
     @Override
     public String toString() {

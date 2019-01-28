@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
@@ -40,8 +37,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ActivityTe
  *
  */
 public class ActivityTestResponseImpl extends CircuitSwitchedCallMessageImpl implements ActivityTestResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ActivityTestResponse";
+	public static final String _PrimitiveName = "ActivityTestResponse";
 
     @Override
     public CAPMessageType getMessageType() {
@@ -94,25 +92,6 @@ public class ActivityTestResponseImpl extends CircuitSwitchedCallMessageImpl imp
     public void encodeData(AsnOutputStream asnOs) throws CAPException {
         throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ActivityTestResponseImpl> ACTIVITY_TEST_RESPONSE_XML = new XMLFormat<ActivityTestResponseImpl>(
-            ActivityTestResponseImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ActivityTestResponseImpl activityTestResponse)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, activityTestResponse);
-        }
-
-        @Override
-        public void write(ActivityTestResponseImpl activityTestResponse, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(activityTestResponse, xml);
-        }
-    };
 
     @Override
     public String toString() {

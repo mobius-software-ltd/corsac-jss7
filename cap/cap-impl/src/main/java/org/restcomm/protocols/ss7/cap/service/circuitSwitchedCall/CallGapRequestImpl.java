@@ -23,9 +23,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -51,22 +48,16 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
  * @author <a href="mailto:bartosz.krok@pro-ids.com"> Bartosz Krok (ProIDS sp. z o.o.)</a>
  */
 public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implements CallGapRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_gapCriteria = 0;
+	public static final int _ID_gapCriteria = 0;
     public static final int _ID_gapIndicators = 1;
     public static final int _ID_controlType = 2;
     public static final int _ID_gapTreatment = 3;
     public static final int _ID_capExtension = 4;
 
-    private static final String IS_CAP_VERSION_3_OR_LATER = "isCAPVersion3orLater";
-
     public static final String _PrimitiveName = "CallGapRequestIndication";
-    private static final String GAP_CRITERIA = "gapCriteria";
-    private static final String GAP_INDICATOR = "gapIndicators";
-    private static final String CONTROL_TYPE = "controlType";
-    private static final String GAP_TREATMENT = "gapTreatment";
-    private static final String CAP_EXTENSION = "capExtension";
-
+    
     private GapCriteria gapCriteria;
     private GapIndicators gapIndicators;
     private ControlType controlType;
@@ -76,10 +67,8 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
     public CallGapRequestImpl() {
     }
 
-    private boolean isCAPVersion3orLater;
-
     public CallGapRequestImpl(boolean isCAPVersion3orLater) {
-        this.isCAPVersion3orLater = isCAPVersion3orLater;
+        //this.isCAPVersion3orLater = isCAPVersion3orLater;
     }
 
     public CallGapRequestImpl(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment,
@@ -287,53 +276,6 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
     public CAPExtensions getExtensions() {
         return capExtensions;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CallGapRequestImpl> CALLGAP_REQUEST_XML = new XMLFormat<CallGapRequestImpl>(
-            CallGapRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CallGapRequestImpl callGapRequest)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, callGapRequest);
-
-            callGapRequest.isCAPVersion3orLater = xml.getAttribute(IS_CAP_VERSION_3_OR_LATER, false);
-
-            callGapRequest.gapCriteria = xml.get(GAP_CRITERIA, GapCriteriaImpl.class);
-            callGapRequest.gapIndicators = xml.get(GAP_INDICATOR, GapIndicatorsImpl.class);
-
-            String str = xml.get(CONTROL_TYPE, String.class);
-            if (str != null) {
-                callGapRequest.controlType = Enum.valueOf(ControlType.class, str);
-            }
-
-            callGapRequest.gapTreatment = xml.get(GAP_TREATMENT, GapTreatmentImpl.class);
-            callGapRequest.capExtensions = xml.get(CAP_EXTENSION, CAPExtensionsImpl.class);
-        }
-
-        @Override
-        public void write(CallGapRequestImpl callGapRequest, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(callGapRequest, xml);
-
-            xml.setAttribute(IS_CAP_VERSION_3_OR_LATER, callGapRequest.isCAPVersion3orLater);
-
-            xml.add((GapCriteriaImpl) callGapRequest.getGapCriteria(), GAP_CRITERIA, GapCriteriaImpl.class);
-            xml.add((GapIndicatorsImpl) callGapRequest.getGapIndicators(), GAP_INDICATOR, GapIndicatorsImpl.class);
-
-            if (callGapRequest.getControlType() != null) {
-                xml.add((String) callGapRequest.getControlType().toString(), CONTROL_TYPE, String.class);
-            }
-            if (callGapRequest.getGapTreatment() != null) {
-                xml.add((GapTreatmentImpl) callGapRequest.getGapTreatment(), GAP_TREATMENT, GapTreatmentImpl.class);
-            }
-            if (callGapRequest.getExtensions() != null) {
-                xml.add((CAPExtensionsImpl) callGapRequest.getExtensions(), CAP_EXTENSION, CAPExtensionsImpl.class);
-            }
-        }
-    };
 
     @Override
     public String toString() {

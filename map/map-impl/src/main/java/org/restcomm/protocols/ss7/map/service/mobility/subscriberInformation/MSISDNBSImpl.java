@@ -42,7 +42,9 @@ import java.util.ArrayList;
  * Created by vsubbotin on 26/05/16.
  */
 public class MSISDNBSImpl extends SequenceBase implements MSISDNBS {
-    private static final int _TAG_BASIC_SERVICE_LIST = 0;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_BASIC_SERVICE_LIST = 0;
     private static final int _TAG_EXTENSION_CONTAINER = 1;
 
     private ISDNAddressString msisdn;

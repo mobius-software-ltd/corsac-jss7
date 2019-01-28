@@ -32,7 +32,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCPAbortIndicati
  *
  */
 public class TCPAbortIndicationImpl extends DialogIndicationImpl implements TCPAbortIndication {
-    // This indication is used to inform user of abnormal cases.
+	private static final long serialVersionUID = 1L;
+
+	// This indication is used to inform user of abnormal cases.
     private PAbortCause cause;
 
     // private boolean localProviderOriginated = false;

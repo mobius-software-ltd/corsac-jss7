@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class FQDNImpl extends OctetStringBase implements FQDN {
+	private static final long serialVersionUID = 1L;
 
-    public FQDNImpl() {
+	public FQDNImpl() {
         super(9, 255, "FQDN");
     }
 

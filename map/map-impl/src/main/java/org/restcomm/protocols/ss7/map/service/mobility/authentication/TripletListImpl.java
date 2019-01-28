@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class TripletListImpl implements TripletList, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "TripletList";
+	public static final String _PrimitiveName = "TripletList";
 
     private ArrayList<AuthenticationTriplet> authenticationTriplets;
 

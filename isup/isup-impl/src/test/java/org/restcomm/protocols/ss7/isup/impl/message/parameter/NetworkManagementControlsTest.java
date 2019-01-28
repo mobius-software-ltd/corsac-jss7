@@ -76,7 +76,7 @@ public class NetworkManagementControlsTest extends ParameterHarness {
     }
 
     private byte[] getBody1(boolean[] tarEnabled) {
-        boolean[] bools = new boolean[] { true, true, false, true, false, true, true };
+        //boolean[] bools = new boolean[] { true, true, false, true, false, true, true };
         NetworkManagementControlsImpl eci = new NetworkManagementControlsImpl();
         byte[] b = new byte[tarEnabled.length];
         for (int index = 0; index < tarEnabled.length; index++) {

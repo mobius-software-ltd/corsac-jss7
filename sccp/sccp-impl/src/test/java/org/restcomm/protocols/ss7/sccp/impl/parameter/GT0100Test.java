@@ -34,9 +34,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
@@ -189,7 +186,7 @@ public class GT0100Test {
         assertTrue(correct, "Incorrect encoding");
     }
 
-    @Test(groups = { "parameter", "functional.encode" })
+    /*@Test(groups = { "parameter", "functional.encode" })
     public void testSerialization() throws Exception {
 
         GlobalTitle0100Impl gt = new GlobalTitle0100Impl("9023629581",0, BCDEvenEncodingScheme.INSTANCE,NumberingPlan.ISDN_MOBILE, NatureOfAddress.NATIONAL);
@@ -213,6 +210,5 @@ public class GT0100Test {
         assertEquals(aiOut.getTranslationType(), 0);
         assertEquals(aiOut.getNumberingPlan(), NumberingPlan.ISDN_MOBILE);
         assertEquals(aiOut.getDigits(), "9023629581");
-    }
-
+    }*/
 }

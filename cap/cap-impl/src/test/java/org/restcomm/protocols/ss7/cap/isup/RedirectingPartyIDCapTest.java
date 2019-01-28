@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,7 +56,7 @@ public class RedirectingPartyIDCapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         RedirectingPartyIDCapImpl elem = new RedirectingPartyIDCapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         RedirectingNumber rn = elem.getRedirectingNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
@@ -88,7 +83,7 @@ public class RedirectingPartyIDCapTest {
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int addressRepresentationRestrictedIndicator
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         RedirectingPartyIDCapImpl original = new RedirectingPartyIDCapImpl(new RedirectingNumberImpl(
@@ -118,6 +113,5 @@ public class RedirectingPartyIDCapTest {
                 .getNumberingPlanIndicator());
         assertEquals(copy.getRedirectingNumber().getAddressRepresentationRestrictedIndicator(), original.getRedirectingNumber()
                 .getAddressRepresentationRestrictedIndicator());
-
-    }
+    }*/
 }

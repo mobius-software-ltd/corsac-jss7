@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,13 +44,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class TBusySpecificInfoImpl extends SequenceBase implements TBusySpecificInfo {
-
-    private static final String BUSY_CAUSE = "busyCause";
-    private static final String CALL_FORWARDED = "callForwarded";
-    private static final String ROUTE_NOT_PERMITTED = "routeNotPermitted";
-    private static final String FORWARDING_DESTINATION_NUMBER = "forwardingDestinationNumber";
-
-    public static final int _ID_busyCause = 0;
+	private static final long serialVersionUID = 1L;
+	
+	public static final int _ID_busyCause = 0;
     public static final int _ID_callForwarded = 50;
     public static final int _ID_routeNotPermitted = 51;
     public static final int _ID_forwardingDestinationNumber = 52;
@@ -188,45 +181,4 @@ public class TBusySpecificInfoImpl extends SequenceBase implements TBusySpecific
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<TBusySpecificInfoImpl> T_BUSY_SPECIFIC_INFO = new XMLFormat<TBusySpecificInfoImpl>(
-            TBusySpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, TBusySpecificInfoImpl tBusySpecificInfo)
-                throws XMLStreamException {
-            tBusySpecificInfo.busyCause = xml.get(BUSY_CAUSE, CauseCapImpl.class);
-
-            Boolean bval = xml.get(CALL_FORWARDED, Boolean.class);
-            if (bval != null)
-                tBusySpecificInfo.callForwarded = bval;
-            bval = xml.get(ROUTE_NOT_PERMITTED, Boolean.class);
-            if (bval != null)
-                tBusySpecificInfo.routeNotPermitted = bval;
-
-            tBusySpecificInfo.forwardingDestinationNumber = xml.get(FORWARDING_DESTINATION_NUMBER,
-                    CalledPartyNumberCapImpl.class);
-        }
-
-        @Override
-        public void write(TBusySpecificInfoImpl tBusySpecificInfo, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (tBusySpecificInfo.busyCause != null) {
-                xml.add((CauseCapImpl) tBusySpecificInfo.busyCause, BUSY_CAUSE, CauseCapImpl.class);
-            }
-
-            if (tBusySpecificInfo.callForwarded)
-                xml.add(tBusySpecificInfo.callForwarded, CALL_FORWARDED, Boolean.class);
-            if (tBusySpecificInfo.routeNotPermitted)
-                xml.add(tBusySpecificInfo.routeNotPermitted, ROUTE_NOT_PERMITTED, Boolean.class);
-
-            if (tBusySpecificInfo.forwardingDestinationNumber != null) {
-                xml.add((CalledPartyNumberCapImpl) tBusySpecificInfo.forwardingDestinationNumber,
-                        FORWARDING_DESTINATION_NUMBER, CalledPartyNumberCapImpl.class);
-            }
-        }
-    };
 }

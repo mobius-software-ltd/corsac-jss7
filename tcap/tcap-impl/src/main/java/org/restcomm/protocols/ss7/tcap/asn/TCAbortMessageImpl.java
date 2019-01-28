@@ -38,8 +38,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage;
  *
  */
 public class TCAbortMessageImpl implements TCAbortMessage {
-
-    private static final String _OCTET_STRING_ENCODE = "US-ASCII";
+	private static final long serialVersionUID = 1L;
 
     private byte[] destTxId;
     private PAbortCauseType type;

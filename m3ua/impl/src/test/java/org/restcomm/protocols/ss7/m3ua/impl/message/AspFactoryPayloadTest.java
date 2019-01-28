@@ -31,9 +31,6 @@ import java.util.ArrayList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.mobicents.protocols.api.Association;
-import org.mobicents.protocols.api.IpChannelType;
-import org.mobicents.protocols.sctp.AssociationImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.AspFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.transfer.PayloadDataImpl;
@@ -44,7 +41,12 @@ import org.restcomm.protocols.ss7.m3ua.message.transfer.PayloadData;
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.ProtocolData;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
+import org.restcomm.protocols.ss7.sctp.proxy.Association;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationImpl;
+import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 /**
  * @author sergey vetyutnev
@@ -62,9 +64,9 @@ public class AspFactoryPayloadTest {
         byte[] plData = new byte[] { 9, 0, 3, 5, 7, 2, 66, 1, 2, 66, 1, 5, 3, -43, 28, 24, 0 };
 
         // SCTP - SCTP layer netty support
-        AspFactoryImplProxy aspFactory = new AspFactoryImplProxy(true);
+        AspFactoryImplProxy aspFactory = new AspFactoryImplProxy();
         ByteBuf byteBuf = Unpooled.wrappedBuffer(data);
-        org.mobicents.protocols.api.PayloadData pd = new org.mobicents.protocols.api.PayloadData(byteBuf.capacity(), byteBuf,
+        org.restcomm.protocols.ss7.sctp.proxy.PayloadData pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf,
                 true, false, 0, 0);
         AssociationImpl association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName",
                 IpChannelType.SCTP, null);
@@ -89,9 +91,9 @@ public class AspFactoryPayloadTest {
         assertEquals(plData, protocolData.getData());
 
         // TCP - SCTP layer netty support
-        aspFactory = new AspFactoryImplProxy(true);
+        aspFactory = new AspFactoryImplProxy();
         byteBuf = Unpooled.wrappedBuffer(data);
-        pd = new org.mobicents.protocols.api.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
+        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
         association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName", IpChannelType.TCP, null);
         aspFactory.onPayload(association, pd);
 
@@ -113,9 +115,9 @@ public class AspFactoryPayloadTest {
         assertEquals(0, protocolData.getMP());
 
         // SCTP - SCTP layer netty NOT support
-        aspFactory = new AspFactoryImplProxy(false);
+        aspFactory = new AspFactoryImplProxy();
         byteBuf = Unpooled.wrappedBuffer(data);
-        pd = new org.mobicents.protocols.api.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
+        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
         association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName", IpChannelType.SCTP, null);
         aspFactory.onPayload(association, pd);
 
@@ -137,9 +139,9 @@ public class AspFactoryPayloadTest {
         assertEquals(0, protocolData.getMP());
 
         // TCP - SCTP layer netty NOT support
-        aspFactory = new AspFactoryImplProxy(false);
+        aspFactory = new AspFactoryImplProxy();
         byteBuf = Unpooled.wrappedBuffer(data);
-        pd = new org.mobicents.protocols.api.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
+        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
         association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName", IpChannelType.TCP, null);
         aspFactory.onPayload(association, pd);
 
@@ -208,12 +210,12 @@ public class AspFactoryPayloadTest {
                 (byte) 0x86, (byte) 0x95, (byte) 0x99, (byte) 0x89, (byte) 0x9f, 0x39, 0x08, 0x02, 0x11, 0x20, 0x10,
                 (byte) 0x91, 0x45, 0x51, 0x23 };
 
-        AspFactoryImplProxy aspFactory = new AspFactoryImplProxy(true);
+        AspFactoryImplProxy aspFactory = new AspFactoryImplProxy();
         AssociationImpl association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName",
                 IpChannelType.TCP, null);
 
         ByteBuf byteBuf = Unpooled.wrappedBuffer(header);
-        org.mobicents.protocols.api.PayloadData pd = new org.mobicents.protocols.api.PayloadData(byteBuf.capacity(), byteBuf,
+        org.restcomm.protocols.ss7.sctp.proxy.PayloadData pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf,
                 true, false, 0, 0);
         aspFactory.onPayload(association, pd);        
 
@@ -222,14 +224,14 @@ public class AspFactoryPayloadTest {
         // Now lets read only first half of body and yet we have null
         // messageImpl
         byteBuf = Unpooled.wrappedBuffer(bodyStart);
-        pd = new org.mobicents.protocols.api.PayloadData(byteBuf.capacity(), byteBuf,
+        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf,
                 true, false, 0, 0);
         aspFactory.onPayload(association, pd);        
         assertEquals(aspFactory.lstReadMessage.size(), 0);
 
         // Now lets read other half
         byteBuf = Unpooled.wrappedBuffer(bodyEndWithOtherMessage);
-        pd = new org.mobicents.protocols.api.PayloadData(byteBuf.capacity(), byteBuf,
+        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf,
                 true, false, 0, 0);
         aspFactory.onPayload(association, pd);        
         assertEquals(aspFactory.lstReadMessage.size(), 2);
@@ -277,7 +279,7 @@ public class AspFactoryPayloadTest {
         byte[] plData = new byte[] { 9, 0, 3, 5, 7, 2, 66, 1, 2, 66, 1, 5, 3, -43, 28, 24, 0 };
 
         // SCTP - SCTP layer netty support
-        AspFactoryImplProxy aspFactory = new AspFactoryImplProxy(true);
+        AspFactoryImplProxy aspFactory = new AspFactoryImplProxy();
         AssociationImplProxy association = new AssociationImplProxy();
         aspFactory.setAssociation(association);
 
@@ -295,12 +297,12 @@ public class AspFactoryPayloadTest {
         aspFactory.doWrite(message);
 
         assertEquals(association.lstWriteMessage.size(), 1);
-        org.mobicents.protocols.api.PayloadData pl2 = association.lstWriteMessage.get(0);
+        org.restcomm.protocols.ss7.sctp.proxy.PayloadData pl2 = association.lstWriteMessage.get(0);
         assertEquals(pl2.getData(), data);
 
         
         // SCTP - SCTP layer NOT netty support
-        aspFactory = new AspFactoryImplProxy(false);
+        aspFactory = new AspFactoryImplProxy();
         association = new AssociationImplProxy();
         aspFactory.setAssociation(association);
 
@@ -322,11 +324,11 @@ public class AspFactoryPayloadTest {
 
     private class AspFactoryImplProxy extends AspFactoryImpl {
         protected ArrayList<M3UAMessage> lstReadMessage = new ArrayList<M3UAMessage>();
-
-        public AspFactoryImplProxy(boolean nettySupport) {
-            super("M3uaAspFact", 16, 1, false);
+        
+        public AspFactoryImplProxy() throws Exception {
+        	super("M3uaAspFact", 16, 1, false, new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} ));
             // int maxSequenceNumber, long aspId
-            M3UAManagementImpl m3uaManagement = new M3UAManagementImplProxy("Test", "m3ua", nettySupport);
+            M3UAManagementImpl m3uaManagement = new M3UAManagementImplProxy("Test", "m3ua");
             this.setM3UAManagement(m3uaManagement);
             this.createSLSTable(8);
         }
@@ -345,21 +347,20 @@ public class AspFactoryPayloadTest {
     }
     
     private class M3UAManagementImplProxy extends M3UAManagementImpl {
-        public M3UAManagementImplProxy(String name, String productName, boolean sctpLibNettySupport) {
+        public M3UAManagementImplProxy(String name, String productName) {
             super(name, productName, null);
-            this.sctpLibNettySupport = sctpLibNettySupport;
         }
     }
 
     private class AssociationImplProxy extends AssociationImpl {
-        protected ArrayList<org.mobicents.protocols.api.PayloadData> lstWriteMessage = new ArrayList<org.mobicents.protocols.api.PayloadData>();
+        protected ArrayList<org.restcomm.protocols.ss7.sctp.proxy.PayloadData> lstWriteMessage = new ArrayList<org.restcomm.protocols.ss7.sctp.proxy.PayloadData>();
 
         public AssociationImplProxy() throws Exception {
             super("hostAddress", 1111, "peerAddress", 1112, "assocName", IpChannelType.SCTP, null);
         }
 
         @Override
-        public void send(org.mobicents.protocols.api.PayloadData payloadData) throws Exception {
+        public void send(org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData) throws Exception {
             lstWriteMessage.add(payloadData);
         }
     }

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.router;
 
-import javolution.util.FastList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
 
@@ -37,7 +37,7 @@ import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
 public class DPCNode {
     int dpc = -1;
 
-    private FastList<OPCNode> opcList = new FastList<OPCNode>();
+    private ConcurrentHashMap<Integer,OPCNode> opcList = new ConcurrentHashMap<Integer,OPCNode>();
 
     private OPCNode wildCardOpcNode = null;
 
@@ -46,37 +46,31 @@ public class DPCNode {
     }
 
     protected void addSi(int opc, int si, AsImpl asImpl) throws Exception {
-        for (FastList.Node<OPCNode> n = opcList.head(), end = opcList.tail(); (n = n.getNext()) != end;) {
-            OPCNode opcNode = n.getValue();
-            if (opcNode.opc == opc) {
-                opcNode.addSi(si, asImpl);
-                return;
-            }
+    	OPCNode opcNode=opcList.get(opc);
+        if(opcNode==null) {
+        	opcNode = new OPCNode(this.dpc, opc);
+        	OPCNode oldNode=opcList.putIfAbsent(opc, opcNode);
+        	if(oldNode!=null)
+        		opcNode=oldNode;
         }
-
-        OPCNode opcNode = new OPCNode(this.dpc, opc);
+    	
         opcNode.addSi(si, asImpl);
-        opcList.add(opcNode);
-
+        
         if (opcNode.opc == -1) {
-            // we have wild card OPCNode. Use this if no matching OPCNode
-            // found while finding AS
             wildCardOpcNode = opcNode;
         }
-
     }
 
     protected AsImpl getAs(int opc, short si) {
-        for (FastList.Node<OPCNode> n = opcList.head(), end = opcList.tail(); (n = n.getNext()) != end;) {
-            OPCNode opcNode = n.getValue();
-            if (opcNode.opc == opc) {
-                return opcNode.getAs(si);
-            }
-        }
-
+    	OPCNode opcNode=opcList.get(opc);
+    	if(opcNode!=null) {
+    		return opcNode.getAs(si);
+    	}
+    	
         if (wildCardOpcNode != null) {
             return wildCardOpcNode.getAs(si);
         }
+        
         return null;
     }
 }

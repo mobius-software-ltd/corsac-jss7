@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -48,20 +45,15 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  *
  */
 public class VariablePartImpl implements VariablePart, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_integer = 0;
+	public static final int _ID_integer = 0;
     public static final int _ID_number = 1;
     public static final int _ID_time = 2;
     public static final int _ID_date = 3;
     public static final int _ID_price = 4;
 
     public static final String _PrimitiveName = "VariablePart";
-
-    private static final String INTEGER = "integer";
-    private static final String NUMBER = "number";
-    private static final String TIME = "time";
-    private static final String DATE = "date";
-    private static final String PRICE = "price";
 
     private Integer integer;
     private Digits number;
@@ -298,52 +290,4 @@ public class VariablePartImpl implements VariablePart, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<VariablePartImpl> VARIABLE_PART_XML = new XMLFormat<VariablePartImpl>(
-            VariablePartImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, VariablePartImpl variablePart)
-                throws XMLStreamException {
-            variablePart.integer = xml.get(INTEGER, Integer.class);
-            variablePart.number = xml.get(NUMBER, DigitsImpl.class);
-            variablePart.time = xml.get(TIME, VariablePartTimeImpl.class);
-            variablePart.date = xml.get(DATE, VariablePartDateImpl.class);
-            variablePart.price = xml.get(PRICE, VariablePartPriceImpl.class);
-
-            int choiceCount = 0;
-            if (variablePart.integer != null)
-                choiceCount++;
-            if (variablePart.number != null)
-                choiceCount++;
-            if (variablePart.time != null)
-                choiceCount++;
-            if (variablePart.date != null)
-                choiceCount++;
-            if (variablePart.price != null)
-                choiceCount++;
-
-            if (choiceCount != 1)
-                throw new XMLStreamException("VariablePart decoding error: there must be one choice selected, found: "
-                        + choiceCount);
-        }
-
-        @Override
-        public void write(VariablePartImpl variablePart, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (variablePart.integer != null)
-                xml.add(variablePart.integer, INTEGER, Integer.class);
-            if (variablePart.number != null)
-                xml.add((DigitsImpl) variablePart.number, NUMBER, DigitsImpl.class);
-            if (variablePart.time != null)
-                xml.add((VariablePartTimeImpl) variablePart.time, TIME, VariablePartTimeImpl.class);
-            if (variablePart.date != null)
-                xml.add((VariablePartDateImpl) variablePart.date, DATE, VariablePartDateImpl.class);
-            if (variablePart.price != null)
-                xml.add((VariablePartPriceImpl) variablePart.price, PRICE, VariablePartPriceImpl.class);
-        }
-    };
 }

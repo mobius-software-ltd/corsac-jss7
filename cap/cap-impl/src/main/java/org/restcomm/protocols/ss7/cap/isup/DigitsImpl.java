@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.isup;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -49,11 +46,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
  *
  */
 public class DigitsImpl implements Digits, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "Digits";
-
-    private static final String ISUP_GENERIC_DIGITS_XML = "genericDigits";
-    private static final String ISUP_GENERIC_NUMBER_XML = "genericNumber";
+	public static final String _PrimitiveName = "Digits";
 
     private byte[] data;
     private boolean isGenericDigits;
@@ -287,40 +282,4 @@ public class DigitsImpl implements Digits, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<DigitsImpl> DIGITS_XML = new XMLFormat<DigitsImpl>(DigitsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, DigitsImpl digits) throws XMLStreamException {
-            try {
-                GenericDigits gd = xml.get(ISUP_GENERIC_DIGITS_XML, GenericDigitsImpl.class);
-                if (gd != null)
-                    digits.setGenericDigits(gd);
-                GenericNumber gn = xml.get(ISUP_GENERIC_NUMBER_XML, GenericNumberImpl.class);
-                if (gn != null)
-                    digits.setGenericNumber(gn);
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-
-        @Override
-        public void write(DigitsImpl digits, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            try {
-                if (digits.getIsGenericDigits())
-                    xml.add(((GenericDigitsImpl) digits.getGenericDigits()), ISUP_GENERIC_DIGITS_XML, GenericDigitsImpl.class);
-                else if (digits.getIsGenericNumber())
-                    xml.add(((GenericNumberImpl) digits.getGenericNumber()), ISUP_GENERIC_NUMBER_XML, GenericNumberImpl.class);
-                else
-                    throw new XMLStreamException(
-                            "Error when serializing Digits: primitive is marked neither GenericDigits nor GenericNumber");
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-    };
-
 }

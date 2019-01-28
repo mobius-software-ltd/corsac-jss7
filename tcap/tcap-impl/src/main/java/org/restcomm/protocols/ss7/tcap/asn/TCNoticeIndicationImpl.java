@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCNoticeIndication;
  *
  */
 public class TCNoticeIndicationImpl implements TCNoticeIndication {
+	private static final long serialVersionUID = 1L;
 
-    private SccpAddress localAddress;
+	private SccpAddress localAddress;
     private SccpAddress remoteAddress;
     private ReturnCauseValue reportCause;
     private Dialog dialog;

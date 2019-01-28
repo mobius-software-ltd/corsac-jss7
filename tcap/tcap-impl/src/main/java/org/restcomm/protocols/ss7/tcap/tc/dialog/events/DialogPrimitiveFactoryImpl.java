@@ -42,7 +42,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcap.tc.component.ComponentPrimitiveFactoryImpl;
 
 /**
  * @author baranowb
@@ -51,10 +50,7 @@ import org.restcomm.protocols.ss7.tcap.tc.component.ComponentPrimitiveFactoryImp
  */
 public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
 
-    private ComponentPrimitiveFactoryImpl componentPrimitiveFactory;
-
     public DialogPrimitiveFactoryImpl(ComponentPrimitiveFactory componentPrimitiveFactory) {
-        this.componentPrimitiveFactory = (ComponentPrimitiveFactoryImpl) componentPrimitiveFactory;
     }
 
     /*

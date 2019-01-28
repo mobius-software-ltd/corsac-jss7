@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class MTsmsCAMELTDPCriteriaImpl extends SequenceBase implements MTsmsCAMELTDPCriteria {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_tPDUTypeCriterion = 0;
+	private static final int _TAG_tPDUTypeCriterion = 0;
 
     private SMSTriggerDetectionPoint smsTriggerDetectionPoint;
     private ArrayList<MTSMSTPDUType> tPDUTypeCriterion;

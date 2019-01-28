@@ -38,7 +38,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
  *
  */
 public class ErrorCodeImpl implements ErrorCode {
-    private ErrorCodeType type;
+	private static final long serialVersionUID = 1L;
+
+	private ErrorCodeType type;
     private Long localErrorCode;
     private long[] globalErrorCode;
 

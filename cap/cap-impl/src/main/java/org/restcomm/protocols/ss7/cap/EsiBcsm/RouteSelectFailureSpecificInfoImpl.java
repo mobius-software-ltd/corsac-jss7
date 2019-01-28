@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,10 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class RouteSelectFailureSpecificInfoImpl extends SequenceBase implements RouteSelectFailureSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final String CAUSE_CAP = "causeCap";
-
-    public static final int _ID_failureCause = 0;
+	public static final int _ID_failureCause = 0;
 
     private CauseCap failureCause;
 
@@ -117,26 +113,4 @@ public class RouteSelectFailureSpecificInfoImpl extends SequenceBase implements 
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<RouteSelectFailureSpecificInfoImpl> ROUTE_SELECT_FAILURE_SPECIFIC_INFO_XML = new XMLFormat<RouteSelectFailureSpecificInfoImpl>(
-            RouteSelectFailureSpecificInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml,
-                RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo) throws XMLStreamException {
-            routeSelectFailureSpecificInfo.failureCause = xml.get(CAUSE_CAP, CauseCapImpl.class);
-        }
-
-        @Override
-        public void write(RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo,
-                javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-
-            if (routeSelectFailureSpecificInfo.failureCause != null) {
-                xml.add(((CauseCapImpl) routeSelectFailureSpecificInfo.failureCause), CAUSE_CAP, CauseCapImpl.class);
-            }
-        }
-    };
 }

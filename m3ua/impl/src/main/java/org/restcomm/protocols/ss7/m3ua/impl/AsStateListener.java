@@ -21,6 +21,7 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
+
 /**
  * <p>
  * The listener interface for receiving events when {@link AsImpl} state changes to Active or not-active
@@ -31,7 +32,7 @@ package org.restcomm.protocols.ss7.m3ua.impl;
  */
 public interface AsStateListener {
 
-    /**
+	/**
      * Invoked when {@link AsImpl} becomes active
      *
      * @param asImpl

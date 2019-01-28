@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
  *
  */
 public class MAPDialogPdpContextActivationImpl extends MAPDialogImpl implements MAPDialogPdpContextActivation {
+	private static final long serialVersionUID = 1L;
 
-    protected MAPDialogPdpContextActivationImpl(MAPApplicationContext appCntx, Dialog tcapDialog,
+	protected MAPDialogPdpContextActivationImpl(MAPApplicationContext appCntx, Dialog tcapDialog,
             MAPProviderImpl mapProviderImpl, MAPServicePdpContextActivation mapService, AddressString origReference,
             AddressString destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);

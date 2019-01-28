@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -101,7 +96,7 @@ public class ContinueWithArgumentArgExtensionTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
         LegOrCallSegmentImpl legOrCallSegment = new LegOrCallSegmentImpl(12);
         ContinueWithArgumentArgExtensionImpl original = new ContinueWithArgumentArgExtensionImpl(true, false, true, legOrCallSegment);
@@ -155,6 +150,5 @@ public class ContinueWithArgumentArgExtensionTest {
         assertEquals(original.getSuppressOutgoingCallBarring(), copy.getSuppressOutgoingCallBarring());
         assertNull(original.getLegOrCallSegment());
         assertNull(copy.getLegOrCallSegment());
-    }
-
+    }*/
 }

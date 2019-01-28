@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.map;
 
+import java.util.UUID;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -73,7 +75,7 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
 
     public void start() {
         // Listen for Dialog events
-        mapProvider.addMAPDialogListener(this);
+        mapProvider.addMAPDialogListener(UUID.randomUUID(),this);
         // Listen for USSD related messages
         mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
 
@@ -91,7 +93,7 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
         MAPDialogSupplementary currentMapDialog = ind.getMAPDialog();
 
         try {
-            String request = ussdString.getString(null);
+            ussdString.getString(null);
 
             // processing USSD request
             String response = "Your balans is 100$";

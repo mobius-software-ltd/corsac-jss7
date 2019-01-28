@@ -27,12 +27,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,7 +56,7 @@ public class LegIDTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         LegIDImpl legId = new LegIDImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         legId.decodeAll(ais);
         assertNotNull(legId.getSendingSideID());
         assertNull(legId.getReceivingSideID());
@@ -70,7 +65,7 @@ public class LegIDTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         legId = new LegIDImpl();
-        tag = ais.readTag();
+        ais.readTag();
         legId.decodeAll(ais);
         assertNull(legId.getSendingSideID());
         assertNotNull(legId.getReceivingSideID());
@@ -93,7 +88,7 @@ public class LegIDTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         LegIDImpl original = new LegIDImpl(true, LegType.leg1);
@@ -139,5 +134,5 @@ public class LegIDTest {
 
         assertEquals(copy.getSendingSideID(), original.getSendingSideID());
         assertEquals(copy.getReceivingSideID(), original.getReceivingSideID());
-    }
+    }*/
 }

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.AbstractPointCodeInterf
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public abstract class AbstractPointCode extends AbstractISUPParameter implements AbstractPointCodeInterface {
+	private static final long serialVersionUID = 1L;
 
-    protected int signalingPointCode;
+	protected int signalingPointCode;
 
     public int decode(byte[] b) throws ParameterException {
         if (b == null || b.length != 2) {

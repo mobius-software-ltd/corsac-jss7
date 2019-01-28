@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityEnhancedFormatData;
  *
  */
 public class ValidityEnhancedFormatDataImpl implements ValidityEnhancedFormatData {
+	private static final long serialVersionUID = 1L;
 
-    public byte[] data;
+	public byte[] data;
 
     public ValidityEnhancedFormatDataImpl(byte[] data) {
         this.data = data;

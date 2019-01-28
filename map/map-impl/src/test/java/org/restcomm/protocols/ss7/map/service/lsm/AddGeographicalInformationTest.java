@@ -49,7 +49,7 @@ public class AddGeographicalInformationTest {
 
         byte[] rawData = getEncodedData_EllipsoidPointWithUncertaintyCircle();
         AsnInputStream asn = new AsnInputStream(rawData);
-        int tag = asn.readTag();
+        asn.readTag();
         AddGeographicalInformationImpl impl = new AddGeographicalInformationImpl();
         impl.decodeAll(asn);
 

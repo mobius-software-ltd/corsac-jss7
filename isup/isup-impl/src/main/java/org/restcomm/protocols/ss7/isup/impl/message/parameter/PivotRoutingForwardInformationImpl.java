@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class PivotRoutingForwardInformationImpl extends AbstractInformationParameterBaseImpl implements PivotRoutingForwardInformation {
+	private static final long serialVersionUID = 1L;
 
-    private static final Map<Integer, Class<? extends AbstractInformationImpl>> tagMapping;
+	private static final Map<Integer, Class<? extends AbstractInformationImpl>> tagMapping;
 
     static{
         Map<Integer, Class<? extends AbstractInformationImpl>> tmp = new HashMap<Integer, Class<? extends AbstractInformationImpl>>();

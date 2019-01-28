@@ -40,8 +40,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
  *
  */
 public class TCContinueMessageImpl implements TCContinueMessage {
-
-    private static final String _OCTET_STRING_ENCODE = "US-ASCII";
+	private static final long serialVersionUID = 1L;
 
     // mandatory
     private byte[] originatingTransactionId;

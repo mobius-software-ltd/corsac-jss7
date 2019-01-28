@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
@@ -38,8 +35,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
  *
  */
 public class ISDNAddressStringImpl extends AddressStringImpl implements ISDNAddressString {
+	private static final long serialVersionUID = 1L;
 
-    public ISDNAddressStringImpl() {
+	public ISDNAddressStringImpl() {
     }
 
     public ISDNAddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
@@ -69,23 +67,4 @@ public class ISDNAddressStringImpl extends AddressStringImpl implements ISDNAddr
         return "ISDNAddressString[AddressNature=" + this.addressNature + ", NumberingPlan=" + this.numberingPlan + ", Address="
                 + this.address + "]";
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ISDNAddressStringImpl> ISDN_ADDRESS_STRING_XML = new XMLFormat<ISDNAddressStringImpl>(
-            ISDNAddressStringImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ISDNAddressStringImpl isdnAddressStringImpl)
-                throws XMLStreamException {
-            ADDRESS_STRING_XML.read(xml, isdnAddressStringImpl);
-        }
-
-        @Override
-        public void write(ISDNAddressStringImpl isdnAddressStringImpl, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            ADDRESS_STRING_XML.write(isdnAddressStringImpl, xml);
-        }
-    };
 }

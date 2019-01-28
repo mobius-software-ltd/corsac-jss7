@@ -32,8 +32,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class LocalReferenceImpl extends AbstractParameter implements LocalReference {
+	private static final long serialVersionUID = 1L;
 
-    private int value;
+	private int value;
 
     public LocalReferenceImpl() {
     }

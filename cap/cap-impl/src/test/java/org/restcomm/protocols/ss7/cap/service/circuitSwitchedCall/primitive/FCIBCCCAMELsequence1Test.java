@@ -23,15 +23,9 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -64,7 +58,7 @@ public class FCIBCCCAMELsequence1Test {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         FCIBCCCAMELsequence1Impl elem = new FCIBCCCAMELsequence1Impl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(Arrays.equals(elem.getFreeFormatData().getData(), this.getDataFFD()));
         assertEquals(elem.getPartyToCharge().getSendingSideID(), LegType.leg2);
@@ -84,7 +78,7 @@ public class FCIBCCCAMELsequence1Test {
         // byte[] freeFormatData, SendingSideID partyToCharge, AppendFreeFormatData appendFreeFormatData
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         FreeFormatData ffd = new FreeFormatDataImpl(getDataFFD());
@@ -132,5 +126,5 @@ public class FCIBCCCAMELsequence1Test {
         assertEquals(copy.getFreeFormatData().getData(), getDataFFD());
         assertNull(copy.getPartyToCharge());
         assertNull(copy.getAppendFreeFormatData());
-    }
+    }*/
 }

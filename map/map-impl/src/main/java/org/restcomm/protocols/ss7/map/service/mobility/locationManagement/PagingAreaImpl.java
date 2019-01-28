@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class PagingAreaImpl implements PagingArea, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "PagingArea";
+	public static final String _PrimitiveName = "PagingArea";
 
     private ArrayList<LocationArea> locationAreas;
 
@@ -106,7 +107,7 @@ public class PagingAreaImpl implements PagingArea, MAPAsnPrimitive {
             if (ais.available() == 0)
                 break;
 
-            int tag = ais.readTag();
+            ais.readTag();
             if (ais.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || !ais.isTagPrimitive())
                 throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
                         + ": Parameter locationAreas has bad tag class or is not primitive",

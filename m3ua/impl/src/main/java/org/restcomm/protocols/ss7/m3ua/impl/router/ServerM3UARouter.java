@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.router;
 
-import javolution.util.FastList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
 import org.restcomm.protocols.ss7.m3ua.parameter.OPCList;
@@ -45,7 +45,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.ServiceIndicators;
  */
 public class ServerM3UARouter {
 
-    private FastList<DPCNode> dpcList = new FastList<DPCNode>();
+    private ConcurrentHashMap<Integer,DPCNode> dpcList = new ConcurrentHashMap<Integer, DPCNode>();
 
     public ServerM3UARouter() {
     }
@@ -85,18 +85,18 @@ public class ServerM3UARouter {
             siShortArr = siArray[0].getIndicators();
         }
 
-        for (FastList.Node<DPCNode> n = dpcList.head(), end = dpcList.tail(); (n = n.getNext()) != end;) {
-            DPCNode dpcNode = n.getValue();
-            if (dpcNode.dpc == dpc) {
-                this.addSi(dpcNode, opcIntArr, siShortArr, asImpl);
-                return;
-            }
+        DPCNode dpcNode=dpcList.get(dpc);
+        if (dpcNode!=null) {
+            this.addSi(dpcNode, opcIntArr, siShortArr, asImpl);
+            return;
         }
 
-        DPCNode dpcNode = new DPCNode(dpc);
-        this.addSi(dpcNode, opcIntArr, siShortArr, asImpl);
-        this.dpcList.add(dpcNode);
-
+        dpcNode = new DPCNode(dpc);
+        DPCNode oldNode=this.dpcList.putIfAbsent(dpc, dpcNode);
+        if(oldNode!=null) {
+        	dpcNode=oldNode;
+        }
+        this.addSi(dpcNode, opcIntArr, siShortArr, asImpl);        
     }
 
     /**
@@ -115,11 +115,9 @@ public class ServerM3UARouter {
      * @return
      */
     public AsImpl getAs(int dpc, int opc, short si) {
-        for (FastList.Node<DPCNode> n = dpcList.head(), end = dpcList.tail(); (n = n.getNext()) != end;) {
-            DPCNode dpcNode = n.getValue();
-            if (dpcNode.dpc == dpc) {
-                return dpcNode.getAs(opc, si);
-            }
+    	DPCNode dpcNode = dpcList.get(dpc);
+    	if(dpcNode!=null) {
+            return dpcNode.getAs(opc, si);
         }
         return null;
     }

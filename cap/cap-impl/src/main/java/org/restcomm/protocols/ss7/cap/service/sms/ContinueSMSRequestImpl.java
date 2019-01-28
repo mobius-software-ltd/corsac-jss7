@@ -37,8 +37,9 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.ContinueSMSRequest;
 *
 */
 public class ContinueSMSRequestImpl extends SmsMessageImpl implements ContinueSMSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ContinueSmsRequest";
+	public static final String _PrimitiveName = "ContinueSmsRequest";
 
     @Override
     public CAPMessageType getMessageType() {

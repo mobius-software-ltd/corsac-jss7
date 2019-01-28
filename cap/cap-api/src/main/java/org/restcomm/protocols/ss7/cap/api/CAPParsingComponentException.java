@@ -28,8 +28,9 @@ package org.restcomm.protocols.ss7.cap.api;
  *
  */
 public class CAPParsingComponentException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-    private CAPParsingComponentExceptionReason reason;
+	private CAPParsingComponentExceptionReason reason;
 
     public CAPParsingComponentException() {
         // TODO Auto-generated constructor stub

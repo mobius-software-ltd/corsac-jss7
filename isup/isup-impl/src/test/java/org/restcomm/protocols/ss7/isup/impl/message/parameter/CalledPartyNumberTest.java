@@ -22,15 +22,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
@@ -104,7 +98,7 @@ public class CalledPartyNumberTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    @Test(groups = { "functional.xml.serialize", "parameter" })
+    /*@Test(groups = { "functional.xml.serialize", "parameter" })
     public void testXMLSerialize() throws Exception {
 
         CalledPartyNumberImpl original = new CalledPartyNumberImpl(CalledPartyNumber._NAI_INTERNATIONAL_NUMBER, "664422",
@@ -132,7 +126,7 @@ public class CalledPartyNumberTest extends ParameterHarness {
         assertEquals(copy.getAddress(), original.getAddress());
         assertEquals(copy.getNumberingPlanIndicator(), original.getNumberingPlanIndicator());
         assertEquals(copy.getInternalNetworkNumberIndicator(), original.getInternalNetworkNumberIndicator());
-    }
+    }*/
 
     /*
      * (non-Javadoc)

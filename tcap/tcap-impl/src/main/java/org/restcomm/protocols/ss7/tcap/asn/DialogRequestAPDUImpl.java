@@ -37,8 +37,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class DialogRequestAPDUImpl implements DialogRequestAPDU {
-
-    private ApplicationContextName acn;
+	private static final long serialVersionUID = 1L;
+	
+	private ApplicationContextName acn;
     private UserInformation ui;
     private ProtocolVersion protocolVersion = null;
     private boolean doNotSendProtocolVersion = false;

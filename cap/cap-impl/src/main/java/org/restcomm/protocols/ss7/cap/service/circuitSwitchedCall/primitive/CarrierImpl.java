@@ -22,11 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import javax.xml.bind.DatatypeConverter;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
 import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
 
@@ -36,12 +31,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
 *
 */
 public class CarrierImpl extends OctetStringBase implements Carrier {
+	private static final long serialVersionUID = 1L;
 
-    private static final String DATA = "data";
-
-    private static final String DEFAULT_VALUE = null;
-
-    public CarrierImpl() {
+	public CarrierImpl() {
         super(4, 4, "Carrier");
     }
 
@@ -53,26 +45,4 @@ public class CarrierImpl extends OctetStringBase implements Carrier {
     public byte[] getData() {
         return data;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CarrierImpl> CARRIER_XML = new XMLFormat<CarrierImpl>(CarrierImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CarrierImpl carrier) throws XMLStreamException {
-            String s = xml.getAttribute(DATA, DEFAULT_VALUE);
-            if (s != null) {
-                carrier.data = DatatypeConverter.parseHexBinary(s);
-            }
-        }
-
-        @Override
-        public void write(CarrierImpl carrier, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (carrier.data != null) {
-                xml.setAttribute(DATA, DatatypeConverter.printHexBinary(carrier.data));
-            }
-        }
-    };
-
 }

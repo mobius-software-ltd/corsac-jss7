@@ -61,7 +61,7 @@ public class VelocityEstimateTest {
 
         byte[] rawData = getEncodedData_HorizontalVelocity();
         AsnInputStream asn = new AsnInputStream(rawData);
-        int tag = asn.readTag();
+        asn.readTag();
         VelocityEstimateImpl impl = new VelocityEstimateImpl();
         impl.decodeAll(asn);
 
@@ -71,7 +71,7 @@ public class VelocityEstimateTest {
 
         rawData = getEncodedData_HorizontalWithVerticalVelocity();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new VelocityEstimateImpl();
         impl.decodeAll(asn);
 
@@ -82,7 +82,7 @@ public class VelocityEstimateTest {
 
         rawData = getEncodedData_HorizontalVelocityWithUncertainty();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new VelocityEstimateImpl();
         impl.decodeAll(asn);
 
@@ -93,7 +93,7 @@ public class VelocityEstimateTest {
 
         rawData = getEncodedData_HorizontalWithVerticalVelocityAndUncertainty();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new VelocityEstimateImpl();
         impl.decodeAll(asn);
 

@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import javax.xml.bind.DatatypeConverter;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformationBase;
 
@@ -39,45 +36,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformationB
  * @author sergey vetyutnev
  */
 public abstract class UserServiceInformationBaseImpl extends AbstractISUPParameter implements UserServiceInformationBase {
+	private static final long serialVersionUID = 1L;
 
-    private static final String CODING_STANDART = "codingStandart";
-    private static final String INFORMATION_TRANSFER_CAPABILITY = "informationTransferCapability";
-    private static final String TRANSFER_MODE = "transferMode";
-    private static final String CUSTOM_INFORMATION_TRANSFERRATE = "customInformationTransferRate";
-    private static final String INFORMATION_TRANSFER_RATE = "informationTransferRate";
-    private static final String L1_USER_INFORMATION = "l1UserInformation";
-    private static final String L2_USER_INFORMATION = "l2UserInformation";
-    private static final String L3_USER_INFORMATION = "l3UserInformation";
-    private static final String SYNC_MODE = "syncMode";
-    private static final String NEGOTIATION = "negotiation";
-    private static final String USER_RATE = "userRate";
-    private static final String INTERMEDIATE_RATE = "intermediateRate";
-    private static final String NIC_ON_TX = "nicOnTx";
-    private static final String NIC_ON_RX = "nicOnRx";
-    private static final String FC_ON_TX = "fcOnTx";
-    private static final String FC_ON_RX = "fcOnRx";
-    private static final String HDR = "hdr";
-    private static final String MULTIFRAME = "multiframe";
-    private static final String MODE = "mode";
-    private static final String LLI = "lli";
-    private static final String ASSIGNOR = "assignor";
-    private static final String IN_BAND_NEGOTIATION = "inBandNegotiation";
-    private static final String STOP_BITS = "stopBits";
-    private static final String DATA_BITS = "dataBits";
-    private static final String PARITY = "parity";
-    private static final String DUPLEX_MODE = "duplexMode";
-    private static final String MODEM_TYPE = "modemType";
-    private static final String L3_PROTOCOL = "l3Protocol";
-
-    private static final String BYTE_5A_IS_PRESENT = "byte5aIsPresent";
-    private static final String BYTE_5B_IS_PRESENT = "byte5bIsPresent";
-    private static final String BYTE_5C_IS_PRESENT = "byte5cIsPresent";
-    private static final String BYTE_5D_IS_PRESENT = "byte5dIsPresent";
-    private static final String DATA = "data";
-
-    private static final int DEFAULT_VALUES = 0;
-
-    private int codingStandart = 0;
+	private int codingStandart = 0;
     private int informationTransferCapability = 0;
     private int transferMode = 0;
     private int customInformationTransferRate = 0;
@@ -916,107 +877,4 @@ public abstract class UserServiceInformationBaseImpl extends AbstractISUPParamet
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<UserServiceInformationBaseImpl> ISUP_USER_SERVICE_INFORMATION_BASE_XML = new XMLFormat<UserServiceInformationBaseImpl>(
-            UserServiceInformationBaseImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, UserServiceInformationBaseImpl userServiceInformation)
-                throws XMLStreamException {
-            userServiceInformation.codingStandart = xml.getAttribute(CODING_STANDART, DEFAULT_VALUES);
-            userServiceInformation.informationTransferCapability = xml.getAttribute(INFORMATION_TRANSFER_CAPABILITY,
-                    DEFAULT_VALUES);
-            userServiceInformation.transferMode = xml.getAttribute(TRANSFER_MODE, DEFAULT_VALUES);
-            userServiceInformation.customInformationTransferRate = xml.getAttribute(CUSTOM_INFORMATION_TRANSFERRATE,
-                    DEFAULT_VALUES);
-            userServiceInformation.informationTransferRate = xml.getAttribute(INFORMATION_TRANSFER_RATE, DEFAULT_VALUES);
-            userServiceInformation.l1UserInformation = xml.getAttribute(L1_USER_INFORMATION, DEFAULT_VALUES);
-            userServiceInformation.l2UserInformation = xml.getAttribute(L2_USER_INFORMATION, DEFAULT_VALUES);
-            userServiceInformation.l3UserInformation = xml.getAttribute(L3_USER_INFORMATION, DEFAULT_VALUES);
-            userServiceInformation.syncMode = xml.getAttribute(SYNC_MODE, DEFAULT_VALUES);
-            userServiceInformation.negotiation = xml.getAttribute(NEGOTIATION, DEFAULT_VALUES);
-            userServiceInformation.userRate = xml.getAttribute(USER_RATE, DEFAULT_VALUES);
-            userServiceInformation.intermediateRate = xml.getAttribute(INTERMEDIATE_RATE, DEFAULT_VALUES);
-            userServiceInformation.nicOnTx = xml.getAttribute(NIC_ON_TX, DEFAULT_VALUES);
-            userServiceInformation.nicOnRx = xml.getAttribute(NIC_ON_RX, DEFAULT_VALUES);
-            userServiceInformation.fcOnTx = xml.getAttribute(FC_ON_TX, DEFAULT_VALUES);
-            userServiceInformation.fcOnRx = xml.getAttribute(FC_ON_RX, DEFAULT_VALUES);
-            userServiceInformation.hdr = xml.getAttribute(HDR, DEFAULT_VALUES);
-            userServiceInformation.multiframe = xml.getAttribute(MULTIFRAME, DEFAULT_VALUES);
-            userServiceInformation.mode = xml.getAttribute(MODE, DEFAULT_VALUES);
-            userServiceInformation.lli = xml.getAttribute(LLI, DEFAULT_VALUES);
-            userServiceInformation.assignor = xml.getAttribute(ASSIGNOR, DEFAULT_VALUES);
-            userServiceInformation.inBandNegotiation = xml.getAttribute(IN_BAND_NEGOTIATION, DEFAULT_VALUES);
-            userServiceInformation.stopBits = xml.getAttribute(STOP_BITS, DEFAULT_VALUES);
-            userServiceInformation.dataBits = xml.getAttribute(DATA_BITS, DEFAULT_VALUES);
-            userServiceInformation.parity = xml.getAttribute(PARITY, DEFAULT_VALUES);
-            userServiceInformation.duplexMode = xml.getAttribute(DUPLEX_MODE, DEFAULT_VALUES);
-            userServiceInformation.modemType = xml.getAttribute(MODEM_TYPE, DEFAULT_VALUES);
-            userServiceInformation.l3Protocol = xml.getAttribute(L3_PROTOCOL, DEFAULT_VALUES);
-
-            userServiceInformation.byte5aIsPresent = xml.getAttribute(BYTE_5A_IS_PRESENT, false);
-            userServiceInformation.byte5bIsPresent = xml.getAttribute(BYTE_5B_IS_PRESENT, false);
-            userServiceInformation.byte5cIsPresent = xml.getAttribute(BYTE_5C_IS_PRESENT, false);
-            userServiceInformation.byte5dIsPresent = xml.getAttribute(BYTE_5D_IS_PRESENT, false);
-
-            String str = xml.get(DATA, String.class);
-            if (str != null)
-                userServiceInformation.data = DatatypeConverter.parseHexBinary(str);
-        }
-
-        @Override
-        public void write(UserServiceInformationBaseImpl userServiceInformation, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(CODING_STANDART, userServiceInformation.codingStandart);
-            xml.setAttribute(INFORMATION_TRANSFER_CAPABILITY, userServiceInformation.informationTransferCapability);
-            xml.setAttribute(TRANSFER_MODE, userServiceInformation.transferMode);
-            xml.setAttribute(INFORMATION_TRANSFER_RATE, userServiceInformation.informationTransferRate);
-
-            if (userServiceInformation.informationTransferRate == _ITR_MULTIRATE)
-                xml.setAttribute(CUSTOM_INFORMATION_TRANSFERRATE, userServiceInformation.customInformationTransferRate);
-
-            if (userServiceInformation.l1UserInformation > 0) {
-                xml.setAttribute(L1_USER_INFORMATION, userServiceInformation.l1UserInformation);
-                xml.setAttribute(SYNC_MODE, userServiceInformation.syncMode);
-                xml.setAttribute(NEGOTIATION, userServiceInformation.negotiation);
-                xml.setAttribute(USER_RATE, userServiceInformation.userRate);
-                xml.setAttribute(INTERMEDIATE_RATE, userServiceInformation.intermediateRate);
-                xml.setAttribute(NIC_ON_TX, userServiceInformation.nicOnTx);
-                xml.setAttribute(NIC_ON_RX, userServiceInformation.nicOnRx);
-                xml.setAttribute(FC_ON_TX, userServiceInformation.fcOnTx);
-                xml.setAttribute(FC_ON_RX, userServiceInformation.fcOnRx);
-                xml.setAttribute(HDR, userServiceInformation.hdr);
-                xml.setAttribute(MULTIFRAME, userServiceInformation.multiframe);
-                xml.setAttribute(MODE, userServiceInformation.mode);
-                xml.setAttribute(LLI, userServiceInformation.lli);
-                xml.setAttribute(ASSIGNOR, userServiceInformation.assignor);
-                xml.setAttribute(IN_BAND_NEGOTIATION, userServiceInformation.inBandNegotiation);
-                xml.setAttribute(STOP_BITS, userServiceInformation.stopBits);
-                xml.setAttribute(DATA_BITS, userServiceInformation.dataBits);
-                xml.setAttribute(PARITY, userServiceInformation.parity);
-                xml.setAttribute(DUPLEX_MODE, userServiceInformation.duplexMode);
-                xml.setAttribute(MODEM_TYPE, userServiceInformation.modemType);
-
-                xml.setAttribute(BYTE_5A_IS_PRESENT, userServiceInformation.byte5aIsPresent);
-                xml.setAttribute(BYTE_5B_IS_PRESENT, userServiceInformation.byte5bIsPresent);
-                xml.setAttribute(BYTE_5C_IS_PRESENT, userServiceInformation.byte5cIsPresent);
-                xml.setAttribute(BYTE_5D_IS_PRESENT, userServiceInformation.byte5dIsPresent);
-            }
-
-            if (userServiceInformation.l2UserInformation > 0)
-                xml.setAttribute(L2_USER_INFORMATION, userServiceInformation.l2UserInformation);
-
-            if (userServiceInformation.l3UserInformation > 0) {
-                xml.setAttribute(L3_USER_INFORMATION, userServiceInformation.l3UserInformation);
-                xml.setAttribute(L3_PROTOCOL, userServiceInformation.l3Protocol);
-            }
-
-            if (userServiceInformation.data != null)
-                xml.add(DatatypeConverter.printHexBinary(userServiceInformation.data), DATA, String.class);
-        }
-    };
-
 }

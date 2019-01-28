@@ -33,9 +33,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -199,7 +196,7 @@ public class MAPExtensionContainerTest {
 
         byte[] data = this.getTestA();
         AsnInputStream ais = new AsnInputStream(data);
-        int tag = ais.readTag();
+        ais.readTag();
         MAPExtensionContainerImpl extCont = new MAPExtensionContainerImpl();
         extCont.decodeAll(ais);
 
@@ -216,7 +213,7 @@ public class MAPExtensionContainerTest {
                 0x03, (byte) 0x92, 0x11, 0x07, 0x30, 0x03, (byte) 0x81, 0x01, 0x0a };
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         MAPExtensionContainerImpl original = (MAPExtensionContainerImpl) MAPExtensionContainerTest.GetTestExtensionContainer();
@@ -240,5 +237,5 @@ public class MAPExtensionContainerTest {
 
         MAPExtensionContainerTest.CheckTestExtensionContainer(copy);
 
-    }
+    }*/
 }

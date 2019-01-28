@@ -28,6 +28,7 @@ import static org.testng.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.restcomm.protocols.ss7.isup.ISUPEvent;
 import org.restcomm.protocols.ss7.isup.ISUPListener;
@@ -39,13 +40,9 @@ import org.restcomm.protocols.ss7.isup.impl.CircuitManagerImpl;
 import org.restcomm.protocols.ss7.isup.impl.ISUPStackImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
-import org.restcomm.protocols.ss7.mtp.Mtp3;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
-import org.restcomm.protocols.ss7.scheduler.Clock;
-import org.restcomm.protocols.ss7.scheduler.DefaultClock;
-import org.restcomm.protocols.ss7.scheduler.Scheduler;
 
 /**
  * @author baranowb
@@ -55,9 +52,6 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
 
     protected ISUPStack stack;
     protected ISUPProvider provider;
-
-    protected Clock clock;
-    protected Scheduler scheduler;
 
     protected TimerTestMtp3UserPart userPart;
 
@@ -70,17 +64,15 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
     protected static final int localSpc = 2;
     protected static final int ni = 2;
 
+    protected UUID listenerUUID;
+    
     public void setUp() throws Exception {
-        clock = new DefaultClock();
-        scheduler = new Scheduler();
-        scheduler.setClock(clock);
-        scheduler.start();
-
-        this.userPart = new TimerTestMtp3UserPart();
+    	listenerUUID=UUID.randomUUID();
+    	this.userPart = new TimerTestMtp3UserPart();
         this.userPart.start();
-        this.stack = new ISUPStackImpl(scheduler, localSpc, ni);
+        this.stack = new ISUPStackImpl(localSpc, ni,4);
         this.provider = this.stack.getIsupProvider();
-        this.provider.addListener(this);
+        this.provider.addListener(listenerUUID,this);
         this.stack.setMtp3UserPart(this.userPart);
         CircuitManagerImpl cm = new CircuitManagerImpl();
         cm.addCircuit(1, dpc);
@@ -119,7 +111,7 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
         }
     }
 
-    protected String doStringCompare(List lst1, List lst2) {
+    protected String doStringCompare(List<EventReceived> lst1, List<EventReceived> lst2) {
         StringBuilder sb = new StringBuilder();
         int size1 = lst1.size();
         int size2 = lst2.size();
@@ -151,7 +143,7 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
         ISUPMessage answer = getAnswer();
         int opc = 1;
         int dpc = 2;
-        int si = Mtp3._SI_SERVICE_ISUP;
+        int si = Mtp3UserPartBaseImpl._SI_SERVICE_ISUP;
         int ni = 2;
         int sls = 3;
         // int ssi = ni << 2;
@@ -182,7 +174,7 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
     }
 
     protected void doWait(long t) throws InterruptedException {
-        Thread.currentThread().sleep(t);
+        Thread.sleep(t);
     }
 
     /**
@@ -303,7 +295,7 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
     private class TimerTestMtp3UserPart extends Mtp3UserPartBaseImpl {
         
         public TimerTestMtp3UserPart() {
-            super(null, null);
+            super(null);
         }
 
         public void sendTransferMessageToLocalUser(Mtp3TransferPrimitive msg, int seqControl) {

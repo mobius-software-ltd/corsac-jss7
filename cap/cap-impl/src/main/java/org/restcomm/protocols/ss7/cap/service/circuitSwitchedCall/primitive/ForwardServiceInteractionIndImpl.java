@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -48,17 +45,15 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 *
 */
 public class ForwardServiceInteractionIndImpl extends SequenceBase implements ForwardServiceInteractionInd {
-    public static final int _ID_conferenceTreatmentIndicator = 1;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_conferenceTreatmentIndicator = 1;
     public static final int _ID_callDiversionTreatmentIndicator = 2;
     public static final int _ID_callingPartyRestrictionIndicator = 4;
 
     private ConferenceTreatmentIndicator conferenceTreatmentIndicator;
     private CallDiversionTreatmentIndicator callDiversionTreatmentIndicator;
     private CallingPartyRestrictionIndicator callingPartyRestrictionIndicator;
-
-    private static final String CONFERENCE_TREATMENT_INDICATOR = "conferenceTreatmentIndicator";
-    private static final String CALL_DIVERSION_TREATMENT_INDICATOR = "callDiversionTreatmentIndicator";
-    private static final String CALLING_PARTY_RESTRICTION_INDICATOR = "callingPartyRestrictionIndicator";
 
     public ForwardServiceInteractionIndImpl() {
         super("ForwardServiceInteractionInd");
@@ -171,35 +166,6 @@ public class ForwardServiceInteractionIndImpl extends SequenceBase implements Fo
             throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
         }
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ForwardServiceInteractionIndImpl> FORWARD_SERVICE_INTERACTION_IND_XML = new XMLFormat<ForwardServiceInteractionIndImpl>(
-            ForwardServiceInteractionIndImpl.class) {
-
-        public void read(javolution.xml.XMLFormat.InputElement xml, ForwardServiceInteractionIndImpl forwardServiceInteractionInd) throws XMLStreamException {
-
-            String str = xml.get(CONFERENCE_TREATMENT_INDICATOR, String.class);
-            if (str != null)
-                forwardServiceInteractionInd.conferenceTreatmentIndicator = Enum.valueOf(ConferenceTreatmentIndicator.class, str);
-            str = xml.get(CALL_DIVERSION_TREATMENT_INDICATOR, String.class);
-            if (str != null)
-                forwardServiceInteractionInd.callDiversionTreatmentIndicator = Enum.valueOf(CallDiversionTreatmentIndicator.class, str);
-            str = xml.get(CALLING_PARTY_RESTRICTION_INDICATOR, String.class);
-            if (str != null)
-                forwardServiceInteractionInd.callingPartyRestrictionIndicator = Enum.valueOf(CallingPartyRestrictionIndicator.class, str);
-        }
-
-        public void write(ForwardServiceInteractionIndImpl forwardServiceInteractionInd, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (forwardServiceInteractionInd.conferenceTreatmentIndicator != null)
-                xml.add(forwardServiceInteractionInd.conferenceTreatmentIndicator.toString(), CONFERENCE_TREATMENT_INDICATOR, String.class);
-            if (forwardServiceInteractionInd.callDiversionTreatmentIndicator != null)
-                xml.add(forwardServiceInteractionInd.callDiversionTreatmentIndicator.toString(), CALL_DIVERSION_TREATMENT_INDICATOR, String.class);
-            if (forwardServiceInteractionInd.callingPartyRestrictionIndicator != null)
-                xml.add(forwardServiceInteractionInd.callingPartyRestrictionIndicator.toString(), CALLING_PARTY_RESTRICTION_INDICATOR, String.class);
-        }
-    };
 
     @Override
     public String toString() {

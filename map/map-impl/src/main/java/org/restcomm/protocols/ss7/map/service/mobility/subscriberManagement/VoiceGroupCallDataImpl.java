@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class VoiceGroupCallDataImpl extends SequenceBase implements VoiceGroupCallData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_additionalInfo = 0;
+	private static final int _TAG_additionalInfo = 0;
     private static final int _TAG_longGroupId = 1;
 
     private GroupId groupId;

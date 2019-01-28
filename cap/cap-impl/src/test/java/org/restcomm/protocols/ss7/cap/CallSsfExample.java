@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.cap;
 
+import java.util.UUID;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -8,7 +10,6 @@ import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPDialogListener;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessage;
-import org.restcomm.protocols.ss7.cap.api.CAPParameterFactory;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfo;
@@ -59,7 +60,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargi
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
@@ -70,7 +70,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitchedCallListener {
 
     private CAPProvider capProvider;
-    private CAPParameterFactory paramFact;
     private CAPDialogCircuitSwitchedCall currentCapDialog;
     private CallContent cc;
 
@@ -83,9 +82,7 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
             ctx.close();
         }
 
-        paramFact = capProvider.getCAPParameterFactory();
-
-        capProvider.addCAPDialogListener(this);
+        capProvider.addCAPDialogListener(UUID.randomUUID(),this);
         capProvider.getCAPServiceCircuitSwitchedCall().addCAPServiceListener(this);
     }
 
@@ -118,9 +115,6 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
         currentCapDialog.send();
 
         this.cc.step = Step.initialDPSent;
-        this.cc.calledPartyNumber = calledPartyNumber;
-        this.cc.callingPartyNumber = callingPartyNumber;
-
     }
 
     public void sendEventReportBCSM_OAnswer(OAnswerSpecificInfo oAnswerSpecificInfo, ReceivingSideID legID,
@@ -150,8 +144,6 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     @Override
     public void onRequestReportBCSMEventRequest(RequestReportBCSMEventRequest ind) {
         if (currentCapDialog != null && this.cc != null && this.cc.step != Step.disconnected) {
-            this.cc.requestReportBCSMEventRequest = ind;
-
             // initiating BCSM events processing
         }
         ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
@@ -180,7 +172,6 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     @Override
     public void onConnectRequest(ConnectRequest ind) {
         this.cc.step = Step.callAllowed;
-        this.cc.destinationRoutingAddress = ind.getDestinationRoutingAddress();
         ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
         // sending Connect to force routing the call to a new number
     }
@@ -402,11 +393,6 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     private class CallContent {
         public Step step;
         public Long activityTestInvokeId;
-
-        public CalledPartyNumberCap calledPartyNumber;
-        public CallingPartyNumberCap callingPartyNumber;
-        public RequestReportBCSMEventRequest requestReportBCSMEventRequest;
-        public DestinationRoutingAddress destinationRoutingAddress;
     }
 
     @Override

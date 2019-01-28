@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class TBcsmCamelTdpCriteriaImpl extends SequenceBase implements TBcsmCamelTdpCriteria {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_basicServiceCriteria = 0;
+	private static final int _TAG_basicServiceCriteria = 0;
     private static final int _TAG_tCauseValueCriteria = 1;
 
     private TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint;
@@ -124,7 +125,7 @@ public class TBcsmCamelTdpCriteriaImpl extends SequenceBase implements TBcsmCame
                                 if (ais2.available() == 0)
                                     break;
 
-                                int tag2 = ais2.readTag();
+                                ais2.readTag();
                                 extBasicServiceCode = new ExtBasicServiceCodeImpl();
                                 ((ExtBasicServiceCodeImpl) extBasicServiceCode).decodeAll(ais2);
                                 this.basicServiceCriteria.add(extBasicServiceCode);

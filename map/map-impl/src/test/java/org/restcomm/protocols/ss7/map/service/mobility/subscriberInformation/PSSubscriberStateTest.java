@@ -27,13 +27,8 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -140,7 +135,7 @@ public class PSSubscriberStateTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         PSSubscriberStateImpl original = new PSSubscriberStateImpl(PSSubscriberStateChoice.psDetached, null, null);
@@ -222,6 +217,5 @@ public class PSSubscriberStateTest {
         assertEquals(copy.getPDPContextInfoList().size(), original.getPDPContextInfoList().size());
         assertEquals(copy.getPDPContextInfoList().get(0).getPdpContextIdentifier(), original.getPDPContextInfoList().get(0).getPdpContextIdentifier());
         assertEquals(copy.getPDPContextInfoList().get(1).getPdpContextIdentifier(), original.getPDPContextInfoList().get(1).getPdpContextIdentifier());
-    }
-
+    }*/
 }

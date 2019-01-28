@@ -27,8 +27,9 @@ import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 
 public class ServingCheckDataImpl implements ServingCheckData {
+	private static final long serialVersionUID = 1L;
 
-    private ServingCheckResult result;
+	private ServingCheckResult result;
     private ApplicationContextName alternativeApplicationContext = null;
 
     public ServingCheckDataImpl(ServingCheckResult result) {

@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class MAPProviderAbortInfoImpl implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int MAP_PROVIDER_ABORT_INFO_TAG = 0x05;
+	public static final int MAP_PROVIDER_ABORT_INFO_TAG = 0x05;
 
     protected static final int PROVIDER_ABORT_TAG_CLASS = Tag.CLASS_CONTEXT_SPECIFIC;
     protected static final boolean PROVIDER_ABORT_TAG_PC_CONSTRUCTED = false;

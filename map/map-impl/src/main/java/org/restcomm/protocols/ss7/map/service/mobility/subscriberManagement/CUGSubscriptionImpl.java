@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class CUGSubscriptionImpl extends SequenceBase implements CUGSubscription {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_extensionContainer = 0;
+	private static final int _TAG_extensionContainer = 0;
 
     private int cugIndex;
     private CUGInterlock cugInterlock = null;
@@ -168,7 +169,7 @@ public class CUGSubscriptionImpl extends SequenceBase implements CUGSubscription
                                         if (ais2a.available() == 0)
                                             break;
 
-                                        int tag2a = ais2a.readTag();
+                                        ais2a.readTag();
 
                                         ExtBasicServiceCode basicServiceItem = new ExtBasicServiceCodeImpl();
                                         ((ExtBasicServiceCodeImpl) basicServiceItem).decodeAll(ais2a);

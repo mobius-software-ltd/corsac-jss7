@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class SGSNInterfaceListImpl extends BitStringBase implements SGSNInterfaceList {
-    static final int _ID_gb = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_gb = 0;
     static final int _ID_iu = 1;
     static final int _ID_gn = 2;
     static final int _ID_mapGr = 3;

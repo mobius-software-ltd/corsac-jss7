@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class AdditionalNumberImpl implements AdditionalNumber, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_MSC_NUMBER = 0;
+	private static final int _TAG_MSC_NUMBER = 0;
     private static final int _TAG_SGSN_NUMBER = 1;
 
     public static final String _PrimitiveName = "AdditionalNumber";

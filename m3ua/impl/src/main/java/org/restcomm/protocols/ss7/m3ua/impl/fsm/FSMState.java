@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.fsm;
 
-import javolution.util.FastList;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -34,7 +34,7 @@ public class FSMState {
     private String name;
     private FSM fsm;
 
-    private FastList<Transition> transitions = new FastList<Transition>();
+    private ConcurrentHashMap<String,Transition> transitions = new ConcurrentHashMap<String,Transition>();
     protected long timeout;
 
     // The time in ms when this sate was entered
@@ -114,7 +114,7 @@ public class FSMState {
     }
 
     protected void add(Transition t) {
-        transitions.add(t);
+        transitions.put(t.getName(), t);
     }
 
     /**
@@ -137,12 +137,7 @@ public class FSMState {
      * @return the transition or null if not found.
      */
     private Transition find(String name) {
-        for (Transition t : transitions) {
-            if (t.getName().matches(name)) {
-                return t;
-            }
-        }
-        return null;
+    	return transitions.get(name);
     }
 
     @Override

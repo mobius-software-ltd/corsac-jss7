@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.sccp.impl.mgmt.mtp;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.Util;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.mtp.Mtp3StatusCause;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
@@ -41,7 +40,6 @@ import org.restcomm.protocols.ss7.sccp.impl.mgmt.Mtp3UnavailabiltyCauseType;
 import org.restcomm.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessage;
 import org.restcomm.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessageType;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.ss7ext.Ss7ExtInterface;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -69,22 +67,18 @@ public class MtpPrimitivesTest extends SccpHarness {
     }
 
     protected void createStack1() {
-        sccpStack1 = createStack(sccpStack1Name, null);
+        sccpStack1 = createStack(sccpStack1Name);
         sccpProvider1 = sccpStack1.getSccpProvider();
     }
 
     protected void createStack2() {
-        sccpStack2 = createStack(sccpStack2Name, null);
+        sccpStack2 = createStack(sccpStack2Name);
         sccpProvider2 = sccpStack2.getSccpProvider();
     }
 
     @Override
-    protected SccpStackImpl createStack(String name, Ss7ExtInterface ss7ExtInterface) {
-        SccpStackImpl stack = new SccpStackImplProxy(name, ss7ExtInterface);
-        final String dir = Util.getTmpTestDir();
-        if (dir != null) {
-            stack.setPersistDir(dir);
-        }
+    protected SccpStackImpl createStack(String name) {
+        SccpStackImpl stack = new SccpStackImplProxy(name);
         return stack;
     }
 
@@ -122,7 +116,7 @@ public class MtpPrimitivesTest extends SccpHarness {
         // super.data1.add(createPausePrimitive(getStack2PC()));
         this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC());
 
-        Thread.currentThread().sleep(500);
+        Thread.sleep(500);
         // now s1 thinks s2 is not available
         assertTrue(u1.getMessages().size() == 0, "U1 Received message, it should not!");
         assertTrue(u2.getMessages().size() == 0, "U2 Received message, it should not!");
@@ -146,7 +140,7 @@ public class MtpPrimitivesTest extends SccpHarness {
         // now send msg from s1
         u1.send();
 
-        Thread.currentThread().sleep(500);
+        Thread.sleep(500);
 
         assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 0, "U2 received Mtp3 Primitve, it should not!");
         assertTrue(stack.getManagementProxy().getMgmtMessages().size() == 0, "U2 received Management message, it should not!");
@@ -156,7 +150,7 @@ public class MtpPrimitivesTest extends SccpHarness {
         // super.data1.add(createResumePrimitive(getStack2PC()));
         this.mtp3UserPart1.sendResumeMessageToLocalUser(getStack2PC());
 
-        Thread.currentThread().sleep(500);
+        Thread.sleep(500);
         stack = (SccpStackImplProxy) sccpStack1;
 
         assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 2, "U1 did not receive Mtp3 Primitve, it should !");
@@ -166,12 +160,12 @@ public class MtpPrimitivesTest extends SccpHarness {
         assertEquals(rmtpPause, emtpPause, "Failed to match management message in U1");
 
         Mtp3PrimitiveMessage rmtpResume = stack.getManagementProxy().getMtp3Messages().get(1);
-        Mtp3PrimitiveMessage emtpResume = new Mtp3PrimitiveMessage(0, Mtp3PrimitiveMessageType.MTP3_RESUME, 2);
-        assertEquals(rmtpPause, emtpPause, "Failed to match management message in U1");
+        Mtp3PrimitiveMessage emtpResume = new Mtp3PrimitiveMessage(1, Mtp3PrimitiveMessageType.MTP3_RESUME, 2);
+        assertEquals(rmtpResume, emtpResume, "Failed to match management message in U1");
 
         u1.send();
 
-        Thread.currentThread().sleep(500);
+        Thread.sleep(500);
         stack = (SccpStackImplProxy) sccpStack2;
         assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 0, "U2 received Mtp3 Primitve, it should not!");
         assertTrue(stack.getManagementProxy().getMgmtMessages().size() == 0, "U2 received Management message, it should not!");
@@ -234,7 +228,7 @@ public class MtpPrimitivesTest extends SccpHarness {
         this.mtp3UserPart1.sendStatusMessageToLocalUser(getStack2PC(),
                 Mtp3StatusCause.UserPartUnavailability_UnequippedRemoteUser, 0, 0);
 
-        Thread.currentThread().sleep(500);
+        Thread.sleep(500);
         // now s1 thinks s2 is not available
         assertTrue(u1.getMessages().size() == 0, "U1 Received message, it should not!");
         assertTrue(u2.getMessages().size() == 0, "U2 Received message, it should not!");
@@ -259,7 +253,7 @@ public class MtpPrimitivesTest extends SccpHarness {
         // now send msg from s1
         u1.send();
 
-        Thread.currentThread().sleep(500);
+        Thread.sleep(500);
 
         assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 0, "U2 received Mtp3 Primitve, it should not!");
         assertTrue(stack.getManagementProxy().getMgmtMessages().size() == 0, "U2 received Management message, it should not!");
@@ -276,6 +270,8 @@ public class MtpPrimitivesTest extends SccpHarness {
             case CAUSE_UNEQUIPED:
                 cs = Mtp3StatusCause.UserPartUnavailability_UnequippedRemoteUser;
                 break;
+			default:
+				break;
         }
         this.mtp3UserPart1.sendStatusMessageToLocalUser(getStack2PC(), cs, 0, 0);
 
@@ -315,7 +311,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 
         u1.send();
 
-        Thread.currentThread().sleep(500);
+        Thread.sleep(500);
         assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 0, "U2 received Mtp3 Primitve, it should not!");
         assertTrue(stack.getManagementProxy().getMgmtMessages().size() == 1,
                 "U2 did not receive Management message, it should !");

@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallDiversionInformatio
  *
  */
 public class CallDiversionInformationImpl extends AbstractISUPParameter implements CallDiversionInformation {
+	private static final long serialVersionUID = 1L;
 
-    private int redirectingReason = 0;
+	private int redirectingReason = 0;
 
     private int notificationSubscriptionOptions = 0;
 

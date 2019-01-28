@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class MMEEventListImpl extends BitStringBase implements MMEEventList {
-    static final int _ID_ueInitiatedPDNconectivityRequest = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_ueInitiatedPDNconectivityRequest = 0;
     static final int _ID_serviceRequestts = 1;
     static final int _ID_initialAttachTrackingAreaUpdateDetach = 2;
     static final int _ID_ueInitiatedPDNdisconnection = 3;

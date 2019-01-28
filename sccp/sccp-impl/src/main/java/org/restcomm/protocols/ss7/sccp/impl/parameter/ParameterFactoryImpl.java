@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.Segmentation;
  * @author baranowb
  */
 public class ParameterFactoryImpl implements ParameterFactory {
+	private static final long serialVersionUID = 1L;
 
-    public SccpAddress createSccpAddress(RoutingIndicator ri, GlobalTitle gt, int dpc, int ssn) {
+	public SccpAddress createSccpAddress(RoutingIndicator ri, GlobalTitle gt, int dpc, int ssn) {
         return new SccpAddressImpl(ri, gt, dpc, ssn);
     }
 

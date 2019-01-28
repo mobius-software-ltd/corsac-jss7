@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -55,7 +50,7 @@ public class TimeIfTariffSwitchTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         TimeIfTariffSwitchImpl elem = new TimeIfTariffSwitchImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getTimeSinceTariffSwitch(), 11);
         assertEquals((int) elem.getTariffSwitchInterval(), 22);
@@ -70,7 +65,7 @@ public class TimeIfTariffSwitchTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerializaion() throws Exception {
         TimeIfTariffSwitchImpl original = new TimeIfTariffSwitchImpl(11, 22);
 
@@ -95,5 +90,5 @@ public class TimeIfTariffSwitchTest {
         assertEquals(copy.getTimeSinceTariffSwitch(), original.getTimeSinceTariffSwitch());
         assertEquals(copy.getTariffSwitchInterval(), original.getTariffSwitchInterval());
 
-    }
+    }*/
 }

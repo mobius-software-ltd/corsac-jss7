@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
  *
  */
 public class SmsStatusReportTpduImpl extends SmsTpduImpl implements SmsStatusReportTpdu {
+	private static final long serialVersionUID = 1L;
 
-    private boolean userDataHeaderIndicator;
+	private boolean userDataHeaderIndicator;
     private boolean moreMessagesToSend;
     private boolean forwardedOrSpawned;
     private StatusReportQualifier statusReportQualifier;

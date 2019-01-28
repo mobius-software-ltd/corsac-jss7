@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class APNConfigurationProfileImpl extends SequenceBase implements APNConfigurationProfile {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_ePSDataList = 1;
+	private static final int _TAG_ePSDataList = 1;
     private static final int _TAG_extensionContainer = 2;
 
     private int defaultContext;

@@ -37,8 +37,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class QoSSubscribedImpl extends OctetStringBase implements QoSSubscribed {
+	private static final long serialVersionUID = 1L;
 
-    public QoSSubscribedImpl() {
+	public QoSSubscribedImpl() {
         super(3, 3, "QoSSubscribed");
     }
 

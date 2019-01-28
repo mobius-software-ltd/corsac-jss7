@@ -29,8 +29,9 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn;
  *
  */
 public class EncodeException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-    public EncodeException() {
+	public EncodeException() {
     }
 
     public EncodeException(String message) {

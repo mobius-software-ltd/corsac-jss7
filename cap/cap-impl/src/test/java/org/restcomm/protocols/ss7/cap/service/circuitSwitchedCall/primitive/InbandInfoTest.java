@@ -26,17 +26,11 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageID;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InbandInfoImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
@@ -103,7 +97,7 @@ public class InbandInfoTest {
         // MessageID messageID, Integer numberOfRepetitions, Integer duration, Integer interval
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         MessageID messageID = new MessageIDImpl(10);
@@ -153,5 +147,5 @@ public class InbandInfoTest {
         assertEquals((int) copy.getNumberOfRepetitions(), 1);
         assertEquals((int) copy.getDuration(), 2);
         assertEquals((int) copy.getInterval(), 3);
-    }
+    }*/
 }

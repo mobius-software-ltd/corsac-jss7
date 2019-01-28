@@ -51,8 +51,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Supp
  *
  */
 public class SGSNCapabilityImpl extends SequenceBase implements SGSNCapability {
+	private static final long serialVersionUID = 1L;
 
-    private static final int TAG_extensionContainer = 1;
+	private static final int TAG_extensionContainer = 1;
     private static final int TAG_superChargerSupportedInServingNetworkEntity = 2;
     private static final int TAG_gprsEnhancementsSupportIndicator = 3;
     private static final int TAG_supportedCamelPhases = 4;

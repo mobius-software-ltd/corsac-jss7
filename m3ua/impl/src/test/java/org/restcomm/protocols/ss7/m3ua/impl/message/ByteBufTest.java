@@ -11,7 +11,7 @@ public class ByteBufTest {
     public void testSingleAspInAs() throws Exception {
         try {
             CompositeByteBuf comp = Unpooled.compositeBuffer();
-            ByteBuf top = comp;
+            //ByteBuf top = comp;
 
             ByteBuf b1 = Unpooled.buffer();
             ByteBuf b2 = Unpooled.buffer();
@@ -42,10 +42,10 @@ public class ByteBufTest {
             comp.readBytes(bb2);
 
             comp.discardReadBytes();
-            int xxx = 0;
-            xxx++;
+            //int xxx = 0;
+            //xxx++;
         } catch (Exception ee) {
-            int iii = 10;
+            //int iii = 10;
         }
     }
 }

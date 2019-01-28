@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.sccp.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
@@ -54,13 +53,15 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
  * @author abhayani
  */
 public class User extends BaseSccpListener implements SccpListener {
-    protected SccpProvider provider;
+	private static final long serialVersionUID = 1L;
+
+	protected SccpProvider provider;
     protected SccpAddress address;
     protected SccpAddress dest;
     protected int ssn;
     // protected SccpMessage msg;
     protected List<SccpMessage> messages = new ArrayList<SccpMessage>();
-    protected List<byte[]> receivedData = Collections.synchronizedList(new ArrayList<byte[]>());
+    protected ConcurrentLinkedQueue<byte[]> receivedData = new ConcurrentLinkedQueue<byte[]>();
     protected boolean refuseConnections;
     protected UserStats stats = new UserStats();
     private UserOptions options = new UserOptions();
@@ -205,12 +206,6 @@ public class User extends BaseSccpListener implements SccpListener {
     }
 
     @Override
-    public void onNetworkIdState(int networkId, NetworkIdState networkIdState) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress, ProtocolClass clazz, Credit credit, byte[] data, Importance importance) throws Exception {
         if (!refuseConnections) {
             conn.confirm(calledAddress, (options.confirmCredit != null) ? options.confirmCredit : credit, options.sendConfirmData);
@@ -269,7 +264,7 @@ public class User extends BaseSccpListener implements SccpListener {
         receivedData.add(data);
     }
 
-    public List<byte[]> getReceivedData() {
+    public ConcurrentLinkedQueue<byte[]> getReceivedData() {
         return receivedData;
     }
 

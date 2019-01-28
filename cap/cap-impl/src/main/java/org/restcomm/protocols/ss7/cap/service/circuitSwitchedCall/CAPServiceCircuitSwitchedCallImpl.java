@@ -115,6 +115,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
             case CapV4_scf_gsmSSFGeneric:
             case CapV4_gsmSRF_gsmSCF:
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
+			default:
+				break;
         }
 
         return new ServingCheckDataImpl(ServingCheckResult.AC_NotServing);

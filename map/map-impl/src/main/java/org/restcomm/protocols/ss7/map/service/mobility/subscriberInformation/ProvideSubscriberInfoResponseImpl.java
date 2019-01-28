@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 *
 */
 public class ProvideSubscriberInfoResponseImpl extends MobilityMessageImpl implements ProvideSubscriberInfoResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ProvideSubscriberInfoResponse";
+	public static final String _PrimitiveName = "ProvideSubscriberInfoResponse";
 
     private SubscriberInfo subscriberInfo;
     private MAPExtensionContainer extensionContainer;

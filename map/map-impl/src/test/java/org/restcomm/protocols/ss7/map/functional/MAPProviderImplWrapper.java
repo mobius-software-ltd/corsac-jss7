@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.map.functional;
 
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
+import org.restcomm.protocols.ss7.map.MAPStackConfigurationManagement;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPProviderAbortReason;
@@ -30,8 +31,6 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPServiceSupple
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
 
 /**
  *
@@ -40,13 +39,14 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
  *
  */
 public class MAPProviderImplWrapper extends MAPProviderImpl {
+	private static final long serialVersionUID = 1L;
 
-    private int testMode = 0;
+	private int testMode = 0;
 
     private final MAPServiceSupplementary mapServiceSupplementaryTest = new MAPServiceSupplementaryImplWrapper(this);
 
     public MAPProviderImplWrapper(TCAPProvider tcapProvider) {
-        super("Test", tcapProvider);
+        super("Test", tcapProvider,new MAPStackConfigurationManagement());
 
         for (MAPServiceBase serv : this.mapServices) {
             if (serv instanceof MAPServiceSupplementary) {
@@ -67,8 +67,8 @@ public class MAPProviderImplWrapper extends MAPProviderImpl {
     }
 
     public void onTCBegin(TCBeginIndication tcBeginIndication) {
-        ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
-        Component[] comps = tcBeginIndication.getComponents();
+        tcBeginIndication.getApplicationContextName();
+        tcBeginIndication.getComponents();
 
         if (this.testMode == 1) {
             try {

@@ -49,8 +49,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
  * @author Oleg Kulikov
  */
 public class ProtocolClassImpl extends AbstractParameter implements ProtocolClass {
+	private static final long serialVersionUID = 1L;
 
-    private int pClass;
+	private int pClass;
     private int msgHandling;
 
     /** Creates a new instance of UnitDataMandatotyFixedPart */

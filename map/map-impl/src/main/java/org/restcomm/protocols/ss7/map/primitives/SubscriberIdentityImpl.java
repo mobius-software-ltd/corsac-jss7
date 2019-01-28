@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
  *
  */
 public class SubscriberIdentityImpl implements SubscriberIdentity, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "SubscriberIdentity";
+	public static final String _PrimitiveName = "SubscriberIdentity";
 
     private static final int _TAG_IMSI = 0;
     private static final int _TAG_MSISDN = 1;

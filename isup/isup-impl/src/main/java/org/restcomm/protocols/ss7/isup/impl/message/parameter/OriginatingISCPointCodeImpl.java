@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginatingISCPointCode
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class OriginatingISCPointCodeImpl extends AbstractPointCode implements OriginatingISCPointCode {
+	private static final long serialVersionUID = 1L;
 
-    public int getCode() {
+	public int getCode() {
 
         return _PARAMETER_CODE;
     }

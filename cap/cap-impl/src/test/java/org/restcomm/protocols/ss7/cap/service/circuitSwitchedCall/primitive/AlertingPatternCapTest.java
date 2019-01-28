@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,14 +56,14 @@ public class AlertingPatternCapTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         AlertingPatternCapImpl elem = new AlertingPatternCapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getAlertingPattern().getAlertingLevel(), AlertingLevel.Level1);
 
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new AlertingPatternCapImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getAlertingPattern().getAlertingCategory(), AlertingCategory.Category2);
     }
@@ -89,7 +84,7 @@ public class AlertingPatternCapTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingLevel.Level1);
@@ -113,6 +108,5 @@ public class AlertingPatternCapTest {
         AlertingPatternCapImpl copy = reader.read("alertingPatternCap", AlertingPatternCapImpl.class);
 
         assertEquals(copy.getData(), original.getData());
-
-    }
+    }*/
 }

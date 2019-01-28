@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
  *
  */
 public class ProtocolVersionImpl implements ProtocolVersion {
+	private static final long serialVersionUID = 1L;
 
-    private int data;
+	private int data;
 
     /**
      * Creating ProtocolVersion that support both T1_114_1996Supported and T1_114_2000Supported

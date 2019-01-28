@@ -21,7 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
@@ -69,10 +70,10 @@ public class THLocalAsActToActRemAspAct implements TransitionHandler {
 
                 // Iterate through ASP's and send AS_ACTIVE to ASP's who
                 // are INACTIVE
-                for (FastList.Node<Asp> n = this.asImpl.appServerProcs.head(), end = this.asImpl.appServerProcs.tail(); (n = n
-                        .getNext()) != end;) {
-                    AspImpl remAspImpl = (AspImpl) n.getValue();
-
+            	Iterator<Entry<String, Asp>> iterator=this.asImpl.appServerProcs.entrySet().iterator();
+                while(iterator.hasNext()) {
+                    AspImpl remAspImpl = (AspImpl) iterator.next().getValue();
+                                
                     FSM aspPeerFSM = remAspImpl.getPeerFSM();
                     AspState aspState = AspState.getState(aspPeerFSM.getState().getName());
 
@@ -84,10 +85,10 @@ public class THLocalAsActToActRemAspAct implements TransitionHandler {
             } else if (this.asImpl.getTrafficModeType().getMode() == TrafficModeType.Override) {
                 // Look at 5.2.2. 1+1 Sparing, Backup Override
 
-                for (FastList.Node<Asp> n = this.asImpl.appServerProcs.head(), end = this.asImpl.appServerProcs.tail(); (n = n
-                        .getNext()) != end;) {
-                    AspImpl remAspImpl = (AspImpl) n.getValue();
-
+            	Iterator<Entry<String, Asp>> iterator=this.asImpl.appServerProcs.entrySet().iterator();
+                while(iterator.hasNext()) {
+                    AspImpl remAspImpl = (AspImpl) iterator.next().getValue();
+                
                     FSM aspPeerFSM = remAspImpl.getPeerFSM();
                     AspState aspState = AspState.getState(aspPeerFSM.getState().getName());
 

@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class ExtCallBarringFeatureImpl extends SequenceBase implements ExtCallBarringFeature {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_ss_Status = 4;
+	private static final int _TAG_ss_Status = 4;
 
     private ExtBasicServiceCode basicService = null;
     private ExtSSStatus ssStatus = null;

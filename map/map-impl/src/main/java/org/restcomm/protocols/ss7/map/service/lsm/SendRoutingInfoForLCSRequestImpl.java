@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
  *
  */
 public class SendRoutingInfoForLCSRequestImpl extends LsmMessageImpl implements SendRoutingInfoForLCSRequest {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_MLC_NUMBER = 0;
+	private static final int _TAG_MLC_NUMBER = 0;
     private static final int _TAG_TARGET_MS = 1;
     private static final int _TAG_EXTENSION_CONTAINER = 2;
 

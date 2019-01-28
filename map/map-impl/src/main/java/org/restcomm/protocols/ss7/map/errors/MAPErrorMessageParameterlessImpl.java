@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -38,8 +35,9 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageParameterless;
  * @author amit bhayani
  */
 public class MAPErrorMessageParameterlessImpl extends MAPErrorMessageImpl implements MAPErrorMessageParameterless {
+	private static final long serialVersionUID = 1L;
 
-    public MAPErrorMessageParameterlessImpl() {
+	public MAPErrorMessageParameterlessImpl() {
     }
 
     public MAPErrorMessageParameterlessImpl(Long errorCode) {
@@ -85,23 +83,4 @@ public class MAPErrorMessageParameterlessImpl extends MAPErrorMessageImpl implem
     public String toString() {
         return "MAPErrorMessageParameterless [errorCode=" + this.errorCode + "]";
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageParameterlessImpl> MAP_ERROR_MESSAGE_PARAMETERLESS_XML = new XMLFormat<MAPErrorMessageParameterlessImpl>(
-            MAPErrorMessageParameterlessImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageParameterlessImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-        }
-
-        @Override
-        public void write(MAPErrorMessageParameterlessImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-        }
-    };
 }

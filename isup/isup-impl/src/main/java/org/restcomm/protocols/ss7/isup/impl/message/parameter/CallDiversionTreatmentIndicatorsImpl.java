@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallDiversionTreatmentI
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallDiversionTreatmentIndicatorsImpl extends AbstractISUPParameter implements CallDiversionTreatmentIndicators {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] callDivertedIndicators = null;
+	private byte[] callDivertedIndicators = null;
 
     public CallDiversionTreatmentIndicatorsImpl() {
         super();

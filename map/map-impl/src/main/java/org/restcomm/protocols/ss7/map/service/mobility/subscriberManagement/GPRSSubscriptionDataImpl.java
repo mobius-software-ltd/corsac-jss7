@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PDP
  *
  */
 public class GPRSSubscriptionDataImpl extends SequenceBase implements GPRSSubscriptionData {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_gprsDataList = 1;
+	protected static final int _TAG_gprsDataList = 1;
     protected static final int _TAG_extContainer = 2;
     protected static final int _TAG_apnOiReplacement = 3;
 

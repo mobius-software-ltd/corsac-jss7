@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class BMSCInterfaceListImpl extends BitStringBase implements BMSCInterfaceList {
-    static final int _ID_gmb = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_gmb = 0;
 
     public static final String _PrimitiveName = "BMSCInterfaceList";
 

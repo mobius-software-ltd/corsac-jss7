@@ -50,7 +50,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 *
 */
 public class ProvideSubscriberInfoRequestImpl extends MobilityMessageImpl implements ProvideSubscriberInfoRequest {
-    protected static final int _TAG_imsi = 0;
+	private static final long serialVersionUID = 1L;
+
+	protected static final int _TAG_imsi = 0;
     protected static final int _TAG_lmsi = 1;
     protected static final int _TAG_requestedInfo = 2;
     protected static final int _TAG_extensionContainer = 3;
@@ -164,8 +166,7 @@ public class ProvideSubscriberInfoRequestImpl extends MobilityMessageImpl implem
         this.extensionContainer = null;
         this.callPriority = null;
 
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
+        AsnInputStream ais = ansIS.readSequenceStreamData(length);      
         while (true) {
             if (ais.available() == 0)
                 break;
@@ -217,8 +218,6 @@ public class ProvideSubscriberInfoRequestImpl extends MobilityMessageImpl implem
             } else {
                 ais.advanceElement();
             }
-
-            num++;
         }
 
         if (this.imsi == null)

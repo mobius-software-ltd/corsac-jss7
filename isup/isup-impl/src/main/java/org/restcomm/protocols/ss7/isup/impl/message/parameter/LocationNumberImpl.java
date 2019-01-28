@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 
@@ -38,18 +35,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class LocationNumberImpl extends AbstractNAINumber implements LocationNumber {
+	private static final long serialVersionUID = 1L;
 
-    private static final String NUMBERING_PLAN_INDICATOR = "numberingPlanIndicator";
-    private static final String INTERNAL_NETWORK_NUMBER_INDICATOR = "internalNetworkNumberIndicator";
-    private static final String ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR = "addressRepresentationRestrictedIndicator";
-    private static final String SCREENING_INDICATOR = "screeningIndicator";
-
-    private static final int DEFAULT_NUMBERING_PLAN_INDICATOR = 0;
-    private static final int DEFAULT_INTERNAL_NETWORK_NUMBER_INDICATOR = 0;
-    private static final int DEFAULT_ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR = 0;
-    private static final int DEFAULT_SCREENING_INDICATOR = 0;
-
-    protected int numberingPlanIndicator;
+	protected int numberingPlanIndicator;
     protected int internalNetworkNumberIndicator;
     protected int addressRepresentationRestrictedIndicator;
     protected int screeningIndicator;
@@ -192,37 +180,4 @@ public class LocationNumberImpl extends AbstractNAINumber implements LocationNum
                 + ", natureOfAddresIndicator=" + natureOfAddresIndicator + ", oddFlag=" + oddFlag + ", address=" + address
                 + "]";
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<LocationNumberImpl> ISUP_LOCATION_NUMBER_XML = new XMLFormat<LocationNumberImpl>(
-            LocationNumberImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, LocationNumberImpl locationNumber)
-                throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.read(xml, locationNumber);
-
-            locationNumber.numberingPlanIndicator = xml
-                    .getAttribute(NUMBERING_PLAN_INDICATOR, DEFAULT_NUMBERING_PLAN_INDICATOR);
-            locationNumber.internalNetworkNumberIndicator = xml.getAttribute(INTERNAL_NETWORK_NUMBER_INDICATOR,
-                    DEFAULT_INTERNAL_NETWORK_NUMBER_INDICATOR);
-            locationNumber.addressRepresentationRestrictedIndicator = xml.getAttribute(
-                    ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR, DEFAULT_ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR);
-            locationNumber.screeningIndicator = xml.getAttribute(SCREENING_INDICATOR, DEFAULT_SCREENING_INDICATOR);
-        }
-
-        @Override
-        public void write(LocationNumberImpl locationNumber, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.write(locationNumber, xml);
-
-            xml.setAttribute(NUMBERING_PLAN_INDICATOR, locationNumber.numberingPlanIndicator);
-            xml.setAttribute(INTERNAL_NETWORK_NUMBER_INDICATOR, locationNumber.internalNetworkNumberIndicator);
-            xml.setAttribute(ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR,
-                    locationNumber.addressRepresentationRestrictedIndicator);
-            xml.setAttribute(SCREENING_INDICATOR, locationNumber.screeningIndicator);
-        }
-    };
 }

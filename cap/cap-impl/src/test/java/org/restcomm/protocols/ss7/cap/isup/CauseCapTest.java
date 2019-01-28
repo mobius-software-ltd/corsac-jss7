@@ -26,16 +26,10 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
 
@@ -61,7 +55,7 @@ public class CauseCapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         CauseCapImpl elem = new CauseCapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         CauseIndicators ci = elem.getCauseIndicators();
@@ -71,7 +65,7 @@ public class CauseCapTest {
         assertNull(ci.getDiagnostics());
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerializaion() throws Exception {
 
         CauseCapImpl original = new CauseCapImpl(this.getIntData());
@@ -96,14 +90,14 @@ public class CauseCapTest {
         CauseCapImpl copy = reader.read("causeCap", CauseCapImpl.class);
 
         assertEquals(copy.getCauseIndicators().getCauseValue(), original.getCauseIndicators().getCauseValue());
-    }
+    }*/
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         CauseIndicatorsImpl original0 = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_NATIONAL,
@@ -132,5 +126,5 @@ public class CauseCapTest {
         assertEquals(copy.getCauseIndicators().getLocation(), original.getCauseIndicators().getLocation());
         assertEquals(copy.getCauseIndicators().getRecommendation(), original.getCauseIndicators().getRecommendation());
         assertEquals(copy.getCauseIndicators().getCauseValue(), original.getCauseIndicators().getCauseValue());
-    }
+    }*/
 }

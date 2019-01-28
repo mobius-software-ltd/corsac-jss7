@@ -29,16 +29,10 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
 import org.restcomm.protocols.ss7.cap.CAPStackImpl;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
@@ -236,7 +230,6 @@ import org.testng.annotations.Test;
  */
 public class CAPFunctionalTest extends SccpHarness {
 
-    private static Logger logger = Logger.getLogger(CAPFunctionalTest.class);
     private static final int _WAIT_TIMEOUT = 500;
     private static final int _TCAP_DIALOG_RELEASE_TIMEOUT = 0;
 
@@ -244,9 +237,7 @@ public class CAPFunctionalTest extends SccpHarness {
     private CAPStackImpl stack2;
     private SccpAddress peer1Address;
     private SccpAddress peer2Address;
-    private Client client;
-    private Server server;
-
+    
     @Override
     protected int getSSN() {
         return 146;
@@ -290,8 +281,8 @@ public class CAPFunctionalTest extends SccpHarness {
         peer1Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 146);
         peer2Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 146);
 
-        this.stack1 = new CAPStackImplWrapper(this.sccpProvider1, 146);
-        this.stack2 = new CAPStackImplWrapper(this.sccpProvider2, 146);
+        this.stack1 = new CAPStackImplWrapper(this.sccpProvider1, 146, 4);
+        this.stack2 = new CAPStackImplWrapper(this.sccpProvider2, 146, 4);
 
         this.stack1.start();
         this.stack2.start();
@@ -315,24 +306,6 @@ public class CAPFunctionalTest extends SccpHarness {
         super.tearDown();
     }
 
-    private void setupLog4j() {
-
-        InputStream inStreamLog4j = getClass().getResourceAsStream("/log4j.properties");
-
-        Properties propertiesLog4j = new Properties();
-
-        try {
-            propertiesLog4j.load(inStreamLog4j);
-            PropertyConfigurator.configure(propertiesLog4j);
-        } catch (Exception e) {
-            e.printStackTrace();
-            BasicConfigurator.configure();
-        }
-
-        logger.debug("log4j configured");
-
-    }
-
     /**
      * InitialDP + Error message SystemFailure ACN=CAP-v1-gsmSSF-to-gsmSCF
      *
@@ -342,8 +315,7 @@ public class CAPFunctionalTest extends SccpHarness {
     public void testInitialDp_Error() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
-            private int dialogStep;
-
+            
             @Override
             public void onErrorComponent(CAPDialog capDialog, Long invokeId, CAPErrorMessage capErrorMessage) {
                 super.onErrorComponent(capDialog, invokeId, capErrorMessage);
@@ -354,9 +326,7 @@ public class CAPFunctionalTest extends SccpHarness {
             }
         };
 
-        Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
-            private int dialogStep;
-            private long processUnstructuredSSRequestInvokeId = 0l;
+        Server server = new Server(this.stack2, this, peer2Address, peer1Address) {            
 
             @Override
             public void onInitialDPRequest(InitialDPRequest ind) {
@@ -899,7 +869,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
         client.sendInitialDp(CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF);
 
         // waiting here for DialogTimeOut -> ActivityTest
-        Thread.currentThread().sleep(_SLEEP_BEFORE_ODISCONNECT);
+        Thread.sleep(_SLEEP_BEFORE_ODISCONNECT);
 
         // sending an event of call finishing
         client.sendEventReportBCSMRequest_1();
@@ -1522,8 +1492,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     public void testScfSsf() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
-            private int dialogStep;
-
             public void onCallInformationReportRequest(CallInformationReportRequest ind) {
                 super.onCallInformationReportRequest(ind);
 
@@ -1542,9 +1510,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             }
 
             public void onDialogDelimiter(CAPDialog capDialog) {
-                super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
+                super.onDialogDelimiter(capDialog);                
             }
         };
 
@@ -1910,9 +1876,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
-
             }
         };
 
@@ -2009,7 +1972,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
         client.sendInitialDp(CAPApplicationContext.CapV3_gsmSSF_scfGeneric);
 
         // waiting here for DialogTimeOut -> ActivityTest
-        Thread.currentThread().sleep(_SLEEP_BEFORE_ODISCONNECT);
+        Thread.sleep(_SLEEP_BEFORE_ODISCONNECT);
 
         waitForEnd();
         // Thread.currentThread().sleep(1000000);
@@ -2041,9 +2004,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
-
             }
         };
 
@@ -2052,8 +2012,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
             }
 
             public void onDialogTimeout(CAPDialog capDialog) {
@@ -2112,9 +2070,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
-
             }
         };
 
@@ -2123,8 +2078,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
             }
 
             public void onDialogTimeout(CAPDialog capDialog) {
@@ -2169,9 +2122,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
-
             }
 
             public void onDialogRelease(CAPDialog capDialog) {
@@ -2195,8 +2145,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
             }
         };
 
@@ -2252,8 +2200,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     public void testReferensedNumber() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
-            private int dialogSteps = 0;
-
             public void onDialogAccept(CAPDialog capDialog, CAPGprsReferenceNumber capGprsReferenceNumber) {
                 super.onDialogAccept(capDialog, capGprsReferenceNumber);
 
@@ -2264,8 +2210,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogGprs dlg = (CAPDialogGprs) capDialog;
             }
 
             public void onDialogRelease(CAPDialog capDialog) {
@@ -2350,8 +2294,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     public void testReferensedNumber_BadVal() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
-            private int dialogSteps = 0;
-
             public void onDialogUserAbort(CAPDialog capDialog, CAPGeneralAbortReason generalReason,
                     CAPUserAbortReason userReason) {
                 super.onDialogUserAbort(capDialog, generalReason, userReason);
@@ -2364,8 +2306,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogGprs dlg = (CAPDialogGprs) capDialog;
             }
 
             public void onDialogRelease(CAPDialog capDialog) {
@@ -2378,8 +2318,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogGprs dlg = (CAPDialogGprs) capDialog;
             }
         };
 
@@ -2419,24 +2357,12 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
             }
 
             public void onDialogUserAbort(CAPDialog capDialog, CAPGeneralAbortReason generalReason,
                     CAPUserAbortReason userReason) {
                 super.onDialogUserAbort(capDialog, generalReason, userReason);
                 assertEquals(capDialog.getTCAPMessageType(), MessageType.Abort);
-            }
-        };
-
-        Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
-
-            @Override
-            public void onDialogDelimiter(CAPDialog capDialog) {
-                super.onDialogDelimiter(capDialog);
-
-                CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
             }
         };
 
@@ -2452,7 +2378,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
         count = 0;
         // Server side events
-        List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
 
         client.testMessageUserDataLength();
 
@@ -2631,8 +2556,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     @Test(groups = { "functional.flow", "dialog" })
     public void testDelayedClosePrearranged() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
-            int dialogStep = 0;
-
             public void onDialogAccept(CAPDialog capDialog, CAPGprsReferenceNumber capGprsReferenceNumber) {
                 super.onDialogAccept(capDialog, capGprsReferenceNumber);
 
@@ -2784,13 +2707,11 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
         };
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
-            int dialogStep = 0;
             long invokeId1;
             long invokeId2;
             long outInvokeId1;
             long outInvokeId2;
             long outInvokeId3;
-            long outInvokeId4;
 
             public void onInitialDPRequest(InitialDPRequest ind) {
                 super.onInitialDPRequest(ind);
@@ -2852,8 +2773,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     outInvokeId3 = invoke.getInvokeId();
                     dlg.sendInvokeComponent(invoke);
 
-                    outInvokeId4 = dlg.addSpecializedResourceReportRequest_CapV23(invokeId2);
-
+                    dlg.addSpecializedResourceReportRequest_CapV23(invokeId2);
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest, null,
                             sequence++));
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest, null,
@@ -3365,8 +3285,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     @Test(groups = { "functional.flow", "dialog" })
     public void testTcNotice() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
-            int dialogStep = 0;
-
             public void onDialogNotice(CAPDialog capDialog, CAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
                 super.onDialogNotice(capDialog, noticeProblemDiagnostic);
 
@@ -4567,22 +4485,16 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
-            private int dialogStep = 0;
-
             @Override
             public void onContinueSMSRequest(ContinueSMSRequest ind) {
                 super.onContinueSMSRequest(ind);
 
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-                dialogStep = 1;
             }
 
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogSms dlg = (CAPDialogSms) capDialog;
-
             }
         };
 
@@ -4689,8 +4601,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
-            private int dialogStep = 0;
-
             @Override
             public void onReleaseSMSRequest(ReleaseSMSRequest ind) {
                 super.onReleaseSMSRequest(ind);
@@ -4698,15 +4608,11 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 assertEquals(ind.getRPCause().getData(), 8);
 
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-                dialogStep = 1;
             }
 
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
                 super.onDialogDelimiter(capDialog);
-
-                CAPDialogSms dlg = (CAPDialogSms) capDialog;
-
             }
         };
 
@@ -5424,7 +5330,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     
     private void waitForEnd() {
         try {
-            Date startTime = new Date();
             // while (true) {
             // if (client.isFinished() && server.isFinished())
             // break;
@@ -5434,7 +5339,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             // if (new Date().getTime() - startTime.getTime() > _WAIT_TIMEOUT)
             // break;
 
-            Thread.currentThread().sleep(_WAIT_TIMEOUT);
+            Thread.sleep(_WAIT_TIMEOUT);
             // Thread.currentThread().sleep(1000000);
             // }
         } catch (InterruptedException e) {

@@ -21,9 +21,9 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSMState;
@@ -35,8 +35,6 @@ import org.restcomm.protocols.ss7.m3ua.impl.fsm.TransitionHandler;
  *
  */
 public class THPeerAsActToPen implements TransitionHandler {
-
-    private static final Logger logger = Logger.getLogger(THPeerAsActToPen.class);
 
     private AsImpl asImpl = null;
     private FSM fsm;
@@ -51,13 +49,14 @@ public class THPeerAsActToPen implements TransitionHandler {
 
         // check if there is atleast one other ASP in ACTIVE state. If
         // yes this AS remains in ACTIVE state else goes in PENDING state.
-        for (FastList.Node<Asp> n = this.asImpl.appServerProcs.head(), end = this.asImpl.appServerProcs.tail(); (n = n
-                .getNext()) != end;) {
-            AspImpl aspImpl = (AspImpl) n.getValue();
+        Iterator<Entry<String, Asp>> iterator=this.asImpl.appServerProcs.entrySet().iterator();
+        while(iterator.hasNext()) {
+            AspImpl aspImpl = (AspImpl) iterator.next().getValue();
+            
             FSM aspLocalFSM = aspImpl.getLocalFSM();
             AspState aspState = AspState.getState(aspLocalFSM.getState().getName());
 
-            if (aspImpl != causeAsp && aspState == AspState.ACTIVE) {
+            if (!aspImpl.getName().equals(causeAsp.getName()) && aspState == AspState.ACTIVE) {
                 return false;
             }
         }

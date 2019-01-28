@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.datacoding.Gsm7EncodingStyle;
  *
  */
 public class UserDataImpl implements UserData {
+	private static final long serialVersionUID = 1L;
 
-    private static GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
+	private static GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
     private static Charset ucs2Charset = Charset.forName("UTF-16BE");
 
     private DataCodingScheme dataCodingScheme;
@@ -209,6 +210,8 @@ public class UserDataImpl implements UserData {
                     }
                     this.encodedUserDataLength = this.encodedData.length;
                     break;
+				default:
+					break;
             }
         }
     }
@@ -241,9 +244,7 @@ public class UserDataImpl implements UserData {
             // TODO: implement the case with compressed sms message
             // If this is a signal message - this.decodedMessage can be decoded
             // If thus is a segment of concatenated message this.decodedMessage should stay null and this case should be
-            // processed by a special static method
-            int i1 = 0;
-            i1++;
+            // processed by a special static method            
         } else {
             switch (this.dataCodingScheme.getCharacterSet()) {
                 case GSM7:
@@ -307,6 +308,8 @@ public class UserDataImpl implements UserData {
                     bf = ucs2Charset.decode(bb);
                     this.decodedMessage = bf.toString();
                     break;
+				default:
+					break;
             }
         }
     }

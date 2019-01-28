@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ChargingCharacteristicsImpl implements ChargingCharacteristics, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ChargingCharacteristics";
+	public static final String _PrimitiveName = "ChargingCharacteristics";
 
     public static final int _ID_maxTransferredVolume = 0;
     public static final int _ID_maxElapsedTime = 1;

@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,12 +43,11 @@ import org.restcomm.protocols.ss7.map.primitives.ArrayListSerializingBase;
  *
  */
 public class VariableMessageImpl extends SequenceBase implements VariableMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_elementaryMessageID = 0;
+	public static final int _ID_elementaryMessageID = 0;
     public static final int _ID_variableParts = 1;
 
-    private static final String ELEMENTARY_MESSAGE_ID = "elementaryMessageID";
-    private static final String VARIABLE_PARTS = "variableParts";
     private static final String VARIABLE_PART = "variablePart";
 
     private int elementaryMessageID;
@@ -180,35 +176,6 @@ public class VariableMessageImpl extends SequenceBase implements VariableMessage
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<VariableMessageImpl> VARIABLE_MESSAGE_XML = new XMLFormat<VariableMessageImpl>(
-            VariableMessageImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, VariableMessageImpl variableMessage)
-                throws XMLStreamException {
-            variableMessage.elementaryMessageID = xml.getAttribute(ELEMENTARY_MESSAGE_ID, 0);
-
-            VariableMessage_VariableParts al = xml.get(VARIABLE_PARTS, VariableMessage_VariableParts.class);
-            if (al != null) {
-                variableMessage.variableParts = al.getData();
-            }
-        }
-
-        @Override
-        public void write(VariableMessageImpl variableMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(ELEMENTARY_MESSAGE_ID, variableMessage.elementaryMessageID);
-
-            if (variableMessage.variableParts != null) {
-                VariableMessage_VariableParts al = new VariableMessage_VariableParts(variableMessage.variableParts);
-                xml.add(al, VARIABLE_PARTS, VariableMessage_VariableParts.class);
-            }
-        }
-    };
 
     public static class VariableMessage_VariableParts extends ArrayListSerializingBase<VariablePart> {
 

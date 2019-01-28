@@ -25,11 +25,10 @@ package org.restcomm.protocols.ss7.tcap;
 import static org.testng.Assert.*;
 
 import java.io.IOException;
-
-import javolution.util.FastMap;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.sccp.MaxConnectionCountReached;
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.SccpManagementEventListener;
@@ -44,7 +43,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.ss7.congestion.ExecutorCongestionMonitor;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -80,7 +78,7 @@ public class CreateDialogTest {
     public void setUp() throws Exception {
         System.out.println("setUp");
 
-        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest");
+        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", 4);
 
         this.tcapStack1.start();
     }
@@ -105,7 +103,7 @@ public class CreateDialogTest {
         assertEquals((long) dlg1.getLocalDialogId(), 1L);
 
         try {
-            Dialog dlg2 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 1L);
+            this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 1L);
             fail("Must be failure because dialogID==1 is busy");
         } catch (Exception e) {
         }
@@ -118,8 +116,9 @@ public class CreateDialogTest {
     }
 
     private class SccpHarnessPreview implements SccpProvider {
+		private static final long serialVersionUID = 1L;
 
-        @Override
+		@Override
         public void deregisterSccpListener(int arg0) {
             // TODO Auto-generated method stub
 
@@ -143,11 +142,8 @@ public class CreateDialogTest {
             return null;
         }
 
-        protected SccpListener sccpListener;
-
         @Override
         public void registerSccpListener(int arg0, SccpListener listener) {
-            sccpListener = listener;
         }
 
         @Override
@@ -158,13 +154,13 @@ public class CreateDialogTest {
         }
 
         @Override
-        public void registerManagementEventListener(SccpManagementEventListener listener) {
+        public void registerManagementEventListener(UUID key,SccpManagementEventListener listener) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void deregisterManagementEventListener(SccpManagementEventListener listener) {
+        public void deregisterManagementEventListener(UUID key) {
             // TODO Auto-generated method stub
 
         }
@@ -176,24 +172,13 @@ public class CreateDialogTest {
         }
 
         @Override
-        public FastMap<Integer, NetworkIdState> getNetworkIdStateList() {
-            return new FastMap<Integer, NetworkIdState>();
-        }
-
-        @Override
-        public ExecutorCongestionMonitor[] getExecutorCongestionMonitorList() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
         public SccpConnection newConnection(int localSsn, ProtocolClass protocolClass) throws MaxConnectionCountReached {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public FastMap<LocalReference, SccpConnection> getConnections() {
+        public ConcurrentHashMap<LocalReference, SccpConnection> getConnections() {
             // TODO Auto-generated method stub
             return null;
         }
@@ -208,12 +193,6 @@ public class CreateDialogTest {
 		public SccpStack getSccpStack() {
 			// TODO Auto-generated method stub
 			return null;
-		}
-
-		@Override
-		public void updateSPCongestion(Integer ssn, Integer congestionLevel) {
-			// TODO Auto-generated method stub
-			
 		}
     }
 

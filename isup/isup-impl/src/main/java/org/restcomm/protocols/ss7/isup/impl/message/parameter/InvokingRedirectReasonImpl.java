@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectReason;
  *
  */
 public class InvokingRedirectReasonImpl extends AbstractInformationImpl implements InvokingRedirectReason {
+	private static final long serialVersionUID = 1L;
 
-    private List<RedirectReason> reasons = new ArrayList<RedirectReason>();
+	private List<RedirectReason> reasons = new ArrayList<RedirectReason>();
 
 
     public InvokingRedirectReasonImpl() {

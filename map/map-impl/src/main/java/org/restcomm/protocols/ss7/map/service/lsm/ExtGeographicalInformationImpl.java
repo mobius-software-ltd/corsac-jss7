@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Geo
  *
  */
 public class ExtGeographicalInformationImpl extends OctetStringBase implements ExtGeographicalInformation {
+	private static final long serialVersionUID = 1L;
 
-    public ExtGeographicalInformationImpl() {
+	public ExtGeographicalInformationImpl() {
         super(1, 20, "ExtGeographicalInformation");
     }
 
@@ -188,6 +189,8 @@ public class ExtGeographicalInformationImpl extends OctetStringBase implements E
                     if (this.data == null || this.data.length != 14)
                         return 0;
                     return GeographicalInformationImpl.decodeUncertainty(this.data[9]);
+				default:
+					break;
             }
         }
 
@@ -208,6 +211,8 @@ public class ExtGeographicalInformationImpl extends OctetStringBase implements E
                     if (this.data == null || this.data.length != 14)
                         return 0;
                     return GeographicalInformationImpl.decodeUncertainty(this.data[10]);
+				default:
+					break;
             }
         }
 
@@ -228,6 +233,8 @@ public class ExtGeographicalInformationImpl extends OctetStringBase implements E
                     if (this.data == null || this.data.length != 14)
                         return 0;
                     return (data[11] & 0xFF) * 2;
+				default:
+					break;
             }
         }
 
@@ -253,6 +260,8 @@ public class ExtGeographicalInformationImpl extends OctetStringBase implements E
                     if (this.data == null || this.data.length != 13)
                         return 0;
                     return this.data[12];
+				default:
+					break;
             }
         }
 

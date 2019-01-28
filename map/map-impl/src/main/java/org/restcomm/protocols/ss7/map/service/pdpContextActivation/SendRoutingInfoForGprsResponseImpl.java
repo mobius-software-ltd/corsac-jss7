@@ -45,7 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 *
 */
 public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMessageImpl implements SendRoutingInfoForGprsResponse {
-    protected static final int _TAG_sgsnAddress = 0;
+	private static final long serialVersionUID = 1L;
+
+	protected static final int _TAG_sgsnAddress = 0;
     protected static final int _TAG_ggsnAddress = 1;
     protected static final int _TAG_mobileNotReachableReason = 2;
     protected static final int _TAG_extensionContainer = 3;
@@ -150,7 +152,7 @@ public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMess
         this.extensionContainer = null;
 
         AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
+        
         while (true) {
             if (ais.available() == 0)
                 break;
@@ -194,8 +196,6 @@ public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMess
             } else {
                 ais.advanceElement();
             }
-
-            num++;
         }
 
         if (this.sgsnAddress == null)

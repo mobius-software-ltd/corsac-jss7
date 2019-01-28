@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferReference;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallTransferReferenceImpl extends AbstractISUPParameter implements CallTransferReference {
+	private static final long serialVersionUID = 1L;
 
-    private int callTransferReference = 0;
+	private int callTransferReference = 0;
 
     public CallTransferReferenceImpl(byte[] b) throws ParameterException {
         super();

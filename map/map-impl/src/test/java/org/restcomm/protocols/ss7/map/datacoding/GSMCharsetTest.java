@@ -236,14 +236,10 @@ public class GSMCharsetTest {
 
         byte[] textPart0 = new byte[] { 0, (byte) 0xE7 };
         String msg0 = new String(textPart0, ucs2Charset);
-        byte[] testPart0Utf8 = msg0.getBytes(utf8Charset);
+        msg0.getBytes(utf8Charset);
 
         byte[] textPart = new byte[] { 0x74, 0x65, 0x73, 0x74, 0x73, 0x65, 0x6e, 0x64, 0x20, (byte) 0xc3, (byte) 0x87 };
         String msg = new String(textPart, utf8Charset);
-
-        String s1 = "testsend Ç";
-        String s2 = "Ç";
-        int i2 = msg.charAt(9);
 
         GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
         Charset cSet = gsm7Charset;
@@ -263,8 +259,8 @@ public class GSMCharsetTest {
 
     @Test(groups = { "datacoding" })
     public void testNationalLanguage() throws Exception {
-        GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
-        Charset cSet = gsm7Charset;
+        //GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
+        //Charset cSet = gsm7Charset;
 //        Gsm7NationalLanguageIdentifier nationalLanguageLockingShift = null;
 //        Gsm7NationalLanguageIdentifier nationalLanguageSingleShift = null;
 //        NationalLanguageIdentifier nationalLanguageLockingShiftIdentifier = null;
@@ -283,9 +279,9 @@ public class GSMCharsetTest {
 //                    nationalLanguageSingleShiftIdentifier);
 //        }
 
-        GSMCharsetEncoder encoder = (GSMCharsetEncoder) cSet.newEncoder();
+        //GSMCharsetEncoder encoder = (GSMCharsetEncoder) cSet.newEncoder();
 //        encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(buf2));
-        ByteBuffer bb = null;
+        //ByteBuffer bb = null;
 
         
     }
@@ -364,7 +360,6 @@ public class GSMCharsetTest {
 
     @Test(groups = { "datacoding" })
     public void testCheckZeroCharacter() throws Exception {
-        byte[] encodedDataAscii = new byte[] { 97, 0, '[', 98 };
         byte[] encodedDataGsm = new byte[] { 97, 32, 27, 60, 98 };
         String msg = "a\0[b";
         UserDataHeaderImpl udh = new UserDataHeaderImpl();

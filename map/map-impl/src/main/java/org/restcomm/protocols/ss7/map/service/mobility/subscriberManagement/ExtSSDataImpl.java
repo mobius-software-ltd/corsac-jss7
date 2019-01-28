@@ -49,8 +49,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSSubscriptionOption
  *
  */
 public class ExtSSDataImpl extends SequenceBase implements ExtSSData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_ss_Status = 4;
+	private static final int _TAG_ss_Status = 4;
     private static final int _TAG_extensionContainer = 5;
 
     private SSCode ssCode = null;

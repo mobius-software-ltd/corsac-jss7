@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.authentication.CurrentSec
  *
  */
 public class SendIdentificationResponseImpl extends MobilityMessageImpl implements SendIdentificationResponse {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_currentSecurityContext = 2;
+	protected static final int _TAG_currentSecurityContext = 2;
     protected static final int _TAG_extensionContainer = 3;
 
     public static final int _TAG_SendIdentificationResponse = 3;

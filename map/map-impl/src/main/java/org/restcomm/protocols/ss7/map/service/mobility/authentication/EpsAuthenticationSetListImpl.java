@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class EpsAuthenticationSetListImpl implements EpsAuthenticationSetList, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EpsAuthenticationSetList";
+	public static final String _PrimitiveName = "EpsAuthenticationSetList";
 
     private ArrayList<EpcAv> epcAvs;
 

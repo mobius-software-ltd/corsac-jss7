@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.gap.*;
@@ -41,12 +38,8 @@ import org.restcomm.protocols.ss7.cap.primitives.ExtensionFieldImpl;
 import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CallGapRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.*;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -102,7 +95,7 @@ public class CallGapRequestTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         CallGapRequestImpl elem = new CallGapRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
@@ -127,7 +120,7 @@ public class CallGapRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new CallGapRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
@@ -178,7 +171,7 @@ public class CallGapRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         //Min parameters
@@ -281,5 +274,5 @@ public class CallGapRequestTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
+    }*/
 }

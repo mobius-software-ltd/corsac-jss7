@@ -66,7 +66,7 @@ public class RequestedInformationTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         RequestedInformationImpl elem = new RequestedInformationImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getRequestedInformationType(), RequestedInformationType.callConnectedElapsedTime);
         assertEquals((int) elem.getCallConnectedElapsedTimeValue(), 0);
@@ -74,7 +74,7 @@ public class RequestedInformationTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new RequestedInformationImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getRequestedInformationType(), RequestedInformationType.callStopTime);
         assertEquals(elem.getCallStopTimeValue().getYear(), 2011);
@@ -87,7 +87,7 @@ public class RequestedInformationTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new RequestedInformationImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getRequestedInformationType(), RequestedInformationType.releaseCause);
         CauseIndicators ci = elem.getReleaseCauseValue().getCauseIndicators();
@@ -98,7 +98,7 @@ public class RequestedInformationTest {
         data = this.getData4();
         ais = new AsnInputStream(data);
         elem = new RequestedInformationImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getRequestedInformationType(), RequestedInformationType.callAttemptElapsedTime);
         assertEquals((int) elem.getCallAttemptElapsedTimeValue(), 11);

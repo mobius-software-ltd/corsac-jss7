@@ -26,23 +26,13 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.ProcessUnstructuredSSRequestImpl;
 import org.testng.annotations.AfterClass;
@@ -81,7 +71,7 @@ public class ProcessUnstructuredSSRequestTest {
         byte[] data = new byte[] { 0x30, 0x0a, 0x04, 0x01, 0x0f, 0x04, 0x05, 0x2a, (byte) 0xd9, (byte) 0x8c, 0x36, 0x02 };
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         ProcessUnstructuredSSRequestImpl addNum = new ProcessUnstructuredSSRequestImpl();
         addNum.decodeAll(asn);
@@ -111,7 +101,7 @@ public class ProcessUnstructuredSSRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "service.ussd" })
+    /*@Test(groups = { "functional.xml.serialize", "service.ussd" })
     public void testXMLSerialize() throws Exception {
 
         ISDNAddressStringImpl isdnAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
@@ -145,5 +135,5 @@ public class ProcessUnstructuredSSRequestTest {
         assertEquals(copy.getUSSDString(), original.getUSSDString());
         assertEquals(copy.getAlertingPattern(), original.getAlertingPattern());
 
-    }
+    }*/
 }

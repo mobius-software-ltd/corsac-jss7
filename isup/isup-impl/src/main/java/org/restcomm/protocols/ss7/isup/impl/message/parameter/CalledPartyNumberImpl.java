@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 
@@ -40,14 +37,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
  * @author Oleg Kulikoff
  */
 public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPartyNumber {
+	private static final long serialVersionUID = 1L;
 
-    private static final String NUMBERING_PLAN_INDICATOR = "numberingPlanIndicator";
-    private static final String INTERNAL_NETWORK_NUMBER_INDICATOR = "internalNetworkNumberIndicator";
-
-    private static final int DEFAULT_NUMBERING_PLAN_INDICATOR = 0;
-    private static final int DEFAULT_INTERNAL_NETWORK_NUMBER_INDICATOR = 0;
-
-    protected int numberingPlanIndicator;
+	protected int numberingPlanIndicator;
     protected int internalNetworkNumberIndicator;
 
     /**
@@ -142,32 +134,4 @@ public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPa
                 + internalNetworkNumberIndicator + ", natureOfAddresIndicator=" + natureOfAddresIndicator + ", oddFlag="
                 + oddFlag + ", address=" + address + "]";
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CalledPartyNumberImpl> ISUP_CALLED_PARTY_NUMBER_XML = new XMLFormat<CalledPartyNumberImpl>(
-            CalledPartyNumberImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CalledPartyNumberImpl calledPartyNumber)
-                throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.read(xml, calledPartyNumber);
-
-            calledPartyNumber.numberingPlanIndicator = xml.getAttribute(NUMBERING_PLAN_INDICATOR,
-                    DEFAULT_NUMBERING_PLAN_INDICATOR);
-            calledPartyNumber.internalNetworkNumberIndicator = xml.getAttribute(INTERNAL_NETWORK_NUMBER_INDICATOR,
-                    DEFAULT_INTERNAL_NETWORK_NUMBER_INDICATOR);
-        }
-
-        @Override
-        public void write(CalledPartyNumberImpl calledPartyNumber, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.write(calledPartyNumber, xml);
-
-            xml.setAttribute(NUMBERING_PLAN_INDICATOR, calledPartyNumber.numberingPlanIndicator);
-            xml.setAttribute(INTERNAL_NETWORK_NUMBER_INDICATOR, calledPartyNumber.internalNetworkNumberIndicator);
-        }
-    };
-
 }

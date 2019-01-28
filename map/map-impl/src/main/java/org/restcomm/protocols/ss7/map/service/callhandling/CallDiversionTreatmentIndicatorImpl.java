@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class CallDiversionTreatmentIndicatorImpl extends OctetStringLength1Base implements CallDiversionTreatmentIndicator {
+	private static final long serialVersionUID = 1L;
 
-    public CallDiversionTreatmentIndicatorImpl() {
+	public CallDiversionTreatmentIndicatorImpl() {
         super("CallDiversionTreatmentIndicator");
     }
 

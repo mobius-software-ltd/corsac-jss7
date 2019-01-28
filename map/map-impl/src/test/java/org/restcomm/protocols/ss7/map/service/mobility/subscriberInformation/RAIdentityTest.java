@@ -22,16 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import static org.testng.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
-import org.testng.annotations.Test;
-
 /**
 *
 * @author sergey vetyutnev
@@ -39,7 +29,7 @@ import org.testng.annotations.Test;
 */
 public class RAIdentityTest {
 
-    private byte[] getData() {
+	/*private byte[] getData() {
         return new byte[] { 1, 2, 3, 4, 5, 6 };
     }
 
@@ -66,6 +56,5 @@ public class RAIdentityTest {
         RAIdentityImpl copy = reader.read("raIdentity", RAIdentityImpl.class);
 
         assertEquals(copy.getData(), original.getData());
-    }
-
+    }*/
 }

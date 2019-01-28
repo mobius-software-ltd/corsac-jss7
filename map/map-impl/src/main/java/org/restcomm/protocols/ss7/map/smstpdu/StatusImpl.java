@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.Status;
  *
  */
 public class StatusImpl implements Status {
+	private static final long serialVersionUID = 1L;
 
-    private int code;
+	private int code;
 
     public StatusImpl(int code) {
         this.code = code;

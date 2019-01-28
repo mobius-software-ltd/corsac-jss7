@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ContinueGPRSRequestImpl extends GprsMessageImpl implements ContinueGPRSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ContinueGPRSRequest";
+	public static final String _PrimitiveName = "ContinueGPRSRequest";
 
     public static final int _ID_pdpID = 0;
 

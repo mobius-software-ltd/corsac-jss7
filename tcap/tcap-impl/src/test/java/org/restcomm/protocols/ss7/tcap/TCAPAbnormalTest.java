@@ -92,8 +92,8 @@ public class TCAPAbnormalTest extends SccpHarness {
         peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
         peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-        this.tcapStack1 = new TCAPStackImpl("TCAPAbnormalTest", this.sccpProvider1, 8);
-        this.tcapStack2 = new TCAPStackImpl("TCAPAbnormalTest", this.sccpProvider2, 8);
+        this.tcapStack1 = new TCAPStackImpl("TCAPAbnormalTest", this.sccpProvider1, 8, 4);
+        this.tcapStack2 = new TCAPStackImpl("TCAPAbnormalTest", this.sccpProvider2, 8, 4);
 
         this.tcapStack1.start();
         this.tcapStack2.start();
@@ -141,58 +141,12 @@ public class TCAPAbnormalTest extends SccpHarness {
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
                 getMessageWithUnsupportedProtocolVersion(), 0, 0, false, null, null);
         this.sccpProvider1.send(message);
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
 
         assertEquals(client.pAbortCauseType, PAbortCauseType.NoCommonDialoguePortion);
-    }
-
-    /**
-     * Case when receiving a dialog the dialog count exceeds the MaxDialogs count we setMaxDialogs for Server ==1 TC-BEGIN
-     * TC-BEGIN TC-ABORT + PAbortCauseType.ResourceLimitation
-     */
-    @Test(groups = { "functional.flow" })
-    public void dialogCountExceedTest() throws Exception {
-
-        long stamp = System.currentTimeMillis();
-        List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-        TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp);
-        clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
-        clientExpectedEvents.add(te);
-        te = TestEvent.createSentEvent(EventType.Begin, null, 2, stamp + WAIT_TIME);
-        clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 3, stamp + WAIT_TIME);
-        clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + WAIT_TIME);
-        clientExpectedEvents.add(te);
-
-        List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-        te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp);
-        serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 1, stamp + _DIALOG_TIMEOUT);
-        serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 2, stamp + _DIALOG_TIMEOUT);
-        serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + _DIALOG_TIMEOUT);
-        serverExpectedEvents.add(te);
-
-        this.tcapStack2.setMaxDialogs(1);
-        client.startClientDialog();
-        client.sendBegin();
-        client.releaseDialog();
-        Thread.sleep(WAIT_TIME);
-        client.startClientDialog();
-        client.sendBegin();
-        Thread.sleep(WAIT_TIME);
-        Thread.sleep(_DIALOG_TIMEOUT);
-
-        client.compareEvents(clientExpectedEvents);
-        server.compareEvents(serverExpectedEvents);
-
-        assertEquals(client.pAbortCauseType, PAbortCauseType.ResourceLimitation);
     }
 
     /**
@@ -215,7 +169,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
                 getMessageBadSyntax(), 0, 0, false, null, null);
         this.sccpProvider1.send(message);
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
@@ -567,7 +521,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
                 getUnrecognizedMessageTypeMessage(), 0, 0, false, null, null);
         this.sccpProvider1.send(message);
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);

@@ -236,7 +236,7 @@ public abstract class ParameterHarness {
             final Object[][] expectedValues) {
         try {
             Method m = component.getClass().getMethod(getMethodName);
-            Object[] parts = (Object[]) m.invoke(component, null);
+            Object[] parts = (Object[]) m.invoke(component, (Object[])null);
             for (int index = 0; index < parts.length; index++) {
                 testValues(parts[index], getterMethodNames, expectedValues[index]);
             }
@@ -252,11 +252,11 @@ public abstract class ParameterHarness {
 
     public void testValues(final Object component, final String[] getterMethodNames, final Object[] expectedValues) {
         try {
-            Class cClass = component.getClass();
+            Class<?> cClass = component.getClass();
             for (int index = 0; index < getterMethodNames.length; index++) {
-                Method m = cClass.getMethod(getterMethodNames[index], null);
+                Method m = cClass.getMethod(getterMethodNames[index], (Class[])null);
                 // Should not be null by now
-                Object v = m.invoke(component, null);
+                Object v = m.invoke(component, (Object[])null);
                 if (v == null && expectedValues[index] != null) {
                     fail("Failed to validate values in component: " + component.getClass().getName() + ". Value of: "
                             + getterMethodNames[index] + " is null, but test values is not.");

@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 
@@ -39,18 +36,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
  * @author Oleg Kulikoff
  */
 public class CallingPartyNumberImpl extends AbstractNAINumber implements CallingPartyNumber {
+	private static final long serialVersionUID = 1L;
 
-    private static final String NUMBERING_PLAN_INDICATOR = "numberingPlanIndicator";
-    private static final String NUMBER_NUMBER_INCOMPLETE_INDICATOR = "numberIncompleteIndicator";
-    private static final String ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR = "addressRepresentationRestrictedIndicator";
-    private static final String SCREENING_INDICATOR = "screeningIndicator";
-
-    private static final int DEFAULT_NUMBERING_PLAN_INDICATOR = 0;
-    private static final int DEFAULT_NUMBER_NUMBER_INCOMPLETE_INDICATOR = 0;
-    private static final int DEFAULT_ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR = 0;
-    private static final int DEFAULT_SCREENING_INDICATOR = 0;
-
-    protected int numberingPlanIndicator;
+	protected int numberingPlanIndicator;
     protected int numberIncompleteIndicator;
     protected int addressRepresentationRestrictedIndicator;
     protected int screeningIndicator;
@@ -216,37 +204,4 @@ public class CallingPartyNumberImpl extends AbstractNAINumber implements Calling
                 + ", natureOfAddresIndicator=" + natureOfAddresIndicator + ", oddFlag=" + oddFlag + ", address=" + address
                 + "]";
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CallingPartyNumberImpl> ISUP_CALLING_PARTY_NUMBER_XML = new XMLFormat<CallingPartyNumberImpl>(
-            CallingPartyNumberImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CallingPartyNumberImpl callingPartyNumber)
-                throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.read(xml, callingPartyNumber);
-
-            callingPartyNumber.numberingPlanIndicator = xml.getAttribute(NUMBERING_PLAN_INDICATOR,
-                    DEFAULT_NUMBERING_PLAN_INDICATOR);
-            callingPartyNumber.numberIncompleteIndicator = xml.getAttribute(NUMBER_NUMBER_INCOMPLETE_INDICATOR,
-                    DEFAULT_NUMBER_NUMBER_INCOMPLETE_INDICATOR);
-            callingPartyNumber.addressRepresentationRestrictedIndicator = xml.getAttribute(
-                    ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR, DEFAULT_ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR);
-            callingPartyNumber.screeningIndicator = xml.getAttribute(SCREENING_INDICATOR, DEFAULT_SCREENING_INDICATOR);
-        }
-
-        @Override
-        public void write(CallingPartyNumberImpl callingPartyNumber, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.write(callingPartyNumber, xml);
-
-            xml.setAttribute(NUMBERING_PLAN_INDICATOR, callingPartyNumber.numberingPlanIndicator);
-            xml.setAttribute(NUMBER_NUMBER_INCOMPLETE_INDICATOR, callingPartyNumber.numberIncompleteIndicator);
-            xml.setAttribute(ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR,
-                    callingPartyNumber.addressRepresentationRestrictedIndicator);
-            xml.setAttribute(SCREENING_INDICATOR, callingPartyNumber.screeningIndicator);
-        }
-    };
 }

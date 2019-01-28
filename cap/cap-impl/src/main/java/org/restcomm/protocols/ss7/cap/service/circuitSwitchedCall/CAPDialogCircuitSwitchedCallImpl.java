@@ -105,8 +105,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
  *
  */
 public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements CAPDialogCircuitSwitchedCall {
+	private static final long serialVersionUID = 1L;
 
-    protected CAPDialogCircuitSwitchedCallImpl(CAPApplicationContext appCntx, Dialog tcapDialog,
+	protected CAPDialogCircuitSwitchedCallImpl(CAPApplicationContext appCntx, Dialog tcapDialog,
             CAPProviderImpl capProviderImpl, CAPServiceBase capService) {
         super(appCntx, tcapDialog, capProviderImpl, capService);
     }

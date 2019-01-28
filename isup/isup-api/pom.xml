@@ -3,13 +3,13 @@
 
 	<parent>
 		<artifactId>isup-parent</artifactId>
-		<groupId>org.restcomm.protocols.ss7.isup</groupId>
+		<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>isup-api</artifactId>
 
-	<name>Restcomm jSS7 :: ISUP :: Api :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: ISUP :: Api :: ${project.artifactId}</name>
 
 	<dependencies>
 		<dependency>
@@ -18,11 +18,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 			<artifactId>mtp-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 			<artifactId>mtp</artifactId>
 		</dependency>
 		<dependency>

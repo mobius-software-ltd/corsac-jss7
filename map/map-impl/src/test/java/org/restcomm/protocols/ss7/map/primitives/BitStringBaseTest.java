@@ -158,13 +158,12 @@ public class BitStringBaseTest {
         assertFalse(imp1.equals(imp3));
         assertFalse(imp2.equals(imp3));
         assertFalse(implx.equals(imp3));
-
-        int i1 = imp1.hashCode();
     }
 
     private class TestBitStringImpl extends BitStringBase {
+		private static final long serialVersionUID = 1L;
 
-        public TestBitStringImpl(BitSetStrictLength data) {
+		public TestBitStringImpl(BitSetStrictLength data) {
             super(12, 20, 12, "Test BitString primitive", data);
         }
 

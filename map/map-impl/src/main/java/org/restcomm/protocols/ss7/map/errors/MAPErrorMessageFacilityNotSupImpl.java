@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,11 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  * @author amit bhayani
  */
 public class MAPErrorMessageFacilityNotSupImpl extends MAPErrorMessageImpl implements MAPErrorMessageFacilityNotSup {
-    private static final String SHAPE_OF_LOCATION_ESTIMATE_NOT_SUPPORTED = "shapeOfLocationEstimateNotSupported";
-    private static final String NEEDED_LCS_CAPABILITY_NOT_SUPPORTED = "neededLcsCapabilityNotSupportedInServingNode";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
+	private static final long serialVersionUID = 1L;
 
-    public static final int shapeOfLocationEstimateNotSupported_TAG = 0;
+	public static final int shapeOfLocationEstimateNotSupported_TAG = 0;
     public static final int neededLcsCapabilityNotSupportedInServingNode_TAG = 1;
 
     private MAPExtensionContainer extensionContainer;
@@ -262,33 +257,4 @@ public class MAPErrorMessageFacilityNotSupImpl extends MAPErrorMessageImpl imple
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageFacilityNotSupImpl> MAP_ERROR_MESSAGE_FACILITY_NOT_SUPPORTED_XML = new XMLFormat<MAPErrorMessageFacilityNotSupImpl>(
-            MAPErrorMessageFacilityNotSupImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageFacilityNotSupImpl ussdMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, ussdMessage);
-            ussdMessage.shapeOfLocationEstimateNotSupported = xml.get(SHAPE_OF_LOCATION_ESTIMATE_NOT_SUPPORTED, Boolean.class);
-            ussdMessage.neededLcsCapabilityNotSupportedInServingNode = xml.get(NEEDED_LCS_CAPABILITY_NOT_SUPPORTED,
-                    Boolean.class);
-            ussdMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageFacilityNotSupImpl ussdMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(ussdMessage, xml);
-            xml.add(ussdMessage.getShapeOfLocationEstimateNotSupported(), SHAPE_OF_LOCATION_ESTIMATE_NOT_SUPPORTED,
-                    Boolean.class);
-            xml.add(ussdMessage.getNeededLcsCapabilityNotSupportedInServingNode(), NEEDED_LCS_CAPABILITY_NOT_SUPPORTED,
-                    Boolean.class);
-            xml.add((MAPExtensionContainerImpl) ussdMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
 }

@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,7 +56,7 @@ public class GlobalCellIdTest {
         byte[] data = this.getData();
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         GlobalCellIdImpl prim = new GlobalCellIdImpl();
         prim.decodeAll(asn);
@@ -78,7 +73,7 @@ public class GlobalCellIdTest {
         data = this.getData2();
 
         asn = new AsnInputStream(data);
-        tag = asn.readTag();
+        asn.readTag();
 
         prim = new GlobalCellIdImpl();
         prim.decodeAll(asn);
@@ -103,7 +98,7 @@ public class GlobalCellIdTest {
         assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         GlobalCellIdImpl original = new GlobalCellIdImpl(250, 1, 4444, 3333);
@@ -131,6 +126,5 @@ public class GlobalCellIdTest {
         assertEquals(copy.getLac(), original.getLac());
         assertEquals(copy.getCellId(), original.getCellId());
 
-    }
-
+    }*/
 }

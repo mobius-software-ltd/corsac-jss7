@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -109,7 +104,7 @@ public class ExtTeleserviceCodeTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberManagement" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberManagement" })
     public void testXMLSerializaion() throws Exception {
         ExtTeleserviceCodeImpl original = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.telephony);
 
@@ -131,6 +126,5 @@ public class ExtTeleserviceCodeTest {
         ExtTeleserviceCodeImpl copy = reader.read("extTeleserviceCode", ExtTeleserviceCodeImpl.class);
 
         assertEquals(copy.getTeleserviceCodeValue(), original.getTeleserviceCodeValue());
-    }
-
+    }*/
 }

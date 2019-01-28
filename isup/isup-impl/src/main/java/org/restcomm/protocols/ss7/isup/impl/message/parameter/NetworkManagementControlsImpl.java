@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NetworkManagementContro
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class NetworkManagementControlsImpl extends AbstractISUPParameter implements NetworkManagementControls {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TURN_ON = 1;
+	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
     // FIXME - should we switch to boolean[] - its a slight perf loss :P
     private byte[] networkManagementControls = null;

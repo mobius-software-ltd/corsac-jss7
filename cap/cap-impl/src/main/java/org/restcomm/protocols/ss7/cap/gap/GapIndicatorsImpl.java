@@ -23,9 +23,6 @@ package org.restcomm.protocols.ss7.cap.gap;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -41,14 +38,10 @@ import org.restcomm.protocols.ss7.cap.primitives.SequenceBase;
  * @author <a href="mailto:bartosz.krok@pro-ids.com"> Bartosz Krok (ProIDS sp. z o.o.)</a>
  */
 public class GapIndicatorsImpl extends SequenceBase implements GapIndicators {
-
-    private static final String DURATION = "duration";
-    private static final String GAP_INTERVAL = "gapInterval";
-
-    public static final int _ID_Duration = 0;
+	private static final long serialVersionUID = 1L;
+	
+	public static final int _ID_Duration = 0;
     public static final int _ID_Gap_Interval = 1;
-
-    private static int DEFAULT_VALUE = 0;
 
     private int duration;
     private int gapInterval;
@@ -149,22 +142,6 @@ public class GapIndicatorsImpl extends SequenceBase implements GapIndicators {
         }
     }
 
-    protected static final XMLFormat<GapIndicatorsImpl> GAP_INDICATORS_XML = new XMLFormat<GapIndicatorsImpl>(GapIndicatorsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, GapIndicatorsImpl gapIndicators) throws XMLStreamException {
-            gapIndicators.duration = xml.getAttribute(DURATION, DEFAULT_VALUE);
-            gapIndicators.gapInterval = xml.getAttribute(GAP_INTERVAL, DEFAULT_VALUE);
-        }
-
-        @Override
-        public void write(GapIndicatorsImpl gapIndicators, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(DURATION, gapIndicators.duration);
-            xml.setAttribute(GAP_INTERVAL, gapIndicators.gapInterval);
-        }
-    };
-
     @Override
     public String toString() {
 
@@ -181,5 +158,4 @@ public class GapIndicatorsImpl extends SequenceBase implements GapIndicators {
 
         return sb.toString();
     }
-
 }

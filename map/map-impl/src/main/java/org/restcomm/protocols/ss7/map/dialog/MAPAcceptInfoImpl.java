@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class MAPAcceptInfoImpl implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int MAP_ACCEPT_INFO_TAG = 0x01;
+	public static final int MAP_ACCEPT_INFO_TAG = 0x01;
 
     protected static final int ACCEPT_INFO_TAG_CLASS = Tag.CLASS_CONTEXT_SPECIFIC;
     protected static final boolean ACCEPT_INFO_TAG_PC_PRIMITIVE = true;

@@ -27,8 +27,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuA;
 import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 
 public class UESBIIuAImpl extends BitStringBase implements UESBIIuA {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "UESBIIuA";
+	public static final String _PrimitiveName = "UESBIIuA";
 
     public UESBIIuAImpl() {
         super(1, 128, 1, _PrimitiveName);

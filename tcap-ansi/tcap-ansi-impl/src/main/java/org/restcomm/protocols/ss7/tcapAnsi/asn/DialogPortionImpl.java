@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
  *
  */
 public class DialogPortionImpl implements DialogPortion {
+	private static final long serialVersionUID = 1L;
 
-    private ProtocolVersion protocolVersion;
+	private ProtocolVersion protocolVersion;
     private ApplicationContext applicationContext;
     private UserInformation userInformation;
     private SecurityContext securityContext;

@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
  *
  */
 public class TMSIImpl extends OctetStringBase implements TMSI {
+	private static final long serialVersionUID = 1L;
 
-    public TMSIImpl(byte[] data) {
+	public TMSIImpl(byte[] data) {
         super(1, 4, "TMSI", data);
     }
 

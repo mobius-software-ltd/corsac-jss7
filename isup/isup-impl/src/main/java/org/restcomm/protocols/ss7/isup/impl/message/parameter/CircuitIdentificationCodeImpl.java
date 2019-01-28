@@ -38,8 +38,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CircuitIdentificationCo
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class CircuitIdentificationCodeImpl extends AbstractISUPParameter implements CircuitIdentificationCode {
+	private static final long serialVersionUID = 1L;
 
-    private int cic;
+	private int cic;
 
     /**
      *

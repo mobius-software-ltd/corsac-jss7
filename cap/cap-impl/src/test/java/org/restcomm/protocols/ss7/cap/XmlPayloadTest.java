@@ -1,19 +1,8 @@
 package org.restcomm.protocols.ss7.cap;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-
-import javolution.xml.XMLObjectReader;
-
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ConnectRequestImpl;
-
-
 public class XmlPayloadTest {
 
-    //@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
         File file = new File( "E:\\01\\aaa.txt" );
 
@@ -38,5 +27,5 @@ public class XmlPayloadTest {
             int g1 = 0;
         }
 
-    }
+    }*/
 }

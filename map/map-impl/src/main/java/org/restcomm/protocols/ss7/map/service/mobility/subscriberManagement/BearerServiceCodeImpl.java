@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
@@ -36,11 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class BearerServiceCodeImpl extends OctetStringLength1Base implements BearerServiceCode {
+	private static final long serialVersionUID = 1L;
 
-    private static final String BEARER_SERVICE_CODE_VALUE = "bearerServiceCodeValue";
-    private static final String DATA = "data";
-
-    public BearerServiceCodeImpl() {
+	public BearerServiceCodeImpl() {
         super("BearerServiceCode");
     }
 
@@ -77,26 +72,4 @@ public class BearerServiceCodeImpl extends OctetStringLength1Base implements Bea
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<BearerServiceCodeImpl> BEARER_SERVICE_CODE_XML = new XMLFormat<BearerServiceCodeImpl>(
-            BearerServiceCodeImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, BearerServiceCodeImpl ssCode) throws XMLStreamException {
-            ssCode.data = xml.get(DATA, Integer.class);
-
-            String str = xml.get(BEARER_SERVICE_CODE_VALUE, String.class);
-        }
-
-        @Override
-        public void write(BearerServiceCodeImpl ssCode, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.add(ssCode.getData(), DATA, Integer.class);
-
-            if (ssCode.getBearerServiceCodeValue() != null)
-                xml.add((String) ssCode.getBearerServiceCodeValue().toString(), BEARER_SERVICE_CODE_VALUE, String.class);
-        }
-    };
 }

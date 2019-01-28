@@ -17,8 +17,5 @@ public class FirstTest {
             EventTypeBCSM en2 = EventTypeBCSM.getInstance(en.getCode());
             assertEquals(en, en2);
         }
-
-        int ff = 0;
-        ff++;
     }
 }

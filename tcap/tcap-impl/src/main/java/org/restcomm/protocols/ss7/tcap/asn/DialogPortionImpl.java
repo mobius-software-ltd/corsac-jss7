@@ -77,8 +77,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class DialogPortionImpl implements DialogPortion {
+	private static final long serialVersionUID = 1L;
 
-    // Encoded OID, dont like this....
+	// Encoded OID, dont like this....
     private static final long[] _DIALG_UNI = new long[] { 0, 0, 17, 773, 1, 2, 1 };
     private static final long[] _DIALG_STRUCTURED = new long[] { 0, 0, 17, 773, 1, 1, 1 };
 

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 *
 */
 public class SecurityContextImpl implements SecurityContext {
+	private static final long serialVersionUID = 1L;
 
-    private Long integerSecurityId;
+	private Long integerSecurityId;
     private long[] objectSecurityId;
 
     @Override

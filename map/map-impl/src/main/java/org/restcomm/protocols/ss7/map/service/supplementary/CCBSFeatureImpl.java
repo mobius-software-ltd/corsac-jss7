@@ -44,7 +44,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Basi
 *
 */
 public class CCBSFeatureImpl extends SequenceBase implements CCBSFeature {
-    public static final int _TAG_ccbsIndex = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _TAG_ccbsIndex = 0;
     public static final int _TAG_bSubscriberNumber = 1;
     public static final int _TAG_bSubscriberSubaddress = 2;
     public static final int _TAG_basicServiceGroup = 3;

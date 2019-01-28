@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class KcImpl extends OctetStringBase implements Kc {
+	private static final long serialVersionUID = 1L;
 
-    public KcImpl(byte[] data) {
+	public KcImpl(byte[] data) {
         super(8, 8, "Kc", data);
     }
 

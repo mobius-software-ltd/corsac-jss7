@@ -40,8 +40,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
  *
  */
 public class TCBeginMessageImpl implements TCBeginMessage {
+	private static final long serialVersionUID = 1L;
 
-    private static final String _OCTET_STRING_ENCODE = "US-ASCII";
     // mandatory
     private byte[] originatingTransactionId;
     // opt

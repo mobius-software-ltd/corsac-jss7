@@ -27,11 +27,10 @@ import static org.testng.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javolution.util.FastMap;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.sccp.MaxConnectionCountReached;
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.SccpManagementEventListener;
@@ -55,7 +54,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryIndicatio
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
-import org.restcomm.ss7.congestion.ExecutorCongestionMonitor;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -98,7 +96,7 @@ public class PreviewModeFunctionalTest {
     public void setUp() throws Exception {
         System.out.println("setUp");
 
-        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "PreviewModeFunctionalTest");
+        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "PreviewModeFunctionalTest",4);
 
         // this.tcapStack1.setInvokeTimeout(0);
         this.tcapStack1.setPreviewMode(true);
@@ -519,8 +517,9 @@ public class PreviewModeFunctionalTest {
     }
 
     private class SccpHarnessPreview implements SccpProvider {
+		private static final long serialVersionUID = 1L;
 
-        @Override
+		@Override
         public void deregisterSccpListener(int arg0) {
             // TODO Auto-generated method stub
 
@@ -544,11 +543,8 @@ public class PreviewModeFunctionalTest {
             return null;
         }
 
-        protected SccpListener sccpListener;
-
         @Override
         public void registerSccpListener(int arg0, SccpListener listener) {
-            sccpListener = listener;
         }
 
         @Override
@@ -559,13 +555,13 @@ public class PreviewModeFunctionalTest {
         }
 
         @Override
-        public void registerManagementEventListener(SccpManagementEventListener listener) {
+        public void registerManagementEventListener(UUID key,SccpManagementEventListener listener) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void deregisterManagementEventListener(SccpManagementEventListener listener) {
+        public void deregisterManagementEventListener(UUID key) {
             // TODO Auto-generated method stub
 
         }
@@ -577,24 +573,13 @@ public class PreviewModeFunctionalTest {
         }
 
         @Override
-        public FastMap<Integer, NetworkIdState> getNetworkIdStateList() {
-            return new FastMap<Integer, NetworkIdState>();
-        }
-
-        @Override
-        public ExecutorCongestionMonitor[] getExecutorCongestionMonitorList() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
         public SccpConnection newConnection(int localSsn, ProtocolClass protocolClass) throws MaxConnectionCountReached {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public FastMap<LocalReference, SccpConnection> getConnections() {
+        public ConcurrentHashMap<LocalReference, SccpConnection> getConnections() {
             // TODO Auto-generated method stub
             return null;
         }
@@ -609,12 +594,6 @@ public class PreviewModeFunctionalTest {
 		public SccpStack getSccpStack() {
 			// TODO Auto-generated method stub
 			return null;
-		}
-
-		@Override
-		public void updateSPCongestion(Integer ssn, Integer congestionLevel) {
-			// TODO Auto-generated method stub
-			
 		}
     }
 

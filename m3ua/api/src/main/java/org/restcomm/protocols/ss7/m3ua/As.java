@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.m3ua;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
@@ -126,7 +126,7 @@ public interface As {
      *
      * @return
      */
-    List<Asp> getAspList();
+    Collection<Asp> getAspList();
 
     /**
      * Current state of this As

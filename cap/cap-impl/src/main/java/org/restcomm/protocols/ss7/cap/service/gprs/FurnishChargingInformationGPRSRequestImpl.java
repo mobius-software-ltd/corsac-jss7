@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class FurnishChargingInformationGPRSRequestImpl extends GprsMessageImpl implements FurnishChargingInformationGPRSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "FurnishChargingInformationGPRSRequest";
+	public static final String _PrimitiveName = "FurnishChargingInformationGPRSRequest";
 
     public static final int _ID_CAMELFCIGPRSBillingChargingCharacteristics = 0;
 
@@ -131,11 +132,13 @@ public class FurnishChargingInformationGPRSRequestImpl extends GprsMessageImpl i
 
         int tag = aiss.readTag();
 
-        if (tag != Tag.SEQUENCE || aiss.getTagClass() != Tag.CLASS_UNIVERSAL || aiss.isTagPrimitive())
+        if (tag != Tag.SEQUENCE || aiss.getTagClass() != Tag.CLASS_UNIVERSAL || aiss.isTagPrimitive()) {
+        	aiss.close();
             throw new CAPParsingComponentException("Error when decoding " + _PrimitiveName
                     + ": bad tag or tagClass or is primitive of the choice fciGPRSBillingChargingCharacteristics",
                     CAPParsingComponentExceptionReason.MistypedParameter);
-
+        }
+        
         this.fciGPRSBillingChargingCharacteristics = new CAMELFCIGPRSBillingChargingCharacteristicsImpl();
         ((CAMELFCIGPRSBillingChargingCharacteristicsImpl) this.fciGPRSBillingChargingCharacteristics).decodeAll(aiss);
 

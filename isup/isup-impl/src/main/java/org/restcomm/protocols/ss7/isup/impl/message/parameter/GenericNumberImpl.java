@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 
@@ -39,21 +36,10 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
  * @author Oleg Kulikoff
  */
 public class GenericNumberImpl extends AbstractNAINumber implements GenericNumber {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TURN_ON = 1;
+	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
-
-    private static final String NUMBERING_PLAN_INDICATOR = "numberingPlanIndicator";
-    private static final String NUMBER_INCOMPLETE = "numberIncomplete";
-    private static final String ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR = "addressRepresentationRestrictedIndicator";
-    private static final String SCREENING_INDICATOR = "screeningIndicator";
-    private static final String NUMBER_QUALIFIER_INDICATOR = "numberQualifierIndicator";
-
-    private static final int DEFAULT_NUMBERING_PLAN_INDICATOR = 0;
-    private static final boolean DEFAULT_NUMBER_INCOMPLETE = false;
-    private static final int DEFAULT_ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR = 0;
-    private static final int DEFAULT_SCREENING_INDICATOR = 0;
-    private static final int DEFAULT_NUMBER_QUALIFIER_INDICATOR = 0;
 
     protected int numberQualifierIndicator;
     protected int numberingPlanIndicator;
@@ -217,37 +203,4 @@ public class GenericNumberImpl extends AbstractNAINumber implements GenericNumbe
                 + ", natureOfAddresIndicator=" + natureOfAddresIndicator + ", oddFlag=" + oddFlag + ", address=" + address
                 + "]";
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<GenericNumberImpl> ISUP_GENERIC_NUMBER_XML = new XMLFormat<GenericNumberImpl>(
-            GenericNumberImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, GenericNumberImpl genericNumber) throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.read(xml, genericNumber);
-
-            genericNumber.numberingPlanIndicator = xml.getAttribute(NUMBERING_PLAN_INDICATOR, DEFAULT_NUMBERING_PLAN_INDICATOR);
-            genericNumber.numberIncomplete = xml.getAttribute(NUMBER_INCOMPLETE, DEFAULT_NUMBER_INCOMPLETE);
-            genericNumber.addressRepresentationRestrictedIndicator = xml.getAttribute(
-                    ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR, DEFAULT_ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR);
-            genericNumber.screeningIndicator = xml.getAttribute(SCREENING_INDICATOR, DEFAULT_SCREENING_INDICATOR);
-            genericNumber.numberQualifierIndicator = xml.getAttribute(NUMBER_QUALIFIER_INDICATOR,
-                    DEFAULT_NUMBER_QUALIFIER_INDICATOR);
-        }
-
-        @Override
-        public void write(GenericNumberImpl genericNumber, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            ISUP_ABSTRACT_NAI_NUMBER_XML.write(genericNumber, xml);
-
-            xml.setAttribute(NUMBERING_PLAN_INDICATOR, genericNumber.numberingPlanIndicator);
-            xml.setAttribute(NUMBER_INCOMPLETE, genericNumber.numberIncomplete);
-            xml.setAttribute(ADDRESS_REPRESENTATION_RESTRICTED_INDICATOR,
-                    genericNumber.addressRepresentationRestrictedIndicator);
-            xml.setAttribute(SCREENING_INDICATOR, genericNumber.screeningIndicator);
-            xml.setAttribute(NUMBER_QUALIFIER_INDICATOR, genericNumber.numberQualifierIndicator);
-        }
-    };
 }

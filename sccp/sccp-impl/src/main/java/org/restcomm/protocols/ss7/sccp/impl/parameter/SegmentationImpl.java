@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.Segmentation;
  * @author baranowb
  */
 public class SegmentationImpl extends AbstractParameter implements Segmentation {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TRUE = 1;
+	private static final int _TRUE = 1;
     private static final int _FALSE = 0;
     private boolean firstSegIndication = false;
     private boolean class1Selected = false;

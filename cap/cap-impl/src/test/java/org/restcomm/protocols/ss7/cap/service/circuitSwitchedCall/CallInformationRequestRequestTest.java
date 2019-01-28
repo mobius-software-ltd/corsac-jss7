@@ -60,7 +60,7 @@ public class CallInformationRequestRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         CallInformationRequestRequestImpl elem = new CallInformationRequestRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getRequestedInformationTypeList().get(0), RequestedInformationType.callStopTime);
@@ -72,7 +72,7 @@ public class CallInformationRequestRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new CallInformationRequestRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getRequestedInformationTypeList().get(0), RequestedInformationType.callStopTime);

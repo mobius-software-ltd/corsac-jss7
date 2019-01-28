@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -48,15 +45,9 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
  *
  */
 public class CAMELAChBillingChargingCharacteristicsImpl implements CAMELAChBillingChargingCharacteristics, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String MAX_CALL_PERIOD_DURATION = "maxCallPeriodDuration";
-    private static final String RELEASED_IF_DURATION_EXCEEDED = "releaseIfdurationExceeded";
-    private static final String TARIFF_SWITCH_INTERVAL = "tariffSwitchInterval";
-    private static final String AUDIBLE_INDICATOR = "audibleIndicator";
-    private static final String EXTENSIONS = "extensions";
-    private static final String CAP_VERSION = "capVersion";
-
-    public static final int _ID_timeDurationCharging = 0;
+	public static final int _ID_timeDurationCharging = 0;
 
     public static final int _ID_maxCallPeriodDuration = 0;
     public static final int _ID_releaseIfdurationExceeded = 1;
@@ -182,11 +173,16 @@ public class CAMELAChBillingChargingCharacteristicsImpl implements CAMELAChBilli
         AsnInputStream aiss = new AsnInputStream(this.data);
         int tag = aiss.readTag();
         if (tag != _ID_timeDurationCharging || aiss.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || aiss.isTagPrimitive())
-            throw new CAPParsingComponentException("Error when decoding " + _PrimitiveName
+        {
+        	int tagClass= aiss.getTagClass();
+        	aiss.close();            	
+        	throw new CAPParsingComponentException("Error when decoding " + _PrimitiveName
                     + ": CAMEL-AChBillingChargingCharacteristics choice has bad tag or tagClass or is primitive, tag=" + tag
-                    + ", tagClass=" + aiss.getTagClass(), CAPParsingComponentExceptionReason.MistypedParameter);
-
+                    + ", tagClass=" + tagClass, CAPParsingComponentExceptionReason.MistypedParameter);
+        }
+        
         AsnInputStream ais = aiss.readSequenceStream();
+        aiss.close();
         while (true) {
             if (ais.available() == 0)
                 break;
@@ -400,47 +396,4 @@ public class CAMELAChBillingChargingCharacteristicsImpl implements CAMELAChBilli
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CAMELAChBillingChargingCharacteristicsImpl> CAMEL_ACH_BILLING_CHARGING_CHARACTERISTIC_XML = new XMLFormat<CAMELAChBillingChargingCharacteristicsImpl>(
-            CAMELAChBillingChargingCharacteristicsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml,
-                CAMELAChBillingChargingCharacteristicsImpl camelAChBillingChargingCharacteristics) throws XMLStreamException {
-            camelAChBillingChargingCharacteristics.capVersion = xml.getAttribute(CAP_VERSION, 2);
-
-            camelAChBillingChargingCharacteristics.maxCallPeriodDuration = xml.get(MAX_CALL_PERIOD_DURATION, Long.class);
-            camelAChBillingChargingCharacteristics.releaseIfdurationExceeded = xml.get(RELEASED_IF_DURATION_EXCEEDED,
-                    Boolean.class);
-            camelAChBillingChargingCharacteristics.tariffSwitchInterval = xml.get(TARIFF_SWITCH_INTERVAL, Long.class);
-            camelAChBillingChargingCharacteristics.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-            camelAChBillingChargingCharacteristics.audibleIndicator = xml.get(AUDIBLE_INDICATOR, AudibleIndicatorImpl.class);
-
-        }
-
-        @Override
-        public void write(CAMELAChBillingChargingCharacteristicsImpl camelAChBillingChargingCharacteristics,
-                javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(CAP_VERSION, camelAChBillingChargingCharacteristics.capVersion);
-
-            xml.add(camelAChBillingChargingCharacteristics.maxCallPeriodDuration, MAX_CALL_PERIOD_DURATION, Long.class);
-            xml.add(camelAChBillingChargingCharacteristics.releaseIfdurationExceeded, RELEASED_IF_DURATION_EXCEEDED,
-                    Boolean.class);
-
-            if (camelAChBillingChargingCharacteristics.tariffSwitchInterval != null) {
-                xml.add(camelAChBillingChargingCharacteristics.tariffSwitchInterval, TARIFF_SWITCH_INTERVAL, Long.class);
-            }
-            if (camelAChBillingChargingCharacteristics.extensions != null) {
-                xml.add((CAPExtensionsImpl) camelAChBillingChargingCharacteristics.extensions, EXTENSIONS,
-                        CAPExtensionsImpl.class);
-            }
-
-            if (camelAChBillingChargingCharacteristics.audibleIndicator != null) {
-                xml.add(((AudibleIndicatorImpl) camelAChBillingChargingCharacteristics.audibleIndicator), AUDIBLE_INDICATOR, AudibleIndicatorImpl.class);
-            }
-        }
-    };
 }

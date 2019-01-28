@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.tcap;
 
 import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -40,9 +41,10 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
  *
  */
 public class TCAPProviderImplWrapper extends TCAPProviderImpl {
+	private static final long serialVersionUID = 1L;
 
-    protected TCAPProviderImplWrapper(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn) {
-        super(sccpProvider, stack, ssn);
+	protected TCAPProviderImplWrapper(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn,ScheduledExecutorService service) {
+        super(sccpProvider, stack, ssn, service);
     }
 
     public Map<PreviewDialogDataKey, PreviewDialogData> getDialogPreviewList() {

@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class CUGFeatureImpl extends SequenceBase implements CUGFeature {
+	private static final long serialVersionUID = 1L;
 
-    private ExtBasicServiceCode basicService = null;
+	private ExtBasicServiceCode basicService = null;
     private Integer preferentialCugIndicator = null;
     private InterCUGRestrictions interCugRestrictions = null;
     private MAPExtensionContainer extensionContainer = null;

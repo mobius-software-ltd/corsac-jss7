@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class AMBRImpl extends SequenceBase implements AMBR {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_maxRequestedBandwidthUL = 0;
+	private static final int _TAG_maxRequestedBandwidthUL = 0;
     private static final int _TAG_maxRequestedBandwidthDL = 1;
     private static final int _TAG_extensionContainer = 2;
 

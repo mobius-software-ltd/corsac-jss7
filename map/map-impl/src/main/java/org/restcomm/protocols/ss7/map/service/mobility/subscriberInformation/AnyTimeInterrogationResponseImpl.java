@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -48,11 +45,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class AnyTimeInterrogationResponseImpl extends MobilityMessageImpl implements AnyTimeInterrogationResponse, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "AnyTimeInterrogationResponse";
-
-    private static final String SUBSCRIBER_INFO = "subscriberInfo";
-    private static final String EXTENSION_CONTAINER = "extensionContainer";
+	public static final String _PrimitiveName = "AnyTimeInterrogationResponse";
 
     private SubscriberInfo subscriberInfo;
     private MAPExtensionContainer extensionContainer;
@@ -283,23 +278,4 @@ public class AnyTimeInterrogationResponseImpl extends MobilityMessageImpl implem
         sb.append("]");
         return sb.toString();
     }
-
-    protected static final XMLFormat<AnyTimeInterrogationResponseImpl> ANY_TIME_INTERROGATION_RESPONSE_XML = new XMLFormat<AnyTimeInterrogationResponseImpl>(
-            AnyTimeInterrogationResponseImpl.class) {
-
-        @Override
-        public void write(AnyTimeInterrogationResponseImpl obj, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.add((SubscriberInfoImpl) obj.subscriberInfo, SUBSCRIBER_INFO, SubscriberInfoImpl.class);
-            if (obj.extensionContainer != null) {
-                xml.add((MAPExtensionContainerImpl) obj.extensionContainer, EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-            }
-        }
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, AnyTimeInterrogationResponseImpl obj) throws XMLStreamException {
-            obj.subscriberInfo = xml.get(SUBSCRIBER_INFO, SubscriberInfoImpl.class);
-            obj.extensionContainer = xml.get(EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-    };
 }

@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastSet;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
@@ -38,18 +38,16 @@ public class THPeerAsInActToAct implements TransitionHandler {
     private static final Logger logger = Logger.getLogger(THPeerAsInActToAct.class);
 
     private AsImpl asImpl = null;
-    private FSM fsm;
-
+    
     THPeerAsInActToAct(AsImpl asImpl, FSM fsm) {
         this.asImpl = asImpl;
-        this.fsm = fsm;
     }
 
     @Override
     public boolean process(FSMState state) {
-        FastSet<AsStateListener> asStateListeners = this.asImpl.getAsStateListeners();
-        for (FastSet.Record r = asStateListeners.head(), end = asStateListeners.tail(); (r = r.getNext()) != end;) {
-            AsStateListener asAsStateListener = asStateListeners.valueOf(r);
+        Iterator<AsStateListener> asStateListeners = this.asImpl.getAsStateListeners().iterator();
+        while(asStateListeners.hasNext()) {
+            AsStateListener asAsStateListener = asStateListeners.next();
             try {
                 asAsStateListener.onAsActive(this.asImpl);
             } catch (Exception e) {

@@ -45,28 +45,21 @@ public class MAPStackImpl implements MAPStack {
     private final String name;
     private final MAPStackConfigurationManagement mapCfg;
 
-    private String persistDir = null;
-
     public MAPStackImpl(String name, SccpProvider sccpPprovider, int ssn) {
         this.name = name;
-        this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn);
+        this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, 4);
         TCAPProvider tcapProvider = tcapStack.getProvider();
-        mapProvider = new MAPProviderImpl(name, tcapProvider);
-
-        this.state = State.CONFIGURED;
-
-        this.mapCfg = MAPStackConfigurationManagement.getInstance();
-        this.mapCfg.setConfigFileName(this.name);
+        this.mapCfg = new MAPStackConfigurationManagement();
+        mapProvider = new MAPProviderImpl(name, tcapProvider,this.mapCfg);
+        this.state = State.CONFIGURED;        
     }
 
     public MAPStackImpl(String name, TCAPProvider tcapProvider) {
         this.name = name;
-        mapProvider = new MAPProviderImpl(name, tcapProvider);
+        this.mapCfg = new MAPStackConfigurationManagement();
+        mapProvider = new MAPProviderImpl(name, tcapProvider,this.mapCfg);
         this.tcapStack = tcapProvider.getStack();
-        this.state = State.CONFIGURED;
-
-        this.mapCfg = MAPStackConfigurationManagement.getInstance();
-        this.mapCfg.setConfigFileName(this.name);
+        this.state = State.CONFIGURED;        
     }
 
     @Override
@@ -81,9 +74,6 @@ public class MAPStackImpl implements MAPStack {
 
     @Override
     public void start() throws Exception {
-        this.mapCfg.setPersistDir(this.persistDir);
-        this.mapCfg.load();
-
         if (state != State.CONFIGURED) {
             throw new IllegalStateException("Stack has not been configured or is already running!");
         }
@@ -108,11 +98,6 @@ public class MAPStackImpl implements MAPStack {
         }
 
         this.state = State.CONFIGURED;
-        mapCfg.store();
-    }
-
-    public void setPersistDir(String persistDir) {
-        this.persistDir = persistDir;
     }
 
     // // ///////////////
@@ -141,12 +126,4 @@ public class MAPStackImpl implements MAPStack {
     public TCAPStack getTCAPStack() {
         return this.tcapStack;
     }
-
-//    public void onCongestionStart(String congName) {
-//        this.mapProvider.onCongestionStart(congName);
-//    }
-//
-//    public void onCongestionFinish(String congName) {
-//        this.mapProvider.onCongestionFinish(congName);
-//    }
 }

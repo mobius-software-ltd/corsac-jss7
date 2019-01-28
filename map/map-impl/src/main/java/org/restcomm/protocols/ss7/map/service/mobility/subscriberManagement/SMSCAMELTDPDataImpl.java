@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class SMSCAMELTDPDataImpl extends SequenceBase implements SMSCAMELTDPData {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_smsTriggerDetectionPoint = 0;
+	public static final int _TAG_smsTriggerDetectionPoint = 0;
     public static final int _TAG_serviceKey = 1;
     public static final int _TAG_gsmSCFAddress = 2;
     public static final int _TAG_defaultSMSHandling = 3;

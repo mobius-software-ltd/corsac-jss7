@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  *
  */
 public class AOCBeforeAnswerImpl implements AOCBeforeAnswer, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_cAI_GSM0224 = 0;
+	public static final int _ID_cAI_GSM0224 = 0;
     public static final int _ID_aOCSubsequent = 1;
 
     public static final String _PrimitiveName = "AOCBeforeAnswer";

@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventReportSMSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EventReportSMSRequest";
+	public static final String _PrimitiveName = "EventReportSMSRequest";
 
     public static final int _ID_eventTypeSMS = 0;
     public static final int _ID_eventSpecificInformationSMS = 1;

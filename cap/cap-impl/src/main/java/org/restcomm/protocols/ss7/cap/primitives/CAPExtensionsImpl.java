@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.cap.primitives;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,12 +42,12 @@ import org.restcomm.protocols.ss7.map.primitives.ArrayListSerializingBase;
  *
  */
 public class CAPExtensionsImpl implements CAPExtensions, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "CAPExtensions";
+	public static final String _PrimitiveName = "CAPExtensions";
 
     private static final String EXTENSION_FIELD = "extensionField";
-    private static final String EXTENSION_FIELD_LIST = "extensionFieldList";
-
+    
     private ArrayList<ExtensionField> extensionFields;
 
     public CAPExtensionsImpl() {
@@ -192,33 +189,6 @@ public class CAPExtensionsImpl implements CAPExtensions, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CAPExtensionsImpl> CAP_Extensions_XML = new XMLFormat<CAPExtensionsImpl>(
-            CAPExtensionsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CAPExtensionsImpl capExtensions) throws XMLStreamException {
-            CAPExtensions_ExtensionFields al = xml.get(EXTENSION_FIELD_LIST, CAPExtensions_ExtensionFields.class);
-            if (al != null) {
-                capExtensions.extensionFields = al.getData();
-            }
-        }
-
-        @Override
-        public void write(CAPExtensionsImpl capExtensions, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (capExtensions.extensionFields == null || capExtensions.extensionFields.size() == 0)
-                return;
-
-            if (capExtensions.extensionFields != null) {
-                CAPExtensions_ExtensionFields al = new CAPExtensions_ExtensionFields(capExtensions.extensionFields);
-                xml.add(al, EXTENSION_FIELD_LIST, CAPExtensions_ExtensionFields.class);
-            }
-        }
-    };
 
     public static class CAPExtensions_ExtensionFields extends ArrayListSerializingBase<ExtensionField> {
 

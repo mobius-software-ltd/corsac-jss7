@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -52,15 +49,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class TimeDurationChargingResultImpl extends SequenceBase implements TimeDurationChargingResult {
+	private static final long serialVersionUID = 1L;
 
-    private static final String PARTY_TO_CHARGE = "partyToCharge";
-    private static final String TIME_INFORMATION = "timeInformation";
-    private static final String LEG_ACTIVE = "legActive";
-    private static final String CALL_LEG_RELEASED_AT_TCP_EXPIRY = "callLegReleasedAtTcpExpiry";
-    private static final String EXTENSIONS = "extensions";
-    private static final String A_CH_CHARGING_ADDRESS = "aChChargingAddress";
-
-    public static final int _ID_partyToCharge = 0;
+	public static final int _ID_partyToCharge = 0;
     public static final int _ID_timeInformation = 1;
     public static final int _ID_legActive = 2;
     public static final int _ID_callLegReleasedAtTcpExpiry = 3;
@@ -258,55 +249,4 @@ public class TimeDurationChargingResultImpl extends SequenceBase implements Time
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<TimeDurationChargingResultImpl> TIME_DURATION_CHARGING_RESULT_XML = new XMLFormat<TimeDurationChargingResultImpl>(
-            TimeDurationChargingResultImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, TimeDurationChargingResultImpl timeDurationChargingResult)
-                throws XMLStreamException {
-            timeDurationChargingResult.partyToCharge = xml.get(PARTY_TO_CHARGE, ReceivingSideIDImpl.class);
-            timeDurationChargingResult.timeInformation = xml.get(TIME_INFORMATION, TimeInformationImpl.class);
-
-            Boolean bval = xml.get(LEG_ACTIVE, Boolean.class);
-            if (bval != null)
-                timeDurationChargingResult.legActive = bval;
-            bval = xml.get(CALL_LEG_RELEASED_AT_TCP_EXPIRY, Boolean.class);
-            if (bval != null)
-                timeDurationChargingResult.callLegReleasedAtTcpExpiry = bval;
-
-            timeDurationChargingResult.aChChargingAddress = xml.get(A_CH_CHARGING_ADDRESS, AChChargingAddressImpl.class);
-
-            timeDurationChargingResult.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-
-        }
-
-        @Override
-        public void write(TimeDurationChargingResultImpl timeDurationChargingResult, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            if (timeDurationChargingResult.partyToCharge != null)
-                xml.add((ReceivingSideIDImpl) timeDurationChargingResult.partyToCharge, PARTY_TO_CHARGE,
-                        ReceivingSideIDImpl.class);
-
-            if (timeDurationChargingResult.timeInformation != null)
-                xml.add((TimeInformationImpl) timeDurationChargingResult.timeInformation, TIME_INFORMATION,
-                        TimeInformationImpl.class);
-
-            if (timeDurationChargingResult.legActive)
-                xml.add(timeDurationChargingResult.legActive, LEG_ACTIVE, Boolean.class);
-            if (timeDurationChargingResult.callLegReleasedAtTcpExpiry)
-                xml.add(timeDurationChargingResult.callLegReleasedAtTcpExpiry, CALL_LEG_RELEASED_AT_TCP_EXPIRY, Boolean.class);
-
-            if (timeDurationChargingResult.aChChargingAddress != null)
-                xml.add((AChChargingAddressImpl) timeDurationChargingResult.aChChargingAddress, A_CH_CHARGING_ADDRESS, AChChargingAddressImpl.class);
-
-            if (timeDurationChargingResult.extensions != null)
-                xml.add((CAPExtensionsImpl) timeDurationChargingResult.extensions, EXTENSIONS, CAPExtensionsImpl.class);
-
-        }
-    };
 }

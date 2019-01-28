@@ -50,7 +50,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class ContinuityMessageImpl extends ISUPMessageImpl implements ContinuityMessage {
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Continuity);
+	private static final long serialVersionUID = 1L;
+
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Continuity);
     private static final int _MANDATORY_VAR_COUNT = 0;
 
     static final int _INDEX_F_MessageType = 0;
@@ -132,7 +134,7 @@ public class ContinuityMessageImpl extends ISUPMessageImpl implements Continuity
      * @see org.restcomm.protocols.ss7.isup.message.ContinuityMessage# getContinuitiyIndicators()
      */
     public ContinuityIndicators getContinuityIndicators() {
-        return (ContinuityIndicators) super.f_Parameters.get(this._INDEX_F_ContinuityIndicators);
+        return (ContinuityIndicators) super.f_Parameters.get(_INDEX_F_ContinuityIndicators);
     }
 
     /*
@@ -142,7 +144,7 @@ public class ContinuityMessageImpl extends ISUPMessageImpl implements Continuity
      * (org.restcomm.protocols.ss7.isup.message.parameter .ContinuitiyIndicators)
      */
     public void setContinuityIndicators(ContinuityIndicators value) {
-        super.f_Parameters.put(this._INDEX_F_ContinuityIndicators, value);
+        super.f_Parameters.put(_INDEX_F_ContinuityIndicators, value);
 
     }
 
@@ -153,7 +155,7 @@ public class ContinuityMessageImpl extends ISUPMessageImpl implements Continuity
      */
 
     public MessageType getMessageType() {
-        return this._MESSAGE_TYPE;
+        return _MESSAGE_TYPE;
     }
 
     /*

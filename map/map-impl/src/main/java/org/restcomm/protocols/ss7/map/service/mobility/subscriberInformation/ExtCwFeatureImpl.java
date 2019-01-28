@@ -39,7 +39,9 @@ import java.io.IOException;
  * Created by vsubbotin on 26/05/16.
  */
 public class ExtCwFeatureImpl extends SequenceBase implements ExtCwFeature {
-    private static final int _TAG_EXT_BASIC_SERVICE_CODE = 1;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_EXT_BASIC_SERVICE_CODE = 1;
     private static final int _TAG_EXT_SS_STATUS = 2;
 
     private ExtBasicServiceCode basicService;

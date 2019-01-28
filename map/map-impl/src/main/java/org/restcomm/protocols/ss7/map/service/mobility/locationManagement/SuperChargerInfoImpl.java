@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class SuperChargerInfoImpl implements SuperChargerInfo, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_sendSubscriberData = 0;
+	public static final int _ID_sendSubscriberData = 0;
     public static final int _ID_subscriberDataStored = 1;
 
     public static final String _PrimitiveName = "SuperChargerInfo";

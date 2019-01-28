@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -48,10 +45,8 @@ import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
  *
  */
 public class UnstructuredSSResponseImpl extends SupplementaryMessageImpl implements UnstructuredSSResponse {
+	private static final long serialVersionUID = 1L;
 
-    /**
-     *
-     */
     public UnstructuredSSResponseImpl() {
         super();
     }
@@ -111,7 +106,7 @@ public class UnstructuredSSResponseImpl extends SupplementaryMessageImpl impleme
 
         AsnInputStream ais = ansIS.readSequenceStreamData(length);
 
-        int tag = ais.readTag();
+        ais.readTag();
 
         // ussd-DataCodingScheme USSD-DataCodingScheme
         if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive())
@@ -122,7 +117,7 @@ public class UnstructuredSSResponseImpl extends SupplementaryMessageImpl impleme
         int length1 = ais.readLength();
         this.ussdDataCodingSch = new CBSDataCodingSchemeImpl(ais.readOctetStringData(length1)[0]);
 
-        tag = ais.readTag();
+        ais.readTag();
 
         // ussd-String USSD-String
         if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive())
@@ -181,25 +176,4 @@ public class UnstructuredSSResponseImpl extends SupplementaryMessageImpl impleme
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<UnstructuredSSResponseImpl> UNSTRUCTURED_SS_RESPONSE_XML = new XMLFormat<UnstructuredSSResponseImpl>(
-            UnstructuredSSResponseImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, UnstructuredSSResponseImpl ussdMessage)
-                throws XMLStreamException {
-            USSD_MESSAGE_XML.read(xml, ussdMessage);
-
-        }
-
-        @Override
-        public void write(UnstructuredSSResponseImpl ussdMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            USSD_MESSAGE_XML.write(ussdMessage, xml);
-        }
-    };
-
 }

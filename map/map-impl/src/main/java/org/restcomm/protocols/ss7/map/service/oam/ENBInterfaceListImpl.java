@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class ENBInterfaceListImpl extends BitStringBase implements ENBInterfaceList {
-    static final int _ID_s1Mme = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_s1Mme = 0;
     static final int _ID_x2 = 1;
     static final int _ID_uu = 2;
 

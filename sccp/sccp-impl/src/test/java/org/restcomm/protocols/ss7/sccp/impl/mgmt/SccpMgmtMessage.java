@@ -31,7 +31,9 @@ import java.io.Serializable;
  *
  */
 public class SccpMgmtMessage implements Serializable {
-    private SccpMgmtMessageType type;
+	private static final long serialVersionUID = 1L;
+
+	private SccpMgmtMessageType type;
     private int affectedSsn;
     private int affectedPc;
     private int subsystemMultiplicity;

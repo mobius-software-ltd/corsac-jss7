@@ -62,7 +62,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtB
  *
  */
 public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl implements SendRoutingInformationRequest {
-    private ISDNAddressString msisdn;
+	private static final long serialVersionUID = 1L;
+
+	private ISDNAddressString msisdn;
     private CUGCheckInfo cugCheckInfo;
     private Integer numberOfForwarding;
     private InterrogationType interrogationType;

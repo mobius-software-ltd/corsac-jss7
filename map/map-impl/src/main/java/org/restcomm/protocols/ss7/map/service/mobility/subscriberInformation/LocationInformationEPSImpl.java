@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -51,8 +48,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class LocationInformationEPSImpl extends SequenceBase implements LocationInformationEPS {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_eUtranCellGlobalIdentity = 0;
+	public static final int _ID_eUtranCellGlobalIdentity = 0;
     public static final int _ID_trackingAreaIdentity = 1;
     public static final int _ID_extensionContainer = 2;
     public static final int _ID_geographicalInformation = 3;
@@ -60,15 +58,6 @@ public class LocationInformationEPSImpl extends SequenceBase implements Location
     public static final int _ID_currentLocationRetrieved = 5;
     public static final int _ID_ageOfLocationInformation = 6;
     public static final int _ID_mme_Name = 7;
-
-    private static final String E_UTRAN_CELL_GLOBAL_IDENTITY = "eUtranCellGlobalIdentity";
-    private static final String TRACKING_AREA_IDENTITY = "trackingAreaIdentity";
-    private static final String EXTENSION_CONTAINER = "extensionContainer";
-    private static final String GEOGRAPHICAL_INFORMATION = "geographicalInformation";
-    private static final String GEODETIC_INFORMATION = "geodeticInformation";
-    private static final String CURRENT_LOCATION_RETRIEVED = "currentLocationRetrieved";
-    private static final String AGE_OF_LOCATION_INFORMATION = "ageOfLocationInformation";
-    private static final String MME_NAME = "mmeName";
 
     private EUtranCgi eUtranCellGlobalIdentity = null;
     private TAId trackingAreaIdentity = null;
@@ -387,63 +376,4 @@ public class LocationInformationEPSImpl extends SequenceBase implements Location
         sb.append("]");
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<LocationInformationEPSImpl> LOCATION_INFORMATION_EPS_XML = new XMLFormat<LocationInformationEPSImpl>(
-            LocationInformationEPSImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, LocationInformationEPSImpl locationInformationEPS)
-                throws XMLStreamException {
-            locationInformationEPS.eUtranCellGlobalIdentity = xml.get(E_UTRAN_CELL_GLOBAL_IDENTITY, EUtranCgiImpl.class);
-            locationInformationEPS.trackingAreaIdentity = xml.get(TRACKING_AREA_IDENTITY, TAIdImpl.class);
-            locationInformationEPS.extensionContainer = xml.get(EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-            locationInformationEPS.geographicalInformation = xml.get(GEOGRAPHICAL_INFORMATION,
-                    GeographicalInformationImpl.class);
-
-            locationInformationEPS.geodeticInformation = xml.get(GEODETIC_INFORMATION, GeodeticInformationImpl.class);
-            Boolean bval = xml.get(CURRENT_LOCATION_RETRIEVED, Boolean.class);
-            if (bval != null)
-                locationInformationEPS.currentLocationRetrieved = bval;
-            locationInformationEPS.ageOfLocationInformation = xml.get(AGE_OF_LOCATION_INFORMATION, Integer.class);
-            locationInformationEPS.mmeName = xml.get(MME_NAME, DiameterIdentityImpl.class);
-        }
-
-        @Override
-        public void write(LocationInformationEPSImpl locationInformationEPS, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (locationInformationEPS.eUtranCellGlobalIdentity != null) {
-                xml.add((EUtranCgiImpl) locationInformationEPS.eUtranCellGlobalIdentity, E_UTRAN_CELL_GLOBAL_IDENTITY,
-                        EUtranCgiImpl.class);
-            }
-            if (locationInformationEPS.trackingAreaIdentity != null) {
-                xml.add((TAIdImpl) locationInformationEPS.trackingAreaIdentity, TRACKING_AREA_IDENTITY, TAIdImpl.class);
-            }
-            if (locationInformationEPS.extensionContainer != null) {
-                xml.add((MAPExtensionContainerImpl) locationInformationEPS.extensionContainer, EXTENSION_CONTAINER,
-                        MAPExtensionContainerImpl.class);
-            }
-            if (locationInformationEPS.geographicalInformation != null) {
-                xml.add((GeographicalInformationImpl) locationInformationEPS.geographicalInformation, GEOGRAPHICAL_INFORMATION,
-                        GeographicalInformationImpl.class);
-            }
-
-            if (locationInformationEPS.geodeticInformation != null) {
-                xml.add((GeodeticInformationImpl) locationInformationEPS.geodeticInformation, GEODETIC_INFORMATION,
-                        GeodeticInformationImpl.class);
-            }
-            if (locationInformationEPS.currentLocationRetrieved) {
-                xml.add((Boolean) locationInformationEPS.currentLocationRetrieved, CURRENT_LOCATION_RETRIEVED, Boolean.class);
-            }
-            if (locationInformationEPS.ageOfLocationInformation != null) {
-                xml.add((Integer) locationInformationEPS.ageOfLocationInformation, AGE_OF_LOCATION_INFORMATION, Integer.class);
-            }
-            if (locationInformationEPS.mmeName != null) {
-                xml.add((DiameterIdentityImpl) locationInformationEPS.mmeName, MME_NAME, DiameterIdentityImpl.class);
-            }
-        }
-    };
-
 }

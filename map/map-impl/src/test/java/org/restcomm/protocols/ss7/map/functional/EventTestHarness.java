@@ -348,7 +348,7 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
         }
     }
 
-    protected String doStringCompare(List expectedEvents, List observerdEvents) {
+    protected String doStringCompare(List<TestEvent> expectedEvents, List<TestEvent> observerdEvents) {
         StringBuilder sb = new StringBuilder();
         int size1 = expectedEvents.size();
         int size2 = observerdEvents.size();

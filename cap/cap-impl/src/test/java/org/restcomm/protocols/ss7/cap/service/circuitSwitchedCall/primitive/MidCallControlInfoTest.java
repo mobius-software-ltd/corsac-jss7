@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -103,7 +97,7 @@ public class MidCallControlInfoTest {
         assertEquals(aos.toByteArray(), this.getData2());
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
         MidCallControlInfoImpl original = new MidCallControlInfoImpl(3, null, null, null, null, null);
 
@@ -155,6 +149,5 @@ public class MidCallControlInfoTest {
         assertEquals(copy.getCancelDigit(), original.getCancelDigit());
         assertEquals(copy.getStartDigit(), original.getStartDigit());
         assertEquals((int) copy.getInterDigitTimeout(), (int) original.getInterDigitTimeout());
-    }
-
+    }*/
 }

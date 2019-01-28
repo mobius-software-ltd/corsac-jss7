@@ -60,7 +60,7 @@ public class SendChargingInformationRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         SendChargingInformationRequestImpl elem = new SendChargingInformationRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         this.testCAI_GSM0224(elem.getSCIBillingChargingCharacteristics().getAOCSubsequent().getCAI_GSM0224());
         assertEquals((int) elem.getSCIBillingChargingCharacteristics().getAOCSubsequent().getTariffSwitchInterval(), 100);

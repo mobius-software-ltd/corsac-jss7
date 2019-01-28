@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -52,11 +49,9 @@ import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
  *
  */
 public class UnstructuredSSRequestImpl extends SupplementaryMessageImpl implements UnstructuredSSRequest {
+	private static final long serialVersionUID = 1L;
 
-    private static final String MSISDN = "msisdn";
-    private static final String ALERTING_PATTERN = "alertingPattern";
-
-    private static final int _TAG_MSISDN = 0;
+	private static final int _TAG_MSISDN = 0;
 
     private ISDNAddressString msisdnAddressString = null;
     private AlertingPattern alertingPattern = null;
@@ -263,29 +258,4 @@ public class UnstructuredSSRequestImpl extends SupplementaryMessageImpl implemen
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<UnstructuredSSRequestImpl> UNSTRUCTURED_SS_REQUEST_XML = new XMLFormat<UnstructuredSSRequestImpl>(
-            UnstructuredSSRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, UnstructuredSSRequestImpl ussdMessage)
-                throws XMLStreamException {
-            USSD_MESSAGE_XML.read(xml, ussdMessage);
-            ussdMessage.msisdnAddressString = xml.get(MSISDN, ISDNAddressStringImpl.class);
-            ussdMessage.alertingPattern = xml.get(ALERTING_PATTERN, AlertingPatternImpl.class);
-
-        }
-
-        @Override
-        public void write(UnstructuredSSRequestImpl ussdMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            USSD_MESSAGE_XML.write(ussdMessage, xml);
-            xml.add(((ISDNAddressStringImpl) ussdMessage.msisdnAddressString), MSISDN, ISDNAddressStringImpl.class);
-            xml.add(((AlertingPatternImpl) ussdMessage.alertingPattern), ALERTING_PATTERN, AlertingPatternImpl.class);
-        }
-    };
-
 }

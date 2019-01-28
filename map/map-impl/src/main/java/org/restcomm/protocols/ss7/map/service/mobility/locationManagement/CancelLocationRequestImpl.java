@@ -53,8 +53,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class CancelLocationRequestImpl extends MobilityMessageImpl implements CancelLocationRequest {
+	private static final long serialVersionUID = 1L;
 
-    private static final int TAG_typeOfUpdate = 0;
+	private static final int TAG_typeOfUpdate = 0;
     private static final int TAG_mtrfSupportedAndAuthorized = 1;
     private static final int TAG_mtrfSupportedAndNotAuthorized = 2;
     private static final int TAG_newMSCNumber = 3;

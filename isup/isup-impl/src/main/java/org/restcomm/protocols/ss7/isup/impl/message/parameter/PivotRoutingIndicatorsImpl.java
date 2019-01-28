@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotRoutingIndicators;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class PivotRoutingIndicatorsImpl extends AbstractISUPParameter implements PivotRoutingIndicators {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] pivotRoutingIndicators;
+	private byte[] pivotRoutingIndicators;
 
     public PivotRoutingIndicatorsImpl() {
         super();

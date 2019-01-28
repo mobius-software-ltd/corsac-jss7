@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class PGWEventListImpl extends BitStringBase implements PGWEventList {
-    static final int _ID_pdnConnectionCreation = 0;
+	private static final long serialVersionUID = 1L;
+	
+	static final int _ID_pdnConnectionCreation = 0;
     static final int _ID_pdnConnectionTermination = 1;
     static final int _ID_bearerActivationModificationDeletion = 2;
 

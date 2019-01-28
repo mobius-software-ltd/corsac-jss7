@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class ReportingPLMNListImpl implements ReportingPLMNList, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_plmnListPrioritized = 0;
+	public static final int _ID_plmnListPrioritized = 0;
     public static final int _ID_plmnList = 1;
 
     public static final String _PrimitiveName = "ReportingPLMNList";

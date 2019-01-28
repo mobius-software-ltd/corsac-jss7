@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class SGSNCapabilitiesImpl extends OctetStringLength1Base implements SGSNCapabilities {
+	private static final long serialVersionUID = 1L;
 
-    public SGSNCapabilitiesImpl() {
+	public SGSNCapabilitiesImpl() {
         super("SGSNCapabilities");
     }
 

@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,12 +44,11 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.FCIB
  */
 public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMessageImpl implements
         FurnishChargingInformationRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_fCIBCCCAMELsequence1 = 0;
+	public static final int _ID_fCIBCCCAMELsequence1 = 0;
 
     public static final String _PrimitiveName = "FurnishChargingInformationIndication";
-
-    private static final String FCIBCC_CAMEL_SEQUENCE1 = "fciBCCCAMELsequence1";
 
     private FCIBCCCAMELsequence1 FCIBCCCAMELsequence1;
 
@@ -215,30 +211,4 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<FurnishChargingInformationRequestImpl> FURNISH_CHARGING_INFORMATION_REQUEST_XML = new XMLFormat<FurnishChargingInformationRequestImpl>(
-            FurnishChargingInformationRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml,
-                FurnishChargingInformationRequestImpl furnishChargingInformationRequest) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, furnishChargingInformationRequest);
-
-            furnishChargingInformationRequest.FCIBCCCAMELsequence1 = xml.get(FCIBCC_CAMEL_SEQUENCE1,
-                    FCIBCCCAMELsequence1Impl.class);
-        }
-
-        @Override
-        public void write(FurnishChargingInformationRequestImpl furnishChargingInformationRequest,
-                javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(furnishChargingInformationRequest, xml);
-
-            if (furnishChargingInformationRequest.FCIBCCCAMELsequence1 != null)
-                xml.add((FCIBCCCAMELsequence1Impl) furnishChargingInformationRequest.FCIBCCCAMELsequence1,
-                        FCIBCC_CAMEL_SEQUENCE1, FCIBCCCAMELsequence1Impl.class);
-        }
-    };
 }

@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class ExtSSStatusImpl extends OctetStringBase implements ExtSSStatus {
+	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
      * SSStatus bits TS 3GPP TS 23.011
      */
     public static final byte sssBitQ = 8; // bit 4

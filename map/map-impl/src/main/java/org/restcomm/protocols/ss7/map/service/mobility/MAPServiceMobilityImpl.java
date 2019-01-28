@@ -275,6 +275,8 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
             }
+			default:
+				break;
         }
 
         return new ServingCheckDataImpl(ServingCheckResult.AC_NotServing);
@@ -626,7 +628,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
 
     private void cancelLocationResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
             boolean returnResultNotLast) throws MAPParsingComponentException {
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
+        mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
 
         CancelLocationResponseImpl ind = new CancelLocationResponseImpl();
 
@@ -775,7 +777,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
 
     private void updateGprsLocationResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
             boolean returnResultNotLast) throws MAPParsingComponentException {
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
+        mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
 
         UpdateGprsLocationResponseImpl ind = new UpdateGprsLocationResponseImpl();
 

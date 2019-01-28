@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.cap.primitives.SequenceBase;
  *
  */
 public class VolumeIfTariffSwitchImpl extends SequenceBase implements VolumeIfTariffSwitch {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_volumeSinceLastTariffSwitch = 0;
+	public static final int _ID_volumeSinceLastTariffSwitch = 0;
     public static final int _ID_volumeTariffSwitchInterval = 1;
 
     public static final int _ID_VolumeIfTariffSwitch = 1;

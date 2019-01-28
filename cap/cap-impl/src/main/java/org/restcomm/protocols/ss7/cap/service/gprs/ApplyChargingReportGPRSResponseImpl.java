@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.ApplyChargingReportGPRSRe
  *
  */
 public class ApplyChargingReportGPRSResponseImpl extends GprsMessageImpl implements ApplyChargingReportGPRSResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ApplyChargingReportGPRSResponse";
+	public static final String _PrimitiveName = "ApplyChargingReportGPRSResponse";
 
     @Override
     public CAPMessageType getMessageType() {

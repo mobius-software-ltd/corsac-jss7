@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class InterCUGRestrictionsImpl extends OctetStringLength1Base implements InterCUGRestrictions {
+	private static final long serialVersionUID = 1L;
 
-    public InterCUGRestrictionsImpl() {
+	public InterCUGRestrictionsImpl() {
         super("InterCUGRestrictions");
     }
 

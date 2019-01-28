@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
  *
  */
 public class TCQueryRequestImpl extends DialogRequestImpl implements TCQueryRequest {
+	private static final long serialVersionUID = 1L;
 
-    private SccpAddress originatingAddress, destinationAddress;
+	private SccpAddress originatingAddress, destinationAddress;
 
     // fields
     private ApplicationContext applicationContextName;

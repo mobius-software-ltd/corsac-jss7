@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class AbortSourceImpl implements AbortSource {
+	private static final long serialVersionUID = 1L;
 
-    private AbortSourceType type;
+	private AbortSourceType type;
 
     /*
      * (non-Javadoc)

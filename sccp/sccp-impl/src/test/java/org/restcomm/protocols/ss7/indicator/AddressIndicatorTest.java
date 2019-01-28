@@ -26,12 +26,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.restcomm.protocols.ss7.indicator.AddressIndicator;
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
@@ -126,7 +120,7 @@ public class AddressIndicatorTest {
         assertEquals(i1, i2);
     }
 
-    @Test(groups = { "functional.encode", "indicator" })
+    /*@Test(groups = { "functional.encode", "indicator" })
     public void testSerialize() throws Exception {
         AddressIndicator ai = new AddressIndicator(false, true, RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
                 GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
@@ -150,6 +144,5 @@ public class AddressIndicatorTest {
         assertEquals(aiOut.getGlobalTitleIndicator(), GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
         assertEquals(aiOut.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN);
         assertFalse(aiOut.isReservedForNationalUseBit());
-    }
-
+    }*/
 }

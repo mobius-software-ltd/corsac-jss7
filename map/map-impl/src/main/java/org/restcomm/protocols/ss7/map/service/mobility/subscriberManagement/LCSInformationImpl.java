@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class LCSInformationImpl extends SequenceBase implements LCSInformation {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_gmlcList = 0;
+	public static final int _TAG_gmlcList = 0;
     public static final int _TAG_lcsPrivacyExceptionList = 1;
     public static final int _TAG_molrList = 2;
     public static final int _TAG_addLcsPrivacyExceptionList = 3;

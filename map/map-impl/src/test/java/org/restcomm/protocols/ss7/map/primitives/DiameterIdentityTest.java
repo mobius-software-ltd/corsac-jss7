@@ -22,17 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import static org.testng.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
-import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
-import org.testng.annotations.Test;
-
 /**
  *
  * @author sergey vetyutnev
@@ -40,7 +29,7 @@ import org.testng.annotations.Test;
  */
 public class DiameterIdentityTest {
 
-    private byte[] getData() {
+	/*private byte[] getData() {
         return new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     }
 
@@ -68,6 +57,5 @@ public class DiameterIdentityTest {
 
         assertEquals(copy.getData(), original.getData());
 
-    }
-
+    }*/
 }

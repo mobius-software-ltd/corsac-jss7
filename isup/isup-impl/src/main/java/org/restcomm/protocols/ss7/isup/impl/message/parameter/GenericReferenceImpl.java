@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericReference;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class GenericReferenceImpl extends AbstractISUPParameter implements GenericReference {
+	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
      *
      */
     public GenericReferenceImpl() {

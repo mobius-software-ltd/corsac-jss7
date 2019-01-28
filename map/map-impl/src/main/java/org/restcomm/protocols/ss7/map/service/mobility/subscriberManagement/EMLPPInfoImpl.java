@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class EMLPPInfoImpl extends SequenceBase implements EMLPPInfo {
+	private static final long serialVersionUID = 1L;
 
-    private int maximumentitledPriority = 0;
+	private int maximumentitledPriority = 0;
     private int defaultPriority = 0;
     private MAPExtensionContainer extensionContainer = null;
 

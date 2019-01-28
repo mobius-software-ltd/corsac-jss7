@@ -28,12 +28,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -87,7 +82,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         CAMELAChBillingChargingCharacteristicsImpl elem = new CAMELAChBillingChargingCharacteristicsImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getMaxCallPeriodDuration(), 12000);
         assertTrue(elem.getReleaseIfdurationExceeded());
@@ -98,7 +93,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new CAMELAChBillingChargingCharacteristicsImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getMaxCallPeriodDuration(), 10000);
         assertTrue(elem.getReleaseIfdurationExceeded());
@@ -110,7 +105,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new CAMELAChBillingChargingCharacteristicsImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getMaxCallPeriodDuration(), 10000);
         assertTrue(elem.getReleaseIfdurationExceeded());
@@ -122,7 +117,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         data = this.getData4();
         ais = new AsnInputStream(data);
         elem = new CAMELAChBillingChargingCharacteristicsImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getMaxCallPeriodDuration(), 10000);
         assertTrue(elem.getReleaseIfdurationExceeded());
@@ -133,7 +128,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         data = this.getData5();
         ais = new AsnInputStream(data);
         elem = new CAMELAChBillingChargingCharacteristicsImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getMaxCallPeriodDuration(), 12000);
         assertTrue(elem.getReleaseIfdurationExceeded());
@@ -146,7 +141,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         data = this.getData6();
         ais = new AsnInputStream(data);
         elem = new CAMELAChBillingChargingCharacteristicsImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getMaxCallPeriodDuration(), 10000);
         assertFalse(elem.getReleaseIfdurationExceeded());
@@ -202,7 +197,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData6()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
         CAMELAChBillingChargingCharacteristicsImpl original = new CAMELAChBillingChargingCharacteristicsImpl(12000, true,
                 8000L, null, CAPExtensionsTest.createTestCAPExtensions(), 2);
@@ -257,5 +252,5 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         assertEquals((long) copy.getTariffSwitchInterval(), (long) original.getTariffSwitchInterval());
         assertNull(copy.getExtensions());
         assertEquals(copy.getAudibleIndicator().getTone(), original.getAudibleIndicator().getTone());
-    }
+    }*/
 }

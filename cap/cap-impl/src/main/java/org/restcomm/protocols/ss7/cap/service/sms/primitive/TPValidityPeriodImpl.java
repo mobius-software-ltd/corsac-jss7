@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.smstpdu.ValidityPeriodImpl;
  *
  */
 public class TPValidityPeriodImpl extends OctetStringBase implements TPValidityPeriod {
+	private static final long serialVersionUID = 1L;
 
-    public TPValidityPeriodImpl() {
+	public TPValidityPeriodImpl() {
         super(1, 7, "TPValidityPeriod");
     }
 

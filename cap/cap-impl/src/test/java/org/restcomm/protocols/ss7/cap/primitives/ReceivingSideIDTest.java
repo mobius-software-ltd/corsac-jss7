@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.primitives;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -56,7 +51,7 @@ public class ReceivingSideIDTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ReceivingSideIDImpl elem = new ReceivingSideIDImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getReceivingSideID(), LegType.leg2);
     }
@@ -70,7 +65,7 @@ public class ReceivingSideIDTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerializaion() throws Exception {
         ReceivingSideIDImpl original = new ReceivingSideIDImpl(LegType.leg2);
 
@@ -93,5 +88,5 @@ public class ReceivingSideIDTest {
         ReceivingSideIDImpl copy = reader.read("receivingSideID", ReceivingSideIDImpl.class);
 
         assertEquals(copy.getReceivingSideID(), original.getReceivingSideID());
-    }
+    }*/
 }

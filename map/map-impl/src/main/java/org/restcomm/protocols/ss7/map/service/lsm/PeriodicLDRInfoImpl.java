@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class PeriodicLDRInfoImpl implements PeriodicLDRInfo, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "PeriodicLDRInfo";
+	public static final String _PrimitiveName = "PeriodicLDRInfo";
 
     private int reportingAmount;
     private int reportingInterval;

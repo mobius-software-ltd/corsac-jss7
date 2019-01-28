@@ -21,7 +21,9 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastSet;
+import java.util.Iterator;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.State;
@@ -38,14 +40,16 @@ public class RouteRow implements AsStateListener {
     private static final Logger logger = Logger.getLogger(RouteRow.class);
 
     private int mtp3Status = Mtp3PausePrimitive.PAUSE;
-    private FastSet<AsImpl> servedByAsSet = null;
+    private ConcurrentHashMap<String,AsImpl> servedByAsSet = null;
     private int dpc;
     private final M3UAManagementImpl m3uaManagement;
-
+    private UUID uniqueID;
+    
     RouteRow(int dpc, M3UAManagementImpl m3uaManagement) {
         this.dpc = dpc;
-        this.m3uaManagement = m3uaManagement;
-        this.servedByAsSet = new FastSet<AsImpl>();
+        this.m3uaManagement = m3uaManagement;        
+        this.servedByAsSet = new ConcurrentHashMap<String,AsImpl>();
+        this.uniqueID=m3uaManagement.getUuidGenerator().GenerateTimeBasedGuid(System.currentTimeMillis());
     }
 
     public int getDpc() {
@@ -57,8 +61,8 @@ public class RouteRow implements AsStateListener {
     }
 
     protected void addServedByAs(AsImpl asImpl) {
-        this.servedByAsSet.add(asImpl);
-        asImpl.addAsStateListener(this);
+        this.servedByAsSet.put(asImpl.getName(), asImpl);
+        asImpl.addAsStateListener(uniqueID,this);
     }
 
     protected int servedByAsSize() {
@@ -66,8 +70,8 @@ public class RouteRow implements AsStateListener {
     }
 
     protected void removeServedByAs(AsImpl asImpl) {
-        boolean flag = this.servedByAsSet.remove(asImpl);
-        asImpl.removeAsStateListener(this);
+        boolean flag = (this.servedByAsSet.remove(asImpl.getName())!=null);
+        asImpl.removeAsStateListener(uniqueID);
         if (!flag) {
             logger.error(String.format("Removing route As=%s from DPC=%d failed!", asImpl, dpc));
         } else {
@@ -93,9 +97,9 @@ public class RouteRow implements AsStateListener {
         // Send MTP3 PAUSE to MTP3 user only if its not already sent for this
         // DPC
         if (this.mtp3Status != Mtp3Primitive.PAUSE) {
-
-            for (FastSet.Record r = this.servedByAsSet.head(), end = this.servedByAsSet.tail(); (r = r.getNext()) != end;) {
-                AsImpl asImplTmp = this.servedByAsSet.valueOf(r);
+        	Iterator<AsImpl> iterator=this.servedByAsSet.values().iterator();
+        	while(iterator.hasNext()) {
+                AsImpl asImplTmp = iterator.next();
                 if ((asImplTmp.getState().getName().equals(State.STATE_ACTIVE))
                         || (asImplTmp.getState().getName().equals(State.STATE_PENDING))) {
                     // If there are more AS in ACTIVE || PENDING state, no need

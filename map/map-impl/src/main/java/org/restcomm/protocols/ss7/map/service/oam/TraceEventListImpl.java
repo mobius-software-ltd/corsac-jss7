@@ -48,7 +48,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
 *
 */
 public class TraceEventListImpl extends SequenceBase implements TraceEventList {
-    public static final int _ID_mscSList = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_mscSList = 0;
     public static final int _ID_mgwList = 1;
     public static final int _ID_sgsnList = 2;
     public static final int _ID_ggsnList = 3;

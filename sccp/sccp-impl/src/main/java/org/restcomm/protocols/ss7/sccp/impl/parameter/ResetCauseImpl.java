@@ -33,7 +33,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ResetCauseImpl extends AbstractParameter  implements ResetCause {
-    private ResetCauseValue value;
+	private static final long serialVersionUID = 1L;
+
+	private ResetCauseValue value;
     private int digValue;
 
     public ResetCauseImpl() {

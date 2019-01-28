@@ -76,8 +76,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
  *
  */
 public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
+	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
      * @param appCntx
      * @param tcapDialog
      * @param mapProviderImpl

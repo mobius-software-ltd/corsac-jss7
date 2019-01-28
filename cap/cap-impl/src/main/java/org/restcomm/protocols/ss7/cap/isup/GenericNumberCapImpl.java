@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.isup;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,10 +44,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
  * @author tamas gyorgyey
  */
 public class GenericNumberCapImpl implements GenericNumberCap, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "GenericNumberCap";
-
-    private static final String ISUP_GENERIC_NUMBER_XML = "genericNumber";
+	public static final String _PrimitiveName = "GenericNumberCap";
 
     private byte[] data;
 
@@ -222,32 +218,4 @@ public class GenericNumberCapImpl implements GenericNumberCap, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<GenericNumberCapImpl> GENERIC_NUMBER_CAP_XML = new XMLFormat<GenericNumberCapImpl>(
-            GenericNumberCapImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, GenericNumberCapImpl genericNumber)
-                throws XMLStreamException {
-            try {
-                genericNumber.setGenericNumber(xml.get(ISUP_GENERIC_NUMBER_XML, GenericNumberImpl.class));
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-
-        @Override
-        public void write(GenericNumberCapImpl genericNumber, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            try {
-                xml.add(((GenericNumberImpl) genericNumber.getGenericNumber()), ISUP_GENERIC_NUMBER_XML,
-                        GenericNumberImpl.class);
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-    };
 }

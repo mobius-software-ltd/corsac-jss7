@@ -74,7 +74,7 @@ public class ForwardingDataTest {
         byte[] data = new byte[] { 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         ForwardingDataImpl forwardingData = new ForwardingDataImpl();
         forwardingData.decodeAll(asn);

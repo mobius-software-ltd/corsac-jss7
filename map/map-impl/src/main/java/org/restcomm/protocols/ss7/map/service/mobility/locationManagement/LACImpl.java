@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class LACImpl implements LAC, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "LAC";
+	public static final String _PrimitiveName = "LAC";
 
     private byte[] data;
 

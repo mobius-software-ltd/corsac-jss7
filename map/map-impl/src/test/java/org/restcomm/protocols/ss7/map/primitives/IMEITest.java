@@ -32,9 +32,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -132,7 +129,7 @@ public class IMEITest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         IMEIImpl original = new IMEIImpl("12345123450000");
@@ -155,6 +152,5 @@ public class IMEITest {
         IMEIImpl copy = reader.read("imei", IMEIImpl.class);
 
         assertEquals(copy.getIMEI(), original.getIMEI());
-    }
-
+    }*/
 }

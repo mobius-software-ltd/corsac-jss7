@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,10 +44,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ReleaseCallRequestImpl extends CircuitSwitchedCallMessageImpl implements ReleaseCallRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ReleaseCalltRequestIndication";
-
-    private static final String CAUSE = "cause";
+	public static final String _PrimitiveName = "ReleaseCalltRequestIndication";
 
     private CauseCap cause;
 
@@ -177,28 +173,4 @@ public class ReleaseCallRequestImpl extends CircuitSwitchedCallMessageImpl imple
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ReleaseCallRequestImpl> RELEASE_CALL_REQUEST_XML = new XMLFormat<ReleaseCallRequestImpl>(
-            ReleaseCallRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ReleaseCallRequestImpl releaseCallRequest)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, releaseCallRequest);
-
-            releaseCallRequest.cause = xml.get(CAUSE, CauseCapImpl.class);
-        }
-
-        @Override
-        public void write(ReleaseCallRequestImpl releaseCallRequest, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(releaseCallRequest, xml);
-
-            if (releaseCallRequest.getCause() != null)
-                xml.add((CauseCapImpl) releaseCallRequest.getCause(), CAUSE, CauseCapImpl.class);
-        }
-    };
 }

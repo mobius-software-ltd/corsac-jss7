@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
  *
  */
 public class LCSClientNameImpl implements LCSClientName, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_DATA_CODING_SCHEME = 0;
+	private static final int _TAG_DATA_CODING_SCHEME = 0;
     private static final int _TAG_NAME_STRING = 2;
     private static final int _TAG_LCS_FORMAT_INDICATOR = 3;
 

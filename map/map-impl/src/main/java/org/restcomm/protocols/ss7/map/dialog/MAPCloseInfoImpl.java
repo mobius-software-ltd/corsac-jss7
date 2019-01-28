@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class MAPCloseInfoImpl implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int MAP_CLOSE_INFO_TAG = 0x02;
+	public static final int MAP_CLOSE_INFO_TAG = 0x02;
 
     protected static final int CLOSE_INFO_TAG_CLASS = Tag.CLASS_CONTEXT_SPECIFIC;
     protected static final boolean CLOSE_INFO_TAG_PC_PRIMITIVE = true;

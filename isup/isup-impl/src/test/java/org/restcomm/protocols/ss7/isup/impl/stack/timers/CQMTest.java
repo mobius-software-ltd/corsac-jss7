@@ -95,8 +95,8 @@ public class CQMTest extends SingleTimers {
 
         CircuitStateIndicator ci = super.provider.getParameterFactory().createCircuitStateIndicator();
         byte[] state = new byte[2];
-        state[0] = ci.createCircuitState(ci._MBS_LAR_BLOCKED, ci._CPS_CIB, ci._HBS_LAR_BLOCKED);
-        state[1] = ci.createCircuitState(ci._MBS_LAR_BLOCKED, ci._CPS_COB, ci._HBS_LAR_BLOCKED);
+        state[0] = ci.createCircuitState(CircuitStateIndicator._MBS_LAR_BLOCKED, CircuitStateIndicator._CPS_CIB, CircuitStateIndicator._HBS_LAR_BLOCKED);
+        state[1] = ci.createCircuitState(CircuitStateIndicator._MBS_LAR_BLOCKED, CircuitStateIndicator._CPS_COB, CircuitStateIndicator._HBS_LAR_BLOCKED);
         ci.setCircuitState(state);
         ans.setCircuitStateIndicator(ci);
         return ans;

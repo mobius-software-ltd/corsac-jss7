@@ -27,13 +27,12 @@ import static org.testng.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
-
 import org.restcomm.protocols.ss7.sccp.MaxConnectionCountReached;
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.SccpManagementEventListener;
@@ -53,7 +52,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.PreviewDialogDataKey;
 import org.restcomm.protocols.ss7.tcapAnsi.TCAPProviderImplWrapper;
 import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImplWrapper;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
-import org.restcomm.ss7.congestion.ExecutorCongestionMonitor;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -71,7 +69,6 @@ public class DialogPreviewModeMngConcurrentTest {
 
     private SccpHarnessPreview sccpProv = new SccpHarnessPreview();
     private TCAPStackImplWrapper tcapStack1;
-    private static final int MAX_DIALOGS = 100;
     private static final int DPC = 100;
     private static final int SSN = 100;
     private static final int TEST_TIMEOUT = 1000000;
@@ -99,7 +96,7 @@ public class DialogPreviewModeMngConcurrentTest {
     public void setUp() throws Exception {
         System.out.println("setUp");
 
-        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "DialogMngConcurrentTest");
+        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "DialogMngConcurrentTest",4);
         this.tcapStack1.start();
         provider = (TCAPProviderImplWrapper) tcapStack1.getProvider();
     }
@@ -113,34 +110,6 @@ public class DialogPreviewModeMngConcurrentTest {
     public void tearDown() {
         System.out.println("tearDown");
         this.tcapStack1.stop();
-    }
-
-    @Test
-    public void testMaxDialogConstraint() throws Exception {
-        tcapStack1.setMaxDialogs(MAX_DIALOGS);
-
-        List<Runnable> runnables = new ArrayList<Runnable>();
-        for (int i = 0; i < MAX_DIALOGS + 100; i++) {
-            runnables.add(new Runnable() {
-                public void run() {
-                    SccpAddress localAddress = new SccpAddressImpl();
-                    SccpAddress remoteAddress = new SccpAddressImpl();
-                    PreviewDialogDataKey ky = new PreviewDialogDataKey(DPC, SCCP_DIGITS, SSN, txSeq.incrementAndGet());
-                    try {
-                        Long previewDialogId = provider.getAvailableTxIdPreview();
-                        PreviewDialogData pdd = new PreviewDialogData(provider, previewDialogId);
-                        provider.createPreviewDialog(ky, localAddress, remoteAddress, 0);
-                    } catch (Exception e) {
-
-                    }
-                }
-            });
-        }
-
-        ConcurrentTestUtil.assertConcurrent("", runnables, TEST_TIMEOUT);
-        Assert.assertEquals(MAX_DIALOGS, provider.getDialogPreviewList().size());
-
-        tcapStack1.setMaxDialogs(10000);
     }
 
     @Test
@@ -337,7 +306,7 @@ public class DialogPreviewModeMngConcurrentTest {
 
         final PreviewDialogDataKey ky = new PreviewDialogDataKey(DPC, SCCP_DIGITS, SSN, txSeq.incrementAndGet());
         Long previewDialogId = provider.getAvailableTxIdPreview();
-        final PreviewDialogData pdd = new PreviewDialogData(provider, previewDialogId);
+        new PreviewDialogData(provider, previewDialogId);
         final SccpAddress localAddress = new SccpAddressImpl();
         final SccpAddress remoteAddress = new SccpAddressImpl();
         final DialogImpl createPreviewDialog = (DialogImpl) provider.createPreviewDialog(ky, localAddress, remoteAddress, 0);
@@ -345,7 +314,7 @@ public class DialogPreviewModeMngConcurrentTest {
         final PreviewDialogDataKey ky2 = new PreviewDialogDataKey(DPC, SCCP_DIGITS, SSN, txSeq.incrementAndGet());
         provider.getPreviewDialog(ky, ky2, localAddress, remoteAddress, 0);
 
-        List<Runnable> runnables = new ArrayList();
+        List<Runnable> runnables = new ArrayList<Runnable>();
         for (int i = 0; i < 100; i++) {
             runnables.add(new Runnable() {
                 public void run() {
@@ -359,8 +328,9 @@ public class DialogPreviewModeMngConcurrentTest {
     }
 
     private class SccpHarnessPreview implements SccpProvider {
+		private static final long serialVersionUID = 1L;
 
-        @Override
+		@Override
         public void deregisterSccpListener(int arg0) {
             // TODO Auto-generated method stub
 
@@ -384,11 +354,8 @@ public class DialogPreviewModeMngConcurrentTest {
             return null;
         }
 
-        protected SccpListener sccpListener;
-
         @Override
         public void registerSccpListener(int arg0, SccpListener listener) {
-            sccpListener = listener;
         }
 
         @Override
@@ -399,13 +366,13 @@ public class DialogPreviewModeMngConcurrentTest {
         }
 
         @Override
-        public void registerManagementEventListener(SccpManagementEventListener listener) {
+        public void registerManagementEventListener(UUID key,SccpManagementEventListener listener) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void deregisterManagementEventListener(SccpManagementEventListener listener) {
+        public void deregisterManagementEventListener(UUID key) {
             // TODO Auto-generated method stub
 
         }
@@ -416,23 +383,13 @@ public class DialogPreviewModeMngConcurrentTest {
         }
 
         @Override
-        public FastMap<Integer, NetworkIdState> getNetworkIdStateList() {
-            return new FastMap<Integer, NetworkIdState>();
-        }
-
-        @Override
-        public ExecutorCongestionMonitor[] getExecutorCongestionMonitorList() {
-            return null;
-        }
-
-        @Override
         public SccpConnection newConnection(int localSsn, ProtocolClass protocolClass) throws MaxConnectionCountReached {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public FastMap<LocalReference, SccpConnection> getConnections() {
+        public ConcurrentHashMap<LocalReference, SccpConnection> getConnections() {
             // TODO Auto-generated method stub
             return null;
         }
@@ -447,12 +404,6 @@ public class DialogPreviewModeMngConcurrentTest {
 		public SccpStack getSccpStack() {
 			// TODO Auto-generated method stub
 			return null;
-		}
-
-		@Override
-		public void updateSPCongestion(Integer ssn, Integer congestionLevel) {
-			// TODO Auto-generated method stub
-			
 		}
     }
 

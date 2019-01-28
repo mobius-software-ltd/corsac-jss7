@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.isup;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.UUID;
 
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 
@@ -61,14 +62,14 @@ public interface ISUPProvider extends Serializable {
      *
      * @param listener
      */
-    void addListener(ISUPListener listener);
+    void addListener(UUID key,ISUPListener listener);
 
     /**
      * Removes listener.
      *
      * @param listener
      */
-    void removeListener(ISUPListener listener);
+    void removeListener(UUID key);
 
     /**
      * Get factory for ISUP parameters.

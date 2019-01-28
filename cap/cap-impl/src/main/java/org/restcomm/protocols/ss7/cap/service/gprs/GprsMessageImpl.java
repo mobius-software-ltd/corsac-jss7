@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  *
  */
 public abstract class GprsMessageImpl extends MessageImpl implements GprsMessage, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public CAPDialogGprs getCAPDialog() {
+	public CAPDialogGprs getCAPDialog() {
         return (CAPDialogGprs) super.getCAPDialog();
     }
 

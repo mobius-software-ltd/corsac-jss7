@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
 *
 */
 public class ListOfMeasurementsImpl extends OctetStringBase implements ListOfMeasurements {
+	private static final long serialVersionUID = 1L;
 
-    public ListOfMeasurementsImpl() {
+	public ListOfMeasurementsImpl() {
         super(4, 4, "ListOfMeasurements");
     }
 

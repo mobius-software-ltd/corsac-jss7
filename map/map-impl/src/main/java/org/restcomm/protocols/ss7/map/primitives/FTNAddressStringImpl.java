@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
  *
  */
 public class FTNAddressStringImpl extends AddressStringImpl implements FTNAddressString {
+	private static final long serialVersionUID = 1L;
 
-    public FTNAddressStringImpl() {
+	public FTNAddressStringImpl() {
     }
 
     public FTNAddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {

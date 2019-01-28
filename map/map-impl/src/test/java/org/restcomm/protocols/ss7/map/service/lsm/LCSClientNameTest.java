@@ -88,7 +88,7 @@ public class LCSClientNameTest {
         byte[] data = getData();
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         LCSClientNameImpl lcsClientName = new LCSClientNameImpl();
         lcsClientName.decodeAll(asn);
@@ -102,7 +102,7 @@ public class LCSClientNameTest {
         data = getDataFull();
 
         asn = new AsnInputStream(data);
-        tag = asn.readTag();
+        asn.readTag();
 
         lcsClientName = new LCSClientNameImpl();
         lcsClientName.decodeAll(asn);

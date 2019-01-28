@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,9 +42,9 @@ import org.restcomm.protocols.ss7.cap.api.errors.CancelProblem;
  */
 public class CAPErrorMessageCancelFailedImpl extends CAPErrorMessageImpl implements CAPErrorMessageCancelFailed {
 
-    private static final String CANCEL_PROBLEM = "cancelProblem";
+    private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "CAPErrorMessageCancelFailed";
+	public static final String _PrimitiveName = "CAPErrorMessageCancelFailed";
 
     private CancelProblem cancelProblem;
 
@@ -182,30 +179,4 @@ public class CAPErrorMessageCancelFailedImpl extends CAPErrorMessageImpl impleme
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CAPErrorMessageCancelFailedImpl> CAP_ERROR_MESSAGE_CANCEL_FAILED_XML = new XMLFormat<CAPErrorMessageCancelFailedImpl>(
-            CAPErrorMessageCancelFailedImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CAPErrorMessageCancelFailedImpl errorMessage)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-
-            String str = xml.get(CANCEL_PROBLEM, String.class);
-            if (str != null)
-                errorMessage.cancelProblem = Enum.valueOf(CancelProblem.class, str);
-        }
-
-        @Override
-        public void write(CAPErrorMessageCancelFailedImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-
-            if (errorMessage.cancelProblem != null)
-                xml.add((String) errorMessage.cancelProblem.toString(), CANCEL_PROBLEM, String.class);
-        }
-    };
 }

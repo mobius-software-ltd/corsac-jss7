@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
  * @author kulikov
  */
 public class HopCounterImpl extends AbstractParameter implements HopCounter {
+	private static final long serialVersionUID = 1L;
 
-    private int value;
+	private int value;
 
     public HopCounterImpl(int value) {
         this.value = value;

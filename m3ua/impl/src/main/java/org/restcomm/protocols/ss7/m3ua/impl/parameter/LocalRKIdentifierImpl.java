@@ -22,10 +22,6 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.m3ua.parameter.LocalRKIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -34,9 +30,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
  * @author amit bhayani
  *
  */
-public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdentifier, XMLSerializable {
-
-    private static final String ID = "id";
+public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdentifier {
 
     private byte[] value;
     private long id;
@@ -89,23 +83,4 @@ public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdent
     public String toString() {
         return String.format("LocalRKIdentifier id=%d", id);
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<LocalRKIdentifierImpl> RC_XML = new XMLFormat<LocalRKIdentifierImpl>(
-            LocalRKIdentifierImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, LocalRKIdentifierImpl localRkId) throws XMLStreamException {
-            localRkId.id = xml.getAttribute(ID).toLong();
-            localRkId.encode();
-        }
-
-        @Override
-        public void write(LocalRKIdentifierImpl localRkId, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(ID, localRkId.id);
-        }
-    };
 }

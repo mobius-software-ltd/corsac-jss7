@@ -248,13 +248,17 @@ public class SccpFlowControl {
     }
 
     public static class MessageSequenceNumberException extends IllegalStateException {
-        public MessageSequenceNumberException(String message) {
+		private static final long serialVersionUID = 1L;
+
+		public MessageSequenceNumberException(String message) {
             super(message);
         }
     }
 
     public static class MessageSequenceEmptyWindowException extends IllegalStateException {
-        public MessageSequenceEmptyWindowException(String message) {
+		private static final long serialVersionUID = 1L;
+
+		public MessageSequenceEmptyWindowException(String message) {
             super(message);
         }
     }

@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 *
 */
 public class SendImsiRequestImpl extends OamMessageImpl implements SendImsiRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "SendImsiRequest";
+	public static final String _PrimitiveName = "SendImsiRequest";
 
     private ISDNAddressString msisdn;
 

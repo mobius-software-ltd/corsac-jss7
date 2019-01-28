@@ -51,8 +51,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class SendIdentificationRequestImpl extends MobilityMessageImpl implements SendIdentificationRequest {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_previousLAI = 0;
+	protected static final int _TAG_previousLAI = 0;
     protected static final int _TAG_hopCounter = 1;
     protected static final int _TAG_mtRoamingForwardingSupported = 2;
     protected static final int _TAG_newVLRNumber = 3;

@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
  *
  */
 public class ReturnErrorImpl implements ReturnError {
+	private static final long serialVersionUID = 1L;
 
-    // mandatory
+	// mandatory
     private Long invokeId;
 
     // mandatory

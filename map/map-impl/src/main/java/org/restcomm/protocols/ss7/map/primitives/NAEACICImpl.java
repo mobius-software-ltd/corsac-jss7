@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationTypeVa
  *
  */
 public class NAEACICImpl extends OctetStringBase implements NAEACIC {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int NETWORK_IND_PLAN_MASK = 0x0F;
+	protected static final int NETWORK_IND_PLAN_MASK = 0x0F;
     protected static final int NETWORK_IND_TYPE_MASK = 0x70;
     protected static final int THREE_OCTET_CARRIER_CODE_MASK = 0x0F;
 

@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -79,7 +74,7 @@ public class RouteSelectFailureSpecificInfoTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
 
         CauseCapImpl cause = new CauseCapImpl(this.getIntData());
@@ -110,6 +105,5 @@ public class RouteSelectFailureSpecificInfoTest {
                 .getCauseIndicators().getCauseValue());
         assertEquals(copy.getFailureCause().getCauseIndicators().getCodingStandard(), original.getFailureCause()
                 .getCauseIndicators().getCodingStandard());
-
-    }
+    }*/
 }

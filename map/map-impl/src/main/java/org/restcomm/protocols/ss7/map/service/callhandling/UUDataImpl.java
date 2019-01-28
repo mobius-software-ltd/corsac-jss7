@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,15 +43,12 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class UUDataImpl extends SequenceBase implements UUData {
-    public static final int _ID_uuIndicator = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_uuIndicator = 0;
     public static final int _ID_uuI = 1;
     public static final int _ID_uusCFInteraction = 2;
     public static final int _ID_extensionContainer = 3;
-
-    private static final String UU_INDICATOR = "uuIndicator";
-    private static final String UU_I = "uuI";
-    private static final String UUS_CF_INTERACTION = "uusCFInteraction";
-    private static final String EXTENSION_CONTAINER = "extensionContainer";
 
     private UUIndicator uuIndicator;
     private UUI uuI;
@@ -160,34 +154,6 @@ public class UUDataImpl extends SequenceBase implements UUData {
             throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
         }
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<UUDataImpl> UU_DATA_XML = new XMLFormat<UUDataImpl>(UUDataImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, UUDataImpl uuData) throws XMLStreamException {
-            uuData.uuIndicator = xml.get(UU_INDICATOR, UUIndicatorImpl.class);
-            uuData.uuI = xml.get(UU_I, UUIImpl.class);
-            Boolean bval = xml.get(UUS_CF_INTERACTION, Boolean.class);
-            if (bval != null)
-                uuData.uusCFInteraction = bval;
-            uuData.extensionContainer = xml.get(EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(UUDataImpl uuData, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (uuData.uuIndicator != null)
-                xml.add((UUIndicatorImpl) uuData.uuIndicator, UU_INDICATOR, UUIndicatorImpl.class);
-            if (uuData.uuI != null)
-                xml.add((UUIImpl) uuData.uuI, UU_I, UUIImpl.class);
-            if (uuData.uusCFInteraction)
-                xml.add(uuData.uusCFInteraction, UUS_CF_INTERACTION, Boolean.class);
-            if (uuData.extensionContainer != null)
-                xml.add((MAPExtensionContainerImpl) uuData.extensionContainer, EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-    };
 
     @Override
     public String toString() {

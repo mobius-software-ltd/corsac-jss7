@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class OfferedCamel4FunctionalitiesImpl extends BitStringBase implements OfferedCamel4Functionalities {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _ID_initiateCallAttempt = 0;
+	private static final int _ID_initiateCallAttempt = 0;
     private static final int _ID_splitLeg = 1;
     private static final int _ID_moveLeg = 2;
     private static final int _ID_disconnectLeg = 3;

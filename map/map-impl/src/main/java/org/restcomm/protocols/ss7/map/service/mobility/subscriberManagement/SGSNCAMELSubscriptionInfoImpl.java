@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class SGSNCAMELSubscriptionInfoImpl extends SequenceBase implements SGSNCAMELSubscriptionInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_gprsCsi = 0;
+	private static final int _TAG_gprsCsi = 0;
     private static final int _TAG_moSmsCsi = 1;
     private static final int _TAG_extensionContainer = 2;
     private static final int _TAG_mtSmsCsi = 3;

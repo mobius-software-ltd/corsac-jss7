@@ -29,9 +29,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0010Impl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ParameterFactoryImpl;
@@ -100,7 +97,7 @@ public class GT0010Test {
         assertTrue(correct, "Incorrect encoding");
     }
 
-    @Test(groups = { "parameter", "functional.encode" })
+    /*@Test(groups = { "parameter", "functional.encode" })
     public void testSerialization() throws Exception {
         GlobalTitle0010Impl gt = new GlobalTitle0010Impl("9023629581",0);
 
@@ -121,6 +118,5 @@ public class GT0010Test {
         // check results
         assertEquals(aiOut.getTranslationType(), 0);
         assertEquals(aiOut.getDigits(), "9023629581");
-    }
-
+    }*/
 }

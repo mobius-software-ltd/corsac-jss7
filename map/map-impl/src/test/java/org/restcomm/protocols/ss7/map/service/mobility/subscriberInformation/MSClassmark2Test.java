@@ -22,17 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import static org.testng.Assert.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSClassmark2Impl;
-import org.testng.annotations.Test;
-
 /**
 *
 * @author sergey vetyutnev
@@ -40,7 +29,7 @@ import org.testng.annotations.Test;
 */
 public class MSClassmark2Test {
 
-    private byte[] getMSClassmark2Data() {
+	/*private byte[] getMSClassmark2Data() {
         return new byte[] { 11, 12, 13 };
     }
 
@@ -67,6 +56,5 @@ public class MSClassmark2Test {
         MSClassmark2Impl copy = reader.read("msClassmark2", MSClassmark2Impl.class);
 
         assertEquals(copy.getData(), original.getData());
-    }
-
+    }*/
 }

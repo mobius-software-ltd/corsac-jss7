@@ -25,14 +25,10 @@ package org.restcomm.protocols.ss7.map.primitives;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ByteArrayContainer;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
@@ -43,13 +39,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
  *
  */
 public class MAPPrivateExtensionImpl implements MAPPrivateExtension, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String OID = "oid";
-    private static final String DATA = "data";
-
-    private static final String DEFAULT_STRING = null;
-
-    private long[] oId;
+	private long[] oId;
     private byte[] data;
 
     public MAPPrivateExtensionImpl() {
@@ -271,43 +263,4 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension, MAPAsnPrimi
             return false;
         return true;
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPPrivateExtensionImpl> MAP_PRIVATE_EXTENSION_XML = new XMLFormat<MAPPrivateExtensionImpl>(
-            MAPPrivateExtensionImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPPrivateExtensionImpl mapPrivateExtension)
-                throws XMLStreamException {
-            String globalCode = xml.getAttribute(OID, DEFAULT_STRING);
-            if (globalCode != null) {
-                OidContainer oid = new OidContainer();
-                try {
-                    oid.parseSerializedData(globalCode);
-                } catch (NumberFormatException e) {
-                    throw new XMLStreamException("NumberFormatException when parsing oid in MAPPrivateExtension", e);
-                }
-                mapPrivateExtension.oId = oid.getData();
-            }
-            ByteArrayContainer bc = xml.get(DATA, ByteArrayContainer.class);
-            if (bc != null) {
-                mapPrivateExtension.data = bc.getData();
-            }
-        }
-
-        @Override
-        public void write(MAPPrivateExtensionImpl mapPrivateExtension, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (mapPrivateExtension.oId != null) {
-                OidContainer oid = new OidContainer(mapPrivateExtension.oId);
-                xml.setAttribute(OID, oid.getSerializedData());
-            }
-            if (mapPrivateExtension.data != null) {
-                ByteArrayContainer bac = new ByteArrayContainer(mapPrivateExtension.data);
-                xml.add(bac, DATA, ByteArrayContainer.class);
-            }
-        }
-    };
 }

@@ -27,12 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -74,7 +69,7 @@ public class ApplyChargingRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ApplyChargingRequestImpl elem = new ApplyChargingRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals((long) elem.getAChBillingChargingCharacteristics().getMaxCallPeriodDuration(), 36000);
@@ -90,7 +85,7 @@ public class ApplyChargingRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new ApplyChargingRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals((long) elem.getAChBillingChargingCharacteristics().getMaxCallPeriodDuration(), 36000);
@@ -106,7 +101,7 @@ public class ApplyChargingRequestTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new ApplyChargingRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals((long) elem.getAChBillingChargingCharacteristics().getMaxCallPeriodDuration(), 36000);
@@ -154,7 +149,7 @@ public class ApplyChargingRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerializaion() throws Exception {
         CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics = new CAMELAChBillingChargingCharacteristicsImpl(
                 36000, false, null, null, null, 2);
@@ -217,5 +212,5 @@ public class ApplyChargingRequestTest {
         assertNull(copy.getPartyToCharge());
         assertNull(copy.getExtensions());
         assertEquals(copy.getAChChargingAddress().getSrfConnection(), original.getAChChargingAddress().getSrfConnection());
-    }
+    }*/
 }

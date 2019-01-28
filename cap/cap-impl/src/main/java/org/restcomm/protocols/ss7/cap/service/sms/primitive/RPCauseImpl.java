@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class RPCauseImpl extends OctetStringLength1Base implements RPCause {
+	private static final long serialVersionUID = 1L;
 
-    public RPCauseImpl() {
+	public RPCauseImpl() {
         super("RPCause");
     }
 

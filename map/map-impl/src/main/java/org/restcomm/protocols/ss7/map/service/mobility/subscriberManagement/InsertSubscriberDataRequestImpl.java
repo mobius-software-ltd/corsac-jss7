@@ -75,8 +75,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl implements InsertSubscriberDataRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "InsertSubscriberDataRequest";
+	public static final String _PrimitiveName = "InsertSubscriberDataRequest";
 
     // MAP V1 & V2 & V3:
     protected static final int _TAG_imsi = 0;

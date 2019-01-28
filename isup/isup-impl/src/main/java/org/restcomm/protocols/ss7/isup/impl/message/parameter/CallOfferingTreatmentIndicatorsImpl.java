@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallOfferingTreatmentIn
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallOfferingTreatmentIndicatorsImpl extends AbstractISUPParameter implements CallOfferingTreatmentIndicators {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] callOfferingTreatmentIndicators = null;
+	private byte[] callOfferingTreatmentIndicators = null;
 
     public CallOfferingTreatmentIndicatorsImpl() {
         super();

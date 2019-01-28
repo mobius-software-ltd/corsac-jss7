@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 *
 */
 public class UserInformationElementImpl implements UserInformationElement {
+	private static final long serialVersionUID = 1L;
 
-    private External ext = new External();
+	private External ext = new External();
 
 
     /*

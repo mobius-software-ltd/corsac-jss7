@@ -36,10 +36,10 @@ import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
  */
 public class TCAPStackImplWrapper extends TCAPStackImpl {
 
-    public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName) {
-        super(stackName);
+    public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName,int threads) {
+        super(stackName,threads);
 
-        this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn);
+        this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn, service);
     }
 
     public Map<PreviewDialogDataKey, PreviewDialogData> getDialogPreviewList() {

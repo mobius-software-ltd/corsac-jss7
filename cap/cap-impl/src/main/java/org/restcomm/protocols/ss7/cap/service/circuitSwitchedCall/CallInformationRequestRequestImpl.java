@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
  *
  */
 public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessageImpl implements CallInformationRequestRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_requestedInformationTypeList = 0;
+	public static final int _ID_requestedInformationTypeList = 0;
     public static final int _ID_extensions = 2;
     public static final int _ID_legID = 3;
 

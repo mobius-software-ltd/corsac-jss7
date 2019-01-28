@@ -21,8 +21,9 @@
  */
 package org.restcomm.protocols.ss7.m3ua;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
@@ -41,20 +42,6 @@ public interface M3UAManagement {
      * @return name of this stack
      */
     String getName();
-
-    /**
-     * The directory where configuration file is persisted.
-     *
-     * @return directory where configuration file is persisted
-     */
-    String getPersistDir();
-
-    /**
-     * Set the directory where the configuration file is persisted
-     *
-     * @param persistDir
-     */
-    void setPersistDir(String persistDir);
 
     /**
      * The maximum SLS value. By Default this is set to 256
@@ -100,8 +87,6 @@ public interface M3UAManagement {
      */
     void setHeartbeatTime(int timeBetweenHeartbeat) throws Exception;
 
-    M3UACounterProvider getCounterProvider();
-
     boolean isUseLsbForLinksetSelection();
 
     void setUseLsbForLinksetSelection(boolean useLsbForLinksetSelection) throws Exception;
@@ -109,13 +94,6 @@ public interface M3UAManagement {
     int getDeliveryMessageThreadCount();
 
     String getRoutingLabelFormatStr();
-
-    /**
-     * Returns if an SCTP level supports netty.
-     *
-     * @return
-     */
-    boolean isSctpLibNettySupport();
 
     /**
      * Start M3UA stack
@@ -143,14 +121,14 @@ public interface M3UAManagement {
      *
      * @return list of {@link As} configured for this stack
      */
-    List<As> getAppServers();
+    Collection<As> getAppServers();
 
     /**
      * Returns list of {@link AspFactory} configured for this stack
      *
      * @return
      */
-    List<AspFactory> getAspfactories();
+    Collection<AspFactory> getAspfactories();
 
     /**
      * Create new {@link As}.
@@ -310,16 +288,17 @@ public interface M3UAManagement {
     /**
      * Add new {@link M3UAManagementEventListener}
      *
+     * @param key
      * @param m3uaManagementEventListener
      */
-    void addM3UAManagementEventListener(M3UAManagementEventListener m3uaManagementEventListener);
+    void addM3UAManagementEventListener(UUID key,M3UAManagementEventListener m3uaManagementEventListener);
 
     /**
      * Remove existing {@link M3UAManagementEventListener}
      *
-     * @param m3uaManagementEventListener
+     * @param key
      */
-    void removeM3UAManagementEventListener(M3UAManagementEventListener m3uaManagementEventListener);
+    void removeM3UAManagementEventListener(UUID key);
 
     /**
      * Returns the Route table/Map with DPC as key and list of {@link As} array as potential As that can route Payload to this
@@ -327,21 +306,7 @@ public interface M3UAManagement {
      *
      * @return
      */
-    Map<String, RouteAs> getRoute();
-
-    /**
-     * Set to true to enable statistics.
-     *
-     * @param val
-     */
-    void setStatisticsEnabled(boolean val) throws Exception;
-
-    /**
-     * Returns true if this stack is gathering statistics
-     *
-     * @return
-     */
-    boolean getStatisticsEnabled();
+    Map<RoutingKey, RouteAs> getRoute();
 
     boolean getRoutingKeyManagementEnabled();
 

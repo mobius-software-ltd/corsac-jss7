@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
  *
  */
 public class SSCamelDataImpl extends SequenceBase implements SSCamelData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_extensionContainer = 0;
+	private static final int _TAG_extensionContainer = 0;
 
     private ArrayList<SSCode> ssEventList;
     private ISDNAddressString gsmSCFAddress;

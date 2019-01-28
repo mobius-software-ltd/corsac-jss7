@@ -38,7 +38,9 @@ import java.io.IOException;
  * Created by vsubbotin on 26/05/16.
  */
 public class ClipDataImpl extends SequenceBase implements ClipData {
-    private static final int _TAG_EXT_SS_STATUS = 1;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_EXT_SS_STATUS = 1;
     private static final int _TAG_OVERRIDE_CATEGORY = 2;
     private static final int _TAG_NOTIFICATION_TO_CSE = 3;
 

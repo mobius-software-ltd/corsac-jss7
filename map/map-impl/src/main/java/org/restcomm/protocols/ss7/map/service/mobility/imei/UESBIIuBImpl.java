@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class UESBIIuBImpl extends BitStringBase implements UESBIIuB {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "UESBIIuB";
+	public static final String _PrimitiveName = "UESBIIuB";
 
     public UESBIIuBImpl() {
         super(1, 128, 1, _PrimitiveName);

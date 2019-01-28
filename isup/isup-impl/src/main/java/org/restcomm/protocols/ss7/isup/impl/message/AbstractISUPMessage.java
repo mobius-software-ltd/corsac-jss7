@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
  *
  */
 public abstract class AbstractISUPMessage implements ISUPMessage {
+	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
      * Decodes this element from passed byte[] array. This array must contain only element data. however in case of constructor
      * elements it may contain more information elements that consist of tag, length and contents elements, this has to be
      * handled by specific implementation of this method.

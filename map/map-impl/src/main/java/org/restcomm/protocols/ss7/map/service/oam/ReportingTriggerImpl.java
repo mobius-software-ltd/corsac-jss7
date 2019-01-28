@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
 *
 */
 public class ReportingTriggerImpl extends OctetStringLength1Base implements ReportingTrigger {
+	private static final long serialVersionUID = 1L;
 
-    public ReportingTriggerImpl() {
+	public ReportingTriggerImpl() {
         super("ReportingTrigger");
     }
 

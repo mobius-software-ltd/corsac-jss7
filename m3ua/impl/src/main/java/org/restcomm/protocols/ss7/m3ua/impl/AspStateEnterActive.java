@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.M3UAManagementEventListener;
@@ -52,11 +52,10 @@ public class AspStateEnterActive implements FSMStateEventHandler {
             AspState oldState = AspState.getState(this.aspImpl.state.getName());
             this.aspImpl.state = AspState.ACTIVE;
 
-            FastList<M3UAManagementEventListener> managementEventListenersTmp = this.aspImpl.aspFactoryImpl.m3UAManagementImpl.managementEventListeners;
+            Iterator<M3UAManagementEventListener> managementEventListenersTmp = this.aspImpl.aspFactoryImpl.m3UAManagementImpl.managementEventListeners.values().iterator();
 
-            for (FastList.Node<M3UAManagementEventListener> n = managementEventListenersTmp.head(), end = managementEventListenersTmp
-                    .tail(); (n = n.getNext()) != end;) {
-                M3UAManagementEventListener m3uaManagementEventListener = n.getValue();
+            while(managementEventListenersTmp.hasNext()) {
+                M3UAManagementEventListener m3uaManagementEventListener = managementEventListenersTmp.next();
                 try {
                     m3uaManagementEventListener.onAspActive(this.aspImpl, oldState);
                 } catch (Throwable ee) {

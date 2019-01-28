@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class CSAllocationRetentionPriorityImpl extends OctetStringLength1Base implements CSAllocationRetentionPriority {
+	private static final long serialVersionUID = 1L;
 
-    public CSAllocationRetentionPriorityImpl() {
+	public CSAllocationRetentionPriorityImpl() {
         super("CSAllocationRetentionPriority");
     }
 

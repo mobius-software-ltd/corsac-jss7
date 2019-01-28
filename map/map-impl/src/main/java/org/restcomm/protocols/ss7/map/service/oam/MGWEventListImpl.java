@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class MGWEventListImpl extends BitStringBase implements MGWEventList {
-    static final int _ID_context = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_context = 0;
 
     public static final String _PrimitiveName = "MGWEventList";
 

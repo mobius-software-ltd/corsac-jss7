@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
  *
  */
 public class TCContinueIndicationImpl extends DialogIndicationImpl implements TCContinueIndication {
+	private static final long serialVersionUID = 1L;
 
-    private SccpAddress originatingAddress;
+	private SccpAddress originatingAddress;
 
     // fields
     private ApplicationContextName applicationContextName;

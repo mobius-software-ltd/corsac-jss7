@@ -23,9 +23,6 @@ package org.restcomm.protocols.ss7.cap.gap;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -44,12 +41,10 @@ import org.restcomm.protocols.ss7.cap.primitives.SequenceBase;
  * @author <a href="mailto:bartosz.krok@pro-ids.com"> Bartosz Krok (ProIDS sp. z o.o.)</a>
  */
 public class CompoundCriteriaImpl extends SequenceBase implements CompoundCriteria {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _ID_basicGapCriteria = 0;
+	private static final int _ID_basicGapCriteria = 0;
     private static final int _ID_scfId = 1;
-
-    private static final String BASIC_GAP_CRITERIA = "basicGapCriteria";
-    private static final String SCF_ID = "scfId";
 
     private BasicGapCriteria basicGapCriteria;
     private ScfID scfId;
@@ -142,24 +137,6 @@ public class CompoundCriteriaImpl extends SequenceBase implements CompoundCriter
             throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + ex.getMessage(), ex);
         }
     }
-
-    protected static final XMLFormat<CompoundCriteriaImpl> COMPOUND_CRITERIA_XML = new XMLFormat<CompoundCriteriaImpl>(CompoundCriteriaImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CompoundCriteriaImpl compoundCriteria) throws XMLStreamException {
-            compoundCriteria.basicGapCriteria = xml.get(BASIC_GAP_CRITERIA, BasicGapCriteriaImpl.class);
-            compoundCriteria.scfId = xml.get(SCF_ID, ScfIDImpl.class);
-        }
-
-        @Override
-        public void write(CompoundCriteriaImpl compoundCriteria, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.add((BasicGapCriteriaImpl) compoundCriteria.basicGapCriteria, BASIC_GAP_CRITERIA, BasicGapCriteriaImpl.class);
-
-            if (compoundCriteria.scfId != null) {
-                xml.add((ScfIDImpl) compoundCriteria.scfId, SCF_ID, ScfIDImpl.class);
-            }
-        }
-    };
 
     @Override
     public String toString() {

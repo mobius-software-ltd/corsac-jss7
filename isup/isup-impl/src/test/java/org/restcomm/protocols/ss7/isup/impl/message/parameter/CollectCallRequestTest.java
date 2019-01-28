@@ -35,8 +35,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CollectCallRequestImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.CircuitGroupSuperVisionMessageType;
-import org.restcomm.protocols.ss7.isup.message.parameter.CircuitStateIndicator;
 import org.testng.annotations.Test;
 
 /**

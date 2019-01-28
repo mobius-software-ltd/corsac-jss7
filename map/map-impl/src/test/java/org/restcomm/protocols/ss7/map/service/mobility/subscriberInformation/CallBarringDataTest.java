@@ -73,7 +73,10 @@ public class CallBarringDataTest {
         ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl(new ExtBearerServiceCodeImpl(BearerServiceCodeValue.allBearerServices));
         final ExtCallBarringFeatureImpl extCallBarringFeature = new ExtCallBarringFeatureImpl(extBasicServiceCode,
                 new ExtSSStatusImpl(true, false, false, false), null);
-        CallBarringDataImpl callBarringData = new CallBarringDataImpl(new ArrayList<ExtCallBarringFeature>(){{add(extCallBarringFeature);}},
+        
+        ArrayList<ExtCallBarringFeature> extCallBarringFeatureList=new ArrayList<ExtCallBarringFeature>();
+        extCallBarringFeatureList.add(extCallBarringFeature);
+        CallBarringDataImpl callBarringData = new CallBarringDataImpl(extCallBarringFeatureList,
                 new PasswordImpl("0000"), 3, true, MAPExtensionContainerTest.GetTestExtensionContainer());
 
         AsnOutputStream asnOS = new AsnOutputStream();

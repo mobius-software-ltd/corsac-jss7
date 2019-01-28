@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class SpecificCSIWithdrawImpl extends BitStringBase implements SpecificCSIWithdraw {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_o_csi = 0;
+	private static final int _INDEX_o_csi = 0;
     private static final int _INDEX_ss_csi = 1;
     private static final int _INDEX_tif_csi = 2;
     private static final int _INDEX_d_csi = 3;

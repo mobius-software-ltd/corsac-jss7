@@ -25,8 +25,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import org.mobicents.protocols.asn.AsnInputStream;
@@ -35,9 +33,6 @@ import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ResetTimerRequestImpl;
 import org.testng.annotations.Test;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 /**
  *
@@ -57,7 +52,7 @@ public class ResetTimerTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ResetTimerRequestImpl elem = new ResetTimerRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getTimerID(), TimerID.tssf);
         assertEquals(elem.getTimerValue(), 1000);
@@ -75,7 +70,7 @@ public class ResetTimerTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
         ResetTimerRequestImpl original = new ResetTimerRequestImpl(TimerID.tssf, 1000, CAPExtensionsTest.createTestCAPExtensions(),
                 100);
@@ -108,5 +103,5 @@ public class ResetTimerTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
+    }*/
 }

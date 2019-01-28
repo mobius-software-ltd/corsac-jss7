@@ -26,29 +26,16 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.PlayAnnouncementRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InbandInfoImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InformationToSendImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ToneImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariableMessageImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartDateImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
 import org.testng.annotations.Test;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 /**
  *
@@ -99,7 +86,7 @@ public class PlayAnnouncementRequestTest {
         // requestAnnouncementStartedNotification
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         ArrayList<VariablePart> aL = new ArrayList<VariablePart>();
@@ -143,5 +130,5 @@ public class PlayAnnouncementRequestTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
+    }*/
 }

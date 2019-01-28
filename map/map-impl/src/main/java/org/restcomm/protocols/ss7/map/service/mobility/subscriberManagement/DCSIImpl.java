@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class DCSIImpl extends SequenceBase implements DCSI {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_dpAnalysedInfoCriteriaList = 0;
+	public static final int _TAG_dpAnalysedInfoCriteriaList = 0;
     public static final int _TAG_camelCapabilityHandling = 1;
     public static final int _TAG_extensionContainer = 2;
     public static final int _TAG_notificationToCSE = 3;

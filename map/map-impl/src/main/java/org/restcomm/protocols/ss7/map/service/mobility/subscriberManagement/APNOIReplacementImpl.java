@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class APNOIReplacementImpl extends OctetStringBase implements APNOIReplacement {
+	private static final long serialVersionUID = 1L;
 
-    public APNOIReplacementImpl() {
+	public APNOIReplacementImpl() {
         super(9, 100, "APNOIReplacement");
     }
 

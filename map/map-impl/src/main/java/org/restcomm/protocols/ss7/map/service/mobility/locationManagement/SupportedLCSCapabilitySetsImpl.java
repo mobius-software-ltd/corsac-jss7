@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class SupportedLCSCapabilitySetsImpl implements SupportedLCSCapabilitySets, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_LCS_CAPABILITY_SET1 = 0;
+	private static final int _INDEX_LCS_CAPABILITY_SET1 = 0;
     private static final int _INDEX_LCS_CAPABILITY_SET2 = 1;
     private static final int _INDEX_LCS_CAPABILITY_SET3 = 2;
     private static final int _INDEX_LCS_CAPABILITY_SET4 = 3;

@@ -38,8 +38,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.Disconnect
  */
 public class DisconnectForwardConnectionRequestImpl extends CircuitSwitchedCallMessageImpl implements
         DisconnectForwardConnectionRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "DisconnectForwardConnectionIndication";
+	public static final String _PrimitiveName = "DisconnectForwardConnectionIndication";
 
     @Override
     public CAPMessageType getMessageType() {

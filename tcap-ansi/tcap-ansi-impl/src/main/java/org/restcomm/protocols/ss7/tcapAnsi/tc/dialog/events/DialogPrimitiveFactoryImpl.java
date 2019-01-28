@@ -40,7 +40,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.tc.component.ComponentPrimitiveFactoryImpl;
 
 /**
  * @author baranowb
@@ -49,10 +48,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.tc.component.ComponentPrimitiveFactor
  */
 public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
 
-    private ComponentPrimitiveFactoryImpl componentPrimitiveFactory;
-
     public DialogPrimitiveFactoryImpl(ComponentPrimitiveFactory componentPrimitiveFactory) {
-        this.componentPrimitiveFactory = (ComponentPrimitiveFactoryImpl) componentPrimitiveFactory;
     }
 
     /*

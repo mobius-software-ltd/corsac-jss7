@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class LocationTypeImpl implements LocationType, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_LOCATION_ESTIMATE_TYPE = 0;
+	private static final int _TAG_LOCATION_ESTIMATE_TYPE = 0;
     private static final int _TAG_DEFERRED_LOCATION_EVET_TYPE = 1;
 
     public static final String _PrimitiveName = "LocationType";

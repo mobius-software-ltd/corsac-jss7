@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Information;
  *
  */
 abstract class AbstractInformationParameterBaseImpl extends AbstractISUPParameter{
+	private static final long serialVersionUID = 1L;
 
-    private List<Information> infos = new ArrayList<Information>();
+	private List<Information> infos = new ArrayList<Information>();
 
     public int decode(byte[] b) throws ParameterException {
         if (b.length < 1) {
@@ -84,7 +85,7 @@ abstract class AbstractInformationParameterBaseImpl extends AbstractISUPParamete
         if (infos == null || infos.length == 0) {
             return;
         }
-        Class cellClass = infos.getClass().getComponentType();
+        Class<?> cellClass = infos.getClass().getComponentType();
         for(int index = 0;index<this.infos.size();index++){
             if(cellClass.isAssignableFrom(this.infos.get(index).getClass())){
                 this.infos.remove(index);

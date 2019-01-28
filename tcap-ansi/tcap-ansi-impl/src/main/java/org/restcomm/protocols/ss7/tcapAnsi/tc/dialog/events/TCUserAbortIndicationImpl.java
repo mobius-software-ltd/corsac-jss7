@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 
 public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements TCUserAbortIndication {
+	private static final long serialVersionUID = 1L;
 
-    private UserInformation userInformation;
+	private UserInformation userInformation;
     private ApplicationContext acn;
     private SecurityContext securityContext;
     private Confidentiality confidentiality;

@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class AOCGPRSImpl extends SequenceBase implements AOCGPRS {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_aocInitial = 0;
+	public static final int _ID_aocInitial = 0;
     public static final int _ID_aocSubsequent = 1;
 
     private CAI_GSM0224 aocInitial;

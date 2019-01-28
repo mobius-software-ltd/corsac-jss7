@@ -27,12 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -62,7 +57,7 @@ public class ApplyChargingReportRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ApplyChargingReportRequestImpl elem = new ApplyChargingReportRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getTimeDurationChargingResult().getPartyToCharge().getReceivingSideID(), LegType.leg1);
@@ -91,7 +86,7 @@ public class ApplyChargingReportRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerializaion() throws Exception {
 
         ReceivingSideIDImpl partyToCharge = new ReceivingSideIDImpl(LegType.leg1);
@@ -124,5 +119,5 @@ public class ApplyChargingReportRequestTest {
         assertEquals(copy.getTimeDurationChargingResult().getPartyToCharge().getReceivingSideID(), original
                 .getTimeDurationChargingResult().getPartyToCharge().getReceivingSideID());
 
-    }
+    }*/
 }

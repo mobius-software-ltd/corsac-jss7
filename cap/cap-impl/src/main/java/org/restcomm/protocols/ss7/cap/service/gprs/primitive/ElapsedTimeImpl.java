@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ElapsedTimeImpl implements ElapsedTime, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ElapsedTime";
+	public static final String _PrimitiveName = "ElapsedTime";
 
     public static final int _ID_timeGPRSIfNoTariffSwitch = 0;
     public static final int _ID_timeGPRSIfTariffSwitch = 1;

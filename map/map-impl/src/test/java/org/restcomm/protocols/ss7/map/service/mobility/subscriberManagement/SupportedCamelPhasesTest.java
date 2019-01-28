@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -83,7 +78,7 @@ public class SupportedCamelPhasesTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
+    /*@Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
     public void testXMLSerialize() throws Exception {
 
         SupportedCamelPhasesImpl original = new SupportedCamelPhasesImpl(true, false, true, false);
@@ -109,6 +104,5 @@ public class SupportedCamelPhasesTest {
         assertEquals(copy.getPhase2Supported(), original.getPhase2Supported());
         assertEquals(copy.getPhase3Supported(), original.getPhase3Supported());
         assertEquals(copy.getPhase4Supported(), original.getPhase4Supported());
-    }
-
+    }*/
 }

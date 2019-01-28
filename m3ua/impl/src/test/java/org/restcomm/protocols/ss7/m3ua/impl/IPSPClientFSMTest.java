@@ -30,21 +30,11 @@ import io.netty.buffer.ByteBufAllocator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import javolution.util.FastMap;
-
-import org.mobicents.protocols.api.Association;
-import org.mobicents.protocols.api.AssociationListener;
-import org.mobicents.protocols.api.AssociationType;
-import org.mobicents.protocols.api.CongestionListener;
-import org.mobicents.protocols.api.IpChannelType;
-import org.mobicents.protocols.api.Management;
-import org.mobicents.protocols.api.ManagementEventListener;
-import org.mobicents.protocols.api.PayloadData;
-import org.mobicents.protocols.api.Server;
-import org.mobicents.protocols.api.ServerListener;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
@@ -75,11 +65,22 @@ import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
+import org.restcomm.protocols.ss7.sctp.proxy.Association;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationListener;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationType;
+import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
+import org.restcomm.protocols.ss7.sctp.proxy.Management;
+import org.restcomm.protocols.ss7.sctp.proxy.ManagementEventListener;
+import org.restcomm.protocols.ss7.sctp.proxy.PayloadData;
+import org.restcomm.protocols.ss7.sctp.proxy.Server;
+import org.restcomm.protocols.ss7.sctp.proxy.ServerListener;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 /**
  * Tests for FSM of IPSP acting as CLIENT
@@ -111,7 +112,8 @@ public class IPSPClientFSMTest {
     public void setUp() throws Exception {
         semaphore = new Semaphore(0);
         this.transportManagement = new NettyTransportManagement();
-        this.clientM3UAMgmt = new M3UAManagementImpl("IPSPClientFSMTest", null, null);
+        UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
+        this.clientM3UAMgmt = new M3UAManagementImpl("IPSPClientFSMTest", null,uuidGenerator);
         this.clientM3UAMgmt.setTransportManagement(this.transportManagement);
         this.mtp3UserPartListener = new Mtp3UserPartListenerimpl();
         this.clientM3UAMgmt.addMtp3UserPartListener(this.mtp3UserPartListener);
@@ -628,11 +630,10 @@ public class IPSPClientFSMTest {
     class TestAssociation implements Association {
 
         private AssociationListener associationListener = null;
-        private String name = null;
         private LinkedList<M3UAMessage> messageRxFromUserPart = new LinkedList<M3UAMessage>();
 
         TestAssociation(String name) {
-            this.name = name;
+            //this.name = name;
         }
 
         M3UAMessage txPoll() {
@@ -755,18 +756,11 @@ public class IPSPClientFSMTest {
             // TODO Auto-generated method stub
             return null;
         }
-
-        @Override
-        public int getCongestionLevel() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
     }
 
     class NettyTransportManagement implements Management {
 
-        private FastMap<String, Association> associations = new FastMap<String, Association>();
+        private ConcurrentHashMap<String, Association> associations = new ConcurrentHashMap<String, Association>();
 
         @Override
         public Association addAssociation(String hostAddress, int hostPort, String peerAddress, int peerPort, String assocName)
@@ -796,7 +790,7 @@ public class IPSPClientFSMTest {
 
         @Override
         public Map<String, Association> getAssociations() {
-            return associations.unmodifiable();
+            return associations;
         }
 
         @Override
@@ -815,16 +809,6 @@ public class IPSPClientFSMTest {
         }
 
         @Override
-        public int getWorkerThreads() {
-            return 0;
-        }
-
-        @Override
-        public boolean isSingleThread() {
-            return false;
-        }
-
-        @Override
         public void removeAssociation(String assocName) throws Exception {
 
         }
@@ -836,18 +820,6 @@ public class IPSPClientFSMTest {
 
         @Override
         public void setConnectDelay(int connectDelay) {
-
-        }
-
-        @Override
-        public void setSingleThread(boolean arg0) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void setWorkerThreads(int arg0) {
-            // TODO Auto-generated method stub
 
         }
 
@@ -888,18 +860,6 @@ public class IPSPClientFSMTest {
         }
 
         @Override
-        public String getPersistDir() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void setPersistDir(String arg0) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
         public Association addAssociation(String arg0, int arg1, String arg2, int arg3, String arg4, IpChannelType arg5,
                 String[] extraHostAddresses) throws Exception {
             // TODO Auto-generated method stub
@@ -927,7 +887,7 @@ public class IPSPClientFSMTest {
         }
 
         @Override
-        public void addManagementEventListener(ManagementEventListener arg0) {
+        public void addManagementEventListener(UUID key,ManagementEventListener arg0) {
             // TODO Auto-generated method stub
 
         }
@@ -946,7 +906,7 @@ public class IPSPClientFSMTest {
         }
 
         @Override
-        public void removeManagementEventListener(ManagementEventListener arg0) {
+        public void removeManagementEventListener(UUID key) {
             // TODO Auto-generated method stub
 
         }
@@ -966,78 +926,6 @@ public class IPSPClientFSMTest {
         public boolean isStarted() {
             // TODO Auto-generated method stub
             return false;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_1() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_2() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_3() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_1() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_2() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_3() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_1(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_2(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_3(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_1(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_2(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_3(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
         }
 
         @Override
@@ -1132,18 +1020,6 @@ public class IPSPClientFSMTest {
 
         @Override
         public void setOptionSctpInitMaxstreams_MaxOutStreams(Integer arg0) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void addCongestionListener(CongestionListener arg0) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void removeCongestionListener(CongestionListener arg0) {
             // TODO Auto-generated method stub
             
         }

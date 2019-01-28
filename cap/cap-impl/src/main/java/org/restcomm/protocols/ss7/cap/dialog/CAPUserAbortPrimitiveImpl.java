@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  *
  */
 public class CAPUserAbortPrimitiveImpl implements CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final long[] CAP_AbortReason_OId = { 0, 4, 0, 0, 1, 1, 2, 2 };
+	public static final long[] CAP_AbortReason_OId = { 0, 4, 0, 0, 1, 1, 2, 2 };
 
     private CAPUserAbortReason reason;
 

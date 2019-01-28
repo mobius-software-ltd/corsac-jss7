@@ -25,9 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
@@ -42,8 +39,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
  *
  */
 public class GlobalTitle0011Impl extends AbstractGlobalTitle implements GlobalTitle0011 {
+	private static final long serialVersionUID = 1L;
 
-    private NumberingPlan numberingPlan;
+	private NumberingPlan numberingPlan;
     private int translationType;
 
     public GlobalTitle0011Impl() {
@@ -148,27 +146,4 @@ public class GlobalTitle0011Impl extends AbstractGlobalTitle implements GlobalTi
     public String toString() {
         return "GlobalTitle0011Impl [digits=" + digits + ",numberingPlan=" + numberingPlan + ", translationType=" + translationType + ", encodingScheme=" + encodingScheme + "]";
     }
- // default XML representation.
-    protected static final XMLFormat<GlobalTitle0011Impl> XML = new XMLFormat<GlobalTitle0011Impl>(GlobalTitle0011Impl.class) {
-        private final ParameterFactoryImpl factory = new ParameterFactoryImpl();
-        public void write(GlobalTitle0011Impl ai, OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(TRANSLATION_TYPE, ai.translationType);
-            xml.setAttribute(ENCODING_SCHEME, ai.encodingScheme.getSchemeCode());
-            xml.setAttribute(NUMBERING_PLAN, ai.numberingPlan.getValue());
-            xml.setAttribute(DIGITS, ai.digits);
-        }
-
-        public void read(InputElement xml, GlobalTitle0011Impl ai) throws XMLStreamException {
-            try {
-                ai.translationType = xml.getAttribute(TRANSLATION_TYPE).toInt();
-                //wrong...
-                final byte esCode = (byte) xml.getAttribute(ENCODING_SCHEME).toInt();
-                ai.encodingScheme = factory.createEncodingScheme(esCode);
-                ai.numberingPlan = NumberingPlan.valueOf(xml.getAttribute(NUMBERING_PLAN).toInt());
-                ai.digits = xml.getAttribute(DIGITS).toString();
-            } catch (Exception e) {
-                throw new XMLStreamException(e);
-            }
-        }
-    };
 }

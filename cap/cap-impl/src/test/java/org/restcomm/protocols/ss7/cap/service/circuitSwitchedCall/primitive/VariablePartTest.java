@@ -26,23 +26,16 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartDateImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartPriceImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.testng.annotations.Test;
 
 /**
@@ -181,7 +174,7 @@ public class VariablePartTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData5()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         Integer integer = 15;
@@ -329,5 +322,5 @@ public class VariablePartTest {
         assertNull(copy.getDate());
         assertEquals(copy.getPrice().getPriceIntegerPart(), integerPart);
         assertEquals(copy.getPrice().getPriceHundredthPart(), hundredthPart);
-    }
+    }*/
 }

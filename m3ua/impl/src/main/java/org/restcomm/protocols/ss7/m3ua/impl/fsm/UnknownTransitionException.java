@@ -29,8 +29,9 @@ package org.restcomm.protocols.ss7.m3ua.impl.fsm;
  *
  */
 public class UnknownTransitionException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
      * Creates a new instance of <code>UnknownTransitionException</code> without detail message.
      */
     public UnknownTransitionException() {

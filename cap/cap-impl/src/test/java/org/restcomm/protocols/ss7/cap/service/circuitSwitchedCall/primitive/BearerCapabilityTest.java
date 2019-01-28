@@ -22,22 +22,14 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.isup.BearerCapImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.testng.annotations.Test;
 
 /**
@@ -61,7 +53,7 @@ public class BearerCapabilityTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         BearerCapabilityImpl elem = new BearerCapabilityImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(Arrays.equals(elem.getBearerCap().getData(), this.getIntData1()));
     }
@@ -76,7 +68,7 @@ public class BearerCapabilityTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         UserServiceInformationImpl original0 = new UserServiceInformationImpl();
@@ -110,5 +102,5 @@ public class BearerCapabilityTest {
         assertEquals(copy.getBearerCap().getUserServiceInformation().getInformationTransferCapability(), original
                 .getBearerCap().getUserServiceInformation().getInformationTransferCapability());
 
-    }
+    }*/
 }

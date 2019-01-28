@@ -43,7 +43,9 @@ public class RejectImpl implements Reject {
 
     // all are mandatory
 
-    // this can actaully be null in this case.
+	private static final long serialVersionUID = 1L;
+
+	// this can actaully be null in this case.
     private Long invokeId;
     private boolean localOriginated = false;
 

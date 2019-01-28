@@ -49,8 +49,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class CircuitGroupQueryResponseMessageImpl extends ISUPMessageImpl implements CircuitGroupQueryResponseMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.CircuitGroupQueryResponse);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.CircuitGroupQueryResponse);
     private static final int _MANDATORY_VAR_COUNT = 2;
 
     static final int _INDEX_F_MessageType = 0;
@@ -130,7 +131,7 @@ public class CircuitGroupQueryResponseMessageImpl extends ISUPMessageImpl implem
      */
 
     public MessageType getMessageType() {
-        return this._MESSAGE_TYPE;
+        return _MESSAGE_TYPE;
     }
 
     /*

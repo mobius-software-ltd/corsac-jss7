@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.M3UAManagementEventListener;
@@ -50,12 +50,10 @@ public abstract class SEHAsStateEnterActive implements FSMStateEventHandler {
         if (!this.asImpl.state.getName().equals(State.STATE_ACTIVE)) {
             AsState oldState = AsState.getState(this.asImpl.state.getName());
             this.asImpl.state = AsState.ACTIVE;
-
-            FastList<M3UAManagementEventListener> managementEventListenersTmp = this.asImpl.m3UAManagementImpl.managementEventListeners;
-
-            for (FastList.Node<M3UAManagementEventListener> n = managementEventListenersTmp.head(), end = managementEventListenersTmp
-                    .tail(); (n = n.getNext()) != end;) {
-                M3UAManagementEventListener m3uaManagementEventListener = n.getValue();
+            
+            Iterator<M3UAManagementEventListener> managementEventListenersTmp = this.asImpl.m3UAManagementImpl.managementEventListeners.values().iterator();
+            while(managementEventListenersTmp.hasNext()) {
+                M3UAManagementEventListener m3uaManagementEventListener = managementEventListenersTmp.next();
                 try {
                     m3uaManagementEventListener.onAsActive(this.asImpl, oldState);
                 } catch (Throwable ee) {

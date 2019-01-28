@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class TPDataCodingSchemeImpl extends OctetStringLength1Base implements TPDataCodingScheme {
+	private static final long serialVersionUID = 1L;
 
-    public TPDataCodingSchemeImpl() {
+	public TPDataCodingSchemeImpl() {
         super("TPDataCodingScheme");
     }
 

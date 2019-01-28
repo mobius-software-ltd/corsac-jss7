@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class IKImpl extends OctetStringBase implements IK {
+	private static final long serialVersionUID = 1L;
 
-    public IKImpl(byte[] data) {
+	public IKImpl(byte[] data) {
         super(16, 16, "IK", data);
     }
 

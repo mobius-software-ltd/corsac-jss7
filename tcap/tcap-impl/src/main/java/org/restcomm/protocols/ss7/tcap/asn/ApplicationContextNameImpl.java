@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class ApplicationContextNameImpl implements ApplicationContextName {
+	private static final long serialVersionUID = 1L;
 
-    // object identifier value
+	// object identifier value
     private long[] oid;
 
     /*

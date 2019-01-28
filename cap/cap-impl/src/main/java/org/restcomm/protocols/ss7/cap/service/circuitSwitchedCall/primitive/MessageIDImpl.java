@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.ArrayListSerializingBase;
  *
  */
 public class MessageIDImpl implements MessageID, CAPAsnPrimitive {
-
-    public static final int _ID_elementaryMessageID = 0;
+	private static final long serialVersionUID = 1L;
+	
+	public static final int _ID_elementaryMessageID = 0;
     public static final int _ID_text = 1;
     public static final int _ID_elementaryMessageIDs = 29;
     public static final int _ID_variableMessage = 30;
@@ -56,10 +54,7 @@ public class MessageIDImpl implements MessageID, CAPAsnPrimitive {
     public static final String _PrimitiveName = "MessageID";
 
     private static final String ELEMENTARY_MESSAGE_ID = "elementaryMessageID";
-    private static final String TEXT = "text";
-    private static final String ELEMENTARY_MESSAGE_IDS = "elementaryMessageIDs";
-    private static final String VARIABLE_MESSAGE = "variableMessage";
-
+    
     private Integer elementaryMessageID;
     private MessageIDText text;
     private ArrayList<Integer> elementaryMessageIDs;
@@ -304,53 +299,6 @@ public class MessageIDImpl implements MessageID, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MessageIDImpl> MESSAGE_ID_XML = new XMLFormat<MessageIDImpl>(MessageIDImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MessageIDImpl messageID) throws XMLStreamException {
-            messageID.elementaryMessageID = xml.get(ELEMENTARY_MESSAGE_ID, Integer.class);
-            messageID.text = xml.get(TEXT, MessageIDTextImpl.class);
-
-            MessageID_ElementaryMessageIDs al = xml.get(ELEMENTARY_MESSAGE_IDS, MessageID_ElementaryMessageIDs.class);
-            if (al != null) {
-                messageID.elementaryMessageIDs = al.getData();
-            }
-
-            messageID.variableMessage = xml.get(VARIABLE_MESSAGE, VariableMessageImpl.class);
-
-            int choiceCount = 0;
-            if (messageID.elementaryMessageID != null)
-                choiceCount++;
-            if (messageID.text != null)
-                choiceCount++;
-            if (messageID.elementaryMessageIDs != null)
-                choiceCount++;
-            if (messageID.variableMessage != null)
-                choiceCount++;
-
-            if (choiceCount != 1)
-                throw new XMLStreamException("MessageID decoding error: there must be one choice selected, found: "
-                        + choiceCount);
-        }
-
-        @Override
-        public void write(MessageIDImpl messageID, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (messageID.elementaryMessageID != null)
-                xml.add(messageID.elementaryMessageID, ELEMENTARY_MESSAGE_ID, Integer.class);
-            if (messageID.text != null)
-                xml.add((MessageIDTextImpl) messageID.text, TEXT, MessageIDTextImpl.class);
-            if (messageID.elementaryMessageIDs != null) {
-                MessageID_ElementaryMessageIDs al = new MessageID_ElementaryMessageIDs(messageID.elementaryMessageIDs);
-                xml.add(al, ELEMENTARY_MESSAGE_IDS, MessageID_ElementaryMessageIDs.class);
-            }
-            if (messageID.variableMessage != null)
-                xml.add((VariableMessageImpl) messageID.variableMessage, VARIABLE_MESSAGE, VariableMessageImpl.class);
-        }
-    };
 
     public static class MessageID_ElementaryMessageIDs extends ArrayListSerializingBase<Integer> {
 

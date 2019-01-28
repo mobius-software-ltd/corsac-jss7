@@ -51,7 +51,7 @@ public class AOCSubsequentTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         AOCSubsequentImpl elem = new AOCSubsequentImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNull(elem.getCAI_GSM0224().getE1());
         assertNull(elem.getCAI_GSM0224().getE2());

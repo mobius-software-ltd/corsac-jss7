@@ -39,7 +39,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ErrorCodeType;
  *
  */
 public class ErrorCodeImpl extends AbstractAsnEncodable implements ErrorCode {
-    private ErrorCodeType type;
+	private static final long serialVersionUID = 1L;
+
+	private ErrorCodeType type;
     private Long localErrorCode;
     private long[] globalErrorCode;
 

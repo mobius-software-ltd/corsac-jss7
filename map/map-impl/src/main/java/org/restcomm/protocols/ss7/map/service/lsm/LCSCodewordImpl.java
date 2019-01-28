@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
  *
  */
 public class LCSCodewordImpl implements LCSCodeword, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_DATA_CODING_SCHEME = 0;
+	private static final int _TAG_DATA_CODING_SCHEME = 0;
     private static final int _TAG_LCS_CODE_WORD_STRING = 1;
 
     public static final String _PrimitiveName = "LCSCodeword";

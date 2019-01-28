@@ -31,7 +31,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.Util;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
@@ -66,7 +65,7 @@ import org.testng.annotations.Test;
 public class MessageSegmentationTest {
 
     private Logger logger;
-    private SccpStackImpl stack = new SccpStackImpl("MessageSegmentationTestStack", null);
+    private SccpStackImpl stack = new SccpStackImpl("MessageSegmentationTestStack");
     private MessageFactoryImpl messageFactory;
     private static byte[] dataA;
 
@@ -82,7 +81,6 @@ public class MessageSegmentationTest {
 
     @BeforeMethod
     public void setUp() throws Exception {
-        this.stack.setPersistDir(Util.getTmpTestDir());
         this.stack.start();
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = Logger.getLogger(SccpStackImpl.class.getCanonicalName());

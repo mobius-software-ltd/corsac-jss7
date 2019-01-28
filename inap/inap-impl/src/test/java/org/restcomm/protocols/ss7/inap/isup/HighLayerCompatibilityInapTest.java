@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.inap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,7 +56,7 @@ public class HighLayerCompatibilityInapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         HighLayerCompatibilityInapImpl elem = new HighLayerCompatibilityInapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         UserTeleserviceInformation hlc = elem.getHighLayerCompatibility();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
@@ -90,7 +85,7 @@ public class HighLayerCompatibilityInapTest {
         // int codingStandard, int interpretation, int presentationMethod, int highLayerCharIdentification
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         UserTeleserviceInformationImpl prim = new UserTeleserviceInformationImpl(
@@ -124,5 +119,5 @@ public class HighLayerCompatibilityInapTest {
         assertEquals(copy.getHighLayerCompatibility().getHighLayerCharIdentification(), original.getHighLayerCompatibility()
                 .getHighLayerCharIdentification());
 
-    }
+    }*/
 }

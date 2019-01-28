@@ -82,7 +82,7 @@ public class INRTest extends SingleTimers {
         ans.setCircuitIdentificationCode(cic);
 
         InformationIndicators ii = super.provider.getParameterFactory().createInformationIndicators();
-        ii.setCallingPartyAddressResponseIndicator(ii._CPARI_ADDRESS_INCLUDED);
+        ii.setCallingPartyAddressResponseIndicator(InformationIndicators._CPARI_ADDRESS_INCLUDED);
         ans.setInformationIndicators(ii);
         return ans;
     }

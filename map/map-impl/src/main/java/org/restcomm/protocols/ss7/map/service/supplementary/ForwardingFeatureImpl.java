@@ -48,7 +48,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Basi
  *
  */
 public class ForwardingFeatureImpl extends SequenceBase implements ForwardingFeature {
-    public static final int _ID_ssStatus = 4;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _ID_ssStatus = 4;
     public static final int _ID_forwardedToNumber = 5;
     public static final int _ID_forwardedToSubaddress = 8;
     public static final int _ID_forwardingOptions = 6;

@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.scheduler;
 
-import javolution.util.FastList;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -34,28 +35,39 @@ import org.apache.log4j.Logger;
 public class M3UAScheduler implements Runnable {
     private static final Logger logger = Logger.getLogger(M3UAScheduler.class);
 
-    // TODO : Synchronize tasks? Use Iterator?
-    protected FastList<M3UATask> tasks = new FastList<M3UATask>();
+    protected ConcurrentLinkedQueue<M3UATask> firstPool = new ConcurrentLinkedQueue<M3UATask>();
+    protected ConcurrentLinkedQueue<M3UATask> secondPool = new ConcurrentLinkedQueue<M3UATask>();
 
-    private FastList<M3UATask> removed = new FastList<M3UATask>();
-
+    private AtomicInteger currPool=new AtomicInteger(1);
+    
     public void execute(M3UATask task) {
         if (task == null) {
             return;
         }
-        this.tasks.add(task);
+        
+        if(currPool.get()%2==1)
+        	this.firstPool.offer(task);
+        else
+        	this.secondPool.offer(task);        
     }
 
     public void run() {
         long now = System.currentTimeMillis();
-        for (FastList.Node<M3UATask> n = tasks.head(), end = tasks.tail(); (n = n.getNext()) != end;) {
-            M3UATask task = n.getValue();
+        
+        ConcurrentLinkedQueue<M3UATask> activeTasks;
+        ConcurrentLinkedQueue<M3UATask> nextTasks;
+        if(currPool.getAndIncrement()%2==1) {
+        	activeTasks=this.firstPool;
+        	nextTasks=this.secondPool;
+        } else {
+        	activeTasks=this.secondPool;
+        	nextTasks=this.firstPool;
+        }
+        
+        M3UATask task=activeTasks.poll();
+        while(task!=null) {
             // check if has been canceled from different thread.
-            if (task.isCanceled()) {
-                // tasks.delete(n);
-                removed.add(task);
-            } else {
-
+            if (!task.isCanceled()) {                
                 try {
                     task.run(now);
                 } catch (Exception e) {
@@ -64,16 +76,12 @@ public class M3UAScheduler implements Runnable {
                     }
                 }
                 // check if its canceled after run;
-                if (task.isCanceled()) {
-                    removed.add(task);
+                if (!task.isCanceled()) {
+                	nextTasks.offer(task);
                 }
             }
-            // tempTask = null;
-        }
-
-        if (this.removed.size() > 0) {
-            this.tasks.removeAll(this.removed);
-            this.removed.clear();
+            
+            task=activeTasks.poll();
         }
     }
 }

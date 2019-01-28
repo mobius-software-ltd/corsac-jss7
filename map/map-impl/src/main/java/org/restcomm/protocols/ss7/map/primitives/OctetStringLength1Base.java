@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
  *
  */
 public abstract class OctetStringLength1Base implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    protected int data;
+	protected int data;
 
     protected String _PrimitiveName;
 

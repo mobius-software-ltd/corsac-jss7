@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TerminatingNetworkRouti
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ForwardGVNSImpl extends AbstractISUPParameter implements ForwardGVNS {
+	private static final long serialVersionUID = 1L;
 
-    // FIXME: we must add in numbers below max digits check - in case of max octets - only odd digits number is valid
+	// FIXME: we must add in numbers below max digits check - in case of max octets - only odd digits number is valid
     private OriginatingParticipatingServiceProviderImpl opServiceProvider = null;
     private GVNSUserGroupImpl gvnsUserGroup = null;
     private TerminatingNetworkRoutingNumberImpl tnRoutingNumber = null;

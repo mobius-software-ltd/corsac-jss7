@@ -47,7 +47,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Basi
 *
 */
 public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implements InterrogateSSResponse {
-    public static final int _TAG_ssStatus = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _TAG_ssStatus = 0;
     public static final int _TAG_basicServiceGroupList = 2;
     public static final int _TAG_forwardingFeatureList = 3;
     public static final int _TAG_genericServiceInfo = 4;

@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class ISRInformationImpl extends BitStringBase implements ISRInformation {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_updateMME = 0;
+	private static final int _INDEX_updateMME = 0;
     private static final int _INDEX_cancelSGSN = 1;
     private static final int _INDEX_initialAttachIndicator = 2;
 

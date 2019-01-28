@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ReleaseSMSRequestImpl extends SmsMessageImpl implements ReleaseSMSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ReleaseSMSRequest";
+	public static final String _PrimitiveName = "ReleaseSMSRequest";
 
     private RPCause rpCause;
 

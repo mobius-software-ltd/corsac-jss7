@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class ProtocolVersionImpl implements ProtocolVersion {
+	private static final long serialVersionUID = 1L;
 
-    private boolean supportedVersion = true;
+	private boolean supportedVersion = true;
 
     public boolean isSupportedVersion() {
 

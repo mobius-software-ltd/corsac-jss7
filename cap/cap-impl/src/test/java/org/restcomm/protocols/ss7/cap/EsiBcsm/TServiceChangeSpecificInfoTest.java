@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -77,7 +71,7 @@ public class TServiceChangeSpecificInfoTest {
         assertEquals(aos.toByteArray(), this.getData1());
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         ExtTeleserviceCode extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.facsimileGroup4);
         ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl(extTeleservice);
@@ -101,6 +95,5 @@ public class TServiceChangeSpecificInfoTest {
 
         assertEquals(copy.getExtBasicServiceCode().getExtTeleservice().getTeleserviceCodeValue(), original.getExtBasicServiceCode().getExtTeleservice()
                 .getTeleserviceCodeValue());
-    }
-
+    }*/
 }

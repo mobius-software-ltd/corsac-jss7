@@ -3,13 +3,13 @@
 
 	<parent>
 		<artifactId>sccp-parent</artifactId>
-		<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+		<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sccp-impl</artifactId>
 
-	<name>Restcomm jSS7 :: SCCP :: Impl :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: SCCP :: Impl :: ${project.artifactId}</name>
 
 
 	<dependencies>
@@ -17,19 +17,14 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sccp-api</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restcomm.protocols.ss7.management</groupId>
-			<artifactId>shell-server-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>		
 		<dependency>
 			<artifactId>mtp-api</artifactId>
-			<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 		</dependency>
 		<dependency>
 			<artifactId>m3ua-impl</artifactId>
-			<groupId>org.restcomm.protocols.ss7.m3ua</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.m3ua</groupId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -46,13 +41,8 @@
 			<artifactId>concurrent</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
-			<groupId>javolution</groupId>
-			<artifactId>javolution</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 			<artifactId>mtp</artifactId>
 		</dependency>
 	</dependencies>

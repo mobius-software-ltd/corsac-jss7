@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class ODBGeneralDataImpl extends BitStringBase implements ODBGeneralData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_allOGCallsBarred = 0;
+	private static final int _INDEX_allOGCallsBarred = 0;
     private static final int _INDEX_internationalOGCallsBarred = 1;
     private static final int _INDEX_internationalOGCallsNotToHPLMNCountryBarred = 2;
     private static final int _INDEX_interzonalOGCallsBarred = 6;

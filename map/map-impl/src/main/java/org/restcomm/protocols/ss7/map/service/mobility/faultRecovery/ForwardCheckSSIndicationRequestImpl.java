@@ -38,8 +38,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 *
 */
 public class ForwardCheckSSIndicationRequestImpl extends MobilityMessageImpl implements ForwardCheckSSIndicationRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ForwardCheckSSIndicationRequest";
+	public static final String _PrimitiveName = "ForwardCheckSSIndicationRequest";
 
     public ForwardCheckSSIndicationRequestImpl() {
     }

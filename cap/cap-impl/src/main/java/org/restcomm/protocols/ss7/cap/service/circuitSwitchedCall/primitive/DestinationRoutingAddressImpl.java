@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -48,10 +45,10 @@ import org.restcomm.protocols.ss7.map.primitives.ArrayListSerializingBase;
  *
  */
 public class DestinationRoutingAddressImpl extends SequenceBase implements DestinationRoutingAddress {
+	private static final long serialVersionUID = 1L;
 
-    private static final String CALLED_PARTY_NUMBER = "calledPartyNumber";
-    private static final String CALLED_PARTY_NUMBER_LIST = "calledPartyNumberList";
-
+	private static final String CALLED_PARTY_NUMBER = "calledPartyNumber";
+    
     public ArrayList<CalledPartyNumberCap> calledPartyNumber;
 
     public DestinationRoutingAddressImpl() {
@@ -124,33 +121,6 @@ public class DestinationRoutingAddressImpl extends SequenceBase implements Desti
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<DestinationRoutingAddressImpl> DESTINATION_ROUTING_ADDRESS_XML = new XMLFormat<DestinationRoutingAddressImpl>(
-            DestinationRoutingAddressImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, DestinationRoutingAddressImpl destinationRoutingAddress)
-                throws XMLStreamException {
-            DestinationRoutingAddress_CalledPartyNumbers al = xml.get(CALLED_PARTY_NUMBER_LIST,
-                    DestinationRoutingAddress_CalledPartyNumbers.class);
-            if (al != null) {
-                destinationRoutingAddress.calledPartyNumber = al.getData();
-            }
-        }
-
-        @Override
-        public void write(DestinationRoutingAddressImpl destinationRoutingAddress, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (destinationRoutingAddress.calledPartyNumber != null) {
-                DestinationRoutingAddress_CalledPartyNumbers al = new DestinationRoutingAddress_CalledPartyNumbers(
-                        destinationRoutingAddress.calledPartyNumber);
-                xml.add(al, CALLED_PARTY_NUMBER_LIST, DestinationRoutingAddress_CalledPartyNumbers.class);
-            }
-        }
-    };
 
     public static class DestinationRoutingAddress_CalledPartyNumbers extends ArrayListSerializingBase<CalledPartyNumberCap> {
 

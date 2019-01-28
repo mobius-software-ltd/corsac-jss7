@@ -23,16 +23,11 @@
 package org.restcomm.protocols.ss7.m3ua.impl;
 
 import static org.testng.Assert.assertEquals;
-import javolution.util.FastList;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.api.IpChannelType;
-import org.mobicents.protocols.api.Management;
-import org.mobicents.protocols.sctp.netty.NettySctpManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.IPSPType;
-import org.restcomm.protocols.ss7.m3ua.Util;
 import org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.rkm.DeregistrationRequestImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.rkm.RegistrationRequestImpl;
@@ -53,12 +48,16 @@ import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
+import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
+import org.restcomm.protocols.ss7.sctp.proxy.Management;
+import org.restcomm.protocols.ss7.sctp.proxy.SctpManagementImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 import com.sun.nio.sctp.SctpChannel;
 
 /**
@@ -66,7 +65,6 @@ import com.sun.nio.sctp.SctpChannel;
  * @author amit bhayani
  *
  */
-@SuppressWarnings("restriction")
 public class RKMAsExistTest {
 
     private static final Logger logger = Logger.getLogger(RKMAsExistTest.class);
@@ -91,7 +89,6 @@ public class RKMAsExistTest {
     private ParameterFactoryImpl factory = new ParameterFactoryImpl();
 
     private AsImpl remAs1;
-    private AsImpl remAs2;
     private AspImpl remAsp;
     @SuppressWarnings("unused")
     private AspFactoryImpl remAspFactory;
@@ -257,7 +254,7 @@ public class RKMAsExistTest {
             RoutingContext rc2 = factory.createRoutingContext(new long[] { 200l });
             TrafficModeType trafficModeType = factory.createTrafficModeType(TrafficModeType.Loadshare);
             remAs1 = (AsImpl) serverM3uaMgmt.createAs("server-testas1", Functionality.IPSP, ExchangeType.SE, IPSPType.SERVER, rc1, trafficModeType, 1, null);
-            remAs2 = (AsImpl) serverM3uaMgmt.createAs("server-testas2", Functionality.IPSP, ExchangeType.SE, IPSPType.SERVER, rc2, trafficModeType, 1, null);
+            serverM3uaMgmt.createAs("server-testas2", Functionality.IPSP, ExchangeType.SE, IPSPType.SERVER, rc2, trafficModeType, 1, null);
             remAspFactory = (AspFactoryImpl) serverM3uaMgmt.createAspFactory("server-testasp", SERVER_ASSOCIATION_NAME, false);
             remAsp = serverM3uaMgmt.assignAspToAs("server-testas1", "server-testasp");
             serverM3uaMgmt.addRoute(123, -1, -1, "server-testas1");
@@ -302,9 +299,7 @@ public class RKMAsExistTest {
     }
     
     private Management getSctpManagement(String s) throws Exception {
-        Management sctpManagement = new NettySctpManagementImpl(s);
-        sctpManagement.setPersistDir(Util.getTmpTestDir());
-        sctpManagement.setSingleThread(true);
+        Management sctpManagement = new SctpManagementImpl(s,4,4,4);
         sctpManagement.start();
         sctpManagement.setConnectDelay(1000 * 5);
         sctpManagement.removeAllResourses();
@@ -312,8 +307,8 @@ public class RKMAsExistTest {
     }
     
     private M3UAManagementImpl getM3uaManagement(String s, Management sctpManagement) throws Exception {
-        M3UAManagementImpl m3uaMgmt = new M3UAManagementImpl(s, null, null);
-        m3uaMgmt.setPersistDir(Util.getTmpTestDir());
+    	UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
+        M3UAManagementImpl m3uaMgmt = new M3UAManagementImpl(s, null, uuidGenerator);
         m3uaMgmt.setTransportManagement(sctpManagement);
         m3uaMgmt.addMtp3UserPartListener(mtp3UserPartListener);
         m3uaMgmt.start();

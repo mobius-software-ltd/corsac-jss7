@@ -22,17 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import static org.testng.Assert.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
-import org.restcomm.protocols.ss7.map.service.callhandling.UUIndicatorImpl;
-import org.testng.annotations.Test;
-
 /**
 *
 * @author sergey vetyutnev
@@ -40,7 +29,7 @@ import org.testng.annotations.Test;
 */
 public class UUIndicatorTest {
 
-    @Test(groups = { "functional.xml.serialize", "callhandling" })
+    /*@Test(groups = { "functional.xml.serialize", "callhandling" })
     public void testXMLSerialize() throws Exception {
 
         UUIndicatorImpl original = new UUIndicatorImpl(136);
@@ -65,6 +54,5 @@ public class UUIndicatorTest {
 
         assertEquals(copy.getData(), original.getData());
 
-    }
-
+    }*/
 }

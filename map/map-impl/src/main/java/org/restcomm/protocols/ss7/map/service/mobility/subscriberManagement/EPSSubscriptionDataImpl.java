@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class EPSSubscriptionDataImpl extends SequenceBase implements EPSSubscriptionData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_apnOiReplacement = 0;
+	private static final int _TAG_apnOiReplacement = 0;
     private static final int _TAG_rfspId = 2;
     private static final int _TAG_ambr = 3;
     private static final int _TAG_apnConfigurationProfile = 4;

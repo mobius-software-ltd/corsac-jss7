@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,15 +42,11 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class SubscriberStateImpl implements SubscriberState, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_assumedIdle = 0;
+	public static final int _ID_assumedIdle = 0;
     public static final int _ID_camelBusy = 1;
     public static final int _ID_notProvidedFromVLR = 2;
-
-    private static final String SUBSCRIBER_STATE_CHOICE = "subscriberStateChoice";
-    private static final String NOT_REACHABLE_REASON = "notReachableReason";
-
-    private static final String DEFAULT_STRING_VALUE = null;
 
     public static final String _PrimitiveName = "SubscriberState";
 
@@ -233,37 +226,4 @@ public class SubscriberStateImpl implements SubscriberState, MAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<SubscriberStateImpl> SUBSCRIBER_STATE_XML = new XMLFormat<SubscriberStateImpl>(
-            SubscriberStateImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, SubscriberStateImpl subscriberState)
-                throws XMLStreamException {
-            String choice = xml.getAttribute(SUBSCRIBER_STATE_CHOICE, DEFAULT_STRING_VALUE);
-            SubscriberStateChoice subscriberStateChoice = null;
-            if (choice != null) {
-                subscriberStateChoice = Enum.valueOf(SubscriberStateChoice.class, choice);
-            }
-            String nrr = xml.get(NOT_REACHABLE_REASON, String.class);
-            NotReachableReason notReachableReason = null;
-            if (nrr != null) {
-                notReachableReason = Enum.valueOf(NotReachableReason.class, nrr);
-            }
-
-            subscriberState.setData(subscriberStateChoice, notReachableReason);
-        }
-
-        @Override
-        public void write(SubscriberStateImpl subscriberState, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            if (subscriberState.subscriberStateChoice != null)
-                xml.setAttribute(SUBSCRIBER_STATE_CHOICE, subscriberState.subscriberStateChoice.toString());
-            if (subscriberState.notReachableReason != null)
-                xml.add(subscriberState.notReachableReason.toString(), NOT_REACHABLE_REASON, String.class);
-        }
-    };
 }

@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class CategoryImpl extends OctetStringLength1Base implements Category {
+	private static final long serialVersionUID = 1L;
 
-    public CategoryImpl() {
+	public CategoryImpl() {
         super("Category");
     }
 

@@ -18,18 +18,17 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import java.io.IOException;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CR_RECEIVED;
 import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED;
 import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED_SEND_WINDOW_EXHAUSTED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.NEW;
 
 public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implements SccpConnection {
 
     protected SccpFlowControl flow;
 
-    private boolean overloaded;
+    private AtomicBoolean overloaded=new AtomicBoolean(false);
 
     public SccpConnectionWithFlowControlImpl(int localSsn, LocalReference localReference, ProtocolClass protocol, SccpStackImpl stack, SccpRoutingControl sccpRoutingControl) {
         super(localSsn, localReference, protocol, stack, sccpRoutingControl);
@@ -59,22 +58,14 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
     }
 
     public void setOverloaded(boolean overloaded) throws Exception {
-        try {
-            connectionLock.lock();
-
-            if (this.overloaded == overloaded) {
-                return;
-            }
-            if (overloaded) {
-                sendAk(new CreditImpl(0));
-            } else {
-                sendAk();
-            }
-            this.overloaded = overloaded;
-
-        } finally {
-            connectionLock.unlock();
-        }
+    	if(!this.overloaded.compareAndSet(!overloaded, overloaded))
+    	    return;
+        
+        if (overloaded) {
+            sendAk(new CreditImpl(0));
+        } else {
+            sendAk();
+        }    
     }
 
     public void prepareMessageForSending(SccpConnSegmentableMessageImpl message) {
@@ -105,23 +96,18 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
     }
 
     public void receiveMessage(SccpConnMessage message) throws Exception {
-        try {
-            connectionLock.lock();
-            super.receiveMessage(message);
+    	super.receiveMessage(message);
 
-            if (message instanceof SccpConnCcMessageImpl) {
-                SccpConnCcMessageImpl cc = (SccpConnCcMessageImpl) message;
-                if (cc.getCredit() != null) {
-                    this.flow = newSccpFlowControl(cc.getCredit());
-                }
-
-            } else if (message instanceof SccpConnAkMessageImpl) {
-                handleAkMessage((SccpConnAkMessageImpl) message);
-            } else if (message instanceof SccpConnRsrMessageImpl) {
-                flow.reinitialize();
+        if (message instanceof SccpConnCcMessageImpl) {
+            SccpConnCcMessageImpl cc = (SccpConnCcMessageImpl) message;
+            if (cc.getCredit() != null) {
+                this.flow = newSccpFlowControl(cc.getCredit());
             }
-        } finally {
-            connectionLock.unlock();
+
+        } else if (message instanceof SccpConnAkMessageImpl) {
+            handleAkMessage((SccpConnAkMessageImpl) message);
+        } else if (message instanceof SccpConnRsrMessageImpl) {
+            flow.reinitialize();
         }
     }
 
@@ -190,26 +176,12 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
         flow.reinitialize();
     }
 
-    protected void setConnectionLock(ReentrantLock lock) {
-        if (getState() != NEW) {
-            throw new IllegalStateException();
-        }
-        super.setConnectionLock(lock);
-    }
-
     protected boolean isCanSendData() {
-        try {
-            connectionLock.lock();
-
-            SccpConnectionState oldState = getState();
-            if (oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && flow.isAuthorizedToTransmitAnotherMessage()) {
-                setState(ESTABLISHED);
-            }
-            return getState() == ESTABLISHED;
-
-        } finally {
-            connectionLock.unlock();
+    	SccpConnectionState oldState = getState();
+        if (oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && flow.isAuthorizedToTransmitAnotherMessage()) {
+            setState(ESTABLISHED);
         }
+        return getState() == ESTABLISHED;
     }
 
     public Credit getSendCredit() {
@@ -231,7 +203,7 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
         sb.append("ConnectionWithFlowControl[");
 
         fillSccpConnectionFields(sb);
-        if (overloaded)
+        if (overloaded.get())
             sb.append(", overloaded");
         sb.append("]");
 

@@ -68,8 +68,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
  *
  */
 public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
+	private static final long serialVersionUID = 1L;
 
-    protected CAPDialogSmsImpl(CAPApplicationContext appCntx, Dialog tcapDialog, CAPProviderImpl capProviderImpl,
+	protected CAPDialogSmsImpl(CAPApplicationContext appCntx, Dialog tcapDialog, CAPProviderImpl capProviderImpl,
             CAPServiceBase capService) {
         super(appCntx, tcapDialog, capProviderImpl, capService);
     }

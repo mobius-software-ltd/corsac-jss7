@@ -84,14 +84,15 @@ public class TestEvent {
         if (getClass() != obj.getClass())
             return false;
         TestEvent other = (TestEvent) obj;
-        if (!Arrays.equals(event, other.event))
+        if (!Arrays.equals(event, other.event)) 
             return false;
         if (sent != other.sent)
-            return false;
+        	return false;
         if (sequence != other.sequence)
-            return false;
+        	return false;
         if (testEventType != other.testEventType)
-            return false;
+           return false;
+        
         return true;
     }
 }

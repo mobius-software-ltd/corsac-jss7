@@ -22,10 +22,6 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
 
@@ -34,9 +30,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
  * @author amit bhayani
  *
  */
-public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeType, XMLSerializable {
-    private static final String MODE = "mode";
-
+public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeType {
     private int mode = 0;
     private byte[] value;
 
@@ -87,24 +81,6 @@ public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeTyp
     public String toString() {
         return String.format("TrafficModeType mode=%d value=%s", mode, this.getStringRepresentation());
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<TrafficModeTypeImpl> RC_XML = new XMLFormat<TrafficModeTypeImpl>(TrafficModeTypeImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, TrafficModeTypeImpl trafficMode) throws XMLStreamException {
-            trafficMode.mode = xml.getAttribute(MODE).toInt();
-            trafficMode.encode();
-        }
-
-        @Override
-        public void write(TrafficModeTypeImpl trafficMode, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(MODE, trafficMode.mode);
-        }
-    };
 
     public String getStringRepresentation() {
         switch (mode) {

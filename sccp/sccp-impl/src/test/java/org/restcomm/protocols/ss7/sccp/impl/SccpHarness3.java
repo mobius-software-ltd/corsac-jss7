@@ -69,7 +69,7 @@ public abstract class SccpHarness3 extends SccpHarness {
     }
 
     protected void createStack3() {
-        sccpStack3 = createStack(sccpStack3Name, null);
+        sccpStack3 = createStack(sccpStack3Name);
     }
 
     protected void setUpStack1() throws Exception {
@@ -179,10 +179,5 @@ public abstract class SccpHarness3 extends SccpHarness {
         this.tearDownStack1();
         this.tearDownStack2();
         this.tearDownStack3();
-    }
-
-    public void saveTrafficInFile() {
-//        ((Mtp3UserPartImpl) this.mtp3UserPart3).saveTrafficInFile = true;
-        super.saveTrafficInFile();
     }
 }

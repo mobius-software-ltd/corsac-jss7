@@ -39,7 +39,9 @@ import java.io.IOException;
  * Created by vsubbotin on 25/05/16.
  */
 public class ODBInfoImpl extends SequenceBase implements ODBInfo {
-    public static final String _PrimitiveName = "ODBInfo";
+	private static final long serialVersionUID = 1L;
+
+	public static final String _PrimitiveName = "ODBInfo";
 
     private ODBData odbData;
     private boolean notificationToCSE;

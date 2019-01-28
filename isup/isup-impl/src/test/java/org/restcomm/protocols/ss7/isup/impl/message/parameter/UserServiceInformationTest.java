@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
@@ -304,7 +299,7 @@ public class UserServiceInformationTest {
         // we need to test other case encoding/decoding
     }
 
-    @Test(groups = { "functional.xml.serialize", "parameter" })
+    /*@Test(groups = { "functional.xml.serialize", "parameter" })
     public void testXMLSerialize() throws Exception {
 
         UserServiceInformationImpl original = new UserServiceInformationImpl();
@@ -436,6 +431,5 @@ public class UserServiceInformationTest {
         assertEquals(copy.getModemType(), original.getModemType());
         assertEquals(copy.getL3Protocol(), original.getL3Protocol());
 
-    }
-
+    }*/
 }

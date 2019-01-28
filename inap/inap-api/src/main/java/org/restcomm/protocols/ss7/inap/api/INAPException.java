@@ -28,8 +28,9 @@ package org.restcomm.protocols.ss7.inap.api;
  *
  */
 public class INAPException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-    public INAPException() {
+	public INAPException() {
     }
 
     public INAPException(String message) {

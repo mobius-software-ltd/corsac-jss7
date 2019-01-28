@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.primitives.TbcdString;
  *
  */
 public class AddressFieldImpl implements AddressField {
+	private static final long serialVersionUID = 1L;
 
-    private TypeOfNumber typeOfNumber;
+	private TypeOfNumber typeOfNumber;
     private NumberingPlanIdentification numberingPlanIdentification;
     private String addressValue;
 

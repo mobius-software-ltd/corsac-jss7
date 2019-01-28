@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.isup;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,10 +44,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
  *
  */
 public class CallingPartyNumberCapImpl implements CallingPartyNumberCap, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "CallingPartyNumberCap";
-
-    private static final String ISUP_CALLING_PARTY_NUMBER_XML = "isupCallingPartyNumber";
+	public static final String _PrimitiveName = "CallingPartyNumberCap";
 
     private byte[] data;
 
@@ -215,32 +211,4 @@ public class CallingPartyNumberCapImpl implements CallingPartyNumberCap, CAPAsnP
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CallingPartyNumberCapImpl> CALLING_PARTY_NUMBER_CAP_XML = new XMLFormat<CallingPartyNumberCapImpl>(
-            CallingPartyNumberCapImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CallingPartyNumberCapImpl callingPartyNumber)
-                throws XMLStreamException {
-            try {
-                callingPartyNumber.setCallingPartyNumber(xml.get(ISUP_CALLING_PARTY_NUMBER_XML, CallingPartyNumberImpl.class));
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-
-        @Override
-        public void write(CallingPartyNumberCapImpl callingPartyNumber, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            try {
-                xml.add(((CallingPartyNumberImpl) callingPartyNumber.getCallingPartyNumber()), ISUP_CALLING_PARTY_NUMBER_XML,
-                        CallingPartyNumberImpl.class);
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-    };
 }

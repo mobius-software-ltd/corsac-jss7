@@ -31,7 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
 *
 */
 public class GGSNEventListImpl extends BitStringBase implements GGSNEventList {
-    static final int _ID_pdpContext = 0;
+	private static final long serialVersionUID = 1L;
+
+	static final int _ID_pdpContext = 0;
     static final int _ID_mbmsContext = 1;
 
     public static final String _PrimitiveName = "GGSNEventList";

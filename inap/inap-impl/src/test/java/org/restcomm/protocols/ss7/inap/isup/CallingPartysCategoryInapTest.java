@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.inap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,7 +56,7 @@ public class CallingPartysCategoryInapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         CallingPartysCategoryInapImpl elem = new CallingPartysCategoryInapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         CallingPartyCategory cpc = elem.getCallingPartyCategory();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
@@ -85,7 +80,7 @@ public class CallingPartysCategoryInapTest {
         // byte callingPartyCategory
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         CallingPartysCategoryInapImpl original = new CallingPartysCategoryInapImpl(new CallingPartyCategoryImpl((byte) 10));
@@ -110,5 +105,5 @@ public class CallingPartysCategoryInapTest {
         assertEquals(copy.getCallingPartyCategory().getCallingPartyCategory(), original.getCallingPartyCategory()
                 .getCallingPartyCategory());
 
-    }
+    }*/
 }

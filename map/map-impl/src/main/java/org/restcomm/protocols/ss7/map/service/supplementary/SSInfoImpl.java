@@ -43,7 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 *
 */
 public class SSInfoImpl implements SSInfo, MAPAsnPrimitive {
-    public static final int _TAG_forwardingInfo = 0;
+	private static final long serialVersionUID = 1L;
+
+	public static final int _TAG_forwardingInfo = 0;
     public static final int _TAG_callBarringInfo = 1;
     public static final int _TAG_ssData = 3;
 

@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
  *
  */
 public abstract class AbstractFacilityMessageImpl extends ISUPMessageImpl implements AbstractFacilityMessage {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _MANDATORY_VAR_COUNT = 0;
+	private static final int _MANDATORY_VAR_COUNT = 0;
     private static final boolean _OPTIONAL_POSSIBLE = true;
 
     static final int _INDEX_F_MessageType = 0;

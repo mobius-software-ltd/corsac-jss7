@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class PDNTypeImpl extends OctetStringLength1Base implements PDNType {
+	private static final long serialVersionUID = 1L;
 
-    public PDNTypeImpl() {
+	public PDNTypeImpl() {
         super("PDNType");
     }
 

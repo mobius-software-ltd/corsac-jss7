@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class CksnImpl extends OctetStringLength1Base implements Cksn {
+	private static final long serialVersionUID = 1L;
 
-    public CksnImpl(int data) {
+	public CksnImpl(int data) {
         super("Cksn", data);
     }
 

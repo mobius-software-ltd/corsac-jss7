@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.inap.primitives;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -44,11 +41,9 @@ import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
  *
  */
 public class MiscCallInfoImpl implements MiscCallInfo, INAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final String MESSAGE_TYPE = "messageType";
-    private static final String DP_ASSIGNMENT = "dpAssignment";
-
-    public static final int _ID_messageType = 0;
+	public static final int _ID_messageType = 0;
     public static final int _ID_dpAssignment = 1;
 
     public static final String _PrimitiveName = "MiscCallInfo";
@@ -209,36 +204,4 @@ public class MiscCallInfoImpl implements MiscCallInfo, INAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MiscCallInfoImpl> MISC_CALL_INFO_XML = new XMLFormat<MiscCallInfoImpl>(
-            MiscCallInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MiscCallInfoImpl miscCallInfo) throws XMLStreamException {
-            Integer integ = xml.get(MESSAGE_TYPE, Integer.class);
-            if (integ != null) {
-                miscCallInfo.messageType = MiscCallInfoMessageType.getInstance(integ);
-            }
-
-            integ = xml.get(DP_ASSIGNMENT, Integer.class);
-            if (integ != null) {
-                miscCallInfo.dpAssignment = MiscCallInfoDpAssignment.getInstance(integ);
-            }
-        }
-
-        @Override
-        public void write(MiscCallInfoImpl miscCallInfo, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-
-            if (miscCallInfo.messageType != null) {
-                xml.add(miscCallInfo.messageType.getCode(), MESSAGE_TYPE, Integer.class);
-            }
-
-            if (miscCallInfo.dpAssignment != null) {
-                xml.add(miscCallInfo.dpAssignment.getCode(), DP_ASSIGNMENT, Integer.class);
-            }
-        }
-    };
 }

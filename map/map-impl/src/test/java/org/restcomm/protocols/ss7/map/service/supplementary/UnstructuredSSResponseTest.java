@@ -21,24 +21,10 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
-import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSResponseImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 
 /**
  * @author Amit Bhayani
@@ -69,7 +55,7 @@ public class UnstructuredSSResponseTest {
     public void tearDown() {
     }
 
-    @Test(groups = { "functional.xml.serialize", "service.ussd" })
+    /*@Test(groups = { "functional.xml.serialize", "service.ussd" })
     public void testXMLSerialize() throws Exception {
 
         USSDString ussdStr = new USSDStringImpl("1", null, null);
@@ -123,6 +109,5 @@ public class UnstructuredSSResponseTest {
 
         assertNull(copy.getUSSDString());
 
-    }    
-
+    }*/
 }

@@ -22,17 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
-import org.testng.annotations.Test;
-
 /**
 *
 * @author sergey vetyutnev
@@ -44,7 +33,7 @@ public class FreeFormatDataTest {
         return new byte[] { 1, 2, 3, 4, 5 };
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         FreeFormatDataImpl original = new FreeFormatDataImpl(getData());
@@ -66,6 +55,5 @@ public class FreeFormatDataTest {
         FreeFormatDataImpl copy = reader.read("freeFormatData", FreeFormatDataImpl.class);
 
         assertEquals(copy.getData(), getData());
-    }
-
+    }*/
 }

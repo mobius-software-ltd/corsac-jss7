@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class ODBHPLMNDataImpl extends BitStringBase implements ODBHPLMNData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_plmnSpecificBarringType1 = 0;
+	private static final int _INDEX_plmnSpecificBarringType1 = 0;
     private static final int _INDEX_plmnSpecificBarringType2 = 1;
     private static final int _INDEX_plmnSpecificBarringType3 = 2;
     private static final int _INDEX_plmnSpecificBarringType4 = 3;

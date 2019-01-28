@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,7 +56,7 @@ public class GenericNumberCapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         GenericNumberCapImpl elem = new GenericNumberCapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         GenericNumber gn = elem.getGenericNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
@@ -92,7 +87,7 @@ public class GenericNumberCapTest {
         // boolean numberIncomplete, int screeningIndicator
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
@@ -130,5 +125,5 @@ public class GenericNumberCapTest {
         assertEquals(copy.getGenericNumber().getScreeningIndicator(), original.getGenericNumber().getScreeningIndicator());
         assertEquals(copy.getGenericNumber().isOddFlag(), original.getGenericNumber().isOddFlag());
 
-    }
+    }*/
 }

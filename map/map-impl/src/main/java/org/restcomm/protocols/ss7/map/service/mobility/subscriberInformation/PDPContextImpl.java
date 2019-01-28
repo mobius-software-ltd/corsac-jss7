@@ -66,8 +66,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSS
  *
  */
 public class PDPContextImpl extends SequenceBase implements PDPContext {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _ID_pdp_Type = 16;
+	private static final int _ID_pdp_Type = 16;
     private static final int _ID_pdp_Address = 17;
     private static final int _ID_QoS_Subscribed = 18;
     private static final int _ID_vplmnAddressAllowed = 19;

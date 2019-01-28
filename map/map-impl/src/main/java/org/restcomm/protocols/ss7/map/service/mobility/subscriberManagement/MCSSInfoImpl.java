@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
  *
  */
 public class MCSSInfoImpl extends SequenceBase implements MCSSInfo {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_ssCode = 0;
+	public static final int _TAG_ssCode = 0;
     public static final int _TAG_ssStatus = 1;
     public static final int _TAG_nbrSB = 2;
     public static final int _TAG_nbrUser = 3;

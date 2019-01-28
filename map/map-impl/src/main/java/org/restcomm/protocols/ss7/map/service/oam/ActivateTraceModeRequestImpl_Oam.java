@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
 *
 */
 public class ActivateTraceModeRequestImpl_Oam extends ActivateTraceModeRequestImpl_Base implements ActivateTraceModeRequest_Oam {
+	private static final long serialVersionUID = 1L;
 
-    public ActivateTraceModeRequestImpl_Oam() {
+	public ActivateTraceModeRequestImpl_Oam() {
         super();
     }
 

@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -61,7 +56,7 @@ public class LocationNumberCapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         LocationNumberCapImpl elem = new LocationNumberCapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         LocationNumber ln = elem.getLocationNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
@@ -92,7 +87,7 @@ public class LocationNumberCapTest {
         // int screeningIndicator
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         LocationNumberImpl ln = new LocationNumberImpl(LocationNumber._NAI_NATIONAL_SN, "12345", LocationNumber._NPI_TELEX,
@@ -128,6 +123,5 @@ public class LocationNumberCapTest {
                 .getAddressRepresentationRestrictedIndicator());
         assertEquals(copy.getLocationNumber().getScreeningIndicator(), original.getLocationNumber().getScreeningIndicator());
         assertEquals(copy.getLocationNumber().isOddFlag(), original.getLocationNumber().isOddFlag());
-
-    }
+    }*/
 }

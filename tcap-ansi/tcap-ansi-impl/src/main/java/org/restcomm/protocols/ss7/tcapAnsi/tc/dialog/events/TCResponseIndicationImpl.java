@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndica
  *
  */
 public class TCResponseIndicationImpl extends DialogIndicationImpl implements TCResponseIndication {
+	private static final long serialVersionUID = 1L;
 
-    // fields
+	// fields
     private ApplicationContext applicationContextName;
     private UserInformation userInformation;
     private SecurityContext securityContext;

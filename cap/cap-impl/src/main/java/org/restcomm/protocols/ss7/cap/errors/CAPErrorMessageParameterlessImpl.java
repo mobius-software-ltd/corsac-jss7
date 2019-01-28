@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.errors;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
@@ -39,8 +36,9 @@ import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageParameterless;
  *
  */
 public class CAPErrorMessageParameterlessImpl extends CAPErrorMessageImpl implements CAPErrorMessageParameterless {
+	private static final long serialVersionUID = 1L;
 
-    public CAPErrorMessageParameterlessImpl(Long errorCode) {
+	public CAPErrorMessageParameterlessImpl(Long errorCode) {
         super(errorCode);
     }
 
@@ -140,24 +138,4 @@ public class CAPErrorMessageParameterlessImpl extends CAPErrorMessageImpl implem
                 return errorCode.toString();
         }
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CAPErrorMessageParameterlessImpl> CAP_ERROR_MESSAGE_PARAMETERLESS_XML = new XMLFormat<CAPErrorMessageParameterlessImpl>(
-            CAPErrorMessageParameterlessImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CAPErrorMessageParameterlessImpl errorMessage)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-        }
-
-        @Override
-        public void write(CAPErrorMessageParameterlessImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-        }
-    };
-
 }

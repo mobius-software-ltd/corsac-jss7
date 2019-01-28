@@ -42,7 +42,9 @@ import java.util.ArrayList;
  * Created by vsubbotin on 25/05/16.
  */
 public class CallBarringDataImpl extends SequenceBase implements CallBarringData {
-    public static final String _PrimitiveName = "CallBarringData";
+	private static final long serialVersionUID = 1L;
+
+	public static final String _PrimitiveName = "CallBarringData";
 
     private ArrayList<ExtCallBarringFeature> callBarringFeatureList;
     private Password password;

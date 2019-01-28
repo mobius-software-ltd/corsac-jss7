@@ -70,7 +70,7 @@ public class ForwardingOptionsTest {
         byte[] data5 = new byte[] { 0x4, 0x1, (byte) 0x24 };
 
         AsnInputStream asn = new AsnInputStream(data1);
-        int tag = asn.readTag();
+        asn.readTag();
         ForwardingOptionsImpl fo = new ForwardingOptionsImpl();
         fo.decodeAll(asn);
 
@@ -81,7 +81,7 @@ public class ForwardingOptionsTest {
         assertTrue(fo.getForwardingReason() == ForwardingReason.busy);
 
         asn = new AsnInputStream(data2);
-        tag = asn.readTag();
+        asn.readTag();
         fo = new ForwardingOptionsImpl();
         fo.decodeAll(asn);
 
@@ -92,7 +92,7 @@ public class ForwardingOptionsTest {
         assertTrue(fo.getForwardingReason() == ForwardingReason.notReachable);
 
         asn = new AsnInputStream(data3);
-        tag = asn.readTag();
+        asn.readTag();
         fo = new ForwardingOptionsImpl();
         fo.decodeAll(asn);
 
@@ -103,7 +103,7 @@ public class ForwardingOptionsTest {
         assertTrue(fo.getForwardingReason() == ForwardingReason.noReply);
 
         asn = new AsnInputStream(data4);
-        tag = asn.readTag();
+        asn.readTag();
         fo = new ForwardingOptionsImpl();
         fo.decodeAll(asn);
 
@@ -114,7 +114,7 @@ public class ForwardingOptionsTest {
         assertTrue(fo.getForwardingReason() == ForwardingReason.noReply);
 
         asn = new AsnInputStream(data5);
-        tag = asn.readTag();
+        asn.readTag();
         fo = new ForwardingOptionsImpl();
         fo.decodeAll(asn);
 

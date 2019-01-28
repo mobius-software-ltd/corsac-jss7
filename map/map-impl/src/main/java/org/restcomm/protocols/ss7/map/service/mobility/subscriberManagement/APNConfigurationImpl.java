@@ -54,8 +54,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class APNConfigurationImpl extends SequenceBase implements APNConfiguration {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_contextId = 0;
+	private static final int _TAG_contextId = 0;
     private static final int _TAG_pDNType = 1;
     private static final int _TAG_servedPartyIPIPv4Address = 2;
     private static final int _TAG_apn = 3;

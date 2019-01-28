@@ -40,7 +40,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
  *
  */
 public class ErrorCodeImpl implements ErrorCode {
-    private ErrorCodeType type;
+	private static final long serialVersionUID = 1L;
+
+	private ErrorCodeType type;
     private Long nationalErrorCode;
     private Long privateErrorCode;
 

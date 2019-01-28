@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
@@ -36,11 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class SSCodeImpl extends OctetStringLength1Base implements SSCode {
+	private static final long serialVersionUID = 1L;
 
-    private static final String SUPPLEMENTARY_CODE_VALUE = "supplementaryCodeValue";
-    private static final String DATA = "data";
-
-    public SSCodeImpl() {
+	public SSCodeImpl() {
         super("SSCode");
     }
 
@@ -79,26 +74,4 @@ public class SSCodeImpl extends OctetStringLength1Base implements SSCode {
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<SSCodeImpl> SS_CODE = new XMLFormat<SSCodeImpl>(SSCodeImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, SSCodeImpl ssCode) throws XMLStreamException {
-            ssCode.data = xml.get(DATA, Integer.class);
-
-            String str = xml.get(SUPPLEMENTARY_CODE_VALUE, String.class);
-        }
-
-        @Override
-        public void write(SSCodeImpl ssCode, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.add(ssCode.getData(), DATA, Integer.class);
-
-            if (ssCode.getSupplementaryCodeValue() != null)
-                xml.add((String) ssCode.getSupplementaryCodeValue().toString(), SUPPLEMENTARY_CODE_VALUE, String.class);
-        }
-    };
-
 }

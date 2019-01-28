@@ -32,7 +32,6 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
  */
 public class CorrelationIdImpl extends ParameterImpl implements CorrelationId {
 
-    private static final long UNSIGNED_INT_MAX_VALUE = 0xFFFFFFFF;
     private long corrId;
 
     protected CorrelationIdImpl(long corrId) {

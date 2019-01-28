@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class CancelGPRSRequestImpl extends GprsMessageImpl implements CancelGPRSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "CancelGPRSRequest";
+	public static final String _PrimitiveName = "CancelGPRSRequest";
 
     public static final int _ID_pdpID = 0;
 

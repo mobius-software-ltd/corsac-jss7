@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -60,7 +55,7 @@ public class DisconnectLegRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         DisconnectLegRequestImpl elem = new DisconnectLegRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getLegToBeReleased().getReceivingSideID(), LegType.leg6);
@@ -83,7 +78,7 @@ public class DisconnectLegRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         LegIDImpl legToBeReleased = new LegIDImpl(false, LegType.leg6);
@@ -143,6 +138,5 @@ public class DisconnectLegRequestTest {
         assertNull(copy.getReleaseCause());
         assertNull(original.getExtensions());
         assertNull(copy.getExtensions());
-    }
-
+    }*/
 }

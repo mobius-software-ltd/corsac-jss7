@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.gap;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -74,7 +69,7 @@ public class GapIndicatorsTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         GapIndicatorsImpl original = new GapIndicatorsImpl(100, -1);
@@ -109,6 +104,5 @@ public class GapIndicatorsTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
-
+    }*/
 }

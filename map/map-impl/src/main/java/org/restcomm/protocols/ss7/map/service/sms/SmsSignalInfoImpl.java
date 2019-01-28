@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
  *
  */
 public class SmsSignalInfoImpl implements SmsSignalInfo, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "SmsSignalInfo";
+	public static final String _PrimitiveName = "SmsSignalInfo";
 
     private byte[] data;
     private Charset gsm8Charset;

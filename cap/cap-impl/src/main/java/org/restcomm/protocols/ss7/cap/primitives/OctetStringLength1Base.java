@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
  *
  */
 public abstract class OctetStringLength1Base implements CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    protected int data;
+	protected int data;
 
     protected String _PrimitiveName;
 

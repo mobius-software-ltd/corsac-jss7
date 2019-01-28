@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class EntityReleasedGPRSRequestImpl extends GprsMessageImpl implements EntityReleasedGPRSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EntityReleasedGPRSRequest";
+	public static final String _PrimitiveName = "EntityReleasedGPRSRequest";
 
     public static final int _ID_gprsCause = 0;
     public static final int _ID_pdpID = 1;

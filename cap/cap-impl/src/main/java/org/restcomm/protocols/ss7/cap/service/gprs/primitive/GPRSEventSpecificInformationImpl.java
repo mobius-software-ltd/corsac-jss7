@@ -53,8 +53,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
  *
  */
 public class GPRSEventSpecificInformationImpl implements GPRSEventSpecificInformation, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "GPRSEventSpecificInformation";
+	public static final String _PrimitiveName = "GPRSEventSpecificInformation";
 
     public static final int _ID_locationInformationGPRS = 0;
     public static final int _ID_pdpContextchangeOfPositionSpecificInformation = 1;

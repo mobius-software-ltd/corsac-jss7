@@ -47,8 +47,9 @@ import org.restcomm.protocols.ss7.map.datacoding.Gsm7EncodingStyle;
  *
  */
 public class USSDStringImpl extends OctetStringBase implements USSDString {
+	private static final long serialVersionUID = 1L;
 
-    private CBSDataCodingScheme dataCodingScheme;
+	private CBSDataCodingScheme dataCodingScheme;
 
     private static GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
     private static GSMCharset gsm7Charset_Urdu = new GSMCharset("GSM", new String[] {}, GSMCharset.BYTE_TO_CHAR_UrduAlphabet,
@@ -157,6 +158,8 @@ public class USSDStringImpl extends OctetStringBase implements USSDString {
                         bb.get(this.data);
                     }
                     break;
+				default:
+					break;
             }
         }
     }
@@ -248,6 +251,8 @@ public class USSDStringImpl extends OctetStringBase implements USSDString {
                         res = bf.toString();
                     }
                     break;
+				default:
+					break;
             }
         }
 

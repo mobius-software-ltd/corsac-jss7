@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public abstract class LsmMessageImpl extends MessageImpl implements LsmMessage, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    /*
+	/*
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.LsmMessage#getMAPDialog()

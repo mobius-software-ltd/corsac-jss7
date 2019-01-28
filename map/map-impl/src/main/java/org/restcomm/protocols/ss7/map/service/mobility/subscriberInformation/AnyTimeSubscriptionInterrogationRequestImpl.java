@@ -46,7 +46,9 @@ import java.io.IOException;
  * Created by vsubbotin on 24/05/16.
  */
 public class AnyTimeSubscriptionInterrogationRequestImpl extends MobilityMessageImpl implements AnyTimeSubscriptionInterrogationRequest, MAPAsnPrimitive {
-    private static final int _TAG_SUBSCRIBER_IDENTITY = 0;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_SUBSCRIBER_IDENTITY = 0;
     private static final int _TAG_REQUESTED_SUBSCRIPTION_INFO = 1;
     private static final int _TAG_GSM_SCF_ADDRESS = 2;
     private static final int _TAG_EXTENSION_CONTAINER = 3;

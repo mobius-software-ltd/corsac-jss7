@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseReques
  *
  */
 public class TCResponseRequestImpl extends DialogRequestImpl implements TCResponseRequest {
+	private static final long serialVersionUID = 1L;
 
-    private ApplicationContext applicationContextName;
+	private ApplicationContext applicationContextName;
     private SccpAddress originatingAddress;
     private UserInformation userInformation;
     private SecurityContext securityContext;

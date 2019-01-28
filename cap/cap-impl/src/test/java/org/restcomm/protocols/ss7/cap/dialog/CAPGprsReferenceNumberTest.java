@@ -51,7 +51,7 @@ public class CAPGprsReferenceNumberTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         CAPGprsReferenceNumberImpl elem = new CAPGprsReferenceNumberImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNotNull(elem.getDestinationReference());
         assertNotNull(elem.getOriginationReference());

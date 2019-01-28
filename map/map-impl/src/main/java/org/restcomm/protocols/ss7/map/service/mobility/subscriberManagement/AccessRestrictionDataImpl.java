@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class AccessRestrictionDataImpl extends BitStringBase implements AccessRestrictionData {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_UtranNotAllowed = 0;
+	private static final int _INDEX_UtranNotAllowed = 0;
     private static final int _INDEX_GeranNotAllowed = 1;
     private static final int _INDEX_GanNotAllowed = 2;
     private static final int _INDEX_IHspaEvolutionNotAllowed = 3;

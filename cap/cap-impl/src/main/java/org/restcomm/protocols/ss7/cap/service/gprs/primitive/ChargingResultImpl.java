@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class ChargingResultImpl implements ChargingResult, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ChargingResult";
+	public static final String _PrimitiveName = "ChargingResult";
 
     public static final int _ID_transferredVolume = 0;
     public static final int _ID_elapsedTime = 1;

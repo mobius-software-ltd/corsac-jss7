@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,12 +44,11 @@ import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
  */
 public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitchedCallMessageImpl implements
         PromptAndCollectUserInformationResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_digitsResponse = 0;
+	public static final int _ID_digitsResponse = 0;
 
     public static final String _PrimitiveName = "PromptAndCollectUserInformationResponseIndication";
-
-    private static final String DIGITS_RESPONSE = "digitsResponse";
 
     public Digits digitsResponse;
 
@@ -174,38 +170,6 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
         if (this.digitsResponse != null)
             ((DigitsImpl) this.digitsResponse).encodeData(asnOs);
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<PromptAndCollectUserInformationResponseImpl> PROMPT_AND_COLLECT_USER_INFORMATION_RESPONSE_XML = new XMLFormat<PromptAndCollectUserInformationResponseImpl>(
-            PromptAndCollectUserInformationResponseImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml,
-                PromptAndCollectUserInformationResponseImpl promptAndCollectUserInformationResponse) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, promptAndCollectUserInformationResponse);
-
-            promptAndCollectUserInformationResponse.digitsResponse = xml.get(DIGITS_RESPONSE, DigitsImpl.class);
-
-            int choiceCount = 0;
-            if (promptAndCollectUserInformationResponse.digitsResponse != null)
-                choiceCount++;
-
-            if (choiceCount != 1)
-                throw new XMLStreamException("PromptAndCollectUserInformationResponse decoding error: there must be one choice selected, found: "
-                        + choiceCount);
-        }
-
-        @Override
-        public void write(PromptAndCollectUserInformationResponseImpl promptAndCollectUserInformationResponse,
-                javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(promptAndCollectUserInformationResponse, xml);
-
-            if (promptAndCollectUserInformationResponse.digitsResponse != null)
-                xml.add((DigitsImpl) promptAndCollectUserInformationResponse.digitsResponse, DIGITS_RESPONSE, DigitsImpl.class);
-        }
-    };
 
     @Override
     public String toString() {

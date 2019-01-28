@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 *
 */
 public class SendImsiResponseImpl extends OamMessageImpl implements SendImsiResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "SendImsiResponse";
+	public static final String _PrimitiveName = "SendImsiResponse";
 
     private IMSI imsi;
 

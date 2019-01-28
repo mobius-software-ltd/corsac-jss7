@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.ActivityTestGPRSRequest;
  *
  */
 public class ActivityTestGPRSRequestImpl extends GprsMessageImpl implements ActivityTestGPRSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ActivityTestGPRSRequest";
+	public static final String _PrimitiveName = "ActivityTestGPRSRequest";
 
     @Override
     public CAPMessageType getMessageType() {

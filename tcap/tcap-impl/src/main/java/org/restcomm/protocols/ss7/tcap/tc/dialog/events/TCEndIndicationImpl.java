@@ -28,7 +28,6 @@ package org.restcomm.protocols.ss7.tcap.tc.dialog.events;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
@@ -37,10 +36,10 @@ import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
  *
  */
 public class TCEndIndicationImpl extends DialogIndicationImpl implements TCEndIndication {
+	private static final long serialVersionUID = 1L;
 
-    private SccpAddress originatingAddress;
-    private TerminationType terminationType;
-
+	private SccpAddress originatingAddress;
+    
     // fields
     private ApplicationContextName applicationContextName;
     private UserInformation userInformation;

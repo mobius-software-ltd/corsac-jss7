@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class TransferredVolumeImpl implements TransferredVolume, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "TransferredVolume";
+	public static final String _PrimitiveName = "TransferredVolume";
 
     public static final int _ID_volumeIfNoTariffSwitch = 0;
     public static final int _ID_volumeIfTariffSwitch = 1;

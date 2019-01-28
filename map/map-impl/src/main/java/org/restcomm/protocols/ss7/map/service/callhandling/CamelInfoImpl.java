@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Supp
  *
  */
 public class CamelInfoImpl extends SequenceBase implements CamelInfo {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_offeredCamel4CSIs = 0;
+	private static final int _TAG_offeredCamel4CSIs = 0;
 
     public SupportedCamelPhases supportedCamelPhases;
     public boolean suppressTCSI;

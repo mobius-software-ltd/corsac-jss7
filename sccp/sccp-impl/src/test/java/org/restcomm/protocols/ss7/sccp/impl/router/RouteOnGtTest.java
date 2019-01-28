@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.sccp.impl.router;
 
 import static org.testng.Assert.assertEquals;
 
-import org.restcomm.protocols.ss7.Util;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.Mtp3UserPartImpl;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
@@ -37,7 +36,6 @@ import org.restcomm.protocols.ss7.sccp.message.SccpNoticeMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.ss7ext.Ss7ExtInterface;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -84,23 +82,19 @@ public class RouteOnGtTest extends SccpHarness {
 
     @Override
     protected void createStack1() {
-        sccpStack1 = createStack(sccpStack1Name, null);
+        sccpStack1 = createStack(sccpStack1Name);
         sccpProvider1 = sccpStack1.getSccpProvider();
     }
 
     @Override
     protected void createStack2() {
-        sccpStack2 = createStack(sccpStack2Name, null);
+        sccpStack2 = createStack(sccpStack2Name);
         sccpProvider2 = sccpStack2.getSccpProvider();
     }
 
     @Override
-    protected SccpStackImpl createStack(String name, Ss7ExtInterface ss7ExtInterface) {
-        SccpStackImpl stack = new SccpStackImplProxy(name, ss7ExtInterface);
-        final String dir = Util.getTmpTestDir();
-        if (dir != null) {
-            stack.setPersistDir(dir);
-        }
+    protected SccpStackImpl createStack(String name) {
+        SccpStackImpl stack = new SccpStackImplProxy(name);
         return stack;
     }
 
@@ -138,7 +132,7 @@ public class RouteOnGtTest extends SccpHarness {
         SccpMessage mes1 = u1.getMessages().get(0);
         SccpNoticeMessage mes11 = (SccpNoticeMessage) mes1;
         ReturnCause returnCause = mes11.getReturnCause();
-        assertEquals(returnCause.getValue(), ReturnCauseValue.ERR_IN_LOCAL_PROCESSING);
+        assertEquals(returnCause.getValue(), ReturnCauseValue.NO_TRANSLATION_FOR_ADDRESS);
     }
 
     @Test(groups = { "SccpMessage", "functional.transfer" })

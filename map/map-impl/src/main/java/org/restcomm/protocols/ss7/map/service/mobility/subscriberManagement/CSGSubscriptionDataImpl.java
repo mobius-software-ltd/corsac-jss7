@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.primitives.TimeImpl;
  *
  */
 public class CSGSubscriptionDataImpl extends SequenceBase implements CSGSubscriptionData {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_LipaAllowedAPNList = 0;
+	public static final int _TAG_LipaAllowedAPNList = 0;
 
     private CSGId csgId;
     private Time expirationDate;

@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.message;
 
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+
 import io.netty.buffer.ByteBuf;
-import javolution.text.TextBuilder;
-import javolution.util.FastMap;
 
 import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.message.M3UAMessage;
@@ -41,7 +42,7 @@ public abstract class M3UAMessageImpl implements M3UAMessage {
     private int messageType;
 
     private String message;
-    protected FastMap<Short, Parameter> parameters = new FastMap<Short, Parameter>();
+    protected ConcurrentHashMap<Short, Parameter> parameters = new ConcurrentHashMap<Short, Parameter>();
 
     private ParameterFactoryImpl factory = new ParameterFactoryImpl();
 
@@ -112,10 +113,11 @@ public abstract class M3UAMessageImpl implements M3UAMessage {
 
     @Override
     public String toString() {
-        TextBuilder tb = new TextBuilder();
+        StringBuilder tb = new StringBuilder();
         tb.append(this.message).append(" Params(");
-        for (FastMap.Entry<Short, Parameter> e = parameters.head(), end = parameters.tail(); (e = e.getNext()) != end;) {
-            Parameter value = e.getValue();
+        Iterator<Parameter> iterator=parameters.values().iterator();
+        while(iterator.hasNext()) {
+            Parameter value = iterator.next();
             tb.append(value.toString());
             tb.append(", ");
         }

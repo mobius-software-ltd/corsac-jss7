@@ -23,15 +23,9 @@
 package org.restcomm.protocols.ss7.cap.primitives;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -68,33 +62,43 @@ public class ExtensionFieldTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ExtensionFieldImpl elem = new ExtensionFieldImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
+        ais.close();
+        
         assertEquals((int) elem.getLocalCode(), 2);
         assertEquals(elem.getCriticalityType(), CriticalityType.typeIgnore);
         ais = new AsnInputStream(elem.getData());
         ais.readNullData(elem.getData().length);
-
+        ais.close();
+        
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new ExtensionFieldImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(Arrays.equals(elem.getGlobalCode(), this.getDataOid()));
         assertEquals(elem.getCriticalityType(), CriticalityType.typeIgnore);
+        ais.close();
+        
         ais = new AsnInputStream(elem.getData());
         boolean bool = ais.readBooleanData(elem.getData().length);
         assertTrue(bool);
-
+        ais.close();
+        
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new ExtensionFieldImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
+        ais.close();
+        
         assertEquals((int) elem.getLocalCode(), 2222);
         assertEquals(elem.getCriticalityType(), CriticalityType.typeAbort);
         ais = new AsnInputStream(elem.getData());
         int i1 = (int) ais.readIntegerData(elem.getData().length);
+        ais.close();
+        
         assertEquals(i1, -555);
     }
 
@@ -104,6 +108,8 @@ public class ExtensionFieldTest {
         AsnOutputStream aos = new AsnOutputStream();
         aos.writeNullData();
         ExtensionFieldImpl elem = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, aos.toByteArray());
+        aos.close();
+        
         aos = new AsnOutputStream();
         elem.encodeAll(aos);
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
@@ -111,6 +117,8 @@ public class ExtensionFieldTest {
         aos = new AsnOutputStream();
         aos.writeBooleanData(true);
         elem = new ExtensionFieldImpl(this.getDataOid(), null, aos.toByteArray());
+        aos.close();
+        
         aos = new AsnOutputStream();
         elem.encodeAll(aos);
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
@@ -118,12 +126,14 @@ public class ExtensionFieldTest {
         aos = new AsnOutputStream();
         aos.writeIntegerData(-555);
         elem = new ExtensionFieldImpl(2222, CriticalityType.typeAbort, aos.toByteArray());
+        aos.close();
+        
         aos = new AsnOutputStream();
         elem.encodeAll(aos);
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
     }
 
-    private byte[] getDataSer() {
+    /*private byte[] getDataSer() {
         return new byte[] { 1, (byte) 255, 3 };
     }
 
@@ -179,5 +189,5 @@ public class ExtensionFieldTest {
         assertEquals(copy.getCriticalityType(), original.getCriticalityType());
         assertEquals(copy.getData(), original.getData());
 
-    }
+    }*/
 }

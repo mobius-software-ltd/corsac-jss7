@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.sccp.impl.parameter;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
@@ -38,9 +35,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
  *
  */
 public class NoGlobalTitle extends AbstractGlobalTitle {
+	private static final long serialVersionUID = 1L;
 
-
-    public NoGlobalTitle() {
+	public NoGlobalTitle() {
 
     }
 
@@ -72,16 +69,4 @@ public class NoGlobalTitle extends AbstractGlobalTitle {
         }
         this.encodingScheme.encode(this.digits, out);
     }
-
-    // default XML representation.
-    protected static final XMLFormat<NoGlobalTitle> XML = new XMLFormat<NoGlobalTitle>(NoGlobalTitle.class) {
-
-        public void write(NoGlobalTitle ai, OutputElement xml) throws XMLStreamException {
-            xml.setAttribute(DIGITS, ai.digits);
-        }
-
-        public void read(InputElement xml, NoGlobalTitle ai) throws XMLStreamException {
-            ai.digits = xml.getAttribute(DIGITS).toString();
-        }
-    };
 }

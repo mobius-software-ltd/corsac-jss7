@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -45,10 +42,9 @@ import org.restcomm.protocols.ss7.map.api.errors.PWRegistrationFailureCause;
  */
 public class MAPErrorMessagePwRegistrationFailureImpl extends MAPErrorMessageImpl implements
         MAPErrorMessagePwRegistrationFailure {
+	private static final long serialVersionUID = 1L;
 
-    private static final String PW_REGIS_FAILURE_CAUSE = "pwRegistrationFailureCause";
-
-    private PWRegistrationFailureCause pwRegistrationFailureCause;
+	private PWRegistrationFailureCause pwRegistrationFailureCause;
 
     protected String _PrimitiveName = "MAPErrorMessagePwRegistrationFailure";
 
@@ -179,29 +175,4 @@ public class MAPErrorMessagePwRegistrationFailureImpl extends MAPErrorMessageImp
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessagePwRegistrationFailureImpl> MAP_ERROR_MESSAGE_PW_REGIS_FAILURE_XML = new XMLFormat<MAPErrorMessagePwRegistrationFailureImpl>(
-            MAPErrorMessagePwRegistrationFailureImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessagePwRegistrationFailureImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-            String str = xml.get(PW_REGIS_FAILURE_CAUSE, String.class);
-            if (str != null)
-                errorMessage.pwRegistrationFailureCause = Enum.valueOf(PWRegistrationFailureCause.class, str);
-        }
-
-        @Override
-        public void write(MAPErrorMessagePwRegistrationFailureImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            if (errorMessage.getPWRegistrationFailureCause() != null)
-                xml.add((String) errorMessage.getPWRegistrationFailureCause().toString(), PW_REGIS_FAILURE_CAUSE, String.class);
-        }
-    };
-
 }

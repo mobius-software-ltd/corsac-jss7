@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class MWStatusImpl extends BitStringBase implements MWStatus {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_ScAddressNotIncluded = 0;
+	private static final int _INDEX_ScAddressNotIncluded = 0;
     private static final int _INDEX_MnrfSet = 1;
     private static final int _INDEX_McefSet = 2;
     private static final int _INDEX_MnrgSet = 3;

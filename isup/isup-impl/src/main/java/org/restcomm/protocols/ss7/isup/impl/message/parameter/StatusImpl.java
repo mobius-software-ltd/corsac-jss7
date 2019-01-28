@@ -28,8 +28,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Status;
  *
  */
 public class StatusImpl implements Status {
+	private static final long serialVersionUID = 1L;
 
-    private byte status;
+	private byte status;
     public StatusImpl() {
         // TODO Auto-generated constructor stub
     }

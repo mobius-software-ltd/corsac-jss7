@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class DeferredLocationEventTypeImpl extends BitStringBase implements DeferredLocationEventType {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _INDEX_MS_AVAILABLE = 0;
+	private static final int _INDEX_MS_AVAILABLE = 0;
     private static final int _INDEX__ENTERING_INTO_AREA = 1;
     private static final int _INDEX_LEAVING_FROM_AREA = 2;
     private static final int _INDEX_BEING_INSIDE_AREA = 3;

@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class OSmsSubmissionSpecificInfoImpl extends SequenceBase implements OSmsSubmissionSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    public OSmsSubmissionSpecificInfoImpl() {
+	public OSmsSubmissionSpecificInfoImpl() {
         super("OSmsSubmissionSpecificInfo");
     }
 

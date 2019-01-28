@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -88,7 +83,7 @@ public class ISDNAddressStringTest {
 
     }
 
-    @Test(groups = { "functional.serialize", "primitives" })
+    /*@Test(groups = { "functional.serialize", "primitives" })
     public void testSerialization() throws Exception {
         ISDNAddressStringImpl original = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
@@ -114,6 +109,5 @@ public class ISDNAddressStringTest {
         assertEquals(copy.getAddressNature(), original.getAddressNature());
         assertEquals(copy.getNumberingPlan(), original.getNumberingPlan());
         assertEquals(copy.getAddress(), original.getAddress());
-    }
-
+    }*/
 }

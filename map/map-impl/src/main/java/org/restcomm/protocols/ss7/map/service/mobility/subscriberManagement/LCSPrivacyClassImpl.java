@@ -49,8 +49,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
  *
  */
 public class LCSPrivacyClassImpl extends SequenceBase implements LCSPrivacyClass {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_notificationToMSUser = 0;
+	private static final int _TAG_notificationToMSUser = 0;
     private static final int _TAG_externalClientList = 1;
     private static final int _TAG_plmnClientList = 2;
     private static final int _TAG_extensionContainer = 3;

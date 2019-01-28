@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLast;
  *
  */
 public abstract class ReturnImpl implements Return {
+	private static final long serialVersionUID = 1L;
 
-    protected Long correlationId;
+	protected Long correlationId;
     protected Parameter parameter;
     private OperationCode operationCode;
 

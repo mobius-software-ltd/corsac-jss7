@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -62,7 +57,7 @@ public class LocationNumberMapTest {
 
         AsnInputStream asn = new AsnInputStream(rawData);
 
-        int tag = asn.readTag();
+        asn.readTag();
         LocationNumberMapImpl impl = new LocationNumberMapImpl();
         impl.decodeAll(asn);
         LocationNumber ln = impl.getLocationNumber();
@@ -101,7 +96,7 @@ public class LocationNumberMapTest {
         // int screeningIndicator
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         LocationNumberImpl ln = new LocationNumberImpl(LocationNumber._NAI_NATIONAL_SN, "80207910020",
@@ -137,6 +132,5 @@ public class LocationNumberMapTest {
                 .getNumberingPlanIndicator());
         assertEquals(copy.getLocationNumber().getScreeningIndicator(), original.getLocationNumber().getScreeningIndicator());
 
-    }
-
+    }*/
 }

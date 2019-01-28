@@ -55,8 +55,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class UpdateLocationRequestImpl extends MobilityMessageImpl implements UpdateLocationRequest {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_mscNumber = 1;
+	protected static final int _TAG_mscNumber = 1;
     protected static final int _TAG_roamingNumber = 0;
     protected static final int _TAG_lmsi = 10;
     protected static final int _TAG_vlrCapability = 6;

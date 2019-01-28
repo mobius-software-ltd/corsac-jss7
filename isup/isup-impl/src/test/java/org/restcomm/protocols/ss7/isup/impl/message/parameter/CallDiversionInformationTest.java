@@ -64,7 +64,7 @@ public class CallDiversionInformationTest extends ParameterHarness {
     public void testBody1EncodedValues() throws ParameterException {
         CallDiversionInformationImpl cdi = new CallDiversionInformationImpl(getBody1());
         String[] methodNames = { "getNotificationSubscriptionOptions", "getRedirectingReason" };
-        Object[] expectedValues = { cdi._NSO_P_A_WITH_RN, cdi._REDIRECTING_REASON_DDA };
+        Object[] expectedValues = { CallDiversionInformationImpl._NSO_P_A_WITH_RN, CallDiversionInformationImpl._REDIRECTING_REASON_DDA };
         super.testValues(cdi, methodNames, expectedValues);
     }
 

@@ -76,8 +76,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSC
  *
  */
 public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDPSMSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "InitialDPSMSRequest";
+	public static final String _PrimitiveName = "InitialDPSMSRequest";
 
     public static final int _ID_serviceKey = 0;
     public static final int _ID_destinationSubscriberNumber = 1;

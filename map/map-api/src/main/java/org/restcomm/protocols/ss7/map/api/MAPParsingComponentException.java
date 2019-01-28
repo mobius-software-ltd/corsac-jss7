@@ -28,7 +28,9 @@ package org.restcomm.protocols.ss7.map.api;
  *
  */
 public class MAPParsingComponentException extends Exception {
-    private MAPParsingComponentExceptionReason reason;
+	private static final long serialVersionUID = 1L;
+
+	private MAPParsingComponentExceptionReason reason;
 
     public MAPParsingComponentException() {
         // TODO Auto-generated constructor stub

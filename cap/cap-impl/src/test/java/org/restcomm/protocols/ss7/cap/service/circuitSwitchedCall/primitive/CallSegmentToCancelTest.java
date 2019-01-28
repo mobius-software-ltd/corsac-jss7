@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -72,7 +67,7 @@ public class CallSegmentToCancelTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerializaion() throws Exception {
         CallSegmentToCancelImpl original = new CallSegmentToCancelImpl(3, 5);
 
@@ -97,5 +92,5 @@ public class CallSegmentToCancelTest {
         assertEquals(copy.getInvokeID(), original.getInvokeID());
         assertEquals(copy.getCallSegmentID(), original.getCallSegmentID());
 
-    }
+    }*/
 }

@@ -24,17 +24,12 @@ package org.restcomm.protocols.ss7.sccp.impl;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.mtp.Mtp3UserPart;
 import org.restcomm.protocols.ss7.sccp.MaxConnectionCountReached;
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.SccpManagementEventListener;
@@ -43,7 +38,6 @@ import org.restcomm.protocols.ss7.sccp.SccpStack;
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpDataMessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpNoticeMessageImpl;
-import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.sccp.message.MessageFactory;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
@@ -52,9 +46,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.ss7.congestion.ExecutorCongestionMonitor;
-
-import java.util.Map;
 
 /**
  *
@@ -64,17 +55,16 @@ import java.util.Map;
  *
  */
 public class SccpProviderImpl implements SccpProvider, Serializable {
-    private static final Logger logger = Logger.getLogger(SccpProviderImpl.class);
+	private static final long serialVersionUID = 1L;
+
+	private static final Logger logger = Logger.getLogger(SccpProviderImpl.class);
 
     private transient SccpStackImpl stack;
-    protected FastMap<Integer, SccpListener> ssnToListener = new FastMap<Integer, SccpListener>();
-    protected FastList<SccpManagementEventListener> managementEventListeners = new FastList<SccpManagementEventListener>();
+    protected ConcurrentHashMap<Integer, SccpListener> ssnToListener = new ConcurrentHashMap<Integer, SccpListener>();
+    protected ConcurrentHashMap<UUID,SccpManagementEventListener> managementEventListeners = new ConcurrentHashMap<UUID,SccpManagementEventListener>();
 
     private MessageFactoryImpl messageFactory;
     private ParameterFactoryImpl parameterFactory;
-
-    //<ssn - congestion level>
-    private ConcurrentHashMap<Integer, Integer> congestionSsn = new ConcurrentHashMap<Integer, Integer>();
 
     SccpProviderImpl(SccpStackImpl stack) {
         this.stack = stack;
@@ -91,68 +81,44 @@ public class SccpProviderImpl implements SccpProvider, Serializable {
     }
 
     public void registerSccpListener(int ssn, SccpListener listener) {
-        synchronized (this) {
-            SccpListener existingListener = ssnToListener.get(ssn);
-            if (existingListener != null) {
-                if (logger.isEnabledFor(Level.WARN)) {
-                    logger.warn(String.format("Registering SccpListener=%s for already existing SccpListnere=%s for SSN=%d",
-                            listener, existingListener, ssn));
-                }
+    	SccpListener existingListener = ssnToListener.get(ssn);
+        if (existingListener != null) {
+            if (logger.isEnabledFor(Level.WARN)) {
+                logger.warn(String.format("Registering SccpListener=%s for already existing SccpListnere=%s for SSN=%d",
+                        listener, existingListener, ssn));
             }
-            FastMap<Integer, SccpListener> newListener = new FastMap<Integer, SccpListener>();
-            newListener.putAll(ssnToListener);
-            newListener.put(ssn, listener);
-            ssnToListener = newListener;
-
-            this.stack.broadcastChangedSsnState(ssn, true);
         }
+        
+        ssnToListener.put(ssn, listener);
+        this.stack.broadcastChangedSsnState(ssn, true);
     }
 
     public void deregisterSccpListener(int ssn) {
-        synchronized (this) {
-            FastMap<Integer, SccpListener> newListener = new FastMap<Integer, SccpListener>();
-            newListener.putAll(ssnToListener);
-            SccpListener existingListener = newListener.remove(ssn);
-            if (existingListener == null) {
-                if (logger.isEnabledFor(Level.WARN)) {
-                    logger.warn(String.format("No existing SccpListnere=%s for SSN=%d", existingListener, ssn));
-                }
+    	SccpListener existingListener = ssnToListener.remove(ssn);
+        if (existingListener == null) {
+            if (logger.isEnabledFor(Level.WARN)) {
+                logger.warn(String.format("No existing SccpListnere=%s for SSN=%d", existingListener, ssn));
             }
-            ssnToListener = newListener;
-
-            this.stack.broadcastChangedSsnState(ssn, false);
         }
+        this.stack.broadcastChangedSsnState(ssn, false);
     }
 
-    public void registerManagementEventListener(SccpManagementEventListener listener) {
-        synchronized (this) {
-            if (this.managementEventListeners.contains(listener))
-                return;
-
-            FastList<SccpManagementEventListener> newManagementEventListeners = new FastList<SccpManagementEventListener>();
-            newManagementEventListeners.addAll(this.managementEventListeners);
-            newManagementEventListeners.add(listener);
-            this.managementEventListeners = newManagementEventListeners;
-        }
+    public void registerManagementEventListener(UUID key,SccpManagementEventListener listener) {
+    	if (this.managementEventListeners.containsKey(key))
+    		return;
+    	
+    	this.managementEventListeners.put(key, listener);
     }
 
-    public void deregisterManagementEventListener(SccpManagementEventListener listener) {
-        synchronized (this) {
-            if (!this.managementEventListeners.contains(listener))
-                return;
-
-            FastList<SccpManagementEventListener> newManagementEventListeners = new FastList<SccpManagementEventListener>();
-            newManagementEventListeners.addAll(this.managementEventListeners);
-            newManagementEventListeners.remove(listener);
-            this.managementEventListeners = newManagementEventListeners;
-        }
+    public void deregisterManagementEventListener(UUID key) {
+    	this.managementEventListeners.remove(key);
     }
 
-    public SccpListener getSccpListener(int ssn) {
+    protected SccpListener getSccpListener(int ssn) {
         return ssnToListener.get(ssn);
     }
 
-    public FastMap<Integer, SccpListener> getAllSccpListeners() {
+    protected ConcurrentHashMap<Integer, SccpListener> getAllSccpListeners() {
         return ssnToListener;
     }
 
@@ -161,15 +127,8 @@ public class SccpProviderImpl implements SccpProvider, Serializable {
     }
 
     @Override
-    public FastMap<LocalReference, SccpConnection> getConnections() {
-        FastMap<LocalReference, SccpConnection> connections = new FastMap<>();
-
-        if (stack.connections != null) {
-            for (Map.Entry<Integer, SccpConnectionImpl> entry: stack.connections.entrySet()) {
-                connections.put(new LocalReferenceImpl(entry.getKey()), entry.getValue());
-            }
-        }
-        return connections.shared();
+    public ConcurrentHashMap<LocalReference, SccpConnection> getConnections() {
+        return stack.connections;
     }
 
     @Override
@@ -198,44 +157,13 @@ public class SccpProviderImpl implements SccpProvider, Serializable {
     }
 
     @Override
-    public FastMap<Integer, NetworkIdState> getNetworkIdStateList() {
-        return this.stack.ss7ExtSccpDetailedInterface.getNetworkIdList(-1);
-    }
-
-    @Override
     public void coordRequest(int ssn) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public ExecutorCongestionMonitor[] getExecutorCongestionMonitorList() {
-        ArrayList<ExecutorCongestionMonitor> res = new ArrayList<ExecutorCongestionMonitor>();
-        for (FastMap.Entry<Integer, Mtp3UserPart> e = this.stack.mtp3UserParts.head(), end = this.stack.mtp3UserParts.tail(); (e = e
-                .getNext()) != end;) {
-            Mtp3UserPart mup = e.getValue();
-            ExecutorCongestionMonitor ecm = mup.getExecutorCongestionMonitor();
-            if (ecm != null)
-                res.add(ecm);
-        }
-
-        ExecutorCongestionMonitor[] ress = new ExecutorCongestionMonitor[res.size()];
-        res.toArray(ress);
-        return ress;
-    }
-
-    @Override
     public SccpStack getSccpStack() {
         return this.stack;
     }
-
-    public ConcurrentHashMap<Integer, Integer> getCongestionSsn() {
-        return this.congestionSsn;
-    }
-
-    @Override
-    public void updateSPCongestion(Integer ssn, Integer congestionLevel) {
-        congestionSsn.put(ssn, congestionLevel);
-    }
-
 }

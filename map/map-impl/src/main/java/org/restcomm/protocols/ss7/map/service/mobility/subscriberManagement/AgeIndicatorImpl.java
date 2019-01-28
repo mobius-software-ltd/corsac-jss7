@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class AgeIndicatorImpl extends OctetStringBase implements AgeIndicator {
+	private static final long serialVersionUID = 1L;
 
-    public AgeIndicatorImpl() {
+	public AgeIndicatorImpl() {
         super(1, 6, "AgeIndicator");
     }
 

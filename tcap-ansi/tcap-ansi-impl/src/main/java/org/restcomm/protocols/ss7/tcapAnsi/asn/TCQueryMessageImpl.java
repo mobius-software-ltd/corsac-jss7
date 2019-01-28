@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
  *
  */
 public class TCQueryMessageImpl implements TCQueryMessage {
+	private static final long serialVersionUID = 1L;
 
-    private boolean dialogTermitationPermission;
+	private boolean dialogTermitationPermission;
     private byte[] originatingTransactionId;
     private DialogPortion dp;
     private Component[] component;

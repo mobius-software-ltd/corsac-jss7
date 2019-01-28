@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
  *
  */
 public class SmsSubmitReportTpduImpl extends SmsTpduImpl implements SmsSubmitReportTpdu {
+	private static final long serialVersionUID = 1L;
 
-    private boolean userDataHeaderIndicator;
+	private boolean userDataHeaderIndicator;
     private FailureCause failureCause;
     private ParameterIndicator parameterIndicator;
     private AbsoluteTimeStamp serviceCentreTimeStamp;

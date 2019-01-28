@@ -57,7 +57,9 @@ import java.util.ArrayList;
  * Created by vsubbotin on 24/05/16.
  */
 public class AnyTimeSubscriptionInterrogationResponseImpl extends MobilityMessageImpl implements AnyTimeSubscriptionInterrogationResponse, MAPAsnPrimitive {
-    private static final int _TAG_CALL_FORWARDING_DATA = 1;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_CALL_FORWARDING_DATA = 1;
     private static final int _TAG_CALL_BARRING_DATA = 2;
     private static final int _TAG_ODB_INFO = 3;
     private static final int _TAG_CAMEL_SUBSCRIPTION_INFO = 4;

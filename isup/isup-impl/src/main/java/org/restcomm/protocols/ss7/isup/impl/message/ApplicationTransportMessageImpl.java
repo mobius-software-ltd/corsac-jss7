@@ -49,8 +49,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class ApplicationTransportMessageImpl extends ISUPMessageImpl implements ApplicationTransportMessage {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _MANDATORY_VAR_COUNT = 0;
+	private static final int _MANDATORY_VAR_COUNT = 0;
 
     static final int _INDEX_F_MessageType = 0;
     static final int _INDEX_O_MessageCompatibilityInformation = 0;

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.router;
 
-import javolution.util.FastList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
 
@@ -35,7 +35,7 @@ public class OPCNode {
 
     protected int dpc;
     protected int opc;
-    protected FastList<SINode> siList = new FastList<SINode>();
+    protected ConcurrentHashMap<Integer,SINode> siList = new ConcurrentHashMap<Integer,SINode>();
 
     // Reference to wild card SINode. If no matching SINode found for passed si
     // and wildcard defined, use wildcard one.
@@ -47,29 +47,26 @@ public class OPCNode {
     }
 
     protected void addSi(int si, AsImpl asImpl) throws Exception {
-        for (FastList.Node<SINode> n = siList.head(), end = siList.tail(); (n = n.getNext()) != end;) {
-            SINode siNode = n.getValue();
-            if (siNode.si == si) {
-                throw new Exception(String.format("Service indicator %d already exist for OPC %d and DPC %d", si, opc, dpc));
-            }
-        }
-
-        SINode siNode = new SINode(si, asImpl);
-        siList.add(siNode);
-
+    	SINode siNode=siList.get(si);
+    	if(siNode!=null)
+    		throw new Exception(String.format("Service indicator %d already exist for OPC %d and DPC %d", si, opc, dpc));
+    	        
+        siNode = new SINode(si, asImpl);
+        SINode oldNode=siList.putIfAbsent(si, siNode);
+        if(oldNode!=null)
+        	throw new Exception(String.format("Service indicator %d already exist for OPC %d and DPC %d", si, opc, dpc));
+	    
         if (si == -1) {
             wildCardSINode = siNode;
         }
     }
 
     protected AsImpl getAs(short si) {
-        for (FastList.Node<SINode> n = siList.head(), end = siList.tail(); (n = n.getNext()) != end;) {
-            SINode siNode = n.getValue();
-            if (siNode.si == si) {
-                return siNode.asImpl;
-            }
-        }
-
+    	SINode siNode=siList.get(si);
+    	if(siNode!=null) {
+    		return siNode.asImpl;
+    	}
+    	
         if (wildCardSINode != null) {
             return wildCardSINode.asImpl;
         }

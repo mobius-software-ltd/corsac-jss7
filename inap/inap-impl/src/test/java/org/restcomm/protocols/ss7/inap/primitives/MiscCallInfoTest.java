@@ -27,12 +27,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -63,7 +58,7 @@ public class MiscCallInfoTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         MiscCallInfoImpl elem = new MiscCallInfoImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNotNull(elem.getMessageType());
         assertNull(elem.getDpAssignment());
@@ -72,7 +67,7 @@ public class MiscCallInfoTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new MiscCallInfoImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNotNull(elem.getMessageType());
         assertNotNull(elem.getDpAssignment());
@@ -96,7 +91,7 @@ public class MiscCallInfoTest {
 
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerializaion() throws Exception {
         MiscCallInfoImpl original = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
 
@@ -145,5 +140,5 @@ public class MiscCallInfoTest {
         assertEquals(copy.getMessageType(), original.getMessageType());
         assertEquals(copy.getDpAssignment(), original.getDpAssignment());
 
-    }
+    }*/
 }

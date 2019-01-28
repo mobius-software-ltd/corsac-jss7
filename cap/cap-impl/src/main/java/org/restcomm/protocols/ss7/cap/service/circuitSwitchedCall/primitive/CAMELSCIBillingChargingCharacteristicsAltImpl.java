@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  */
 public class CAMELSCIBillingChargingCharacteristicsAltImpl implements CAMELSCIBillingChargingCharacteristicsAlt,
         CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "CAMELSCIBillingChargingCharacteristicsAlt";
+	public static final String _PrimitiveName = "CAMELSCIBillingChargingCharacteristicsAlt";
 
     public CAMELSCIBillingChargingCharacteristicsAltImpl() {
     }
@@ -93,8 +94,7 @@ public class CAMELSCIBillingChargingCharacteristicsAltImpl implements CAMELSCIBi
 
     private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, IOException, AsnException {
 
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-
+        ansIS.readSequenceStreamData(length);
     }
 
     @Override

@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
  *
  */
 public class ExtCallBarInfoImpl extends SequenceBase implements ExtCallBarInfo {
+	private static final long serialVersionUID = 1L;
 
-    private SSCode ssCode = null;
+	private SSCode ssCode = null;
     private ArrayList<ExtCallBarringFeature> callBarringFeatureList = null;
     private MAPExtensionContainer extensionContainer = null;
 

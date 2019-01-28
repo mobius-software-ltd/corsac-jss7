@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginatingParticipatin
  */
 public class OriginatingParticipatingServiceProviderImpl extends AbstractNumber implements
         OriginatingParticipatingServiceProvider {
+	private static final long serialVersionUID = 1L;
 
-    // FIXME: shoudl we add max octets ?
+	// FIXME: shoudl we add max octets ?
     private int opspLengthIndicator;
 
     public OriginatingParticipatingServiceProviderImpl() {

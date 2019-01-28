@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class TPShortMessageSpecificInfoImpl extends OctetStringLength1Base implements TPShortMessageSpecificInfo {
+	private static final long serialVersionUID = 1L;
 
-    public TPShortMessageSpecificInfoImpl() {
+	public TPShortMessageSpecificInfoImpl() {
         super("TPShortMessageSpecificInfo");
     }
 

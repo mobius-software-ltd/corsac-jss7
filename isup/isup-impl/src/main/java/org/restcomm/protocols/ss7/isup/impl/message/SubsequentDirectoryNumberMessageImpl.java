@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.SubsequentNumber;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class SubsequentDirectoryNumberMessageImpl extends ISUPMessageImpl implements SubsequentDirectoryNumberMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.SubsequentDirectoryNumber);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.SubsequentDirectoryNumber);
     private static final int _MANDATORY_VAR_COUNT = 0;
     private static final boolean _HAS_MANDATORY = true;
     private static final boolean _OPTIONAL_POSSIBLE = true;

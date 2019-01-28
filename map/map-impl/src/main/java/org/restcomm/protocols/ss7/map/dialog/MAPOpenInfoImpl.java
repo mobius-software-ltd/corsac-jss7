@@ -61,8 +61,9 @@ MAP OpenInfo ::= SEQUENCE ( imsi (0) IMSI OPTIONAL, originationReference (1) Add
  *
  */
 public class MAPOpenInfoImpl implements MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int MAP_OPEN_INFO_TAG = 0x00;
+	public static final int MAP_OPEN_INFO_TAG = 0x00;
 
     protected static final int DESTINATION_REF_TAG = 0x00;
     protected static final int ORIGINATION_REF_TAG = 0x01;

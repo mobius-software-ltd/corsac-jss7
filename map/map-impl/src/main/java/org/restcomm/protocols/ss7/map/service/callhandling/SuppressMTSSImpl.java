@@ -41,7 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class SuppressMTSSImpl implements SuppressMTSS, MAPAsnPrimitive {
-    private static final int _INDEX_SuppressCUG = 0;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _INDEX_SuppressCUG = 0;
     private static final int _INDEX_SuppressCCBS = 1;
 
     private static final String _PrimitiveName = "SuppressMTSS";

@@ -72,7 +72,7 @@ public class LocationTypeTest {
     public void testDecode() throws Exception {
         byte[] data = new byte[] { 0x30, 0x03, (byte) 0x80, 0x01, 0x00 };
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         LocationTypeImpl locType = new LocationTypeImpl();
         locType.decodeAll(asn);
@@ -101,7 +101,7 @@ public class LocationTypeTest {
     public void testDecode1() throws Exception {
         byte[] data = new byte[] { 0x30, 0x07, (byte) 0x80, 0x01, 0x00, (byte) 0x81, 0x02, 0x04, (byte) -16 };
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         LocationTypeImpl locType = new LocationTypeImpl();
         locType.decodeAll(asn);

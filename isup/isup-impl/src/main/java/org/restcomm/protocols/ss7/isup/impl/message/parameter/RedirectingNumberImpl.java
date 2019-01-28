@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
  * @author sergey vetyutnev
  */
 public class RedirectingNumberImpl extends CalledNumberImpl implements RedirectingNumber {
+	private static final long serialVersionUID = 1L;
 
-    public RedirectingNumberImpl(byte[] representation) throws ParameterException {
+	public RedirectingNumberImpl(byte[] representation) throws ParameterException {
         super(representation);
 
     }

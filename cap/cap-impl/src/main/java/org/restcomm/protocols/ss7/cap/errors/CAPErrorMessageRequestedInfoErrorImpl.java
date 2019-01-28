@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -44,8 +41,7 @@ import org.restcomm.protocols.ss7.cap.api.errors.RequestedInfoErrorParameter;
  *
  */
 public class CAPErrorMessageRequestedInfoErrorImpl extends CAPErrorMessageImpl implements CAPErrorMessageRequestedInfoError {
-
-    private static final String REQUESTED_INFO_ERROR_PARAMETER = "requestedInfoErrorParameter";
+	private static final long serialVersionUID = 1L;
 
     public static final String _PrimitiveName = "CAPErrorMessageRequestedInfoError";
 
@@ -176,31 +172,4 @@ public class CAPErrorMessageRequestedInfoErrorImpl extends CAPErrorMessageImpl i
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CAPErrorMessageRequestedInfoErrorImpl> CAP_ERROR_MESSAGE_REQUESTED_INFO_ERROR_XML = new XMLFormat<CAPErrorMessageRequestedInfoErrorImpl>(
-            CAPErrorMessageRequestedInfoErrorImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CAPErrorMessageRequestedInfoErrorImpl errorMessage)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-
-            String str = xml.get(REQUESTED_INFO_ERROR_PARAMETER, String.class);
-            if (str != null)
-                errorMessage.requestedInfoErrorParameter = Enum.valueOf(RequestedInfoErrorParameter.class, str);
-        }
-
-        @Override
-        public void write(CAPErrorMessageRequestedInfoErrorImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            CAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-
-            if (errorMessage.requestedInfoErrorParameter != null)
-                xml.add((String) errorMessage.requestedInfoErrorParameter.toString(), REQUESTED_INFO_ERROR_PARAMETER,
-                        String.class);
-        }
-    };
 }

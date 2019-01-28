@@ -72,7 +72,7 @@ public class CallInformationReportRequestTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         CallInformationReportRequestImpl elem = new CallInformationReportRequestImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getRequestedInformationList().get(0).getRequestedInformationType(),
@@ -95,7 +95,7 @@ public class CallInformationReportRequestTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new CallInformationReportRequestImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
 
         assertEquals(elem.getRequestedInformationList().get(0).getRequestedInformationType(),

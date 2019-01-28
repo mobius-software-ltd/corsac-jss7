@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class DialogAbortAPDUImpl implements DialogAbortAPDU {
+	private static final long serialVersionUID = 1L;
 
-    private AbortSource abortSource;
+	private AbortSource abortSource;
     private UserInformation userInformation;
 
     /**

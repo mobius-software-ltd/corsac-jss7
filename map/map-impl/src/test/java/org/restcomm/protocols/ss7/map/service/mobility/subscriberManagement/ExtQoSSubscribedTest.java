@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -146,7 +140,7 @@ public class ExtQoSSubscribedTest {
         assertEquals(asn.toByteArray(), this.getData2());
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         ExtQoSSubscribed_MaximumSduSizeImpl maximumSduSize = new ExtQoSSubscribed_MaximumSduSizeImpl(1502, false);
@@ -189,6 +183,5 @@ public class ExtQoSSubscribedTest {
         assertEquals(copy.getTrafficHandlingPriority(), original.getTrafficHandlingPriority());
         assertEquals(copy.getGuaranteedBitRateForUplink().getBitRate(), original.getGuaranteedBitRateForUplink().getBitRate());
         assertEquals(copy.getGuaranteedBitRateForDownlink().getBitRate(), original.getGuaranteedBitRateForDownlink().getBitRate());
-    }
-
+    }*/
 }

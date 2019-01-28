@@ -22,11 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import javax.xml.bind.DatatypeConverter;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristics;
 import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
 
@@ -36,20 +31,12 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
  *
  */
 public class ChargingCharacteristicsImpl extends OctetStringBase implements ChargingCharacteristics {
-
-    public static final int _FLAG_NORMAL_CHARGING = 0x08;
+	private static final long serialVersionUID = 1L;
+	
+	public static final int _FLAG_NORMAL_CHARGING = 0x08;
     public static final int _FLAG_PREPAID_CHARGING = 0x04;
     public static final int _FLAG_FLAT_RATE_CHARGING_CHARGING = 0x02;
     public static final int _FLAG_CHARGING_BY_HOT_BILLING_CHARGING = 0x01;
-
-    private static final String DATA = "data";
-    private static final String IS_NORMAL_CHARGING = "isNormalCharging";
-    private static final String IS_PREPAID_CHARGING = "isPrepaidCharging";
-    private static final String IS_FLAT_RATE_CHARGING = "isFlatRateChargingCharging";
-    private static final String IS_BY_HOT_BILLING_CHARGING = "isChargingByHotBillingCharging";
-
-    private static final String DEFAULT_VALUE = null;
-    private static final boolean DEFAULT_BOOL_VALUE = false;
 
     public ChargingCharacteristicsImpl() {
         super(2, 2, "ChargingCharacteristics");
@@ -157,34 +144,4 @@ public class ChargingCharacteristicsImpl extends OctetStringBase implements Char
             return super.toString();
         }
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<ChargingCharacteristicsImpl> CHARGING_CHARACTERISTICS_XML = new XMLFormat<ChargingCharacteristicsImpl>(ChargingCharacteristicsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, ChargingCharacteristicsImpl chargingCharacteristics) throws XMLStreamException {
-            String s = xml.getAttribute(DATA, DEFAULT_VALUE);
-            if (s != null) {
-                chargingCharacteristics.data = DatatypeConverter.parseHexBinary(s);
-            }
-            boolean isNormalCharging = xml.getAttribute(IS_NORMAL_CHARGING, DEFAULT_BOOL_VALUE);
-            boolean isPrepaidCharging = xml.getAttribute(IS_PREPAID_CHARGING, DEFAULT_BOOL_VALUE);
-            boolean isFlatRateChargingCharging = xml.getAttribute(IS_FLAT_RATE_CHARGING, DEFAULT_BOOL_VALUE);
-            boolean isChargingByHotBillingCharging = xml.getAttribute(IS_BY_HOT_BILLING_CHARGING, DEFAULT_BOOL_VALUE);
-            chargingCharacteristics.setData(isNormalCharging, isPrepaidCharging, isFlatRateChargingCharging, isChargingByHotBillingCharging);
-        }
-
-        @Override
-        public void write(ChargingCharacteristicsImpl chargingCharacteristics, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (chargingCharacteristics.data != null) {
-                xml.setAttribute(DATA, DatatypeConverter.printHexBinary(chargingCharacteristics.data));
-            }
-            xml.setAttribute(IS_NORMAL_CHARGING, chargingCharacteristics.isNormalCharging());
-            xml.setAttribute(IS_PREPAID_CHARGING, chargingCharacteristics.isPrepaidCharging());
-            xml.setAttribute(IS_FLAT_RATE_CHARGING, chargingCharacteristics.isFlatRateChargingCharging());
-            xml.setAttribute(IS_BY_HOT_BILLING_CHARGING, chargingCharacteristics.isChargingByHotBillingCharging());
-        }
-    };
 }

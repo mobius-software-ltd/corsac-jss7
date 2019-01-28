@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class AuthenticationSetListImpl implements AuthenticationSetList, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _TAG_tripletList = 0;
+	public static final int _TAG_tripletList = 0;
     public static final int _TAG_quintupletList = 1;
 
     public static final String _PrimitiveName = "AuthenticationSetList";

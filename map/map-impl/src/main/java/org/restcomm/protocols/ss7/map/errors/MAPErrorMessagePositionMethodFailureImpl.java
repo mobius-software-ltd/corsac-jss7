@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,11 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  */
 public class MAPErrorMessagePositionMethodFailureImpl extends MAPErrorMessageImpl implements
         MAPErrorMessagePositionMethodFailure {
+	private static final long serialVersionUID = 1L;
 
-    private static final String POSITION_METHOD_FAILURE_DIAG = "positionMethodFailureDiagnostic";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
-
-    public static final int PositionMethodFailureDiagnostic_TAG = 0;
+	public static final int PositionMethodFailureDiagnostic_TAG = 0;
     public static final int ExtensionContainer_TAG = 1;
 
     private PositionMethodFailureDiagnostic positionMethodFailureDiagnostic;
@@ -226,35 +221,4 @@ public class MAPErrorMessagePositionMethodFailureImpl extends MAPErrorMessageImp
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessagePositionMethodFailureImpl> MAP_ERROR_MESSAGE_POSITION_METHOD_FAILURE_XML = new XMLFormat<MAPErrorMessagePositionMethodFailureImpl>(
-            MAPErrorMessagePositionMethodFailureImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessagePositionMethodFailureImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-            String str = xml.get(POSITION_METHOD_FAILURE_DIAG, String.class);
-            if (str != null)
-                errorMessage.positionMethodFailureDiagnostic = Enum.valueOf(PositionMethodFailureDiagnostic.class, str);
-
-            errorMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessagePositionMethodFailureImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            if (errorMessage.getPositionMethodFailureDiagnostic() != null)
-                xml.add((String) errorMessage.getPositionMethodFailureDiagnostic().toString(), POSITION_METHOD_FAILURE_DIAG,
-                        String.class);
-
-            xml.add((MAPExtensionContainerImpl) errorMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
-
 }

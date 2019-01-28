@@ -62,8 +62,10 @@ public class MSISDNBSTest {
                 NumberingPlan.ISDN, "111222333");
         final ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(
                 new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allFacsimileTransmissionServices));
-        MSISDNBSImpl msisdnbs = new MSISDNBSImpl(msisdn, new ArrayList<ExtBasicServiceCode>(){{add(extBasicServiceCode);}},
-                MAPExtensionContainerTest.GetTestExtensionContainer());
+        
+        ArrayList<ExtBasicServiceCode> extBasicServiceCodeList=new ArrayList<ExtBasicServiceCode>();
+        extBasicServiceCodeList.add(extBasicServiceCode);
+        MSISDNBSImpl msisdnbs = new MSISDNBSImpl(msisdn, extBasicServiceCodeList,MAPExtensionContainerTest.GetTestExtensionContainer());
 
         AsnOutputStream asnOS = new AsnOutputStream();
         msisdnbs.encodeAll(asnOS);

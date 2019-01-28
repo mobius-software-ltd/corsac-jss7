@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.primitives;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -73,7 +68,7 @@ public class BurstListTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         BurstImpl burst = new BurstImpl(null, 10, null, null, null);
@@ -97,6 +92,5 @@ public class BurstListTest {
 
         assertEquals((int) copy.getWarningPeriod(), (int) original.getWarningPeriod());
         assertEquals((int) copy.getBursts().getBurstInterval(), (int) original.getBursts().getBurstInterval());
-    }
-
+    }*/
 }

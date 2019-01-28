@@ -26,7 +26,9 @@ package org.restcomm.protocols.ss7.sccp.message;
  *
  */
 public class ParseException extends Exception {
-    // TODO: add proper level of detail ( what went wrong, etc )
+	private static final long serialVersionUID = 1L;
+
+	// TODO: add proper level of detail ( what went wrong, etc )
     public ParseException() {
         super();
         // TODO Auto-generated constructor stub

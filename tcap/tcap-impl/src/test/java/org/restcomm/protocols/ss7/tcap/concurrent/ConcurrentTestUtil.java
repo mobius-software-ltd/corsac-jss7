@@ -22,9 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcap.concurrent;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,7 +38,7 @@ import junit.framework.Assert;
 */
 public class ConcurrentTestUtil {
 
-    public static final List<Throwable> exceptions = Collections.synchronizedList(new ArrayList<Throwable>());
+    public static final ConcurrentLinkedQueue<Throwable> exceptions = new ConcurrentLinkedQueue<Throwable>();
 
     public static void assertConcurrent(final String message, final List<Runnable> runnables, final int maxTimeout) throws InterruptedException {
         exceptions.clear();

@@ -37,8 +37,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.Disconnect
  *
  */
 public class DisconnectLegResponseImpl extends CircuitSwitchedCallMessageImpl implements DisconnectLegResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "DisconnectLegResponse";
+	public static final String _PrimitiveName = "DisconnectLegResponse";
 
     @Override
     public CAPMessageType getMessageType() {

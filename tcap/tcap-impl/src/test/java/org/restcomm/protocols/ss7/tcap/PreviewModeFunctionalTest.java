@@ -28,14 +28,13 @@ import static org.testng.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javolution.util.FastMap;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.MaxConnectionCountReached;
-import org.restcomm.protocols.ss7.sccp.NetworkIdState;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.SccpManagementEventListener;
@@ -63,7 +62,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndicatio
 import org.restcomm.protocols.ss7.tcap.asn.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.ss7.congestion.ExecutorCongestionMonitor;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -92,7 +90,7 @@ public class PreviewModeFunctionalTest {
         // this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
         // this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
         System.out.println("setUpClass");
-        SccpStackImpl stack = new SccpStackImpl("XXX", null);
+        SccpStackImpl stack = new SccpStackImpl("XXX");
         this.parameterFactory = stack.getSccpProvider().getParameterFactory();
         this.messageFactory = stack.getSccpProvider().getMessageFactory();
     }
@@ -113,7 +111,7 @@ public class PreviewModeFunctionalTest {
     public void setUp() throws Exception {
         System.out.println("setUp");
 
-        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "PreviewModeFunctionalTest");
+        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "PreviewModeFunctionalTest", 4);
 
         // this.tcapStack1.setInvokeTimeout(0);
         this.tcapStack1.setPreviewMode(true);
@@ -476,66 +474,10 @@ public class PreviewModeFunctionalTest {
         EventTestHarness.doCompareEvents(observerdEvents, expectedEvents);
     }
 
-    /**
-     * TC-BEGIN + addProcessUnstructuredSSRequest DialogTimeout
-     */
-    @Test(groups = { "functional.flow" })
-    public void tooManyDialogsTest() throws Exception {
-
-        
-
-        byte[] m1 = new byte[] { 98, -127, -109, 72, 4, 0, 0, 0, 1, 107, 108, 40, 106, 6, 7, 0, 17, -122, 5, 1, 1, 1, -96, 95,
-                96, 93, -128, 2, 7, -128, -95, 9, 6, 7, 4, 0, 0, 1, 0, 19, 2, -66, 76, 40, 74, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96,
-                63, -96, 61, -128, 9, -106, 2, 36, -128, 3, 0, -128, 0, -14, -127, 7, -111, 19, 38, -104, -122, 3, -16, 48, 39,
-                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
-                24, 25, 26, -95, 3, 31, 32, 33, 108, 29, -95, 27, 2, 1, 1, 2, 1, 59, 48, 19, 4, 1, 15, 4, 5, -86, -40, 108, 54,
-                2, -128, 7, -111, 19, 38, -120, -125, 0, -14 };
-        byte[] m2 = new byte[] { 98, -127, -103, 72, 4, 0, 0, 0, 2, 107, 108, 40, 106, 6, 7, 0, 17, -122, 5, 1, 1, 1, -96, 95,
-                96, 93, -128, 2, 7, -128, -95, 9, 6, 7, 4, 0, 0, 1, 0, 21, 2, -66, 76, 40, 74, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96,
-                63, -96, 61, -128, 9, -106, 2, 36, -128, 3, 0, -128, 0, -14, -127, 7, -111, 19, 38, -104, -122, 3, -16, 48, 39,
-                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
-                24, 25, 26, -95, 3, 31, 32, 33, 108, 35, -95, 33, 2, 1, 1, 2, 1, 46, 48, 25, -128, 6, 82, -112, 25, 83, -105,
-                -103, -126, 6, -111, 17, 33, 34, 51, -13, 4, 5, 21, 22, 23, 24, 25, 5, 0 };
-
-        GlobalTitle gt1 = this.parameterFactory.createGlobalTitle("11111", 0, NumberingPlan.ISDN_MOBILE, null, NatureOfAddress.INTERNATIONAL);
-        GlobalTitle gt2 = this.parameterFactory.createGlobalTitle("22222", 0, NumberingPlan.ISDN_MOBILE, null, NatureOfAddress.INTERNATIONAL);
-        SccpAddress addr1 = this.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, gt1, 0, 6); // 101
-        SccpAddress addr2 = this.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, gt2, 0, 6); // 102
-
-        long stamp = System.currentTimeMillis();
-        List<TestEvent> expectedEvents = new ArrayList<TestEvent>();
-        TestEvent te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp);
-        expectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.Invoke, null, 1, stamp);
-        expectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.Begin, null, 2, stamp);
-        expectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.Invoke, null, 3, stamp);
-        expectedEvents.add(te);
-
-        this.tcapStack1.setMaxDialogs(1);
-
-        SccpDataMessageImpl msg = (SccpDataMessageImpl) messageFactory.createDataMessageClass1(addr2, addr1, m1, 0, 0, false, null, null);
-        msg.setIncomingOpc(101);
-        msg.setIncomingDpc(102);
-        this.sccpProv.sccpListener.onMessage(msg);
-        assertEquals(this.tcapStack1.getDialogPreviewList().size(), 1);
-        msg = (SccpDataMessageImpl) messageFactory.createDataMessageClass1(addr1, addr2, m2, 0, 0, false, null, null);
-        msg.setIncomingOpc(101);
-        msg.setIncomingDpc(102);
-        this.sccpProv.sccpListener.onMessage(msg);
-        assertEquals(this.tcapStack1.getDialogPreviewList().size(), 1);
-
-        this.tcapStack1.setMaxDialogs(100);
-        this.sccpProv.sccpListener.onMessage(msg);
-        assertEquals(this.tcapStack1.getDialogPreviewList().size(), 2);
-
-        EventTestHarness.doCompareEvents(observerdEvents, expectedEvents);
-    }
-
     private class SccpHarnessPreview implements SccpProvider {
+		private static final long serialVersionUID = 1L;
 
-        @Override
+		@Override
         public void deregisterSccpListener(int arg0) {
             // TODO Auto-generated method stub
 
@@ -572,13 +514,13 @@ public class PreviewModeFunctionalTest {
         }
 
         @Override
-        public void registerManagementEventListener(SccpManagementEventListener listener) {
+        public void registerManagementEventListener(UUID key,SccpManagementEventListener listener) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void deregisterManagementEventListener(SccpManagementEventListener listener) {
+        public void deregisterManagementEventListener(UUID key) {
             // TODO Auto-generated method stub
 
         }
@@ -590,24 +532,13 @@ public class PreviewModeFunctionalTest {
         }
 
         @Override
-        public FastMap<Integer, NetworkIdState> getNetworkIdStateList() {
-            return new FastMap<Integer, NetworkIdState>();
-        }
-
-        @Override
-        public ExecutorCongestionMonitor[] getExecutorCongestionMonitorList() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
         public SccpConnection newConnection(int localSsn, ProtocolClass protocolClass) throws MaxConnectionCountReached {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public FastMap<LocalReference, SccpConnection> getConnections() {
+        public ConcurrentHashMap<LocalReference, SccpConnection> getConnections() {
             // TODO Auto-generated method stub
             return null;
         }
@@ -622,12 +553,6 @@ public class PreviewModeFunctionalTest {
 		public SccpStack getSccpStack() {
 			// TODO Auto-generated method stub
 			return null;
-		}
-
-		@Override
-		public void updateSPCongestion(Integer ssn, Integer congestionLevel) {
-			// TODO Auto-generated method stub
-			
 		}
     }
 

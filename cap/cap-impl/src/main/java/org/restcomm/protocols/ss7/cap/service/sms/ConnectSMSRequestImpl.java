@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
  *
  */
 public class ConnectSMSRequestImpl extends SmsMessageImpl implements ConnectSMSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ConnectSMSRequest";
+	public static final String _PrimitiveName = "ConnectSMSRequest";
 
     public static final int _ID_callingPartysNumber = 0;
     public static final int _ID_destinationSubscriberNumber = 1;

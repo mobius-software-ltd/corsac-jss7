@@ -82,7 +82,7 @@ public class SubscriberIdentityTest {
     public void testDecode() throws Exception {
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
         SubscriberIdentityImpl subsIdent = new SubscriberIdentityImpl();
         subsIdent.decodeAll(asn);
         IMSI imsi = subsIdent.getIMSI();
@@ -92,7 +92,7 @@ public class SubscriberIdentityTest {
         assertTrue(imsi.getData().equals("724999900000007"));
 
         asn = new AsnInputStream(dataMsIsdn);
-        tag = asn.readTag();
+        asn.readTag();
         subsIdent = new SubscriberIdentityImpl();
         subsIdent.decodeAll(asn);
         imsi = subsIdent.getIMSI();

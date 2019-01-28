@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class AdditionalInfoImpl extends BitStringBase implements AdditionalInfo {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "AdditionalInfo";
+	public static final String _PrimitiveName = "AdditionalInfo";
 
     public AdditionalInfoImpl() {
         super(1, 136, 1, _PrimitiveName);

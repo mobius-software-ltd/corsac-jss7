@@ -24,17 +24,10 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.EsiBcsm.MidCallEventsImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OMidCallSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.EsiBcsm.TMidCallSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MidCallEvents;
 import org.restcomm.protocols.ss7.cap.api.isup.Digits;
@@ -88,7 +81,7 @@ public class TMidCallSpecificInfoTest {
         assertEquals(aos.toByteArray(), this.getData1());
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         GenericDigits genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, getDigitsData());
         Digits dtmfDigits = new DigitsImpl(genericDigits);
@@ -116,6 +109,5 @@ public class TMidCallSpecificInfoTest {
         assertEquals(copy.getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits(), original.getMidCallEvents()
                 .getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits());
         assertNull(copy.getMidCallEvents().getDTMFDigitsTimeOut());
-    }
-
+    }*/
 }

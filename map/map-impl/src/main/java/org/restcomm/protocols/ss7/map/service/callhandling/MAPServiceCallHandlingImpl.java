@@ -130,6 +130,8 @@ public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MA
                 } else {
                     return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
                 }
+			default:
+				break;
         }
 
         return new ServingCheckDataImpl(ServingCheckResult.AC_NotServing);
@@ -163,8 +165,8 @@ public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MA
         Long ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new MAPParsingComponentException("", MAPParsingComponentExceptionReason.UnrecognizedOperation);
-        MAPApplicationContextName acn = mapDialog.getApplicationContext().getApplicationContextName();
-        int vers = mapDialog.getApplicationContext().getApplicationContextVersion().getVersion();
+        mapDialog.getApplicationContext().getApplicationContextName();
+        mapDialog.getApplicationContext().getApplicationContextVersion().getVersion();
         int ocValueInt = (int) (long) ocValue;
 
         switch (ocValueInt) {

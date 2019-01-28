@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledDirectoryNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CalledDirectoryNumberImpl extends AbstractNAINumber implements CalledDirectoryNumber {
+	private static final long serialVersionUID = 1L;
 
-    protected int numberingPlanIndicator;
+	protected int numberingPlanIndicator;
 
     protected int internalNetworkNumberIndicator;
 

@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -106,7 +101,7 @@ public class DpSpecificInfoAltTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         ExtBearerServiceCode extBearerService = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl(extBearerService);
@@ -142,6 +137,5 @@ public class DpSpecificInfoAltTest {
                 .getCalledPartyNumber().getCalledPartyNumber().getAddress());
         assertEquals(copy.getTServiceChangeSpecificInfo().getExtBasicServiceCode().getExtTeleservice().getTeleserviceCodeValue(), original
                 .getTServiceChangeSpecificInfo().getExtBasicServiceCode().getExtTeleservice().getTeleserviceCodeValue());
-    }
-
+    }*/
 }

@@ -35,10 +35,6 @@ import org.testng.annotations.Test;
  */
 public class SupportedLCSCapabilitySetsTest {
 
-    private byte[] getEncodedData() {
-        return new byte[] { 3, 2, 4, 64 };
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
     }

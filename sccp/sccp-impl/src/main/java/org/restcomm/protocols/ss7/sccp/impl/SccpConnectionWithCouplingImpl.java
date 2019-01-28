@@ -141,7 +141,6 @@ public abstract class SccpConnectionWithCouplingImpl extends SccpConnectionWithS
         }
         this.couplingEnabled = true;
         this.nextConn = nextConn;
-        setConnectionLock(nextConn.connectionLock);
         if (!nextConn.couplingEnabled && nextConn.nextConn != this) {
             nextConn.enableCoupling(this);
         }

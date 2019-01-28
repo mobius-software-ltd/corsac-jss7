@@ -4,49 +4,23 @@
 
 	<parent>
 		<artifactId>ss7-parent</artifactId>
-		<groupId>org.restcomm.protocols.ss7</groupId>
+		<groupId>com.mobius-software.telco.protocols.ss7</groupId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
 
 	<artifactId>inap-parent</artifactId>
-	<groupId>org.restcomm.protocols.ss7.inap</groupId>
+	<groupId>com.mobius-software.telco.protocols.ss7.inap</groupId>
 
 	<packaging>pom</packaging>
 
-	<name>Restcomm jSS7 :: INAP :: Parent :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: INAP :: Parent :: ${project.artifactId}</name>
 	<properties />
 
 	<modules>
 		<module>inap-api</module>
 		<module>inap-impl</module>
 	</modules>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<groupId>org.mobicents.tools</groupId>
-				<version>
-					${restcomm.tools.mavenplugin.eclipse.version}
-				</version>
-				<inherited>false</inherited>
-				<executions />
-				<configuration>
-					<classpathExcludes>
-						<exclude>xml-apis:xml-apis</exclude>
-						<exclude>jtidy:jtidy</exclude>
-					</classpathExcludes>
-					<resolveTransitiveDependencies>
-						true
-					</resolveTransitiveDependencies>
-					<eclipseProjectName>
-						inap
-					</eclipseProjectName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 	<profiles>
 		<profile>

@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GVNSUserGroup;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class GVNSUserGroupImpl extends AbstractNumber implements GVNSUserGroup {
+	private static final long serialVersionUID = 1L;
 
-    // FIXME: shoudl we add max octets ?
+	// FIXME: shoudl we add max octets ?
     private int gugLengthIndicator;
 
     public GVNSUserGroupImpl() {

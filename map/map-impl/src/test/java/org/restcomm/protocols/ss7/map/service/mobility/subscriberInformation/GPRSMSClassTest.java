@@ -22,15 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -65,8 +59,8 @@ public class GPRSMSClassTest {
 
         AsnInputStream asn = new AsnInputStream(rawData);
 
-        int tag = asn.readTag();
-        GPRSMSClassImpl impl = new GPRSMSClassImpl();
+        asn.readTag();
+        //GPRSMSClassImpl impl = new GPRSMSClassImpl();
 
         // TODO: fix a test
 
@@ -75,6 +69,7 @@ public class GPRSMSClassTest {
         //
         // assertTrue(Arrays.equals(impl.getMSNetworkCapability().getData(), this.getEncodedDataNetworkCapability()));
         // assertTrue(Arrays.equals(impl.getMSRadioAccessCapability().getData(), this.getEncodedDataRadioAccessCapability()));
+        asn.close();        
     }
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
@@ -90,7 +85,7 @@ public class GPRSMSClassTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(this.getEncodedDataNetworkCapability());
@@ -116,6 +111,5 @@ public class GPRSMSClassTest {
 
         assertEquals(copy.getMSNetworkCapability().getData(), original.getMSNetworkCapability().getData());
         assertEquals(copy.getMSRadioAccessCapability().getData(), original.getMSRadioAccessCapability().getData());
-    }
-
+    }*/
 }

@@ -42,7 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
  *
  */
 public abstract class OctetStringBase implements MAPAsnPrimitive {
-    private static final char[] digits = "0123456789ABCDEF".toCharArray();
+	private static final long serialVersionUID = 1L;
+
+	private static final char[] digits = "0123456789ABCDEF".toCharArray();
 
     protected byte[] data;
 

@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -112,7 +107,7 @@ public class DigitsTest {
         // boolean numberIncomplete, int screeningIndicator
     }
 
-    private byte[] getEncodedData() {
+    /*private byte[] getEncodedData() {
         return new byte[] { 0x21, 0x43, 0x65 };
     }
 
@@ -185,5 +180,5 @@ public class DigitsTest {
         assertEquals(copy.getGenericNumber().getScreeningIndicator(), original.getGenericNumber().getScreeningIndicator());
         assertEquals(copy.getGenericNumber().isOddFlag(), original.getGenericNumber().isOddFlag());
 
-    }
+    }*/
 }

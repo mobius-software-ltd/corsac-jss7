@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.M3UAManagementEventListener;
@@ -40,11 +40,9 @@ public abstract class SEHAsStateEnterPen implements FSMStateEventHandler {
     private static final Logger logger = Logger.getLogger(SEHAsStateEnterPen.class);
 
     protected AsImpl asImpl = null;
-    private FSM fsm;
-
+    
     public SEHAsStateEnterPen(AsImpl asImpl, FSM fsm) {
         this.asImpl = asImpl;
-        this.fsm = fsm;
     }
 
     public void onEvent(FSMState state) {
@@ -53,14 +51,12 @@ public abstract class SEHAsStateEnterPen implements FSMStateEventHandler {
         }
 
         if (!this.asImpl.state.getName().equals(State.STATE_PENDING)) {
-            AsState oldState = AsState.getState(this.asImpl.state.getName());
+            AsState oldState = AsState.getState(this.asImpl.state.getName());            
             this.asImpl.state = AsState.PENDING;
-
-            FastList<M3UAManagementEventListener> managementEventListenersTmp = this.asImpl.m3UAManagementImpl.managementEventListeners;
-
-            for (FastList.Node<M3UAManagementEventListener> n = managementEventListenersTmp.head(), end = managementEventListenersTmp
-                    .tail(); (n = n.getNext()) != end;) {
-                M3UAManagementEventListener m3uaManagementEventListener = n.getValue();
+            
+            Iterator<M3UAManagementEventListener> managementEventListenersTmp = this.asImpl.m3UAManagementImpl.managementEventListeners.values().iterator();
+            while(managementEventListenersTmp.hasNext()) {
+                M3UAManagementEventListener m3uaManagementEventListener = managementEventListenersTmp.next();
                 try {
                     m3uaManagementEventListener.onAsPending(this.asImpl, oldState);
                 } catch (Throwable ee) {

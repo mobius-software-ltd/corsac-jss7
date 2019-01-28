@@ -42,7 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  */
 public class ReturnToInvokingExchangeCallIdentifierImpl extends AbstractInformationImpl implements
         ReturnToInvokingExchangeCallIdentifier {
-    private int callIdentity = 0;
+	private static final long serialVersionUID = 1L;
+	
+	private int callIdentity = 0;
     // Should we use here SignalingPointCode class?
     private int signalingPointCode = 0;
     public ReturnToInvokingExchangeCallIdentifierImpl() {

@@ -72,8 +72,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAI
  *
  */
 public class InitialDpGprsRequestImpl extends GprsMessageImpl implements InitialDpGprsRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "InitialDpGprsRequest";
+	public static final String _PrimitiveName = "InitialDpGprsRequest";
 
     public static final int _ID_serviceKey = 0;
     public static final int _ID_gprsEventType = 1;

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ServiceActivation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ServiceActivationImpl extends AbstractISUPParameter implements ServiceActivation {
+	private static final long serialVersionUID = 1L;
 
-    // FIXME: this is again simple container
+	// FIXME: this is again simple container
     /**
      * See Q.763 3.49
      */

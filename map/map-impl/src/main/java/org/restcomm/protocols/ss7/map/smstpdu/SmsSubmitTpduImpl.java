@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodFormat;
  *
  */
 public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
+	private static final long serialVersionUID = 1L;
 
-    private boolean rejectDuplicates;
+	private boolean rejectDuplicates;
     private ValidityPeriodFormat validityPeriodFormat;
     private boolean replyPathExists;
     private boolean userDataHeaderIndicator;
@@ -141,6 +142,8 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
                 ValidityEnhancedFormatData vef = new ValidityEnhancedFormatDataImpl(buf);
                 this.validityPeriod = new ValidityPeriodImpl(vef);
                 break;
+			default:
+				break;
         }
 
         this.userDataLength = stm.read();
@@ -253,6 +256,8 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
             case fieldPresentEnhancedFormat:
                 res.write(this.validityPeriod.getEnhancedFormatValue().getData());
                 break;
+			default:
+				break;
         }
 
         res.write(this.userDataLength);

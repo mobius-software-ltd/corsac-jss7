@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class DestinationNumberCriteriaImpl extends SequenceBase implements DestinationNumberCriteria {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_matchType = 0;
+	private static final int _TAG_matchType = 0;
     private static final int _TAG_destinationNumberList = 1;
     private static final int _TAG_destinationNumberLengthList = 2;
 

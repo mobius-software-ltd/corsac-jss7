@@ -71,8 +71,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessT
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Answer);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Answer);
     private static final int _MANDATORY_VAR_COUNT = 0;
 
     static final int _INDEX_F_MessageType = 0;
@@ -120,7 +121,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getAccessDeliveryInformation()
      */
     public AccessDeliveryInformation getAccessDeliveryInformation() {
-        return (AccessDeliveryInformation) super.o_Parameters.get(this._INDEX_O_AccessDeliveryInformation);
+        return (AccessDeliveryInformation) super.o_Parameters.get(_INDEX_O_AccessDeliveryInformation);
     }
 
     /*
@@ -129,7 +130,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getAccessTransport ()
      */
     public AccessTransport getAccessTransport() {
-        return (AccessTransport) super.o_Parameters.get(this._INDEX_O_AccessTransport);
+        return (AccessTransport) super.o_Parameters.get(_INDEX_O_AccessTransport);
     }
 
     /*
@@ -138,7 +139,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getApplicationTransportParameter()
      */
     public ApplicationTransport getApplicationTransportParameter() {
-        return (ApplicationTransport) super.o_Parameters.get(this._INDEX_O_ApplicationTransportParameter);
+        return (ApplicationTransport) super.o_Parameters.get(_INDEX_O_ApplicationTransportParameter);
     }
 
     /*
@@ -147,7 +148,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getBackwardCallIndicators()
      */
     public BackwardCallIndicators getBackwardCallIndicators() {
-        return (BackwardCallIndicators) super.o_Parameters.get(this._INDEX_O_BackwardCallIndicators);
+        return (BackwardCallIndicators) super.o_Parameters.get(_INDEX_O_BackwardCallIndicators);
     }
 
     /*
@@ -156,7 +157,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getBackwardGVNS()
      */
     public BackwardGVNS getBackwardGVNS() {
-        return (BackwardGVNS) super.o_Parameters.get(this._INDEX_O_BackwardGVNS);
+        return (BackwardGVNS) super.o_Parameters.get(_INDEX_O_BackwardGVNS);
     }
 
     /*
@@ -165,7 +166,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getCallHistoryInformation()
      */
     public CallHistoryInformation getCallHistoryInformation() {
-        return (CallHistoryInformation) super.o_Parameters.get(this._INDEX_O_CallHistoryInformation);
+        return (CallHistoryInformation) super.o_Parameters.get(_INDEX_O_CallHistoryInformation);
     }
 
     /*
@@ -174,7 +175,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getCallReference()
      */
     public CallReference getCallReference() {
-        return (CallReference) super.o_Parameters.get(this._INDEX_O_CallReference);
+        return (CallReference) super.o_Parameters.get(_INDEX_O_CallReference);
     }
 
     /*
@@ -183,7 +184,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getConferenceTreatmentIndicators()
      */
     public ConferenceTreatmentIndicators getConferenceTreatmentIndicators() {
-        return (ConferenceTreatmentIndicators) super.o_Parameters.get(this._INDEX_O_ConferenceTreatmentIndicators);
+        return (ConferenceTreatmentIndicators) super.o_Parameters.get(_INDEX_O_ConferenceTreatmentIndicators);
     }
 
     /*
@@ -192,7 +193,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getConnectedNumber ()
      */
     public ConnectedNumber getConnectedNumber() {
-        return (ConnectedNumber) super.o_Parameters.get(this._INDEX_O_ConnectedNumber);
+        return (ConnectedNumber) super.o_Parameters.get(_INDEX_O_ConnectedNumber);
     }
 
     /*
@@ -201,7 +202,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getDisplayInformation ()
      */
     public DisplayInformation getDisplayInformation() {
-        return (DisplayInformation) super.o_Parameters.get(this._INDEX_O_DisplayInformation);
+        return (DisplayInformation) super.o_Parameters.get(_INDEX_O_DisplayInformation);
     }
 
     /*
@@ -210,7 +211,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getEchoControlInformation()
      */
     public EchoControlInformation getEchoControlInformation() {
-        return (EchoControlInformation) super.o_Parameters.get(this._INDEX_O_EchoControlInformation);
+        return (EchoControlInformation) super.o_Parameters.get(_INDEX_O_EchoControlInformation);
     }
 
     /*
@@ -219,7 +220,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getGenericNotificationIndicator()
      */
     public GenericNotificationIndicator getGenericNotificationIndicator() {
-        return (GenericNotificationIndicator) super.o_Parameters.get(this._INDEX_O_GenericNotificationIndicator);
+        return (GenericNotificationIndicator) super.o_Parameters.get(_INDEX_O_GenericNotificationIndicator);
     }
 
     /*
@@ -228,7 +229,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getGenericNumber()
      */
     public GenericNumber getGenericNumber() {
-        return (GenericNumber) super.o_Parameters.get(this._INDEX_O_GenericNumber);
+        return (GenericNumber) super.o_Parameters.get(_INDEX_O_GenericNumber);
     }
 
     /*
@@ -237,7 +238,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getNetworkSpecificFacility()
      */
     public NetworkSpecificFacility getNetworkSpecificFacility() {
-        return (NetworkSpecificFacility) super.o_Parameters.get(this._INDEX_O_NetworkSpecificFacility);
+        return (NetworkSpecificFacility) super.o_Parameters.get(_INDEX_O_NetworkSpecificFacility);
     }
 
     /*
@@ -246,7 +247,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getOptionalBackwardCallIndicators()
      */
     public OptionalBackwardCallIndicators getOptionalBackwardCallIndicators() {
-        return (OptionalBackwardCallIndicators) super.o_Parameters.get(this._INDEX_O_OptionalBackwardCallIndicators);
+        return (OptionalBackwardCallIndicators) super.o_Parameters.get(_INDEX_O_OptionalBackwardCallIndicators);
     }
 
     /*
@@ -255,7 +256,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getParameterCompatibilityInformation()
      */
     public ParameterCompatibilityInformation getParameterCompatibilityInformation() {
-        return (ParameterCompatibilityInformation) super.o_Parameters.get(this._INDEX_O_ParameterCompatibilityInformation);
+        return (ParameterCompatibilityInformation) super.o_Parameters.get(_INDEX_O_ParameterCompatibilityInformation);
     }
 
     /*
@@ -264,7 +265,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getPivotRoutingBackwardInformation()
      */
     public PivotRoutingBackwardInformation getPivotRoutingBackwardInformation() {
-        return (PivotRoutingBackwardInformation) super.o_Parameters.get(this._INDEX_O_PivotRoutingBackwardInformation);
+        return (PivotRoutingBackwardInformation) super.o_Parameters.get(_INDEX_O_PivotRoutingBackwardInformation);
     }
 
     /*
@@ -273,7 +274,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getRedirectionNumber ()
      */
     public RedirectionNumber getRedirectionNumber() {
-        return (RedirectionNumber) super.o_Parameters.get(this._INDEX_O_RedirectionNumber);
+        return (RedirectionNumber) super.o_Parameters.get(_INDEX_O_RedirectionNumber);
     }
 
     /*
@@ -282,7 +283,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getRedirectionNumberRestriction()
      */
     public RedirectionNumberRestriction getRedirectionNumberRestriction() {
-        return (RedirectionNumberRestriction) super.o_Parameters.get(this._INDEX_O_RedirectionNumberRestriction);
+        return (RedirectionNumberRestriction) super.o_Parameters.get(_INDEX_O_RedirectionNumberRestriction);
     }
 
     /*
@@ -291,7 +292,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getRedirectStatus ()
      */
     public RedirectStatus getRedirectStatus() {
-        return (RedirectStatus) super.o_Parameters.get(this._INDEX_O_RedirectStatus);
+        return (RedirectStatus) super.o_Parameters.get(_INDEX_O_RedirectStatus);
     }
 
     /*
@@ -300,7 +301,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getRemoteOperations ()
      */
     public RemoteOperations getRemoteOperations() {
-        return (RemoteOperations) super.o_Parameters.get(this._INDEX_O_RemoteOperations);
+        return (RemoteOperations) super.o_Parameters.get(_INDEX_O_RemoteOperations);
     }
 
     /*
@@ -309,7 +310,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage#getServiceActivation ()
      */
     public ServiceActivation getServiceActivation() {
-        return (ServiceActivation) super.o_Parameters.get(this._INDEX_O_ServiceActivation);
+        return (ServiceActivation) super.o_Parameters.get(_INDEX_O_ServiceActivation);
     }
 
     /*
@@ -318,7 +319,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getTransmissionMediumUsed()
      */
     public TransmissionMediumUsed getTransmissionMediumUsed() {
-        return (TransmissionMediumUsed) super.o_Parameters.get(this._INDEX_O_TransmissionMediumUsed);
+        return (TransmissionMediumUsed) super.o_Parameters.get(_INDEX_O_TransmissionMediumUsed);
     }
 
     /*
@@ -327,7 +328,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getUserToUserIndicators()
      */
     public UserToUserIndicators getUserToUserIndicators() {
-        return (UserToUserIndicators) super.o_Parameters.get(this._INDEX_O_UserToUserIndicators);
+        return (UserToUserIndicators) super.o_Parameters.get(_INDEX_O_UserToUserIndicators);
     }
 
     /*
@@ -336,7 +337,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.message.AnswerMessage# getUserToUserInformation()
      */
     public UserToUserInformation getUserToUserInformation() {
-        return (UserToUserInformation) super.o_Parameters.get(this._INDEX_O_UserToUserInformation);
+        return (UserToUserInformation) super.o_Parameters.get(_INDEX_O_UserToUserInformation);
     }
 
     /*
@@ -346,7 +347,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .AccessDeliveryInformation)
      */
     public void setAccessDeliveryInformation(AccessDeliveryInformation value) {
-        super.o_Parameters.put(this._INDEX_O_AccessDeliveryInformation, value);
+        super.o_Parameters.put(_INDEX_O_AccessDeliveryInformation, value);
 
     }
 
@@ -357,7 +358,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.accessTransport. AccessTransport)
      */
     public void setAccessTransport(AccessTransport value) {
-        super.o_Parameters.put(this._INDEX_O_AccessTransport, value);
+        super.o_Parameters.put(_INDEX_O_AccessTransport, value);
 
     }
 
@@ -368,7 +369,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message. parameter.ApplicationTransportParameter)
      */
     public void setApplicationTransportParameter(ApplicationTransport value) {
-        super.o_Parameters.put(this._INDEX_O_ApplicationTransportParameter, value);
+        super.o_Parameters.put(_INDEX_O_ApplicationTransportParameter, value);
 
     }
 
@@ -379,7 +380,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .BackwardCallIndicators)
      */
     public void setBackwardCallIndicators(BackwardCallIndicators indicators) {
-        super.o_Parameters.put(this._INDEX_O_BackwardCallIndicators, indicators);
+        super.o_Parameters.put(_INDEX_O_BackwardCallIndicators, indicators);
 
     }
 
@@ -390,7 +391,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.BackwardGVNS)
      */
     public void setBackwardGVNS(BackwardGVNS value) {
-        super.o_Parameters.put(this._INDEX_O_BackwardGVNS, value);
+        super.o_Parameters.put(_INDEX_O_BackwardGVNS, value);
 
     }
 
@@ -401,7 +402,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .CallHistoryInformation)
      */
     public void setCallHistoryInformation(CallHistoryInformation value) {
-        super.o_Parameters.put(this._INDEX_O_CallHistoryInformation, value);
+        super.o_Parameters.put(_INDEX_O_CallHistoryInformation, value);
 
     }
 
@@ -412,7 +413,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.CallReference)
      */
     public void setCallReference(CallReference value) {
-        super.o_Parameters.put(this._INDEX_O_CallReference, value);
+        super.o_Parameters.put(_INDEX_O_CallReference, value);
 
     }
 
@@ -423,7 +424,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message. parameter.ConferenceTreatmentIndicators)
      */
     public void setConferenceTreatmentIndicators(ConferenceTreatmentIndicators value) {
-        super.o_Parameters.put(this._INDEX_O_ConferenceTreatmentIndicators, value);
+        super.o_Parameters.put(_INDEX_O_ConferenceTreatmentIndicators, value);
 
     }
 
@@ -434,7 +435,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.ConnectedNumber)
      */
     public void setConnectedNumber(ConnectedNumber value) {
-        super.o_Parameters.put(this._INDEX_O_ConnectedNumber, value);
+        super.o_Parameters.put(_INDEX_O_ConnectedNumber, value);
 
     }
 
@@ -445,7 +446,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.DisplayInformation)
      */
     public void setDisplayInformation(DisplayInformation value) {
-        super.o_Parameters.put(this._INDEX_O_DisplayInformation, value);
+        super.o_Parameters.put(_INDEX_O_DisplayInformation, value);
 
     }
 
@@ -456,7 +457,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .EchoControlInformation)
      */
     public void setEchoControlInformation(EchoControlInformation value) {
-        super.o_Parameters.put(this._INDEX_O_EchoControlInformation, value);
+        super.o_Parameters.put(_INDEX_O_EchoControlInformation, value);
 
     }
 
@@ -467,7 +468,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .GenericNotificationIndicator)
      */
     public void setGenericNotificationIndicator(GenericNotificationIndicator value) {
-        super.o_Parameters.put(this._INDEX_O_GenericNotificationIndicator, value);
+        super.o_Parameters.put(_INDEX_O_GenericNotificationIndicator, value);
 
     }
 
@@ -478,7 +479,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber)
      */
     public void setGenericNumber(GenericNumber value) {
-        super.o_Parameters.put(this._INDEX_O_GenericNumber, value);
+        super.o_Parameters.put(_INDEX_O_GenericNumber, value);
 
     }
 
@@ -489,7 +490,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .NetworkSpecificFacility)
      */
     public void setNetworkSpecificFacility(NetworkSpecificFacility value) {
-        super.o_Parameters.put(this._INDEX_O_NetworkSpecificFacility, value);
+        super.o_Parameters.put(_INDEX_O_NetworkSpecificFacility, value);
 
     }
 
@@ -500,7 +501,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message .parameter.OptionalBackwardCallIndicators)
      */
     public void setOptionalBackwardCallIndicators(OptionalBackwardCallIndicators value) {
-        super.o_Parameters.put(this._INDEX_O_OptionalBackwardCallIndicators, value);
+        super.o_Parameters.put(_INDEX_O_OptionalBackwardCallIndicators, value);
 
     }
 
@@ -511,7 +512,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message .parameter.ParameterCompatibilityInformation)
      */
     public void setParameterCompatibilityInformation(ParameterCompatibilityInformation value) {
-        super.o_Parameters.put(this._INDEX_O_ParameterCompatibilityInformation, value);
+        super.o_Parameters.put(_INDEX_O_ParameterCompatibilityInformation, value);
 
     }
 
@@ -522,7 +523,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message .parameter.PivotRoutingBackwardInformation)
      */
     public void setPivotRoutingBackwardInformation(PivotRoutingBackwardInformation value) {
-        super.o_Parameters.put(this._INDEX_O_PivotRoutingBackwardInformation, value);
+        super.o_Parameters.put(_INDEX_O_PivotRoutingBackwardInformation, value);
 
     }
 
@@ -533,7 +534,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumber)
      */
     public void setRedirectionNumber(RedirectionNumber value) {
-        super.o_Parameters.put(this._INDEX_O_RedirectionNumber, value);
+        super.o_Parameters.put(_INDEX_O_RedirectionNumber, value);
 
     }
 
@@ -544,7 +545,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .RedirectionNumberRestriction)
      */
     public void setRedirectionNumberRestriction(RedirectionNumberRestriction value) {
-        super.o_Parameters.put(this._INDEX_O_RedirectionNumberRestriction, value);
+        super.o_Parameters.put(_INDEX_O_RedirectionNumberRestriction, value);
 
     }
 
@@ -555,7 +556,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.RedirectStatus)
      */
     public void setRedirectStatus(RedirectStatus value) {
-        super.o_Parameters.put(this._INDEX_O_RedirectStatus, value);
+        super.o_Parameters.put(_INDEX_O_RedirectStatus, value);
 
     }
 
@@ -566,7 +567,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperations)
      */
     public void setRemoteOperations(RemoteOperations value) {
-        super.o_Parameters.put(this._INDEX_O_RemoteOperations, value);
+        super.o_Parameters.put(_INDEX_O_RemoteOperations, value);
 
     }
 
@@ -577,7 +578,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.ServiceActivation)
      */
     public void setServiceActivation(ServiceActivation value) {
-        super.o_Parameters.put(this._INDEX_O_ServiceActivation, value);
+        super.o_Parameters.put(_INDEX_O_ServiceActivation, value);
 
     }
 
@@ -588,7 +589,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .TransmissionMediumUsed)
      */
     public void setTransmissionMediumUsed(TransmissionMediumUsed value) {
-        super.o_Parameters.put(this._INDEX_O_TransmissionMediumUsed, value);
+        super.o_Parameters.put(_INDEX_O_TransmissionMediumUsed, value);
 
     }
 
@@ -599,7 +600,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators)
      */
     public void setUserToUserIndicators(UserToUserIndicators value) {
-        super.o_Parameters.put(this._INDEX_O_UserToUserIndicators, value);
+        super.o_Parameters.put(_INDEX_O_UserToUserIndicators, value);
 
     }
 
@@ -610,7 +611,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * (org.restcomm.protocols.ss7.isup.message.parameter .UserToUserInformation)
      */
     public void setUserToUserInformation(UserToUserInformation value) {
-        super.o_Parameters.put(this._INDEX_O_UserToUserInformation, value);
+        super.o_Parameters.put(_INDEX_O_UserToUserInformation, value);
 
     }
 
@@ -780,7 +781,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      */
 
     public MessageType getMessageType() {
-        return this._MESSAGE_TYPE;
+        return _MESSAGE_TYPE;
     }
 
     /*

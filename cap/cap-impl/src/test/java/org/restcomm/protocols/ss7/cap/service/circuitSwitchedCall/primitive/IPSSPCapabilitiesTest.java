@@ -22,17 +22,11 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -64,7 +58,7 @@ public class IPSSPCapabilitiesTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         IPSSPCapabilitiesImpl elem = new IPSSPCapabilitiesImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(elem.getIPRoutingAddressSupported());
         assertFalse(elem.getVoiceBackSupported());
@@ -76,7 +70,7 @@ public class IPSSPCapabilitiesTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new IPSSPCapabilitiesImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertFalse(elem.getIPRoutingAddressSupported());
         assertTrue(elem.getVoiceBackSupported());
@@ -106,7 +100,7 @@ public class IPSSPCapabilitiesTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         IPSSPCapabilitiesImpl original = new IPSSPCapabilitiesImpl(true, false, true, false, false, null);
@@ -151,5 +145,5 @@ public class IPSSPCapabilitiesTest {
 
         assertEquals(copy.getData(), original.getData());
 
-    }
+    }*/
 }

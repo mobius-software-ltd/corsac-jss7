@@ -24,12 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -100,7 +95,7 @@ public class AudibleIndicatorTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
         AudibleIndicatorImpl original = new AudibleIndicatorImpl(false);
 
@@ -147,6 +142,5 @@ public class AudibleIndicatorTest {
         assertNull(copy.getTone());
         assertEquals((int) copy.getBurstList().getWarningPeriod(), (int) original.getBurstList().getWarningPeriod());
         assertEquals((int) copy.getBurstList().getBursts().getNumberOfBursts(), (int) original.getBurstList().getBursts().getNumberOfBursts());
-    }
-
+    }*/
 }

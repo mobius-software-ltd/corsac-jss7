@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -102,8 +99,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtB
  *
  */
 public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl implements InitialDPRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_serviceKey = 0;
+	public static final int _ID_serviceKey = 0;
     public static final int _ID_calledPartyNumber = 2;
     public static final int _ID_callingPartyNumber = 3;
     public static final int _ID_callingPartysCategory = 5;
@@ -135,46 +133,13 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     public static final int _ID_callForwardingSS_Pending = 58;
     public static final int _ID_initialDPArgExtension = 59;
 
-    private static final String IS_CAP_VERSION_3_OR_LATER = "isCAPVersion3orLater";
-    private static final String SERVICE_KEY = "serviceKey";
-    private static final String CALLED_PARTY_NUMBER = "calledPartyNumber";
-    private static final String CALLING_PARTY_NUMBER = "callingPartyNumber";
-    private static final String CALLING_PARTYS_CATEGORY = "callingPartysCategory";
-    private static final String CG_ENCOUNTERED = "cgEncountered";
-    private static final String IPSSP_CAPABILITIES = "ipsspCapabilities";
-    private static final String LOCATION_NUMBER = "locationNumber";
-    private static final String ORIGINAL_CALLED_PARTY_ID = "originalCalledPartyID";
-    private static final String EXTENSIONS = "extensions";
-    private static final String HIGH_LAYER_COMPATIBILITY = "highLayerCompatibility";
-    private static final String ADDITIONAL_CALLING_PARTY_NUMBER = "additionalCallingPartyNumber";
-    private static final String BEARER_CAPABILITY = "bearerCapability";
-    private static final String EVENT_TYPE_BCSM = "eventTypeBCSM";
-    private static final String REDIRECTING_PARTY_ID = "redirectingPartyID";
-    private static final String REDIRECTION_INFORMATION = "redirectionInformation";
-    private static final String CAUSE = "cause";
-    private static final String SERVICE_INTERACTION_INDICATORS_TWO = "serviceInteractionIndicatorsTwo";
-    private static final String CARRIER = "carrier";
-    private static final String CUG_INDEX = "cugIndex";
-    private static final String CUG_INTERLOCK = "cugInterlock";
-    private static final String CUG_OUTGOING_ACCESS = "cugOutgoingAccess";
-    private static final String IMSI = "imsi";
-    private static final String SUBSCRIBER_STATE = "subscriberState";
-    private static final String LOCATION_INFORMATION = "locationInformation";
-    private static final String EXT_BASIC_SERVICE_CODE = "extBasicServiceCode";
-    private static final String CALL_REFERENCE_NUMBER = "callReferenceNumber";
-    private static final String MSC_ADDRESS = "mscAddress";
-    private static final String CALLED_PARTY_BCD_NUMBER = "calledPartyBCDNumber";
-    private static final String TIME_AND_TIMEZONE = "timeAndTimezone";
-    private static final String CALL_FORWARDING_SS_PENDING = "callForwardingSSPending";
-    private static final String INITIAL_DP_ARG_EXTENSION = "initialDPArgExtension";
-
     public static final String _PrimitiveName = "InitialDPRequestIndication";
 
     private int serviceKey;
     private CalledPartyNumberCap calledPartyNumber;
     private CallingPartyNumberCap callingPartyNumber;
     private CallingPartysCategoryInap callingPartysCategory;
-    private CGEncountered CGEncountered;
+    private CGEncountered cgEncountered;
     private IPSSPCapabilities IPSSPCapabilities;
     private LocationNumberCap locationNumber;
     private OriginalCalledNumberCap originalCalledPartyID;
@@ -216,7 +181,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 
     public InitialDPRequestImpl(int serviceKey, CalledPartyNumberCap calledPartyNumber,
             CallingPartyNumberCap callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
-            CGEncountered CGEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberCap locationNumber,
+            CGEncountered cgEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberCap locationNumber,
             OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions,
             HighLayerCompatibilityInap highLayerCompatibility, Digits additionalCallingPartyNumber,
             BearerCapability bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCap redirectingPartyID,
@@ -231,7 +196,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         this.calledPartyNumber = calledPartyNumber;
         this.callingPartyNumber = callingPartyNumber;
         this.callingPartysCategory = callingPartysCategory;
-        this.CGEncountered = CGEncountered;
+        this.cgEncountered = cgEncountered;
         this.IPSSPCapabilities = IPSSPCapabilities;
         this.locationNumber = locationNumber;
         this.originalCalledPartyID = originalCalledPartyID;
@@ -293,7 +258,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 
     @Override
     public CGEncountered getCGEncountered() {
-        return CGEncountered;
+        return cgEncountered;
     }
 
     @Override
@@ -489,7 +454,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         this.calledPartyNumber = null;
         this.callingPartyNumber = null;
         this.callingPartysCategory = null;
-        this.CGEncountered = null;
+        this.cgEncountered = null;
         this.IPSSPCapabilities = null;
         this.locationNumber = null;
         this.originalCalledPartyID = null;
@@ -552,8 +517,8 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
                         ((CallingPartysCategoryInapImpl) this.callingPartysCategory).decodeAll(ais);
                         break;
                     case _ID_cGEncountered:
-                        i1 = (int) ais.readInteger();
-                        this.CGEncountered = CGEncountered.getInstance(i1);
+                        i1 = (int) ais.readInteger();                        
+                        this.cgEncountered = CGEncountered.getInstance(i1);
                         break;
                     case _ID_iPSSPCapabilities:
                         this.IPSSPCapabilities = new IPSSPCapabilitiesImpl();
@@ -724,8 +689,8 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             if (this.callingPartysCategory != null)
                 ((CallingPartysCategoryInapImpl) this.callingPartysCategory).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
                         _ID_callingPartysCategory);
-            if (this.CGEncountered != null) {
-                aos.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_cGEncountered, this.CGEncountered.getCode());
+            if (this.cgEncountered != null) {
+                aos.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_cGEncountered, this.cgEncountered.getCode());
             }
             if (this.IPSSPCapabilities != null)
                 ((IPSSPCapabilitiesImpl) this.IPSSPCapabilities).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
@@ -820,155 +785,6 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         }
     }
 
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<InitialDPRequestImpl> INITIALDP_REQUEST_XML = new XMLFormat<InitialDPRequestImpl>(
-            InitialDPRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, InitialDPRequestImpl initialDP) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, initialDP);
-
-            initialDP.isCAPVersion3orLater = xml.getAttribute(IS_CAP_VERSION_3_OR_LATER, false);
-
-            initialDP.serviceKey = xml.get(SERVICE_KEY, Integer.class);
-            initialDP.calledPartyNumber = xml.get(CALLED_PARTY_NUMBER, CalledPartyNumberCapImpl.class);
-            initialDP.callingPartyNumber = xml.get(CALLING_PARTY_NUMBER, CallingPartyNumberCapImpl.class);
-            initialDP.callingPartysCategory = xml.get(CALLING_PARTYS_CATEGORY, CallingPartysCategoryInapImpl.class);
-
-            String str = xml.get(CG_ENCOUNTERED, String.class);
-            if (str != null)
-                initialDP.CGEncountered = Enum.valueOf(CGEncountered.class, str);
-            initialDP.IPSSPCapabilities = xml.get(IPSSP_CAPABILITIES, IPSSPCapabilitiesImpl.class);
-            initialDP.locationNumber = xml.get(LOCATION_NUMBER, LocationNumberCapImpl.class);
-            initialDP.originalCalledPartyID = xml.get(ORIGINAL_CALLED_PARTY_ID, OriginalCalledNumberCapImpl.class);
-            initialDP.extensions = xml.get(EXTENSIONS, CAPExtensionsImpl.class);
-
-            initialDP.highLayerCompatibility = xml.get(HIGH_LAYER_COMPATIBILITY, HighLayerCompatibilityInapImpl.class);
-            initialDP.additionalCallingPartyNumber = xml.get(ADDITIONAL_CALLING_PARTY_NUMBER, DigitsImpl.class);
-            initialDP.bearerCapability = xml.get(BEARER_CAPABILITY, BearerCapabilityImpl.class);
-            str = xml.get(EVENT_TYPE_BCSM, String.class);
-            if (str != null)
-                initialDP.eventTypeBCSM = Enum.valueOf(EventTypeBCSM.class, str);
-            initialDP.redirectingPartyID = xml.get(REDIRECTING_PARTY_ID, RedirectingPartyIDCapImpl.class);
-
-            initialDP.redirectionInformation = xml.get(REDIRECTION_INFORMATION, RedirectionInformationInapImpl.class);
-
-            initialDP.cause = xml.get(CAUSE, CauseCapImpl.class);
-            initialDP.serviceInteractionIndicatorsTwo = xml.get(SERVICE_INTERACTION_INDICATORS_TWO, ServiceInteractionIndicatorsTwoImpl.class);
-            initialDP.carrier = xml.get(CARRIER, CarrierImpl.class);
-            initialDP.cugIndex = xml.get(CUG_INDEX, CUGIndexImpl.class);
-            initialDP.cugInterlock = xml.get(CUG_INTERLOCK, CUGInterlockImpl.class);
-            Boolean bval = xml.get(CUG_OUTGOING_ACCESS, Boolean.class);
-            if (bval != null)
-                initialDP.cugOutgoingAccess = bval;
-
-            initialDP.imsi = xml.get(IMSI, IMSIImpl.class);
-            initialDP.subscriberState = xml.get(SUBSCRIBER_STATE, SubscriberStateImpl.class);
-            initialDP.locationInformation = xml.get(LOCATION_INFORMATION, LocationInformationImpl.class);
-            initialDP.extBasicServiceCode = xml.get(EXT_BASIC_SERVICE_CODE, ExtBasicServiceCodeImpl.class);
-
-            initialDP.callReferenceNumber = xml.get(CALL_REFERENCE_NUMBER, CallReferenceNumberImpl.class);
-            initialDP.mscAddress = xml.get(MSC_ADDRESS, ISDNAddressStringImpl.class);
-            initialDP.calledPartyBCDNumber = xml.get(CALLED_PARTY_BCD_NUMBER, CalledPartyBCDNumberImpl.class);
-            initialDP.timeAndTimezone = xml.get(TIME_AND_TIMEZONE, TimeAndTimezoneImpl.class);
-            bval = xml.get(CALL_FORWARDING_SS_PENDING, Boolean.class);
-            if (bval != null)
-                initialDP.callForwardingSSPending = bval;
-            initialDP.initialDPArgExtension = xml.get(INITIAL_DP_ARG_EXTENSION, InitialDPArgExtensionImpl.class);
-        }
-
-        @Override
-        public void write(InitialDPRequestImpl initialDP, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(initialDP, xml);
-
-            xml.setAttribute(IS_CAP_VERSION_3_OR_LATER, initialDP.isCAPVersion3orLater);
-
-            xml.add((Integer) initialDP.getServiceKey(), SERVICE_KEY, Integer.class);
-            if (initialDP.getCalledPartyNumber() != null)
-                xml.add((CalledPartyNumberCapImpl) initialDP.getCalledPartyNumber(), CALLED_PARTY_NUMBER,
-                        CalledPartyNumberCapImpl.class);
-            if (initialDP.getCallingPartyNumber() != null)
-                xml.add((CallingPartyNumberCapImpl) initialDP.getCallingPartyNumber(), CALLING_PARTY_NUMBER,
-                        CallingPartyNumberCapImpl.class);
-            if (initialDP.getCallingPartysCategory() != null)
-                xml.add((CallingPartysCategoryInapImpl) initialDP.getCallingPartysCategory(), CALLING_PARTYS_CATEGORY,
-                        CallingPartysCategoryInapImpl.class);
-
-            if (initialDP.getCGEncountered() != null)
-                xml.add((String) initialDP.getCGEncountered().toString(), CG_ENCOUNTERED, String.class);
-            if (initialDP.getIPSSPCapabilities() != null)
-                xml.add((IPSSPCapabilitiesImpl) initialDP.getIPSSPCapabilities(), IPSSP_CAPABILITIES,
-                        IPSSPCapabilitiesImpl.class);
-            if (initialDP.getLocationNumber() != null)
-                xml.add((LocationNumberCapImpl) initialDP.getLocationNumber(), LOCATION_NUMBER, LocationNumberCapImpl.class);
-            if (initialDP.getOriginalCalledPartyID() != null)
-                xml.add((OriginalCalledNumberCapImpl) initialDP.getOriginalCalledPartyID(), ORIGINAL_CALLED_PARTY_ID,
-                        OriginalCalledNumberCapImpl.class);
-            if (initialDP.getExtensions() != null)
-                xml.add((CAPExtensionsImpl) initialDP.getExtensions(), EXTENSIONS, CAPExtensionsImpl.class);
-
-            if (initialDP.getHighLayerCompatibility() != null)
-                xml.add((HighLayerCompatibilityInapImpl) initialDP.getHighLayerCompatibility(), HIGH_LAYER_COMPATIBILITY,
-                        HighLayerCompatibilityInapImpl.class);
-            if (initialDP.getAdditionalCallingPartyNumber() != null)
-                xml.add((DigitsImpl) initialDP.getAdditionalCallingPartyNumber(), ADDITIONAL_CALLING_PARTY_NUMBER,
-                        DigitsImpl.class);
-            if (initialDP.getBearerCapability() != null)
-                xml.add((BearerCapabilityImpl) initialDP.getBearerCapability(), BEARER_CAPABILITY, BearerCapabilityImpl.class);
-            if (initialDP.getEventTypeBCSM() != null)
-                xml.add((String) initialDP.getEventTypeBCSM().toString(), EVENT_TYPE_BCSM, String.class);
-            if (initialDP.getRedirectingPartyID() != null)
-                xml.add((RedirectingPartyIDCapImpl) initialDP.getRedirectingPartyID(), REDIRECTING_PARTY_ID,
-                        RedirectingPartyIDCapImpl.class);
-
-            if (initialDP.getRedirectionInformation() != null)
-                xml.add((RedirectionInformationInapImpl) initialDP.getRedirectionInformation(), REDIRECTION_INFORMATION,
-                        RedirectionInformationInapImpl.class);
-
-            if (initialDP.getCause() != null)
-                xml.add((CauseCapImpl) initialDP.getCause(), CAUSE, CauseCapImpl.class);
-            if (initialDP.serviceInteractionIndicatorsTwo != null)
-                xml.add((ServiceInteractionIndicatorsTwoImpl) initialDP.serviceInteractionIndicatorsTwo, SERVICE_INTERACTION_INDICATORS_TWO, ServiceInteractionIndicatorsTwoImpl.class);
-            if (initialDP.carrier != null)
-                xml.add((CarrierImpl) initialDP.carrier, CARRIER, CarrierImpl.class);
-            if (initialDP.cugIndex != null)
-                xml.add((CUGIndexImpl) initialDP.cugIndex, CUG_INDEX, CUGIndexImpl.class);
-            if (initialDP.cugInterlock != null)
-                xml.add((CUGInterlockImpl) initialDP.cugInterlock, CUG_INTERLOCK, CUGInterlockImpl.class);
-            if (initialDP.cugOutgoingAccess)
-                xml.add(initialDP.cugOutgoingAccess, CUG_OUTGOING_ACCESS, Boolean.class);
-
-            if (initialDP.getIMSI() != null)
-                xml.add((IMSIImpl) initialDP.getIMSI(), IMSI, IMSIImpl.class);
-            if (initialDP.getSubscriberState() != null)
-                xml.add((SubscriberStateImpl) initialDP.getSubscriberState(), SUBSCRIBER_STATE, SubscriberStateImpl.class);
-            if (initialDP.getLocationInformation() != null)
-                xml.add((LocationInformationImpl) initialDP.getLocationInformation(), LOCATION_INFORMATION,
-                        LocationInformationImpl.class);
-            if (initialDP.getExtBasicServiceCode() != null)
-                xml.add((ExtBasicServiceCodeImpl) initialDP.getExtBasicServiceCode(), EXT_BASIC_SERVICE_CODE,
-                        ExtBasicServiceCodeImpl.class);
-
-            if (initialDP.getCallReferenceNumber() != null)
-                xml.add((CallReferenceNumberImpl) initialDP.getCallReferenceNumber(), CALL_REFERENCE_NUMBER,
-                        CallReferenceNumberImpl.class);
-            if (initialDP.getMscAddress() != null)
-                xml.add((ISDNAddressStringImpl) initialDP.getMscAddress(), MSC_ADDRESS, ISDNAddressStringImpl.class);
-            if (initialDP.getCalledPartyBCDNumber() != null)
-                xml.add((CalledPartyBCDNumberImpl) initialDP.getCalledPartyBCDNumber(), CALLED_PARTY_BCD_NUMBER,
-                        CalledPartyBCDNumberImpl.class);
-            if (initialDP.getTimeAndTimezone() != null)
-                xml.add((TimeAndTimezoneImpl) initialDP.getTimeAndTimezone(), TIME_AND_TIMEZONE, TimeAndTimezoneImpl.class);
-            if (initialDP.getCallForwardingSSPending())
-                xml.add((Boolean) initialDP.getCallForwardingSSPending(), CALL_FORWARDING_SS_PENDING, Boolean.class);
-            if (initialDP.getInitialDPArgExtension() != null)
-                xml.add((InitialDPArgExtensionImpl) initialDP.getInitialDPArgExtension(), INITIAL_DP_ARG_EXTENSION,
-                        InitialDPArgExtensionImpl.class);
-        }
-    };
-
     @Override
     public String toString() {
 
@@ -991,9 +807,9 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             sb.append(", callingPartysCategory=");
             sb.append(callingPartysCategory.toString());
         }
-        if (this.CGEncountered != null) {
+        if (this.cgEncountered != null) {
             sb.append(", CGEncountered=");
-            sb.append(CGEncountered.toString());
+            sb.append(cgEncountered.toString());
         }
         if (this.IPSSPCapabilities != null) {
             sb.append(", IPSSPCapabilities=");

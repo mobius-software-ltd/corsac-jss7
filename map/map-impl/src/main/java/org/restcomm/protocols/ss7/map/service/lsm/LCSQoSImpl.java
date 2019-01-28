@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class LCSQoSImpl implements LCSQoS, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_HORIZONTAL_ACCURACY = 0;
+	private static final int _TAG_HORIZONTAL_ACCURACY = 0;
     private static final int _TAG_VERTICAL_COORDINATE_REQUEST = 1;
     private static final int _TAG_VERTICAL_ACCURACY = 2;
     private static final int _TAG_RESPONSE_TIME = 3;

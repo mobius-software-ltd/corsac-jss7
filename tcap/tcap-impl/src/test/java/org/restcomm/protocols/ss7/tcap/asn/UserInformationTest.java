@@ -98,7 +98,7 @@ public class UserInformationTest {
 
         byte[] userInfData = asnos.toByteArray();
 
-        String s = TcBeginTest.dump(userInfData, userInfData.length, false);
+        TcBeginTest.dump(userInfData, userInfData.length, false);
         assertTrue(Arrays.equals(encodedData, userInfData));
 
     }

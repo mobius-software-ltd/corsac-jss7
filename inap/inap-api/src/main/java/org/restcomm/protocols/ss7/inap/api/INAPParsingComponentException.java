@@ -28,8 +28,9 @@ package org.restcomm.protocols.ss7.inap.api;
  *
  */
 public class INAPParsingComponentException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-    private INAPParsingComponentExceptionReason reason;
+	private INAPParsingComponentExceptionReason reason;
 
     public INAPParsingComponentException() {
         // TODO Auto-generated constructor stub

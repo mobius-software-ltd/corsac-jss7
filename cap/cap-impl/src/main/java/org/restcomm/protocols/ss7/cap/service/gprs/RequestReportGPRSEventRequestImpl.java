@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class RequestReportGPRSEventRequestImpl extends GprsMessageImpl implements RequestReportGPRSEventRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "RequestReportGPRSEventRequest";
+	public static final String _PrimitiveName = "RequestReportGPRSEventRequest";
 
     public static final int _ID_gprsEvent = 0;
     public static final int _ID_pdpID = 1;

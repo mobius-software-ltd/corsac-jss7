@@ -29,25 +29,16 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import io.netty.buffer.ByteBufAllocator;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import javolution.util.FastList;
-import javolution.util.FastMap;
-
-import org.mobicents.protocols.api.Association;
-import org.mobicents.protocols.api.AssociationListener;
-import org.mobicents.protocols.api.AssociationType;
-import org.mobicents.protocols.api.CongestionListener;
-import org.mobicents.protocols.api.IpChannelType;
-import org.mobicents.protocols.api.Management;
-import org.mobicents.protocols.api.ManagementEventListener;
-import org.mobicents.protocols.api.PayloadData;
-import org.mobicents.protocols.api.Server;
-import org.mobicents.protocols.api.ServerListener;
 import org.restcomm.protocols.ss7.m3ua.As;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.AspFactory;
@@ -55,7 +46,6 @@ import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.M3UAManagementEventListener;
 import org.restcomm.protocols.ss7.m3ua.State;
-import org.restcomm.protocols.ss7.m3ua.Util;
 import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.AsState;
 import org.restcomm.protocols.ss7.m3ua.impl.AspFactoryImpl;
@@ -85,18 +75,29 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
+import org.restcomm.protocols.ss7.sctp.proxy.Association;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationListener;
+import org.restcomm.protocols.ss7.sctp.proxy.AssociationType;
+import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
+import org.restcomm.protocols.ss7.sctp.proxy.Management;
+import org.restcomm.protocols.ss7.sctp.proxy.ManagementEventListener;
+import org.restcomm.protocols.ss7.sctp.proxy.PayloadData;
+import org.restcomm.protocols.ss7.sctp.proxy.Server;
+import org.restcomm.protocols.ss7.sctp.proxy.ServerListener;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
+
 /**
  * Tests the FSM of client side AS and ASP's
  *
  * @author amit bhayani
  *
- */
+ */ 
 public class RemSgFSMTest {
 
     private ParameterFactoryImpl parmFactory = new ParameterFactoryImpl();
@@ -109,7 +110,9 @@ public class RemSgFSMTest {
     private NettyTransportManagement transportManagement = null;
 
     private M3UAManagementEventListenerImpl m3uaManagementEventListenerImpl = null;
-
+    
+    private UUID listenerUUID;
+    
     public RemSgFSMTest() {
     }
 
@@ -125,15 +128,14 @@ public class RemSgFSMTest {
     public void setUp() throws Exception {
         semaphore = new Semaphore(0);
         this.transportManagement = new NettyTransportManagement();
-        this.transportManagement.setPersistDir(Util.getTmpTestDir());
         this.m3uaManagementEventListenerImpl = new M3UAManagementEventListenerImpl();
-        this.clientM3UAMgmt = new M3UAManagementImpl("RemSgFSMTest", null, null);
-        this.clientM3UAMgmt.setPersistDir(Util.getTmpTestDir());
-        this.clientM3UAMgmt.addM3UAManagementEventListener(this.m3uaManagementEventListenerImpl);
+        UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
+        this.clientM3UAMgmt = new M3UAManagementImpl("RemSgFSMTest", null, uuidGenerator);
+        listenerUUID=uuidGenerator.GenerateTimeBasedGuid(System.currentTimeMillis());
+        this.clientM3UAMgmt.addM3UAManagementEventListener(listenerUUID, this.m3uaManagementEventListenerImpl);
         this.clientM3UAMgmt.setTransportManagement(this.transportManagement);
         this.mtp3UserPartListener = new Mtp3UserPartListenerimpl();
         this.clientM3UAMgmt.addMtp3UserPartListener(this.mtp3UserPartListener);
-        this.clientM3UAMgmt.setPersistDir(Util.getTmpTestDir());
         this.clientM3UAMgmt.start();
 
     }
@@ -256,19 +258,22 @@ public class RemSgFSMTest {
         // Check if MTP3 RESUME received
         // lets wait for 2second to receive the MTP3 primitive before giving up
         semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        // RESUME for DPC 3
+        semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
+        // RESUME for DPC 3 and DPC 2
         Mtp3Primitive mtp3Primitive = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
         assertNotNull(mtp3Primitive);
         assertEquals(Mtp3Primitive.RESUME, mtp3Primitive.getType());
-        assertEquals(3, mtp3Primitive.getAffectedDpc());
 
-        // lets wait for 2second to receive the MTP3 primitive before giving up
-        semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        // RESUME for DPC 2
-        mtp3Primitive = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
-        assertNotNull(mtp3Primitive);
-        assertEquals(Mtp3Primitive.RESUME, mtp3Primitive.getType());
-        assertEquals(2, mtp3Primitive.getAffectedDpc());
+        Mtp3Primitive mtp3Primitive2 = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
+        assertNotNull(mtp3Primitive2);
+        assertEquals(Mtp3Primitive.RESUME, mtp3Primitive2.getType());
+        
+        List<Integer> possibleDPC=new ArrayList<Integer>();
+        possibleDPC.add(2);
+        possibleDPC.add(3);        
+        assertTrue(possibleDPC.contains(mtp3Primitive.getAffectedDpc()));
+        assertTrue(possibleDPC.contains(mtp3Primitive2.getAffectedDpc()));
+        assertEquals(5,mtp3Primitive.getAffectedDpc() + mtp3Primitive2.getAffectedDpc());
 
         // No more MTP3 Primitive or message
         assertNull(this.mtp3UserPartListener.rxMtp3PrimitivePoll());
@@ -292,20 +297,19 @@ public class RemSgFSMTest {
         // lets wait for 3 seconds to receive the MTP3 primitive before giving
         // up. We know Pending timeout is 2 secs
         semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        // PAUSE for DPC 3
-        mtp3Primitive = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
-        assertNotNull(mtp3Primitive);
-        assertEquals(Mtp3Primitive.PAUSE, mtp3Primitive.getType());
-        assertEquals(3, mtp3Primitive.getAffectedDpc());
-
-        // lets wait for 3 seconds to receive the MTP3 primitive before giving
-        // up. We know Pending timeout is 2 secs
         semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        // PAUSE for DPC 2
+        // PAUSE for DPC 3 and DPC 2
         mtp3Primitive = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
         assertNotNull(mtp3Primitive);
         assertEquals(Mtp3Primitive.PAUSE, mtp3Primitive.getType());
-        assertEquals(2, mtp3Primitive.getAffectedDpc());
+
+        mtp3Primitive2 = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
+        assertNotNull(mtp3Primitive2);
+        assertEquals(Mtp3Primitive.PAUSE, mtp3Primitive.getType());
+        
+        assertTrue(possibleDPC.contains(mtp3Primitive.getAffectedDpc()));
+        assertTrue(possibleDPC.contains(mtp3Primitive2.getAffectedDpc()));
+        assertEquals(5,mtp3Primitive.getAffectedDpc() + mtp3Primitive2.getAffectedDpc());
 
         // No more MTP3 Primitive or message
         assertNull(this.mtp3UserPartListener.rxMtp3PrimitivePoll());
@@ -725,14 +729,24 @@ public class RemSgFSMTest {
         aspFactoryImpl.read(message);
 
         assertEquals(AspState.ACTIVE_SENT, this.getAspState(asp1LocalFSM));
-        assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspInactive, System
-                .currentTimeMillis(), new Object[] { remAsp1 }, m3uaManagementEventsSeq++)));
-
         assertEquals(AspState.ACTIVE_SENT, this.getAspState(asp2LocalFSM));
+        
+        assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
         assertEquals(remAsp2.getState().getName(), State.STATE_INACTIVE);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspInactive, System
-                .currentTimeMillis(), new Object[] { remAsp2 }, m3uaManagementEventsSeq++)));
+        
+        int[] sequences=new int[2];
+        sequences[0]=m3uaManagementEventsSeq++;
+        sequences[1]=m3uaManagementEventsSeq++;
+        
+        TestEvent[] expectedEvents=new TestEvent[2];
+        expectedEvents[0]=new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { remAsp1 }, sequences[0]);
+        expectedEvents[1]=new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { remAsp2 }, sequences[1]);
+        
+        TestEvent[] expectedEvents2=new TestEvent[2];
+        expectedEvents2[0]=new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { remAsp1 }, sequences[1]);
+        expectedEvents2[1]=new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { remAsp2 }, sequences[0]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] {expectedEvents,expectedEvents2}));
 
         // ASP_ACTIVE for both ASP in txQueue
         assertTrue(validateMessage(testAssociation, MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE, -1, -1));
@@ -801,19 +815,22 @@ public class RemSgFSMTest {
         // Check if MTP3 RESUME received
         // lets wait for 2second to receive the MTP3 primitive before giving up
         semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        // RESUME for DPC 2
+        semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
+        // RESUME for DPC 2 and DPC 3
         Mtp3Primitive mtp3Primitive = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
         assertNotNull(mtp3Primitive);
         assertEquals(Mtp3Primitive.RESUME, mtp3Primitive.getType());
-        assertEquals(2, mtp3Primitive.getAffectedDpc());
-
-        // lets wait for 2second to receive the MTP3 primitive before giving up
-        semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        // RESUME for DPC 3
-        mtp3Primitive = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
-        assertNotNull(mtp3Primitive);
-        assertEquals(Mtp3Primitive.RESUME, mtp3Primitive.getType());
-        assertEquals(3, mtp3Primitive.getAffectedDpc());
+        
+        Mtp3Primitive mtp3Primitive2 = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
+        assertNotNull(mtp3Primitive2);
+        assertEquals(Mtp3Primitive.RESUME, mtp3Primitive2.getType());
+        
+        List<Integer> possibleDPC=new ArrayList<Integer>();
+        possibleDPC.add(2);
+        possibleDPC.add(3);        
+        assertTrue(possibleDPC.contains(mtp3Primitive.getAffectedDpc()));
+        assertTrue(possibleDPC.contains(mtp3Primitive2.getAffectedDpc()));
+        assertEquals(5,mtp3Primitive.getAffectedDpc() + mtp3Primitive2.getAffectedDpc());
 
         // No more MTP3 Primitive or message
         assertNull(this.mtp3UserPartListener.rxMtp3PrimitivePoll());
@@ -846,23 +863,52 @@ public class RemSgFSMTest {
         aspFactoryImpl.stop();
 
         assertEquals(AspState.DOWN_SENT, this.getAspState(asp1LocalFSM));
-        assertEquals(remAsp1.getState().getName(), State.STATE_DOWN);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspDown, System
-                .currentTimeMillis(), new Object[] { remAsp1 }, m3uaManagementEventsSeq++)));
-
-        assertEquals(remAs1.getState().getName(), State.STATE_PENDING);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AsPending, System
-                .currentTimeMillis(), new Object[] { remAs1 }, m3uaManagementEventsSeq++)));
-
         assertEquals(AspState.DOWN_SENT, this.getAspState(asp2LocalFSM));
+        
+        assertEquals(remAsp1.getState().getName(), State.STATE_DOWN);
         assertEquals(remAsp2.getState().getName(), State.STATE_DOWN);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspDown, System
-                .currentTimeMillis(), new Object[] { remAsp2 }, m3uaManagementEventsSeq++)));
+        
+        sequences=new int[4];
+        sequences[0]=m3uaManagementEventsSeq++;
+        sequences[1]=m3uaManagementEventsSeq++;
+        sequences[2]=m3uaManagementEventsSeq++;
+        sequences[3]=m3uaManagementEventsSeq++;
+        
+        TestEvent[] firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { remAsp1 }, sequences[0]);
+        
+        TestEvent[] secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { remAsp2 }, sequences[0]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
 
+        firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AsPending, System.currentTimeMillis(), new Object[] { remAs1 }, sequences[1]);
+        
+        secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AsPending, System.currentTimeMillis(), new Object[] { remAs2 }, sequences[1]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
+        
+        firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { remAsp1 }, sequences[2]);
+        
+        secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { remAsp2 }, sequences[2]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
+
+        firstPath=new TestEvent[1];
+        firstPath[0]=new TestEvent(TestEventType.AsPending, System.currentTimeMillis(), new Object[] { remAs1 }, sequences[3]);
+        
+        secondPath=new TestEvent[1];
+        secondPath[0]=new TestEvent(TestEventType.AsPending, System.currentTimeMillis(), new Object[] { remAs2 }, sequences[3]);
+        
+        assertTrue(this.m3uaManagementEventListenerImpl.validateEvents(new TestEvent[][] { firstPath,secondPath}));
+        
+        assertEquals(remAs1.getState().getName(), State.STATE_PENDING);
         assertEquals(remAs2.getState().getName(), State.STATE_PENDING);
-        assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AsPending, System
-                .currentTimeMillis(), new Object[] { remAs2 }, m3uaManagementEventsSeq++)));
-
+        
         assertTrue(validateMessage(testAssociation, MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN, -1, -1));
         // also the both AS is PENDING
         assertEquals(AsState.PENDING, this.getAsState(as1PeerFSM));
@@ -871,20 +917,19 @@ public class RemSgFSMTest {
         // lets wait for 3 seconds to receive the MTP3 primitive before giving
         // up. We know Pending timeout is 2 secs
         semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        // PAUSE for DPC 2
-        mtp3Primitive = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
-        assertNotNull(mtp3Primitive);
-        assertEquals(Mtp3Primitive.PAUSE, mtp3Primitive.getType());
-        assertEquals(2, mtp3Primitive.getAffectedDpc());
-
-        // lets wait for 3 seconds to receive the MTP3 primitive before giving
-        // up. We know Pending timeout is 2 secs
         semaphore.tryAcquire(5000, TimeUnit.MILLISECONDS);
-        // PAUSE for DPC 3
+        // PAUSE for DPC 2 and DPC3
         mtp3Primitive = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
         assertNotNull(mtp3Primitive);
         assertEquals(Mtp3Primitive.PAUSE, mtp3Primitive.getType());
-        assertEquals(3, mtp3Primitive.getAffectedDpc());
+
+        mtp3Primitive2 = this.mtp3UserPartListener.rxMtp3PrimitivePoll();
+        assertNotNull(mtp3Primitive2);
+        assertEquals(Mtp3Primitive.PAUSE, mtp3Primitive2.getType());
+        
+        assertTrue(possibleDPC.contains(mtp3Primitive.getAffectedDpc()));
+        assertTrue(possibleDPC.contains(mtp3Primitive2.getAffectedDpc()));
+        assertEquals(5,mtp3Primitive.getAffectedDpc() + mtp3Primitive2.getAffectedDpc());
 
         // No more MTP3 Primitive or message
         assertNull(this.mtp3UserPartListener.rxMtp3PrimitivePoll());
@@ -1242,7 +1287,7 @@ public class RemSgFSMTest {
         aspFactory1.stop();
 
 
-    }    
+    }   
 
     @Test
     public void testPendingQueue() throws Exception {
@@ -1587,18 +1632,11 @@ public class RemSgFSMTest {
             // TODO Auto-generated method stub
             return null;
         }
-
-        @Override
-        public int getCongestionLevel() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
     }
 
     class NettyTransportManagement implements Management {
 
-        private FastMap<String, Association> associations = new FastMap<String, Association>();
+        private ConcurrentHashMap<String, Association> associations = new ConcurrentHashMap<String, Association>();
 
         @Override
         public Association addAssociation(String hostAddress, int hostPort, String peerAddress, int peerPort, String assocName)
@@ -1628,7 +1666,7 @@ public class RemSgFSMTest {
 
         @Override
         public Map<String, Association> getAssociations() {
-            return associations.unmodifiable();
+            return associations;
         }
 
         @Override
@@ -1647,16 +1685,6 @@ public class RemSgFSMTest {
         }
 
         @Override
-        public int getWorkerThreads() {
-            return 0;
-        }
-
-        @Override
-        public boolean isSingleThread() {
-            return false;
-        }
-
-        @Override
         public void removeAssociation(String assocName) throws Exception {
 
         }
@@ -1668,18 +1696,6 @@ public class RemSgFSMTest {
 
         @Override
         public void setConnectDelay(int connectDelay) {
-
-        }
-
-        @Override
-        public void setSingleThread(boolean arg0) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void setWorkerThreads(int arg0) {
-            // TODO Auto-generated method stub
 
         }
 
@@ -1720,18 +1736,6 @@ public class RemSgFSMTest {
         }
 
         @Override
-        public String getPersistDir() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void setPersistDir(String arg0) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
         public Association addAssociation(String arg0, int arg1, String arg2, int arg3, String arg4, IpChannelType arg5,
                 String[] extraHostAddresses) throws Exception {
             // TODO Auto-generated method stub
@@ -1758,7 +1762,7 @@ public class RemSgFSMTest {
         }
 
         @Override
-        public void addManagementEventListener(ManagementEventListener arg0) {
+        public void addManagementEventListener(UUID key,ManagementEventListener arg0) {
             // TODO Auto-generated method stub
 
         }
@@ -1777,7 +1781,7 @@ public class RemSgFSMTest {
         }
 
         @Override
-        public void removeManagementEventListener(ManagementEventListener arg0) {
+        public void removeManagementEventListener(UUID key) {
             // TODO Auto-generated method stub
 
         }
@@ -1798,79 +1802,7 @@ public class RemSgFSMTest {
             // TODO Auto-generated method stub
             return false;
         }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_1() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_2() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_BackToNormalDelayThreshold_3() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_1() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_2() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getCongControl_DelayThreshold_3() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_1(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_2(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_BackToNormalDelayThreshold_3(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_1(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_2(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setCongControl_DelayThreshold_3(double arg0) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
+        
         @Override
         public Boolean getOptionSctpDisableFragments() {
             // TODO Auto-generated method stub
@@ -1968,18 +1900,6 @@ public class RemSgFSMTest {
         }
 
         @Override
-        public void addCongestionListener(CongestionListener arg0) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void removeCongestionListener(CongestionListener arg0) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
         public int getBufferSize() {
             // TODO Auto-generated method stub
             return 0;
@@ -2018,7 +1938,7 @@ public class RemSgFSMTest {
         private LinkedList<Mtp3Primitive> mtp3Primitives = new LinkedList<Mtp3Primitive>();
         private LinkedList<Mtp3TransferPrimitive> mtp3TransferPrimitives = new LinkedList<Mtp3TransferPrimitive>();
 
-        Mtp3Primitive rxMtp3PrimitivePoll() {
+        Mtp3Primitive rxMtp3PrimitivePoll() {        	
             return this.mtp3Primitives.poll();
         }
 
@@ -2028,31 +1948,31 @@ public class RemSgFSMTest {
 
         @Override
         public void onMtp3PauseMessage(Mtp3PausePrimitive pause) {
-            this.mtp3Primitives.add(pause);
+        	this.mtp3Primitives.add(pause);
             semaphore.release();
         }
 
         @Override
         public void onMtp3ResumeMessage(Mtp3ResumePrimitive resume) {
-            this.mtp3Primitives.add(resume);
+        	this.mtp3Primitives.add(resume);
             semaphore.release();
         }
 
         @Override
         public void onMtp3StatusMessage(Mtp3StatusPrimitive status) {
-            this.mtp3Primitives.add(status);
+        	this.mtp3Primitives.add(status);
             semaphore.release();
         }
 
         @Override
         public void onMtp3TransferMessage(Mtp3TransferPrimitive transfer) {
-            this.mtp3TransferPrimitives.add(transfer);
+        	this.mtp3TransferPrimitives.add(transfer);
             semaphore.release();
         }
 
         @Override
         public void onMtp3EndCongestionMessage(Mtp3EndCongestionPrimitive msg) {
-            this.mtp3Primitives.add(msg);
+        	this.mtp3Primitives.add(msg);
             semaphore.release();
         }
 
@@ -2060,123 +1980,123 @@ public class RemSgFSMTest {
 
     private class M3UAManagementEventListenerImpl implements M3UAManagementEventListener {
 
-        private FastList<TestEvent> testEvents = new FastList<TestEvent>();
+        private ConcurrentLinkedQueue<TestEvent> testEvents = new ConcurrentLinkedQueue<TestEvent>();
         private int sequence = 0;
 
         @Override
         public void onAsCreated(As as) {
             TestEvent testEvent = new TestEvent(TestEventType.AsCreated, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsDestroyed(As as) {
             TestEvent testEvent = new TestEvent(TestEventType.AsDestroyed, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspFactoryCreated(AspFactory aspFactory) {
             TestEvent testEvent = new TestEvent(TestEventType.AspFactoryCreated, System.currentTimeMillis(),
                     new Object[] { aspFactory }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspFactoryDestroyed(AspFactory aspFactory) {
             TestEvent testEvent = new TestEvent(TestEventType.AspFactoryDestroyed, System.currentTimeMillis(),
                     new Object[] { aspFactory }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspAssignedToAs(As as, Asp asp) {
             TestEvent testEvent = new TestEvent(TestEventType.AspAssignedToAs, System.currentTimeMillis(), new Object[] { as,
                     asp }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspUnassignedFromAs(As as, Asp asp) {
             TestEvent testEvent = new TestEvent(TestEventType.AspUnassignedFromAs, System.currentTimeMillis(), new Object[] {
                     as, asp }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onRemoveAllResources() {
             TestEvent testEvent = new TestEvent(TestEventType.RemoveAllResources, System.currentTimeMillis(), null, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspFactoryStarted(AspFactory aspFactory) {
             TestEvent testEvent = new TestEvent(TestEventType.AspFactoryStarted, System.currentTimeMillis(),
                     new Object[] { aspFactory }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspFactoryStopped(AspFactory aspFactory) {
             TestEvent testEvent = new TestEvent(TestEventType.AspFactoryStopped, System.currentTimeMillis(),
                     new Object[] { aspFactory }, sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspActive(Asp asp, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AspActive, System.currentTimeMillis(), new Object[] { asp },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspInactive(Asp asp, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AspInactive, System.currentTimeMillis(), new Object[] { asp },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAspDown(Asp asp, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AspDown, System.currentTimeMillis(), new Object[] { asp },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsActive(As as, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AsActive, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsPending(As as, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AsPending, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsInactive(As as, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AsInactive, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         @Override
         public void onAsDown(As as, State oldState) {
             TestEvent testEvent = new TestEvent(TestEventType.AsDown, System.currentTimeMillis(), new Object[] { as },
                     sequence++);
-            this.testEvents.add(testEvent);
+            this.testEvents.offer(testEvent);
         }
 
         public boolean validateEvent(TestEvent testEventExpected) {
 
-            TestEvent testEventActual = this.testEvents.removeFirst();
+            TestEvent testEventActual = this.testEvents.poll();
 
             if (testEventActual == null) {
                 return false;
@@ -2185,6 +2105,42 @@ public class RemSgFSMTest {
             return testEventExpected.equals(testEventActual);
         }
 
+        public boolean validateEvents(TestEvent[][] testEventExpected) {
+        	TestEvent[] testEventActual=new TestEvent[testEventExpected[0].length];
+        	for(int i=0;i<testEventExpected[0].length;i++) {
+        		TestEvent currEvent = this.testEvents.poll();
+    	
+        		if (currEvent == null) {
+    	                return false;
+        		}
+        		
+        	    testEventActual[i]=currEvent;    	       
+        	}
+        	
+        	for(int l=0;l<testEventExpected.length;l++) {
+        		Boolean overallValid=true;        		
+        		for(int i=0;i<testEventExpected[l].length;i++) {
+        			Boolean hasValid=false;
+        			for(int j=0;j<testEventActual.length;j++) {
+		            	if(testEventActual[j].equals(testEventExpected[l][i])) {
+		            		hasValid=true;
+		            		break;
+		            	}
+		            }
+    	            
+    	            if(!hasValid) {
+    	            	overallValid=false;
+    	            	break;
+    	            }
+	        	}
+	            
+	            if(overallValid)
+	            	return true;	            
+        	}
+        	
+            return false;
+        }
+        
         @Override
         public void onServiceStarted() {
             // TODO Auto-generated method stub

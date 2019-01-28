@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class QualityOfServiceImpl extends SequenceBase implements QualityOfService {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_requestedQoS = 0;
+	public static final int _ID_requestedQoS = 0;
     public static final int _ID_subscribedQoS = 1;
     public static final int _ID_negotiatedQoS = 2;
     public static final int _ID_requestedQoSExtension = 3;

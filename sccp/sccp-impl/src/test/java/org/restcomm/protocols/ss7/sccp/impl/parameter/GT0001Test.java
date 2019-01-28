@@ -34,9 +34,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0001Impl;
@@ -142,7 +139,7 @@ public class GT0001Test {
         assertTrue(correct, "Incorrect encoding");
     }
 
-    @Test(groups = { "parameter", "functional.encode" })
+    /*@Test(groups = { "parameter", "functional.encode" })
     public void testSerialization() throws Exception {
         GlobalTitle0001Impl gt = new GlobalTitle0001Impl("9023629581",NatureOfAddress.NATIONAL);
 
@@ -163,5 +160,5 @@ public class GT0001Test {
         // check results
         assertEquals(aiOut.getNatureOfAddress(), NatureOfAddress.NATIONAL);
         assertEquals(aiOut.getDigits(), "9023629581");
-    }
+    }*/
 }

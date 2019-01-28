@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
 *
 */
 public class EraseSSRequestImpl extends SupplementaryMessageImpl implements EraseSSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EraseSSRequest";
+	public static final String _PrimitiveName = "EraseSSRequest";
 
     private SSForBSCode ssForBSCode;
 

@@ -27,12 +27,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -40,16 +35,12 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateChoice;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationResponseImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
@@ -170,7 +161,7 @@ public class AnyTimeInterrogationResponseTest {
         assertTrue(Arrays.equals(dataFull, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         ISDNAddressStringImpl vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "554433221100");
@@ -211,5 +202,5 @@ public class AnyTimeInterrogationResponseTest {
         assertEquals(copy.getSubscriberInfo().getGPRSMSClass().getMSNetworkCapability(), original.getSubscriberInfo().getGPRSMSClass().getMSNetworkCapability());
         assertEquals(copy.getSubscriberInfo().getMNPInfoRes().getIMSI(), original.getSubscriberInfo().getMNPInfoRes().getIMSI());
 
-    }
+    }*/
 }

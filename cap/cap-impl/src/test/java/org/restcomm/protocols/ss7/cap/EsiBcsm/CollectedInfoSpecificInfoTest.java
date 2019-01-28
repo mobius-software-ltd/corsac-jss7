@@ -24,12 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import static org.testng.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -81,7 +75,7 @@ public class CollectedInfoSpecificInfoTest {
         assertEquals(aos.toByteArray(), this.getData1());
     }
 
-    @Test(groups = { "functional.xml.serialize", "EsiBcsm" })
+    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
     public void testXMLSerializaion() throws Exception {
         CalledPartyNumber calledPartyNumber = new CalledPartyNumberImpl();
         calledPartyNumber.setAddress("22222212345");
@@ -111,6 +105,5 @@ public class CollectedInfoSpecificInfoTest {
                 .getNatureOfAddressIndicator());
         assertEquals(copy.getCalledPartyNumber().getCalledPartyNumber().getNumberingPlanIndicator(), original.getCalledPartyNumber().getCalledPartyNumber()
                 .getNumberingPlanIndicator());
-    }
-
+    }*/
 }

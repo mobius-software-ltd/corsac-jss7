@@ -34,8 +34,9 @@ import org.mobicents.protocols.asn.AsnOutputStream;
  *
  */
 public class TCUnidentifiedMessage implements Encodable {
+	private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger(TCUnidentifiedMessage.class);
+	private static final Logger logger = Logger.getLogger(TCUnidentifiedMessage.class);
 
     public static final int _TAG_OTX = 0x08;
 

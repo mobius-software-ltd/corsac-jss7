@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.IPSS
  */
 public class AssistRequestInstructionsRequestImpl extends CircuitSwitchedCallMessageImpl implements
         AssistRequestInstructionsRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_correlationID = 0;
+	public static final int _ID_correlationID = 0;
     public static final int _ID_iPSSPCapabilities = 2;
     public static final int _ID_extensions = 3;
 

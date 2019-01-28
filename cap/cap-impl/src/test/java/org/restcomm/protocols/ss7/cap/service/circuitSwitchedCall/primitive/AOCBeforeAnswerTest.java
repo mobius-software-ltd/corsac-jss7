@@ -53,7 +53,7 @@ public class AOCBeforeAnswerTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         AOCBeforeAnswerImpl elem = new AOCBeforeAnswerImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertNull(elem.getAOCInitial().getE1());
         assertNull(elem.getAOCInitial().getE2());

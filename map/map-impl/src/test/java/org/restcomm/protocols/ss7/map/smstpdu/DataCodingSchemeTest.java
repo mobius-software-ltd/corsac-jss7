@@ -27,8 +27,6 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.nio.charset.Charset;
-
 import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaIndicationType;
@@ -49,10 +47,10 @@ public class DataCodingSchemeTest {
         
         
 //        Charset utf8Charset = Charset.forName("UTF-8");
-        Charset utf8Charset = Charset.forName("UTF-16BE");
+        //Charset utf8Charset = Charset.forName("UTF-16BE");
 //        byte[] data = new byte[] { 0x31, 0x32, 0x33, 0x02, 0x1b, 0x3c, 0x1b, 0x3e, 0x20, 0x04, 0x05 };
-        byte[] data = new byte[] { 0x04, 0x10, 0x04, 0x11, 0x04, 0x12, 0x04, 0x13, 0x04, 0x14 };
-        String s = new String(data, utf8Charset);        
+        //byte[] data = new byte[] { 0x04, 0x10, 0x04, 0x11, 0x04, 0x12, 0x04, 0x13, 0x04, 0x14 };
+        //String s = new String(data, utf8Charset);        
         
         
         

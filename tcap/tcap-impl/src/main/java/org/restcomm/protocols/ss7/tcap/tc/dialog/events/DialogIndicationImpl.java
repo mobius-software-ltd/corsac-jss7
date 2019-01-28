@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
  *
  */
 public abstract class DialogIndicationImpl implements DialogIndication {
+	private static final long serialVersionUID = 1L;
 
-    private Component[] components;
+	private Component[] components;
     private Dialog dialog;
     private Byte qos;
     private EventType type;

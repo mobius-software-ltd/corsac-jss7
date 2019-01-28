@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringLength1Base;
  *
  */
 public class MTSMSCauseImpl extends OctetStringLength1Base implements MTSMSCause {
+	private static final long serialVersionUID = 1L;
 
-    public MTSMSCauseImpl() {
+	public MTSMSCauseImpl() {
         super("MTSMSCause");
     }
 

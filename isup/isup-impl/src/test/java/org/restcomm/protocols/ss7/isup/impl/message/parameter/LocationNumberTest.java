@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
@@ -122,7 +117,7 @@ public class LocationNumberTest {
         assertTrue(Arrays.equals(data, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "parameter" })
+    /*@Test(groups = { "functional.xml.serialize", "parameter" })
     public void testXMLSerialize() throws Exception {
 
         LocationNumberImpl original = new LocationNumberImpl(LocationNumber._NAI_NATIONAL_SN, "12345",
@@ -153,7 +148,7 @@ public class LocationNumberTest {
         assertEquals(copy.getAddressRepresentationRestrictedIndicator(), original.getAddressRepresentationRestrictedIndicator());
         assertEquals(copy.getScreeningIndicator(), original.getScreeningIndicator());
         assertEquals(copy.isOddFlag(), original.isOddFlag());
-    }
+    }*/
 
     // /**
     // * @throws IOException

@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumberRestri
  *
  */
 public class RedirectionNumberRestrictionImpl extends AbstractISUPParameter implements RedirectionNumberRestriction {
+	private static final long serialVersionUID = 1L;
 
-    private int presentationRestrictedIndicator;
+	private int presentationRestrictedIndicator;
 
     public RedirectionNumberRestrictionImpl(int presentationRestrictedIndicator) {
         super();

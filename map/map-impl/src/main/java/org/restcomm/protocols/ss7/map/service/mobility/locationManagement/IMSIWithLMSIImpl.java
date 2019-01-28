@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.SequenceBase;
  *
  */
 public class IMSIWithLMSIImpl extends SequenceBase implements IMSIWithLMSI {
+	private static final long serialVersionUID = 1L;
 
-    private IMSI imsi;
+	private IMSI imsi;
     private LMSI lmsi;
 
     public IMSIWithLMSIImpl() {

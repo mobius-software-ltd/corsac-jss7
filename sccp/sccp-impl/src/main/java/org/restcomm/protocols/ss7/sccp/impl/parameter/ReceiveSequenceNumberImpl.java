@@ -33,7 +33,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ReceiveSequenceNumberImpl extends AbstractParameter implements ReceiveSequenceNumber {
-    private SequenceNumber value = new SequenceNumberImpl(0);
+	private static final long serialVersionUID = 1L;
+
+	private SequenceNumber value = new SequenceNumberImpl(0);
 
     public ReceiveSequenceNumberImpl() {
     }

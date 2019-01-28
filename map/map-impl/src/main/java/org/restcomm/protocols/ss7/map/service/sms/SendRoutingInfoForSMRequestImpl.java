@@ -56,8 +56,9 @@ import java.io.IOException;
  *
  */
 public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements SendRoutingInfoForSMRequest {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_msisdn = 0;
+	protected static final int _TAG_msisdn = 0;
     protected static final int _TAG_sm_RP_PRI = 1;
     protected static final int _TAG_serviceCentreAddress = 2;
     protected static final int _TAG_teleservice = 5;

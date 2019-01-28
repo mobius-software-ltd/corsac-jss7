@@ -40,7 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Reserved;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ReservedImpl extends AbstractISUPParameter implements Reserved {
-    // FIXME: XXX
+	private static final long serialVersionUID = 1L;
+
+	// FIXME: XXX
     // there is no info, 3.27 in Q.763 is empty... cmon.
     public ReservedImpl() {
         super();

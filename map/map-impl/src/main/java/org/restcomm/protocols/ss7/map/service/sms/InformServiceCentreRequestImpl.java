@@ -46,8 +46,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class InformServiceCentreRequestImpl extends SmsMessageImpl implements InformServiceCentreRequest {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_AdditionalAbsentSubscriberDiagnosticSM = 0;
+	protected static final int _TAG_AdditionalAbsentSubscriberDiagnosticSM = 0;
 
     private ISDNAddressString storedMSISDN;
     private MWStatus mwStatus;

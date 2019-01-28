@@ -22,17 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import static org.testng.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TAIdImpl;
-import org.testng.annotations.Test;
-
 /**
  *
  * @author sergey vetyutnev
@@ -40,7 +29,7 @@ import org.testng.annotations.Test;
  */
 public class TAIdTest {
 
-    private byte[] getData() {
+	/*private byte[] getData() {
         return new byte[] { 12, 23, 45, 67, 78 };
     }
 
@@ -68,6 +57,5 @@ public class TAIdTest {
 
         assertEquals(copy.getData(), original.getData());
 
-    }
-
+    }*/
 }

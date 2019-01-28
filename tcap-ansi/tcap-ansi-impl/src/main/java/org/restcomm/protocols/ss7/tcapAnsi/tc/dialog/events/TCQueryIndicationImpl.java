@@ -35,8 +35,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryIndicatio
  *
  */
 public class TCQueryIndicationImpl extends DialogIndicationImpl implements TCQueryIndication {
+	private static final long serialVersionUID = 1L;
 
-    private SccpAddress originatingAddress, destinationAddress;
+	private SccpAddress originatingAddress, destinationAddress;
 
     // fields
     private ApplicationContext applicationContextName;

@@ -31,7 +31,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.Util;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
@@ -66,12 +65,11 @@ import org.testng.annotations.Test;
 public class SccpNoticeMessageTest {
 
     private Logger logger;
-    private SccpStackImpl stack = new SccpStackImpl("SccpNoticeMessageTestStack", null);
+    private SccpStackImpl stack = new SccpStackImpl("SccpNoticeMessageTestStack");
     private MessageFactoryImpl messageFactory;
 
     @BeforeMethod
     public void setUp() {
-        this.stack.setPersistDir(Util.getTmpTestDir());
         this.stack.start();
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = Logger.getLogger(SccpStackImpl.class.getCanonicalName());

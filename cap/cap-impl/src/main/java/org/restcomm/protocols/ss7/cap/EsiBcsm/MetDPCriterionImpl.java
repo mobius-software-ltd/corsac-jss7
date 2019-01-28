@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -50,20 +47,9 @@ import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 *
 */
 public class MetDPCriterionImpl implements MetDPCriterion, CAPAsnPrimitive {
-
-    private static final String ENTERING_CELL_GLOBAL_ID = "enteringCellGlobalId";
-    private static final String LEAVING_CELL_GLOBAL_ID = "leavingCellGlobalId";
-    private static final String ENTERING_SERVICE_AREA_ID = "enteringServiceAreaId";
-    private static final String LEAVING_SERVICE_AREA_ID = "leavingServiceAreaId";
-    private static final String ENTERING_LOCATION_AREA_ID = "enteringLocationAreaId";
-    private static final String LEAVING_LOCATION_AREA_ID = "leavingLocationAreaId";
-    private static final String INTER_SYSTEM_HAND_OVER_TO_UMTS = "interSystemHandOverToUMTS";
-    private static final String INTER_SYSTEM_HAND_OVER_TO_GSM = "interSystemHandOverToGSM";
-    private static final String INTER_PLMN_HAND_OVER = "interPLMNHandOver";
-    private static final String INTER_MSC_HAND_OVER = "interMSCHandOver";
-    private static final String MET_DP_CRITERION_ALT = "metDPCriterionAlt";
-
-    public static final int _ID_enteringCellGlobalId = 0;
+	private static final long serialVersionUID = 1L;
+	
+	public static final int _ID_enteringCellGlobalId = 0;
     public static final int _ID_leavingCellGlobalId = 1;
     public static final int _ID_enteringServiceAreaId = 2;
     public static final int _ID_leavingServiceAreaId = 3;
@@ -458,71 +444,6 @@ public class MetDPCriterionImpl implements MetDPCriterion, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    protected static final XMLFormat<MetDPCriterionImpl> MET_DP_CRITERION_XML = new XMLFormat<MetDPCriterionImpl>(MetDPCriterionImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MetDPCriterionImpl metDPCriterion) throws XMLStreamException {
-            metDPCriterion.enteringCellGlobalId = xml.get(ENTERING_CELL_GLOBAL_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            metDPCriterion.leavingCellGlobalId = xml.get(LEAVING_CELL_GLOBAL_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            metDPCriterion.enteringServiceAreaId = xml.get(ENTERING_SERVICE_AREA_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            metDPCriterion.leavingServiceAreaId = xml.get(LEAVING_SERVICE_AREA_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-
-            metDPCriterion.enteringLocationAreaId = xml.get(ENTERING_LOCATION_AREA_ID, LAIFixedLengthImpl.class);
-            metDPCriterion.leavingLocationAreaId = xml.get(LEAVING_LOCATION_AREA_ID, LAIFixedLengthImpl.class);
-
-            Boolean bval = xml.get(INTER_SYSTEM_HAND_OVER_TO_UMTS, Boolean.class);
-            if (bval != null)
-                metDPCriterion.interSystemHandOverToUMTS = bval;
-            bval = xml.get(INTER_SYSTEM_HAND_OVER_TO_GSM, Boolean.class);
-            if (bval != null)
-                metDPCriterion.interSystemHandOverToGSM = bval;
-            bval = xml.get(INTER_PLMN_HAND_OVER, Boolean.class);
-            if (bval != null)
-                metDPCriterion.interPLMNHandOver = bval;
-            bval = xml.get(INTER_MSC_HAND_OVER, Boolean.class);
-            if (bval != null)
-                metDPCriterion.interMSCHandOver = bval;
-
-            metDPCriterion.metDPCriterionAlt = xml.get(MET_DP_CRITERION_ALT, MetDPCriterionAltImpl.class);
-        }
-
-        @Override
-        public void write(MetDPCriterionImpl metDPCriterion, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (metDPCriterion.enteringCellGlobalId != null) {
-                xml.add((CellGlobalIdOrServiceAreaIdFixedLengthImpl) metDPCriterion.enteringCellGlobalId, ENTERING_CELL_GLOBAL_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            }
-            if (metDPCriterion.leavingCellGlobalId != null) {
-                xml.add((CellGlobalIdOrServiceAreaIdFixedLengthImpl) metDPCriterion.leavingCellGlobalId, LEAVING_CELL_GLOBAL_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            }
-            if (metDPCriterion.enteringServiceAreaId != null) {
-                xml.add((CellGlobalIdOrServiceAreaIdFixedLengthImpl) metDPCriterion.enteringServiceAreaId, ENTERING_SERVICE_AREA_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            }
-            if (metDPCriterion.leavingServiceAreaId != null) {
-                xml.add((CellGlobalIdOrServiceAreaIdFixedLengthImpl) metDPCriterion.leavingServiceAreaId, LEAVING_SERVICE_AREA_ID, CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-            }
-
-            if (metDPCriterion.enteringLocationAreaId != null) {
-                xml.add((LAIFixedLengthImpl) metDPCriterion.enteringLocationAreaId, ENTERING_LOCATION_AREA_ID, LAIFixedLengthImpl.class);
-            }
-            if (metDPCriterion.leavingLocationAreaId != null) {
-                xml.add((LAIFixedLengthImpl) metDPCriterion.leavingLocationAreaId, LEAVING_LOCATION_AREA_ID, LAIFixedLengthImpl.class);
-            }
-
-            if (metDPCriterion.interSystemHandOverToUMTS)
-                xml.add(metDPCriterion.interSystemHandOverToUMTS, INTER_SYSTEM_HAND_OVER_TO_UMTS, Boolean.class);
-            if (metDPCriterion.interSystemHandOverToGSM)
-                xml.add(metDPCriterion.interSystemHandOverToGSM, INTER_SYSTEM_HAND_OVER_TO_GSM, Boolean.class);
-            if (metDPCriterion.interPLMNHandOver)
-                xml.add(metDPCriterion.interPLMNHandOver, INTER_PLMN_HAND_OVER, Boolean.class);
-            if (metDPCriterion.interMSCHandOver)
-                xml.add(metDPCriterion.interMSCHandOver, INTER_MSC_HAND_OVER, Boolean.class);
-
-            if (metDPCriterion.metDPCriterionAlt != null) {
-                xml.add((MetDPCriterionAltImpl) metDPCriterion.metDPCriterionAlt, MET_DP_CRITERION_ALT, MetDPCriterionAltImpl.class);
-            }
-        }
-    };
 
     public enum CellGlobalIdOrServiceAreaIdFixedLength_Option {
         enteringCellGlobalId, leavingCellGlobalId, enteringServiceAreaId, leavingServiceAreaId;

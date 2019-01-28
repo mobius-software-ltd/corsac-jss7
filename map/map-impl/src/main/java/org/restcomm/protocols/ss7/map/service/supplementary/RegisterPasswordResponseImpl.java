@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.RegisterPassword
 *
 */
 public class RegisterPasswordResponseImpl extends SupplementaryMessageImpl implements RegisterPasswordResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "RegisterPasswordResponse";
+	public static final String _PrimitiveName = "RegisterPasswordResponse";
 
     private Password password;
 

@@ -44,8 +44,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
  *
  */
 public class FCIBCCCAMELsequence1GprsImpl extends SequenceBase implements FCIBCCCAMELsequence1Gprs {
-
-    public static final int _ID_freeFormatData = 0;
+	private static final long serialVersionUID = 1L;
+	
+	public static final int _ID_freeFormatData = 0;
     public static final int _ID_pdpID = 1;
     public static final int _ID_appendFreeFormatData = 2;
 

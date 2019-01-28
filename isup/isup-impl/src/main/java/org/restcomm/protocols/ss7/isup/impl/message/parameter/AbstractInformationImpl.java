@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.InformationType;
  *
  */
 public abstract class AbstractInformationImpl implements Information {
+	private static final long serialVersionUID = 1L;
 
-    protected final InformationType type;
+	protected final InformationType type;
     protected int tag;
     public AbstractInformationImpl(InformationType type) {
         super();

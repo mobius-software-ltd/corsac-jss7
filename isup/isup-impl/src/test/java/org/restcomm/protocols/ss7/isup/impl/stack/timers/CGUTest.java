@@ -93,7 +93,7 @@ public class CGUTest extends DoubleTimers {
 
         CircuitGroupSuperVisionMessageType cgsvmt = super.provider.getParameterFactory()
                 .createCircuitGroupSuperVisionMessageType();
-        cgsvmt.setCircuitGroupSuperVisionMessageTypeIndicator(cgsvmt._CIRCUIT_GROUP_SMTIHFO);
+        cgsvmt.setCircuitGroupSuperVisionMessageTypeIndicator(CircuitGroupSuperVisionMessageType._CIRCUIT_GROUP_SMTIHFO);
         cgu.setSupervisionType(cgsvmt);
 
         return cgu;
@@ -119,7 +119,7 @@ public class CGUTest extends DoubleTimers {
 
         CircuitGroupSuperVisionMessageType cgsvmt = super.provider.getParameterFactory()
                 .createCircuitGroupSuperVisionMessageType();
-        cgsvmt.setCircuitGroupSuperVisionMessageTypeIndicator(cgsvmt._CIRCUIT_GROUP_SMTIHFO);
+        cgsvmt.setCircuitGroupSuperVisionMessageTypeIndicator(CircuitGroupSuperVisionMessageType._CIRCUIT_GROUP_SMTIHFO);
         cgua.setSupervisionType(cgsvmt);
 
         return cgua;

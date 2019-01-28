@@ -77,8 +77,10 @@ public class CallForwardingDataTest {
         FTNAddressStringImpl longForwardedToNumber = new FTNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12345");
         final ExtForwFeatureImpl extForwFeature = new ExtForwFeatureImpl(null, new ExtSSStatusImpl(false, true, false, true), forwardedToNumber, null,
                 null, 5, null, longForwardedToNumber);
-        CallForwardingDataImpl callForwardingData = new CallForwardingDataImpl(new ArrayList<ExtForwFeature>(){{add(extForwFeature);}}, true,
-                MAPExtensionContainerTest.GetTestExtensionContainer());
+        
+        ArrayList<ExtForwFeature> extForwFeatureList=new ArrayList<ExtForwFeature>();
+        extForwFeatureList.add(extForwFeature);
+        CallForwardingDataImpl callForwardingData = new CallForwardingDataImpl(extForwFeatureList, true, MAPExtensionContainerTest.GetTestExtensionContainer());
 
         AsnOutputStream asnOS = new AsnOutputStream();
         callForwardingData.encodeAll(asnOS);

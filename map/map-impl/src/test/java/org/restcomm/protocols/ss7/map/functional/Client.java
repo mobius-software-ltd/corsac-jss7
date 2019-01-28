@@ -38,12 +38,10 @@ import org.restcomm.protocols.ss7.map.api.MAPProvider;
 import org.restcomm.protocols.ss7.map.api.MAPStack;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtProtocolId;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
@@ -114,7 +112,6 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SubscriberStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VlrCamelSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceBroadcastData;
@@ -140,8 +137,6 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCod
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.primitives.ExtExternalSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
@@ -151,18 +146,14 @@ import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.primitives.SignalInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.TMSIImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.ADDInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.EPSInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.IMSIWithLMSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.ISRInformationImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LACImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LocationAreaImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PagingAreaImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SGSNCapabilityImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.service.sms.AlertServiceCentreRequestImpl;
 import org.restcomm.protocols.ss7.map.service.sms.SM_RP_SMEAImpl;
 import org.restcomm.protocols.ss7.map.service.sms.SmsSignalInfoImpl;
@@ -180,6 +171,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.testng.Assert.assertNull;
 
@@ -202,7 +194,7 @@ public class Client extends EventTestHarness {
     protected MAPParameterFactory mapParameterFactory;
 
     // private boolean finished = true;
-    private String unexpected = "";
+    //private String unexpected = "";
 
     protected MAPDialogSupplementary clientDialog;
     protected MAPDialogSms clientDialogSms;
@@ -211,8 +203,6 @@ public class Client extends EventTestHarness {
     protected MAPDialogCallHandling clientDialogCallHandling;
     protected MAPDialogOam clientDialogOam;
     protected MAPDialogPdpContextActivation clientDialogPdpContextActivation;
-
-    private long savedInvokeId;
 
     public Client(MAPStack mapStack, MAPFunctionalTest runningTestCase, SccpAddress thisAddress, SccpAddress remoteAddress) {
         super(logger);
@@ -223,7 +213,7 @@ public class Client extends EventTestHarness {
 
         this.mapParameterFactory = this.mapProvider.getMAPParameterFactory();
 
-        this.mapProvider.addMAPDialogListener(this);
+        this.mapProvider.addMAPDialogListener(UUID.randomUUID(),this);
         this.mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
         this.mapProvider.getMAPServiceSms().addMAPServiceListener(this);
         this.mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
@@ -319,7 +309,7 @@ public class Client extends EventTestHarness {
 
         USSDString ussdString = this.mapParameterFactory.createUSSDString(MAPFunctionalTest.USSD_STRING);
 
-        savedInvokeId = clientDialog.addProcessUnstructuredSSRequest(new CBSDataCodingSchemeImpl(0x0f), ussdString, null,
+        clientDialog.addProcessUnstructuredSSRequest(new CBSDataCodingSchemeImpl(0x0f), ussdString, null,
                 msisdn);
 
         logger.debug("Sending USSDString" + MAPFunctionalTest.USSD_STRING);
@@ -838,7 +828,7 @@ public class Client extends EventTestHarness {
                 this.remoteAddress, null);
 
         IMSI imsi = new IMSIImpl("1111122222");
-        LMSI lmsi = this.mapParameterFactory.createLMSI(new byte[] { 0, 3, 98, 39 });
+        this.mapParameterFactory.createLMSI(new byte[] { 0, 3, 98, 39 });
 
         clientDialogMobility.addCancelLocationRequest(imsi, null, null, null, null, false, false, null, null, null);
 
@@ -1090,32 +1080,32 @@ public class Client extends EventTestHarness {
         boolean suppressionOfAnnouncement = false;
         ISDNAddressString gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22226");
-        CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(new byte[] { 19, -6, 61, 61, -22 });
+        //CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(new byte[] { 19, -6, 61, 61, -22 });
         boolean orInterrogation = false;
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
+        //MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        //AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
         boolean ccbsCall = false;
-        SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = new SupportedCamelPhasesImpl(true, true, false, false);
-        MAPExtensionContainer extensionContainerforAddSigInfo = this.mapParameterFactory.createMAPExtensionContainer(al,
-                new byte[] { 31, 32, 33 });
-        ExtExternalSignalInfoImpl additionalSignalInfo = new ExtExternalSignalInfoImpl(signalInfo,
-                ExtProtocolId.getExtProtocolId(0), extensionContainerforAddSigInfo);
+        //SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = new SupportedCamelPhasesImpl(true, true, false, false);
+        //MAPExtensionContainer extensionContainerforAddSigInfo = this.mapParameterFactory.createMAPExtensionContainer(al,
+        //        new byte[] { 31, 32, 33 });
+        //ExtExternalSignalInfoImpl additionalSignalInfo = new ExtExternalSignalInfoImpl(signalInfo,
+        //        ExtProtocolId.getExtProtocolId(0), extensionContainerforAddSigInfo);
         boolean orNotSupportedInGMSC = false;
         boolean prePagingSupported = false;
         boolean longFTNSupported = false;
         boolean suppressVtCsi = false;
-        OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode = new OfferedCamel4CSIsImpl(false, false, false, false,
-                true, true, true);
+        //OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode = new OfferedCamel4CSIsImpl(false, false, false, false,
+        //        true, true, true);
         boolean mtRoamingRetrySupported = false;
         ArrayList<LocationArea> locationAreas = new ArrayList<LocationArea>();
         LACImpl lac = new LACImpl(123);
         LocationAreaImpl la = new LocationAreaImpl(lac);
         locationAreas.add(la);
-        PagingAreaImpl pagingArea = new PagingAreaImpl(locationAreas);
-        EMLPPPriority callPriority = EMLPPPriority.getEMLPPPriority(0);
+        //PagingAreaImpl pagingArea = new PagingAreaImpl(locationAreas);
+        //EMLPPPriority callPriority = EMLPPPriority.getEMLPPPriority(0);
         boolean mtrfIndicator = false;
-        ISDNAddressString oldMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                "22225");
+        //ISDNAddressString oldMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        //       "22225");
 
         clientDialogCallHandling.addProvideRoamingNumberRequest(imsi, mscNumber, msisdn, lmsi, gsmBearerCapability,
                 networkSignalInfo, suppressionOfAnnouncement, gmscAddress, null, orInterrogation, null, null, ccbsCall, null,
@@ -2115,11 +2105,11 @@ public class Client extends EventTestHarness {
     }
 
     public void debug(String message) {
-        this.logger.debug(message);
+        logger.debug(message);
     }
 
     public void error(String message, Exception e) {
-        this.logger.error(message, e);
+        logger.error(message, e);
     }
 
 }

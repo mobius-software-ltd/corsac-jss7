@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 *
 */
 public class ReadyForSMResponseImpl extends SmsMessageImpl implements ReadyForSMResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ReadyForSMResponse";
+	public static final String _PrimitiveName = "ReadyForSMResponse";
 
     private MAPExtensionContainer extensionContainer;
 
@@ -119,7 +120,6 @@ public class ReadyForSMResponseImpl extends SmsMessageImpl implements ReadyForSM
         this.extensionContainer = null;
 
         AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
         while (true) {
             if (ais.available() == 0)
                 break;
@@ -143,8 +143,6 @@ public class ReadyForSMResponseImpl extends SmsMessageImpl implements ReadyForSM
             } else {
                 ais.advanceElement();
             }
-
-            num++;
         }
     }
 

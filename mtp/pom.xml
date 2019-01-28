@@ -3,13 +3,13 @@
 
 	<parent>
 		<artifactId>ss7-parent</artifactId>
-		<groupId>org.restcomm.protocols.ss7</groupId>
+		<groupId>com.mobius-software.telco.protocols.ss7</groupId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+	<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 	<artifactId>mtp-parent</artifactId>
-	<name>Restcomm jSS7 :: MTP :: Parent :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: MTP :: Parent :: ${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -20,27 +20,6 @@
 	<build>
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<plugins>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<groupId>org.mobicents.tools</groupId>
-				<version>
-					${restcomm.tools.mavenplugin.eclipse.version}
-				</version>
-				<inherited>false</inherited>
-				<executions />
-				<configuration>
-					<classpathExcludes>
-						<exclude>xml-apis:xml-apis</exclude>
-						<exclude>jtidy:jtidy</exclude>
-					</classpathExcludes>
-					<resolveTransitiveDependencies>
-						true
-					</resolveTransitiveDependencies>
-					<eclipseProjectName>
-						mtp
-					</eclipseProjectName>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

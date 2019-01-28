@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
 import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
@@ -36,10 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
  *
  */
 public class AlertingPatternCapImpl extends OctetStringBase implements AlertingPatternCap {
+	private static final long serialVersionUID = 1L;
 
-    private static final String ALERTING_PATTERN = "alertingPattern";
-
-    public AlertingPatternCapImpl() {
+	public AlertingPatternCapImpl() {
         super(3, 3, "AlertingPatternCap");
     }
 
@@ -90,25 +86,4 @@ public class AlertingPatternCapImpl extends OctetStringBase implements AlertingP
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<AlertingPatternCapImpl> ALERTING_PATTERN_CAP_XML = new XMLFormat<AlertingPatternCapImpl>(
-            AlertingPatternCapImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, AlertingPatternCapImpl alertingPattern)
-                throws XMLStreamException {
-            alertingPattern.setAlertingPattern(xml.get(ALERTING_PATTERN, AlertingPatternImpl.class));
-        }
-
-        @Override
-        public void write(AlertingPatternCapImpl alertingPattern, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            AlertingPattern ap = alertingPattern.getAlertingPattern();
-            if (ap != null)
-                xml.add((AlertingPatternImpl) ap, ALERTING_PATTERN, AlertingPatternImpl.class);
-        }
-    };
 }

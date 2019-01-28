@@ -33,8 +33,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
  */
 public class NationalLanguageSingleShiftIdentifierImpl extends Gsm7NationalLanguageIdentifierImpl implements
         NationalLanguageSingleShiftIdentifier {
+	private static final long serialVersionUID = 1L;
 
-    public NationalLanguageSingleShiftIdentifierImpl(NationalLanguageIdentifier nationalLanguageCode) {
+	public NationalLanguageSingleShiftIdentifierImpl(NationalLanguageIdentifier nationalLanguageCode) {
         super(nationalLanguageCode);
     }
 

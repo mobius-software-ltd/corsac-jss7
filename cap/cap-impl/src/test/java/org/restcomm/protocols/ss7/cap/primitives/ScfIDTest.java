@@ -52,7 +52,7 @@ public class ScfIDTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         ScfIDImpl elem = new ScfIDImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(Arrays.equals(elem.getData(), this.getDataInt()));
     }

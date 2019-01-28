@@ -27,17 +27,11 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingLevel;
 import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
@@ -71,7 +65,7 @@ public class AlertingPatternTest {
         byte[] data = new byte[] { (byte) 0x04, 0x01, 0x07 };
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         AlertingPatternImpl addNum = new AlertingPatternImpl();
         addNum.decodeAll(asn);
@@ -96,7 +90,7 @@ public class AlertingPatternTest {
         assertTrue(Arrays.equals(data, encodedData));
     }
 
-    @Test(groups = { "functional.serialize", "primitives" })
+    /*@Test(groups = { "functional.serialize", "primitives" })
     public void testSerialization() throws Exception {
         AlertingPatternImpl original = new AlertingPatternImpl(AlertingCategory.Category4);
 
@@ -145,5 +139,5 @@ public class AlertingPatternTest {
         assertEquals(copy.getAlertingLevel(), original.getAlertingLevel());
         assertEquals(copy, original);
         assertNull(copy.getAlertingCategory());
-    }
+    }*/
 }

@@ -86,7 +86,7 @@ public class RELTest extends DoubleTimers {
         ReleaseMessage rel = super.provider.getMessageFactory().createREL(1);
         CauseIndicators ci = super.provider.getParameterFactory().createCauseIndicators();
         ci.setCauseValue(0);
-        ci.setCodingStandard(ci._CODING_STANDARD_NATIONAL);
+        ci.setCodingStandard(CauseIndicators._CODING_STANDARD_NATIONAL);
         rel.setCauseIndicators(ci);
         return rel;
     }

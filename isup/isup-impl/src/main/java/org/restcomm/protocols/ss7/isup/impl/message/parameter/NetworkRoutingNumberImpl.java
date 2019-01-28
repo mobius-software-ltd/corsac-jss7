@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NetworkRoutingNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class NetworkRoutingNumberImpl extends AbstractNumber implements NetworkRoutingNumber {
+	private static final long serialVersionUID = 1L;
 
-    private int numberingPlanIndicator;
+	private int numberingPlanIndicator;
     private int natureOfAddressIndicator;
 
     public NetworkRoutingNumberImpl(String address) {

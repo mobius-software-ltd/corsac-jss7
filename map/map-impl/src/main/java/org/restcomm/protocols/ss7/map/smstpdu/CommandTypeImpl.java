@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.CommandTypeValue;
  *
  */
 public class CommandTypeImpl implements CommandType {
+	private static final long serialVersionUID = 1L;
 
-    private int code;
+	private int code;
 
     public CommandTypeImpl(int code) {
         this.code = code;

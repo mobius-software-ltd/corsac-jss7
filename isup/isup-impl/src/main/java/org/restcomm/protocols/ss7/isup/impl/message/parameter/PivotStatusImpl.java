@@ -33,7 +33,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Status;
  *
  */
 public class PivotStatusImpl extends AbstractISUPParameter implements PivotStatus {
-    private List<Status> statusList = new ArrayList<Status>();
+	private static final long serialVersionUID = 1L;
+
+	private List<Status> statusList = new ArrayList<Status>();
 
     public PivotStatusImpl() {
         // TODO Auto-generated constructor stub

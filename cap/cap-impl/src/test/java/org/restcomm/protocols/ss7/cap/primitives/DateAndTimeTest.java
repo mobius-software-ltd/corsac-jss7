@@ -50,7 +50,7 @@ public class DateAndTimeTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         DateAndTimeImpl elem = new DateAndTimeImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getYear(), 2011);
         assertEquals(elem.getMonth(), 12);

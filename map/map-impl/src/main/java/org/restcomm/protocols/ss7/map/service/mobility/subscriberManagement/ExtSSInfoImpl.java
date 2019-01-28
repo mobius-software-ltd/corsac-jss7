@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class ExtSSInfoImpl implements ExtSSInfo, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ExtSSInfo";
+	public static final String _PrimitiveName = "ExtSSInfo";
 
     protected static final int _TAG_forwardingInfo = 0;
     protected static final int _TAG_callBarringInfo = 1;

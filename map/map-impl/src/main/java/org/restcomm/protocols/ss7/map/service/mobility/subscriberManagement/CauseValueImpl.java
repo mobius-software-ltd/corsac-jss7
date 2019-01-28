@@ -31,8 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
  *
  */
 public class CauseValueImpl extends OctetStringLength1Base implements CauseValue {
+	private static final long serialVersionUID = 1L;
 
-    public CauseValueImpl() {
+	public CauseValueImpl() {
         super("CauseValue");
     }
 

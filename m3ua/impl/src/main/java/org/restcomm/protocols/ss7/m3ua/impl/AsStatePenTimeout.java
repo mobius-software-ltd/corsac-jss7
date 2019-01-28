@@ -22,11 +22,10 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import javolution.util.FastList;
-import javolution.util.FastSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSMState;
@@ -66,11 +65,8 @@ public class AsStatePenTimeout implements FSMStateEventHandler {
      * </p>
      */
     public void onEvent(FSMState state) {
-
-        if (logger.isEnabledFor(Priority.WARN)) {
-            logger.warn(String.format("PENDING timedout for As=%s", this.asImpl.getName()));
-        }
-
+        logger.warn(String.format("PENDING timedout for As=%s", this.asImpl.getName()));
+        
         // Clear the Pending Queue for this As
         this.asImpl.clearPendingQueue();
 
@@ -78,10 +74,9 @@ public class AsStatePenTimeout implements FSMStateEventHandler {
 
         // check if there are any ASP's who are INACTIVE, transition to
         // INACTIVE else DOWN
-        for (FastList.Node<Asp> n = this.asImpl.appServerProcs.head(), end = this.asImpl.appServerProcs.tail(); (n = n
-                .getNext()) != end;) {
-            AspImpl aspImpl = (AspImpl) n.getValue();
-
+        Iterator<Entry<String, Asp>> iterator=this.asImpl.appServerProcs.entrySet().iterator();
+        while(iterator.hasNext()) {
+            AspImpl aspImpl = (AspImpl) iterator.next().getValue();
             FSM aspLocalFSM = aspImpl.getLocalFSM();
 
             if (AspState.getState(aspLocalFSM.getState().getName()) == AspState.INACTIVE) {
@@ -107,9 +102,9 @@ public class AsStatePenTimeout implements FSMStateEventHandler {
         }
 
         // Now send MTP3 PAUSE
-        FastSet<AsStateListener> asStateListeners = this.asImpl.getAsStateListeners();
-        for (FastSet.Record r = asStateListeners.head(), end = asStateListeners.tail(); (r = r.getNext()) != end;) {
-            AsStateListener asAsStateListener = asStateListeners.valueOf(r);
+        Iterator<AsStateListener> asStateListeners = this.asImpl.getAsStateListeners().iterator();
+        while(asStateListeners.hasNext()) {
+            AsStateListener asAsStateListener = asStateListeners.next();
             try {
                 asAsStateListener.onAsInActive(this.asImpl);
             } catch (Exception e) {

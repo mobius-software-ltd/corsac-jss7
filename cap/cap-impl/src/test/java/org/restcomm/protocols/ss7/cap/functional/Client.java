@@ -26,6 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.cap.CAPDialogImpl;
@@ -67,19 +68,16 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPDialogSms;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCause;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
 import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.InitialDpGprsRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingResultImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ElapsedTimeImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSCauseImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.RPCauseImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
@@ -87,7 +85,6 @@ import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
@@ -143,8 +140,6 @@ public class Client extends EventTestHarness {
 
     // private FunctionalTestScenario step;
 
-    private long savedInvokeId;
-
     // private int dialogStep;
     // private String unexpected = "";
 
@@ -162,7 +157,7 @@ public class Client extends EventTestHarness {
         this.inapParameterFactory = this.capProvider.getINAPParameterFactory();
         this.isupParameterFactory = this.capProvider.getISUPParameterFactory();
 
-        this.capProvider.addCAPDialogListener(this);
+        this.capProvider.addCAPDialogListener(UUID.randomUUID(),this);
 
         this.capProvider.getCAPServiceCircuitSwitchedCall().addCAPServiceListener(this);
         this.capProvider.getCAPServiceGprs().addCAPServiceListener(this);
@@ -843,10 +838,10 @@ public class Client extends EventTestHarness {
 //    }
 
     public void debug(String message) {
-        this.logger.debug(message);
+        logger.debug(message);
     }
 
     public void error(String message, Exception e) {
-        this.logger.error(message, e);
+        logger.error(message, e);
     }
 }

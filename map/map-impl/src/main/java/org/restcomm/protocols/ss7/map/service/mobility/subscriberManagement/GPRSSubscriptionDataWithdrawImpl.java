@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 *
 */
 public class GPRSSubscriptionDataWithdrawImpl implements GPRSSubscriptionDataWithdraw, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "GPRSSubscriptionDataWithdraw";
+	public static final String _PrimitiveName = "GPRSSubscriptionDataWithdraw";
 
     private boolean allGPRSData;
     private ArrayList<Integer> contextIdList;

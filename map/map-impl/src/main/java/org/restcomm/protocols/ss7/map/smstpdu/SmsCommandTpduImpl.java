@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduType;
  *
  */
 public class SmsCommandTpduImpl extends SmsTpduImpl implements SmsCommandTpdu {
+	private static final long serialVersionUID = 1L;
 
-    private boolean userDataHeaderIndicator;
+	private boolean userDataHeaderIndicator;
     private boolean statusReportRequest;
     private int messageReference;
     private ProtocolIdentifier protocolIdentifier;
@@ -170,9 +171,16 @@ public class SmsCommandTpduImpl extends SmsTpduImpl implements SmsCommandTpdu {
         this.commandData.encode();
         this.commandDataLength = this.commandData.getEncodedData().length;
 
-        if (this.commandDataLength > _CommandDataLimit)
+        if (this.commandDataLength > _CommandDataLimit) {
+        	try {
+        		res.close();
+        	}
+        	catch(IOException ex) {
+        		
+        	}
             throw new MAPException("Command data field length may not increase " + _CommandDataLimit);
-
+        }
+        
         res.write(this.messageReference);
         res.write(this.protocolIdentifier.getCode());
         res.write(this.commandType.getCode());

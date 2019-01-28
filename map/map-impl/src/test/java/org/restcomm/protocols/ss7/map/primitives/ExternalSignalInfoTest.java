@@ -70,7 +70,7 @@ public class ExternalSignalInfoTest {
         byte[] data_ = new byte[] { 10, 20, 30, 40 };
 
         AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        asn.readTag();
 
         ExternalSignalInfoImpl extSignalInfo = new ExternalSignalInfoImpl();
         extSignalInfo.decodeAll(asn);

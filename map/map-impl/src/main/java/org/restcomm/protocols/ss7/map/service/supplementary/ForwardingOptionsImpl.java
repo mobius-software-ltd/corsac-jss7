@@ -41,7 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class ForwardingOptionsImpl implements ForwardingOptions, MAPAsnPrimitive {
-    private ForwardingReason forwardingReason;
+	private static final long serialVersionUID = 1L;
+
+	private ForwardingReason forwardingReason;
     private int code = 0;
 
     private static final int MASK_notificationForwarding = 0x80;

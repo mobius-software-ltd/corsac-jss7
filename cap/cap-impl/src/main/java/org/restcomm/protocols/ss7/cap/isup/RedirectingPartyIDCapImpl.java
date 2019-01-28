@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.isup;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,10 +44,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
  *
  */
 public class RedirectingPartyIDCapImpl implements RedirectingPartyIDCap, CAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "RedirectingPartyIDCap";
-
-    private static final String ISUP_REDIRECTING_NUMBER_XML = "isupRedirectingNumber";
+	public static final String _PrimitiveName = "RedirectingPartyIDCap";
 
     private byte[] data;
 
@@ -215,32 +211,4 @@ public class RedirectingPartyIDCapImpl implements RedirectingPartyIDCap, CAPAsnP
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<RedirectingPartyIDCapImpl> REDIRECTING_PARTY_ID_CAP_XML = new XMLFormat<RedirectingPartyIDCapImpl>(
-            RedirectingPartyIDCapImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, RedirectingPartyIDCapImpl redirectingPartyID)
-                throws XMLStreamException {
-            try {
-                redirectingPartyID.setRedirectingNumber(xml.get(ISUP_REDIRECTING_NUMBER_XML, RedirectingNumberImpl.class));
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-
-        @Override
-        public void write(RedirectingPartyIDCapImpl redirectingPartyID, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            try {
-                xml.add(((RedirectingNumberImpl) redirectingPartyID.getRedirectingNumber()), ISUP_REDIRECTING_NUMBER_XML,
-                        RedirectingNumberImpl.class);
-            } catch (CAPException e) {
-                throw new XMLStreamException(e);
-            }
-        }
-    };
 }

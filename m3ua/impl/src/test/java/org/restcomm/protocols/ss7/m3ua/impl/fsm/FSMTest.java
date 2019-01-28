@@ -75,8 +75,7 @@ public class FSMTest {
     }
 
     @AfterMethod
-    public void tearDown() throws Exception {
-
+    public void tearDown() throws Exception {    	
     }
 
     @Test
@@ -126,7 +125,7 @@ public class FSMTest {
      */
     @Test
     public void testNoTransitionHandler() throws Exception {
-        FSM fsm = new FSM("test");
+    	FSM fsm = new FSM("test");
 
         fsm.createState("STATE1");
         fsm.createState("STATE2");
@@ -142,7 +141,7 @@ public class FSMTest {
         fsm.signal("GoToSTATE2");
 
         assertTrue(transitionHandlerCalled);
-        assertEquals("STATE1", fsm.getState().getName());
+        assertEquals("STATE1", fsm.getState().getName());               
     }
 
     @Test
@@ -257,10 +256,8 @@ public class FSMTest {
 
     class AsState1Exit implements FSMStateEventHandler {
 
-        private FSM fsm;
-
         public AsState1Exit(FSM fsm) {
-            this.fsm = fsm;
+            //this.fsm = fsm;
         }
 
         public void onEvent(FSMState state) {
@@ -270,10 +267,8 @@ public class FSMTest {
 
     class AsState2Timeout implements FSMStateEventHandler {
 
-        private FSM fsm;
-
         public AsState2Timeout(FSM fsm) {
-            this.fsm = fsm;
+            //this.fsm = fsm;
         }
 
         public void onEvent(FSMState state) {
@@ -283,10 +278,8 @@ public class FSMTest {
 
     class AsState2Enter implements FSMStateEventHandler {
 
-        private FSM fsm;
-
         public AsState2Enter(FSM fsm) {
-            this.fsm = fsm;
+            //this.fsm = fsm;
         }
 
         public void onEvent(FSMState state) {

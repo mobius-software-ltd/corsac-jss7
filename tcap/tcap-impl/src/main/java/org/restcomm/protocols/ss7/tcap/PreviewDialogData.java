@@ -27,7 +27,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.InvokeImpl;
@@ -39,8 +38,6 @@ import org.restcomm.protocols.ss7.tcap.asn.InvokeImpl;
  */
 public class PreviewDialogData {
 
-    private static final Logger logger = Logger.getLogger(PreviewDialogData.class);
-
     private ApplicationContextName lastACN;
     private InvokeImpl[] operationsSentA;
     private InvokeImpl[] operationsSentB;
@@ -51,7 +48,7 @@ public class PreviewDialogData {
     private PreviewDialogDataKey prevewDialogDataKey2;
 
     private ReentrantLock dialogLock = new ReentrantLock();
-    private Future idleTimerFuture;
+    private Future<?> idleTimerFuture;
     private ScheduledExecutorService executor;
     private TCAPProviderImpl provider;
     private long idleTaskTimeout;
@@ -62,7 +59,7 @@ public class PreviewDialogData {
         this.dialogId = dialogId;
         TCAPStack stack = provider.getStack();
         this.idleTaskTimeout = stack.getDialogIdleTimeout();
-        this.executor = provider._EXECUTOR;
+        this.executor = provider.service;
     }
 
     public ApplicationContextName getLastACN() {
@@ -126,7 +123,6 @@ public class PreviewDialogData {
             }
 
             IdleTimerTask t = new IdleTimerTask();
-            t.pdd = this;
             this.idleTimerFuture = this.executor.schedule(t, this.idleTaskTimeout, TimeUnit.MILLISECONDS);
 
         } finally {
@@ -159,8 +155,6 @@ public class PreviewDialogData {
     }
 
     private class IdleTimerTask implements Runnable {
-        PreviewDialogData pdd;
-
         public void run() {
             try {
                 dialogLock.lock();

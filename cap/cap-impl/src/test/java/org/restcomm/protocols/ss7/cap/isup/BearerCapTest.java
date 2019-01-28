@@ -22,22 +22,14 @@
 
 package org.restcomm.protocols.ss7.cap.isup;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.isup.BearerCapImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.testng.annotations.Test;
 
 /**
@@ -61,11 +53,11 @@ public class BearerCapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         BearerCapImpl elem = new BearerCapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
-        UserServiceInformation usi = elem.getUserServiceInformation();
-
+        //UserServiceInformation usi = elem.getUserServiceInformation();
+        
         // TODO: implement UserServiceInformation (ISUP) and then implement CAP unit tests for UserServiceInformation usi
 
         // assertEquals(ci.getCodingStandard(), 0);
@@ -88,7 +80,7 @@ public class BearerCapTest {
         // assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         UserServiceInformationImpl original0 = new UserServiceInformationImpl();
@@ -124,5 +116,5 @@ public class BearerCapTest {
         assertEquals(copy.getUserServiceInformation().getInformationTransferRate(), original.getUserServiceInformation()
                 .getInformationTransferRate());
 
-    }
+    }*/
 }

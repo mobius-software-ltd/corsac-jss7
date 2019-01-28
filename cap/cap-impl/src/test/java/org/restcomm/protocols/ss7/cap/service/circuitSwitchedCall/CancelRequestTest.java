@@ -27,12 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -116,7 +111,7 @@ public class CancelRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerializaion() throws Exception {
         CancelRequestImpl original = new CancelRequestImpl(11000);
         original.setInvokeId(24);
@@ -192,5 +187,5 @@ public class CancelRequestTest {
 
         assertEquals(copy.getInvokeId(), original.getInvokeId());
         assertEquals(copy.getAllRequests(), original.getAllRequests());
-    }
+    }*/
 }

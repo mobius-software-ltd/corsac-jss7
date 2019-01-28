@@ -23,9 +23,6 @@ package org.restcomm.protocols.ss7.cap.gap;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -43,12 +40,10 @@ import org.restcomm.protocols.ss7.cap.primitives.SequenceBase;
  * @author <a href="mailto:bartosz.krok@pro-ids.com"> Bartosz Krok (ProIDS sp. z o.o.)</a>
  */
 public class CallingAddressAndServiceImpl extends SequenceBase implements CallingAddressAndService {
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_callingAddressValue = 0;
+	public static final int _ID_callingAddressValue = 0;
     public static final int _ID_serviceKey = 1;
-
-    private static final String CALLING_ADDRESS_VALUE = "callingAddressValue";
-    private static final String SERVICE_KEY = "serviceKey";
 
     private Digits callingAddressValue;
     private int serviceKey;
@@ -140,26 +135,6 @@ public class CallingAddressAndServiceImpl extends SequenceBase implements Callin
             throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
         }
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CallingAddressAndServiceImpl> CALLING_ADDRESS_AND_SERVICE_XML = new XMLFormat<CallingAddressAndServiceImpl>(CallingAddressAndServiceImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CallingAddressAndServiceImpl callingAddressAndServiceImpl) throws XMLStreamException {
-
-            callingAddressAndServiceImpl.callingAddressValue = xml.get(CALLING_ADDRESS_VALUE, DigitsImpl.class);
-            callingAddressAndServiceImpl.serviceKey = xml.get(SERVICE_KEY, Integer.class);
-        }
-
-        @Override
-        public void write(CallingAddressAndServiceImpl callingAddressAndServiceImpl, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-
-            xml.add((DigitsImpl) callingAddressAndServiceImpl.getCallingAddressValue(), CALLING_ADDRESS_VALUE, DigitsImpl.class);
-            xml.add((Integer) callingAddressAndServiceImpl.getServiceKey(), SERVICE_KEY, Integer.class);
-        }
-    };
 
     @Override
     public String toString() {

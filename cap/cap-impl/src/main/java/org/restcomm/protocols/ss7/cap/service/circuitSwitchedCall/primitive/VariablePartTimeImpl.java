@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTime;
 import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
 
@@ -34,11 +31,9 @@ import org.restcomm.protocols.ss7.cap.primitives.OctetStringBase;
  *
  */
 public class VariablePartTimeImpl extends OctetStringBase implements VariablePartTime {
+	private static final long serialVersionUID = 1L;
 
-    private static final String HOUR = "hour";
-    private static final String MINUTE = "minute";
-
-    public VariablePartTimeImpl() {
+	public VariablePartTimeImpl() {
         super(2, 2, "VariablePartDate");
     }
 
@@ -122,27 +117,4 @@ public class VariablePartTimeImpl extends OctetStringBase implements VariablePar
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<VariablePartTimeImpl> VARIABLE_PART_TIME_XML = new XMLFormat<VariablePartTimeImpl>(
-            VariablePartTimeImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, VariablePartTimeImpl variablePartTime)
-                throws XMLStreamException {
-            variablePartTime.data = new byte[2];
-
-            variablePartTime.setHour(xml.getAttribute(HOUR, 0));
-            variablePartTime.setMinute(xml.getAttribute(MINUTE, 0));
-        }
-
-        @Override
-        public void write(VariablePartTimeImpl variablePartTime, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            xml.setAttribute(HOUR, variablePartTime.getHour());
-            xml.setAttribute(MINUTE, variablePartTime.getMinute());
-        }
-    };
 }

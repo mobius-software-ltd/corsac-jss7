@@ -25,7 +25,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import java.io.IOException;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CLOSED;
 import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CONNECTION_INITIATED;
@@ -44,12 +44,11 @@ public abstract class SccpConnectionBaseImpl {
     protected final Logger logger;
     protected SccpStackImpl stack;
     protected SccpRoutingControl sccpRoutingControl;
-    protected ReentrantLock connectionLock = new ReentrantLock();
     protected Integer remoteSsn;
     protected Integer remoteDpc;
     protected boolean lastMoreDataSent;
 
-    private SccpConnectionState state;
+    private AtomicReference<SccpConnectionState> state=new AtomicReference<SccpConnectionState>();
     private int sls;
     private int localSsn;
     private ProtocolClass protocolClass;
@@ -63,7 +62,7 @@ public abstract class SccpConnectionBaseImpl {
         this.localSsn = localSsn;
         this.protocolClass = protocol;
         this.localReference = localReference;
-        this.state = NEW;
+        state.set(NEW);
         this.logger = Logger.getLogger(SccpConnectionBaseImpl.class.getCanonicalName() + "-" + localReference + "-" + stack.name);
     }
 
@@ -150,45 +149,44 @@ public abstract class SccpConnectionBaseImpl {
     }
 
     public void setState(SccpConnectionState state) {
-        try {
-            connectionLock.lock();
-            if (!(this.state == NEW && state == CONNECTION_INITIATED
-                    || this.state == NEW && state == CR_RECEIVED
-                    || this.state == NEW && state == CLOSED
-                    || this.state == CR_RECEIVED && state == ESTABLISHED
-                    || this.state == CR_RECEIVED && state == CLOSED
-                    || this.state == CONNECTION_INITIATED && state == ESTABLISHED
-                    || this.state == CONNECTION_INITIATED && state == CLOSED
-                    || this.state == ESTABLISHED && state == ESTABLISHED
-                    || this.state == ESTABLISHED && state == CLOSED
-                    || this.state == ESTABLISHED && state == RSR_SENT
-                    || this.state == ESTABLISHED && state == RSR_RECEIVED
-                    || this.state == ESTABLISHED && state == ESTABLISHED_SEND_WINDOW_EXHAUSTED
-                    || this.state == ESTABLISHED && state == RSR_RECEIVED_WILL_PROPAGATE
-                    || this.state == ESTABLISHED && state == DISCONNECT_INITIATED
-                    || this.state == DISCONNECT_INITIATED && state == DISCONNECT_INITIATED // repeated RLSD
-                    || this.state == DISCONNECT_INITIATED && state == CLOSED
-                    || this.state == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == ESTABLISHED
-                    || this.state == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == ESTABLISHED_SEND_WINDOW_EXHAUSTED
-                    || this.state == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == RSR_RECEIVED
-                    || this.state == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == CLOSED
-                    || this.state == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == DISCONNECT_INITIATED
-                    || this.state == RSR_SENT && state == ESTABLISHED
-                    || this.state == RSR_SENT && state == CLOSED
-                    || this.state == RSR_RECEIVED && state == ESTABLISHED
-                    || this.state == RSR_RECEIVED_WILL_PROPAGATE && state == RSR_PROPAGATED_VIA_COUPLED
-                    || this.state == RSR_PROPAGATED_VIA_COUPLED && state == ESTABLISHED
-                    || this.state == RSR_RECEIVED && state == CLOSED
+    	SccpConnectionState oldState;
+    	do {
+        	oldState=this.state.get();
+            if (!(oldState == NEW && state == CONNECTION_INITIATED
+                    || oldState == NEW && state == CR_RECEIVED
+                    || oldState == NEW && state == CLOSED
+                    || oldState == CR_RECEIVED && state == ESTABLISHED
+                    || oldState == CR_RECEIVED && state == CLOSED
+                    || oldState == CONNECTION_INITIATED && state == ESTABLISHED
+                    || oldState == CONNECTION_INITIATED && state == CLOSED
+                    || oldState == ESTABLISHED && state == ESTABLISHED
+                    || oldState == ESTABLISHED && state == CLOSED
+                    || oldState == ESTABLISHED && state == RSR_SENT
+                    || oldState == ESTABLISHED && state == RSR_RECEIVED
+                    || oldState == ESTABLISHED && state == ESTABLISHED_SEND_WINDOW_EXHAUSTED
+                    || oldState == ESTABLISHED && state == RSR_RECEIVED_WILL_PROPAGATE
+                    || oldState == ESTABLISHED && state == DISCONNECT_INITIATED
+                    || oldState == DISCONNECT_INITIATED && state == DISCONNECT_INITIATED // repeated RLSD
+                    || oldState == DISCONNECT_INITIATED && state == CLOSED
+                    || oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == ESTABLISHED
+                    || oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == ESTABLISHED_SEND_WINDOW_EXHAUSTED
+                    || oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == RSR_RECEIVED
+                    || oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == CLOSED
+                    || oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && state == DISCONNECT_INITIATED
+                    || oldState == RSR_SENT && state == ESTABLISHED
+                    || oldState == RSR_SENT && state == CLOSED
+                    || oldState == RSR_RECEIVED && state == ESTABLISHED
+                    || oldState == RSR_RECEIVED_WILL_PROPAGATE && state == RSR_PROPAGATED_VIA_COUPLED
+                    || oldState == RSR_PROPAGATED_VIA_COUPLED && state == ESTABLISHED
+                    || oldState == RSR_RECEIVED && state == CLOSED
                     // when error happens during message routing connection becomes immediately closed
-                    || this.state == CLOSED && state == CLOSED
+                    || oldState == CLOSED && state == CLOSED
             )) {
-                logger.error(String.format("state change error: from %s to %s", this.state, state));
-                throw new IllegalStateException(String.format("state change error: from %s to %s", this.state, state));
+                logger.error(String.format("state change error: from %s to %s", oldState, state));
+                throw new IllegalStateException(String.format("state change error: from %s to %s", oldState, state));
             }
-            this.state = state;
-        } finally {
-            connectionLock.unlock();
-        }
+    	}
+    	while(!this.state.compareAndSet(oldState, state));
     }
 
     protected void checkLocalListener() throws IOException {
@@ -262,12 +260,12 @@ public abstract class SccpConnectionBaseImpl {
         rlsd.setReleaseCause(reason);
         rlsd.setSourceLocalReferenceNumber(getLocalReference());
         rlsd.setUserData(data);
-        SccpConnectionState prevState = state;
+        SccpConnectionState prevState = state.get();
         try {
             setState(DISCONNECT_INITIATED);
             sendMessage(rlsd);
         } catch (Exception e) {
-            state = prevState;
+            state.set(prevState);
             throw e;
         }
     }
@@ -308,13 +306,6 @@ public abstract class SccpConnectionBaseImpl {
         setState(SccpConnectionState.ESTABLISHED);
     }
 
-    protected void setConnectionLock(ReentrantLock lock) {
-        if (getState() != NEW) {
-            throw new IllegalStateException();
-        }
-        this.connectionLock = lock;
-    }
-
     public Integer getRemoteDpc() {
         return remoteDpc;
     }
@@ -349,7 +340,7 @@ public abstract class SccpConnectionBaseImpl {
     }
 
     public SccpConnectionState getState() {
-        return state;
+        return state.get();
     }
 
     public ProtocolClass getProtocolClass() {
@@ -357,11 +348,12 @@ public abstract class SccpConnectionBaseImpl {
     }
 
     public boolean isAvailable() {
-        return state == ESTABLISHED || state == ESTABLISHED_SEND_WINDOW_EXHAUSTED;
+    	SccpConnectionState currState=state.get();
+        return currState == ESTABLISHED || currState == ESTABLISHED_SEND_WINDOW_EXHAUSTED;
     }
 
     protected boolean isCanSendData() {
-        return state == ESTABLISHED;
+        return state.get() == ESTABLISHED;
     }
 
     public Credit getSendCredit() {

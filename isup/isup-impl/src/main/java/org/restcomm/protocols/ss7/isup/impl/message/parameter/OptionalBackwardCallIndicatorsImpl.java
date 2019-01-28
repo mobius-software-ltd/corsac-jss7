@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OptionalBackwardCallInd
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class OptionalBackwardCallIndicatorsImpl extends AbstractISUPParameter implements OptionalBackwardCallIndicators {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TURN_ON = 1;
+	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
     private boolean inbandInformationIndicator;

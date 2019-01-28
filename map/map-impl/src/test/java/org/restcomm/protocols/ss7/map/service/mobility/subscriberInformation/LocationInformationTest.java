@@ -26,27 +26,19 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
 import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationEPSImpl;
@@ -235,7 +227,7 @@ public class LocationInformationTest {
         // boolean saiPresent, LocationInformationEPS locationInformationEPS, UserCSGInformation userCSGInformation
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         ISDNAddressString vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
@@ -301,6 +293,5 @@ public class LocationInformationTest {
         assertEquals((int) copy.getLocationInformationEPS().getAgeOfLocationInformation(), (int) original
                 .getLocationInformationEPS().getAgeOfLocationInformation());
         assertEquals(copy.getUserCSGInformation().getCSGId().getData(), original.getUserCSGInformation().getCSGId().getData());
-    }
-
+    }*/
 }

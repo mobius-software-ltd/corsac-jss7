@@ -45,7 +45,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class ResetCircuitMessageImpl extends ISUPMessageImpl implements ResetCircuitMessage {
-    // reset indication I think.
+	private static final long serialVersionUID = 1L;
+
+	// reset indication I think.
     public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.ResetCircuit);
 
     private static final int _MANDATORY_VAR_COUNT = 0;
@@ -98,7 +100,7 @@ public class ResetCircuitMessageImpl extends ISUPMessageImpl implements ResetCir
      */
 
     public MessageType getMessageType() {
-        return this._MESSAGE_TYPE;
+        return _MESSAGE_TYPE;
     }
 
     /*

@@ -27,12 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -95,7 +90,7 @@ public class CollectedInfoTest {
         // Boolean voiceBack
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         CollectedDigitsImpl elem = new CollectedDigitsImpl(null, 31, null, null, null, null, null, null, null, null, null);
@@ -118,5 +113,5 @@ public class CollectedInfoTest {
         CollectedInfoImpl copy = reader.read("collectedInfo", CollectedInfoImpl.class);
 
         assertEquals(copy.getCollectedDigits().getMaximumNbOfDigits(), 31);
-    }
+    }*/
 }

@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  *
  */
 public class MessageTypeImpl extends AbstractISUPParameter implements MessageType {
+	private static final long serialVersionUID = 1L;
 
-    // we even cant use -1, since it may be avlid value, ech, those binary protocols.
+	// we even cant use -1, since it may be avlid value, ech, those binary protocols.
     private MessageName messageName;
 
 //    public MessageTypeImpl(byte[] code) throws ParameterException {

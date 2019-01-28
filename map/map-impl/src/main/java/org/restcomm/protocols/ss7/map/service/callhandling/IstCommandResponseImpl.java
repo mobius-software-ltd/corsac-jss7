@@ -43,8 +43,9 @@ import java.io.IOException;
  *
  */
 public class IstCommandResponseImpl extends CallHandlingMessageImpl implements IstCommandResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "IstCommandResponse";
+	public static final String _PrimitiveName = "IstCommandResponse";
 
     private MAPExtensionContainer extensionContainer;
 

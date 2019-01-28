@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
  *
  */
 public class AlertServiceCentreRequestImpl extends SmsMessageImpl implements AlertServiceCentreRequest {
+	private static final long serialVersionUID = 1L;
 
-    private ISDNAddressString msisdn;
+	private ISDNAddressString msisdn;
     private AddressString serviceCentreAddress;
     private int operationCode;
 

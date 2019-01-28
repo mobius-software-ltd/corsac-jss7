@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.sccp.impl.mgmt.ssp;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.Util;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.RemoteSubSystemImpl;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
@@ -37,7 +36,6 @@ import org.restcomm.protocols.ss7.sccp.impl.mgmt.Mtp3PrimitiveMessageType;
 import org.restcomm.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessage;
 import org.restcomm.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessageType;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.ss7ext.Ss7ExtInterface;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -69,22 +67,18 @@ public class SSPTest extends SccpHarness {
     }
 
     protected void createStack1() {
-        sccpStack1 = createStack(sccpStack1Name, null);
+        sccpStack1 = createStack(sccpStack1Name);
         sccpProvider1 = sccpStack1.getSccpProvider();
     }
 
     protected void createStack2() {
-        sccpStack2 = createStack(sccpStack2Name, null);
+        sccpStack2 = createStack(sccpStack2Name);
         sccpProvider2 = sccpStack2.getSccpProvider();
     }
 
     @Override
-    protected SccpStackImpl createStack(String name, Ss7ExtInterface ss7ExtInterface) {
-        SccpStackImpl stack = new SccpStackImplProxy(name, ss7ExtInterface);
-        final String dir = Util.getTmpTestDir();
-        if (dir != null) {
-            stack.setPersistDir(dir);
-        }
+    protected SccpStackImpl createStack(String name) {
+        SccpStackImpl stack = new SccpStackImplProxy(name);        
         return stack;
     }
 
@@ -355,8 +349,7 @@ public class SSPTest extends SccpHarness {
         a2 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), 8);
 
         User u1 = new User(sccpStack1.getSccpProvider(), a1, a2, getSSN());
-        User u2 = new User(sccpStack2.getSccpProvider(), a2, a1, getSSN());
-
+        
         sccpStack1.setSstTimerDuration_Min(5000);
         sccpStack1.setSstTimerDuration_IncreaseFactor(1);
 
@@ -392,8 +385,7 @@ public class SSPTest extends SccpHarness {
         a2 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), 8);
 
         User u1 = new User(sccpStack1.getSccpProvider(), a1, a2, getSSN());
-        User u2 = new User(sccpStack2.getSccpProvider(), a2, a1, getSSN());
-
+        
         sccpStack1.setSstTimerDuration_Min(5000);
         sccpStack1.setSstTimerDuration_IncreaseFactor(1);
 

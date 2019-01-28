@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
  *
  */
 public class DataCodingSchemeImpl implements DataCodingScheme {
+	private static final long serialVersionUID = 1L;
 
-    private int code;
+	private int code;
 
     public DataCodingSchemeImpl(int code) {
         this.code = code;
@@ -73,6 +74,8 @@ public class DataCodingSchemeImpl implements DataCodingScheme {
                 this.code = 0xF0 | (characterSet == CharacterSet.GSM8 ? 0x04 : 0)
                         | (messageClass != null ? (messageClass.getCode()) : 0);
                 break;
+			default:
+				break;
         }
     }
 

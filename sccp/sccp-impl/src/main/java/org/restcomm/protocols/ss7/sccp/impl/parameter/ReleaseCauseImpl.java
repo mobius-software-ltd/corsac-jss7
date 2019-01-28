@@ -33,7 +33,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ReleaseCauseImpl extends AbstractParameter  implements ReleaseCause {
-    private ReleaseCauseValue value;
+	private static final long serialVersionUID = 1L;
+	
+	private ReleaseCauseValue value;
     private int digValue;
 
     public ReleaseCauseImpl() {

@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
 *
 */
 public class EraseSSResponseImpl extends SupplementaryMessageImpl implements EraseSSResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EraseSSResponse";
+	public static final String _PrimitiveName = "EraseSSResponse";
 
     private SSInfo ssInfo;
 

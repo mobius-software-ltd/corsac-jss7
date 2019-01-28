@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  *
  */
 public class ResetRequestImpl extends MobilityMessageImpl implements ResetRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "ResetRequest";
+	public static final String _PrimitiveName = "ResetRequest";
 
     private NetworkResource networkResource;
     private ISDNAddressString hlrNumber;
@@ -147,7 +148,6 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
         this.hlrList = null;
 
         AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
         while (true) {
             if (ais.available() == 0) {
                 break;
@@ -209,8 +209,6 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
                 ais.advanceElement();
                 break;
             }
-
-            num++;
         }
 
         if (this.hlrNumber == null)

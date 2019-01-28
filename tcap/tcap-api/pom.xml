@@ -3,13 +3,13 @@
 
 	<parent>
 		<artifactId>tcap-parent</artifactId>
-		<groupId>org.restcomm.protocols.ss7.tcap</groupId>
+		<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>tcap-api</artifactId>
 
-	<name>Restcomm jSS7 :: TCAP :: Api :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: TCAP :: Api :: ${project.artifactId}</name>
 
 	<dependencies>
 		<!--
@@ -22,11 +22,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.statistics</groupId>
-			<artifactId>statistics-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 			<artifactId>sccp-api</artifactId>
 		</dependency>
 		<dependency>

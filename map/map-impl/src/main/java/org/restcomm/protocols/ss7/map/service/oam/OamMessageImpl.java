@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public abstract class OamMessageImpl extends MessageImpl implements OamMessage, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public MAPDialogOam getMAPDialog() {
+	public MAPDialogOam getMAPDialog() {
         MAPDialog mapDialog = super.getMAPDialog();
         return (MAPDialogOam) mapDialog;
     }

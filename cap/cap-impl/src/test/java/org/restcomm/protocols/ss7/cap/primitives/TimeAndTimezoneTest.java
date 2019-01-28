@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.primitives;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -59,7 +54,7 @@ public class TimeAndTimezoneTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         TimeAndTimezoneImpl elem = new TimeAndTimezoneImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getYear(), 2011);
         assertEquals(elem.getMonth(), 12);
@@ -72,7 +67,7 @@ public class TimeAndTimezoneTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new TimeAndTimezoneImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getYear(), 2011);
         assertEquals(elem.getMonth(), 12);
@@ -97,7 +92,7 @@ public class TimeAndTimezoneTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         TimeAndTimezoneImpl original = new TimeAndTimezoneImpl(2011, 12, 30, 10, 7, 18, 32);
@@ -126,6 +121,6 @@ public class TimeAndTimezoneTest {
         assertEquals(copy.getMinute(), original.getMinute());
         assertEquals(copy.getSecond(), original.getSecond());
         assertEquals(copy.getTimeZone(), original.getTimeZone());
-
-    }
+    }*/
+    
 }

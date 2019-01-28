@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaMessageClass;
  *
  */
 public class CBSDataCodingSchemeImpl implements CBSDataCodingScheme {
-
-    private int code;
+	private static final long serialVersionUID = 1L;
+	
+	private int code;
 
     public CBSDataCodingSchemeImpl(int code) {
         this.code = code;
@@ -157,6 +158,8 @@ public class CBSDataCodingSchemeImpl implements CBSDataCodingScheme {
                     return CharacterSet.GSM8;
                 else
                     return CharacterSet.GSM7;
+			default:
+				break;
         }
 
         return null;
@@ -173,6 +176,8 @@ public class CBSDataCodingSchemeImpl implements CBSDataCodingScheme {
             case MessageWithUserDataHeader:
             case DataCodingMessageClass:
                 return DataCodingSchemaMessageClass.getInstance(code & 0x03);
+			default:
+				break;
         }
 
         return null;

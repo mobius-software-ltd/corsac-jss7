@@ -18,8 +18,9 @@ import java.io.IOException;
  * @author eva ogallar
  */
 public class IpSmGwGuidanceImpl  extends SequenceBase implements IpSmGwGuidance {
+	private static final long serialVersionUID = 1L;
 
-    public static final String PRIMITIVE_NAME = "IpSmGwGuidance";
+	public static final String PRIMITIVE_NAME = "IpSmGwGuidance";
 
     private int minimumDeliveryTimeValue;
     private int recommendedDeliveryTimeValue;

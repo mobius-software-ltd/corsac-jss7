@@ -49,8 +49,9 @@ import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
  *
  */
 public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddressString {
+	private static final long serialVersionUID = 1L;
 
-    public SMSAddressStringImpl() {
+	public SMSAddressStringImpl() {
     }
 
     public SMSAddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {

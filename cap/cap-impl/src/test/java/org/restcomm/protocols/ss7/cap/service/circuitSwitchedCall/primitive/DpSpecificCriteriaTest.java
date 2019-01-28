@@ -26,13 +26,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -126,7 +121,7 @@ public class DpSpecificCriteriaTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         DpSpecificCriteriaImpl original = new DpSpecificCriteriaImpl(1000);
@@ -202,5 +197,5 @@ public class DpSpecificCriteriaTest {
         assertNull(copy.getMidCallControlInfo());
         assertEquals(copy.getDpSpecificCriteriaAlt().getChangeOfPositionControlInfo().get(0).isInterSystemHandOver(), original.getDpSpecificCriteriaAlt()
                 .getChangeOfPositionControlInfo().get(0).isInterSystemHandOver());
-    }
+    }*/
 }

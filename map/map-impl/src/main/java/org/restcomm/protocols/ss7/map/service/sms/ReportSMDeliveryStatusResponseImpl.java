@@ -45,8 +45,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class ReportSMDeliveryStatusResponseImpl extends SmsMessageImpl implements ReportSMDeliveryStatusResponse {
+	private static final long serialVersionUID = 1L;
 
-    private ISDNAddressString storedMSISDN;
+	private ISDNAddressString storedMSISDN;
     private MAPExtensionContainer extensionContainer;
 
     private long mapProtocolVersion;

@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.cap.functional;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
@@ -60,10 +61,6 @@ public class Server extends EventTestHarness {
 
     private static Logger logger = Logger.getLogger(Server.class);
 
-    private CAPFunctionalTest runningTestCase;
-    private SccpAddress thisAddress;
-    private SccpAddress remoteAddress;
-
     protected CAPStack capStack;
     protected CAPProvider capProvider;
 
@@ -87,9 +84,6 @@ public class Server extends EventTestHarness {
     Server(CAPStack capStack, CAPFunctionalTest runningTestCase, SccpAddress thisAddress, SccpAddress remoteAddress) {
         super(logger);
         this.capStack = capStack;
-        this.runningTestCase = runningTestCase;
-        this.thisAddress = thisAddress;
-        this.remoteAddress = remoteAddress;
         this.capProvider = this.capStack.getCAPProvider();
 
         this.capParameterFactory = this.capProvider.getCAPParameterFactory();
@@ -98,7 +92,7 @@ public class Server extends EventTestHarness {
         this.inapParameterFactory = this.capProvider.getINAPParameterFactory();
         this.isupParameterFactory = this.capProvider.getISUPParameterFactory();
 
-        this.capProvider.addCAPDialogListener(this);
+        this.capProvider.addCAPDialogListener(UUID.randomUUID(),this);
         this.capProvider.getCAPServiceCircuitSwitchedCall().addCAPServiceListener(this);
         this.capProvider.getCAPServiceGprs().addCAPServiceListener(this);
         this.capProvider.getCAPServiceSms().addCAPServiceListener(this);
@@ -160,10 +154,10 @@ public class Server extends EventTestHarness {
     }
 
     public void debug(String message) {
-        this.logger.debug(message);
+        logger.debug(message);
     }
 
     public void error(String message, Exception e) {
-        this.logger.error(message, e);
+        logger.error(message, e);
     }
 }

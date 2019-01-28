@@ -62,7 +62,9 @@ import java.util.ArrayList;
  * Created by vsubbotin on 25/05/16.
  */
 public class CAMELSubscriptionInfoImpl extends SequenceBase implements CAMELSubscriptionInfo {
-    private static final int _TAG_O_CSI = 0;
+	private static final long serialVersionUID = 1L;
+
+	private static final int _TAG_O_CSI = 0;
     private static final int _TAG_O_BSCM_CAMEL_TDP_CRITERIA_LIST = 1;
     private static final int _TAG_D_CSI = 2;
     private static final int _TAG_T_CSI = 3;

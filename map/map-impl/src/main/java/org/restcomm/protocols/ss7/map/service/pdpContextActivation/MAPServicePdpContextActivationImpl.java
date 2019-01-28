@@ -118,6 +118,8 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
             }
+		default:
+			break;
         }
 
         return new ServingCheckDataImpl(ServingCheckResult.AC_NotServing);
@@ -142,7 +144,7 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
         if (ocValue == null)
             new MAPParsingComponentException("", MAPParsingComponentExceptionReason.UnrecognizedOperation);
         MAPApplicationContextName acn = mapDialog.getApplicationContext().getApplicationContextName();
-        int vers = mapDialog.getApplicationContext().getApplicationContextVersion().getVersion();
+        mapDialog.getApplicationContext().getApplicationContextVersion().getVersion();
         int ocValueInt = (int) (long) ocValue;
 
         switch (ocValueInt) {

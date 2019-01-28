@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class ChargeInformationMessageImpl extends ISUPMessageImpl implements ChargeInformationMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.ChargeInformation);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.ChargeInformation);
 
     /**
      *

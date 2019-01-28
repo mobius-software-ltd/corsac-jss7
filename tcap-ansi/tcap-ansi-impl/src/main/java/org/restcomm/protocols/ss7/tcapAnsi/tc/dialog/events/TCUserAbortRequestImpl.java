@@ -38,8 +38,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortReque
  *
  */
 public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserAbortRequest {
+	private static final long serialVersionUID = 1L;
 
-    // fields
+	// fields
     private ApplicationContext applicationContextName;
     private UserInformation userInformation;
     private SecurityContext securityContext;

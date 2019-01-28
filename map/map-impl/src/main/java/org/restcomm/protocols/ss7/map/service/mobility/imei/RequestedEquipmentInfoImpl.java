@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
  *
  */
 public class RequestedEquipmentInfoImpl extends BitStringBase implements RequestedEquipmentInfo {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "RequestedEquipmentInfo";
+	public static final String _PrimitiveName = "RequestedEquipmentInfo";
 
     private static final int _INDEX_EQUIPMENT_STATUS = 0;
     private static final int _INDEX_BMUEF = 1;

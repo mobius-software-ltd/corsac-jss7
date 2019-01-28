@@ -29,8 +29,6 @@
  */
 package org.restcomm.protocols.ss7.isup.util;
 
-import org.restcomm.protocols.ss7.isup.impl.message.ISUPMessageFactoryImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFactoryImpl;
 
 /**
  * Start time:16:56:29 2009-07-17<br>
@@ -40,9 +38,6 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFacto
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ISUPUtility {
-
-    private static final ISUPParameterFactoryImpl parameterFactory = new ISUPParameterFactoryImpl();
-    private static final ISUPMessageFactoryImpl messageFactory = new ISUPMessageFactoryImpl(parameterFactory);
 
     public static String toHex(byte[] b) {
 

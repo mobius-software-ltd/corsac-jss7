@@ -22,16 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -63,7 +57,7 @@ public class SpecializedResourceReportRequestTest {
 
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
-        int tag = ais.readTag();
+        ais.readTag();
         SpecializedResourceReportRequestImpl elem = new SpecializedResourceReportRequestImpl(true);
         elem.decodeAll(ais);
         assertTrue(elem.getAllAnnouncementsComplete());
@@ -71,7 +65,7 @@ public class SpecializedResourceReportRequestTest {
 
         data = this.getData2();
         ais = new AsnInputStream(data);
-        tag = ais.readTag();
+        ais.readTag();
         elem = new SpecializedResourceReportRequestImpl(true);
         elem.decodeAll(ais);
         assertFalse(elem.getAllAnnouncementsComplete());
@@ -80,7 +74,7 @@ public class SpecializedResourceReportRequestTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new SpecializedResourceReportRequestImpl(false);
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertFalse(elem.getAllAnnouncementsComplete());
         assertFalse(elem.getFirstAnnouncementStarted());
@@ -106,7 +100,7 @@ public class SpecializedResourceReportRequestTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerialize() throws Exception {
 
         SpecializedResourceReportRequestImpl original = new SpecializedResourceReportRequestImpl(false, true, true);
@@ -145,6 +139,5 @@ public class SpecializedResourceReportRequestTest {
         if (!o1.toString().equals(o2.toString()))
             return false;
         return true;
-    }
-
+    }*/
 }

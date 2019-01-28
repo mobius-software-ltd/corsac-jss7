@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NatureOfConnectionIndic
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class NatureOfConnectionIndicatorsImpl extends AbstractISUPParameter implements NatureOfConnectionIndicators {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TURN_ON = 1;
+	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
     private int satelliteIndicator = 0;

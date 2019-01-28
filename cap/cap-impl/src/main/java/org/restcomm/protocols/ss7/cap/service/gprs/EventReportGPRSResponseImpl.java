@@ -36,8 +36,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.EventReportGPRSResponse;
  *
  */
 public class EventReportGPRSResponseImpl extends GprsMessageImpl implements EventReportGPRSResponse {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "EventReportGPRSResponse";
+	public static final String _PrimitiveName = "EventReportGPRSResponse";
 
     @Override
     public CAPMessageType getMessageType() {

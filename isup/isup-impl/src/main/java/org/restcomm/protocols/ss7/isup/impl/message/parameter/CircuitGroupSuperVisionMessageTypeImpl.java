@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CircuitGroupSuperVision
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CircuitGroupSuperVisionMessageTypeImpl extends AbstractISUPParameter implements CircuitGroupSuperVisionMessageType {
+	private static final long serialVersionUID = 1L;
 
-    private int CircuitGroupSuperVisionMessageTypeIndicator = 0;
+	private int CircuitGroupSuperVisionMessageTypeIndicator = 0;
 
     public CircuitGroupSuperVisionMessageTypeImpl(byte[] b) throws ParameterException {
         super();

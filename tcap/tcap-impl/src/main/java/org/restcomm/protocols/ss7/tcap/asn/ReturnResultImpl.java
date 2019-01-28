@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
  *
  */
 public class ReturnResultImpl implements ReturnResult {
+	private static final long serialVersionUID = 1L;
 
-    // mandatory
+	// mandatory
     private Long invokeId;
 
     // This is sequence, both must be present

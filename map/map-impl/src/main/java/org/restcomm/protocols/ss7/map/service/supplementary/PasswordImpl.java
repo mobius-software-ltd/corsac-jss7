@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 *
 */
 public class PasswordImpl implements Password, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "Password";
+	public static final String _PrimitiveName = "Password";
 
     private String data;
 

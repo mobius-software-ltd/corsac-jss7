@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -123,7 +118,7 @@ public class CauseIndicatorsTest {
         // recomendations!=null (extra Recommendation byte)
     }
 
-    @Test(groups = { "functional.xml.serialize", "parameter" })
+    /*@Test(groups = { "functional.xml.serialize", "parameter" })
     public void testXMLSerialize() throws Exception {
 
         CauseIndicatorsImpl original = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_NATIONAL,
@@ -178,6 +173,5 @@ public class CauseIndicatorsTest {
         assertEquals(copy.getRecommendation(), original.getRecommendation());
         assertEquals(copy.getCauseValue(), original.getCauseValue());
         assertEquals(copy.getDiagnostics(), original.getDiagnostics());
-    }
-
+    }*/
 }

@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -65,7 +60,7 @@ public class OriginalCalledNumberCapTest {
         byte[] data = this.getData();
         AsnInputStream ais = new AsnInputStream(data);
         OriginalCalledNumberCapImpl elem = new OriginalCalledNumberCapImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         OriginalCalledNumber ocn = elem.getOriginalCalledNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
@@ -77,7 +72,7 @@ public class OriginalCalledNumberCapTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new OriginalCalledNumberCapImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         ocn = elem.getOriginalCalledNumber();
         assertEquals(ocn.getNumberingPlanIndicator(), 1);
@@ -109,7 +104,7 @@ public class OriginalCalledNumberCapTest {
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int addressRepresentationREstrictedIndicator
     }
 
-    @Test(groups = { "functional.xml.serialize", "isup" })
+    /*@Test(groups = { "functional.xml.serialize", "isup" })
     public void testXMLSerialize() throws Exception {
 
         OriginalCalledNumberCapImpl original = new OriginalCalledNumberCapImpl(new OriginalCalledNumberImpl(
@@ -140,6 +135,5 @@ public class OriginalCalledNumberCapTest {
                 .getNumberingPlanIndicator());
         assertEquals(copy.getOriginalCalledNumber().getAddressRepresentationRestrictedIndicator(), original
                 .getOriginalCalledNumber().getAddressRepresentationRestrictedIndicator());
-
-    }
+    }*/
 }

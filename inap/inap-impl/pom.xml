@@ -3,13 +3,13 @@
 
 	<parent>
 		<artifactId>inap-parent</artifactId>
-		<groupId>org.restcomm.protocols.ss7.inap</groupId>
+		<groupId>com.mobius-software.telco.protocols.ss7.inap</groupId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>inap-impl</artifactId>
 
-	<name>Restcomm jSS7 :: INAP :: Impl :: ${project.artifactId}</name>
+	<name>Corsac jSS7 :: INAP :: Impl :: ${project.artifactId}</name>
 	<properties>
 		<log.file.name>tests.log</log.file.name>
 	</properties>
@@ -33,16 +33,16 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 			<artifactId>sccp-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.sccp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 			<artifactId>sccp-impl</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
 			<artifactId>mtp-api</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -51,11 +51,11 @@
 			<artifactId>asn</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.tcap</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
 			<artifactId>tcap-impl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.tcap</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
 			<artifactId>tcap-api</artifactId>
 		</dependency>
 		<dependency>
@@ -65,19 +65,19 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.isup</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
 			<artifactId>isup-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.isup</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
 			<artifactId>isup-impl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.map</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
 			<artifactId>map-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.restcomm.protocols.ss7.map</groupId>
+			<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
 			<artifactId>map-impl</artifactId>
 		</dependency>
 	</dependencies>

@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -47,12 +44,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  * @author amit bhayani
  */
 public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl implements MAPErrorMessageRoamingNotAllowed {
+	private static final long serialVersionUID = 1L;
 
-    private static final String ROAMING_NOT_ALLOWED_CAUSE = "roamingNotAllowedCause";
-    private static final String ADDITIONAL_ROAMING_NOT_ALLOWED_CAUSE = "additionalRoamingNotAllowedCause";
-    private static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
-
-    public static final int _tag_additionalRoamingNotAllowedCause = 0;
+	public static final int _tag_additionalRoamingNotAllowedCause = 0;
 
     private RoamingNotAllowedCause roamingNotAllowedCause;
     private MAPExtensionContainer extensionContainer;
@@ -276,41 +270,4 @@ public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl im
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<MAPErrorMessageRoamingNotAllowedImpl> MAP_ERROR_MESSAGE_ROAMING_NOT_ALLOWED_XML = new XMLFormat<MAPErrorMessageRoamingNotAllowedImpl>(
-            MAPErrorMessageRoamingNotAllowedImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MAPErrorMessageRoamingNotAllowedImpl errorMessage)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.read(xml, errorMessage);
-            String str = xml.get(ROAMING_NOT_ALLOWED_CAUSE, String.class);
-            if (str != null)
-                errorMessage.roamingNotAllowedCause = Enum.valueOf(RoamingNotAllowedCause.class, str);
-
-            str = xml.get(ADDITIONAL_ROAMING_NOT_ALLOWED_CAUSE, String.class);
-            if (str != null)
-                errorMessage.additionalRoamingNotAllowedCause = Enum.valueOf(AdditionalRoamingNotAllowedCause.class, str);
-
-            errorMessage.extensionContainer = xml.get(MAP_EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-        }
-
-        @Override
-        public void write(MAPErrorMessageRoamingNotAllowedImpl errorMessage, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-            MAP_ERROR_MESSAGE_XML.write(errorMessage, xml);
-            if (errorMessage.getRoamingNotAllowedCause() != null)
-                xml.add((String) errorMessage.getRoamingNotAllowedCause().toString(), ROAMING_NOT_ALLOWED_CAUSE, String.class);
-            if (errorMessage.getAdditionalRoamingNotAllowedCause() != null)
-                xml.add((String) errorMessage.getAdditionalRoamingNotAllowedCause().toString(),
-                        ADDITIONAL_ROAMING_NOT_ALLOWED_CAUSE, String.class);
-
-            xml.add((MAPExtensionContainerImpl) errorMessage.extensionContainer, MAP_EXTENSION_CONTAINER,
-                    MAPExtensionContainerImpl.class);
-        }
-    };
-
 }

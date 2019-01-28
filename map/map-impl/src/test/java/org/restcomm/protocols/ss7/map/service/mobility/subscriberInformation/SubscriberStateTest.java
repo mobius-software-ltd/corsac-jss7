@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -64,7 +59,7 @@ public class SubscriberStateTest {
 
         byte[] rawData = getEncodedData1();
         AsnInputStream asn = new AsnInputStream(rawData);
-        int tag = asn.readTag();
+        asn.readTag();
         SubscriberStateImpl impl = new SubscriberStateImpl();
         impl.decodeAll(asn);
         assertEquals(impl.getSubscriberStateChoice(), SubscriberStateChoice.assumedIdle);
@@ -72,7 +67,7 @@ public class SubscriberStateTest {
 
         rawData = getEncodedData2();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new SubscriberStateImpl();
         impl.decodeAll(asn);
         assertEquals(impl.getSubscriberStateChoice(), SubscriberStateChoice.camelBusy);
@@ -80,7 +75,7 @@ public class SubscriberStateTest {
 
         rawData = getEncodedData3();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new SubscriberStateImpl();
         impl.decodeAll(asn);
         assertEquals(impl.getSubscriberStateChoice(), SubscriberStateChoice.netDetNotReachable);
@@ -112,7 +107,7 @@ public class SubscriberStateTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         SubscriberStateImpl original = new SubscriberStateImpl(SubscriberStateChoice.assumedIdle, null);
@@ -158,5 +153,5 @@ public class SubscriberStateTest {
 
         assertEquals(copy.getSubscriberStateChoice(), original.getSubscriberStateChoice());
         assertEquals(copy.getNotReachableReason(), original.getNotReachableReason());
-    }
+    }*/
 }

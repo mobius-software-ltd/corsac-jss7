@@ -48,8 +48,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements ReportSMDeliveryStatusRequest {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_AbsentSubscriberDiagnosticSM = 0;
+	protected static final int _TAG_AbsentSubscriberDiagnosticSM = 0;
     protected static final int _TAG_ExtensionContainer = 1;
     protected static final int _TAG_GprsSupportIndicator = 2;
     protected static final int _TAG_DeliveryOutcomeIndicator = 3;

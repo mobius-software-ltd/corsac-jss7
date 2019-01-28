@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
 *
 */
 public class InterrogateSSRequestImpl extends SupplementaryMessageImpl implements InterrogateSSRequest {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "InterrogateSSRequest";
+	public static final String _PrimitiveName = "InterrogateSSRequest";
 
     private SSForBSCode ssForBSCode;
 

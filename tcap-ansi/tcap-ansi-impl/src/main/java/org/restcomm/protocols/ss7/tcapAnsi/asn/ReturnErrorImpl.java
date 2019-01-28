@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
  *
  */
 public class ReturnErrorImpl implements ReturnError {
+	private static final long serialVersionUID = 1L;
 
-    protected Long correlationId;
+	protected Long correlationId;
     private ErrorCode errorCode;
     protected Parameter parameter;
 

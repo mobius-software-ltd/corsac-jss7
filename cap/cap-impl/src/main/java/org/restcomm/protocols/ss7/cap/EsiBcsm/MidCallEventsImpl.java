@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -46,10 +43,9 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 *
 */
 public class MidCallEventsImpl implements MidCallEvents, CAPAsnPrimitive {
-    private static final String DTMF_DIGITS_COMPLETED = "dtmfDigitsCompleted";
-    private static final String DTMF_DIGITS_TIME_OUT = "dtmfDigitsTimeOut";
+	private static final long serialVersionUID = 1L;
 
-    public static final int _ID_dTMFDigitsCompleted = 3;
+	public static final int _ID_dTMFDigitsCompleted = 3;
     public static final int _ID_dTMFDigitsTimeOut = 4;
 
     public static final String _PrimitiveName = "MidCallEvents";
@@ -218,28 +214,4 @@ public class MidCallEventsImpl implements MidCallEvents, CAPAsnPrimitive {
 
         return sb.toString();
     }
-
-    protected static final XMLFormat<MidCallEventsImpl> MID_CALL_EVENTS_XML = new XMLFormat<MidCallEventsImpl>(MidCallEventsImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, MidCallEventsImpl midCallEvents) throws XMLStreamException {
-            midCallEvents.dtmfDigitsCompleted = xml.get(DTMF_DIGITS_COMPLETED, DigitsImpl.class);
-            if (midCallEvents.dtmfDigitsCompleted != null)
-                midCallEvents.dtmfDigitsCompleted.setIsGenericDigits();
-            midCallEvents.dtmfDigitsTimeOut = xml.get(DTMF_DIGITS_TIME_OUT, DigitsImpl.class);
-            if (midCallEvents.dtmfDigitsTimeOut != null)
-                midCallEvents.dtmfDigitsTimeOut.setIsGenericDigits();
-        }
-
-        @Override
-        public void write(MidCallEventsImpl midCallEvents, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-            if (midCallEvents.dtmfDigitsCompleted != null) {
-                xml.add((DigitsImpl) midCallEvents.dtmfDigitsCompleted, DTMF_DIGITS_COMPLETED, DigitsImpl.class);
-            }
-            if (midCallEvents.dtmfDigitsTimeOut != null) {
-                xml.add((DigitsImpl) midCallEvents.dtmfDigitsTimeOut, DTMF_DIGITS_TIME_OUT, DigitsImpl.class);
-            }
-        }
-    };
-
 }

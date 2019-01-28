@@ -75,8 +75,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessT
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 class AddressCompleteMessageImpl extends ISUPMessageImpl implements AddressCompleteMessage {
+	private static final long serialVersionUID = 1L;
 
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.AddressComplete);
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.AddressComplete);
 
     private static final int _MANDATORY_VAR_COUNT = 0;
 

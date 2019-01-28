@@ -65,7 +65,7 @@ public class ExtGeographicalInformationTest {
 
         byte[] rawData = getEncodedData_EllipsoidPointWithUncertaintyCircle();
         AsnInputStream asn = new AsnInputStream(rawData);
-        int tag = asn.readTag();
+        asn.readTag();
         ExtGeographicalInformationImpl impl = new ExtGeographicalInformationImpl();
         impl.decodeAll(asn);
 
@@ -76,7 +76,7 @@ public class ExtGeographicalInformationTest {
 
         rawData = getEncodedData_EllipsoidPointWithUncertaintyEllipse();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new ExtGeographicalInformationImpl();
         impl.decodeAll(asn);
 
@@ -90,7 +90,7 @@ public class ExtGeographicalInformationTest {
 
         rawData = getEncodedData_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new ExtGeographicalInformationImpl();
         impl.decodeAll(asn);
 
@@ -106,7 +106,7 @@ public class ExtGeographicalInformationTest {
 
         rawData = getEncodedData_EllipsoidArc();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new ExtGeographicalInformationImpl();
         impl.decodeAll(asn);
 
@@ -121,7 +121,7 @@ public class ExtGeographicalInformationTest {
 
         rawData = getEncodedData_EllipsoidPoint();
         asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
+        asn.readTag();
         impl = new ExtGeographicalInformationImpl();
         impl.decodeAll(asn);
 

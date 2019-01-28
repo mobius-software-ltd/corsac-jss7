@@ -69,8 +69,8 @@ public class ForwardGVNSTest extends ParameterHarness {
         gvns.setAddress(bs2);
         TerminatingNetworkRoutingNumberImpl tnrn = new TerminatingNetworkRoutingNumberImpl();
         tnrn.setAddress(bs3);
-        tnrn.setNumberingPlanIndicator(tnrn._NPI_TELEX);
-        tnrn.setNatureOfAddressIndicator(tnrn._NAI_NATIONAL_SN);
+        tnrn.setNumberingPlanIndicator(TerminatingNetworkRoutingNumberImpl._NPI_TELEX);
+        tnrn.setNatureOfAddressIndicator(TerminatingNetworkRoutingNumberImpl._NAI_NATIONAL_SN);
         return getBody(ops, gvns, tnrn);
     }
 

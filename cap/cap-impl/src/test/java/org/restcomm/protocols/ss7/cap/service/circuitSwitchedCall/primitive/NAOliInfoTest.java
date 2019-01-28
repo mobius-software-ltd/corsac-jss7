@@ -25,12 +25,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -54,7 +49,7 @@ public class NAOliInfoTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         NAOliInfoImpl elem = new NAOliInfoImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getData(), 0x3D);
     }
@@ -68,7 +63,7 @@ public class NAOliInfoTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
     public void testXMLSerialize() throws Exception {
 
         NAOliInfoImpl original = new NAOliInfoImpl(15);
@@ -91,6 +86,5 @@ public class NAOliInfoTest {
         NAOliInfoImpl copy = reader.read("naOliInfo", NAOliInfoImpl.class);
 
         assertEquals(copy.getData(), original.getData());
-
-    }
+    }*/
 }

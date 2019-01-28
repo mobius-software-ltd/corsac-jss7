@@ -22,17 +22,11 @@
 
 package org.restcomm.protocols.ss7.cap.primitives;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -60,7 +54,7 @@ public class CAPExtensionsTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         CAPExtensionsImpl elem = new CAPExtensionsImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertTrue(checkTestCAPExtensions(elem));
     }
@@ -78,11 +72,16 @@ public class CAPExtensionsTest {
         AsnOutputStream aos = new AsnOutputStream();
         aos.writeNullData();
         ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, aos.toByteArray());
+        try {
+        	aos.close();            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         aos = new AsnOutputStream();
         try {
             aos.writeBooleanData(true);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, aos.toByteArray());
@@ -90,6 +89,13 @@ public class CAPExtensionsTest {
         flds.add(a1);
         flds.add(a2);
         CAPExtensionsImpl elem = new CAPExtensionsImpl(flds);
+        
+        try {
+        	aos.close();            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         return elem;
     }
 
@@ -111,15 +117,15 @@ public class CAPExtensionsTest {
         return true;
     }
 
-    private byte[] getDataSer() {
+    /*private byte[] getDataSer() {
         return new byte[] { 1, (byte) 255, 3 };
-    }
+    }*/
 
     public long[] getDataOid() {
         return new long[] { 1, 0, 22 };
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
 
         ArrayList<ExtensionField> fieldsList = new ArrayList<ExtensionField>();
@@ -180,5 +186,5 @@ public class CAPExtensionsTest {
         copy = reader.read("capExtensions", CAPExtensionsImpl.class);
 
         CAPExtensionsTest.checkTestCAPExtensions(copy);
-    }
+    }*/
 }

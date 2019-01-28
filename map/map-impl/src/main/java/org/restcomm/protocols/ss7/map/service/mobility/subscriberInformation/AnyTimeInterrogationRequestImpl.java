@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
  */
 public class AnyTimeInterrogationRequestImpl extends MobilityMessageImpl implements AnyTimeInterrogationRequest,
         MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_SUBSCRIBER_IDENTITY = 0;
+	private static final int _TAG_SUBSCRIBER_IDENTITY = 0;
     private static final int _TAG_REQUESTED_INFO = 1;
     private static final int _TAG_EXTENSION_CONTAINER = 2;
     private static final int _TAG_GSM_SCF_ADDRESS = 3;

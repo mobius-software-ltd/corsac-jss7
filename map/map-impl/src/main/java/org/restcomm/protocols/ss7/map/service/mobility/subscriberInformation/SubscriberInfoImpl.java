@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -54,8 +51,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
  *
  */
 public class SubscriberInfoImpl implements SubscriberInfo, MAPAsnPrimitive {
+	private static final long serialVersionUID = 1L;
 
-    public static final String _PrimitiveName = "SubscriberInfo";
+	public static final String _PrimitiveName = "SubscriberInfo";
 
     public static final int _ID_locationInformation = 0;
     public static final int _ID_subscriberState = 1;
@@ -66,16 +64,6 @@ public class SubscriberInfoImpl implements SubscriberInfo, MAPAsnPrimitive {
     public static final int _ID_msclassmark2 = 6;
     public static final int _ID_gprsMSClass = 7;
     public static final int _ID_mnpInfoRes = 8;
-
-    private static final String LOCATION_INFORMATION = "locationInformation";
-    private static final String SUBSCRIBER_STATE = "subscriberState";
-    private static final String EXTENSION_CONTAINER = "extensionContainer";
-    private static final String LOCATION_INFORMATION_GPRS = "locationInformationGRPS";
-    private static final String PS_SUBSCRIBER_STATE = "psSubscriberState";
-    private static final String IMEI = "imei";
-    private static final String MS_CLASSMARK_2 = "msClassmark2";
-    private static final String GPRS_MS_CLASS = "gprsMSClass";
-    private static final String MNP_INFO_RES = "mnpInfoRes";
 
     private LocationInformation locationInformation = null;
     private SubscriberState subscriberState = null;
@@ -483,62 +471,4 @@ public class SubscriberInfoImpl implements SubscriberInfo, MAPAsnPrimitive {
         sb.append("]");
         return sb.toString();
     }
-
-    protected static final XMLFormat<SubscriberInfoImpl> SUBSCRIBER_INFO_XML = new XMLFormat<SubscriberInfoImpl>(SubscriberInfoImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, SubscriberInfoImpl subscriberInfo) throws XMLStreamException {
-
-            subscriberInfo.locationInformation = xml.get(LOCATION_INFORMATION, LocationInformationImpl.class);
-            subscriberInfo.subscriberState = xml.get(SUBSCRIBER_STATE, SubscriberStateImpl.class);
-            subscriberInfo.extensionContainer = xml.get(EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-            subscriberInfo.locationInformationGPRS = xml.get(LOCATION_INFORMATION_GPRS, LocationInformationGPRSImpl.class);
-            subscriberInfo.psSubscriberState = xml.get(PS_SUBSCRIBER_STATE, PSSubscriberStateImpl.class);
-            subscriberInfo.imei = xml.get(IMEI, IMEIImpl.class);
-            subscriberInfo.msClassmark2 = xml.get(MS_CLASSMARK_2, MSClassmark2Impl.class);
-            subscriberInfo.gprsMSClass = xml.get(GPRS_MS_CLASS, GPRSMSClassImpl.class);
-            subscriberInfo.mnpInfoRes = xml.get(MNP_INFO_RES, MNPInfoResImpl.class);
-        }
-
-        @Override
-        public void write(SubscriberInfoImpl subscriberInfo, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-
-            if (subscriberInfo.locationInformation != null) {
-                xml.add((LocationInformationImpl) subscriberInfo.locationInformation, LOCATION_INFORMATION, LocationInformationImpl.class);
-            }
-
-            if (subscriberInfo.subscriberState != null) {
-                xml.add((SubscriberStateImpl) subscriberInfo.subscriberState, SUBSCRIBER_STATE, SubscriberStateImpl.class);
-            }
-
-            if (subscriberInfo.extensionContainer != null) {
-                xml.add((MAPExtensionContainerImpl) subscriberInfo.extensionContainer, EXTENSION_CONTAINER, MAPExtensionContainerImpl.class);
-            }
-
-            if (subscriberInfo.locationInformationGPRS != null) {
-                xml.add((LocationInformationGPRSImpl) subscriberInfo.locationInformationGPRS, LOCATION_INFORMATION_GPRS,
-                        LocationInformationGPRSImpl.class);
-            }
-
-            if (subscriberInfo.psSubscriberState != null) {
-                xml.add((PSSubscriberStateImpl) subscriberInfo.psSubscriberState, PS_SUBSCRIBER_STATE, PSSubscriberStateImpl.class);
-            }
-
-            if (subscriberInfo.imei != null) {
-                xml.add((IMEIImpl) subscriberInfo.imei, IMEI, IMEIImpl.class);
-            }
-
-            if (subscriberInfo.msClassmark2 != null) {
-                xml.add((MSClassmark2Impl) subscriberInfo.msClassmark2, MS_CLASSMARK_2, MSClassmark2Impl.class);
-            }
-
-            if (subscriberInfo.gprsMSClass != null) {
-                xml.add((GPRSMSClassImpl) subscriberInfo.gprsMSClass, GPRS_MS_CLASS, GPRSMSClassImpl.class);
-            }
-
-            if (subscriberInfo.mnpInfoRes != null) {
-                xml.add((MNPInfoResImpl) subscriberInfo.mnpInfoRes, MNP_INFO_RES, MNPInfoResImpl.class);
-            }
-        }
-    };
 }

@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallReferenceImpl extends AbstractISUPParameter implements CallReference {
+	private static final long serialVersionUID = 1L;
 
-    private int callIdentity = 0;
+	private int callIdentity = 0;
     // Should we use here SignalingPointCode class?
     private int signalingPointCode = 0;
 

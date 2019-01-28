@@ -43,7 +43,9 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  *
  */
 public class ExtendedRoutingInfoImpl implements ExtendedRoutingInfo, MAPAsnPrimitive {
-    private RoutingInfo routingInfo = null;
+	private static final long serialVersionUID = 1L;
+
+	private RoutingInfo routingInfo = null;
     private CamelRoutingInfo camelRoutingInfo = null;
 
     public static final int TAG_camel = 8;

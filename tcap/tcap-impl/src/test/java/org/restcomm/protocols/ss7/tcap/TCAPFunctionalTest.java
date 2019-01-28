@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.tcap;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +59,6 @@ import org.testng.annotations.Test;
  */
 public class TCAPFunctionalTest extends SccpHarness {
     public static final long WAIT_TIME = 500;
-    private static final int _WAIT_TIMEOUT = 90000;
-    private static final int _WAIT_REMOVE = 30000;
     public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
     private TCAPStackImpl tcapStack1;
     private TCAPStackImpl tcapStack2;
@@ -100,8 +97,8 @@ public class TCAPFunctionalTest extends SccpHarness {
         peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
         peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-        this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8);
-        this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 8);
+        this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, 4);
+        this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 8, 4);
 
         this.tcapListenerWrapper = new TCAPListenerWrapper();
         this.tcapStack1.getProvider().addTCListener(tcapListenerWrapper);
@@ -165,18 +162,18 @@ public class TCAPFunctionalTest extends SccpHarness {
         assertNull(client.dialog.getRemoteDialogId());
 
         client.sendBegin();
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
 
         server.sendContinue();
         assertNotNull(server.dialog.getLocalAddress());
         assertNotNull(server.dialog.getRemoteDialogId());
 
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         client.sendEnd(TerminationType.Basic);
         assertNotNull(client.dialog.getLocalAddress());
         assertNotNull(client.dialog.getRemoteDialogId());
 
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
         // waitForEnd();
 
         client.compareEvents(clientExpectedEvents);
@@ -202,19 +199,11 @@ public class TCAPFunctionalTest extends SccpHarness {
 
         client.startUniDialog();
         client.sendUni();
-        client.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
 
-    }
-
-    private void waitForEnd() {
-        try {
-            Thread.currentThread().sleep(_WAIT_TIMEOUT);
-        } catch (InterruptedException e) {
-            fail("Interrupted on wait!");
-        }
     }
 
     private class TCAPListenerWrapper implements TCListener {

@@ -49,7 +49,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class IdentificationRequestMessageImpl extends ISUPMessageImpl implements IdentificationRequestMessage {
-    public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.IdentificationRequest);
+	private static final long serialVersionUID = 1L;
+
+	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.IdentificationRequest);
     private static final int _MANDATORY_VAR_COUNT = 0;
     private static final boolean _HAS_MANDATORY = true;
     private static final boolean _OPTIONAL_POSSIBLE = true;

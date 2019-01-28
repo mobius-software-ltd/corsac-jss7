@@ -27,12 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -66,7 +61,7 @@ public class BCSMEventTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         BCSMEventImpl elem = new BCSMEventImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.oNoAnswer);
         assertEquals(elem.getMonitorMode(), MonitorMode.interrupted);
@@ -77,7 +72,7 @@ public class BCSMEventTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new BCSMEventImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.oCalledPartyBusy);
         assertEquals(elem.getMonitorMode(), MonitorMode.notifyAndContinue);
@@ -106,7 +101,7 @@ public class BCSMEventTest {
         // automaticRearm
     }
 
-    @Test(groups = { "functional.xml.serialize", "primitives" })
+    /*@Test(groups = { "functional.xml.serialize", "primitives" })
     public void testXMLSerialize() throws Exception {
         LegIDImpl legID = new LegIDImpl(true, LegType.leg2);
         DpSpecificCriteriaImpl dpc = new DpSpecificCriteriaImpl(111);
@@ -160,5 +155,5 @@ public class BCSMEventTest {
         assertNull(copy.getLegID());
         assertNull(copy.getDpSpecificCriteria());
         assertEquals(copy.getAutomaticRearm(), original.getAutomaticRearm());
-    }
+    }*/
 }

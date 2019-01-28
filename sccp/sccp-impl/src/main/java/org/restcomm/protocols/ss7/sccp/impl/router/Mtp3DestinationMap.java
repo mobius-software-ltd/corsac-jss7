@@ -21,12 +21,14 @@
  */
 package org.restcomm.protocols.ss7.sccp.impl.router;
 
-import javolution.util.FastMap;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.restcomm.protocols.ss7.sccp.Mtp3Destination;
 
 /**
  * @author amit bhayani
  *
  */
-public class Mtp3DestinationMap<Integer, Mtp3Destination> extends FastMap<Integer, Mtp3Destination> {
-
+public class Mtp3DestinationMap extends ConcurrentHashMap<Integer, Mtp3Destination> {
+	private static final long serialVersionUID = 1L;
 }

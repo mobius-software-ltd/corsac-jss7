@@ -36,7 +36,9 @@ import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
  *
  */
 public class TCUniIndicationImpl extends DialogIndicationImpl implements TCUniIndication {
-    // private Byte qos;
+	private static final long serialVersionUID = 1L;
+
+	// private Byte qos;
     private SccpAddress originatingAddress, destinationAddress;
 
     // fields

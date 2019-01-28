@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.FailureCause;
  *
  */
 public class FailureCauseImpl implements FailureCause {
+	private static final long serialVersionUID = 1L;
 
-    private int code;
+	private int code;
 
     public FailureCauseImpl(int code) {
         this.code = code;

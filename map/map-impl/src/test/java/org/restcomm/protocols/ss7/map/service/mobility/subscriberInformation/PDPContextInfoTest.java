@@ -26,18 +26,11 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPTypeValue;
 import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSChargingIDImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextInfoImpl;
@@ -101,9 +94,9 @@ public class PDPContextInfoTest {
         return new byte[] { 35, 36, 37, 38, 39 };
     }
 
-    private byte[] getEncodedggsnAddress2() {
+    /*private byte[] getEncodedggsnAddress2() {
         return new byte[] { (byte) 192, (byte) 168, 0, 1 };
-    }
+    }*/
 
     private byte[] getEncodedqosSubscribed() {
         return new byte[] { 15 };
@@ -129,9 +122,9 @@ public class PDPContextInfoTest {
         return new byte[] { 47, 48, 49, 50, 51 };
     }
 
-    private byte[] getEncodedrncAddress2() {
+    /*private byte[] getEncodedrncAddress2() {
         return new byte[] { (byte) 192, (byte) 168, 5, 51 };
-    }
+    }*/
 
     private byte[] getEncodedqos2Subscribed() {
         return new byte[] { 52 };
@@ -262,7 +255,7 @@ public class PDPContextInfoTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "subscriberInformation" })
+    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
     public void testXMLSerialize() throws Exception {
 
         PDPTypeImpl pdpType = new PDPTypeImpl(PDPTypeValue.PPP);
@@ -369,6 +362,5 @@ public class PDPContextInfoTest {
         
         
         
-    }
-
+    }*/
 }

@@ -21,7 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -92,7 +93,7 @@ public class RoutingKeyManagementHandler extends MessageHandler {
             //if the ASP is not currently included in the list of ASPs for the related Application Server, the SGP MAY authorize the ASP to be added to the AS
             for(As as : routeAs.getAsArray()) {
                 if(as!=null) {
-                List<Asp> currList = as.getAspList();
+                Collection<Asp> currList = as.getAspList();
                     boolean found = false;
                       for(Asp subAsp : currList) {
                           if(subAsp.getName().equals(aspFactoryImpl.getName())) {
@@ -118,7 +119,9 @@ public class RoutingKeyManagementHandler extends MessageHandler {
             IPSPType ipspType = null;
             int minAspActiveForLoadbalance = 0;
             if(!aspFactoryImpl.m3UAManagementImpl.appServers.isEmpty()) {
-                for(As as : aspFactoryImpl.m3UAManagementImpl.appServers) {
+            	Iterator<As> iterator=aspFactoryImpl.m3UAManagementImpl.appServers.values().iterator();
+                while(iterator.hasNext()) {
+                	As as=iterator.next();
                     if(as != null) {
                         functionality = as.getFunctionality();
                         exchangeType = as.getExchangeType();
@@ -180,11 +183,10 @@ public class RoutingKeyManagementHandler extends MessageHandler {
                     aspFactoryImpl.m3UAManagementImpl.unassignAspFromAs(as.getName(), aspImpl.getName());
                     //if AS does not have ASP remove it
                     if(as.appServerProcs.isEmpty()) {
-                        for(Entry<String, RouteAs> entry : aspFactoryImpl.m3UAManagementImpl.getRoute().entrySet()) {
+                        for(Entry<org.restcomm.protocols.ss7.m3ua.RoutingKey, RouteAs> entry : aspFactoryImpl.m3UAManagementImpl.getRoute().entrySet()) {
                             if(((RouteAsImpl)entry.getValue()).hasAs(as)) {
-                                String key = entry.getKey();
-                                String[] keys = key.split(KEY_SEPARATOR);
-                                aspFactoryImpl.m3UAManagementImpl.removeRoute(Integer.valueOf(keys[0]),Integer.valueOf(keys[1]),Integer.valueOf(keys[2]), as.getName());
+                            	org.restcomm.protocols.ss7.m3ua.RoutingKey key = entry.getKey();
+                                aspFactoryImpl.m3UAManagementImpl.removeRoute(key.getDpc(),key.getOpc(),key.getSi(), as.getName());
                             }
                         }
                         aspFactoryImpl.m3UAManagementImpl.destroyAs(as.getName());

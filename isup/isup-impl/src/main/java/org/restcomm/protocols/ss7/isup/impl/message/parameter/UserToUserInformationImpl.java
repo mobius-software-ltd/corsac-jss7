@@ -47,6 +47,8 @@ public class UserToUserInformationImpl extends AbstractISUPParameter implements 
     // discriminator plus user information field described in ITU-T Recommendation Q.931.
     // This makes no sense...
 
+    private static final long serialVersionUID = 1L;
+	
     private byte[] information;
 
     public UserToUserInformationImpl() {

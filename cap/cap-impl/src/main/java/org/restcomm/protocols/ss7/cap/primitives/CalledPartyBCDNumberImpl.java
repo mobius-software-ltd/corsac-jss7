@@ -29,9 +29,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -51,15 +48,9 @@ import org.restcomm.protocols.ss7.map.primitives.TbcdString;
  *
  */
 public class CalledPartyBCDNumberImpl extends OctetStringBase implements CalledPartyBCDNumber {
-
-    private static final String NAI = "nai";
-    private static final String NPI = "npi";
-    private static final String NUMBER = "number";
-    // private static final String IS_EXTENSION = "isExtension";
-
-    private static final String DEFAULT_STRING_VALUE = null;
-
-    protected static final int NO_EXTENSION_MASK = 0x80;
+	private static final long serialVersionUID = 1L;
+	
+	protected static final int NO_EXTENSION_MASK = 0x80;
     protected static final int NATURE_OF_ADD_IND_MASK = 0x70;
     protected static final int NUMBERING_PLAN_IND_MASK = 0x0F;
 
@@ -241,44 +232,4 @@ public class CalledPartyBCDNumberImpl extends OctetStringBase implements CalledP
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CalledPartyBCDNumberImpl> CALLED_PARTY_BCD_NUMBER_XML = new XMLFormat<CalledPartyBCDNumberImpl>(
-            CalledPartyBCDNumberImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CalledPartyBCDNumberImpl calledPartyBCDNumber)
-                throws XMLStreamException {
-            try {
-                AddressNature addressNature = null;
-                NumberingPlan numberingPlan = null;
-                String nai = xml.getAttribute(NAI, DEFAULT_STRING_VALUE);
-                String npi = xml.getAttribute(NPI, DEFAULT_STRING_VALUE);
-                if (nai != null) {
-                    addressNature = Enum.valueOf(AddressNature.class, nai);
-                }
-                if (npi != null) {
-                    numberingPlan = Enum.valueOf(NumberingPlan.class, npi);
-                }
-
-                calledPartyBCDNumber.setParameters(addressNature, numberingPlan, xml.getAttribute(NUMBER, ""));
-            } catch (CAPException e) {
-                throw new XMLStreamException("CAPException when CalledPartyBCDNumber data setting", e);
-            }
-        }
-
-        @Override
-        public void write(CalledPartyBCDNumberImpl calledPartyBCDNumber, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            xml.setAttribute(NUMBER, calledPartyBCDNumber.getAddress());
-            xml.setAttribute(NAI, calledPartyBCDNumber.getAddressNature().toString());
-            xml.setAttribute(NPI, calledPartyBCDNumber.getNumberingPlan().toString());
-            // if (calledPartyBCDNumber.isExtension()) {
-            // xml.setAttribute(IS_EXTENSION, true);
-            // }
-        }
-    };
 }

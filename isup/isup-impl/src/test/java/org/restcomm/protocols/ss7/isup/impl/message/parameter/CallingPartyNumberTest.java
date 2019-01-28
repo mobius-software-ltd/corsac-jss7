@@ -26,12 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
@@ -146,7 +141,7 @@ public class CallingPartyNumberTest {
         assertTrue(Arrays.equals(data, encodedData));
     }
 
-    @Test(groups = { "functional.xml.serialize", "parameter" })
+    /*@Test(groups = { "functional.xml.serialize", "parameter" })
     public void testXMLSerialize() throws Exception {
 
         CallingPartyNumberImpl original = new CallingPartyNumberImpl(NAINumber._NAI_NATIONAL_SN, "12345",
@@ -176,6 +171,5 @@ public class CallingPartyNumberTest {
         assertEquals(copy.getNumberIncompleteIndicator(), original.getNumberIncompleteIndicator());
         assertEquals(copy.getAddressRepresentationRestrictedIndicator(), original.getAddressRepresentationRestrictedIndicator());
         assertEquals(copy.getScreeningIndicator(), original.getScreeningIndicator());
-    }
-
+    }*/
 }

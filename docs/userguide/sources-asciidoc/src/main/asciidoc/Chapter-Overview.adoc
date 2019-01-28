@@ -1,7 +1,0 @@
-= Overview
-:doctype: book
-:sectnums:
-:toc: left
-:icons: font
-:experimental:
-:sourcedir: .

@@ -69,8 +69,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implements SubscriberLocationReportRequest {
+	private static final long serialVersionUID = 1L;
 
-    private static final int _TAG_MSISDN = 0;
+	private static final int _TAG_MSISDN = 0;
     private static final int _TAG_IMSI = 1;
     private static final int _TAG_IMEI = 2;
     private static final int _TAG_NA_ESRD = 3;

@@ -40,8 +40,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectCapability;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RedirectCapabilityImpl extends AbstractISUPParameter implements RedirectCapability {
+	private static final long serialVersionUID = 1L;
 
-    private byte[] capabilities;
+	private byte[] capabilities;
 
     public RedirectCapabilityImpl() {
         super();

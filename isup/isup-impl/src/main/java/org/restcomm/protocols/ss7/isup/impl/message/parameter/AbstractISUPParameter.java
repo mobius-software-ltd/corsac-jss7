@@ -35,10 +35,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ISUPParameter;
  *
  */
 public abstract class AbstractISUPParameter implements ISUPParameter,Encodable {
+	private static final long serialVersionUID = 1L;
 
-    // protected Logger logger = Logger.getLogger(this.getClass().getName());
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
+	public int encode(ByteArrayOutputStream bos) throws ParameterException {
         // FIXME: this has to be removed, we should not create separate arrays?
         byte[] b = encode();
         try {

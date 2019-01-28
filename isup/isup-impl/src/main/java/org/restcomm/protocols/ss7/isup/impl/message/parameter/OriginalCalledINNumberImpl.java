@@ -42,8 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledINNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class OriginalCalledINNumberImpl extends CalledNumberImpl implements OriginalCalledINNumber {
+	private static final long serialVersionUID = 1L;
 
-    public OriginalCalledINNumberImpl(byte[] representation) throws ParameterException {
+	public OriginalCalledINNumberImpl(byte[] representation) throws ParameterException {
         super(representation);
 
     }

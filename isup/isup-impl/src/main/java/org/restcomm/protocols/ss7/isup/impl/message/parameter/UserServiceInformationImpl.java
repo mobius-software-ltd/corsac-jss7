@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
  * @author sergey vetyutnev
  */
 public class UserServiceInformationImpl extends UserServiceInformationBaseImpl implements UserServiceInformation {
+	private static final long serialVersionUID = 1L;
 
-    public UserServiceInformationImpl() {
+	public UserServiceInformationImpl() {
         super();
 
     }

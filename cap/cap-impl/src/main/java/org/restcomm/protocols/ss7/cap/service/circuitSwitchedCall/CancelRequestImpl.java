@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import java.io.IOException;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -48,12 +45,9 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.Call
  *
  */
 public class CancelRequestImpl extends CircuitSwitchedCallMessageImpl implements CancelRequest {
+	private static final long serialVersionUID = 1L;
 
-    private static final String INVOKE_ID = "invokeID";
-    private static final String ALL_REQUESTS = "allRequests";
-    private static final String CALL_SEGMENT_TO_CANCEL = "callSegmentToCancel";
-
-    public static final int _ID_invokeID = 0;
+	public static final int _ID_invokeID = 0;
     public static final int _ID_allRequests = 1;
     public static final int _ID_callSegmentToCancel = 2;
 
@@ -256,34 +250,4 @@ public class CancelRequestImpl extends CircuitSwitchedCallMessageImpl implements
 
         return sb.toString();
     }
-
-    /**
-     * XML Serialization/Deserialization
-     */
-    protected static final XMLFormat<CancelRequestImpl> CANCEL_REQUEST_XML = new XMLFormat<CancelRequestImpl>(
-            CancelRequestImpl.class) {
-
-        @Override
-        public void read(javolution.xml.XMLFormat.InputElement xml, CancelRequestImpl cancelRequest) throws XMLStreamException {
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.read(xml, cancelRequest);
-            cancelRequest.invokeID = xml.get(INVOKE_ID, Integer.class);
-            Boolean bval = xml.get(ALL_REQUESTS, Boolean.class);
-            if (bval != null)
-                cancelRequest.allRequests = bval;
-            cancelRequest.callSegmentToCancel = xml.get(CALL_SEGMENT_TO_CANCEL, CallSegmentToCancelImpl.class);
-        }
-
-        @Override
-        public void write(CancelRequestImpl cancelRequest, javolution.xml.XMLFormat.OutputElement xml)
-                throws XMLStreamException {
-
-            CIRCUIT_SWITCHED_CALL_MESSAGE_XML.write(cancelRequest, xml);
-
-            xml.add(cancelRequest.invokeID, INVOKE_ID, Integer.class);
-            if (cancelRequest.allRequests)
-                xml.add(cancelRequest.allRequests, ALL_REQUESTS, Boolean.class);
-            xml.add((CallSegmentToCancelImpl) cancelRequest.callSegmentToCancel, CALL_SEGMENT_TO_CANCEL,
-                    CallSegmentToCancelImpl.class);
-        }
-    };
 }

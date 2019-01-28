@@ -21,13 +21,13 @@
  */
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import javolution.util.FastMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author amit bhayani
  *
  */
-public class ConcernedSignalingPointCodeMap<Integer, ConcernedSignalingPointCodeImpl> extends
-        FastMap<Integer, ConcernedSignalingPointCodeImpl> {
-
+public class ConcernedSignalingPointCodeMap extends
+        ConcurrentHashMap<Integer, ConcernedSignalingPointCodeImpl> {
+	private static final long serialVersionUID = 1L;
 }

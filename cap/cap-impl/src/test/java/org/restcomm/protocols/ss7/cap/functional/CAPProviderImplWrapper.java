@@ -41,8 +41,9 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
  *
  */
 public class CAPProviderImplWrapper extends CAPProviderImpl {
+	private static final long serialVersionUID = 1L;
 
-    private int testMode = 0;
+	private int testMode = 0;
 
     // private final MAPServiceSupplementary mapServiceSupplementaryTest = new MAPServiceSupplementaryImplWrapper(this);
 

@@ -27,12 +27,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -76,7 +71,7 @@ public class TimeDurationChargingResultTest {
         byte[] data = this.getData1();
         AsnInputStream ais = new AsnInputStream(data);
         TimeDurationChargingResultImpl elem = new TimeDurationChargingResultImpl();
-        int tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg1);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 26);
@@ -89,7 +84,7 @@ public class TimeDurationChargingResultTest {
         data = this.getData2();
         ais = new AsnInputStream(data);
         elem = new TimeDurationChargingResultImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg2);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 55);
@@ -102,7 +97,7 @@ public class TimeDurationChargingResultTest {
         data = this.getData3();
         ais = new AsnInputStream(data);
         elem = new TimeDurationChargingResultImpl();
-        tag = ais.readTag();
+        ais.readTag();
         elem.decodeAll(ais);
         assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg2);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 55);
@@ -147,7 +142,7 @@ public class TimeDurationChargingResultTest {
         assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
     }
 
-    @Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
+    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
     public void testXMLSerializaion() throws Exception {
         ReceivingSideID partyToCharge = new ReceivingSideIDImpl(LegType.leg1);
         TimeInformation ti = new TimeInformationImpl(26);
@@ -237,5 +232,5 @@ public class TimeDurationChargingResultTest {
         assertEquals(copy.getCallLegReleasedAtTcpExpiry(), original.getCallLegReleasedAtTcpExpiry());
         assertNull(copy.getExtensions());
         assertEquals(copy.getAChChargingAddress().getSrfConnection(), original.getAChChargingAddress().getSrfConnection());
-    }
+    }*/
 }

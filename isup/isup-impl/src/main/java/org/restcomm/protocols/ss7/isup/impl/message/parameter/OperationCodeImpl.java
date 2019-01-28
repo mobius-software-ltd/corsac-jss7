@@ -37,8 +37,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OperationCodeType;
  *
  */
 public class OperationCodeImpl extends AbstractAsnEncodable implements OperationCode {
+	private static final long serialVersionUID = 1L;
 
-    private Long localOperationCode;
+	private Long localOperationCode;
     private long[] globalOperationCode;
     private OperationCodeType type;
 

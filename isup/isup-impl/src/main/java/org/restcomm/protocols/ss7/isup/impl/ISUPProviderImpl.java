@@ -27,10 +27,9 @@ package org.restcomm.protocols.ss7.isup.impl;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.Iterator;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javolution.util.FastList;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -46,32 +45,30 @@ import org.restcomm.protocols.ss7.isup.impl.message.ISUPMessageFactoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
-import org.restcomm.protocols.ss7.scheduler.Scheduler;
 
 /**
  * @author baranowb
  *
  */
 public class ISUPProviderImpl implements ISUPProvider {
+	private static final long serialVersionUID = 1L;
 
-    protected static final Logger logger = Logger.getLogger(ISUPProviderImpl.class);
+	protected static final Logger logger = Logger.getLogger(ISUPProviderImpl.class);
 
-    protected final List<ISUPListener> listeners = new FastList<ISUPListener>();
+    protected final ConcurrentHashMap<UUID,ISUPListener> listeners = new ConcurrentHashMap<UUID,ISUPListener>();
 
     protected final transient ISUPStackImpl stack;
     protected final transient ISUPMessageFactory messageFactory;
     protected final transient ISUPParameterFactory parameterFactory;
-    protected final transient Scheduler scheduler;
-
+    
     protected final transient ConcurrentHashMap<Long, Circuit> cic2Circuit = new ConcurrentHashMap<Long, Circuit>();
     protected final int ni;
     protected final int localSpc;
     protected final boolean automaticTimerMessages;
 
-    public ISUPProviderImpl(ISUPStackImpl isupStackImpl, Scheduler scheduler, int ni, int localSpc,
+    public ISUPProviderImpl(ISUPStackImpl isupStackImpl, int ni, int localSpc,
             boolean automaticTimerMessages) {
         this.stack = isupStackImpl;
-        this.scheduler = scheduler;
 
         this.ni = ni;
         this.localSpc = localSpc;
@@ -100,14 +97,14 @@ public class ISUPProviderImpl implements ISUPProvider {
      *
      * @see org.mobicents.isup.ISUPProvider#addListener(org.mobicents.isup.ISUPListener )
      */
-    public void addListener(ISUPListener listener) {
+    public void addListener(UUID key,ISUPListener listener) {
         if (listener == null) {
             throw new NullPointerException("Listener must not be null!");
         }
-        if (this.listeners.contains(listener)) {
+        if (this.listeners.containsKey(key)) {
             throw new IllegalArgumentException("Listener already present: " + listener + " !");
         } else {
-            this.listeners.add(listener);
+            this.listeners.put(key, listener);
         }
 
     }
@@ -117,11 +114,11 @@ public class ISUPProviderImpl implements ISUPProvider {
      *
      * @seeorg.mobicents.isup.ISUPProvider#removeListener(org.mobicents.isup. ISUPListener)
      */
-    public void removeListener(ISUPListener listener) {
-        if (listener == null) {
+    public void removeListener(UUID key) {
+        if (key == null) {
             throw new NullPointerException("Listener must not be null!");
         }
-        this.listeners.remove(listener);
+        this.listeners.remove(key);
 
     }
 
@@ -196,7 +193,7 @@ public class ISUPProviderImpl implements ISUPProvider {
         this.cic2Circuit.clear();
 
         for (long channelID : channelIDs) {
-            Circuit c = new Circuit(cm.getCIC(channelID), cm.getDPC(channelID), this, scheduler);
+            Circuit c = new Circuit(cm.getCIC(channelID), cm.getDPC(channelID), this, this.stack.getExecutorService());
             cic2Circuit.put(channelID, c);
         }
     }
@@ -235,7 +232,7 @@ public class ISUPProviderImpl implements ISUPProvider {
             // what for do we need to throw this error , lets simply add a circuit and return it , we have all parameters anyway
             // throw new IllegalArgumentException("Curcuit not defined, no route definition present!");
             this.stack.getCircuitManager().addCircuit(cic, dpc);
-            c = new Circuit(cic, dpc, this, scheduler);
+            c = new Circuit(cic, dpc, this, this.stack.getExecutorService());
             cic2Circuit.put(channelID, c);
         } else {
             c = this.cic2Circuit.get(channelID);
@@ -251,9 +248,10 @@ public class ISUPProviderImpl implements ISUPProvider {
      * @param request
      */
     public void deliver(ISUPEvent event) {
-        for (int index = 0; index < listeners.size(); index++) {
+    	Iterator<ISUPListener> iterator=listeners.values().iterator();
+        while(iterator.hasNext()) {
             try {
-                listeners.get(index).onEvent(event);
+            	iterator.next().onEvent(event);
             } catch (Exception e) {
                 if (logger.isEnabledFor(Level.ERROR)) {
                     logger.error("Exception thrown from listener.", e);
@@ -266,10 +264,11 @@ public class ISUPProviderImpl implements ISUPProvider {
     /**
      * @param timeoutEvent
      */
-    public void deliver(ISUPTimeoutEvent timeoutEvent) {
-        for (int index = 0; index < listeners.size(); index++) {
+    public void deliver(ISUPTimeoutEvent timeoutEvent) {    	
+    	Iterator<ISUPListener> iterator=listeners.values().iterator();
+        while(iterator.hasNext()) {
             try {
-                listeners.get(index).onTimeout(timeoutEvent);
+                iterator.next().onTimeout(timeoutEvent);
             } catch (Exception e) {
                 if (logger.isEnabledFor(Level.ERROR)) {
                     logger.error("Exception thrown from listener.", e);

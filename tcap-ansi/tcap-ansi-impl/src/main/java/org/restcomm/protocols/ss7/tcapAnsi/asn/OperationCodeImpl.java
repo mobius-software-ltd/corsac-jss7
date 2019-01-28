@@ -39,8 +39,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
  *
  */
 public class OperationCodeImpl implements OperationCode {
+	private static final long serialVersionUID = 1L;
 
-    private Long nationalOperationCode;
+	private Long nationalOperationCode;
     private Long privateOperationCode;
     private OperationCodeType type;
 

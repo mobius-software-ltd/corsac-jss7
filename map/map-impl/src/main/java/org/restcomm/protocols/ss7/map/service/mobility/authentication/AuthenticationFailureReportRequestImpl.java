@@ -50,8 +50,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 *
 */
 public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl implements AuthenticationFailureReportRequest {
+	private static final long serialVersionUID = 1L;
 
-    protected static final int _TAG_vlrNumber = 0;
+	protected static final int _TAG_vlrNumber = 0;
     protected static final int _TAG_sgsnNumber = 1;
 
     public static final String _PrimitiveName = "AuthenticationFailureReportRequest";

@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSMState;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.TransitionHandler;
@@ -32,8 +31,6 @@ import org.restcomm.protocols.ss7.m3ua.impl.fsm.TransitionHandler;
  *
  */
 public class THPeerAsPendToAct implements TransitionHandler {
-
-    private static final Logger logger = Logger.getLogger(THPeerAsPendToAct.class);
 
     private AsImpl asImpl = null;
     private FSM fsm;

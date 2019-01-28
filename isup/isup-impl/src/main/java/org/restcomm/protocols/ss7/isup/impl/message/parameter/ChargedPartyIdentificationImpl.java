@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ChargedPartyIdentificat
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ChargedPartyIdentificationImpl extends AbstractISUPParameter implements ChargedPartyIdentification {
+	private static final long serialVersionUID = 1L;
 
-  //FIXME: XXX
+	//FIXME: XXX
     @Override
     public int getCode() {
         // TODO Auto-generated method stub

@@ -34,8 +34,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduType;
  *
  */
 public abstract class SmsTpduImpl implements SmsTpdu {
+	private static final long serialVersionUID = 1L;
 
-    protected static int _MASK_TP_MTI = 0x03;
+	protected static int _MASK_TP_MTI = 0x03;
     protected static int _MASK_TP_MMS = 0x04;
     protected static int _MASK_TP_RD = 0x04;
     protected static int _MASK_TP_LP = 0x08;
@@ -76,6 +77,8 @@ public abstract class SmsTpduImpl implements SmsTpdu {
                     return new SmsSubmitTpduImpl(data, gsm8Charset);
                 case SMS_COMMAND:
                     return new SmsCommandTpduImpl(data);
+				default:
+					break;
             }
         } else {
             SmsTpduType type = SmsTpduType.getMobileTerminatedInstance(tpMti);
@@ -86,6 +89,8 @@ public abstract class SmsTpduImpl implements SmsTpdu {
                     return new SmsSubmitReportTpduImpl(data, gsm8Charset);
                 case SMS_STATUS_REPORT:
                     return new SmsStatusReportTpduImpl(data, gsm8Charset);
+				default:
+					break;
             }
         }
 
