@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,17 +103,17 @@ public class SccpManagementProxy extends SccpManagement {
 
     @Override
     public void onManagementMessage(SccpDataMessage message) {
-        byte[] data = message.getData();
-        int messgType = data[0];
-        int affectedSsn = data[1];
+        ByteBuf data = message.getData();
+        int messgType = data.readByte();
+        int affectedSsn = data.readByte();
         int affectedPc;
         int subsystemMultiplicity;
         if (sccpStackImpl.getSccpProtocolVersion() == SccpProtocolVersion.ANSI) {
-            affectedPc = (data[2] & 0xff) | ((data[3] & 0xff) << 8) | ((data[4] & 0xff) << 16);
-            subsystemMultiplicity = data[5] & 0xff;
+            affectedPc = (data.readByte() & 0xff) | ((data.readByte() & 0xff) << 8) | ((data.readByte() & 0xff) << 16);
+            subsystemMultiplicity = data.readByte() & 0xff;
         } else {
-            affectedPc = (data[2] & 0xff) | ((data[3] & 0xff) << 8);
-            subsystemMultiplicity = data[4] & 0xff;
+            affectedPc = (data.readByte() & 0xff) | ((data.readByte() & 0xff) << 8);
+            subsystemMultiplicity = data.readByte() & 0xff;
         }
         SccpMgmtMessage mgmtMessage = new SccpMgmtMessage(seq++, messgType, affectedSsn, affectedPc, subsystemMultiplicity);
         mgmtMessages.add(mgmtMessage);

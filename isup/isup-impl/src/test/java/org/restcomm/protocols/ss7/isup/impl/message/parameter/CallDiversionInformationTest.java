@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallDiversionInformationImpl;
@@ -46,18 +49,18 @@ public class CallDiversionInformationTest extends ParameterHarness {
     public CallDiversionInformationTest() {
         super();
 
-        super.badBodies.add(new byte[0]);
-        super.badBodies.add(new byte[2]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[0]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[2]));
 
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
 
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
         // Notif sub options : 010 - presentation allowed
         // redirect reason : 0100 - deflection during alerting
         // whole : 00100010
-        return new byte[] { 0x22 };
+        return Unpooled.wrappedBuffer(new byte[] { 0x22 });
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -75,7 +78,7 @@ public class CallDiversionInformationTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new CallDiversionInformationImpl(new byte[1]);
+        return new CallDiversionInformationImpl(Unpooled.wrappedBuffer(new byte[1]));
     }
 
 }

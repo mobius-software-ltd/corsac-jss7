@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ServiceActivation;
 
@@ -40,40 +43,40 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ServiceActivation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ServiceActivationImpl extends AbstractISUPParameter implements ServiceActivation {
-	private static final long serialVersionUID = 1L;
-
 	// FIXME: this is again simple container
     /**
      * See Q.763 3.49
      */
     public static final byte _FEATURE_CODE_CALL_TRANSFER = 1;
 
-    private byte[] featureCodes;
+    private ByteBuf featureCodes;
 
     public ServiceActivationImpl() {
         super();
 
     }
 
-    public ServiceActivationImpl(byte[] featureCodes) {
+    public ServiceActivationImpl(ByteBuf featureCodes) {
         super();
         this.featureCodes = featureCodes;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        this.featureCodes = b;
-        return b.length;
+    public void decode(ByteBuf b) throws ParameterException {
+        this.featureCodes = b;        
     }
 
-    public byte[] encode() throws ParameterException {
-        return this.featureCodes;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeBytes(getFeatureCodes());
     }
 
-    public byte[] getFeatureCodes() {
-        return featureCodes;
+    public ByteBuf getFeatureCodes() {
+    	if(featureCodes==null)
+        	return null;
+        
+        return Unpooled.wrappedBuffer(featureCodes);
     }
 
-    public void setFeatureCodes(byte[] featureCodes) {
+    public void setFeatureCodes(ByteBuf featureCodes) {
         this.featureCodes = featureCodes;
     }
 

@@ -27,9 +27,7 @@ import org.restcomm.protocols.ss7.sccp.message.ParseException;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 public class LocalReferenceImpl extends AbstractParameter implements LocalReference {
 	private static final long serialVersionUID = 1L;
@@ -52,50 +50,21 @@ public class LocalReferenceImpl extends AbstractParameter implements LocalRefere
     }
 
     @Override
-    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        this.value = 0;
-        try {
-            if (in.read() != 3) {
-                throw new ParseException();
-            }
-            this.value = in.read() << 16;
-            this.value |= in.read() << 8;
-            this.value |= in.read();
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
-
-    @Override
-    public void encode(final OutputStream os, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            os.write(3);
-            os.write(this.value >> 16 & 0xFF);
-            os.write(this.value >> 8 & 0xFF);
-            os.write(this.value      & 0xFF);
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
-
-    @Override
-    public void decode(final byte[] b, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        if (b.length < 3) {
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        if (buffer.readableBytes() < 3) {
             throw new ParseException();
         }
-        this.value =  (int)b[0] << 16 & 0xFFFFFF;
-        this.value |= (int)b[1] << 8 & 0xFFFF;
-        this.value |= (int)b[2] & 0xFF;
+        this.value =  (int)buffer.readByte() << 16 & 0xFFFFFF;
+        this.value |= (int)buffer.readByte() << 8 & 0xFFFF;
+        this.value |= (int)buffer.readByte() & 0xFF;
 
     }
 
     @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return new byte[] {
-                (byte) (this.value >> 16 & 0xFF),
-                (byte) (this.value >> 8 & 0xFF),
-                (byte) (this.value      & 0xFF)
-        };
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	buffer.writeByte((byte) (this.value >> 16 & 0xFF));
+    	buffer.writeByte((byte) (this.value >> 8 & 0xFF));
+    	buffer.writeByte((byte) (this.value      & 0xFF));    	
     }
 
     @Override

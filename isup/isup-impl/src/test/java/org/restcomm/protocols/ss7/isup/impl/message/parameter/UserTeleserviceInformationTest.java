@@ -25,11 +25,11 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
@@ -66,16 +66,16 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
     public void tearDown() {
     }
 
-    private byte[] getData() {
-        return new byte[] { (byte) 209, (byte) 179 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 209, (byte) 179 });
     }
 
-    private byte[] getData2() {
-        return new byte[] { (byte) 145, 94, (byte) 181 };
+    private ByteBuf getData2() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 145, 94, (byte) 181 });
     }
 
-    private byte[] getData3() {
-        return new byte[] { (byte) 145, 98, (byte) 129 };
+    private ByteBuf getData3() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 145, 98, (byte) 129 });
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -122,28 +122,31 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
                 UserTeleserviceInformation._PRESENTATION_METHOD_HLPP, UserTeleserviceInformation._HLCI_IVTI);
         // int codingStandard, int interpretation, int presentationMethod, int highLayerCharIdentification
 
-        byte[] data = getData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getData();
+        ByteBuf encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
-
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
+        
         prim = new UserTeleserviceInformationImpl(UserTeleserviceInformation._CODING_STANDARD_ITU_T,
                 UserTeleserviceInformation._INTERPRETATION_FHGCI, UserTeleserviceInformation._PRESENTATION_METHOD_HLPP,
                 UserTeleserviceInformation._HLCI_MAINTAINENCE, 53);
 
         data = getData2();
-        encodedData = prim.encode();
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim = new UserTeleserviceInformationImpl(UserTeleserviceInformation._CODING_STANDARD_ITU_T,
                 UserTeleserviceInformation._INTERPRETATION_FHGCI, UserTeleserviceInformation._PRESENTATION_METHOD_HLPP,
                 UserTeleserviceInformation._HLCI_AUDIOGRAPHIC_CONF, UserTeleserviceInformation._EACI_CSIC_H221, true);
 
         data = getData3();
-        encodedData = prim.encode();
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
     }
 
@@ -261,19 +264,19 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(int _PRESENTATION_METHOD, int _INTERPRETATION, int _CODING_STANDARD, int _HLCI) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(0x80 | (_CODING_STANDARD << 5) | (_INTERPRETATION << 2) | _PRESENTATION_METHOD);
-        bos.write(0x80 | _HLCI);
-        return bos.toByteArray();
+    private ByteBuf getBody(int _PRESENTATION_METHOD, int _INTERPRETATION, int _CODING_STANDARD, int _HLCI) {
+    	ByteBuf bos = Unpooled.buffer();
+        bos.writeByte(0x80 | (_CODING_STANDARD << 5) | (_INTERPRETATION << 2) | _PRESENTATION_METHOD);
+        bos.writeByte(0x80 | _HLCI);
+        return bos;
     }
 
-    private byte[] getBody(int _PRESENTATION_METHOD, int _INTERPRETATION, int _CODING_STANDARD, int _HLCI, int _EACI) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(0x80 | (_CODING_STANDARD << 5) | (_INTERPRETATION << 2) | _PRESENTATION_METHOD);
-        bos.write(_HLCI);
-        bos.write(0x80 | _EACI);
-        return bos.toByteArray();
+    private ByteBuf getBody(int _PRESENTATION_METHOD, int _INTERPRETATION, int _CODING_STANDARD, int _HLCI, int _EACI) {
+    	ByteBuf bos = Unpooled.buffer();
+        bos.writeByte(0x80 | (_CODING_STANDARD << 5) | (_INTERPRETATION << 2) | _PRESENTATION_METHOD);
+        bos.writeByte(_HLCI);
+        bos.writeByte(0x80 | _EACI);
+        return bos;
     }
 
     public AbstractISUPParameter getTestedComponent() {

@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginatingParticipatingServiceProvider;
@@ -42,90 +41,70 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginatingParticipatin
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
-public class OriginatingParticipatingServiceProviderImpl extends AbstractNumber implements
-        OriginatingParticipatingServiceProvider {
-	private static final long serialVersionUID = 1L;
-
+public class OriginatingParticipatingServiceProviderImpl extends AbstractNumber implements OriginatingParticipatingServiceProvider {
+	
 	// FIXME: shoudl we add max octets ?
     private int opspLengthIndicator;
 
     public OriginatingParticipatingServiceProviderImpl() {
-
     }
 
-    public OriginatingParticipatingServiceProviderImpl(byte[] representation) throws ParameterException {
+    public OriginatingParticipatingServiceProviderImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
-    }
-
-    public OriginatingParticipatingServiceProviderImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     public OriginatingParticipatingServiceProviderImpl(String address) {
         super(address);
-
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        return super.decode(b);
+    public void decode(ByteBuf b) throws ParameterException {
+        super.decode(b);
     }
 
-    public byte[] encode() throws ParameterException {
-        return super.encode();
+    public void encode(ByteBuf b) throws ParameterException {
+        super.encode(b);
     }
 
-    public int decodeHeader(ByteArrayInputStream bis) throws ParameterException {
-        if (bis.available() == 0) {
+    public void decodeHeader(ByteBuf buffer) throws ParameterException {
+        if (buffer.readableBytes() == 0) {
             throw new ParameterException("No more data to read.");
         }
-        int b = bis.read() & 0xff;
+        int b = buffer.readByte() & 0xff;
 
         this.oddFlag = (b & 0x80) >> 7;
-        this.opspLengthIndicator = b & 0x0F;
-        return 1;
+        this.opspLengthIndicator = b & 0x0F;        
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         int b = 0;
         // Even is 000000000 == 0
         boolean isOdd = this.oddFlag == _FLAG_ODD;
         if (isOdd)
             b |= 0x80;
         b |= this.opspLengthIndicator & 0x0F;
-        bos.write(b);
-        return 1;
+        buffer.writeByte(b);        
     }
 
-    public int decodeBody(ByteArrayInputStream bis) throws ParameterException {
-
-        return 0;
+    public void decodeBody(ByteBuf buffer) throws ParameterException {        
     }
 
-    public int encodeBody(ByteArrayOutputStream bos) {
-
-        return 0;
+    public void encodeBody(ByteBuf buffer) {
     }
 
-    public int decodeDigits(ByteArrayInputStream bis) throws ParameterException {
+    public void decodeDigits(ByteBuf buffer) throws ParameterException {
         if (this.opspLengthIndicator > 0) {
-            if (bis.available() == 0) {
+            if (buffer.readableBytes() == 0) {
                 throw new ParameterException("No more data to read.");
             }
-            return super.decodeDigits(bis, this.opspLengthIndicator);
-        } else {
-            return 0;
+            
+            super.decodeDigits(buffer, this.opspLengthIndicator);
         }
     }
 
-    public int encodeDigits(ByteArrayOutputStream bos) {
+    public void encodeDigits(ByteBuf buffer) {
         if (this.opspLengthIndicator > 0) {
-            return super.encodeDigits(bos);
-        } else {
-            return 0;
+            super.encodeDigits(buffer);
         }
-
     }
 
     public int getOpspLengthIndicator() {
@@ -147,7 +126,6 @@ public class OriginatingParticipatingServiceProviderImpl extends AbstractNumber 
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 }

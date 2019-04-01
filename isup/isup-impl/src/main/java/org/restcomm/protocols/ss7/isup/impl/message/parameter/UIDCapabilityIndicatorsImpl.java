@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UIDCapabilityIndicators;
 
@@ -41,14 +44,12 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UIDCapabilityIndicators
  *
  */
 public class UIDCapabilityIndicatorsImpl extends AbstractISUPParameter implements UIDCapabilityIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
-    private byte[] uidCapabilityIndicators = null;
+    private ByteBuf uidCapabilityIndicators = null;
 
-    public UIDCapabilityIndicatorsImpl(byte[] udiActionIndicators) throws ParameterException {
+    public UIDCapabilityIndicatorsImpl(ByteBuf udiActionIndicators) throws ParameterException {
         super();
         decode(udiActionIndicators);
     }
@@ -58,30 +59,29 @@ public class UIDCapabilityIndicatorsImpl extends AbstractISUPParameter implement
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        try {
-            setUIDCapabilityIndicators(b);
-        } catch (Exception e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
+    public void decode(ByteBuf b) throws ParameterException {
+    	setUIDCapabilityIndicators(b);
     }
 
-    public byte[] encode() throws ParameterException {
-        for (int index = 0; index < this.uidCapabilityIndicators.length; index++) {
-            this.uidCapabilityIndicators[index] = (byte) (this.uidCapabilityIndicators[index] & 0x7F);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getUIDCapabilityIndicators();
+        while(curr.readableBytes()>1) {
+        	buffer.writeByte((byte) (curr.readByte() & 0x7F));
         }
 
-        this.uidCapabilityIndicators[this.uidCapabilityIndicators.length - 1] = (byte) ((this.uidCapabilityIndicators[this.uidCapabilityIndicators.length - 1]) | (0x01 << 7));
-        return this.uidCapabilityIndicators;
+        if(curr.readableBytes()>0)
+        	buffer.writeByte((byte) ((curr.readByte()) | (0x01 << 7)));
     }
 
-    public byte[] getUIDCapabilityIndicators() {
-        return uidCapabilityIndicators;
+    public ByteBuf getUIDCapabilityIndicators() {
+    	if(uidCapabilityIndicators==null)
+        	return null;
+        
+        return Unpooled.wrappedBuffer(uidCapabilityIndicators);
     }
 
-    public void setUIDCapabilityIndicators(byte[] uidCapabilityIndicators) {
-        if (uidCapabilityIndicators == null || uidCapabilityIndicators.length == 0) {
+    public void setUIDCapabilityIndicators(ByteBuf uidCapabilityIndicators) {
+        if (uidCapabilityIndicators == null || uidCapabilityIndicators.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
         this.uidCapabilityIndicators = uidCapabilityIndicators;

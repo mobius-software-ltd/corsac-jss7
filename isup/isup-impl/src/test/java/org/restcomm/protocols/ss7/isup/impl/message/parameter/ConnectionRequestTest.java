@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -51,44 +53,44 @@ public class ConnectionRequestTest extends ParameterHarness {
      * @throws IOException
      */
     public ConnectionRequestTest() throws IOException {
-        super.badBodies.add(new byte[1]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
 
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
         // This will fail, cause this body has APRI allowed, so hardcoded body
         // does nto match encoded body :)
         // super.goodBodies.add(getBody2());
     }
 
-    private byte[] getBody1() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody1() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
         // Local reference
-        bos.write(12);
-        bos.write(120);
-        bos.write(38);
+        bos.writeByte(12);
+        bos.writeByte(120);
+        bos.writeByte(38);
 
         // Signaling point code
-        bos.write(120);
-        bos.write(45);
+        bos.writeByte(120);
+        bos.writeByte(45);
         // protocol class
-        bos.write(120);
+        bos.writeByte(120);
         // credit
-        bos.write(69);
-        return bos.toByteArray();
+        bos.writeByte(69);
+        return bos;
     }
 
-    private byte[] getBody2() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody2() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
 
         // Local reference
-        bos.write(12);
-        bos.write(120);
-        bos.write(38);
+        bos.writeByte(12);
+        bos.writeByte(120);
+        bos.writeByte(38);
 
         // Signaling point code
-        bos.write(120);
-        bos.write(12);
-        return bos.toByteArray();
+        bos.writeByte(120);
+        bos.writeByte(12);
+        return bos;
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -131,7 +133,7 @@ public class ConnectionRequestTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new ConnectionRequestImpl(new byte[5]);
+        return new ConnectionRequestImpl(Unpooled.wrappedBuffer(new byte[5]));
     }
 
 }

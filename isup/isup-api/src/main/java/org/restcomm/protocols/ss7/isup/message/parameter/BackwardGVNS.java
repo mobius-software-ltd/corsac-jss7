@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:11:04:41 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -37,7 +39,7 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
 public interface BackwardGVNS extends ISUPParameter {
     int _PARAMETER_CODE = 0x4D;
 
-    byte[] getBackwardGVNS();
+    ByteBuf getBackwardGVNS();
 
-    void setBackwardGVNS(byte[] backwardGVNS);
+    void setBackwardGVNS(ByteBuf backwardGVNS);
 }

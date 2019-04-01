@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -75,8 +77,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessT
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 class AddressCompleteMessageImpl extends ISUPMessageImpl implements AddressCompleteMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.AddressComplete);
 
     private static final int _MANDATORY_VAR_COUNT = 0;
@@ -342,31 +342,26 @@ class AddressCompleteMessageImpl extends ISUPMessageImpl implements AddressCompl
         return (RedirectStatus) super.o_Parameters.get(_INDEX_O_RedirectStatus);
     }
 
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-        if (b.length - index > 1) {
+        
+    	super.decodeMandatoryParameters(parameterFactory, b);
+        if (b.readableBytes()>0) {
 
             // this.circuitIdentificationCode = b[index++];
             try {
-                byte[] backwardCallIndicator = new byte[2];
-                backwardCallIndicator[0] = b[index++];
-                backwardCallIndicator[1] = b[index++];
+                ByteBuf backwardCallIndicator = b.slice(b.readerIndex(), 2);
                 BackwardCallIndicators bci = parameterFactory.createBackwardCallIndicators();
                 ((AbstractISUPParameter) bci).decode(backwardCallIndicator);
+                b.skipBytes(2);
                 this.setBackwardCallIndicators(bci);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
-
-            // return 3;
-            return index - localIndex;
         } else {
             throw new IllegalArgumentException("byte[] must have atleast five octets");
         }
-
     }
 
     protected int getNumberOfMandatoryVariableLengthParameters() {
@@ -374,17 +369,17 @@ class AddressCompleteMessageImpl extends ISUPMessageImpl implements AddressCompl
         return _MANDATORY_VAR_COUNT;
     }
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody,int parameterIndex)
             throws ParameterException {
         throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
     }
 
-    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
         throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
     }
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
 
         switch (parameterCode & 0xFF) {

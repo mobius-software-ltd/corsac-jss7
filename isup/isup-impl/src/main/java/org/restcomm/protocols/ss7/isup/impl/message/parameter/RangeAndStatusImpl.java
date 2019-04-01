@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
@@ -43,17 +42,15 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAndStatus {
-	private static final long serialVersionUID = 1L;
-
 	private byte range;
     private byte[] status;
 
     // FIXME:
     // private Status[] status = null;
 
-    public RangeAndStatusImpl(byte[] b) throws ParameterException {
+    public RangeAndStatusImpl(ByteBuf b) throws ParameterException {
         super();
-        if (b.length < 1) {
+        if (b.readableBytes() < 1) {
             throw new ParameterException("RangeAndStatus requires atleast 1 byte.");
         }
         decode(b);
@@ -71,30 +68,22 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
         setStatus(status);
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
 
-        this.range = b[0];
-        if (b.length == 1)
-            return 1;
-        this.status = new byte[b.length - 1];
-        System.arraycopy(b, 1, this.status, 0, this.status.length);
-
-        return b.length;
+        this.range = b.readByte();
+        if (b.readableBytes()==0)
+            return;
+        
+        this.status = new byte[b.readableBytes()];
+        b.readBytes(this.status);
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf b) throws ParameterException {
         checkData(range, status);
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(this.range);
-        if (this.status != null) {
-            try {
-                bos.write(this.status);
-            } catch (IOException e) {
-                throw new ParameterException(e);
-            }
-        }
-        return bos.toByteArray();
+        b.writeByte(this.range);
+        if(this.status!=null)
+        	b.writeBytes(this.status);
     }
 
     public byte getRange() {

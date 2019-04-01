@@ -30,7 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledINNumber;
@@ -42,22 +42,11 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledINNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CalledINNumberImpl extends CalledNumberImpl implements CalledINNumber {
-	private static final long serialVersionUID = 1L;
-
 	/**
      * @param representation
      */
-    public CalledINNumberImpl(byte[] representation) throws ParameterException {
+    public CalledINNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
-    }
-
-    /**
-     * @param bis
-     */
-    public CalledINNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     public CalledINNumberImpl() {

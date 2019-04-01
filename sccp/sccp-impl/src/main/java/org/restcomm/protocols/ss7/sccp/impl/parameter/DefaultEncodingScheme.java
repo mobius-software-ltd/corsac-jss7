@@ -21,9 +21,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
 import org.restcomm.protocols.ss7.sccp.parameter.EncodingScheme;
@@ -57,64 +55,56 @@ public class DefaultEncodingScheme implements EncodingScheme {
     }
 
     @Override
-    public void encode(String digits, OutputStream out) throws ParseException {
-        try {
-            boolean odd;
-            if (getSchemeCode() != 0) {
-                odd = isOdd();
-            } else {
-                odd = digits.length() % 2 != 0;
-            }
+    public void encode(String digits, ByteBuf buffer) throws ParseException {
+    	boolean odd;
+        if (getSchemeCode() != 0) {
+            odd = isOdd();
+        } else {
+            odd = digits.length() % 2 != 0;
+        }
 
-            int b = 0;
+        int b = 0;
 
-            int count = odd ? digits.length() - 1 : digits.length();
+        int count = odd ? digits.length() - 1 : digits.length();
 
-            for (int i = 0; i < count - 1; i += 2) {
-                String ds1 = digits.substring(i, i + 1);
-                String ds2 = digits.substring(i + 1, i + 2);
+        for (int i = 0; i < count - 1; i += 2) {
+            String ds1 = digits.substring(i, i + 1);
+            String ds2 = digits.substring(i + 1, i + 2);
 
-                int d1 = Integer.parseInt(ds1, 16);
-                int d2 = Integer.parseInt(ds2, 16);
+            int d1 = Integer.parseInt(ds1, 16);
+            int d2 = Integer.parseInt(ds2, 16);
 
-                b = (byte) (d2 << 4 | d1);
-                out.write(b);
-            }
+            b = (byte) (d2 << 4 | d1);
+            buffer.writeByte(b);
+        }
 
-            // if number is odd append last digit with filler
-            if (odd) {
-                String ds1 = digits.substring(count, count + 1);
-                int d = Integer.parseInt(ds1, 16);
+        // if number is odd append last digit with filler
+        if (odd) {
+            String ds1 = digits.substring(count, count + 1);
+            int d = Integer.parseInt(ds1, 16);
 
-                b = (byte) (d & 0x0f);
-                out.write(b);
-            }
-        } catch (IOException e) {
-            throw new ParseException(e);
+            b = (byte) (d & 0x0f);
+            buffer.writeByte(b);
         }
     }
 
     @Override
-    public String decode(InputStream is) throws ParseException {
-        try {
-            int b;
-            StringBuilder digits = new StringBuilder();
+    public String decode(ByteBuf buffer) throws ParseException {
+    	int b;
+        StringBuilder digits = new StringBuilder();
 
-            while (is.available() > 0) {
-                b = is.read() & 0xff;
+        while (buffer.readableBytes() > 0) {
+            b = buffer.readByte() & 0xff;
 
-                digits.append(Integer.toHexString(b & 0x0f));
-                digits.append(Integer.toHexString((b & 0xf0) >> 4));
-            }
-
-            if (isOdd()) {
-                digits.deleteCharAt(digits.length() - 1);
-            }
-
-            return digits.toString().toLowerCase();
-        } catch (IOException e) {
-            throw new ParseException(e);
+            digits.append(Integer.toHexString(b & 0x0f));
+            digits.append(Integer.toHexString((b & 0xf0) >> 4));
         }
+
+        if (isOdd()) {
+            digits.deleteCharAt(digits.length() - 1);
+        }
+
+        return digits.toString().toLowerCase();
     }
     @Override
     public int hashCode() {

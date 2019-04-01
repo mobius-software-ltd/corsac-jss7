@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import java.io.InputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
@@ -135,7 +135,7 @@ public abstract class SccpMessageImpl implements SccpMessage {
         this.networkId = networkId;
     }
 
-    public abstract void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException;
+    public abstract void decode(ByteBuf in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException;
 
     public abstract EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger,
             boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException;

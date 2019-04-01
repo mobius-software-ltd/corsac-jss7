@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 
 /**
@@ -51,9 +50,6 @@ public enum GeneralProblemType {
     BadlyStructuredComponent(2);
 
     private long type = -1;
-
-    public static final int _TAG_CLASS = Tag.CLASS_APPLICATION;
-    public static final boolean _TAG_PC_PRITIMITIVE = true;
 
     GeneralProblemType(long l) {
         this.type = l;

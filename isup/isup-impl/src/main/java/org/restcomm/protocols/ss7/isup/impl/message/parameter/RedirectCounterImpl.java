@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectCounter;
 
@@ -40,11 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectCounter;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RedirectCounterImpl extends AbstractISUPParameter implements RedirectCounter {
-	private static final long serialVersionUID = 1L;
-
 	private int counter;
 
-    public RedirectCounterImpl(byte[] b) throws ParameterException {
+    public RedirectCounterImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -59,18 +59,17 @@ public class RedirectCounterImpl extends AbstractISUPParameter implements Redire
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null and length must be 1");
         }
 
-        this.counter = b[0] & 0x1F;
-        return 1;
+        this.counter = b.readByte() & 0x1F;        
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf b) throws ParameterException {
 
-        return new byte[] { (byte) (this.counter & 0x1F) };
+        b.writeByte((byte) (this.counter & 0x1F));
     }
 
     public int getCounter() {

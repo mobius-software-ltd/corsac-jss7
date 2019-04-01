@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -47,8 +47,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public abstract class ISUPMessageImpl extends AbstractISUPMessage {
-	private static final long serialVersionUID = 1L;
-
 	/**
      * To use one when encoding, created, possibly when decoding
      */
@@ -144,30 +142,18 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
 
     // ////////////////
     // CODE SECTION //
-    // ////////////////
-    public byte[] encode() throws ParameterException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        // akward :)
-        this.encode(bos);
-        return bos.toByteArray();
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-
-        // bos.write(this.circuitIdentificationCode);
-
+    // ////////////////    
+    public void encode(ByteBuf buffer) throws ParameterException {
         final boolean optionalPresent = this.o_Parameters.size() > 1;
-        this.encodeMandatoryParameters(f_Parameters, bos);
-        this.encodeMandatoryVariableParameters(v_Parameters, bos, optionalPresent);
+        this.encodeMandatoryParameters(f_Parameters, buffer);
+        this.encodeMandatoryVariableParameters(v_Parameters, buffer, optionalPresent);
         if (optionalPresent) {
-            this.encodeOptionalParameters(o_Parameters, bos);
+            this.encodeOptionalParameters(o_Parameters, buffer);
         }
-
-        return bos.size();
     }
 
     // NOTE: those methods are more or less generic.
-    protected void encodeMandatoryParameters(Map<Integer, ISUPParameter> parameters, ByteArrayOutputStream bos)
+    protected void encodeMandatoryParameters(Map<Integer, ISUPParameter> parameters, ByteBuf buffer)
             throws ParameterException {
         // 1.5 Mandatory fixed part
         // Those parameters that are mandatory and of fixed length for a
@@ -181,9 +167,9 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
             // this will be changed to different exception
             throw new ParameterException("CIC is not set!");
         }
-        ((AbstractISUPParameter) this.cic).encode(bos);
+        ((AbstractISUPParameter) this.cic).encode(buffer);
         for (ISUPParameter p : parameters.values()) {
-            ((AbstractISUPParameter) p).encode(bos);
+            ((AbstractISUPParameter) p).encode(buffer);
         }
     }
 
@@ -196,74 +182,66 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
      *        will encode this octet as zeros
      * @throws ParameterException
      */
-    protected void encodeMandatoryVariableParameters(Map<Integer, ISUPParameter> parameters, ByteArrayOutputStream bos,
+    protected void encodeMandatoryVariableParameters(Map<Integer, ISUPParameter> parameters, ByteBuf buffer,
             boolean isOptionalPartPresent) throws ParameterException {
         try {
-            byte[] pointers = null;
             // complicated
             if (!mandatoryVariablePartPossible()) {
                 // we ommit pointer to this part, go straight for optional pointer.
                 if (optionalPartIsPossible()) {
                     if (isOptionalPartPresent) {
-                        pointers = new byte[] { 0x01 };
+                    	buffer.writeByte(0x01);
                     } else {
                         // zeros
-                        pointers = new byte[] { 0x00 };
+                    	buffer.writeByte(0x00);
                     }
-                    bos.write(pointers);
                 } else {
                     // do nothing?
                 }
 
             } else {
-                if (optionalPartIsPossible()) {
-                    pointers = new byte[parameters.size() + 1];
-                } else {
-                    pointers = new byte[parameters.size()];
-                }
-                ByteArrayOutputStream parametersBodyBOS = new ByteArrayOutputStream();
-                byte lastParameterLength = 0;
-                byte currentParameterLength = 0;
+            	int lastParameterLength = 0;
+                int currentParameterLength = 0;     
+                int totalParameterLength=0;
+                
                 for (int index = 0; index < parameters.size(); index++) {
                     AbstractISUPParameter p = (AbstractISUPParameter) parameters.get(index);
+                    
+                    if (index == 0)
+                        totalParameterLength=(parameters.size() + (optionalPartIsPossible() ? 1 : 0));
+                    else 
+                    	totalParameterLength+=lastParameterLength;
 
-                    byte[] body = p.encode();
-                    currentParameterLength = (byte) body.length;
-                    if (body.length > 255) {
-                        // FIXME: is this check valid?
+                    buffer.writeByte(totalParameterLength);                
+                    buffer.markWriterIndex();
+                    
+                    int originalIndex=buffer.writerIndex();                    
+                    buffer.writerIndex(originalIndex+totalParameterLength);
+                    int currWriteIndex=buffer.writerIndex();
+                    p.encode(buffer);                    
+                    currentParameterLength = buffer.writerIndex()-currWriteIndex;
+                    if (currentParameterLength > 255) {
                         throw new ParameterException("Length of body must not be greater than one octet - 255 ");
-                    }
-                    if (index == 0) {
-                        lastParameterLength = currentParameterLength;
+                    }                    
 
-                        // This creates pointer to first mandatory variable param,
-                        // check on optional is required, since if its not defined
-                        // by message, pointer is omited.
-                        pointers[index] = (byte) (parameters.size() + (optionalPartIsPossible() ? 1 : 0));
-                    } else {
-
-                        pointers[index] = (byte) (pointers[index - 1] + lastParameterLength);
-                        lastParameterLength = currentParameterLength;
-                    }
-
-                    parametersBodyBOS.write(currentParameterLength);
-                    parametersBodyBOS.write(body);
+                    buffer.writerIndex(originalIndex+totalParameterLength-1);
+                    buffer.writeByte(currentParameterLength);
+                    lastParameterLength = currentParameterLength;   
+                    buffer.resetWriterIndex();
                 }
 
                 // we ommit pointer to this part, go straight for optional pointer.
+                totalParameterLength+=lastParameterLength;
                 if (optionalPartIsPossible()) {
-                    if (isOptionalPartPresent) {
-                        pointers[pointers.length - 1] = (byte) (pointers[pointers.length - 2] + lastParameterLength);
+                	if (isOptionalPartPresent) {
+                    	buffer.writeByte(totalParameterLength);                        
                     } else {
-                        // zeros
-                        // pointers=new byte[]{0x00};
+                    	buffer.writeByte(0x00);
                     }
-                } else {
-                    // do nothing?
+                	totalParameterLength--;                	
                 }
-
-                bos.write(pointers);
-                bos.write(parametersBodyBOS.toByteArray());
+                
+                buffer.writerIndex(buffer.writerIndex() + totalParameterLength);
             }
         } catch (ParameterException pe) {
             throw pe;
@@ -279,7 +257,7 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
      * @param bos
      * @throws ParameterException
      */
-    protected void encodeOptionalParameters(Map<Integer, ISUPParameter> parameters, ByteArrayOutputStream bos)
+    protected void encodeOptionalParameters(Map<Integer, ISUPParameter> parameters, ByteBuf buffer)
             throws ParameterException {
 
         // NOTE: parameters MUST have as last endOfOptionalParametersParameter+1
@@ -289,80 +267,51 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
             if (p == null)
                 continue;
 
-            byte[] b = ((AbstractISUPParameter) p).encode();
-            // System.err.println("ENCODE O: "+p.getCode()+"---> "+Utils.toHex(b));
-            // FIXME: this can be slow, maybe we shoudl remove that, and code
-            // this explicitly?
-            if (b.length > 255) {
+            buffer.markWriterIndex();
+            buffer.writerIndex(2+buffer.writerIndex());
+            int currIndex=buffer.writerIndex();
+            ((AbstractISUPParameter) p).encode(buffer);
+            int length=buffer.writerIndex()-currIndex;
+            buffer.resetWriterIndex();
+            if (length > 255) {
                 throw new ParameterException("Parameter length is over 255: " + p);
             }
             if (!(p instanceof EndOfOptionalParametersImpl)) {
-                bos.write(p.getCode());
-
-                bos.write(b.length);
+                buffer.writeByte(p.getCode());
+                buffer.writeByte(length);
             }
-            try {
-                bos.write(b);
-            } catch (IOException e) {
-                throw new ParameterException("Failed to encode optional parameters.", e);
-            }
+            
+            buffer.writerIndex(buffer.writerIndex() + length);
         }
-
     }
 
-    public int decode(byte[] b, ISUPMessageFactory messageFactory,ISUPParameterFactory parameterFactory) throws ParameterException {
-        int index = 0;
-        index += this.decodeMandatoryParameters(parameterFactory, b, index);
+    public void decode(ByteBuf b, ISUPMessageFactory messageFactory,ISUPParameterFactory parameterFactory) throws ParameterException {
+        this.decodeMandatoryParameters(parameterFactory, b);
 
         if (mandatoryVariablePartPossible())
-            index += this.decodeMandatoryVariableParameters(parameterFactory, b, index);
+            this.decodeMandatoryVariableParameters(parameterFactory, b);
 
-        if (!this.optionalPartIsPossible() || b.length == index || b[index] == 0x0) {
-            return index;
+        if (!this.optionalPartIsPossible() || b.readableBytes()==0) {
+            return;
         }
 
         // moving pointer to possible location
         // index++;
 
         // +1 for pointer location :)
-        index += b[index];
-
-        index += this.decodeOptionalParameters(parameterFactory, b, index);
-        return index;
+        //index += b[index];
+        if (!mandatoryVariablePartPossible())
+            b.skipBytes(1);
+        //we are already at required location
+        this.decodeOptionalParameters(parameterFactory, b);        
     }
 
     // Unfortunelty this cant be generic, can it?
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
-            throws ParameterException {
-        int localIndex = index;
-        if (b.length - index >= 3) {
-            try {
-                byte[] cic = new byte[2];
-                cic[0] = b[index++];
-                cic[1] = b[index++];
-                this.cic = new CircuitIdentificationCodeImpl();
-                ((AbstractISUPParameter) this.cic).decode(cic);
-
-            } catch (Exception e) {
-                // AIOOBE or IllegalArg
-                throw new ParameterException("Failed to parse CircuitIdentificationCode due to: ", e);
-            }
-            try {
-                // Message Type
-                if (b[index] != this.getMessageType().getCode()) {
-                    throw new ParameterException("Message code is not: " + this.getMessageType().getCode());
-                }
-            } catch (Exception e) {
-                // AIOOBE or IllegalArg
-                throw new ParameterException("Failed to parse MessageCode due to: ", e);
-            }
-            index++;
-
-            // return 3;
-            return index - localIndex;
-        } else {
-            throw new IllegalArgumentException("byte[] must have atleast three octets");
-        }
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf buffer) throws ParameterException {
+    	this.cic=new CircuitIdentificationCodeImpl();
+        ((CircuitIdentificationCodeImpl)cic).decode(buffer.slice(buffer.readerIndex(), 2));        
+        //skip command
+        buffer.skipBytes(3);
     }
 
     /**
@@ -373,59 +322,49 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
      * @return
      * @throws ParameterException
      */
-    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, ByteBuf buffer)
             throws ParameterException {
-        // FIXME: possibly this should also be per msg, since if msg lacks
-        // proper parameter, decoding wotn pick this up and will throw
-        // some bad output, which wont give a clue about reason...
-        int readCount = 0;
-        // int optionalOffset = 0;
-
-        if (b.length - index > 0) {
-
-            byte extPIndex = -1;
+        if (buffer.readableBytes() > 0) {
+        	int parameterLength = 0;
             try {
-                int count = getNumberOfMandatoryVariableLengthParameters();
-                readCount = count;
-                for (int parameterIndex = 0; parameterIndex < count; parameterIndex++) {
-                    int lengthPointerIndex = index + parameterIndex;
-                    int parameterLengthIndex = b[lengthPointerIndex] + lengthPointerIndex;
-
-                    int parameterLength = b[parameterLengthIndex];
-                    byte[] parameterBody = new byte[parameterLength];
-                    System.arraycopy(b, parameterLengthIndex + 1, parameterBody, 0, parameterLength);
+                int parametersCount = getNumberOfMandatoryVariableLengthParameters();
+                for (int parameterIndex = 0; parameterIndex < parametersCount; parameterIndex++) {
+                	buffer.markReaderIndex();
+                    int parameterLengthIndex = buffer.readByte();
+                    buffer.skipBytes(parameterLengthIndex-1);
+                    parameterLength = buffer.readByte();
+                    ByteBuf parameterBody = buffer.slice(buffer.readerIndex(), parameterLength);
                     decodeMandatoryVariableBody(parameterFactory, parameterBody, parameterIndex);
-
-                }
-
-                // optionalOffset = b[index + readCount];
+                    buffer.resetReaderIndex();
+                    buffer.skipBytes(1);
+                }                
             } catch (ArrayIndexOutOfBoundsException aioobe) {
-                throw new ParameterException(
-                        "Failed to read parameter, to few octets in buffer, parameter index: " + extPIndex, aioobe);
+                throw new ParameterException("Failed to read parameter, to few octets in buffer", aioobe);
             } catch (IllegalArgumentException e) {
-                throw new ParameterException("Failed to parse, paramet index: " + extPIndex, e);
+                throw new ParameterException("Failed to parse", e);
             }
+            
+            //skipping to optional part
+            int optionalSkip=buffer.readByte();
+            if(optionalSkip>0)
+            	buffer.skipBytes(optionalSkip-1);
+            else if(parameterLength>0)
+            	buffer.skipBytes(parameterLength+1);
         } else {
             throw new ParameterException(
                     "To few bytes to decode mandatory variable part. There should be atleast on byte to indicate optional part.");
-        }
-
-        // return readCount + optionalOffset;
-        return readCount;
+        }       
     }
 
-    protected int decodeOptionalParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeOptionalParameters(ISUPParameterFactory parameterFactory, ByteBuf buffer)
             throws ParameterException {
 
-        int localIndex = index;
-
-        int readCount = 0;
         // if not, there are no params.
-        if (b.length - index > 0) {
+        if (buffer.readableBytes() > 0) {
             // let it rip :)
             boolean readParameter = true;
             while (readParameter) {
-                if (b.length - localIndex > 0 && b[localIndex] != 0) {
+                if (buffer.readableBytes() > 0) {
                     readParameter = true;
                 } else {
                     readParameter = false;
@@ -433,27 +372,20 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
                 }
                 byte extPCode = -1;
                 byte assumedParameterLength = -1;
-                try {
-
-                    byte parameterCode = b[localIndex++];
-                    extPCode = parameterCode;
-                    byte parameterLength = b[localIndex++];
-                    assumedParameterLength = parameterLength;
-                    byte[] parameterBody = new byte[parameterLength];
-                    // This is bad, we will change this
-
-                    System.arraycopy(b, localIndex, parameterBody, 0, parameterLength);
-                    localIndex += parameterLength;
-                    readCount += 2 + parameterLength;
-
-                    decodeOptionalBody(parameterFactory, parameterBody, parameterCode);
-
-                    if (b.length - localIndex > 0 && b[localIndex] != 0) {
-                        readParameter = true;
-                    } else {
-                        readParameter = false;
+                try {                	
+                    byte parameterCode = buffer.readByte();
+                    if(parameterCode==0x00) {
+                    	readParameter = false;
+                        continue;
                     }
-
+                    
+                    extPCode = parameterCode;
+                    byte parameterLength = buffer.readByte();
+                    assumedParameterLength = parameterLength;
+                    ByteBuf parameterBody=buffer.slice(buffer.readerIndex(),parameterLength);
+                    buffer.skipBytes(parameterLength);
+                    // This is bad, we will change this
+                    decodeOptionalBody(parameterFactory, parameterBody, parameterCode);
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     throw new ParameterException("Failed to read parameter, to few octets in buffer, parameter code: "
                             + extPCode + ", assumed length: " + assumedParameterLength, aioobe);
@@ -462,8 +394,6 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
                 }
             }
         }
-
-        return readCount;
     }
 
     // TODO: add general method to handle decode and "addParam" so we can remove "copy/paste" code to create param and set it in
@@ -472,10 +402,9 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
      * @param parameterBody
      * @param parameterIndex
      */
-    protected abstract void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody,
-            int parameterIndex) throws ParameterException;
+    protected abstract void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody,int parameterIndex) throws ParameterException;
 
-    protected abstract void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected abstract void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException;
 
     protected abstract int getNumberOfMandatoryVariableLengthParameters();

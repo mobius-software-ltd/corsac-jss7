@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformationPrime;
 
@@ -33,14 +35,12 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformationP
  * @author sergey vetyutnev
  */
 public class UserServiceInformationPrimeImpl extends UserServiceInformationBaseImpl implements UserServiceInformationPrime {
-	private static final long serialVersionUID = 1L;
-
 	public UserServiceInformationPrimeImpl() {
         super();
 
     }
 
-    public UserServiceInformationPrimeImpl(byte[] b) throws ParameterException {
+    public UserServiceInformationPrimeImpl(ByteBuf b) throws ParameterException {
         super(b);
     }
 

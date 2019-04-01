@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -50,16 +53,16 @@ public class CircuitGroupSupervisionMessageTypeTest extends ParameterHarness {
     public CircuitGroupSupervisionMessageTypeTest() {
         super();
 
-        super.badBodies.add(new byte[2]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[2]));
 
 
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
        byte[] body = new byte[]{CircuitGroupSuperVisionMessageType._CIRCUIT_GROUP_SMTIHFO };
-       return body;
+       return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

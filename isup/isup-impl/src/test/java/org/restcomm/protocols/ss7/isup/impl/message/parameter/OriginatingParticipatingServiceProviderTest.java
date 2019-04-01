@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -52,10 +54,10 @@ public class OriginatingParticipatingServiceProviderTest extends ParameterHarnes
      */
     public OriginatingParticipatingServiceProviderTest() throws IOException {
 
-        super.badBodies.add(getBody3());
+        super.badBodies.add(Unpooled.wrappedBuffer(getBody3()));
 
-        super.goodBodies.add(new byte[1]);
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
 
     }
 
@@ -79,31 +81,31 @@ public class OriginatingParticipatingServiceProviderTest extends ParameterHarnes
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody1() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody1() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
 
-        bos.write(3);
-        bos.write(super.getSixDigits());
-        return bos.toByteArray();
+        bos.writeByte(3);
+        bos.writeBytes(super.getSixDigits());
+        return bos;
     }
 
-    private byte[] getBody2() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody2() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
 
-        bos.write(3 | 0x80);
-        bos.write(super.getFiveDigits());
-        return bos.toByteArray();
+        bos.writeByte(3 | 0x80);
+        bos.writeBytes(super.getFiveDigits());
+        return bos;
     }
 
-    private byte[] getBody3() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody3() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
 
-        bos.write(4);
-        bos.write(super.getEightDigits());
-        return bos.toByteArray();
+        bos.writeByte(4);
+        bos.writeBytes(super.getEightDigits());
+        return bos;
     }
 
     /*

@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.InformationIndicatorsImpl;
@@ -52,7 +55,7 @@ public class InformationIndicatorsTest extends ParameterHarness {
         // super.badBodies.add(new byte[1]);
     }
 
-    private byte[] getBody(boolean _CIRI_INCLUDED, int _CPARI_ADDRESS_INCLUDED, boolean _CPCRI_CATEOGRY_INCLUDED,
+    private ByteBuf getBody(boolean _CIRI_INCLUDED, int _CPARI_ADDRESS_INCLUDED, boolean _CPCRI_CATEOGRY_INCLUDED,
             boolean _HPI_NOT_PROVIDED, boolean _SII_UNSOLICITED, int reserved) {
 
         int b0 = 0;
@@ -65,7 +68,7 @@ public class InformationIndicatorsTest extends ParameterHarness {
 
         b1 |= (reserved & 0x0F) << 4;
 
-        return new byte[] { (byte) b0, (byte) b1 };
+        return Unpooled.wrappedBuffer(new byte[] { (byte) b0, (byte) b1 });
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -90,7 +93,7 @@ public class InformationIndicatorsTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new InformationIndicatorsImpl(new byte[2]);
+        return new InformationIndicatorsImpl(Unpooled.wrappedBuffer(new byte[2]));
     }
 
 }

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
@@ -34,27 +34,16 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class OriginalCalledNumberImpl extends CalledNumberImpl implements OriginalCalledNumber {
-	private static final long serialVersionUID = 1L;
-
-	public OriginalCalledNumberImpl(byte[] representation) throws ParameterException {
+	public OriginalCalledNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
 
-    public OriginalCalledNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
-    }
-
-    public OriginalCalledNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,
-            int addressRepresentationRestrictedIndicator) {
+    public OriginalCalledNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,int addressRepresentationRestrictedIndicator) {
         super(natureOfAddresIndicator, address, numberingPlanIndicator, addressRepresentationRestrictedIndicator);
-
     }
 
     public OriginalCalledNumberImpl() {
         super();
-
     }
 
     protected String getPrimitiveName() {
@@ -62,7 +51,6 @@ public class OriginalCalledNumberImpl extends CalledNumberImpl implements Origin
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 }

@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -39,19 +42,21 @@ public class CongestedIndicationImpl extends ParameterImpl implements CongestedI
         this.tag = Parameter.Congestion_Indications;
     }
 
-    protected CongestedIndicationImpl(byte[] data) {
+    protected CongestedIndicationImpl(ByteBuf data) {
         // data[0], data[1] and data[2] are reserved
-        this.level = CongestionLevel.getCongestionLevel(data[3]);
+    	data.skipBytes(3);
+    	
+        this.level = CongestionLevel.getCongestionLevel(data.readByte());
         this.tag = Parameter.Congestion_Indications;
     }
 
     @Override
-    protected byte[] getValue() {
-        byte[] data = new byte[4];
-        data[0] = 0;// Reserved
-        data[1] = 0; // Reserved
-        data[2] = 0;// Reserved
-        data[3] = (byte) level.getLevel();
+    protected ByteBuf getValue() {
+        ByteBuf data = Unpooled.buffer(4);
+        data.writeByte(0);// Reserved
+        data.writeByte(0); // Reserved
+        data.writeByte(0);// Reserved
+        data.writeByte((byte) level.getLevel());
 
         return data;
     }

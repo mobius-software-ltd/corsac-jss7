@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OptionalBackwardCallIndicators;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OptionalBackwardCallInd
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class OptionalBackwardCallIndicatorsImpl extends AbstractISUPParameter implements OptionalBackwardCallIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -55,8 +55,7 @@ public class OptionalBackwardCallIndicatorsImpl extends AbstractISUPParameter im
 
     }
 
-    public OptionalBackwardCallIndicatorsImpl(boolean inbandInformationIndicator, boolean callDiversionMayOccurIndicator,
-            boolean simpleSegmentationIndicator, boolean mllpUserIndicator) {
+    public OptionalBackwardCallIndicatorsImpl(boolean inbandInformationIndicator, boolean callDiversionMayOccurIndicator,boolean simpleSegmentationIndicator, boolean mllpUserIndicator) {
         super();
         this.inbandInformationIndicator = inbandInformationIndicator;
         this.callDiversionMayOccurIndicator = callDiversionMayOccurIndicator;
@@ -64,27 +63,25 @@ public class OptionalBackwardCallIndicatorsImpl extends AbstractISUPParameter im
         this.mllpUserIndicator = mllpUserIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
-        this.inbandInformationIndicator = (b[0] & 0x01) == _TURN_ON;
-        this.callDiversionMayOccurIndicator = ((b[0] >> 1) & 0x01) == _TURN_ON;
-        this.simpleSegmentationIndicator = ((b[0] >> 2) & 0x01) == _TURN_ON;
-        this.mllpUserIndicator = ((b[0] >> 3) & 0x01) == _TURN_ON;
-        return 1;
+        
+        byte curr=b.readByte();
+        this.inbandInformationIndicator = (curr & 0x01) == _TURN_ON;
+        this.callDiversionMayOccurIndicator = ((curr >> 1) & 0x01) == _TURN_ON;
+        this.simpleSegmentationIndicator = ((curr >> 2) & 0x01) == _TURN_ON;
+        this.mllpUserIndicator = ((curr >> 3) & 0x01) == _TURN_ON;        
     }
 
-    public byte[] encode() throws ParameterException {
-
+    public void encode(ByteBuf buffef) throws ParameterException {
         int b0 = 0;
-
         b0 = this.inbandInformationIndicator ? _TURN_ON : _TURN_OFF;
         b0 |= (this.callDiversionMayOccurIndicator ? _TURN_ON : _TURN_OFF) << 1;
         b0 |= (this.simpleSegmentationIndicator ? _TURN_ON : _TURN_OFF) << 2;
         b0 |= (this.mllpUserIndicator ? _TURN_ON : _TURN_OFF) << 3;
-
-        return new byte[] { (byte) b0 };
+        buffef.writeByte((byte) b0);
     }
 
     public boolean isInbandInformationIndicator() {
@@ -120,7 +117,6 @@ public class OptionalBackwardCallIndicatorsImpl extends AbstractISUPParameter im
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 

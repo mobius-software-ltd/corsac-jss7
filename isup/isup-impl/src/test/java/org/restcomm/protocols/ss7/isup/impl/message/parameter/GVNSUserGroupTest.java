@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -52,20 +54,20 @@ public class GVNSUserGroupTest extends ParameterHarness {
      */
     public GVNSUserGroupTest() throws IOException {
 
-        super.goodBodies.add(getBody(getSixDigits(), false));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody(getSixDigits(), false)));
 
     }
 
-    private byte[] getBody(byte[] digits, boolean isODD) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody(byte[] digits, boolean isODD) throws IOException {
+        ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
         int header = digits.length;
         if (isODD) {
             header |= 0x01 << 7;
         }
-        bos.write(header);
-        bos.write(digits);
-        return bos.toByteArray();
+        bos.writeByte(header);
+        bos.writeBytes(digits);
+        return bos;
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ISUPMessageFactory;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
@@ -36,8 +36,6 @@ import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
  *
  */
 public abstract class AbstractISUPMessage implements ISUPMessage {
-	private static final long serialVersionUID = 1L;
-
 	/**
      * Decodes this element from passed byte[] array. This array must contain only element data. however in case of constructor
      * elements it may contain more information elements that consist of tag, length and contents elements, this has to be
@@ -48,7 +46,7 @@ public abstract class AbstractISUPMessage implements ISUPMessage {
      * @param parameterFactory - factory which will be used to create specific params.
      * @return
      */
-    public abstract int decode(byte[] b, ISUPMessageFactory isupMessageFactory, ISUPParameterFactory parameterFactory) throws ParameterException;
+    public abstract void decode(ByteBuf b, ISUPMessageFactory isupMessageFactory, ISUPParameterFactory parameterFactory) throws ParameterException;
 
     /**
      * Encodes message as byte[]. See B.4/Q.763 - page 119)
@@ -56,14 +54,5 @@ public abstract class AbstractISUPMessage implements ISUPMessage {
      * @return byte[] with encoded element.
      * @throws ParameterException
      */
-    public abstract byte[] encode() throws ParameterException;
-
-    /**
-     * Encodes message as byte[]. See B.4/Q.763 - page 119)
-     *
-     * @return number of bytes encoded
-     * @throws ParameterException
-     */
-    public abstract int encode(ByteArrayOutputStream bos) throws ParameterException;
-
+    public abstract void encode(ByteBuf buffer) throws ParameterException;
 }

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 
@@ -33,20 +35,17 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
  * @author sergey vetyutnev
  */
 public class RedirectionInformationImpl extends AbstractISUPParameter implements RedirectionInformation {
-	private static final long serialVersionUID = 1L;
-
 	private int redirectingIndicator;
     private int originalRedirectionReason;
     private int redirectionCounter;
     private int redirectionReason;
 
-    public RedirectionInformationImpl(byte[] b) throws IllegalArgumentException, ParameterException {
+    public RedirectionInformationImpl(ByteBuf b) throws IllegalArgumentException, ParameterException {
         super();
         decode(b);
     }
 
-    public RedirectionInformationImpl(int redirectingIndicator, int originalRedirectionReason, int redirectionCounter,
-            int redirectionReason) throws IllegalArgumentException {
+    public RedirectionInformationImpl(int redirectingIndicator, int originalRedirectionReason, int redirectionCounter,int redirectionReason) throws IllegalArgumentException {
         super();
         this.setRedirectingIndicator(redirectingIndicator);
         this.setOriginalRedirectionReason(originalRedirectionReason);
@@ -58,28 +57,29 @@ public class RedirectionInformationImpl extends AbstractISUPParameter implements
         super();
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 2) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 2) {
             throw new ParameterException("byte[] must  not be null and length must  be 2");
         }
         try {
-            this.setRedirectingIndicator((b[0] & 0x07));
-            this.setOriginalRedirectionReason(((b[0] >> 4) & 0x0F));
-            this.setRedirectionCounter((b[1] & 0x07));
-            this.setRedirectionReason(((b[1] >> 4) & 0x0F));
+        	byte curr=b.readByte();
+            this.setRedirectingIndicator((curr & 0x07));
+            this.setOriginalRedirectionReason(((curr >> 4) & 0x0F));
+            curr=b.readByte();
+            this.setRedirectionCounter((curr & 0x07));
+            this.setRedirectionReason(((curr >> 4) & 0x0F));
         } catch (Exception e) {
             throw new ParameterException(e);
         }
-        return 2;
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) {
         int b0 = redirectingIndicator & 0x07;
         b0 |= (this.originalRedirectionReason & 0x0F) << 4;
-
+        buffer.writeByte(b0);
         int b1 = redirectionCounter & 0x07;
         b1 |= (this.redirectionReason & 0x0F) << 4;
-        return new byte[] { (byte) b0, (byte) b1 };
+        buffer.writeByte(b1);
     }
 
     public int getRedirectingIndicator() {

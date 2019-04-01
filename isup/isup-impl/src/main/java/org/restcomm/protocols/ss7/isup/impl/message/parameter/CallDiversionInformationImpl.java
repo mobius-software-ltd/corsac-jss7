@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallDiversionInformation;
@@ -44,8 +43,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallDiversionInformatio
  *
  */
 public class CallDiversionInformationImpl extends AbstractISUPParameter implements CallDiversionInformation {
-	private static final long serialVersionUID = 1L;
-
 	private int redirectingReason = 0;
 
     private int notificationSubscriptionOptions = 0;
@@ -60,41 +57,26 @@ public class CallDiversionInformationImpl extends AbstractISUPParameter implemen
         super();
     }
 
-    public CallDiversionInformationImpl(byte[] b) throws ParameterException {
+    public CallDiversionInformationImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null or have different size than 1");
         }
 
-        int v = b[0];
+        int v = b.readByte();
         this.notificationSubscriptionOptions = v & 0x07;
         this.redirectingReason = (v >> 3) & 0x0F;
-
-        return 1;
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = new byte[1];
-
+    public void encode(ByteBuf b) throws ParameterException {
         int v = 0;
         v |= this.notificationSubscriptionOptions & 0x07;
         v |= (this.redirectingReason & 0x0F) << 3;
-        b[0] = (byte) v;
-        return b;
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        byte[] b = this.encode();
-        try {
-            bos.write(b);
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
+        b.writeByte((byte) v);
     }
 
     public int getNotificationSubscriptionOptions() {

@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ConnectedNumber;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ConnectedNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ConnectedNumberImpl extends AbstractNAINumber implements ConnectedNumber {
-	private static final long serialVersionUID = 1L;
-
 	protected int numberingPlanIndicator;
 
     protected int addressRepresentationRestrictedIndicator;
@@ -56,23 +53,12 @@ public class ConnectedNumberImpl extends AbstractNAINumber implements ConnectedN
      * @param representation
      * @throws ParameterException
      */
-    public ConnectedNumberImpl(byte[] representation) throws ParameterException {
+    public ConnectedNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
     }
 
     public ConnectedNumberImpl() {
         super();
-
-    }
-
-    /**
-     * tttttt
-     *
-     * @param bis
-     * @throws ParameterException
-     */
-    public ConnectedNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
 
     }
 
@@ -84,9 +70,9 @@ public class ConnectedNumberImpl extends AbstractNAINumber implements ConnectedN
         this.screeningIndicator = screeningIndicator;
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         doAddressPresentationRestricted();
-        return super.encodeHeader(bos);
+        super.encodeHeader(buffer);
     }
 
     /*
@@ -95,13 +81,12 @@ public class ConnectedNumberImpl extends AbstractNAINumber implements ConnectedN
      * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException {
+        int b = buffer.readByte() & 0xff;
 
         this.numberingPlanIndicator = (b & 0x70) >> 4;
         this.addressRepresentationRestrictedIndicator = (b & 0x0c) >> 2;
         this.screeningIndicator = (b & 0x03);
-        return 1;
     }
 
     /**
@@ -132,13 +117,12 @@ public class ConnectedNumberImpl extends AbstractNAINumber implements ConnectedN
      * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
-    public int encodeBody(ByteArrayOutputStream bos) {
+    public void encodeBody(ByteBuf buffer) {
         int c = this.numberingPlanIndicator << 4;
 
         c |= (this.addressRepresentationRestrictedIndicator << 2);
         c |= (this.screeningIndicator);
-        bos.write(c & 0x7F);
-        return 1;
+        buffer.writeByte(c & 0x7F);        
     }
 
     protected boolean skipDigits() {

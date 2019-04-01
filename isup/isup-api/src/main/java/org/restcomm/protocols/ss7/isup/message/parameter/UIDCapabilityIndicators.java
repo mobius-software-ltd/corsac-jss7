@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:14:18:57 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -59,9 +61,9 @@ public interface UIDCapabilityIndicators extends ISUPParameter {
      */
     boolean _T9_TI_SOT9P = false;
 
-    byte[] getUIDCapabilityIndicators();
+    ByteBuf getUIDCapabilityIndicators();
 
-    void setUIDCapabilityIndicators(byte[] uidCapabilityIndicators);
+    void setUIDCapabilityIndicators(ByteBuf uidCapabilityIndicators);
 
     byte createUIDAction(boolean TCI, boolean T9);
 

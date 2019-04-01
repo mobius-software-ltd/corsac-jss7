@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.NetworkRoutingNumber;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NetworkRoutingNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class NetworkRoutingNumberImpl extends AbstractNumber implements NetworkRoutingNumber {
-	private static final long serialVersionUID = 1L;
-
 	private int numberingPlanIndicator;
     private int natureOfAddressIndicator;
 
@@ -64,37 +61,24 @@ public class NetworkRoutingNumberImpl extends AbstractNumber implements NetworkR
 
     }
 
-    public NetworkRoutingNumberImpl(byte[] representation) throws ParameterException {
+    public NetworkRoutingNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
 
-    public NetworkRoutingNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException {
     }
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-
-        return 0;
+    public void encodeBody(ByteBuf buffer) {
     }
 
-    public int encodeBody(ByteArrayOutputStream bos) {
-
-        return 0;
-    }
-
-    public int decodeHeader(ByteArrayInputStream bis) throws IllegalArgumentException {
-
-        int b = bis.read() & 0xff;
-
+    public void decodeHeader(ByteBuf buffer) throws IllegalArgumentException {
+        int b = buffer.readByte() & 0xff;
         this.oddFlag = (b & 0x80) >> 7;
         this.numberingPlanIndicator = (b & 0x70) >> 4;
         this.natureOfAddressIndicator = b & 0x0F;
-        return 1;
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         int b = 0;
         // Even is 000000000 == 0
         boolean isOdd = this.oddFlag == _FLAG_ODD;
@@ -103,9 +87,7 @@ public class NetworkRoutingNumberImpl extends AbstractNumber implements NetworkR
 
         b |= (this.numberingPlanIndicator & 0x07) << 4;
         b |= this.natureOfAddressIndicator & 0x0F;
-        bos.write(b);
-
-        return 1;
+        buffer.writeByte(b);
     }
 
     public int getNumberingPlanIndicator() {
@@ -125,7 +107,6 @@ public class NetworkRoutingNumberImpl extends AbstractNumber implements NetworkR
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 }

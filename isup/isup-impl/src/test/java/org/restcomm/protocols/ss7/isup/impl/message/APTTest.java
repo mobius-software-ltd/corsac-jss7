@@ -32,6 +32,8 @@ package org.restcomm.protocols.ss7.isup.impl.message;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.ApplicationTransportMessage;
@@ -54,7 +56,7 @@ public class APTTest extends MessageHarness {
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
 
-        byte[] message = getDefaultBody();
+        ByteBuf message = getDefaultBody();
 
 
         ApplicationTransportMessage msg = super.messageFactory.createAPT();
@@ -70,15 +72,15 @@ public class APTTest extends MessageHarness {
         assertNotNull(msg.getMessageCompatibilityInformation());
         MessageCompatibilityInformation mcis = msg.getMessageCompatibilityInformation();
         assertNotNull(mcis.getMessageCompatibilityInstructionIndicators());
-        assertEquals(mcis.getMessageCompatibilityInstructionIndicators().length,2);
-        assertNotNull(mcis.getMessageCompatibilityInstructionIndicators()[0]);
-        assertNotNull(mcis.getMessageCompatibilityInstructionIndicators()[1]);
-        assertEquals(mcis.getMessageCompatibilityInstructionIndicators()[0].getBandInterworkingIndicator(),2);
-        assertEquals(mcis.getMessageCompatibilityInstructionIndicators()[1].getBandInterworkingIndicator(),0);
+        assertEquals(mcis.getMessageCompatibilityInstructionIndicators().size(),2);
+        assertNotNull(mcis.getMessageCompatibilityInstructionIndicators().get(0));
+        assertNotNull(mcis.getMessageCompatibilityInstructionIndicators().get(1));
+        assertEquals(mcis.getMessageCompatibilityInstructionIndicators().get(0).getBandInterworkingIndicator(),2);
+        assertEquals(mcis.getMessageCompatibilityInstructionIndicators().get(1).getBandInterworkingIndicator(),0);
         
-        MessageCompatibilityInstructionIndicator mic = mcis.getMessageCompatibilityInstructionIndicators()[0];
+        MessageCompatibilityInstructionIndicator mic = mcis.getMessageCompatibilityInstructionIndicators().get(0);
         assertEquals(mic.getBandInterworkingIndicator(), 2);
-        mic = mcis.getMessageCompatibilityInstructionIndicators()[1];
+        mic = mcis.getMessageCompatibilityInstructionIndicators().get(1);
         assertEquals(mic.getBandInterworkingIndicator(), 0);
 
         CircuitIdentificationCode cic = msg.getCircuitIdentificationCode();
@@ -87,7 +89,7 @@ public class APTTest extends MessageHarness {
 
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
                 // CIC
                 0x0C, (byte) 0x0B,
@@ -115,7 +117,7 @@ public class APTTest extends MessageHarness {
                0x00
                 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

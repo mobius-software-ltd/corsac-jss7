@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import java.util.List;
+
 /**
  * Start time:14:01:11 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -42,6 +44,6 @@ public interface RemoteOperations extends ISUPParameter {
     void setProtocol(byte protocol);
     byte getProtocol();
 
-    void setOperations(RemoteOperation...operations);
-    RemoteOperation[] getOperations();
+    void setOperations(List<RemoteOperationImpl> operations);
+    List<RemoteOperationImpl> getOperations();
 }

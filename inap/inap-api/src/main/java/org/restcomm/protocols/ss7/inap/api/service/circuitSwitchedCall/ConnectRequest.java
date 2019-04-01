@@ -35,7 +35,7 @@ import org.restcomm.protocols.ss7.inap.api.isup.RedirectingPartyIDInap;
 import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
 import org.restcomm.protocols.ss7.inap.api.primitives.BearerCapability;
 import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DisplayInformation;
@@ -192,7 +192,7 @@ public interface ConnectRequest {
 
     Integer getCallSegmentID();
 
-    LegID getLegToBeCreated();
+    SendingLegID getLegToBeCreated();
 
     LocationNumberInap getLocationNumber();
 

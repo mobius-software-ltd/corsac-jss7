@@ -32,6 +32,8 @@ package org.restcomm.protocols.ss7.isup.impl.message;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.FacilityRequestMessage;
@@ -51,7 +53,7 @@ public class FARTest extends MessageHarness {
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
 
-        byte[] message = getDefaultBody();
+    	ByteBuf message = getDefaultBody();
 
 
         FacilityRequestMessage msg = super.messageFactory.createFAR();
@@ -65,7 +67,7 @@ public class FARTest extends MessageHarness {
         assertEquals(msg.getCallReference().getSignalingPointCode(), 14409);
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
                 // CIC
                 0x0C, (byte) 0x0B,
@@ -85,7 +87,7 @@ public class FARTest extends MessageHarness {
                 0x00
                 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

@@ -24,16 +24,16 @@ package org.restcomm.protocols.ss7.inap.isup;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.util.Arrays;
-
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  *
@@ -46,20 +46,15 @@ public class HighLayerCompatibilityInapTest {
         return new byte[] { (byte) 151, 2, (byte) 145, (byte) 129 };
     }
 
-    public byte[] getIntData() {
-        return new byte[] { (byte) 145, (byte) 129 };
-    }
-
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
-
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        HighLayerCompatibilityInapImpl elem = new HighLayerCompatibilityInapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(HighLayerCompatibilityInapImpl.class);
+        ByteBuf data = Unpooled.wrappedBuffer(this.getData());
+        ASNDecodeResult output=parser.decode(data);
+        assertTrue(output.getResult() instanceof HighLayerCompatibilityInapImpl);
+        HighLayerCompatibilityInapImpl elem = (HighLayerCompatibilityInapImpl)output.getResult();        
         UserTeleserviceInformation hlc = elem.getHighLayerCompatibility();
-        assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(hlc.getCodingStandard(), 0);
         assertEquals(hlc.getEHighLayerCharIdentification(), 0);
         assertEquals(hlc.getEVideoTelephonyCharIdentification(), 0);
@@ -70,19 +65,13 @@ public class HighLayerCompatibilityInapTest {
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
-
-        HighLayerCompatibilityInapImpl elem = new HighLayerCompatibilityInapImpl(this.getIntData());
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 23);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
-
-        UserTeleserviceInformation hlc = new UserTeleserviceInformationImpl(0, 4, 1, 1);
-        elem = new HighLayerCompatibilityInapImpl(hlc);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 23);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
-
-        // int codingStandard, int interpretation, int presentationMethod, int highLayerCharIdentification
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(HighLayerCompatibilityInapImpl.class);
+        
+    	HighLayerCompatibilityInapImpl elem = new HighLayerCompatibilityInapImpl(new UserTeleserviceInformationImpl(0, 4, 1, 1));
+        ByteBuf data=parser.encode(elem);
+        byte[] encodedData=new byte[data.readableBytes()];
+        data.readBytes(encodedData);        
     }
 
     /*@Test(groups = { "functional.xml.serialize", "isup" })

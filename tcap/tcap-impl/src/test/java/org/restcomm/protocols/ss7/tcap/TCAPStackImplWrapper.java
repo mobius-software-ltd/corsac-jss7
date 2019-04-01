@@ -22,11 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
-import java.util.Map;
-
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
-import org.restcomm.protocols.ss7.tcap.PreviewDialogData;
-import org.restcomm.protocols.ss7.tcap.PreviewDialogDataKey;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 
 /**
@@ -40,11 +36,6 @@ public class TCAPStackImplWrapper extends TCAPStackImpl {
         super(stackName,threads);
 
         this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn, service);
-    }
-
-    public Map<PreviewDialogDataKey, PreviewDialogData> getDialogPreviewList() {
-        TCAPProviderImplWrapper prov = (TCAPProviderImplWrapper) this.getProvider();
-        return prov.getDialogPreviewList();
     }
 
 }

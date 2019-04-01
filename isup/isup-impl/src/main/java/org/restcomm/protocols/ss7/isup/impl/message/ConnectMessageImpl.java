@@ -31,7 +31,6 @@ package org.restcomm.protocols.ss7.isup.impl.message;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.BackwardGVNSImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.MessageTypeImpl;
 import org.restcomm.protocols.ss7.isup.message.ConnectMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.AccessDeliveryInformation;
@@ -61,6 +60,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -71,8 +72,6 @@ import java.util.Set;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class ConnectMessageImpl extends ISUPMessageImpl implements ConnectMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Connect);
     private static final int _MANDATORY_VAR_COUNT = 0;
 
@@ -583,32 +582,26 @@ public class ConnectMessageImpl extends ISUPMessageImpl implements ConnectMessag
         return (HTRInformation) super.o_Parameters.get(_INDEX_O_HTRInformation);
     }
 
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-
-        if (b.length - index > 2) {
+        super.decodeMandatoryParameters(parameterFactory, b);
+        if (b.readableBytes() >= 2) {
 
             try {
-                byte[] body = new byte[2];
-                body[0] = b[index++];
-                body[1] = b[index++];
-
+                ByteBuf body = b.slice(b.readerIndex(), 2);
                 BackwardCallIndicators v = parameterFactory.createBackwardCallIndicators();
                 ((AbstractISUPParameter) v).decode(body);
+                b.skipBytes(2);
                 this.setBackwardCallIndicators(v);
             } catch (Exception e) {
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
-
-            return index - localIndex;
         } else {
             throw new ParameterException("byte[] must have at least 5 octets");
         }
     }
 
-    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
         throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
     }
@@ -618,7 +611,7 @@ public class ConnectMessageImpl extends ISUPMessageImpl implements ConnectMessag
      *
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody (byte [], int)
      */
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody,int parameterIndex)
             throws ParameterException {
         throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
     }
@@ -628,7 +621,7 @@ public class ConnectMessageImpl extends ISUPMessageImpl implements ConnectMessag
      *
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte [], byte)
      */
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         switch (parameterCode & 0xFF) {
             case OptionalBackwardCallIndicators._PARAMETER_CODE:
@@ -638,7 +631,7 @@ public class ConnectMessageImpl extends ISUPMessageImpl implements ConnectMessag
                 this.setOptionalBackwardCallIndicators(optionalBackwardCallIndicators);
                 break;
             case BackwardGVNS._PARAMETER_CODE:
-                BackwardGVNS backwardGVNS = new BackwardGVNSImpl(parameterBody);
+                BackwardGVNS backwardGVNS = parameterFactory.createBackwardGVNS();
                 parameterFactory.createBackwardGVNS();
                 ((AbstractISUPParameter) backwardGVNS).decode(parameterBody);
                 this.setBackwardGVNS(backwardGVNS);

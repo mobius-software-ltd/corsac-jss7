@@ -29,6 +29,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 
 /**
@@ -39,7 +42,7 @@ import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
  */
 public class RELTest extends MessageHarness {
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         // FIXME: for now we strip MTP part
         byte[] message = {
 
@@ -47,7 +50,7 @@ public class RELTest extends MessageHarness {
 
         };
 
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

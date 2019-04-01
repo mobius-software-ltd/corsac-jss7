@@ -22,9 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -56,8 +54,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Number;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public abstract class AbstractNumber extends AbstractISUPParameter implements Number {
-	private static final long serialVersionUID = 1L;
-
 	protected Logger logger = Logger.getLogger(this.getClass());
     /**
      * Holds odd flag, it can have either value: 10000000(x80) or 00000000. For each it takes value 1 and 0;
@@ -82,17 +78,10 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
 
     }
 
-    public AbstractNumber(byte[] representation) throws ParameterException {
+    public AbstractNumber(ByteBuf buffer) throws ParameterException {
         super();
 
-        decode(representation);
-
-    }
-
-    public AbstractNumber(ByteArrayInputStream bis) throws ParameterException {
-        super();
-
-        this.decode(bis);
+        this.decode(buffer);
     }
 
     public AbstractNumber(String address) {
@@ -100,97 +89,46 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
         this.setAddress(address);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(b);
-
-        return this.decode(bis);
-    }
-
-    protected int decode(ByteArrayInputStream bis) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         if (logger.isDebugEnabled()) {
             logger.debug("[" + this.getClass().getSimpleName() + "]Decoding header");
         }
 
-        int count = decodeHeader(bis);
+        decodeHeader(b);
         if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding header, read count: " + count);
+            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding header");
             logger.debug("[" + this.getClass().getSimpleName() + "]Decoding body");
         }
-        count += decodeBody(bis);
+        decodeBody(b);
         if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding body, read count: " + count);
+            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding body");
             logger.debug("[" + this.getClass().getSimpleName() + "]Decoding digits");
         }
-        count += decodeDigits(bis);
+        decodeDigits(b);
         if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding digits, read count: " + count);
-        }
-        return count;
+            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding digits");
+        }        
     }
 
-    public byte[] encode() throws ParameterException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
+    public void encode(ByteBuf buffer) throws ParameterException {
         if (logger.isDebugEnabled()) {
             logger.debug("[" + this.getClass().getSimpleName() + "]Encoding header");
         }
-        int count = encodeHeader(bos);
-        if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding header, write count: " + count);
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding body");
-        }
-        count += encodeBody(bos);
-        if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding body, write count: " + count);
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding digits");
-        }
-        count += encodeDigits(bos);
-        if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding digits, write count: " + count);
-        }
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        // out.write(tag);
-        // Util.encodeLength(count, out);
-        try {
-            out.write(bos.toByteArray());
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return out.toByteArray();
-    }
-
-    public int encode(ByteArrayOutputStream out) throws ParameterException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
+        encodeHeader(buffer);
         if (logger.isDebugEnabled()) {
             logger.debug("[" + this.getClass().getSimpleName() + "]Encoding header");
-        }
-        int count = encodeHeader(bos);
-        if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding header, write count: " + count);
             logger.debug("[" + this.getClass().getSimpleName() + "]Encoding body");
         }
-        count += encodeBody(bos);
+        encodeBody(buffer);
         if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding body, write count: " + count);
+            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding body");
             logger.debug("[" + this.getClass().getSimpleName() + "]Encoding digits");
         }
-        count += encodeDigits(bos);
+        encodeDigits(buffer);
         if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding digits, write count: " + count);
-        }
-
-        // count += tag.length;
-        // out.write(tag);
-        // count += Util.encodeLength(count, out);
-        try {
-            out.write(bos.toByteArray());
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return count;
-    }
+            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding digits");
+        }        
+    }    
 
     /**
      * This method is used in constructor that takes byte[] or ByteArrayInputStream as parameter. Decodes header part (its 1 or
@@ -201,15 +139,12 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
      * @return - number of bytes reads
      * @throws IllegalArgumentException - thrown if read error is encountered.
      */
-    public int decodeHeader(ByteArrayInputStream bis) throws ParameterException {
-        if (bis.available() == 0) {
+    public void decodeHeader(ByteBuf buffer) throws ParameterException {
+        if (buffer.readableBytes() == 0) {
             throw new ParameterException("No more data to read.");
         }
-        int b = bis.read() & 0xff;
-
+        int b = buffer.readByte() & 0xff;
         this.oddFlag = (b & 0x80) >> 7;
-
-        return 1;
     }
 
     /**
@@ -220,7 +155,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
      * @return - number of bytes reads throws IllegalArgumentException - thrown if read error is encountered.
      * @throws IllegalArgumentException - thrown if read error is encountered.
      */
-    public abstract int decodeBody(ByteArrayInputStream bis) throws ParameterException;
+    public abstract void decodeBody(ByteBuf buffer) throws ParameterException;
 
     /**
      * This method is used in constructor that takes byte[] or ByteArrayInputStream as parameter. Decodes digits part.
@@ -229,22 +164,20 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
      * @return - number of bytes reads
      * @throws IllegalArgumentException - thrown if read error is encountered.
      */
-    public int decodeDigits(ByteArrayInputStream bis) throws ParameterException {
+    public void decodeDigits(ByteBuf buffer) throws ParameterException {
         if(skipDigits()){
-            return 0;
+            return;
         }
-        if (bis.available() == 0) {
+        if (buffer.readableBytes() == 0) {
             throw new ParameterException("No more data to read.");
         }
 
         // FIXME: we could spare time by passing length arg - or getting it from
-        // bis??
-        int count = 0;
         try {
             address = "";
             int b = 0;
-            while (bis.available() - 1 > 0) {
-                b = (byte) bis.read();
+            while (buffer.readableBytes() - 1 > 0) {
+                b = (byte) buffer.readByte();
 
                 int d1 = b & 0x0f;
                 int d2 = (b & 0xf0) >> 4;
@@ -253,7 +186,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
 
             }
 
-            b = bis.read() & 0xff;
+            b = buffer.readByte() & 0xff;
             address += Integer.toHexString((b & 0x0f));
 
             if (oddFlag != _FLAG_ODD) {
@@ -263,7 +196,6 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
         } catch (Exception e) {
             throw new ParameterException(e);
         }
-        return count;
     }
 
     /**
@@ -274,11 +206,11 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
      * @return
      * @throws IllegalArgumentException
      */
-    public int decodeDigits(ByteArrayInputStream bis, int octetsCount) throws ParameterException {
+    public void decodeDigits(ByteBuf buffer, int octetsCount) throws ParameterException {
         if(skipDigits()){
-            return 0;
+            return;
         }
-        if (bis.available() == 0) {
+        if (buffer.readableBytes() == 0) {
             throw new ParameterException("No more data to read.");
         }
         int count = 0;
@@ -286,8 +218,8 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
             address = "";
             int b = 0;
             // while (octetsCount != count - 1 && bis.available() - 1 > 0) {
-            while (octetsCount - 1 != count && bis.available() - 1 > 0) {
-                b = (byte) bis.read();
+            while (octetsCount - 1 != count && buffer.readableBytes() - 1 > 0) {
+                b = (byte) buffer.readByte();
                 count++;
 
                 int d1 = b & 0x0f;
@@ -297,7 +229,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
 
             }
 
-            b = bis.read() & 0xff;
+            b = buffer.readByte() & 0xff;
             count++;
             address += Integer.toHexString((b & 0x0f));
 
@@ -311,7 +243,6 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
         if (octetsCount != count) {
             throw new ParameterException("Failed to read [" + octetsCount + "], encountered only [" + count + "]");
         }
-        return count;
     }
 
     /**
@@ -320,15 +251,13 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
      * @param bis
      * @return - number of bytes encoded.
      */
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         int b = 0;
         // Even is 000000000 == 0
         boolean isOdd = this.oddFlag == _FLAG_ODD;
         if (isOdd)
             b |= 0x80;
-        bos.write(b);
-
-        return 1;
+        buffer.writeByte(b);
     }
 
     /**
@@ -338,7 +267,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
      * @return - number of bytes reads
      *
      */
-    public abstract int encodeBody(ByteArrayOutputStream bos);
+    public abstract void encodeBody(ByteBuf buffer);
 
     /**
      * This method is used in encode. Encodes digits part. This is because
@@ -347,15 +276,14 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
      * @return - number of bytes encoded
      *
      */
-    public int encodeDigits(ByteArrayOutputStream bos) {
+    public void encodeDigits(ByteBuf buffer) {
         if(skipDigits()){
-            return 0;
+            return;
         }
         boolean isOdd = this.oddFlag == _FLAG_ODD;
 
         byte b = 0;
         int count = (!isOdd) ? address.length() : address.length() - 1;
-        int bytesCount = 0;
         for (int i = 0; i < count - 1; i += 2) {
             String ds1 = address.substring(i, i + 1);
             String ds2 = address.substring(i + 1, i + 2);
@@ -364,8 +292,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
             int d2 = Integer.parseInt(ds2, 16);
 
             b = (byte) (d2 << 4 | d1);
-            bos.write(b);
-            bytesCount++;
+            buffer.writeByte(b);
         }
 
         if (isOdd) {
@@ -373,11 +300,8 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
             int d = Integer.parseInt(ds1);
 
             b = (byte) (d & 0x0f);
-            bos.write(b);
-            bytesCount++;
+            buffer.writeByte(b);
         }
-
-        return bytesCount;
     }
 
     public boolean isOddFlag() {

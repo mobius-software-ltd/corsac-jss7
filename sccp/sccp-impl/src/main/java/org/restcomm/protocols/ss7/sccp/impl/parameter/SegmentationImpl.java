@@ -25,9 +25,7 @@
  */
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
@@ -146,50 +144,23 @@ public class SegmentationImpl extends AbstractParameter implements Segmentation 
     }
 
     @Override
-    public void decode(InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte[] buffer = new byte[in.read()];
-            if (in.read(buffer) != buffer.length) {
-                throw new ParseException();
-            }
-            this.decode(buffer, factory, sccpProtocolVersion);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
-    }
-
-    @Override
-    public void encode(OutputStream os, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte[] buffer = this.encode(removeSpc, sccpProtocolVersion);
-            os.write(buffer.length);
-            os.write(buffer);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
-    }
-
-    @Override
-    public void decode(byte[] buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        int v = buffer[0];
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        int v = buffer.readByte();
         this.firstSegIndication = ((v >> 7) & 0x01) == _TRUE;
         this.class1Selected = ((v >> 6) & 0x01) == _TRUE;
         this.remainingSegments = (byte) (v & 0x0F);
-        this.segmentationLocalRef = (buffer[1] & 0xFF) + ((buffer[2] & 0xFF) << 8) + ((buffer[3] & 0xFF) << 16);
+        this.segmentationLocalRef = (buffer.readByte() & 0xFF) + ((buffer.readByte() & 0xFF) << 8) + ((buffer.readByte() & 0xFF) << 16);
     }
 
     @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        byte[] buffer = new byte[4];
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         int v = this.remainingSegments & 0x0F;
         v |= ((this.class1Selected ? _TRUE : _FALSE) << 6);
         v |= ((this.firstSegIndication ? _TRUE : _FALSE) << 7);
-        buffer[0] = (byte) v;
-        buffer[1] = (byte) (this.segmentationLocalRef & 0xFF);
-        buffer[2] = (byte) ((this.segmentationLocalRef >> 8) & 0xFF);
-        buffer[3] = (byte) ((this.segmentationLocalRef >> 16) & 0xFF);
-
-        return buffer;
+        buffer.writeByte((byte) v);
+        buffer.writeByte((byte) (this.segmentationLocalRef & 0xFF));
+        buffer.writeByte((byte) ((this.segmentationLocalRef >> 8) & 0xFF));
+        buffer.writeByte((byte) ((this.segmentationLocalRef >> 16) & 0xFF));
     }
 
     @Override

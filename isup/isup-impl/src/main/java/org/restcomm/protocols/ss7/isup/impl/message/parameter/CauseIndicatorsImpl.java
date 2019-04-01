@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -36,20 +36,18 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
  * @author sergey vetyutnev
  */
 public class CauseIndicatorsImpl extends AbstractISUPParameter implements CauseIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private int location = 0;
     private int causeValue = 0;
     private int codingStandard = 0;
     private int recommendation = 0;
-    private byte[] diagnostics = null;
+    private ByteBuf diagnostics = null;
 
     public CauseIndicatorsImpl() {
         super();
 
     }
 
-    public CauseIndicatorsImpl(int codingStandard, int location, int recommendation, int causeValue, byte[] diagnostics) {
+    public CauseIndicatorsImpl(int codingStandard, int location, int recommendation, int causeValue, ByteBuf diagnostics) {
         super();
         this.setCodingStandard(codingStandard);
         this.setLocation(location);
@@ -58,78 +56,42 @@ public class CauseIndicatorsImpl extends AbstractISUPParameter implements CauseI
         this.diagnostics = diagnostics;
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
 
         // NOTE: there are ext bits but we do not care about them
         // FIXME: "Recommendation" optional field must be encoded/decoded when codingStandard!=_CODING_STANDARD_ITUT
 
-        if (b == null || b.length < 2) {
+        if (b == null || b.readableBytes() < 2) {
             throw new ParameterException("byte[] must not be null or has size less than 2");
         }
         // Used because of Q.850 - we must ignore recomendation
-        int index = 0;
         // first two bytes are mandatory
         int v = 0;
         // remove ext
-        v = b[index] & 0x7F;
+        v = b.readByte() & 0x7F;
         this.location = v & 0x0F;
-        this.codingStandard = v >> 5;
-        if (((b[index] & 0x7F) >> 7) == 0) {
-            index += 2;
-        } else {
-            index++;
-        }
+        this.codingStandard = v >> 5;        
+        
         v = 0;
-        v = b[1] & 0x7F;
+        v = b.readByte() & 0x7F;
         this.causeValue = v;
-        if (b.length == 2) {
-            return 2;
-        } else {
-            if ((b.length - 2) % 3 != 0) {
-                throw new ParameterException("Diagnostics part  must have 3xN bytes, it has: " + (b.length - 2));
+        if (b.readableBytes()>0) {            
+            if (b.readableBytes() % 3 != 0) {
+                throw new ParameterException("Diagnostics part  must have 3xN bytes, it has: " + (b.readableBytes()));
             }
 
-            int byteCounter = 2;
-
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            for (int i = 2; i < b.length; i++) {
-                bos.write(b[i]);
-                byteCounter++;
-            }
-
-            this.diagnostics = bos.toByteArray();
-
-            return byteCounter;
+            this.diagnostics=b.slice(b.readerIndex(), b.readableBytes());
         }
     }
 
-    public byte[] encode() throws ParameterException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
+    public void encode(ByteBuf buffer) throws ParameterException {
         int v = this.location & 0x0F;
         v |= (byte) ((this.codingStandard & 0x03) << 5) | (0x01 << 7);
-        bos.write(v);
-        bos.write(this.causeValue | (0x01 << 7));
+        buffer.writeByte(v);
+        buffer.writeByte(this.causeValue | (0x01 << 7));
         if (this.diagnostics != null) {
-            try {
-                bos.write(this.diagnostics);
-            } catch (IOException e) {
-                throw new ParameterException(e);
-            }
+        	buffer.writeBytes(getDiagnostics());
         }
-        byte[] b = bos.toByteArray();
-
-        return b;
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        byte[] b = this.encode();
-        try {
-            bos.write(b);
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
     }
 
     public int getCodingStandard() {
@@ -164,11 +126,14 @@ public class CauseIndicatorsImpl extends AbstractISUPParameter implements CauseI
         this.causeValue = causeValue;
     }
 
-    public byte[] getDiagnostics() {
-        return diagnostics;
+    public ByteBuf getDiagnostics() {
+    	if(diagnostics==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(diagnostics);
     }
 
-    public void setDiagnostics(byte[] diagnostics) {
+    public void setDiagnostics(ByteBuf diagnostics) {
         this.diagnostics = diagnostics;
     }
 
@@ -193,7 +158,7 @@ public class CauseIndicatorsImpl extends AbstractISUPParameter implements CauseI
 
         if (this.diagnostics != null) {
             sb.append(", diagnostics=[");
-            sb.append(printDataArr(this.diagnostics));
+            sb.append(printDataArr(getDiagnostics()));
             sb.append("]");
         }
 
@@ -202,16 +167,17 @@ public class CauseIndicatorsImpl extends AbstractISUPParameter implements CauseI
         return sb.toString();
     }
 
-    protected String printDataArr(byte[] data) {
+    protected String printDataArr(ByteBuf data) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         if (data != null) {
-            for (int b : data) {
+            while(data.readableBytes()>0) {
                 if (first)
                     first = false;
                 else
                     sb.append(", ");
-                sb.append(b);
+                
+                sb.append(data.readByte());
             }
         }
 

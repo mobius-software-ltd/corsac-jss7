@@ -29,6 +29,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -40,7 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.ReleaseCompleteMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
-import org.restcomm.protocols.ss7.isup.util.ISUPUtility;
 
 /**
  * Start time:08:20:34 2009-07-18<br>
@@ -50,8 +51,6 @@ import org.restcomm.protocols.ss7.isup.util.ISUPUtility;
  *
  */
 class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompleteMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.ReleaseComplete);
     private static final int _MANDATORY_VAR_COUNT = 0;
 
@@ -79,11 +78,9 @@ class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompl
      * @see org.mobicents.isup.messages.ISUPMessage#decodeMandatoryVariableBody(byte [], int)
      */
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
-        throw new ParameterException("This message has no mandatory parameters, unknown parameter index: " + parameterIndex
-                + ", body: " + ISUPUtility.toHex(parameterBody));
-
+        throw new ParameterException("This message has no mandatory parameters, unknown parameter index: " + parameterIndex);
     }
 
     /*
@@ -92,7 +89,7 @@ class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompl
      * @see org.mobicents.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
      */
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
 
         switch (parameterCode & 0xFF) {

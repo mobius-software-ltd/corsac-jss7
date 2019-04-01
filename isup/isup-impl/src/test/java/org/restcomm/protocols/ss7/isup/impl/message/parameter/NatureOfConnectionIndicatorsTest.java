@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -47,9 +50,9 @@ public class NatureOfConnectionIndicatorsTest extends ParameterHarness {
 
     public NatureOfConnectionIndicatorsTest() {
         super();
-        super.badBodies.add(new byte[2]);
-        super.goodBodies.add(new byte[1]);
-        super.goodBodies.add(new byte[] { 0x0E });
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[2]));
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { 0x0E }));
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -67,11 +70,11 @@ public class NatureOfConnectionIndicatorsTest extends ParameterHarness {
         super.testValues(eci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(int siOneSatellite, int cciRequiredOnThisCircuit, boolean ecdiIncluded) {
+    private ByteBuf getBody(int siOneSatellite, int cciRequiredOnThisCircuit, boolean ecdiIncluded) {
 
         byte b = (byte) (siOneSatellite | (cciRequiredOnThisCircuit << 2) | (ecdiIncluded ? (0x01 << 4) : (0x00 << 4)));
 
-        return new byte[] { b };
+        return Unpooled.wrappedBuffer(new byte[] { b });
     }
 
     /*
@@ -81,7 +84,7 @@ public class NatureOfConnectionIndicatorsTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new NatureOfConnectionIndicatorsImpl(new byte[1]);
+        return new NatureOfConnectionIndicatorsImpl(Unpooled.wrappedBuffer(new byte[1]));
     }
 
 }

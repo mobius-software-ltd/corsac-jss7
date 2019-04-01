@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.EventInformation;
 
@@ -40,15 +42,13 @@ import org.restcomm.protocols.ss7.isup.message.parameter.EventInformation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class EventInformationImpl extends AbstractISUPParameter implements EventInformation {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
     private int eventIndicator;
     private boolean eventPresentationRestrictedIndicator;
 
-    public EventInformationImpl(byte[] b) throws ParameterException {
+    public EventInformationImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -63,22 +63,20 @@ public class EventInformationImpl extends AbstractISUPParameter implements Event
         this.eventIndicator = eventIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf buffer) throws ParameterException {
+        if (buffer == null || buffer.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null or have different size than 1");
         }
 
-        this.eventIndicator = b[0] & 0x7F;
-        this.eventPresentationRestrictedIndicator = ((b[0] >> 7) & 0x01) == _TURN_ON;
-
-        return 1;
+        byte b=buffer.readByte();
+        this.eventIndicator = b & 0x7F;
+        this.eventPresentationRestrictedIndicator = ((b >> 7) & 0x01) == _TURN_ON;
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = new byte[] { (byte) (this.eventIndicator & 0x7F) };
-
-        b[0] |= (byte) ((this.eventPresentationRestrictedIndicator ? _TURN_ON : _TURN_OFF) << 7);
-        return b;
+    public void encode(ByteBuf buffer) throws ParameterException {
+        byte b = (byte) (this.eventIndicator & 0x7F);
+        b |= (byte) ((this.eventPresentationRestrictedIndicator ? _TURN_ON : _TURN_OFF) << 7);
+        buffer.writeByte(b);
     }
 
     public int getEventIndicator() {

@@ -28,7 +28,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ISUPMessageFactory;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
@@ -46,8 +46,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class PassAlongMessageImpl extends ISUPMessageImpl implements PassAlongMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.PassAlong);
 
     static final int _INDEX_F_MessageType = 0;
@@ -81,42 +79,35 @@ public class PassAlongMessageImpl extends ISUPMessageImpl implements PassAlongMe
     }
 
     @Override
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
         if(this.embedded!=null){
             throw new ParameterException("No embedded message");
         }
 
         //encode CIC and message type
-        this.encodeMandatoryParameters(f_Parameters, bos);
-        final byte[] embeddedBody = ((AbstractISUPMessage)this.embedded).encode();
-        // 2 - for CIC
-        bos.write(embeddedBody, 2, embeddedBody.length - 2);
-        return bos.size();
+        this.encodeMandatoryParameters(f_Parameters, buffer);
+        ((AbstractISUPMessage)this.embedded).encode(buffer);        
     }
 
     @Override
-    public int decode(byte[] b, ISUPMessageFactory messageFactory,ISUPParameterFactory parameterFactory) throws ParameterException {
-        int index = 0;
-        //decode CIC and PAM message type.
-        index += this.decodeMandatoryParameters(parameterFactory, b, index);
-        byte targetMessageType = b[index];
+    public void decode(ByteBuf b,ISUPMessageFactory messageFactory,ISUPParameterFactory parameterFactory) throws ParameterException {
+        this.decodeMandatoryParameters(parameterFactory, b);
+        byte targetMessageType = b.readByte();
         this.embedded = messageFactory.createCommand(targetMessageType, this.getCircuitIdentificationCode().getCIC());
+        
         //create fake msg body
-        byte[] fakeBody = new byte[b.length-1];
-        System.arraycopy(b, 1, fakeBody, 0, fakeBody.length);
-        index+=((AbstractISUPMessage)this.embedded).decode(fakeBody, messageFactory, parameterFactory)-2;
-        return index;
+        ((AbstractISUPMessage)this.embedded).decode(b, messageFactory, parameterFactory);        
     }
 
 
     // Not used, PAM contains body of another message. Since it overrides decode, those methods are not called.
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         // TODO Auto-generated method stub
 
     }
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         // TODO Auto-generated method stub
 

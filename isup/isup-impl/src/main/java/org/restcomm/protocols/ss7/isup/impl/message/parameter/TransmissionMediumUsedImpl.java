@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.TransmissionMediumUsed;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TransmissionMediumUsed;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class TransmissionMediumUsedImpl extends AbstractISUPParameter implements TransmissionMediumUsed {
-	private static final long serialVersionUID = 1L;
-
 	public TransmissionMediumUsedImpl(int transimissionMediumUsed) {
         super();
         this.transimissionMediumUsed = transimissionMediumUsed;
@@ -52,7 +52,7 @@ public class TransmissionMediumUsedImpl extends AbstractISUPParameter implements
 
     }
 
-    public TransmissionMediumUsedImpl(byte[] b) throws ParameterException {
+    public TransmissionMediumUsedImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -62,18 +62,16 @@ public class TransmissionMediumUsedImpl extends AbstractISUPParameter implements
 
     // FIXME: again wrapper class but hell there is a lot of statics....
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
 
-        this.transimissionMediumUsed = b[0];
-
-        return 1;
+        this.transimissionMediumUsed = b.readByte();
     }
 
-    public byte[] encode() throws ParameterException {
-        return new byte[] { (byte) this.transimissionMediumUsed };
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) this.transimissionMediumUsed);
     }
 
     public int getTransimissionMediumUsed() {

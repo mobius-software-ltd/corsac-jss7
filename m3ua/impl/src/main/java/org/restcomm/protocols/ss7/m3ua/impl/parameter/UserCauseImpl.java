@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 import org.restcomm.protocols.ss7.m3ua.parameter.UserCause;
 
@@ -35,20 +38,20 @@ public class UserCauseImpl extends ParameterImpl implements UserCause {
     private int user = 0;
     private int cause = 0;
 
-    private byte[] value;
+    private ByteBuf value;
 
-    protected UserCauseImpl(byte[] value) {
+    protected UserCauseImpl(ByteBuf value) {
         this.tag = Parameter.User_Cause;
 
         this.user = 0;
-        this.user |= value[0] & 0xFF;
+        this.user |= value.readByte() & 0xFF;
         this.user <<= 8;
-        this.user |= value[1] & 0xFF;
+        this.user |= value.readByte() & 0xFF;
 
         this.cause = 0;
-        this.cause |= value[2] & 0xFF;
+        this.cause |= value.readByte() & 0xFF;
         this.cause <<= 8;
-        this.cause |= value[3] & 0xFF;
+        this.cause |= value.readByte() & 0xFF;
 
         this.value = value;
     }
@@ -63,19 +66,19 @@ public class UserCauseImpl extends ParameterImpl implements UserCause {
     private void encode() {
         // create byte array taking into account data, point codes and
         // indicators;
-        this.value = new byte[4];
+        this.value = Unpooled.buffer(4);
         // encode routing context
-        value[0] = (byte) (this.user >> 8);
-        value[1] = (byte) (this.user);
+        value.writeByte((byte) (this.user >> 8));
+        value.writeByte((byte) (this.user));
 
-        value[2] = (byte) (this.cause >> 8);
-        value[3] = (byte) (this.cause);
+        value.writeByte((byte) (this.cause >> 8));
+        value.writeByte((byte) (this.cause));
 
     }
 
     @Override
-    protected byte[] getValue() {
-        return value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(value);
     }
 
     public int getCause() {

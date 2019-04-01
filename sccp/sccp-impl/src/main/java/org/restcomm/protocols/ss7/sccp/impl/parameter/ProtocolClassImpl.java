@@ -36,9 +36,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
@@ -93,43 +91,16 @@ public class ProtocolClassImpl extends AbstractParameter implements ProtocolClas
     }
 
     @Override
-    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (in.read() != 1) {
-                throw new ParseException();
-            }
-
-            int b = in.read() & 0xff;
-
-            pClass = b & 0x0f;
-            msgHandling = (b & 0xf0) >> 4;
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
-    }
-
-    @Override
-    public void encode(OutputStream out, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte b = (byte) (pClass | (msgHandling << 4));
-            out.write(1);
-            out.write(b);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
-    }
-
-    @Override
-    public void decode(byte[] bb, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        int b = bb[0] & 0xff;
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        int b = buffer.readByte() & 0xff;
 
         pClass = b & 0x0f;
         msgHandling = (b & 0xf0) >> 4;
     }
 
     @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return new byte[] { (byte) (pClass | (msgHandling << 4)) };
+    public void encode(ByteBuf buffer,final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	buffer.writeByte((byte) (pClass | (msgHandling << 4)));
     }
 
     public int hashCode() {

@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotRoutingIndicators;
 
@@ -40,41 +43,41 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotRoutingIndicators;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class PivotRoutingIndicatorsImpl extends AbstractISUPParameter implements PivotRoutingIndicators {
-	private static final long serialVersionUID = 1L;
-
-	private byte[] pivotRoutingIndicators;
+	private ByteBuf pivotRoutingIndicators;
 
     public PivotRoutingIndicatorsImpl() {
         super();
 
     }
 
-    public PivotRoutingIndicatorsImpl(byte[] pivotRoutingIndicators) throws ParameterException {
+    public PivotRoutingIndicatorsImpl(ByteBuf pivotRoutingIndicators) throws ParameterException {
         super();
         decode(pivotRoutingIndicators);
     }
 
-    public byte[] encode() throws ParameterException {
-        for (int index = 0; index < this.pivotRoutingIndicators.length; index++) {
-            this.pivotRoutingIndicators[index] = (byte) (this.pivotRoutingIndicators[index] & 0x7F);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getPivotRoutingIndicators();
+        while(curr.readableBytes()>1) {
+            buffer.writeByte((byte) (curr.readByte() & 0x7F));
         }
 
-        this.pivotRoutingIndicators[this.pivotRoutingIndicators.length - 1] = (byte) ((this.pivotRoutingIndicators[this.pivotRoutingIndicators.length - 1]) | (0x01 << 7));
-        return this.pivotRoutingIndicators;
+        if(curr.readableBytes()>0)
+        	buffer.writeByte((byte) (curr.readByte() | (0x01 << 7)));        
     }
 
-    public int decode(byte[] b) throws ParameterException {
-
+    public void decode(ByteBuf b) throws ParameterException {
         setPivotRoutingIndicators(b);
-        return b.length;
     }
 
-    public byte[] getPivotRoutingIndicators() {
-        return pivotRoutingIndicators;
+    public ByteBuf getPivotRoutingIndicators() {
+    	if(pivotRoutingIndicators==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(pivotRoutingIndicators);
     }
 
-    public void setPivotRoutingIndicators(byte[] pivotRoutingIndicators) {
-        if (pivotRoutingIndicators == null || pivotRoutingIndicators.length == 0) {
+    public void setPivotRoutingIndicators(ByteBuf pivotRoutingIndicators) {
+        if (pivotRoutingIndicators == null || pivotRoutingIndicators.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
         this.pivotRoutingIndicators = pivotRoutingIndicators;

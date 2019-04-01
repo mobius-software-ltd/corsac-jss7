@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallOfferingTreatmentIndicators;
 
@@ -40,44 +43,44 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallOfferingTreatmentIn
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallOfferingTreatmentIndicatorsImpl extends AbstractISUPParameter implements CallOfferingTreatmentIndicators {
-	private static final long serialVersionUID = 1L;
-
-	private byte[] callOfferingTreatmentIndicators = null;
+	private ByteBuf callOfferingTreatmentIndicators = null;
 
     public CallOfferingTreatmentIndicatorsImpl() {
         super();
 
     }
 
-    public CallOfferingTreatmentIndicatorsImpl(byte[] b) throws ParameterException {
+    public CallOfferingTreatmentIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length == 0) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() == 0) {
             throw new ParameterException("byte[] must not be null and length must be greater than 0");
         }
-        setCallOfferingTreatmentIndicators(b);
-        return b.length;
+        setCallOfferingTreatmentIndicators(b);        
     }
 
-    public byte[] encode() throws ParameterException {
-
-        for (int index = 0; index < this.callOfferingTreatmentIndicators.length; index++) {
-            this.callOfferingTreatmentIndicators[index] = (byte) ((this.callOfferingTreatmentIndicators[index] & 0x03) | 0x80);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getCallOfferingTreatmentIndicators();
+    	while(curr.readableBytes()>1) {
+    		buffer.writeByte((byte) ((curr.readByte() & 0x03) | 0x80));
         }
 
-        this.callOfferingTreatmentIndicators[this.callOfferingTreatmentIndicators.length - 1] = (byte) ((this.callOfferingTreatmentIndicators[this.callOfferingTreatmentIndicators.length - 1]) & 0x7F);
-        return this.callOfferingTreatmentIndicators;
+    	if(curr.readableBytes()>0)
+    		buffer.writeByte((byte) ((curr.readByte() & 0x7F)));
     }
 
-    public byte[] getCallOfferingTreatmentIndicators() {
-        return callOfferingTreatmentIndicators;
+    public ByteBuf getCallOfferingTreatmentIndicators() {
+    	if(callOfferingTreatmentIndicators==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(callOfferingTreatmentIndicators);
     }
 
-    public void setCallOfferingTreatmentIndicators(byte[] callOfferingTreatmentIndicators) {
-        if (callOfferingTreatmentIndicators == null || callOfferingTreatmentIndicators.length == 0) {
+    public void setCallOfferingTreatmentIndicators(ByteBuf callOfferingTreatmentIndicators) {
+        if (callOfferingTreatmentIndicators == null || callOfferingTreatmentIndicators.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
 

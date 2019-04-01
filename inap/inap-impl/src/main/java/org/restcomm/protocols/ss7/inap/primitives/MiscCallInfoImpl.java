@@ -22,175 +22,58 @@
 
 package org.restcomm.protocols.ss7.inap.primitives;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.inap.api.INAPException;
-import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentException;
-import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoDpAssignment;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class MiscCallInfoImpl implements MiscCallInfo, INAPAsnPrimitive {
-	private static final long serialVersionUID = 1L;
-
-	public static final int _ID_messageType = 0;
-    public static final int _ID_dpAssignment = 1;
-
-    public static final String _PrimitiveName = "MiscCallInfo";
-
-    private MiscCallInfoMessageType messageType;
-    private MiscCallInfoDpAssignment dpAssignment;
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
+public class MiscCallInfoImpl implements MiscCallInfo {
+	private ASNMiscCallInfoMessageType messageType;
+    private ASNMiscCallInfoDpAssignment dpAssignment;
 
     public MiscCallInfoImpl() {
     }
 
     public MiscCallInfoImpl(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment) {
-        this.messageType = messageType;
-        this.dpAssignment = dpAssignment;
+    	if(messageType!=null) {
+	        this.messageType = new ASNMiscCallInfoMessageType();
+	        this.messageType.setType(messageType);
+    	}
+    	
+    	if(dpAssignment!=null) {
+	        this.dpAssignment = new ASNMiscCallInfoDpAssignment();
+	        this.dpAssignment.setType(dpAssignment);
+    	}
     }
 
     @Override
     public MiscCallInfoMessageType getMessageType() {
-        return messageType;
+    	if(this.messageType==null)
+    		return null;
+    	
+        return messageType.getType();
     }
 
     @Override
     public MiscCallInfoDpAssignment getDpAssignment() {
-        return dpAssignment;
-    }
-
-    @Override
-    public int getTag() throws INAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws INAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new INAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    INAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new INAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    INAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws INAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new INAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    INAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new INAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    INAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream asnIS, int length) throws INAPParsingComponentException, IOException, AsnException {
-
-        this.messageType = null;
-        this.dpAssignment = null;
-
-        AsnInputStream ais = asnIS.readSequenceStreamData(length);
-        int i1;
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _ID_messageType:
-                        i1 = (int) ais.readInteger();
-                        this.messageType = MiscCallInfoMessageType.getInstance(i1);
-                        break;
-                    case _ID_dpAssignment:
-                        i1 = (int) ais.readInteger();
-                        this.dpAssignment = MiscCallInfoDpAssignment.getInstance(i1);
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.messageType == null)
-            throw new INAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": messageType is mandatory but not found ", INAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws INAPException {
-
-        this.encodeAll(asnOs, Tag.CLASS_UNIVERSAL, Tag.SEQUENCE);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws INAPException {
-
-        try {
-            asnOs.writeTag(tagClass, false, tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new INAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws INAPException {
-
-        if (this.messageType == null)
-            throw new INAPException("Error while encoding the " + _PrimitiveName + ": messageType must not be empty");
-
-        try {
-            asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_messageType, this.messageType.getCode());
-
-            if (this.dpAssignment != null)
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_dpAssignment, this.dpAssignment.getCode());
-        } catch (IOException e) {
-            throw new INAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new INAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+    	if(dpAssignment==null)
+    		return null;
+    	
+        return dpAssignment.getType();
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
         sb.append(" [");
         if (this.messageType != null) {
             sb.append("messageType=");

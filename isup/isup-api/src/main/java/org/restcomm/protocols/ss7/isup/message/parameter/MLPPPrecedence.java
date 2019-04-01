@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:13:29:53 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -85,7 +87,7 @@ public interface MLPPPrecedence extends ISUPParameter {
 
     void setMllpServiceDomain(int mllpServiceDomain);
 
-    byte[] getNiDigits();
+    ByteBuf getNiDigits();
 
-    void setNiDigits(byte[] niDigits);
+    void setNiDigits(ByteBuf niDigits);
 }

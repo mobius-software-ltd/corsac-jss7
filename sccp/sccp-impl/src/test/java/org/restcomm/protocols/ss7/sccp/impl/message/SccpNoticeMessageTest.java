@@ -26,9 +26,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
@@ -80,8 +79,8 @@ public class SccpNoticeMessageTest {
         this.stack.stop();
     }
 
-    public byte[] getDataUdtS() {
-        return new byte[] { 0x0A, 0x00, 0x03, 0x0D, 0x11, 0x0A, 0x52, (byte) 0x92, 
+    public ByteBuf getDataUdtS() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x0A, 0x00, 0x03, 0x0D, 0x11, 0x0A, 0x52, (byte) 0x92, 
                 0x03, // this was 0x00, however test method has TT set to 3. 
                 0x11, 0x04, (byte) 0x99, (byte) 0x99,
                 (byte) 0x99, (byte) 0x99, 0x09, 0x04, 0x03, (byte) 0xBE, 0x06, (byte) 0x92, (byte) 0x83, 0x65, (byte) 0x81,
@@ -93,41 +92,39 @@ public class SccpNoticeMessageTest {
                 0x01, 0x01, 0x30, 0x06, (byte) 0x80, 0x01, 0x0D, (byte) 0x81, 0x01, 0x01, 0x30, 0x0B, (byte) 0x80, 0x01, 0x11,
                 (byte) 0x81, 0x01, 0x01, (byte) 0xA2, 0x03, (byte) 0x80, 0x01, 0x01, 0x30, 0x0B, (byte) 0x80, 0x01, 0x11,
                 (byte) 0x81, 0x01, 0x01, (byte) 0xA2, 0x03, (byte) 0x80, 0x01, 0x02, 0x30, 0x06, (byte) 0x80, 0x01, 0x12,
-                (byte) 0x81, 0x01, 0x01, (byte) 0xA1, 0x06, 0x02, 0x01, 0x03, 0x02, 0x01, 0x1F };
+                (byte) 0x81, 0x01, 0x01, (byte) 0xA1, 0x06, 0x02, 0x01, 0x03, 0x02, 0x01, 0x1F });
     }
 
-    public byte[] getDataUdtSSrc() {
-        return new byte[] { 101, -127, -128, 72, 4, 0, 0, 0, 1, 73, 4, 0, 23, 58, 38, 107, 42, 40, 40, 6, 7, 0, 17, -122, 5, 1,
+    public ByteBuf getDataUdtSSrc() {
+        return Unpooled.wrappedBuffer(new byte[] { 101, -127, -128, 72, 4, 0, 0, 0, 1, 73, 4, 0, 23, 58, 38, 107, 42, 40, 40, 6, 7, 0, 17, -122, 5, 1,
                 1, 1, -96, 29, 97, 27, -128, 2, 7, -128, -95, 9, 6, 7, 4, 0, 0, 1, 0, 50, 1, -94, 3, 2, 1, 0, -93, 5, -95, 3,
                 2, 1, 0, 108, 70, -95, 60, 2, 1, 2, 2, 1, 23, 48, 52, -96, 50, 48, 6, -128, 1, 14, -127, 1, 1, 48, 6, -128, 1,
                 13, -127, 1, 1, 48, 11, -128, 1, 17, -127, 1, 1, -94, 3, -128, 1, 1, 48, 11, -128, 1, 17, -127, 1, 1, -94, 3,
-                -128, 1, 2, 48, 6, -128, 1, 18, -127, 1, 1, -95, 6, 2, 1, 3, 2, 1, 31 };
+                -128, 1, 2, 48, 6, -128, 1, 18, -127, 1, 1, -95, 6, 2, 1, 3, 2, 1, 31 });
     };
 
-    public byte[] getDataXudt1() {
-        return new byte[] { 18, 1, 15, 4, 6, 10, 15, 2, 66, 8, 4, 67, 1, 0, 6, 5, 11, 12, 13, 14, 15, 18, 1, 7, 0 };
+    public ByteBuf getDataXudt1() {
+        return Unpooled.wrappedBuffer(new byte[] { 18, 1, 15, 4, 6, 10, 15, 2, 66, 8, 4, 67, 1, 0, 6, 5, 11, 12, 13, 14, 15, 18, 1, 7, 0 });
     }
 
-    public byte[] getDataUdt() {
-        return new byte[] { 10, 1, 3, 5, 9, 2, 66, 8, 4, 67, 1, 0, 6, 5, 11, 12, 13, 14, 15 };
+    public ByteBuf getDataUdt() {
+        return Unpooled.wrappedBuffer(new byte[] { 10, 1, 3, 5, 9, 2, 66, 8, 4, 67, 1, 0, 6, 5, 11, 12, 13, 14, 15 });
     }
 
-    public byte[] getDataXudt1Src() {
-        return new byte[] { 11, 12, 13, 14, 15 };
+    public ByteBuf getDataXudt1Src() {
+        return Unpooled.wrappedBuffer(new byte[] { 11, 12, 13, 14, 15 });
     }
 
-    public byte[] getDataLudt1() {
-        return new byte[] { 20, 5, 10, 7, 00, 8, 00, 11, 00, 00, 00, 2, 66, 8, 4, 67, 1, 0, 6, 5, 00, 11, 12, 13, 14, 15 };
+    public ByteBuf getDataLudt1() {
+        return Unpooled.wrappedBuffer(new byte[] { 20, 5, 10, 7, 00, 8, 00, 11, 00, 00, 00, 2, 66, 8, 4, 67, 1, 0, 6, 5, 00, 11, 12, 13, 14, 15 });
     }
 
     @Test(groups = { "SccpMessage", "functional.decode" })
     public void testDecode() throws Exception {
 
         // ---- UDTS
-        byte[] b = this.getDataUdtS();
-
-        ByteArrayInputStream buf = new ByteArrayInputStream(b);
-        int type = buf.read();
+        ByteBuf buf = this.getDataUdtS();
+        int type = buf.readByte();
         SccpNoticeMessage msg = (SccpNoticeMessage) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
         System.out.println(msg);
         assertNotNull(msg);
@@ -144,13 +141,11 @@ public class SccpNoticeMessageTest {
         assertEquals(callingAdd.getSignalingPointCode(), 1726);
         assertEquals(callingAdd.getSubsystemNumber(), 146);
         assertNull(callingAdd.getGlobalTitle());
-        assertTrue(Arrays.equals(msg.getData(), getDataUdtSSrc()));
+        MessageSegmentationTest.assertByteBufs(msg.getData(), getDataUdtSSrc());
 
         // ---- XUDT without segm
-        b = this.getDataXudt1();
-
-        buf = new ByteArrayInputStream(b);
-        type = buf.read();
+        buf = this.getDataXudt1();
+        type = buf.readByte();
         msg = (SccpNoticeMessage) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
         System.out.println(msg);
         assertNotNull(msg);
@@ -169,13 +164,11 @@ public class SccpNoticeMessageTest {
         assertNull(callingAdd.getGlobalTitle());
         assertNull(msg.getSegmentation());
         assertEquals(msg.getImportance().getValue(), 7);
-        assertTrue(Arrays.equals(msg.getData(), getDataXudt1Src()));
+        MessageSegmentationTest.assertByteBufs(msg.getData(), getDataXudt1Src());
 
         // ---- LUDT
-        b = this.getDataLudt1();
-
-        buf = new ByteArrayInputStream(b);
-        type = buf.read();
+        buf = this.getDataLudt1();
+        type = buf.readByte();
         msg = (SccpNoticeMessage) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
         System.out.println(msg);
         assertNotNull(msg);
@@ -194,7 +187,7 @@ public class SccpNoticeMessageTest {
         assertNull(callingAdd.getGlobalTitle());
         assertNull(msg.getSegmentation());
         assertNull(msg.getImportance());
-        assertTrue(Arrays.equals(msg.getData(), getDataXudt1Src()));
+        MessageSegmentationTest.assertByteBufs(msg.getData(), getDataXudt1Src());
 
     }
 
@@ -212,7 +205,7 @@ public class SccpNoticeMessageTest {
 
         EncodingResultData res = msg.encode(stack,LongMessageRuleType.XUDT_ENABLED, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
-        assertTrue(Arrays.equals(res.getSolidData(), getDataUdtS()));
+        MessageSegmentationTest.assertByteBufs(res.getSolidData(), getDataUdtS());
 
         // ---- UDTS
         this.stack.setRemoveSpc(false);
@@ -228,7 +221,7 @@ public class SccpNoticeMessageTest {
 
         res = msg.encode(stack,LongMessageRuleType.XUDT_ENABLED, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
-        assertTrue(Arrays.equals(res.getSolidData(), getDataUdt()));
+        MessageSegmentationTest.assertByteBufs(res.getSolidData(), getDataUdt());
 
         // ---- LUDT without segm
         calledAdd = stack.getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 0, 8);
@@ -240,6 +233,6 @@ public class SccpNoticeMessageTest {
 
         res = msg.encode(stack,LongMessageRuleType.LUDT_ENABLED, 2000, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
-        assertTrue(Arrays.equals(res.getSolidData(), getDataLudt1()));
+        MessageSegmentationTest.assertByteBufs(res.getSolidData(), getDataLudt1());
     }
 }

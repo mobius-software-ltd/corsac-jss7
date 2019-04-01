@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.tcap.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 
 /**
  * <pre>
@@ -56,13 +56,13 @@ public interface TCUserAbortRequest extends DialogRequest {
 
     void setOriginatingAddress(SccpAddress dest);
 
-    ApplicationContextName getApplicationContextName();
+    ApplicationContextNameImpl getApplicationContextName();
 
-    void setApplicationContextName(ApplicationContextName acn);
+    void setApplicationContextName(ApplicationContextNameImpl acn);
 
-    UserInformation getUserInformation();
+    UserInformationImpl getUserInformation();
 
-    void setUserInformation(UserInformation acn);
+    void setUserInformation(UserInformationImpl acn);
 
     /**
      * Setting of {@link DialogServiceUserType} will create the AARE else ABRT is formed

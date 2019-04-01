@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -47,8 +49,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class CircuitGroupQueryMessageImpl extends ISUPMessageImpl implements CircuitGroupQueryMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.CircuitGroupQuery);
     private static final int _MANDATORY_VAR_COUNT = 1;
 
@@ -79,7 +79,7 @@ public class CircuitGroupQueryMessageImpl extends ISUPMessageImpl implements Cir
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody(byte [], int)
      */
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         switch (parameterIndex) {
             case _INDEX_V_RangeAndStatus:
@@ -102,7 +102,7 @@ public class CircuitGroupQueryMessageImpl extends ISUPMessageImpl implements Cir
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
      */
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         throw new ParameterException("This message does not support optional parameters");
 

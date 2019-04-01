@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotCapability;
 
@@ -40,39 +43,39 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotCapability;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class PivotCapabilityImpl extends AbstractISUPParameter implements PivotCapability {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
-    private byte[] pivotCapabilities;
+    private ByteBuf pivotCapabilities;
 
     public PivotCapabilityImpl() {
         super();
 
     }
 
-    public byte[] encode() throws ParameterException {
-        for (int index = 0; index < this.pivotCapabilities.length; index++) {
-            this.pivotCapabilities[index] = (byte) (this.pivotCapabilities[index] & 0x7F);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getPivotCapabilities();
+        while(curr.readableBytes()>1) {
+        	buffer.writeByte(curr.readByte() & 0x7F);            
         }
 
-        this.pivotCapabilities[this.pivotCapabilities.length - 1] = (byte) ((this.pivotCapabilities[this.pivotCapabilities.length - 1]) | (0x01 << 7));
-        return this.pivotCapabilities;
+        if(curr.readableBytes()>0)
+        	buffer.writeByte(curr.readByte() | (0x01 << 7));        
     }
 
-    public int decode(byte[] b) throws ParameterException {
-
+    public void decode(ByteBuf b) throws ParameterException {
         setPivotCapabilities(b);
-        return b.length;
     }
 
-    public byte[] getPivotCapabilities() {
-        return pivotCapabilities;
+    public ByteBuf getPivotCapabilities() {
+    	if(pivotCapabilities==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(pivotCapabilities);
     }
 
-    public void setPivotCapabilities(byte[] pivotCapabilities) {
-        if (pivotCapabilities == null || pivotCapabilities.length == 0) {
+    public void setPivotCapabilities(ByteBuf pivotCapabilities) {
+        if (pivotCapabilities == null || pivotCapabilities.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
 
@@ -84,7 +87,6 @@ public class PivotCapabilityImpl extends AbstractISUPParameter implements PivotC
         b |= pivotPossibility & 0x07;
 
         return (byte) b;
-
     }
 
     public boolean getITRINotAllowed(byte b) {
@@ -96,7 +98,6 @@ public class PivotCapabilityImpl extends AbstractISUPParameter implements PivotC
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 }

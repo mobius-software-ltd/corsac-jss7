@@ -21,6 +21,9 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.ProtocolData;
 
 /**
@@ -37,13 +40,13 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
     private int ni;
     private int mp;
     private int sls;
-    private byte[] data;
+    private ByteBuf data;
 
     protected ProtocolDataImpl() {
         this.tag = ParameterImpl.Protocol_Data;
     }
 
-    protected ProtocolDataImpl(int opc, int dpc, int si, int ni, int mp, int sls, byte[] data) {
+    protected ProtocolDataImpl(int opc, int dpc, int si, int ni, int mp, int sls, ByteBuf data) {
         this();
         this.opc = opc;
         this.dpc = dpc;
@@ -60,48 +63,46 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
      *
      * @param valueData the value of this parameter
      */
-    protected ProtocolDataImpl(byte[] valueData) {
+    protected ProtocolDataImpl(ByteBuf valueData) {
         this();
 
-        this.opc = ((valueData[0] & 0xff) << 24) | ((valueData[1] & 0xff) << 16) | ((valueData[2] & 0xff) << 8)
-                | (valueData[3] & 0xff);
-        this.dpc = ((valueData[4] & 0xff) << 24) | ((valueData[5] & 0xff) << 16) | ((valueData[6] & 0xff) << 8)
-                | (valueData[7] & 0xff);
+        this.opc = ((valueData.readByte() & 0xff) << 24) | ((valueData.readByte() & 0xff) << 16) | ((valueData.readByte() & 0xff) << 8)
+                | (valueData.readByte() & 0xff);
+        this.dpc = ((valueData.readByte() & 0xff) << 24) | ((valueData.readByte() & 0xff) << 16) | ((valueData.readByte() & 0xff) << 8)
+                | (valueData.readByte() & 0xff);
 
-        this.si = valueData[8] & 0xff;
-        this.ni = valueData[9] & 0xff;
-        this.mp = valueData[10] & 0xff;
-        this.sls = valueData[11] & 0xff;
+        this.si = valueData.readByte() & 0xff;
+        this.ni = valueData.readByte() & 0xff;
+        this.mp = valueData.readByte() & 0xff;
+        this.sls = valueData.readByte() & 0xff;
 
-        this.data = new byte[valueData.length - 12];
-        System.arraycopy(valueData, 12, data, 0, valueData.length - 12);
+        this.data = valueData.slice();
     }
 
-    private byte[] encode() {
+    private ByteBuf encode() {
         // create byte array taking into account data, point codes and
         // indicators;
-        byte[] value = new byte[data.length + 12];
-        // insert data
-        System.arraycopy(data, 0, value, 12, data.length);
-
-        // encode originated point codes
-        value[0] = (byte) (opc >> 24);
-        value[1] = (byte) (opc >> 16);
-        value[2] = (byte) (opc >> 8);
-        value[3] = (byte) (opc);
+    	ByteBuf headerValue=Unpooled.buffer(12);
+    	
+    	// encode originated point codes
+    	headerValue.writeByte((byte) (opc >> 24));
+    	headerValue.writeByte((byte) (opc >> 16));
+    	headerValue.writeByte((byte) (opc >> 8));
+    	headerValue.writeByte((byte) (opc));
 
         // encode destination point code
-        value[4] = (byte) (dpc >> 24);
-        value[5] = (byte) (dpc >> 16);
-        value[6] = (byte) (dpc >> 8);
-        value[7] = (byte) (dpc);
+    	headerValue.writeByte((byte) (dpc >> 24));
+    	headerValue.writeByte((byte) (dpc >> 16));
+    	headerValue.writeByte((byte) (dpc >> 8));
+    	headerValue.writeByte((byte) (dpc));
 
         // encode indicators
-        value[8] = (byte) (si);
-        value[9] = (byte) (ni);
-        value[10] = (byte) (mp);
-        value[11] = (byte) (sls);
-
+    	headerValue.writeByte((byte) (si));
+    	headerValue.writeByte((byte) (ni));
+    	headerValue.writeByte((byte) (mp));
+    	headerValue.writeByte((byte) (sls));
+        
+    	ByteBuf value=Unpooled.wrappedBuffer(headerValue,data);
         return value;
     }
 
@@ -129,12 +130,12 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
         return sls;
     }
 
-    public byte[] getData() {
-        return data;
+    public ByteBuf getData() {
+        return Unpooled.wrappedBuffer(data);
     }
 
     @Override
-    protected byte[] getValue() {
+    protected ByteBuf getValue() {
         return this.encode();
     }
 

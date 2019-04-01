@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ConferenceTreatmentIndicators;
 
@@ -40,11 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ConferenceTreatmentIndi
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ConferenceTreatmentIndicatorsImpl extends AbstractISUPParameter implements ConferenceTreatmentIndicators {
-	private static final long serialVersionUID = 1L;
+	private ByteBuf conferenceAcceptance = null;
 
-	private byte[] conferenceAcceptance = null;
-
-    public ConferenceTreatmentIndicatorsImpl(byte[] b) throws ParameterException {
+    public ConferenceTreatmentIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -54,31 +54,30 @@ public class ConferenceTreatmentIndicatorsImpl extends AbstractISUPParameter imp
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length == 0) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() == 0) {
             throw new ParameterException("byte[] must not be null and length must be greater than 0");
         }
-        setConferenceAcceptance(b);
-        return b.length;
+        setConferenceAcceptance(b);        
     }
 
-    public byte[] encode() throws ParameterException {
-
-        for (int index = 0; index < this.conferenceAcceptance.length; index++) {
-            this.conferenceAcceptance[index] = (byte) (this.conferenceAcceptance[index] & 0x03);
+    public void encode(ByteBuf b) throws ParameterException {
+    	ByteBuf curr=getConferenceAcceptance();
+    	while(curr.readableBytes()>1) {
+            b.writeByte(curr.readByte() & 0x03);
         }
 
-        this.conferenceAcceptance[this.conferenceAcceptance.length - 1] = (byte) ((this.conferenceAcceptance[this.conferenceAcceptance.length - 1]) | (0x01 << 7));
-        return this.conferenceAcceptance;
+    	if(curr.readableBytes()>0)
+    		b.writeByte(curr.readByte()  | (0x01 << 7));        
     }
 
-    public byte[] getConferenceAcceptance() {
+    public ByteBuf getConferenceAcceptance() {
         return conferenceAcceptance;
     }
 
-    public void setConferenceAcceptance(byte[] conferenceAcceptance) {
-        if (conferenceAcceptance == null || conferenceAcceptance.length == 0) {
-            throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
+    public void setConferenceAcceptance(ByteBuf conferenceAcceptance) {
+        if (conferenceAcceptance == null || conferenceAcceptance.readableBytes() == 0) {
+            throw new IllegalArgumentException("ByteBuf must not be null and length must be greater than 0");
         }
 
         this.conferenceAcceptance = conferenceAcceptance;

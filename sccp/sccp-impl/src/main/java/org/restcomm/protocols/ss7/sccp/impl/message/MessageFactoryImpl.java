@@ -39,7 +39,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.Importance;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import java.io.InputStream;
+import io.netty.buffer.ByteBuf;
+
 
 /**
  *
@@ -58,20 +59,20 @@ public class MessageFactoryImpl implements MessageFactory {
         this.sccpStackImpl = sccpStackImpl;
     }
 
-    public SccpDataMessage createDataMessageClass0(SccpAddress calledParty, SccpAddress callingParty, byte[] data,
+    public SccpDataMessage createDataMessageClass0(SccpAddress calledParty, SccpAddress callingParty, ByteBuf data,
             int localSsn, boolean returnMessageOnError, HopCounter hopCounter, Importance importance) {
         return new SccpDataMessageImpl( this.sccpStackImpl.getMaxDataMessage(),new ProtocolClassImpl(0, returnMessageOnError),
                 sccpStackImpl.newSls(), localSsn, calledParty, callingParty, data, hopCounter, importance);
     }
 
-    public SccpDataMessage createDataMessageClass1(SccpAddress calledParty, SccpAddress callingParty, byte[] data, int sls,
+    public SccpDataMessage createDataMessageClass1(SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, int sls,
             int localSsn, boolean returnMessageOnError, HopCounter hopCounter, Importance importance) {
         return new SccpDataMessageImpl( this.sccpStackImpl.getMaxDataMessage(),new ProtocolClassImpl(1, returnMessageOnError), sls, localSsn,
                 calledParty, callingParty, data, hopCounter, importance);
     }
 
     public SccpNoticeMessage createNoticeMessage(int origMsgType, ReturnCause returnCause, SccpAddress calledParty,
-            SccpAddress callingParty, byte[] data, HopCounter hopCounter, Importance importance) {
+            SccpAddress callingParty, ByteBuf data, HopCounter hopCounter, Importance importance) {
         int type = SccpMessage.MESSAGE_TYPE_UNDEFINED;
         switch (origMsgType) {
             case SccpMessage.MESSAGE_TYPE_UDT:
@@ -89,7 +90,7 @@ public class MessageFactoryImpl implements MessageFactory {
                 importance);
     }
 
-    public SccpConnCrMessage createConnectMessageClass2(int localSsn, SccpAddress calledAddress, SccpAddress callingAddress, byte[] data, Importance importance) {
+    public SccpConnCrMessage createConnectMessageClass2(int localSsn, SccpAddress calledAddress, SccpAddress callingAddress, ByteBuf data, Importance importance) {
         SccpConnCrMessageImpl message = new SccpConnCrMessageImpl(sccpStackImpl.newSls(), localSsn, calledAddress, callingAddress, null);
         message.setCalledPartyAddress(calledAddress);
         message.setCallingPartyAddress(callingAddress);
@@ -99,7 +100,7 @@ public class MessageFactoryImpl implements MessageFactory {
         return message;
     }
 
-    public SccpConnCrMessage createConnectMessageClass3(int localSsn, SccpAddress calledAddress, SccpAddress callingAddress, Credit credit, byte[] data, Importance importance) {
+    public SccpConnCrMessage createConnectMessageClass3(int localSsn, SccpAddress calledAddress, SccpAddress callingAddress, Credit credit, ByteBuf data, Importance importance) {
         SccpConnCrMessageImpl message = new SccpConnCrMessageImpl(sccpStackImpl.newSls(), localSsn, calledAddress, callingAddress, null);
         message.setCalledPartyAddress(calledAddress);
         message.setCallingPartyAddress(callingAddress);
@@ -110,7 +111,7 @@ public class MessageFactoryImpl implements MessageFactory {
         return message;
     }
 
-    public SccpMessageImpl createMessage(int type, int opc, int dpc, int sls, InputStream in, final SccpProtocolVersion sccpProtocolVersion, int networkId)
+    public SccpMessageImpl createMessage(int type, int opc, int dpc, int sls, ByteBuf buffer, final SccpProtocolVersion sccpProtocolVersion, int networkId)
             throws ParseException {
         SccpMessageImpl msg = null;
         switch (type) {
@@ -176,7 +177,7 @@ public class MessageFactoryImpl implements MessageFactory {
         }
 
         if (msg != null) {
-            msg.decode(in, sccpStackImpl.getSccpProvider().getParameterFactory(), sccpProtocolVersion);
+            msg.decode(buffer, sccpStackImpl.getSccpProvider().getParameterFactory(), sccpProtocolVersion);
         } else if (logger.isEnabledFor(Level.WARN)) {
             logger.warn("No message implementation for MT: " + type);
         }

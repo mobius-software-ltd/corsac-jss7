@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.LoopPreventionIndicators;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.LoopPreventionIndicator
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class LoopPreventionIndicatorsImpl extends AbstractISUPParameter implements LoopPreventionIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -59,30 +59,30 @@ public class LoopPreventionIndicatorsImpl extends AbstractISUPParameter implemen
         this.responseIndicator = responseIndicator;
     }
 
-    public LoopPreventionIndicatorsImpl(byte[] b) throws ParameterException {
+    public LoopPreventionIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
 
-        this.response = (b[0] & 0x01) == _TURN_ON;
+        byte curr=b.readByte();
+        this.response = (curr & 0x01) == _TURN_ON;
 
         if (response) {
-            this.responseIndicator = (b[0] >> 1) & 0x03;
-        }
-        return 1;
+            this.responseIndicator = (curr >> 1) & 0x03;
+        }        
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
         int v = this.response ? _TURN_ON : _TURN_OFF;
         if (this.response) {
             v |= (this.responseIndicator & 0x03) << 1;
         }
-        return new byte[] { (byte) v };
+        buffer.writeByte((byte) v);
     }
 
     public boolean isResponse() {

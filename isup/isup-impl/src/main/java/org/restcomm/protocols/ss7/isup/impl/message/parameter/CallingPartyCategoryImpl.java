@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
@@ -34,8 +34,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallingPartyCategoryImpl extends AbstractISUPParameter implements CallingPartyCategory {
-	private static final long serialVersionUID = 1L;
-	
 	private byte callingPartyCategory = 0;
 
     public CallingPartyCategoryImpl(byte callingPartyCategory) {
@@ -48,28 +46,20 @@ public class CallingPartyCategoryImpl extends AbstractISUPParameter implements C
 
     }
 
-    public CallingPartyCategoryImpl(byte[] representation) throws ParameterException {
+    public CallingPartyCategoryImpl(ByteBuf representation) throws ParameterException {
         super();
         this.decode(representation);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null or have different size than 1");
         }
-        this.callingPartyCategory = b[0];
-
-        return 1;
+        this.callingPartyCategory = b.readByte();
     }
 
-    public byte[] encode() throws ParameterException {
-
-        return new byte[] { this.callingPartyCategory };
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        bos.write(this.callingPartyCategory);
-        return 1;
+    public void encode(ByteBuf buffer) {
+    	buffer.writeByte(this.callingPartyCategory);
     }
 
     public byte getCallingPartyCategory() {

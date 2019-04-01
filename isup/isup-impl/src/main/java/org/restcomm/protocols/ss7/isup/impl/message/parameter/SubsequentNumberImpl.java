@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.SubsequentNumber;
@@ -43,37 +42,21 @@ import org.restcomm.protocols.ss7.isup.message.parameter.SubsequentNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class SubsequentNumberImpl extends AbstractNumber implements SubsequentNumber {
-	private static final long serialVersionUID = 1L;
-
 	public SubsequentNumberImpl() {
         super();
-
     }
 
-    public SubsequentNumberImpl(byte[] representation) throws ParameterException {
+    public SubsequentNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
 
-    public SubsequentNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException {
     }
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        // NOTE: we leave this.
-
-        return 0;
-    }
-
-    public int encodeBody(ByteArrayOutputStream bos) {
-        // NOTE: we leave this.
-        return 0;
+    public void encodeBody(ByteBuf buffer) {
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
-
 }

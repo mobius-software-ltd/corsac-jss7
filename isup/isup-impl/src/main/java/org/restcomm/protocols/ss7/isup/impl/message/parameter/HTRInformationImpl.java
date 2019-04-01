@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.HTRInformation;
@@ -43,18 +42,10 @@ import org.restcomm.protocols.ss7.isup.message.parameter.HTRInformation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class HTRInformationImpl extends AbstractNAINumber implements HTRInformation {
-	private static final long serialVersionUID = 1L;
-
 	private int numberingPlanIndicator;
 
-    public HTRInformationImpl(byte[] representation) throws ParameterException {
+    public HTRInformationImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
-    }
-
-    public HTRInformationImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     public HTRInformationImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator) {
@@ -73,11 +64,13 @@ public class HTRInformationImpl extends AbstractNAINumber implements HTRInformat
      * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
-
-        this.numberingPlanIndicator = (b & 0x70) >> 4;
-        return 1;
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
+    	if(buffer.readableBytes()==0) {
+    		throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+    	}
+    	
+        int b = buffer.readByte() & 0xff;
+        this.numberingPlanIndicator = (b & 0x70) >> 4;        
     }
 
     /*
@@ -86,10 +79,9 @@ public class HTRInformationImpl extends AbstractNAINumber implements HTRInformat
      * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
-    public int encodeBody(ByteArrayOutputStream bos) {
+    public void encodeBody(ByteBuf buffer) {
         int c = (this.numberingPlanIndicator & 0x07) << 4;
-        bos.write(c);
-        return 1;
+        buffer.writeByte(c);        
     }
 
     public int getNumberingPlanIndicator() {
@@ -101,7 +93,6 @@ public class HTRInformationImpl extends AbstractNAINumber implements HTRInformat
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 }

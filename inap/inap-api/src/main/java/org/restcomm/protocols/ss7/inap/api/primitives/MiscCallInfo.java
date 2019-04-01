@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.inap.api.primitives;
 
-import java.io.Serializable;
-
 /**
  *
 <code>
@@ -37,7 +35,7 @@ MiscCallInfo ::= SEQUENCE {
  * @author sergey vetyutnev
  *
  */
-public interface MiscCallInfo extends Serializable {
+public interface MiscCallInfo {
 
     MiscCallInfoMessageType getMessageType();
 

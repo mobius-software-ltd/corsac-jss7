@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitGroupSuperVisionMessageType;
@@ -43,11 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CircuitGroupSuperVision
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CircuitGroupSuperVisionMessageTypeImpl extends AbstractISUPParameter implements CircuitGroupSuperVisionMessageType {
-	private static final long serialVersionUID = 1L;
-
 	private int CircuitGroupSuperVisionMessageTypeIndicator = 0;
 
-    public CircuitGroupSuperVisionMessageTypeImpl(byte[] b) throws ParameterException {
+    public CircuitGroupSuperVisionMessageTypeImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -62,28 +59,15 @@ public class CircuitGroupSuperVisionMessageTypeImpl extends AbstractISUPParamete
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null or has size different than 1.");
         }
-        this.CircuitGroupSuperVisionMessageTypeIndicator = b[0] & 0x03;
-        return 1;
+        this.CircuitGroupSuperVisionMessageTypeIndicator = b.readByte() & 0x03;        
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = new byte[] { (byte) (this.CircuitGroupSuperVisionMessageTypeIndicator & 0x03) };
-
-        return b;
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        byte[] b = this.encode();
-        try {
-            bos.write(b);
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) (this.CircuitGroupSuperVisionMessageTypeIndicator & 0x03));
     }
 
     public int getCircuitGroupSuperVisionMessageTypeIndicator() {

@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
 
@@ -32,23 +35,23 @@ import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
  */
 public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeType {
     private int mode = 0;
-    private byte[] value;
+    private ByteBuf value;
 
     public TrafficModeTypeImpl() {
         this.tag = Parameter.Traffic_Mode_Type;
     }
 
-    protected TrafficModeTypeImpl(byte[] data) {
+    protected TrafficModeTypeImpl(ByteBuf data) {
         this.tag = Parameter.Traffic_Mode_Type;
         this.value = data;
         this.mode = 0;
-        this.mode |= data[0] & 0xFF;
+        this.mode |= data.readByte() & 0xFF;
         this.mode <<= 8;
-        this.mode |= data[1] & 0xFF;
+        this.mode |= data.readByte() & 0xFF;
         this.mode <<= 8;
-        this.mode |= data[2] & 0xFF;
+        this.mode |= data.readByte() & 0xFF;
         this.mode <<= 8;
-        this.mode |= data[3] & 0xFF;
+        this.mode |= data.readByte() & 0xFF;
     }
 
     public TrafficModeTypeImpl(int traffmode) {
@@ -60,12 +63,12 @@ public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeTyp
     private void encode() {
         // create byte array taking into account data, point codes and
         // indicators;
-        this.value = new byte[4];
+        this.value = Unpooled.buffer(4);
         // encode routing context
-        value[0] = (byte) (mode >> 24);
-        value[1] = (byte) (mode >> 16);
-        value[2] = (byte) (mode >> 8);
-        value[3] = (byte) (mode);
+        value.writeByte((byte) (mode >> 24));
+        value.writeByte((byte) (mode >> 16));
+        value.writeByte((byte) (mode >> 8));
+        value.writeByte((byte) (mode));
     }
 
     public int getMode() {
@@ -73,8 +76,8 @@ public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeTyp
     }
 
     @Override
-    protected byte[] getValue() {
-        return value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(value);
     }
 
     @Override

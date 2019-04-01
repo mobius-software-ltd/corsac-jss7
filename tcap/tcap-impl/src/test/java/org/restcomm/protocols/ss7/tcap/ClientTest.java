@@ -1,5 +1,8 @@
 package org.restcomm.protocols.ss7.tcap;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -22,8 +25,10 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 /**
@@ -34,7 +39,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class ClientTest implements TCListener {
     // encoded Application Context Name
-    public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+    public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
     private TCAPProvider tcapProvider;
     private Dialog clientDialog;
 
@@ -59,14 +64,14 @@ public class ClientTest implements TCListener {
         ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
 
         // create some INVOKE
-        Invoke invoke = cpFactory.createTCInvokeRequest();
-        invoke.setInvokeId(this.clientDialog.getNewInvokeId());
-        OperationCode oc = cpFactory.createOperationCode();
-        oc.setLocalOperationCode(12L);
-        invoke.setOperationCode(oc);
+        ComponentImpl invoke = cpFactory.createTCInvokeRequest();
+        invoke.getInvoke().setInvokeId(this.clientDialog.getNewInvokeId());
+        OperationCode oc = cpFactory.createLocalOperationCode();
+        ((LocalOperationCodeImpl)oc).setLocalOperationCode(12L);
+        invoke.getInvoke().setOperationCode(oc);
         // no parameter
         this.clientDialog.sendComponent(invoke);
-        ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         // UI is optional!
         TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.clientDialog);
         tcbr.setApplicationContextName(acn);
@@ -76,7 +81,7 @@ public class ClientTest implements TCListener {
     public void onDialogReleased(Dialog d) {
     }
 
-    public void onInvokeTimeout(Invoke tcInvokeRequest) {
+    public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
     }
 
     public void onDialogTimeout(Dialog d) {

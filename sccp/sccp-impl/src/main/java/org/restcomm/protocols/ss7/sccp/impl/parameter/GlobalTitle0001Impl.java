@@ -21,9 +21,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
@@ -70,47 +68,39 @@ public class GlobalTitle0001Impl extends AbstractGlobalTitle implements GlobalTi
     }
 
     @Override
-    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            int b = in.read() & 0xff;
-            this.natureOfAddress = NatureOfAddress.valueOf(b & 0x7f);
-            if((b & 0x80) >0){
-                super.encodingScheme = BCDOddEncodingScheme.INSTANCE;
-            } else {
-                super.encodingScheme = BCDEvenEncodingScheme.INSTANCE;
-            }
-            super.digits = this.encodingScheme.decode(in);
-        } catch (IOException e) {
-            throw new ParseException(e);
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	int b = buffer.readByte() & 0xff;
+        this.natureOfAddress = NatureOfAddress.valueOf(b & 0x7f);
+        if((b & 0x80) >0){
+            super.encodingScheme = BCDOddEncodingScheme.INSTANCE;
+        } else {
+            super.encodingScheme = BCDEvenEncodingScheme.INSTANCE;
         }
+        super.digits = this.encodingScheme.decode(buffer);
     }
 
     @Override
-    public void encode(final OutputStream out, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (this.natureOfAddress == null) {
-                throw new IllegalStateException();
-            }
-
-            boolean odd = (super.digits.length() % 2) != 0;
-            // encoding first byte
-            int b = 0x00;
-            if (odd) {
-                b = b | (byte) 0x80;
-            }
-            // adding nature of address indicator
-            b = b | (byte) this.natureOfAddress.getValue();
-            // write first byte
-            out.write((byte) b);
-
-            // encode digits
-            if(super.digits == null){
-                throw new IllegalStateException();
-            }
-            this.encodingScheme.encode(digits, out);
-        } catch (IOException e) {
-            throw new ParseException(e);
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	if (this.natureOfAddress == null) {
+            throw new IllegalStateException();
         }
+
+        boolean odd = (super.digits.length() % 2) != 0;
+        // encoding first byte
+        int b = 0x00;
+        if (odd) {
+            b = b | (byte) 0x80;
+        }
+        // adding nature of address indicator
+        b = b | (byte) this.natureOfAddress.getValue();
+        // write first byte
+        buffer.writeByte((byte) b);
+
+        // encode digits
+        if(super.digits == null){
+            throw new IllegalStateException();
+        }
+        this.encodingScheme.encode(digits, buffer);
     }
 
     @Override

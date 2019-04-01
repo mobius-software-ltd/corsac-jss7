@@ -26,6 +26,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -491,7 +492,7 @@ public class IPSPServerFSMTest {
         PayloadDataImpl payload = (PayloadDataImpl) messageFactory.createMessage(MessageClass.TRANSFER_MESSAGES,
                 MessageType.PAYLOAD);
         ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 123, 3, 1, 0, 1,
-                new byte[] { 1, 2, 3, 4 });
+        		Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
         payload.setRoutingContext(rc);
         payload.setData(p1);
 

@@ -23,10 +23,10 @@
 package org.restcomm.protocols.ss7.tcap.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.asn.AbortSource;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.ASNAbortSource;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnosticImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 
 /**
  * <pre>
@@ -60,13 +60,13 @@ public interface TCUserAbortIndication extends DialogIndication {
      */
     Boolean IsAbrtApdu();
 
-    UserInformation getUserInformation();
+    UserInformationImpl getUserInformation();
 
-    AbortSource getAbortSource();
+    ASNAbortSource getAbortSource();
 
-    ApplicationContextName getApplicationContextName();
+    ApplicationContextNameImpl getApplicationContextName();
 
-    ResultSourceDiagnostic getResultSourceDiagnostic();
+    ResultSourceDiagnosticImpl getResultSourceDiagnostic();
 
     SccpAddress getOriginatingAddress();
 

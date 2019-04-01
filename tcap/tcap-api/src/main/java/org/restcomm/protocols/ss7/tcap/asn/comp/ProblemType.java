@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 
 /**
@@ -33,20 +32,16 @@ public enum ProblemType {
 
     General(0), Invoke(1), ReturnResult(2), ReturnError(3);
 
-    private long typeTag = -1;
-
-    public static final int _TAG_CLASS = Tag.CLASS_APPLICATION;
-    public static final boolean _TAG_PC_PRITIMITIVE = true;
-
+    private long value = -1;
     ProblemType(long l) {
-        this.typeTag = l;
+        this.value = l;
     }
 
     /**
      * @return the typeTag
      */
     public long getTypeTag() {
-        return typeTag;
+        return value;
     }
 
     public static ProblemType getFromInt(long t) throws ParseException {

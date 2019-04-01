@@ -26,17 +26,18 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.tcap.asn.AbortSource;
+import org.restcomm.protocols.ss7.tcap.asn.ASNAbortSource;
 import org.restcomm.protocols.ss7.tcap.asn.AbortSourceType;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -51,42 +52,45 @@ public class DialogAbortAPDUTest {
     }
 
     private byte[] getData2() {
-        return new byte[] { 100, 21, (byte) 128, 1, 1, (byte) 190, 16, 40, 14, 6, 7, 4, 0, 0, 1, 1, 1, 1, (byte) 160, 3, 1, 2,
+        return new byte[] { 100, 23, (byte) 128, 1, 1, (byte) 190, 18, 40, 16, 6, 7, 4, 0, 0, 1, 1, 1, 1, (byte) 160, 5, (byte) 160, 3, 1, 2,
                 3 };
     }
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    	ASNGeneric.clear(ASNUserInformationObjectImpl.class);
+    	ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, TCBeginTestASN3.class);    	
+    }
+    
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
-        byte[] b = getData();
-        AsnInputStream asnIs = new AsnInputStream(b);
-        int tag = asnIs.readTag();
-        assertEquals(4, tag);
-        DialogAbortAPDU d = TcapFactory.createDialogAPDUAbort();
-        d.decode(asnIs);
-        AbortSource as = d.getAbortSource();
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(DialogAbortAPDUImpl.class);
+    	
+        Object output=parser.decode(Unpooled.wrappedBuffer(getData())).getResult();
+        assertTrue(output instanceof DialogAbortAPDUImpl);
+        DialogAbortAPDUImpl d = (DialogAbortAPDUImpl)output;
+                
+        ASNAbortSource as = d.getAbortSource();
         assertEquals(AbortSourceType.User, as.getAbortSourceType());
-        UserInformation ui = d.getUserInformation();
+        UserInformationImpl ui = d.getUserInformation();
         assertNull(ui);
 
-        AsnOutputStream aos = new AsnOutputStream();
-        d.encode(aos);
-        assertTrue(Arrays.equals(b, aos.toByteArray()));
+        ByteBuf buffer=parser.encode(d);
+        assertTrue(Arrays.equals(getData(), buffer.array()));
 
-        b = getData2();
-        asnIs = new AsnInputStream(b);
-        tag = asnIs.readTag();
-        assertEquals(4, tag);
-        d = TcapFactory.createDialogAPDUAbort();
-        d.decode(asnIs);
+        output=parser.decode(Unpooled.wrappedBuffer(getData2())).getResult();
+        assertTrue(output instanceof DialogAbortAPDUImpl);
+        d = (DialogAbortAPDUImpl)output;
+        
         as = d.getAbortSource();
         assertEquals(AbortSourceType.Provider, as.getAbortSourceType());
         ui = d.getUserInformation();
         assertNotNull(ui);
-        assertTrue(Arrays.equals(new byte[] { 1, 2, 3 }, ui.getEncodeType()));
+        assertTrue(ui.getExternal().getChild().getValue() instanceof TCBeginTestASN3);
+        assertTrue(Arrays.equals(new byte[] { 1, 2, 3 }, ((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getValue()));
 
-        aos = new AsnOutputStream();
-        d.encode(aos);
-        assertTrue(Arrays.equals(b, aos.toByteArray()));
+        buffer=parser.encode(d);
+        assertTrue(Arrays.equals(getData2(), buffer.array()));
     }
 }

@@ -22,36 +22,17 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcap.asn.Encodable;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  * @author baranowb
  *
  */
-public interface TCEndMessage extends Encodable {
-    int _TAG = 0x04;
-    boolean _TAG_PC_PRIMITIVE = false;
-    int _TAG_CLASS = Tag.CLASS_APPLICATION;
-
-    int _TAG_DTX = 0x09;
-    boolean _TAG_DTX_PC_PRIMITIVE = true;
-    int _TAG_CLASS_DTX = Tag.CLASS_APPLICATION;
-
-    // mandatory
-    byte[] getDestinationTransactionId();
-
-    void setDestinationTransactionId(byte[] t);
-
-    // opt FIXME: make this External?
-    DialogPortion getDialogPortion();
-
-    void setDialogPortion(DialogPortion dp);
-
+@ASNTag(asnClass=ASNClass.APPLICATION,tag=0x04,constructed=true,lengthIndefinite=false)
+public interface TCEndMessage extends TCUnifiedMessage {
     // opt
-    Component[] getComponent();
+	ComponentPortionImpl getComponent();
 
-    void setComponent(Component[] c);
-
+    void setComponent(ComponentPortionImpl c);
 }

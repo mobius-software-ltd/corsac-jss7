@@ -288,7 +288,7 @@ public class AspFactoryPayloadTest {
         PayloadDataImpl message = new PayloadDataImpl();
         NetworkAppearance na = parameterFactory.createNetworkAppearance(0l);
         RoutingContext rc = parameterFactory.createRoutingContext(new long[] { 25l });
-        ProtocolData p = parameterFactory.createProtocolData(6045, 6172, 3, 3, 0, 2, plData);
+        ProtocolData p = parameterFactory.createProtocolData(6045, 6172, 3, 3, 0, 2, Unpooled.wrappedBuffer(plData));
         
         message.setNetworkAppearance(na);
         message.setRoutingContext(rc);
@@ -298,7 +298,9 @@ public class AspFactoryPayloadTest {
 
         assertEquals(association.lstWriteMessage.size(), 1);
         org.restcomm.protocols.ss7.sctp.proxy.PayloadData pl2 = association.lstWriteMessage.get(0);
-        assertEquals(pl2.getData(), data);
+        byte[] pdata=new byte[pl2.getByteBuf().readableBytes()];
+        pl2.getByteBuf().readBytes(pdata);
+        assertEquals(pdata, data);
 
         
         // SCTP - SCTP layer NOT netty support
@@ -309,7 +311,7 @@ public class AspFactoryPayloadTest {
         message = new PayloadDataImpl();
         na = parameterFactory.createNetworkAppearance(0l);
         rc = parameterFactory.createRoutingContext(new long[] { 25l });
-        p = parameterFactory.createProtocolData(6045, 6172, 3, 3, 0, 2, plData);
+        p = parameterFactory.createProtocolData(6045, 6172, 3, 3, 0, 2, Unpooled.wrappedBuffer(plData));
 
         message.setNetworkAppearance(na);
         message.setRoutingContext(rc);
@@ -319,7 +321,9 @@ public class AspFactoryPayloadTest {
 
         assertEquals(association.lstWriteMessage.size(), 1);
         pl2 = association.lstWriteMessage.get(0);
-        assertEquals(pl2.getData(), data);
+        pdata=new byte[pl2.getByteBuf().readableBytes()];
+        pl2.getByteBuf().readBytes(pdata);
+        assertEquals(pdata, data);
     }
 
     private class AspFactoryImplProxy extends AspFactoryImpl {

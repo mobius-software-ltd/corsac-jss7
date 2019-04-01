@@ -25,15 +25,15 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
+import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.BCDOddEncodingScheme;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
@@ -54,11 +54,11 @@ import org.testng.annotations.Test;
 public class SccpAddressTest {
 
     // private SccpAddressCodec codec = new SccpAddressCodec(false);
-    private byte[] data = new byte[] { 0x12, (byte) 0x92, 0x00, 0x11, 0x04, (byte) 0x97, 0x20, (byte) 0x73, 0x00, (byte) 0x92,
-            0x09 };
+    private ByteBuf data = Unpooled.wrappedBuffer(new byte[] { 0x12, (byte) 0x92, 0x00, 0x11, 0x04, (byte) 0x97, 0x20, (byte) 0x73, 0x00, (byte) 0x92,
+            0x09 });
 
-    private byte[] data4 = new byte[] { -123, -110, 0, 17, -105, 32, 115, 0, -110, 9 };
-    private byte[] data5 = new byte[] { -121, -110, 0, 18, 122, 0, 17, -105, 32, 115, 0, -110, 9 };
+    private ByteBuf data4 = Unpooled.wrappedBuffer(new byte[] { -123, -110, 0, 17, -105, 32, 115, 0, -110, 9 });
+    private ByteBuf data5 = Unpooled.wrappedBuffer(new byte[] { -121, -110, 0, 18, 122, 0, 17, -105, 32, 115, 0, -110, 9 });
 
     private ParameterFactoryImpl factory = new ParameterFactoryImpl();
     public SccpAddressTest() {
@@ -86,7 +86,7 @@ public class SccpAddressTest {
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecode1() throws Exception {
         SccpAddressImpl address = new SccpAddressImpl();
-        address.decode(new ByteArrayInputStream(data), factory, SccpProtocolVersion.ITU);
+        address.decode(Unpooled.wrappedBuffer(data), factory, SccpProtocolVersion.ITU);
         assertEquals(address.getSignalingPointCode(), 0);
         assertEquals(address.getSubsystemNumber(), 146);
         assertEquals(address.getGlobalTitle().getDigits(), "79023700299");
@@ -95,7 +95,7 @@ public class SccpAddressTest {
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecode2() throws Exception {
         SccpAddressImpl address = new SccpAddressImpl();
-        address.decode(new ByteArrayInputStream(new byte[] { 0x42, 0x08 }), factory, SccpProtocolVersion.ITU);
+        address.decode(Unpooled.wrappedBuffer(new byte[] { 0x42, 0x08 }), factory, SccpProtocolVersion.ITU);
         assertEquals(address.getSignalingPointCode(), 0);
         assertEquals(address.getSubsystemNumber(), 8);
         assertNull(address.getGlobalTitle());
@@ -104,7 +104,7 @@ public class SccpAddressTest {
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecode4() throws Exception {
         SccpAddressImpl address = new SccpAddressImpl();
-        address.decode(new ByteArrayInputStream(data4), factory, SccpProtocolVersion.ANSI);
+        address.decode(Unpooled.wrappedBuffer(data4), factory, SccpProtocolVersion.ANSI);
         assertEquals(address.getSignalingPointCode(), 0);
         assertEquals(address.getSubsystemNumber(), 146);
         assertEquals(address.getAddressIndicator().getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE);
@@ -120,7 +120,7 @@ public class SccpAddressTest {
         assertEquals(gtt.getEncodingScheme(), BCDOddEncodingScheme.INSTANCE);
         assertEquals(gtt.getTranslationType(), 0);
 
-        address.decode(new ByteArrayInputStream(data5), factory, SccpProtocolVersion.ANSI);
+        address.decode(Unpooled.wrappedBuffer(data5), factory, SccpProtocolVersion.ANSI);
         assertEquals(address.getSignalingPointCode(), 8000000);
         assertEquals(address.getSubsystemNumber(), 146);
         assertEquals(address.getAddressIndicator().getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE);
@@ -145,15 +145,17 @@ public class SccpAddressTest {
         GlobalTitle gt = factory.createGlobalTitle("79023700299",0,NumberingPlan.ISDN_TELEPHONY, BCDOddEncodingScheme.INSTANCE,NatureOfAddress.INTERNATIONAL); 
         SccpAddressImpl address = (SccpAddressImpl)factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,gt, 0, 146); 
                 
-        byte[] bin = address.encode(false, SccpProtocolVersion.ITU);
-        assertTrue(Arrays.equals(data, bin), "Wrong encoding");
+        ByteBuf bin=Unpooled.buffer();
+        address.encode(bin, false, SccpProtocolVersion.ITU);
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data), bin);
     }
 
     @Test(groups = { "parameter", "functional.encode" })
     public void testEncode2() throws Exception {
         SccpAddressImpl address = (SccpAddressImpl) factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null,0,  8);
-        byte[] bin = address.encode(false, SccpProtocolVersion.ITU);
-        assertTrue(Arrays.equals(new byte[] { 0x42, 0x08 }, bin), "Wrong encoding");
+        ByteBuf bin=Unpooled.buffer();
+        address.encode(bin, false, SccpProtocolVersion.ITU);
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(new byte[] { 0x42, 0x08 }), bin);
     }
 
     /**
@@ -168,8 +170,9 @@ public class SccpAddressTest {
 
         GlobalTitle gt = factory.createGlobalTitle("93702994006",0, NumberingPlan.ISDN_TELEPHONY, BCDOddEncodingScheme.INSTANCE,NatureOfAddress.INTERNATIONAL);
         SccpAddressImpl address = (SccpAddressImpl) factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, gt, 5530, 6);
-        byte[] bin = address.encode(true, SccpProtocolVersion.ITU);
-        assertTrue(Arrays.equals(data1, bin), "Wrong encoding");
+        ByteBuf bin=Unpooled.buffer();
+        address.encode(bin, true, SccpProtocolVersion.ITU);
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data1), bin);
 
         // Now test decode
 
@@ -180,19 +183,23 @@ public class SccpAddressTest {
         GlobalTitle gt = factory.createGlobalTitle("79023700299", 0, NumberingPlan.ISDN_TELEPHONY, BCDOddEncodingScheme.INSTANCE);
         SccpAddressImpl address = (SccpAddressImpl) factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, gt, 0, 146);
 
-        byte[] bin = address.encode(false, SccpProtocolVersion.ANSI);
-        assertTrue(Arrays.equals(data4, bin), "Wrong encoding");
+        ByteBuf bin=Unpooled.buffer();
+        address.encode(bin ,false, SccpProtocolVersion.ANSI);
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data4), bin);
 
-        bin = address.encode(true, SccpProtocolVersion.ANSI);
-        assertTrue(Arrays.equals(data4, bin), "Wrong encoding");
+        bin=Unpooled.buffer();
+        address.encode(bin, true, SccpProtocolVersion.ANSI);
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data4), bin);
 
         address = (SccpAddressImpl) factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, gt, 8000000, 146);
 
-        bin = address.encode(false, SccpProtocolVersion.ANSI);
-        assertTrue(Arrays.equals(data5, bin), "Wrong encoding");
+        bin=Unpooled.buffer();
+        address.encode(bin, false, SccpProtocolVersion.ANSI);
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data5), bin);
 
-        bin = address.encode(true, SccpProtocolVersion.ANSI);
-        assertTrue(Arrays.equals(data4, bin), "Wrong encoding");
+        bin=Unpooled.buffer();
+        address.encode(bin, true, SccpProtocolVersion.ANSI);
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data4), bin);
     }
 
     /**

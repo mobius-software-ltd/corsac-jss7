@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.parameter.Credit;
 import org.restcomm.protocols.ss7.sccp.parameter.HopCounter;
 import org.restcomm.protocols.ss7.sccp.parameter.Importance;
@@ -51,8 +53,8 @@ public interface SccpConnCrMessage extends SccpConnMessage, SccpAddressedMessage
     Credit getCredit();
     void setCredit(Credit value);
 
-    byte[] getUserData();
-    void setUserData(byte[] data);
+    ByteBuf getUserData();
+    void setUserData(ByteBuf data);
 
     HopCounter getHopCounter();
     void setHopCounter(HopCounter counter);

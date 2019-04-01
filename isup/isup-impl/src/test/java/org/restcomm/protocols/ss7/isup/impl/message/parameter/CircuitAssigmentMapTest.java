@@ -33,6 +33,8 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -54,21 +56,21 @@ public class CircuitAssigmentMapTest extends ParameterHarness {
      * @throws IOException
      */
     public CircuitAssigmentMapTest() throws IOException {
-        super.badBodies.add(new byte[1]);
-        super.badBodies.add(new byte[6]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[6]));
 
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
 
     }
 
-    private byte[] getBody1() throws IOException {
+    private ByteBuf getBody1() throws IOException {
 
         // we will use odd number of digits, so we leave zero as MSB
         byte[] body = new byte[5];
         body[0] = 12;
         body[1] = 120;
         body[2] = 67;
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -126,7 +128,9 @@ public class CircuitAssigmentMapTest extends ParameterHarness {
         assertTrue(bci.isCircuitEnabled(30), "Circuit was not enabled, it should not.");
         bci.disableCircuit(30);
         assertFalse(bci.isCircuitEnabled(30), "Circuit was not disabled, it should not.");
-        super.makeCompare(getBody1(), bci.encode());
+        ByteBuf encData=Unpooled.buffer();
+        bci.encode(encData);
+        super.makeCompare(getBody1(), encData);
 
     }
 
@@ -137,7 +141,7 @@ public class CircuitAssigmentMapTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new CircuitAssigmentMapImpl(new byte[5]);
+        return new CircuitAssigmentMapImpl(Unpooled.wrappedBuffer(new byte[5]));
     }
 
 }

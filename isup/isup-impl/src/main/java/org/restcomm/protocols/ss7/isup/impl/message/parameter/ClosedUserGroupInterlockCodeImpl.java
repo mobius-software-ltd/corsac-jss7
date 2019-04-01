@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ClosedUserGroupInterlockCode;
 
@@ -40,14 +43,12 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ClosedUserGroupInterloc
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ClosedUserGroupInterlockCodeImpl extends AbstractISUPParameter implements ClosedUserGroupInterlockCode {
-	private static final long serialVersionUID = 1L;
-
 	// XXX: this parameter is weird, it does not follow general convention of
     // parameters :/
-    private byte[] niDigits = null;
+    private ByteBuf niDigits = null;
     private int binaryCode = 0;
 
-    public ClosedUserGroupInterlockCodeImpl(byte[] b) throws ParameterException {
+    public ClosedUserGroupInterlockCodeImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -63,7 +64,7 @@ public class ClosedUserGroupInterlockCodeImpl extends AbstractISUPParameter impl
      *        be empty (zero, default int value)
      * @param binaryCode
      */
-    public ClosedUserGroupInterlockCodeImpl(byte[] niDigits, int binaryCode) {
+    public ClosedUserGroupInterlockCodeImpl(ByteBuf niDigits, int binaryCode) {
         super();
 
         // FIXME: add check for range ?
@@ -71,49 +72,45 @@ public class ClosedUserGroupInterlockCodeImpl extends AbstractISUPParameter impl
         this.binaryCode = binaryCode;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 4) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 4) {
             throw new ParameterException("byte[] must not be null and must have length of 4");
         }
         int v = 0;
-        this.niDigits = new byte[4];
+        this.niDigits = Unpooled.buffer(4);
 
         for (int i = 0; i < 2; i++) {
             v = 0;
-            v = b[i];
-            this.niDigits[i * 2] = (byte) ((v >> 4) & 0x0F);
-            this.niDigits[i * 2 + 1] = (byte) (v & 0x0F);
+            v = b.readByte();
+            this.niDigits.writeByte((byte) ((v >> 4) & 0x0F));
+            this.niDigits.writeByte((byte) (v & 0x0F));
         }
 
-        this.binaryCode = (b[2] << 8) & 0xFF00;
-        this.binaryCode |= b[3];
-
-        return 4;
+        this.binaryCode = (b.readByte() << 8) & 0xFF00;
+        this.binaryCode |= b.readByte();
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = new byte[4];
+    public void encode(ByteBuf buffer) throws ParameterException {
         int v = 0;
+        ByteBuf data=getNiDigits();
         for (int i = 0; i < 2; i++) {
             v = 0;
 
-            v |= (this.niDigits[i * 2] & 0x0F) << 4;
-            v |= (this.niDigits[i * 2 + 1] & 0x0F);
+            v |= (data.readByte() & 0x0F) << 4;
+            v |= (data.readByte() & 0x0F);
 
-            b[i] = (byte) v;
+            buffer.writeByte((byte) v);
         }
-        b[2] = (byte) (this.binaryCode >> 8);
-        b[3] = (byte) this.binaryCode;
-
-        return b;
+        buffer.writeByte((byte) (this.binaryCode >> 8));
+        buffer.writeByte((byte) this.binaryCode);
     }
 
-    public byte[] getNiDigits() {
+    public ByteBuf getNiDigits() {
         return niDigits;
     }
 
-    public void setNiDigits(byte[] niDigits) {
-        if (niDigits == null || niDigits.length != 4) {
+    public void setNiDigits(ByteBuf niDigits) {
+        if (niDigits == null || niDigits.readableBytes() != 4) {
             throw new IllegalArgumentException();
         }
 

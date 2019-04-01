@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:13:54:36 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -55,9 +57,9 @@ public interface RedirectCapability extends ISUPParameter {
      */
     int _RPI_RPANTDC = 3;
 
-    byte[] getCapabilities();
+    ByteBuf getCapabilities();
 
-    void setCapabilities(byte[] capabilities);
+    void setCapabilities(ByteBuf capabilities);
 
     int getCapability(byte b);
 }

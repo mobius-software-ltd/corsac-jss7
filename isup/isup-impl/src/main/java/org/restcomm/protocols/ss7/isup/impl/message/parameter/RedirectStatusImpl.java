@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectStatus;
 
@@ -40,45 +43,45 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectStatus;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RedirectStatusImpl extends AbstractISUPParameter implements RedirectStatus {
-	private static final long serialVersionUID = 1L;
-
-	private byte[] status;
+	private ByteBuf status;
 
     public RedirectStatusImpl() {
         super();
 
     }
 
-    public RedirectStatusImpl(byte[] b) throws ParameterException {
+    public RedirectStatusImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         try {
             setStatus(b);
         } catch (Exception e) {
             throw new ParameterException(e);
         }
-        return b.length;
     }
 
-    public byte[] encode() throws ParameterException {
-
-        for (int index = 0; index < this.status.length; index++) {
-            this.status[index] = (byte) (this.status[index] & 0x03);
+    public void encode(ByteBuf b) throws ParameterException {
+    	ByteBuf curr=getStatus();
+        while(curr.readableBytes()>1) {
+        	b.writeByte((byte) (curr.readByte() & 0x03));
         }
 
-        this.status[this.status.length - 1] = (byte) ((this.status[this.status.length - 1]) | (0x01 << 7));
-        return this.status;
+        if(curr.readableBytes()>0)
+        	b.writeByte((byte) (curr.readByte() | (0x01 << 7)));
     }
 
-    public byte[] getStatus() {
-        return status;
+    public ByteBuf getStatus() {
+    	if(status==null)
+        	return null;
+        
+        return Unpooled.wrappedBuffer(status);
     }
 
-    public void setStatus(byte[] status) {
-        if (status == null || status.length == 0) {
+    public void setStatus(ByteBuf status) {
+        if (status == null || status.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
         this.status = status;

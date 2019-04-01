@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitStateIndicator;
 
@@ -40,11 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CircuitStateIndicator;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CircuitStateIndicatorImpl extends AbstractISUPParameter implements CircuitStateIndicator {
-	private static final long serialVersionUID = 1L;
+	private ByteBuf circuitState = null;
 
-	private byte[] circuitState = null;
-
-    public CircuitStateIndicatorImpl(byte[] circuitState) throws ParameterException {
+    public CircuitStateIndicatorImpl(ByteBuf circuitState) throws ParameterException {
         super();
         this.decode(circuitState);
     }
@@ -54,25 +55,27 @@ public class CircuitStateIndicatorImpl extends AbstractISUPParameter implements 
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         try {
             setCircuitState(b);
         } catch (Exception e) {
             throw new ParameterException(e);
         }
-        return b.length;
     }
 
-    public byte[] encode() throws ParameterException {
-        return this.circuitState;
+    public void encode(ByteBuf buffer) throws ParameterException {
+        buffer.writeBytes(getCircuitState());
     }
 
-    public byte[] getCircuitState() {
-        return circuitState;
+    public ByteBuf getCircuitState() {
+    	if(circuitState==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(circuitState);
     }
 
-    public void setCircuitState(byte[] circuitState) throws IllegalArgumentException {
-        if (circuitState == null || circuitState.length == 0) {
+    public void setCircuitState(ByteBuf circuitState) throws IllegalArgumentException {
+        if (circuitState == null || circuitState.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must nto be null and length must be greater than 0");
         }
         this.circuitState = circuitState;

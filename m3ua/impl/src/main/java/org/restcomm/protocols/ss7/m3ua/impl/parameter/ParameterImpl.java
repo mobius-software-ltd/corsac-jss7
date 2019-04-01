@@ -39,7 +39,7 @@ public abstract class ParameterImpl implements Parameter {
         return tag;
     }
 
-    protected abstract byte[] getValue();
+    protected abstract ByteBuf getValue();
 
     // public void encode(OutputStream out) throws IOException {
     // // obtain encoded value
@@ -61,15 +61,17 @@ public abstract class ParameterImpl implements Parameter {
 
     public void write(ByteBuf buf) {
         // obtain encoded value
-        byte[] value = getValue();
+        ByteBuf value = getValue();
 
         // encode tag
         buf.writeByte((byte) (tag >> 8));
         buf.writeByte((byte) (tag));
 
         // encode length including value, tag and length field itself
-        length = (short) (value.length + 4);
-
+        length = (short) (value.readableBytes() + 4);
+        if(length==4)
+        	throw new RuntimeException("value is empty!!!" + this.getClass().getCanonicalName());
+        
         buf.writeByte((byte) (length >> 8));
         buf.writeByte((byte) (length));
 

@@ -25,18 +25,16 @@ package org.restcomm.protocols.ss7.tcap.tc.dialog.events;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
-import org.restcomm.protocols.ss7.tcap.asn.AbortSource;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.ASNAbortSource;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnosticImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 
 public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements TCUserAbortIndication {
-	private static final long serialVersionUID = 1L;
-
-	private UserInformation userInformation;
-    private AbortSource abortSource;
-    private ApplicationContextName acn;
-    private ResultSourceDiagnostic resultSourceDiagnostic;
+	private UserInformationImpl userInformation;
+    private ASNAbortSource abortSource;
+    private ApplicationContextNameImpl acn;
+    private ResultSourceDiagnosticImpl resultSourceDiagnostic;
     private Boolean aareApdu = false;
     private Boolean abrtApdu = false;
 
@@ -69,7 +67,7 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
         this.abrtApdu = true;
     }
 
-    public UserInformation getUserInformation() {
+    public UserInformationImpl getUserInformation() {
 
         return userInformation;
     }
@@ -77,35 +75,35 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
     /**
      * @param userInformation the userInformation to set
      */
-    public void setUserInformation(UserInformation userInformation) {
+    public void setUserInformation(UserInformationImpl userInformation) {
         this.userInformation = userInformation;
     }
 
     /**
      * @return the abortSource
      */
-    public AbortSource getAbortSource() {
+    public ASNAbortSource getAbortSource() {
         return abortSource;
     }
 
-    public void setAbortSource(AbortSource abortSource) {
+    public void setAbortSource(ASNAbortSource abortSource) {
         this.abortSource = abortSource;
 
     }
 
-    public ApplicationContextName getApplicationContextName() {
+    public ApplicationContextNameImpl getApplicationContextName() {
         return this.acn;
     }
 
-    public void setApplicationContextName(ApplicationContextName acn) {
+    public void setApplicationContextName(ApplicationContextNameImpl acn) {
         this.acn = acn;
     }
 
-    public ResultSourceDiagnostic getResultSourceDiagnostic() {
+    public ResultSourceDiagnosticImpl getResultSourceDiagnostic() {
         return this.resultSourceDiagnostic;
     }
 
-    public void setResultSourceDiagnostic(ResultSourceDiagnostic resultSourceDiagnostic) {
+    public void setResultSourceDiagnostic(ResultSourceDiagnosticImpl resultSourceDiagnostic) {
         this.resultSourceDiagnostic = resultSourceDiagnostic;
     }
 

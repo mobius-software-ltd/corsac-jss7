@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -50,17 +53,17 @@ public class CallReferenceTest extends ParameterHarness {
      * @throws IOException
      */
     public CallReferenceTest() throws IOException {
-        super.badBodies.add(new byte[1]);
-        super.badBodies.add(new byte[2]);
-        super.badBodies.add(new byte[3]);
-        super.badBodies.add(new byte[4]);
-        super.badBodies.add(new byte[6]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[2]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[3]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[4]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[6]));
 
-        super.goodBodies.add(getBody2());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody2()));
 
     }
 
-    private byte[] getBody1() throws IOException {
+    private ByteBuf getBody1() throws IOException {
 
         // we will use odd number of digits, so we leave zero as MSB
         byte[] body = new byte[5];
@@ -70,10 +73,10 @@ public class CallReferenceTest extends ParameterHarness {
         body[3] = 73;
         body[4] = 120;
 
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
-    private byte[] getBody2() throws IOException {
+    private ByteBuf getBody2() throws IOException {
 
         // we will use odd number of digits, so we leave zero as MSB
         byte[] body = new byte[5];
@@ -84,7 +87,7 @@ public class CallReferenceTest extends ParameterHarness {
         // one MSB will be ignored.
         body[4] = 120 & 0x3F;
 
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

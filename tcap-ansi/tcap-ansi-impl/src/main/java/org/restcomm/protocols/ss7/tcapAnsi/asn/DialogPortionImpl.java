@@ -30,12 +30,14 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.EncodeException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 
 /**
@@ -50,9 +52,9 @@ public class DialogPortionImpl implements DialogPortion {
 
 	private ProtocolVersion protocolVersion;
     private ApplicationContext applicationContext;
-    private UserInformation userInformation;
+    private UserInformationImpl userInformation;
     private SecurityContext securityContext;
-    private Confidentiality confidentiality;
+    private ConfidentialityImpl confidentiality;
 
 
     public DialogPortionImpl() {

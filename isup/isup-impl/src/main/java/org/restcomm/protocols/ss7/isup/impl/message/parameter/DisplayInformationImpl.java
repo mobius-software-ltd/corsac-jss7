@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.DisplayInformation;
 
@@ -40,11 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.DisplayInformation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class DisplayInformationImpl extends AbstractISUPParameter implements DisplayInformation {
-	private static final long serialVersionUID = 1L;
+	private ByteBuf info;
 
-	private byte[] info;
-
-    public DisplayInformationImpl(byte[] info) throws ParameterException {
+    public DisplayInformationImpl(ByteBuf info) throws ParameterException {
         super();
         // FIXME: this is only elementID
         // super.tag = new byte[] { 0x28 };
@@ -56,30 +57,33 @@ public class DisplayInformationImpl extends AbstractISUPParameter implements Dis
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         try {
             setInfo(b);
         } catch (Exception e) {
             throw new ParameterException(e);
         }
-        return b.length;
     }
 
-    public byte[] encode() throws ParameterException {
-        for (int index = 0; index < this.info.length; index++) {
-            this.info[index] = (byte) (this.info[index] & 0x7F);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getInfo();
+    	while(curr.readableBytes()>1) {
+            buffer.writeByte((byte) (curr.readByte() & 0x7F));
         }
 
-        this.info[this.info.length - 1] = (byte) ((this.info[this.info.length - 1]) | (0x01 << 7));
-        return this.info;
+    	if(curr.readableBytes()>0)
+    		buffer.writeByte((byte) ((curr.readByte()) | (0x01 << 7)));    	
     }
 
-    public byte[] getInfo() {
-        return info;
+    public ByteBuf getInfo() {
+    	if(info==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(info);
     }
 
-    public void setInfo(byte[] info) throws IllegalArgumentException {
-        if (info == null || info.length == 0) {
+    public void setInfo(ByteBuf info) throws IllegalArgumentException {
+        if (info == null || info.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
         this.info = info;

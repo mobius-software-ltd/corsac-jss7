@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.AbstractParameter;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ProtocolClassImpl;
@@ -58,7 +60,7 @@ public class SccpDataMessageImpl extends SccpDataNoticeTemplateMessageImpl imple
      * @param importance This parameter may be null if you use the default value
      */
     protected SccpDataMessageImpl(int maxDataLen, ProtocolClass protocolClass, int outgoingSls, int localSsn,
-            SccpAddress calledParty, SccpAddress callingParty, byte[] data, HopCounter hopCounter, Importance importance) {
+            SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, HopCounter hopCounter, Importance importance) {
         super(maxDataLen, SccpMessage.MESSAGE_TYPE_UNDEFINED, outgoingSls, localSsn, calledParty, callingParty, data,
                 hopCounter, importance);
 
@@ -109,15 +111,15 @@ public class SccpDataMessageImpl extends SccpDataNoticeTemplateMessageImpl imple
     }
 
     @Override
-    protected byte[] getSecondParamaterData(boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return ((AbstractParameter) protocolClass).encode(removeSPC, sccpProtocolVersion);
+    protected void getSecondParamaterData(ByteBuf data,boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        ((AbstractParameter) protocolClass).encode(data, removeSPC, sccpProtocolVersion);
     }
 
     @Override
-    protected void setSecondParamaterData(int data, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    protected void setSecondParamaterData(ByteBuf data, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         protocolClass = new ProtocolClassImpl();
         // TODO, this makes no sense.
-        ((AbstractParameter) protocolClass).decode(new byte[] { (byte) data }, null, sccpProtocolVersion);
+        ((AbstractParameter) protocolClass).decode(data, null, sccpProtocolVersion);
     }
 
     @Override
@@ -160,7 +162,7 @@ public class SccpDataMessageImpl extends SccpDataNoticeTemplateMessageImpl imple
         }
         sb.append(" DataLen=");
         if (this.data != null)
-            sb.append(this.data.length);
+            sb.append(this.data.readableBytes());
         sb.append("]");
         return sb.toString();
     }

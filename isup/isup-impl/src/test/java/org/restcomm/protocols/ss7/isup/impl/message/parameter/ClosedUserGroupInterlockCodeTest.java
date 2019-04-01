@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -48,23 +51,23 @@ public class ClosedUserGroupInterlockCodeTest extends ParameterHarness {
 
     public ClosedUserGroupInterlockCodeTest() {
         super();
-        super.badBodies.add(getBadBody1());
-        super.badBodies.add(getBadBody2());
+        super.badBodies.add(Unpooled.wrappedBuffer(getBadBody1()));
+        super.badBodies.add(Unpooled.wrappedBuffer(getBadBody2()));
         
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
     }
 
-    private byte[] getBadBody1() {
+    private ByteBuf getBadBody1() {
 
         byte[] body = new byte[]{0x0E};
-        return body;
+        return Unpooled.wrappedBuffer(body);
      }
-    private byte[] getBadBody2() {
+    private ByteBuf getBadBody2() {
 
         byte[] body = new byte[5];
-        return body;
+        return Unpooled.wrappedBuffer(body);
      }
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
         byte[] body = new byte[]{
                 0x12,
@@ -72,7 +75,7 @@ public class ClosedUserGroupInterlockCodeTest extends ParameterHarness {
                 (byte) 0xA8,
                 0x33
         };
-        return body;
+        return Unpooled.wrappedBuffer(body);
      }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -81,7 +84,7 @@ public class ClosedUserGroupInterlockCodeTest extends ParameterHarness {
         ClosedUserGroupInterlockCodeImpl at = new ClosedUserGroupInterlockCodeImpl(getBody1());
 
         String[] methodNames = { "getNiDigits","getBinaryCode" };
-        Object[] expectedValues = { new byte[]{1,2,6,3}, 43059 };
+        Object[] expectedValues = { Unpooled.wrappedBuffer(new byte[]{1,2,6,3}), 43059 };
 
         super.testValues(at, methodNames, expectedValues);
     }

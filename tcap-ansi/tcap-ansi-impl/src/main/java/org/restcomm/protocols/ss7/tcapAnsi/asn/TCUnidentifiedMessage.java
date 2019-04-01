@@ -90,7 +90,5 @@ public class TCUnidentifiedMessage implements Encodable {
         } catch (AsnException e) {
             logger.error("Error while decoding for TCUnidentifiedMessage", e);
         }
-
     }
-
 }

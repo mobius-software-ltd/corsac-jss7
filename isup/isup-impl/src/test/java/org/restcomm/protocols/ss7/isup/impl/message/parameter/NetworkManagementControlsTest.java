@@ -31,6 +31,8 @@
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 
@@ -50,9 +52,9 @@ public class NetworkManagementControlsTest extends ParameterHarness {
     public NetworkManagementControlsTest() {
         super();
 
-        super.goodBodies.add(new byte[1]);
-        super.goodBodies.add(new byte[] { 0x0E });
-        super.goodBodies.add(new byte[] { 0x0E, 32, 45, 0x0A });
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { (byte)0x80}));
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { (byte)0x81 }));
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { 0x01, 0x01, 0x01, (byte)0x81 }));
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -60,14 +62,17 @@ public class NetworkManagementControlsTest extends ParameterHarness {
 
         boolean[] bools = new boolean[] { true, true, false, true, false, true, true };
         NetworkManagementControlsImpl eci = new NetworkManagementControlsImpl(getBody1(bools));
-        byte[] encoded = eci.encode();
-        for (int index = 0; index < encoded.length; index++) {
-            if (bools[index] != eci.isTARControlEnabled(encoded[index])) {
+        ByteBuf encoded=Unpooled.buffer();
+        eci.encode(encoded);
+        
+        for (int index = 0; index < bools.length; index++) {
+        	byte curr=encoded.readByte();
+            if (bools[index] != eci.isTARControlEnabled(curr)) {
                 fail("Failed to get TAR bits, at index: " + index);
             }
 
-            if (index == encoded.length - 1) {
-                if (((encoded[index] >> 7) & 0x01) != 1) {
+            if (encoded.readableBytes()==0) {
+                if (((curr >> 7) & 0x01) != 1) {
                     fail("Last byte must have MSB turned on to indicate last byte, this one does not.");
                 }
             }
@@ -75,12 +80,12 @@ public class NetworkManagementControlsTest extends ParameterHarness {
 
     }
 
-    private byte[] getBody1(boolean[] tarEnabled) {
+    private ByteBuf getBody1(boolean[] tarEnabled) {
         //boolean[] bools = new boolean[] { true, true, false, true, false, true, true };
         NetworkManagementControlsImpl eci = new NetworkManagementControlsImpl();
-        byte[] b = new byte[tarEnabled.length];
+        ByteBuf b = Unpooled.buffer(tarEnabled.length);
         for (int index = 0; index < tarEnabled.length; index++) {
-            b[index] = eci.createTAREnabledByte(tarEnabled[index]);
+            b.writeByte(eci.createTAREnabledByte(tarEnabled[index]));
         }
         return b;
     }
@@ -92,7 +97,7 @@ public class NetworkManagementControlsTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new NetworkManagementControlsImpl(new byte[1]);
+        return new NetworkManagementControlsImpl(Unpooled.wrappedBuffer(new byte[1]));
     }
 
 }

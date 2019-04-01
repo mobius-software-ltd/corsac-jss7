@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -49,27 +52,27 @@ public class ForwardCallIndicatorsTest extends ParameterHarness {
     public ForwardCallIndicatorsTest() {
         super();
 
-        super.badBodies.add(getBadBody1());
-        super.badBodies.add(getBadBody2());
-        super.goodBodies.add(getBody1());
+        super.badBodies.add(Unpooled.wrappedBuffer(getBadBody1()));
+        super.badBodies.add(Unpooled.wrappedBuffer(getBadBody2()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
     }
 
-    private byte[] getBadBody1() {
+    private ByteBuf getBadBody1() {
 
         byte[] body = new byte[]{(byte) 0x81};
-        return body;
+        return Unpooled.wrappedBuffer(body);
      }
     
-    private byte[] getBadBody2() {
+    private ByteBuf getBadBody2() {
 
         byte[] body = new byte[]{(byte) 0x81,3,3};
-        return body;
+        return Unpooled.wrappedBuffer(body);
      }
     
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
         byte[] body = new byte[]{(byte) 0xAA,0x02};
-        return body;
+        return Unpooled.wrappedBuffer(body);
      }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

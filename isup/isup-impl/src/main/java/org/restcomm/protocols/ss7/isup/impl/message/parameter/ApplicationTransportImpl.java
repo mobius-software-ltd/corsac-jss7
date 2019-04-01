@@ -30,8 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ApplicationTransport;
@@ -43,69 +43,75 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ApplicationTransport;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ApplicationTransportImpl extends AbstractISUPParameter implements ApplicationTransport {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
     private Byte applicationContextIdentifier, apmSegmentationIndicator, segmentationLocalReference;
     private Boolean sendNotificationIndicator, releaseCallIndicator, segmentationIndicator;
-    private byte[] encapsulatedApplicationData;
+    private ByteBuf encapsulatedApplicationData;
 
     public ApplicationTransportImpl() {
         super();
     }
 
-    public ApplicationTransportImpl(byte[] b) throws ParameterException {
+    public ApplicationTransportImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         // 4+ lines, depending on "ext" bits...
-        if (b == null || b.length < 1) {
+        if (b == null || b.readableBytes() < 1) {
             throw new ParameterException("byte[] must not be null or have bigger size.");
         }
 
         // integrity check
-        for (int index = 0; index < 4 && index< b.length; index++) {
-            if( (b[index] & 0x80) == 0){
+        b.markReaderIndex();
+        for (int index = 0; index < 4 && b.readableBytes() > 0; index++) {
+            if( (b.readByte() & 0x80) == 0){
                 //expect more
-                if(b.length -1 == index){
+                if(b.readableBytes() == 0){
                     //but there is nothing more
                     throw new ParameterException();
                 }
             } else {
                 //this should be last
-                if(b.length-1-index>0){
+                if(b.readableBytes() > 0){
                     throw new ParameterException();
                 }
             }
         }
-        this.applicationContextIdentifier = (byte) (b[0] & 0x7F);
-        if (b.length == 1)
-            return b.length;
-        this.releaseCallIndicator = (b[1] & 0x01) == _TURN_ON;
-        this.sendNotificationIndicator = ((b[1] >> 1) & 0x01) == _TURN_ON;
-        if (b.length == 2)
-            return b.length;
-        this.apmSegmentationIndicator = (byte) (b[2] & 0x3F);
-        this.segmentationIndicator = ((b[2] >> 6) & 0x01) == _TURN_ON;
-        if (b.length == 3)
-            return b.length;
-        this.segmentationLocalReference = (byte) (b[3] & 0x7F);
-        if (b.length == 4)
-            return b.length;
-        this.encapsulatedApplicationData = new byte[b.length - 4];
-        System.arraycopy(b, 4, this.encapsulatedApplicationData, 0, this.encapsulatedApplicationData.length);
-        return b.length;
+        
+        b.resetReaderIndex();
+        this.applicationContextIdentifier = (byte) (b.readByte() & 0x7F);
+        if (b.readableBytes() == 0)
+            return;
+        
+        byte currByte=b.readByte();
+        this.releaseCallIndicator = (currByte & 0x01) == _TURN_ON;
+        this.sendNotificationIndicator = ((currByte >> 1) & 0x01) == _TURN_ON;
+        if (b.readableBytes() == 0)
+            return;
+        
+        currByte=b.readByte();
+        this.apmSegmentationIndicator = (byte) (currByte & 0x3F);
+        this.segmentationIndicator = ((currByte >> 6) & 0x01) == _TURN_ON;
+        if (b.readableBytes() == 0)
+            return;
+        
+        currByte=b.readByte();
+        this.segmentationLocalReference = (byte) (currByte & 0x7F);
+        if (b.readableBytes() == 0)
+            return;
+        
+        this.encapsulatedApplicationData = b.slice(b.readerIndex(), b.readableBytes());
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
         if(this.applicationContextIdentifier == null){
             throw new ParameterException();
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
         boolean end = false;
         int value = 0x80;
         if (this.releaseCallIndicator != null) {
@@ -114,20 +120,22 @@ public class ApplicationTransportImpl extends AbstractISUPParameter implements A
             end = true;
         }
         value |= (this.applicationContextIdentifier & 0x7F);
-        baos.write(value);
+        buffer.writeByte(value);
         if (end)
-            return baos.toByteArray();
+            return;
+        
         if (this.apmSegmentationIndicator != null) {
             value = 0;
         } else {
             value = 0x80;
             end = true;
         }
+        
         value |= ((this.sendNotificationIndicator ? _TURN_ON : _TURN_OFF) << 1);
         value |= (this.releaseCallIndicator ? _TURN_ON : _TURN_OFF);
-        baos.write(value);
+        buffer.writeByte(value);
         if (end)
-            return baos.toByteArray();
+            return;
 
         if (this.segmentationLocalReference != null) {
             value = 0;
@@ -137,9 +145,9 @@ public class ApplicationTransportImpl extends AbstractISUPParameter implements A
         }
         value |= ((this.segmentationIndicator ? _TURN_ON : _TURN_OFF) << 6);
         value |= ((this.apmSegmentationIndicator) & 0x3F);
-        baos.write(value);
+        buffer.writeByte(value);
         if (end)
-            return baos.toByteArray();
+            return;
 
         if (this.encapsulatedApplicationData != null) {
             value = 0;
@@ -148,16 +156,11 @@ public class ApplicationTransportImpl extends AbstractISUPParameter implements A
             end = true;
         }
         value |= ((this.segmentationLocalReference) & 0x7F);
-        baos.write(value);
+        buffer.writeByte(value);
         if (end)
-            return baos.toByteArray();
+            return;
 
-        try {
-            baos.write(this.encapsulatedApplicationData);
-        } catch (IOException ioe) {
-            throw new ParameterException(ioe);
-        }
-        return baos.toByteArray();
+        buffer.writeBytes(this.encapsulatedApplicationData);
     }
 
     public int getCode() {
@@ -226,12 +229,15 @@ public class ApplicationTransportImpl extends AbstractISUPParameter implements A
     }
 
     @Override
-    public byte[] getEncapsulatedApplicationInformation() {
-        return this.encapsulatedApplicationData;
+    public ByteBuf getEncapsulatedApplicationInformation() {
+    	if(this.encapsulatedApplicationData==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(this.encapsulatedApplicationData);
     }
 
     @Override
-    public void setEncapsulatedApplicationInformation(byte[] v) {
+    public void setEncapsulatedApplicationInformation(ByteBuf v) {
         this.encapsulatedApplicationData = v;
     }
 }

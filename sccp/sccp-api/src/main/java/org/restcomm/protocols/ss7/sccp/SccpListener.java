@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
@@ -90,20 +92,20 @@ public interface SccpListener extends Serializable {
     // can call conn.confirm() or conn.disconnect(...) with refuse reason and data
     void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress,
                              ProtocolClass clazz, Credit credit, // QoS, credit is set only for class 3
-                             byte[] data, Importance importance) throws Exception;
+                             ByteBuf data, Importance importance) throws Exception;
     // N-CONNECT
-    void onConnectConfirm(SccpConnection conn, byte[] data);
+    void onConnectConfirm(SccpConnection conn, ByteBuf data);
 
     // N-DISCONNECT
-    void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, byte[] data);
-    void onDisconnectIndication(SccpConnection conn, RefusalCause reason, byte[] data);
+    void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data);
+    void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data);
     void onDisconnectIndication(SccpConnection conn, ErrorCause errorCause);
 
     void onResetIndication(SccpConnection conn, ResetCause reason);
 
     void onResetConfirm(SccpConnection conn);
 
-    void onData(SccpConnection conn, byte[] data);
+    void onData(SccpConnection conn, ByteBuf data);
 
     void onDisconnectConfirm(SccpConnection conn);
 }

@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.EchoControlInformation;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.EchoControlInformation;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class EchoControlInformationImpl extends AbstractISUPParameter implements EchoControlInformation {
-	private static final long serialVersionUID = 1L;
-
 	private int outgoingEchoControlDeviceInformationIndicator;
     private int incomingEchoControlDeviceInformationIndicator;
     private int outgoingEchoControlDeviceInformationRequestIndicator;
@@ -62,25 +62,24 @@ public class EchoControlInformationImpl extends AbstractISUPParameter implements
         this.incomingEchoControlDeviceInformationRequestIndicator = incomingEchoControlDeviceInformationRequestIndicator;
     }
 
-    public EchoControlInformationImpl(byte[] b) throws ParameterException {
+    public EchoControlInformationImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null or have different size than 1");
         }
-        byte v = b[0];
+        byte v = b.readByte();
 
         this.outgoingEchoControlDeviceInformationIndicator = v & 0x03;
         this.incomingEchoControlDeviceInformationIndicator = (v >> 2) & 0x03;
         this.outgoingEchoControlDeviceInformationRequestIndicator = (v >> 4) & 0x03;
         this.incomingEchoControlDeviceInformationRequestIndicator = (v >> 6) & 0x03;
-        return 1;
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
         byte v = 0;
 
         v |= this.outgoingEchoControlDeviceInformationIndicator & 0x03;
@@ -88,8 +87,7 @@ public class EchoControlInformationImpl extends AbstractISUPParameter implements
         v |= (this.outgoingEchoControlDeviceInformationRequestIndicator & 0x03) << 4;
         v |= (this.incomingEchoControlDeviceInformationRequestIndicator & 0x03) << 6;
 
-        byte[] b = { v };
-        return b;
+        buffer.writeByte(v);
     }
 
     public int getOutgoingEchoControlDeviceInformationIndicator() {

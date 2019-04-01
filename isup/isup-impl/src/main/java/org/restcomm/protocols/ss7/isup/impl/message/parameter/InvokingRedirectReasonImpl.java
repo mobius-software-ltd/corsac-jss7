@@ -21,7 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +36,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectReason;
  *
  */
 public class InvokingRedirectReasonImpl extends AbstractInformationImpl implements InvokingRedirectReason {
-	private static final long serialVersionUID = 1L;
-
 	private List<RedirectReason> reasons = new ArrayList<RedirectReason>();
 
 
@@ -61,33 +60,34 @@ public class InvokingRedirectReasonImpl extends AbstractInformationImpl implemen
         return this.reasons.toArray(new RedirectReason[this.reasons.size()]);
     }
     @Override
-    byte[] encode() throws ParameterException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    public void encode(ByteBuf buffer) throws ParameterException {
         for (int index = 0; index < this.reasons.size(); index++) {
             RedirectReasonImpl ai = (RedirectReasonImpl) this.reasons.get(index);
             ai.trim();
 
-            byte b = (byte) (ai.encode()[0] & 0x7F);
+            byte b = (byte) (ai.getRedirectReason() & 0x7F);
             if (index + 1 == this.reasons.size()) {
                 b |= 0x80;
             }
-            baos.write(b);
-
+            buffer.writeByte(b);
         }
-        return baos.toByteArray();
     }
 
     @Override
-    void decode(byte[] data) throws ParameterException {
-        for(int index = 0;index<data.length;index++){
-            byte b = data[index];
+    public void decode(ByteBuf data) throws ParameterException {
+        while(data.readableBytes()>0){
+            byte b = data.readByte();
             RedirectReasonImpl pr = new RedirectReasonImpl();
             pr.setRedirectReason((byte) (b & 0x7F));
-            if( (b & 0x80) == 0 && index +1 == data.length){
+            if( (b & 0x80) == 0 && data.readableBytes()==0){
                 throw new ParameterException("Extension bit incicates more bytes, but we ran out of them!");
             }
             this.reasons.add(pr);
         }
     }
+	@Override
+	public int getLength() {
+		return this.reasons.size();
+	}
 
 }

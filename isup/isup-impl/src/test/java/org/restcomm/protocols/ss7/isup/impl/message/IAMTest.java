@@ -30,6 +30,8 @@
 package org.restcomm.protocols.ss7.isup.impl.message;
 
 import static org.testng.Assert.assertNotNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
@@ -46,7 +48,7 @@ public class IAMTest extends MessageHarness {
 
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Parameters() throws Exception {
-        byte[] message = getDefaultBody();
+    	ByteBuf message = getDefaultBody();
 
         // InitialAddressMessageImpl iam=new InitialAddressMessageImpl(this,message);
         InitialAddressMessage iam = super.messageFactory.createIAM(0);
@@ -68,7 +70,7 @@ public class IAMTest extends MessageHarness {
 
     public void testThree_Trace() throws Exception {
 
-        byte[] message = new byte[] { 0x73,
+    	ByteBuf message = Unpooled.wrappedBuffer(new byte[] { 0x73,
                 0x00, // CIC
                 0x01, // IAM
                 0x11, // M: natur of connection indicators
@@ -89,12 +91,12 @@ public class IAMTest extends MessageHarness {
                 0x65, 0x73, 0x00
         /*
          * ,0x1b, 0x1d
-         */};
+         */});
         InitialAddressMessage iam = super.messageFactory.createIAM(0);
         ((AbstractISUPMessage) iam).decode(message, messageFactory,parameterFactory);
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         // FIXME: for now we strip MTP part
         byte[] message = {
                 0x0c, (byte)0x0b, 0x01, 0x10, 0x20, 0x01, 0x0a, 0x00, 0x02, 0x0a, 0x08, 0x04, 0x10, (byte)0x97,
@@ -105,7 +107,7 @@ public class IAMTest extends MessageHarness {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
         };
 
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

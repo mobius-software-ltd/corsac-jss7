@@ -30,6 +30,11 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNotificationIndicator;
 
@@ -40,11 +45,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNotificationIndi
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class GenericNotificationIndicatorImpl extends AbstractISUPParameter implements GenericNotificationIndicator {
-	private static final long serialVersionUID = 1L;
+	private List<Integer> notificationIndicator;
 
-	private int[] notificationIndicator;
-
-    public GenericNotificationIndicatorImpl(byte[] b) throws ParameterException {
+    public GenericNotificationIndicatorImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -54,47 +57,47 @@ public class GenericNotificationIndicatorImpl extends AbstractISUPParameter impl
 
     }
 
-    public GenericNotificationIndicatorImpl(int[] notificationIndicator) {
+    public GenericNotificationIndicatorImpl(List<Integer> notificationIndicator) {
         super();
         this.setNotificationIndicator(notificationIndicator);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length < 2) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() < 2) {
             throw new ParameterException("byte[] must  not be null and length must be 1 or greater");
         }
 
-        this.notificationIndicator = new int[b.length];
+        this.notificationIndicator = new ArrayList<Integer>(b.readableBytes());
 
-        for (int i = 0; i < b.length; i++) {
-            int extFlag = (b[i] >> 7) & 0x01;
-            if (extFlag == 0x01 && (b.length - 1 > i)) {
-                throw new ParameterException("Extenstion flag idnicates end of data, however byte[] has more octets. Index: "
-                        + i);
+        while(b.readableBytes()>0) {
+        	byte curr=b.readByte();
+            int extFlag = (curr >> 7) & 0x01;
+            if (extFlag == 0x01 && (b.readableBytes()!=0)) {
+                throw new ParameterException("Extenstion flag idnicates end of data, however byte[] has more octets.");
             }
-            this.notificationIndicator[i] = b[i] & 0x7F;
+            this.notificationIndicator.add(curr & 0x7F);
         }
-        return this.notificationIndicator.length;
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = new byte[this.notificationIndicator.length];
-
-        for (int index = 0; index < b.length; index++) {
-            b[index] = (byte) (this.notificationIndicator[index] & 0x7F);
+    public void encode(ByteBuf buffer) throws ParameterException {
+        for (int index = 0; index < this.notificationIndicator.size()-1; index++) {
+        	buffer.writeByte((byte) (this.notificationIndicator.get(index) & 0x7F));
         }
 
         // sets extension bit to show that we dont have more octets
-        b[b.length - 1] |= 1 << 7;
-
-        return b;
+        byte b=0;
+        if(this.notificationIndicator.size()>0)
+        	b=(byte) (this.notificationIndicator.get(this.notificationIndicator.size()-1) & 0x7F);
+        
+        b |= 1 << 7;
+        buffer.writeByte(b);
     }
 
-    public int[] getNotificationIndicator() {
+    public List<Integer> getNotificationIndicator() {
         return notificationIndicator;
     }
 
-    public void setNotificationIndicator(int[] notificationIndicator) {
+    public void setNotificationIndicator(List<Integer> notificationIndicator) {
         if (notificationIndicator == null) {
             throw new IllegalArgumentException("Notification indicator must not be null");
         }

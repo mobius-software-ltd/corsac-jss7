@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ChargedPartyIdentification;
 
@@ -32,8 +34,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ChargedPartyIdentificat
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ChargedPartyIdentificationImpl extends AbstractISUPParameter implements ChargedPartyIdentification {
-	private static final long serialVersionUID = 1L;
-
 	//FIXME: XXX
     @Override
     public int getCode() {
@@ -42,15 +42,11 @@ public class ChargedPartyIdentificationImpl extends AbstractISUPParameter implem
     }
 
     @Override
-    public int decode(byte[] b) throws ParameterException {
-        // TODO Auto-generated method stub
-        return 0;
+    public void decode(ByteBuf b) throws ParameterException {        
     }
 
     @Override
-    public byte[] encode() throws ParameterException {
-        // TODO Auto-generated method stub
-        return null;
+    public void encode(ByteBuf b) throws ParameterException {
     }
 
 //    3.75

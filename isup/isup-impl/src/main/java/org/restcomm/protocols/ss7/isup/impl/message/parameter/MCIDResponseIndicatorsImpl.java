@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.MCIDResponseIndicators;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MCIDResponseIndicators;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class MCIDResponseIndicatorsImpl extends AbstractISUPParameter implements MCIDResponseIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
     public static boolean HOLDING_NOT_RROVIDED = false;
@@ -60,7 +60,7 @@ public class MCIDResponseIndicatorsImpl extends AbstractISUPParameter implements
 
     }
 
-    public MCIDResponseIndicatorsImpl(byte[] b) throws ParameterException {
+    public MCIDResponseIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -71,23 +71,23 @@ public class MCIDResponseIndicatorsImpl extends AbstractISUPParameter implements
         this.holdingProvidedIndicator = holdingProvidedIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
 
-        this.mcidIncludedIndicator = (b[0] & 0x01) == _TURN_ON;
-        this.holdingProvidedIndicator = ((b[0] >> 1) & 0x01) == _TURN_ON;
-        return 1;
+        byte curr=b.readByte();
+        this.mcidIncludedIndicator = (curr & 0x01) == _TURN_ON;
+        this.holdingProvidedIndicator = ((curr >> 1) & 0x01) == _TURN_ON;        
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
         int b0 = 0;
 
         b0 |= (this.mcidIncludedIndicator ? _TURN_ON : _TURN_OFF);
         b0 |= ((this.holdingProvidedIndicator ? _TURN_ON : _TURN_OFF)) << 1;
 
-        return new byte[] { (byte) b0 };
+        buffer.writeByte((byte) b0);
     }
 
     public boolean isMcidIncludedIndicator() {

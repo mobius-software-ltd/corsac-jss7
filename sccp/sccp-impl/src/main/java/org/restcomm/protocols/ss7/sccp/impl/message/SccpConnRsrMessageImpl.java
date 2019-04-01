@@ -33,9 +33,8 @@ import org.restcomm.protocols.ss7.sccp.message.SccpConnRsrMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class SccpConnRsrMessageImpl extends SccpConnReferencedMessageImpl implements SccpConnRsrMessage {
     protected ResetCause resetCause;
@@ -59,60 +58,42 @@ public class SccpConnRsrMessageImpl extends SccpConnReferencedMessageImpl implem
     }
 
     @Override
-    public void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte[] buffer = new byte[3];
-            in.read(buffer);
-            LocalReferenceImpl ref = new LocalReferenceImpl();
-            ref.decode(buffer, factory, sccpProtocolVersion);
-            destinationLocalReferenceNumber = ref;
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	LocalReferenceImpl ref = new LocalReferenceImpl();
+        ref.decode(buffer, factory, sccpProtocolVersion);
+        destinationLocalReferenceNumber = ref;
 
-            in.read(buffer);
-            ref = new LocalReferenceImpl();
-            ref.decode(buffer, factory, sccpProtocolVersion);
-            sourceLocalReferenceNumber = ref;
+        ref = new LocalReferenceImpl();
+        ref.decode(buffer, factory, sccpProtocolVersion);
+        sourceLocalReferenceNumber = ref;
 
-            buffer = new byte[1];
-            in.read(buffer);
-            ResetCauseImpl cause = new ResetCauseImpl();
-            cause.decode(buffer, factory, sccpProtocolVersion);
-            resetCause = cause;
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+        ResetCauseImpl cause = new ResetCauseImpl();
+        cause.decode(buffer, factory, sccpProtocolVersion);
+        resetCause = cause;
     }
 
     @Override
     public EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger, boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (type == 0) {
-                return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
-            }
-            if (destinationLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
-            }
-            if (sourceLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
-            }
-            if (resetCause == null) {
-                return new EncodingResultData(EncodingResult.ResetCauseMissing, null, null, null);
-            }
-
-            // 8 is sum of 4 fixed-length field lengths
-            ByteArrayOutputStream out = new ByteArrayOutputStream(8);
-
-            byte[] dlr = ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] slr = ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] cause = ((ResetCauseImpl) resetCause).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-
-            out.write(type);
-            out.write(dlr);
-            out.write(slr);
-            out.write(cause);
-            return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-        } catch (IOException e) {
-            throw new ParseException(e);
+    	if (type == 0) {
+            return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
         }
+        if (destinationLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
+        }
+        if (sourceLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
+        }
+        if (resetCause == null) {
+            return new EncodingResultData(EncodingResult.ResetCauseMissing, null, null, null);
+        }
+
+        // 8 is sum of 4 fixed-length field lengths
+        ByteBuf out = Unpooled.buffer(8);
+        out.writeByte(type);
+        ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((ResetCauseImpl) resetCause).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        return new EncodingResultData(EncodingResult.Success, out, null, null);
     }
 
     @Override

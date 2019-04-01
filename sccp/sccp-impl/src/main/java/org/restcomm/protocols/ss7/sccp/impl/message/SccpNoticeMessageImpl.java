@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.AbstractParameter;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ReturnCauseImpl;
@@ -60,7 +62,7 @@ public class SccpNoticeMessageImpl extends SccpDataNoticeTemplateMessageImpl imp
      * @param importance
      */
     protected SccpNoticeMessageImpl(int maxDataLen, int type, ReturnCause returnCause, SccpAddress calledParty,
-            SccpAddress callingParty, byte[] data, HopCounter hopCounter, Importance importance) {
+            SccpAddress callingParty, ByteBuf data, HopCounter hopCounter, Importance importance) {
         super(maxDataLen, type, 0, -1, calledParty, callingParty, data, hopCounter, importance);
 
         this.returnCause = returnCause;
@@ -104,13 +106,13 @@ public class SccpNoticeMessageImpl extends SccpDataNoticeTemplateMessageImpl imp
     }
 
     @Override
-    protected byte[] getSecondParamaterData(boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return ((AbstractParameter) this.returnCause).encode(removeSPC, sccpProtocolVersion);
+    protected void getSecondParamaterData(ByteBuf data,boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        ((AbstractParameter) this.returnCause).encode(data,removeSPC, sccpProtocolVersion);
     }
 
     @Override
-    protected void setSecondParamaterData(int data, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        this.returnCause = new ReturnCauseImpl(ReturnCauseValue.getInstance(data));
+    protected void setSecondParamaterData(ByteBuf data, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        this.returnCause = new ReturnCauseImpl(ReturnCauseValue.getInstance(data.readByte()));
     }
 
     @Override
@@ -141,7 +143,7 @@ public class SccpNoticeMessageImpl extends SccpDataNoticeTemplateMessageImpl imp
                 .append(this.outgoingDpc).append(" CallingAddress(").append(this.callingParty).append(") CalledParty(").append(this.calledParty).append(")");
         sb.append(" DataLen=");
         if (this.data != null)
-            sb.append(this.data.length);
+            sb.append(this.data.readableBytes());
         return sb.toString();
     }
 }

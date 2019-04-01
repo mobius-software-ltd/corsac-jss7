@@ -44,15 +44,16 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
-import java.io.InputStream;
 
 public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements SccpConnCrMessage {
     protected LocalReference sourceLocalReferenceNumber;
     protected ProtocolClass protocolClass;
     protected Credit credit;
-    protected byte[] userData;
+    protected ByteBuf userData;
     protected Importance importance;
 
     public SccpConnCrMessageImpl(int sls, int localSsn, SccpAddress calledParty, SccpAddress callingParty, HopCounter hopCounter) {
@@ -94,12 +95,12 @@ public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements S
     }
 
     @Override
-    public byte[] getUserData() {
-        return userData;
+    public ByteBuf getUserData() {
+        return Unpooled.wrappedBuffer(userData);
     }
 
     @Override
-    public void setUserData(byte[] userData) {
+    public void setUserData(ByteBuf userData) {
         this.userData = userData;
     }
 
@@ -114,47 +115,43 @@ public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements S
     }
 
     @Override
-    public void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         try {
-            byte[] buffer = new byte[3];
-            in.read(buffer);
             LocalReferenceImpl ref = new LocalReferenceImpl();
             ref.decode(buffer, factory, sccpProtocolVersion);
             sourceLocalReferenceNumber = ref;
 
-            buffer = new byte[1];
-            in.read(buffer);
             ProtocolClassImpl protocol = new ProtocolClassImpl();
             protocol.decode(buffer, factory, sccpProtocolVersion);
             protocolClass = protocol;
 
-            int cpaPointer = in.read() & 0xFF;
-            in.mark(in.available());
+            int cpaPointer = buffer.readByte() & 0xFF;
+            buffer.markReaderIndex();
 
-            in.skip(cpaPointer - 1);
-            int len = in.read() & 0xff;
+            buffer.skipBytes(cpaPointer - 1);
+            int len=buffer.readByte();
+            calledParty = createAddress(buffer.slice(buffer.readerIndex(), len), factory, sccpProtocolVersion);
 
-            buffer = new byte[len];
-            in.read(buffer);
+            buffer.resetReaderIndex();
 
-            calledParty = createAddress(buffer, factory, sccpProtocolVersion);
-
-            in.reset();
-
-            int pointer = in.read() & 0xff;
-            in.mark(in.available());
+            int pointer = buffer.readByte() & 0xff;
+            buffer.markReaderIndex();
 
             if (pointer == 0) {
                 // we are done
                 return;
             }
-            if (pointer - 1 != in.skip(pointer - 1)) {
+            
+            try {
+            	buffer.skipBytes(pointer - 1);
+            }
+            catch(IndexOutOfBoundsException ex) {
                 throw new IOException("Not enough data in buffer");
             }
 
             int paramCode = 0;
             // EOP
-            while ((paramCode = in.read() & 0xFF) != 0) {
+            while ((paramCode = buffer.readByte() & 0xFF) != 0) {
                 if (paramCode != Credit.PARAMETER_CODE
                         && paramCode != SccpAddress.CGA_PARAMETER_CODE
                         && paramCode != Parameter.DATA_PARAMETER_CODE
@@ -162,10 +159,10 @@ public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements S
                         && paramCode != Importance.PARAMETER_CODE) {
                     throw new ParseException(String.format("Code %d is not supported for CR message", paramCode));
                 }
-                len = in.read() & 0xff;
-                buffer = new byte[len];
-                in.read(buffer);
-                decodeOptional(paramCode, buffer, sccpProtocolVersion, factory);
+                
+                len = buffer.readByte() & 0xff;
+                decodeOptional(paramCode, buffer.slice(buffer.readerIndex(), len), sccpProtocolVersion, factory);
+                buffer.skipBytes(len);
             }
         } catch (IOException e) {
             throw new ParseException(e);
@@ -174,113 +171,110 @@ public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements S
 
     @Override
     public EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger, boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (type == 0) {
-                return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
-            }
-            if (sourceLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
-            }
-            if (protocolClass == null) {
-                return new EncodingResultData(EncodingResult.ProtocolClassMissing, null, null, null);
-            }
-            if (calledParty == null) {
-                return new EncodingResultData(EncodingResult.CalledPartyAddressMissing, null, null, null);
-            }
-
-            byte[] cdp = ((SccpAddressImpl) calledParty).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] cnp = new byte[0];
-            if (callingParty != null) {
-                cnp = ((SccpAddressImpl) callingParty).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            }
-
-            byte[] slr = ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] protocol = ((ProtocolClassImpl) protocolClass).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] bf = new byte[0];
-            if (userData != null) {
-                bf = userData;
-            }
-
-            int fieldsLen = MessageUtil.calculateCrFieldsLengthWithoutData(cdp.length, credit != null, cnp.length,
-                    hopCounter != null, importance != null);
-            int availLen = maxMtp3UserDataLength - fieldsLen;
-
-            if (availLen > 130)
-                availLen = 130;
-
-            if (bf.length > availLen) {
-                if (logger.isEnabledFor(Level.WARN)) {
-                    logger.warn(String.format(
-                            "Failure when sending a CR message: message is too long. SccpMessageSegment=%s", this));
-                }
-                return new EncodingResultData(EncodingResult.SegmentationNotSupported, null, null, null);
-            }
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream(fieldsLen + bf.length);
-
-            out.write(type);
-            out.write(slr);
-            out.write(protocol);
-
-            // we have 2 pointers (cdp, optionals), cdp starts after 2 octets then
-            int len = 2;
-            out.write(len); //cdp pointer
-
-            boolean optionalPresent = false;
-            if (credit != null || callingParty != null || userData != null || hopCounter != null || importance != null) {
-                len += cdp.length;
-                out.write(len); // optionals pointer
-
-                optionalPresent = true;
-            } else {
-                // in case there is no optional
-                out.write(0);
-            }
-
-            out.write(cdp.length);
-            out.write(cdp);
-
-            if (credit != null) {
-                out.write(Credit.PARAMETER_CODE);
-                byte[] b = ((CreditImpl)credit).encode(removeSPC, sccpProtocolVersion);
-                out.write(b.length);
-                out.write(b);
-            }
-            if (callingParty != null) {
-                out.write(SccpAddress.CGA_PARAMETER_CODE);
-                byte[] b = ((SccpAddressImpl)callingParty).encode(removeSPC, sccpProtocolVersion);
-                out.write(b.length);
-                out.write(b);
-            }
-            if (userData != null) {
-                out.write(Parameter.DATA_PARAMETER_CODE);
-                out.write(userData.length);
-                out.write(userData);
-            }
-            if (hopCounter != null) {
-                out.write(HopCounter.PARAMETER_CODE);
-                byte[] b = ((HopCounterImpl)hopCounter).encode(removeSPC, sccpProtocolVersion);
-                out.write(b.length);
-                out.write(b);
-            }
-            if (importance != null) {
-                out.write(Importance.PARAMETER_CODE);
-                byte[] b = ((ImportanceImpl)importance).encode(removeSPC, sccpProtocolVersion);
-                out.write(b.length);
-                out.write(b);
-            }
-
-            if (optionalPresent) {
-                out.write(0x00);
-            }
-
-            return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-        } catch (IOException e) {
-            throw new ParseException(e);
+    	if (type == 0) {
+            return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
         }
+        if (sourceLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
+        }
+        if (protocolClass == null) {
+            return new EncodingResultData(EncodingResult.ProtocolClassMissing, null, null, null);
+        }
+        if (calledParty == null) {
+            return new EncodingResultData(EncodingResult.CalledPartyAddressMissing, null, null, null);
+        }
+
+        ByteBuf cdp=Unpooled.buffer();
+        ((SccpAddressImpl) calledParty).encode(cdp, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        
+        ByteBuf cnp = null;
+        if (callingParty != null) {
+        	cnp=Unpooled.buffer();
+            ((SccpAddressImpl) callingParty).encode(cnp, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        }
+
+        int cnpLength=0;
+        if(cnp!=null)
+        	cnpLength=cnp.readableBytes();
+        
+        int fieldsLen = MessageUtil.calculateCrFieldsLengthWithoutData(cdp.readableBytes(), credit != null, cnpLength,
+                hopCounter != null, importance != null);
+        int availLen = maxMtp3UserDataLength - fieldsLen;
+
+        if (availLen > 130)
+            availLen = 130;
+
+        int bfLength=0;
+        if(userData!=null)
+        	bfLength=userData.readableBytes();
+        
+        if (bfLength > availLen) {
+            if (logger.isEnabledFor(Level.WARN)) {
+                logger.warn(String.format(
+                        "Failure when sending a CR message: message is too long. SccpMessageSegment=%s", this));
+            }
+            return new EncodingResultData(EncodingResult.SegmentationNotSupported, null, null, null);
+        }
+
+        ByteBuf out = Unpooled.buffer(fieldsLen);
+
+        out.writeByte(type);
+        ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(out, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((ProtocolClassImpl) protocolClass).encode(out, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        
+        // we have 2 pointers (cdp, optionals), cdp starts after 2 octets then
+        int len = 2;
+        out.writeByte(len); //cdp pointer
+
+        boolean optionalPresent = false;
+        if (credit != null || callingParty != null || userData != null || hopCounter != null || importance != null) {
+            len += cdp.readableBytes();
+            out.writeByte(len); // optionals pointer
+
+            optionalPresent = true;
+        } else {
+            // in case there is no optional
+            out.writeByte(0);
+        }
+
+        out.writeByte(cdp.readableBytes());
+        out.writeBytes(cdp);
+
+        if (credit != null) {
+            out.writeByte(Credit.PARAMETER_CODE);
+            out.writeByte(1);
+            ((CreditImpl)credit).encode(out,removeSPC, sccpProtocolVersion);                
+        }
+        if (callingParty != null) {
+            out.writeByte(SccpAddress.CGA_PARAMETER_CODE);
+            out.writeByte(cnp.readableBytes());
+            out.writeBytes(cnp);
+        }
+        if (userData != null) {
+            out.writeByte(Parameter.DATA_PARAMETER_CODE);
+            out.writeByte(userData.readableBytes());
+            out=Unpooled.wrappedBuffer(out,userData);
+        }
+        
+        if (hopCounter != null) {
+            out.writeByte(HopCounter.PARAMETER_CODE);
+            out.writeByte(1);
+            ((HopCounterImpl)hopCounter).encode(out,removeSPC, sccpProtocolVersion);                
+        }
+        if (importance != null) {
+            out.writeByte(Importance.PARAMETER_CODE);
+            out.writeByte(1);
+            ((ImportanceImpl)importance).encode(out, removeSPC, sccpProtocolVersion);                
+        }
+
+        if (optionalPresent) {
+            out.writeByte(0x00);
+        }
+
+        return new EncodingResultData(EncodingResult.Success, out, null, null);
     }
 
-    protected void decodeOptional(int code, byte[] buffer, final SccpProtocolVersion sccpProtocolVersion, ParameterFactory factory) throws ParseException {
+    protected void decodeOptional(int code, ByteBuf buffer, final SccpProtocolVersion sccpProtocolVersion, ParameterFactory factory) throws ParseException {
         switch (code) {
             case Credit.PARAMETER_CODE:
                 CreditImpl cred = new CreditImpl();
@@ -305,7 +299,7 @@ public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements S
                 break;
 
             case HopCounter.PARAMETER_CODE:
-                HopCounterImpl counter = new HopCounterImpl(buffer[0]);
+                HopCounterImpl counter = new HopCounterImpl(buffer.readByte());
                 hopCounter = counter;
                 break;
 
@@ -320,7 +314,7 @@ public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements S
         }
     }
 
-    protected SccpAddress createAddress(byte[] buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    protected SccpAddress createAddress(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         SccpAddressImpl addressImpl = new SccpAddressImpl();
         addressImpl.decode(buffer, factory, sccpProtocolVersion);
         return addressImpl;
@@ -375,7 +369,7 @@ public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements S
         sb.append(")");
         sb.append(" DataLen=");
         if (this.userData != null)
-            sb.append(this.userData.length);
+            sb.append(this.userData.readableBytes());
 
         sb.append(" sourceLR=");
         if (this.sourceLocalReferenceNumber != null)

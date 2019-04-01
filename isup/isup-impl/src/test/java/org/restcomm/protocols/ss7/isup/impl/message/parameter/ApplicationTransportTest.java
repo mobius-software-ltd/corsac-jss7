@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -49,18 +52,18 @@ public class ApplicationTransportTest extends ParameterHarness {
     public ApplicationTransportTest() {
         super();
 
-        super.badBodies.add(new byte[1]);
-        super.badBodies.add(new byte[3]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[3]));
 
-        super.goodBodies.add(getBody1());
-        super.goodBodies.add(getBody2());
-        super.goodBodies.add(getBody3());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody2()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody3()));
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
        byte[] body = new byte[]{(byte)0x81};
-       return body;
+       return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -75,7 +78,7 @@ public class ApplicationTransportTest extends ParameterHarness {
         super.testValues(at, methodNames, expectedValues);
     }
 
-    private byte[] getBody2() {
+    private ByteBuf getBody2() {
         byte[] body = new byte[]{
           //ACI
           5,
@@ -86,7 +89,7 @@ public class ApplicationTransportTest extends ParameterHarness {
           //Segmentation reference
           (byte)(0x80 | 6)
         };
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -101,7 +104,7 @@ public class ApplicationTransportTest extends ParameterHarness {
         super.testValues(at, methodNames, expectedValues);
     }
 
-    private byte[] getBody3() {
+    private ByteBuf getBody3() {
         byte[] body = new byte[]{
           //ACI
           2,
@@ -119,7 +122,7 @@ public class ApplicationTransportTest extends ParameterHarness {
           (byte)8,
           (byte)9,
         };
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -129,12 +132,12 @@ public class ApplicationTransportTest extends ParameterHarness {
 
         String[] methodNames = { "getApplicationContextIdentifier","isSendNotificationIndicator","isReleaseCallIndicator","isSegmentationIndicator",
                 "getAPMSegmentationIndicator","getSegmentationLocalReference", "getEncapsulatedApplicationInformation" };
-        Object[] expectedValues = { new Byte((byte)2),Boolean.FALSE,Boolean.TRUE,Boolean.FALSE,new Byte((byte)5),new Byte((byte)7),new byte[]{(byte)1,
+        Object[] expectedValues = { new Byte((byte)2),Boolean.FALSE,Boolean.TRUE,Boolean.FALSE,new Byte((byte)5),new Byte((byte)7),Unpooled.wrappedBuffer(new byte[]{(byte)1,
             (byte)2,
             (byte)3,
             (byte)4,
             (byte)8,
-            (byte)9} };
+            (byte)9}) };
 
         super.testValues(at, methodNames, expectedValues);
     }

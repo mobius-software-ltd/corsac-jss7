@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:12:22:51 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -102,9 +104,9 @@ public interface CircuitStateIndicator extends ISUPParameter {
      */
     int _HBS_LAR_BLOCKED = 3;
 
-    byte[] getCircuitState();
+    ByteBuf getCircuitState();
 
-    void setCircuitState(byte[] circuitState) throws IllegalArgumentException;
+    void setCircuitState(ByteBuf circuitState) throws IllegalArgumentException;
 
     byte createCircuitState(int MBS, int CPS, int HBS);
 

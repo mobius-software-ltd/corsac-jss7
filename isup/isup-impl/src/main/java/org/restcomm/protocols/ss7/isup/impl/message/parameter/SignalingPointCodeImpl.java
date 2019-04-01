@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.SignalingPointCode;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.SignalingPointCode;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class SignalingPointCodeImpl extends AbstractPointCode implements SignalingPointCode {
-	private static final long serialVersionUID = 1L;
-
 	public int getCode() {
 
         return _PARAMETER_CODE;
@@ -52,7 +52,7 @@ public class SignalingPointCodeImpl extends AbstractPointCode implements Signali
 
     }
 
-    public SignalingPointCodeImpl(byte[] b) throws ParameterException {
+    public SignalingPointCodeImpl(ByteBuf b) throws ParameterException {
         super(b);
 
     }

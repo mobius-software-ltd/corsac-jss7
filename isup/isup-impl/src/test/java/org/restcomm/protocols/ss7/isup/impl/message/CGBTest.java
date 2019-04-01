@@ -34,6 +34,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupBlockingMessage;
@@ -54,15 +56,14 @@ public class CGBTest extends MessageHarness {
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
         // FIXME: for now we strip MTP part
-        byte[] message = { 0x0C, (byte) 0x0B, CircuitGroupBlockingMessage.MESSAGE_CODE
+        ByteBuf message = Unpooled.wrappedBuffer(new byte[] { 0x0C, (byte) 0x0B, CircuitGroupBlockingMessage.MESSAGE_CODE
                 // Circuit group supervision message type
                 , 0x01 // hardware failure oriented
                 , 0x01 // ptr to variable part
                 // no optional, so no pointer
                 // RangeAndStatus._PARAMETER_CODE
                 , 0x03, 0x0A, 0x02, 0x03
-
-        };
+        });
 
         // CircuitGroupBlockingMessage cgb=new CircuitGroupBlockingMessageImpl(this,message);
         CircuitGroupBlockingMessage cgb = super.messageFactory.createCGB(0);
@@ -94,7 +95,7 @@ public class CGBTest extends MessageHarness {
 
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         // FIXME: for now we strip MTP part
         byte[] message = { 0x0C, (byte) 0x0B, CircuitGroupBlockingMessage.MESSAGE_CODE
                 // Circuit group supervision message type
@@ -105,7 +106,7 @@ public class CGBTest extends MessageHarness {
                 , 0x02, 0x04, 0x02
 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumber;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RedirectionNumberImpl extends AbstractNAINumber implements RedirectionNumber {
-	private static final long serialVersionUID = 1L;
-
 	protected int numberingPlanIndicator;
 
     protected int internalNetworkNumberIndicator;
@@ -54,18 +51,11 @@ public class RedirectionNumberImpl extends AbstractNAINumber implements Redirect
 
     }
 
-    public RedirectionNumberImpl(byte[] representation) throws ParameterException {
+    public RedirectionNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
 
-    public RedirectionNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
-    }
-
-    public RedirectionNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,
-            int internalNetworkNumberIndicator) {
+    public RedirectionNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,int internalNetworkNumberIndicator) {
         super(natureOfAddresIndicator, address);
         this.numberingPlanIndicator = numberingPlanIndicator;
         this.internalNetworkNumberIndicator = internalNetworkNumberIndicator;
@@ -77,12 +67,15 @@ public class RedirectionNumberImpl extends AbstractNAINumber implements Redirect
      * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
+    public void decodeBody(ByteBuf buf) throws IllegalArgumentException, ParameterException {
+    	if(buf.readableBytes()==0) {
+    		throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+    	}
+    	
+        int b = buf.readByte() & 0xff;
 
         this.internalNetworkNumberIndicator = (b & 0x80) >> 7;
-        this.numberingPlanIndicator = (b & 0x70) >> 4;
-        return 1;
+        this.numberingPlanIndicator = (b & 0x70) >> 4;        
     }
 
     /*
@@ -91,11 +84,10 @@ public class RedirectionNumberImpl extends AbstractNAINumber implements Redirect
      * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
-    public int encodeBody(ByteArrayOutputStream bos) {
+    public void encodeBody(ByteBuf bos) {
         int c = this.natureOfAddresIndicator << 4;
         c |= (this.internalNetworkNumberIndicator << 7);
-        bos.write(c);
-        return 1;
+        bos.writeByte(c);        
     }
 
     public int getNumberingPlanIndicator() {

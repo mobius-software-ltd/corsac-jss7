@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CorrelationID;
 
@@ -41,19 +43,17 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CorrelationID;
  *
  */
 public class CorrelationIDImpl extends GenericDigitsImpl implements CorrelationID {
-	private static final long serialVersionUID = 1L;
-
 	public CorrelationIDImpl() {
         super();
 
     }
 
-    public CorrelationIDImpl(byte[] b) throws ParameterException {
+    public CorrelationIDImpl(ByteBuf b) throws ParameterException {
         super(b);
 
     }
 
-    public CorrelationIDImpl(int encodignScheme, int typeOfDigits, byte[] digits) {
+    public CorrelationIDImpl(int encodignScheme, int typeOfDigits, ByteBuf digits) {
         super(encodignScheme, typeOfDigits, digits);
 
     }

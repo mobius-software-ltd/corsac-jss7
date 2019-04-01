@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -49,8 +51,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class FacilityRejectedMessageImpl extends ISUPMessageImpl implements FacilityRejectedMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.FacilityRejected);
     private static final int _MANDATORY_VAR_COUNT = 1;
     private static final boolean _OPTIONAL_POSSIBLE = true;
@@ -79,34 +79,29 @@ public class FacilityRejectedMessageImpl extends ISUPMessageImpl implements Faci
     }
 
     @Override
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-        if (b.length - index > 1) {
+        super.decodeMandatoryParameters(parameterFactory, b);
+        if (b.readableBytes() > 0) {
 
             // this.circuitIdentificationCode = b[index++];
             try {
-                byte[] facilityIndicator = new byte[1];
-                facilityIndicator[0] = b[index++];
-
+                ByteBuf facilityIndicator = b.slice(b.readerIndex(), 1);
                 FacilityIndicator bci = parameterFactory.createFacilityIndicator();
                 ((AbstractISUPParameter) bci).decode(facilityIndicator);
                 this.setFacilityIndicator(bci);
+                b.skipBytes(1);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
-
-            // return 3;
-            return index - localIndex;
         } else {
             throw new IllegalArgumentException("byte[] must have atleast four octets");
         }
     }
 
     @Override
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         switch (parameterIndex) {
             case _INDEX_V_CauseIndicators:
@@ -123,7 +118,7 @@ public class FacilityRejectedMessageImpl extends ISUPMessageImpl implements Faci
     }
 
     @Override
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         switch (parameterCode & 0xFF) {
             case UserToUserIndicators._PARAMETER_CODE:

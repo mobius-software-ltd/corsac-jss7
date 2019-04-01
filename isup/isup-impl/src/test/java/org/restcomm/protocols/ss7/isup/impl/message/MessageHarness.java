@@ -33,15 +33,17 @@ package org.restcomm.protocols.ss7.isup.impl.message;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.isup.ISUPMessageFactory;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.impl.message.ISUPMessageFactoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFactoryImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.ParameterHarness;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitIdentificationCode;
 import org.testng.annotations.Test;
@@ -70,33 +72,33 @@ public abstract class MessageHarness {
 
     }
 
-    protected String makeStringCompare(byte[] b1, byte[] b2) {
+    protected String makeStringCompare(ByteBuf b1, ByteBuf b2) {
         int totalLength = 0;
-        if (b1.length >= b2.length) {
-            totalLength = b1.length;
+        if (b1.readableBytes() >= b2.readableBytes()) {
+            totalLength = b1.readableBytes();
         } else {
-            totalLength = b2.length;
+            totalLength = b2.readableBytes();
         }
 
         String out = "";
 
         for (int index = 0; index < totalLength; index++) {
             boolean equals = true;
-            if (b1.length > index) {
-                out += "b1[" + Integer.toHexString(b1[index]) + "]";
+            if (b1.readableBytes() > index) {
+                out += "b1[" + Integer.toHexString(b1.readByte()) + "]";
             } else {
                 equals = false;
                 out += "b1[NOP]";
             }
 
-            if (b2.length > index) {
-                out += "b2[" + Integer.toHexString(b2[index]) + "]";
+            if (b2.readableBytes() > index) {
+                out += "b2[" + Integer.toHexString(b2.readByte()) + "]";
             } else {
                 equals = false;
                 out += "b2[NOP]";
             }
             if(equals){
-                if(b1[index]!=b2[index]){
+                if(b1.readByte()!=b2.readByte()){
                     out+=" <*>";
                 }
             }
@@ -177,19 +179,20 @@ public abstract class MessageHarness {
 
         return out;
     }
-    protected abstract byte[] getDefaultBody();
+    protected abstract ByteBuf getDefaultBody();
 
     protected abstract ISUPMessage getDefaultMessage();
 
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testOne() throws Exception {
 
-        final byte[] defaultBody = getDefaultBody();
+        final ByteBuf defaultBody = getDefaultBody();
         final AbstractISUPMessage msg = (AbstractISUPMessage) getDefaultMessage();
-        msg.decode(defaultBody,messageFactory, parameterFactory);
-        final byte[] encodedBody = msg.encode();
-        final boolean equal = Arrays.equals(defaultBody, encodedBody);
-        assertTrue(equal, makeStringCompare(defaultBody, encodedBody));
+        msg.decode(Unpooled.wrappedBuffer(defaultBody),messageFactory, parameterFactory);
+        final ByteBuf encodedBody = Unpooled.buffer(255);
+        msg.encode(encodedBody);        
+        final boolean equal = ParameterHarness.byteBufEquals(Unpooled.wrappedBuffer(defaultBody), Unpooled.wrappedBuffer(encodedBody));
+        assertTrue(equal, makeStringCompare(Unpooled.wrappedBuffer(defaultBody), Unpooled.wrappedBuffer(encodedBody)));
         final CircuitIdentificationCode cic = msg.getCircuitIdentificationCode();
         assertNotNull(cic, "CircuitIdentificationCode must not be null");
         assertEquals(getDefaultCIC(), cic.getCIC(), "CircuitIdentificationCode value does not match");

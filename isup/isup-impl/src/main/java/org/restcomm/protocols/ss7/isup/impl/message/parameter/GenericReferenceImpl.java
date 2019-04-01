@@ -29,6 +29,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericReference;
 
@@ -39,8 +41,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericReference;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class GenericReferenceImpl extends AbstractISUPParameter implements GenericReference {
-	private static final long serialVersionUID = 1L;
-
 	/**
      *
      */
@@ -53,7 +53,7 @@ public class GenericReferenceImpl extends AbstractISUPParameter implements Gener
      * @throws ParameterException
      *
      */
-    public GenericReferenceImpl(byte[] b) throws ParameterException {
+    public GenericReferenceImpl(ByteBuf b) throws ParameterException {
         decode(b);
     }
 
@@ -67,14 +67,9 @@ public class GenericReferenceImpl extends AbstractISUPParameter implements Gener
         return _PARAMETER_CODE;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        // TODO Auto-generated method stub
-        return 0;
+    public void decode(ByteBuf b) throws ParameterException {        
     }
 
-    public byte[] encode() throws ParameterException {
-        // TODO Auto-generated method stub
-        return null;
+    public void encode(ByteBuf b) throws ParameterException {        
     }
-
 }

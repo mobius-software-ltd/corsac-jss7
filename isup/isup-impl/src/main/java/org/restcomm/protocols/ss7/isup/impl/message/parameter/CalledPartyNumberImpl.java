@@ -22,8 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
@@ -37,8 +36,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
  * @author Oleg Kulikoff
  */
 public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPartyNumber {
-	private static final long serialVersionUID = 1L;
-
 	protected int numberingPlanIndicator;
     protected int internalNetworkNumberIndicator;
 
@@ -48,25 +45,12 @@ public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPa
      * @param representation
      * @throws ParameterException
      */
-    public CalledPartyNumberImpl(byte[] representation) throws ParameterException {
+    public CalledPartyNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
-    }
-
-    /**
-     *
-     *
-     * @param bis
-     * @throws ParameterException
-     */
-    public CalledPartyNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     public CalledPartyNumberImpl() {
         super();
-
     }
 
     /**
@@ -74,8 +58,7 @@ public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPa
      * @param natureOfAddresIndicator
      * @param address
      */
-    public CalledPartyNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,
-            int internalNetworkNumberIndicator) {
+    public CalledPartyNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,int internalNetworkNumberIndicator) {
         super(natureOfAddresIndicator, address);
         this.numberingPlanIndicator = numberingPlanIndicator;
         this.internalNetworkNumberIndicator = internalNetworkNumberIndicator;
@@ -87,12 +70,15 @@ public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPa
      * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
+    	if(buffer.readableBytes()==0) {
+    		throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+    	}
+    	
+        int b = buffer.readByte() & 0xff;
 
         this.internalNetworkNumberIndicator = (b & 0x80) >> 7;
-        this.numberingPlanIndicator = (b & 0x70) >> 4;
-        return 1;
+        this.numberingPlanIndicator = (b & 0x70) >> 4;        
     }
 
     /*
@@ -101,11 +87,10 @@ public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPa
      * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
-    public int encodeBody(ByteArrayOutputStream bos) {
+    public void encodeBody(ByteBuf buffer) {
         int c = (this.numberingPlanIndicator & 0x07) << 4;
         c |= ((this.internalNetworkNumberIndicator & 0x01) << 7);
-        bos.write(c);
-        return 1;
+        buffer.writeByte(c);        
     }
 
     public int getNumberingPlanIndicator() {
@@ -125,7 +110,6 @@ public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPa
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 

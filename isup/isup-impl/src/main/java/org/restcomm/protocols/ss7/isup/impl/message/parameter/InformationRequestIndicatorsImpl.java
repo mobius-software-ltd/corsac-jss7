@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.InformationRequestIndicators;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.InformationRequestIndic
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class InformationRequestIndicatorsImpl extends AbstractISUPParameter implements InformationRequestIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -54,7 +54,7 @@ public class InformationRequestIndicatorsImpl extends AbstractISUPParameter impl
     // FIXME: should we carre about this?
     private int reserved;
 
-    public InformationRequestIndicatorsImpl(byte[] b) throws ParameterException {
+    public InformationRequestIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -76,21 +76,21 @@ public class InformationRequestIndicatorsImpl extends AbstractISUPParameter impl
         this.reserved = reserved;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 2) {
+    public void decode(ByteBuf buffer) throws ParameterException {
+        if (buffer == null || buffer.readableBytes() != 2) {
             throw new IllegalArgumentException("byte[] must  not be null and length must  be 2");
         }
 
-        this.callingPartAddressRequestIndicator = (b[0] & 0x01) == _TURN_ON;
-        this.holdingIndicator = ((b[0] >> 1) & 0x01) == _TURN_ON;
-        this.callingpartysCategoryRequestIndicator = ((b[0] >> 3) & 0x01) == _TURN_ON;
-        this.chargeInformationRequestIndicator = ((b[0] >> 4) & 0x01) == _TURN_ON;
-        this.maliciousCallIdentificationRequestIndicator = ((b[0] >> 7) & 0x01) == _TURN_ON;
-        this.reserved = (b[1] >> 4) & 0x0F;
-        return 2;
+        byte b=buffer.readByte();
+        this.callingPartAddressRequestIndicator = (b & 0x01) == _TURN_ON;
+        this.holdingIndicator = ((b >> 1) & 0x01) == _TURN_ON;
+        this.callingpartysCategoryRequestIndicator = ((b >> 3) & 0x01) == _TURN_ON;
+        this.chargeInformationRequestIndicator = ((b >> 4) & 0x01) == _TURN_ON;
+        this.maliciousCallIdentificationRequestIndicator = ((b >> 7) & 0x01) == _TURN_ON;
+        this.reserved = (buffer.readByte() >> 4) & 0x0F;        
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
         int b0 = 0;
         int b1 = 0;
         b0 |= this.callingPartAddressRequestIndicator ? _TURN_ON : _TURN_OFF;
@@ -100,8 +100,8 @@ public class InformationRequestIndicatorsImpl extends AbstractISUPParameter impl
         b0 |= (this.maliciousCallIdentificationRequestIndicator ? _TURN_ON : _TURN_OFF) << 7;
 
         b1 |= (this.reserved & 0x0F) << 4;
-
-        return new byte[] { (byte) b0, (byte) b1 };
+        buffer.writeByte(b0);
+        buffer.writeByte(b1);        
     }
 
     public boolean isCallingPartAddressRequestIndicator() {

@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:12:28:40 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -52,9 +54,9 @@ public interface ConferenceTreatmentIndicators extends ISUPParameter {
      */
     int _CAI_RCR = 2;
 
-    byte[] getConferenceAcceptance();
+    ByteBuf getConferenceAcceptance();
 
-    void setConferenceAcceptance(byte[] conferenceAcceptance);
+    void setConferenceAcceptance(ByteBuf conferenceAcceptance);
 
     int getConferenceTreatmentIndicator(byte b);
 }

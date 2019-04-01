@@ -75,8 +75,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReturnCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
-import java.util.Iterator;
 
 import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.getDln;
 import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.getSln;
@@ -129,24 +131,6 @@ public class SccpRoutingControl {
     }
 
     protected void routeMssgFromMtp(SccpAddressedMessageImpl msg) throws Exception {
-        if (this.sccpStackImpl.isPreviewMode()) {
-            // we route all incoming message (except management messages) to all registered SccpListeners
-
-            int ssn = msg.getCalledPartyAddress().getSubsystemNumber();
-            if (ssn == 1) {
-                return;
-            }
-
-            if (msg instanceof SccpDataMessage) {
-            	Iterator<SccpListener> lstListn = this.sccpProviderImpl.getAllSccpListeners().values().iterator();
-            	while(lstListn.hasNext()) {
-            		SccpListener listener = lstListn.next();
-                    deliverMessageToSccpUser(listener, (SccpDataMessage) msg);                
-            	}
-            }
-            return;
-        }
-
         //if the local SCCP or node is in an overload condition, SCRC
         // shall inform SCMG
         SccpAddress calledPartyAddress = msg.getCalledPartyAddress();
@@ -240,11 +224,6 @@ public class SccpRoutingControl {
     }
 
     protected void routeMssgFromSccpUser(SccpAddressedMessageImpl msg) throws Exception {
-        if (this.sccpStackImpl.isPreviewMode()) {
-            // we drop off local originated message in pereviewMode
-            return;
-        }
-
         if (msg instanceof SccpAddressedMessageImpl) {
             this.routeAddressed(msg);
         } else {
@@ -253,11 +232,6 @@ public class SccpRoutingControl {
     }
 
     protected void routeMssgFromSccpUserConn(SccpConnMessage msg) throws Exception {
-        if (this.sccpStackImpl.isPreviewMode()) {
-            // we drop off local originated message in pereviewMode
-            return;
-        }
-
         if (msg instanceof SccpAddressedMessageImpl) {
             this.routeAddressed((SccpAddressedMessageImpl)msg);
         } else {
@@ -307,7 +281,7 @@ public class SccpRoutingControl {
                     mup.sendMessage(msg);
                 } else {
                     // segmented data
-                    for (byte[] bf : erd.getSegementedData()) {
+                    for (ByteBuf bf : erd.getSegementedData()) {
                         Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
                                 sap.getOpc(), dpc, sls, bf);
                         mup.sendMessage(msg);
@@ -1287,7 +1261,7 @@ public class SccpRoutingControl {
                     } else {
                         try {
                             SccpConnection conn = sccpStackImpl.getConnection(((SccpConnCrMessageImpl)msg).getSourceLocalReferenceNumber());
-                            listener.onDisconnectIndication(conn, ((SccpConnCrefMessageImpl)ans).getRefusalCause(), new byte[]{});
+                            listener.onDisconnectIndication(conn, ((SccpConnCrefMessageImpl)ans).getRefusalCause(), Unpooled.buffer());
                         } catch (Exception e) {
                             if (logger.isEnabledFor(Level.WARN)) {
                                 logger.warn(String.format(
@@ -1308,7 +1282,7 @@ public class SccpRoutingControl {
         LocalReference ref = (!msg.getIsIncoming()) ? getSln(msg) : getDln(msg);
 
         SccpConnectionImpl conn = sccpStackImpl.getConnection(ref);
-        conn.disconnect(new ReleaseCauseImpl(cause), new byte[] {});
+        conn.disconnect(new ReleaseCauseImpl(cause), Unpooled.buffer());
 //        conn.setState(CLOSED);
     }
 
@@ -1422,7 +1396,7 @@ public class SccpRoutingControl {
 
                     if (err.getErrorCause().getValue() != null && err.getErrorCause().getValue() == SERVICE_CLASS_MISMATCH) {
                         listener.onDisconnectIndication(conn, err.getErrorCause());
-                        conn.disconnect(new ReleaseCauseImpl(SCCP_FAILURE), new byte[] {});
+                        conn.disconnect(new ReleaseCauseImpl(SCCP_FAILURE), Unpooled.buffer());
                     } else {
                         listener.onDisconnectIndication(conn, err.getErrorCause());
                         sccpStackImpl.removeConnection(conn.getLocalReference());

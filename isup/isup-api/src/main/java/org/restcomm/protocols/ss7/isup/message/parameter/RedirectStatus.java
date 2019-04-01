@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:13:59:51 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -50,9 +52,9 @@ public interface RedirectStatus extends ISUPParameter {
      */
     int _RSI_RWNBI = 2;
 
-    byte[] getStatus();
+    ByteBuf getStatus();
 
-    void setStatus(byte[] status);
+    void setStatus(ByteBuf status);
 
     int getStatusIndicator(byte b);
 }

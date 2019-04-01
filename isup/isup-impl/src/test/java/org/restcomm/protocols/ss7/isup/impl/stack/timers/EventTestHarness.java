@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.isup.impl.stack.timers;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -157,7 +159,8 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
         // bout.write((byte) (((opc >> 10) & 0x0F) | ((sls & 0x0F) << 4)));
 
         try {
-            byte[] message = ((AbstractISUPMessage) answer).encode();
+        	ByteBuf message=Unpooled.buffer(255);
+            ((AbstractISUPMessage) answer).encode(message);
             // bout.write(message);
             // byte[] msg = bout.toByteArray();
 
@@ -307,8 +310,15 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
 
             // here we have to parse ISUPMsg and store in receivedRemote
             long tstamp = System.currentTimeMillis();
-            byte[] payload = mtpMsg.getData();
-            int commandCode = payload[2];
+            ByteBuf payload = mtpMsg.getData();
+            if(payload.readableBytes()<3)
+            	throw new IllegalArgumentException("byte[] must have atleast three octets");
+            
+            payload.markReaderIndex();
+            payload.skipBytes(2);
+            int commandCode = payload.readByte();
+            payload.resetReaderIndex();
+            
             AbstractISUPMessage msg = (AbstractISUPMessage) provider.getMessageFactory().createCommand(commandCode);
             try {
                 msg.decode(payload, provider.getMessageFactory(),provider.getParameterFactory());

@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallDiversionTreatmentIndicatorsImpl;
 
@@ -40,18 +43,17 @@ public class CallDiversionTreatmentIndicatorsTest extends ParameterHarness {
 
         // super.badBodies.add(new byte[0]);
 
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
 
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
         byte[] b = new byte[10];
         b[9] = (byte) (b[9] | (0x01 << 7));
-        return b;
+        return Unpooled.wrappedBuffer(b);
     }
 
     public AbstractISUPParameter getTestedComponent() {
         return new CallDiversionTreatmentIndicatorsImpl();
     }
-
 }

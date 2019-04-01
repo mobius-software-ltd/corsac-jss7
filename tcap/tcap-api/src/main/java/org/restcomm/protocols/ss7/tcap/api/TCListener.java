@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCNoticeIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 
 /**
  * @author baranowb
@@ -101,7 +101,7 @@ public interface TCListener {
      *
      * @param tcInvokeRequest
      */
-    void onInvokeTimeout(Invoke tcInvokeRequest);
+    void onInvokeTimeout(InvokeImpl tcInvokeRequest);
 
     /**
      * Called once dialog times out. Once this method is called, dialog cant be used anymore.
@@ -109,5 +109,4 @@ public interface TCListener {
      * @param d
      */
     void onDialogTimeout(Dialog d);
-
 }

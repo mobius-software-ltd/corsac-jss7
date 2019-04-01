@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -51,8 +54,8 @@ public class OptionalForwardCallIndicatorsTest extends ParameterHarness {
 
     public OptionalForwardCallIndicatorsTest() {
         super();
-        super.goodBodies.add(new byte[] { 7 });
-        super.badBodies.add(new byte[] { 8, 8 });
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { 7 }));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[] { 8, 8 }));
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -69,12 +72,12 @@ public class OptionalForwardCallIndicatorsTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(int i, boolean _SSI, boolean _CLIRI) {
+    private ByteBuf getBody(int i, boolean _SSI, boolean _CLIRI) {
 
         byte v = (byte) i;
         v |= ((_SSI ? _TURN_ON : _TURN_OFF) << 2);
         v |= ((_CLIRI ? _TURN_ON : _TURN_OFF) << 7);
-        return new byte[] { (byte) v };
+        return Unpooled.wrappedBuffer(new byte[] { (byte) v });
     }
 
     /*
@@ -84,7 +87,7 @@ public class OptionalForwardCallIndicatorsTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new OptionalForwardCallIndicatorsImpl(new byte[1]);
+        return new OptionalForwardCallIndicatorsImpl(Unpooled.wrappedBuffer(new byte[1]));
     }
 
 }

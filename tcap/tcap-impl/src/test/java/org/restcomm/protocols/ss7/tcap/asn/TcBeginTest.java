@@ -27,39 +27,41 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
-import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDU;
+import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
-import org.restcomm.protocols.ss7.tcap.asn.EncodeException;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
-import org.restcomm.protocols.ss7.tcap.asn.Result;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.ResultType;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  * @author amit bhayani
@@ -69,6 +71,18 @@ import org.testng.annotations.Test;
 @Test(groups = { "asn" })
 public class TcBeginTest {
 
+	@BeforeClass
+	public void setUp()
+	{		
+		ASNGeneric.clear(ASNInvokeParameterImpl.class);
+		ASNGeneric.clear(ASNUserInformationObjectImpl.class);
+		ASNGeneric.clear(ASNReturnResultParameterImpl.class);
+		ASNGeneric.registerAlternative(ASNInvokeParameterImpl.class, TCBeginTestASN1.class);
+		ASNGeneric.registerAlternative(ASNInvokeParameterImpl.class, TCEndTestASN.class);
+		ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, UserInformationTestASN2.class);			
+		ASNGeneric.registerAlternative(ASNReturnResultParameterImpl.class, TCBeginTestASN3.class);		
+	}
+	
     /**
      * The data for this comes from nad1053.pcap USSD Wireshark Trace 2nd Packet
      *
@@ -76,81 +90,78 @@ public class TcBeginTest {
      * @throws ParseException
      */
     @Test(groups = { "functional.encode" })
-    public void testBasicTCBeginEncode() throws IOException, EncodeException, ParseException {
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage();
+    public void testBasicTCBeginEncode() throws ParseException {
+    	
+    	TCBeginMessage tcm = TcapFactory.createTCBeginMessage();
         // tcm.setOriginatingTransactionId(1358955064L);
         tcm.setOriginatingTransactionId(new byte[] { 0x51, 0x00, 0x02, 0x38 });
 
         // Create Dialog Portion
-        DialogPortion dp = TcapFactory.createDialogPortion();
-
-        dp.setOid(true);
-        dp.setOidValue(new long[] { 0, 0, 17, 773, 1, 1, 1 });
-
-        dp.setAsn(true);
-
+        DialogPortionImpl dp = TcapFactory.createDialogPortion(); 
+        dp.setUnidirectional(false);
+        
         DialogRequestAPDUImpl diRequestAPDUImpl = new DialogRequestAPDUImpl();
 
         ApplicationContextNameImpl acn = new ApplicationContextNameImpl();
-        acn.setOid(new long[] { 0, 4, 0, 0, 1, 0, 19, 2 });
+        acn.setValue(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L }));
 
         diRequestAPDUImpl.setApplicationContextName(acn);
 
-        UserInformation userInfo = new UserInformationImpl();
-        userInfo.setOid(true);
-        userInfo.setOidValue(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 });
-
-        userInfo.setAsn(true);
-        userInfo.setEncodeType(new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80,
+        UserInformationImpl userInfo = new UserInformationImpl();
+        
+        UserInformationExternalImpl external=new UserInformationExternalImpl();
+        external.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
+        external.setChild(new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80,
                 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98,
                 (byte) 0x86, 0x03, (byte) 0xf0, 0x00, 0x00 });
 
+        userInfo.setExternal(external);
         diRequestAPDUImpl.setUserInformation(userInfo);
 
         dp.setDialogAPDU(diRequestAPDUImpl);
 
         tcm.setDialogPortion(dp);
 
-        AsnOutputStream aos = new AsnOutputStream();
-
         // INVOKE Component
 
-        Invoke invComp = TcapFactory.createComponentInvoke();
-        invComp.setInvokeId(-128l);
+        ComponentImpl invComp = TcapFactory.createComponentInvoke();
+        invComp.getInvoke().setInvokeId(-128l);
 
         // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode(591L);
-        invComp.setOperationCode(oc);
+        OperationCode oc = TcapFactory.createLocalOperationCode();
+        ((LocalOperationCodeImpl)oc).setLocalOperationCode(591L);
+        invComp.getInvoke().setOperationCode(oc);
 
         // Sequence of Parameter
-        Parameter p1 = TcapFactory.createParameter();
-        p1.setTagClass(Tag.CLASS_UNIVERSAL);
-        p1.setTag(0x04);
-        p1.setData(new byte[] { 0x0f });
+        ASNOctetString p1=new ASNOctetString();
+        p1.setValue(new byte[] { 0x0f });
 
-        Parameter p2 = TcapFactory.createParameter();
-        p2.setTagClass(Tag.CLASS_UNIVERSAL);
-        p2.setTag(0x04);
-        p2.setData(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+        ASNOctetString p2=new ASNOctetString();
+        p2.setValue(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
                 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 });
 
-        Parameter p3 = TcapFactory.createParameter();
-        p3.setTagClass(Tag.CLASS_CONTEXT_SPECIFIC);
-        p3.setTag(0x00);
-        p3.setData(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 });
+        ASNOctetString p3=new ASNOctetString();
+        p3.setValue(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 });
 
-        Parameter p = TcapFactory.createParameter();
-        p.setTagClass(Tag.CLASS_UNIVERSAL);
-        p.setTag(0x04);
-        p.setParameters(new Parameter[] { p1, p2, p3 });
+        TCBeginTestASN1 p = new TCBeginTestASN1();
+        p.setO1(Arrays.asList(new ASNOctetString[] {p1, p2}));
+        p.setO2(p3);
 
-        invComp.setParameter(p);
+        invComp.getInvoke().setParameter(p);
 
-        tcm.setComponent(new Component[] { invComp });
+        ComponentPortionImpl componentPortion=new ComponentPortionImpl();
+        componentPortion.setComponents(Arrays.asList(new ComponentImpl[] { invComp }));
+        tcm.setComponent(componentPortion);
 
-        tcm.encode(aos);
-
+        ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+        try {
+        	parser.encode(tcm);
+        }
+        catch(ASNException ex) {
+        	assertEquals(1,2);
+        }
+        
         //byte[] encodedData = aos.toByteArray();
 
         // Add more here?
@@ -158,7 +169,7 @@ public class TcBeginTest {
     }
 
     @Test(groups = { "functional.encode", "functional.decode" })
-    public void testBasicTCBegin() throws IOException, EncodeException, ParseException {
+    public void testBasicTCBegin() throws ParseException {
 
         // no idea how to check rest...?
 
@@ -185,10 +196,17 @@ public class TcBeginTest {
 
         };
 
-        AsnInputStream ais = new AsnInputStream(b);
-        int tag = ais.readTag();
-        assertEquals(TCBeginMessage._TAG, tag, "Expected TCInvoke");
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage(ais);
+        ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+        Object value=null;
+        try {
+        	value=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        }
+        catch(ASNException ex) {
+        	assertEquals(1,2);
+        }
+        
+        TCBeginMessage tcm = (TCBeginMessage)value;
 
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(), "Originating transaction id does not match");
         assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 8, (byte) 0xA5, 0, 1 }),
@@ -197,7 +215,7 @@ public class TcBeginTest {
 
         assertNull(tcm.getComponent(), "Component portion should not be present");
 
-        DialogPortion dp = tcm.getDialogPortion();
+        DialogPortionImpl dp = tcm.getDialogPortion();
 
         assertFalse(dp.isUnidirectional(), "Dialog should not be Uni");
 
@@ -205,17 +223,23 @@ public class TcBeginTest {
         assertNotNull(dapdu, "APDU should not be null");
         assertEquals(DialogAPDUType.Request, dapdu.getType(), "Wrong APDU type");
         // rest is checked in dialog portion type!
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encoded = aos.toByteArray();
-
-        TCAPTestUtils.compareArrays(b, encoded);
-
+        try {
+	        ByteBuf data=parser.encode(tcm);
+	        byte[] encoded = data.array();
+	
+	        TCAPTestUtils.compareArrays(b, encoded);
+        }
+        catch(ASNException ex) {
+        	assertEquals(1,2);
+        }
     }
 
     @Test
-    public void testBasicTCBegin1() throws IOException, EncodeException, ParseException {
+    public void testBasicTCBegin1() throws ParseException, ASNException {
 
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+        
         // no idea how to check rest...?
 
         // trace
@@ -236,10 +260,9 @@ public class TcBeginTest {
                 5, 57, 7, 112, 99, -10, -125, 7, -111, -127, 103, -125, -128, 72, -9, 108, 20, -95, 18, 2, 1, 0, 2, 1, 59, 48,
                 10, 4, 1, 15, 4, 5, 42, 89, 108, 54, 2 };
 
-        AsnInputStream ais = new AsnInputStream(b);
-        int tag = ais.readTag();
-        assertEquals(TCBeginMessage._TAG, tag, "Expected TCInvoke");
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage(ais);
+        Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof TCBeginMessage, "Expected TCInvoke");
+        TCBeginMessage tcm = (TCBeginMessageImpl)output;
 
         // assertEquals(436208353L, tcm.getOriginatingTransactionId(), "Originating transaction id does not match");
         assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x1A, 0x00, 0x02, (byte) 0xE1 }),
@@ -248,7 +271,7 @@ public class TcBeginTest {
 
         assertNotNull(tcm.getComponent(), "Component portion should be present");
 
-        DialogPortion dp = tcm.getDialogPortion();
+        DialogPortionImpl dp = tcm.getDialogPortion();
 
         assertFalse(dp.isUnidirectional(), "Dialog should not be Uni");
 
@@ -256,17 +279,17 @@ public class TcBeginTest {
         assertNotNull(dapdu, "APDU should not be null");
         assertEquals(DialogAPDUType.Request, dapdu.getType(), "Wrong APDU type");
         // rest is checked in dialog portion type!
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encoded = aos.toByteArray();
-
+        ByteBuf outputBuf=parser.encode(tcm);
+        byte[] encoded = outputBuf.array();
         TCAPTestUtils.compareArrays(b2, encoded);
-
     }
 
     @Test
-    public void testTCBeginMessage_No_Dialog() throws IOException, EncodeException, ParseException {
+    public void testTCBeginMessage_No_Dialog() throws ParseException, ASNException {
 
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+                
         // no idea how to check rest...?
 
         // created by hand
@@ -308,10 +331,9 @@ public class TcBeginTest {
         // use value.................. ???
         };
 
-        AsnInputStream ais = new AsnInputStream(b);
-        int tag = ais.readTag();
-        assertEquals(TCBeginMessage._TAG, tag, "Expected TCBegin");
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage(ais);
+        Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof TCBeginMessage, "Expected TCBegin");
+        TCBeginMessage tcm = (TCBeginMessageImpl)output;
 
         assertNull(tcm.getDialogPortion(), "Dialog portion should not be present");
 
@@ -320,37 +342,37 @@ public class TcBeginTest {
                 "Originating transaction id does not match");
         // comp portion
         assertNotNull(tcm.getComponent(), "Component portion should be present");
-        assertEquals(2, tcm.getComponent().length, "Component count is wrong");
-        Component c = tcm.getComponent()[0];
+        assertEquals(2, tcm.getComponent().getComponents().size(), "Component count is wrong");
+        ComponentImpl c = tcm.getComponent().getComponents().get(0);
         assertEquals(ComponentType.Invoke, c.getType(), "Wrong component type");
-        Invoke i = (Invoke) c;
+        InvokeImpl i = c.getInvoke();
         assertEquals(new Long(1), i.getInvokeId(), "Wrong invoke ID");
         assertNull(i.getLinkedId(), "Linked ID is not null");
 
-        c = tcm.getComponent()[1];
+        c = tcm.getComponent().getComponents().get(1);
         assertEquals(ComponentType.ReturnResult, c.getType(), "Wrong component type");
-        ReturnResult rr = (ReturnResult) c;
+        ReturnResultImpl rr = c.getReturnResult();
         assertEquals(new Long(2), rr.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rr.getOperationCode(), "Operation code should not be null");
 
         OperationCode ocs = rr.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(1), ocs.getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Long(1), ((LocalOperationCodeImpl)ocs).getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rr.getParameter(), "Parameter should not be null");
 
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encoded = aos.toByteArray();
-
+        ByteBuf outputBuf=parser.encode(tcm);
+        byte[] encoded = outputBuf.array();
         TCAPTestUtils.compareArrays(b, encoded);
-
     }
 
     @Test
-    public void testTCBeginMessage_No_Component() throws IOException, EncodeException, ParseException {
+    public void testTCBeginMessage_No_Component() throws ParseException, ASNException {
 
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+        
         // created by hand
         byte[] b = new byte[] {
                 // TCBegin
@@ -384,10 +406,10 @@ public class TcBeginTest {
         // no user info?
         };
 
-        AsnInputStream ais = new AsnInputStream(b);
-        int tag = ais.readTag();
-        assertEquals(TCBeginMessage._TAG, tag, "Expected TCBegin");
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage(ais);
+        Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof TCBeginMessage, "Expected TCBegin");
+        TCBeginMessage tcm = (TCBeginMessageImpl)output;
+
         assertNull(tcm.getComponent(), "Component portion should not be present");
         assertNotNull(tcm.getDialogPortion(), "Dialog portion should not be null");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(), "Originating transaction id does not match");
@@ -398,34 +420,35 @@ public class TcBeginTest {
         DialogAPDU _dapd = tcm.getDialogPortion().getDialogAPDU();
         assertEquals(DialogAPDUType.Response, _dapd.getType(), "Wrong dialog APDU type!");
 
-        DialogResponseAPDU dapd = (DialogResponseAPDU) _dapd;
+        DialogResponseAPDUImpl dapd = (DialogResponseAPDUImpl) _dapd;
 
         // check nulls first
         assertNull(dapd.getUserInformation(), "UserInformation should not be present");
 
         // not nulls
         assertNotNull(dapd.getResult(), "Result should not be null");
-        Result r = dapd.getResult();
+        ResultImpl r = dapd.getResult();
         assertEquals(ResultType.Accepted, r.getResultType(), "Wrong result");
 
         assertNotNull(dapd.getResultSourceDiagnostic(), "Result Source Diagnostic should not be null");
 
-        ResultSourceDiagnostic rsd = dapd.getResultSourceDiagnostic();
+        ResultSourceDiagnosticImpl rsd = dapd.getResultSourceDiagnostic();
         assertNull(rsd.getDialogServiceUserType(), "User diagnostic should not be present");
         assertEquals(DialogServiceProviderType.NoCommonDialogPortion, rsd.getDialogServiceProviderType(),
                 "Wrong provider diagnostic type");
 
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encoded = aos.toByteArray();
-
+        ByteBuf outputBuf=parser.encode(tcm);
+        byte[] encoded = outputBuf.array();
         TCAPTestUtils.compareArrays(b, encoded);
 
     }
 
     @Test
-    public void testTCBeginMessage_No_Nothing() throws IOException, EncodeException, ParseException {
+    public void testTCBeginMessage_No_Nothing() throws ParseException, ASNException {
 
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+        
         // no idea how to check rest...?
 
         // created by hand
@@ -439,10 +462,9 @@ public class TcBeginTest {
 
         };
 
-        AsnInputStream ais = new AsnInputStream(b);
-        int tag = ais.readTag();
-        assertEquals(TCBeginMessage._TAG, tag, "Expected TCBegin");
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage(ais);
+        Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof TCBeginMessage, "Expected TCBegin");
+        TCBeginMessage tcm = (TCBeginMessageImpl)output;
 
         assertNull(tcm.getDialogPortion(), "Dialog portion should be null");
         assertNull(tcm.getComponent(), "Component portion should not be present");
@@ -450,17 +472,17 @@ public class TcBeginTest {
         assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01 }),
                 "Originating transaction id does not match");
 
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encoded = aos.toByteArray();
-
+        ByteBuf outputBuf=parser.encode(tcm);
+        byte[] encoded = outputBuf.array();
         TCAPTestUtils.compareArrays(b, encoded);
-
     }
 
     @Test
-    public void testTCBeginMessage_All() throws IOException, EncodeException, ParseException {
+    public void testTCBeginMessage_All() throws ParseException, ASNException {
 
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+        
         // no idea how to check rest...?
 
         // created by hand
@@ -523,10 +545,9 @@ public class TcBeginTest {
 
         };
 
-        AsnInputStream ais = new AsnInputStream(b);
-        int tag = ais.readTag();
-        assertEquals(TCBeginMessage._TAG, tag, "Expected TCBegin");
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage(ais);
+        Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof TCBeginMessage, "Expected TCBegin");
+        TCBeginMessage tcm = (TCBeginMessageImpl)output;
 
         // universal
         assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01 }),
@@ -539,54 +560,54 @@ public class TcBeginTest {
         DialogAPDU _dapd = tcm.getDialogPortion().getDialogAPDU();
         assertEquals(DialogAPDUType.Response, _dapd.getType(), "Wrong dialog APDU type!");
 
-        DialogResponseAPDU dapd = (DialogResponseAPDU) _dapd;
+        DialogResponseAPDUImpl dapd = (DialogResponseAPDUImpl) _dapd;
 
         // check nulls first
         assertNull(dapd.getUserInformation(), "UserInformation should not be present");
 
         // not nulls
         assertNotNull(dapd.getResult(), "Result should not be null");
-        Result r = dapd.getResult();
+        ResultImpl r = dapd.getResult();
         assertEquals(ResultType.RejectedPermanent, r.getResultType(), "Wrong result");
 
         assertNotNull(dapd.getResultSourceDiagnostic(), "Result Source Diagnostic should not be null");
 
-        ResultSourceDiagnostic rsd = dapd.getResultSourceDiagnostic();
+        ResultSourceDiagnosticImpl rsd = dapd.getResultSourceDiagnostic();
         assertNull(rsd.getDialogServiceUserType(), "User diagnostic should not be present");
         assertEquals(DialogServiceProviderType.Null, rsd.getDialogServiceProviderType(), "Wrong provider diagnostic type");
 
         // comp portion
         assertNotNull(tcm.getComponent(), "Component portion should be present");
-        assertEquals(2, tcm.getComponent().length, "Component count is wrong");
-        Component c = tcm.getComponent()[0];
+        assertEquals(2, tcm.getComponent().getComponents().size(), "Component count is wrong");
+        ComponentImpl c = tcm.getComponent().getComponents().get(0);
         assertEquals(ComponentType.Invoke, c.getType(), "Wrong component type");
-        Invoke i = (Invoke) c;
+        InvokeImpl i = c.getInvoke();
         assertEquals(new Long(1), i.getInvokeId(), "Wrong invoke ID");
         assertNull(i.getLinkedId(), "Linked ID is not null");
 
-        c = tcm.getComponent()[1];
+        c = tcm.getComponent().getComponents().get(1);
         assertEquals(ComponentType.ReturnResultLast, c.getType(), "Wrong component type");
-        ReturnResultLast rrl = (ReturnResultLast) c;
+        ReturnResultLastImpl rrl = c.getReturnResultLast();
         assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
         OperationCode ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Long(0x00FF), ((LocalOperationCodeImpl)ocs).getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encoded = aos.toByteArray();
-
+        ByteBuf outputBuf=parser.encode(tcm);
+        byte[] encoded = outputBuf.array();        
         TCAPTestUtils.compareArrays(b, encoded);
-
     }
 
     @Test
     public void testRealTrace() throws Exception {
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+        
         byte[] TCAP = new byte[] {
                 // TCBeginTag
                 98,
@@ -627,10 +648,9 @@ public class TcBeginTest {
                 7, -111, -105, 32, 115, 0, 2, -15, -97, 57, 8, 2, 1, 80, 65, 49, -128, 116, 97,
                 // end tag!
                 0, 0 };
-        AsnInputStream ais = new AsnInputStream(TCAP);
-        int tag = ais.readTag();
-        assertEquals(TCBeginMessage._TAG, tag, "Expected TCBegin");
-        TcapFactory.createTCBeginMessage(ais);
+        
+        Object output=parser.decode(Unpooled.wrappedBuffer(TCAP)).getResult();
+        assertTrue(output instanceof TCBeginMessage, "Expected TCBegin");               
     }
 
     public static final String dump(byte[] buff, int size, boolean asBits) {
@@ -667,84 +687,81 @@ public class TcBeginTest {
     }
 
     @Test(groups = { "functional.encode" })
-    public void testA() throws IOException, EncodeException, ParseException {
+    public void testA() throws ParseException, ASNException {
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCBeginMessageImpl.class);
+        
         TCBeginMessage tcm = TcapFactory.createTCBeginMessage();
         // tcm.setOriginatingTransactionId(1358955064L);
         tcm.setOriginatingTransactionId(new byte[] { 0x51, 0x00, 0x02, 0x38 });
 
         // Create Dialog Portion
-        DialogPortion dp = TcapFactory.createDialogPortion();
+        DialogPortionImpl dp = TcapFactory.createDialogPortion();
 
-        dp.setOid(true);
-        dp.setOidValue(new long[] { 0, 0, 17, 773, 1, 1, 1 });
-
-        dp.setAsn(true);
-
+        dp.setUnidirectional(false);
         DialogRequestAPDUImpl diRequestAPDUImpl = new DialogRequestAPDUImpl();
 
         ApplicationContextNameImpl acn = new ApplicationContextNameImpl();
-        acn.setOid(new long[] { 0, 4, 0, 0, 1, 0, 19, 2 });
+        acn.setValue(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L }));
 
         diRequestAPDUImpl.setApplicationContextName(acn);
 
-        UserInformation userInfo = new UserInformationImpl();
-        userInfo.setOid(true);
-        userInfo.setOidValue(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 });
-
-        userInfo.setAsn(true);
-        userInfo.setEncodeType(new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80,
+        UserInformationExternalImpl external=new UserInformationExternalImpl();
+        external.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
+        
+        UserInformationTestASN innerASN=new UserInformationTestASN();
+        innerASN.setValue(new byte[] { (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80,
                 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98,
-                (byte) 0x86, 0x03, (byte) 0xf0, 0x00, 0x00 });
-
+                (byte) 0x86, 0x03, (byte) 0xf0 });
+        
+        ASNUserInformationObjectImpl object=new ASNUserInformationObjectImpl();
+        object.setValue(innerASN);
+        
+        external.setChildAsObject(object);
+        
+        UserInformationImpl userInfo = new UserInformationImpl();
+        userInfo.setExternal(external);
+        
         diRequestAPDUImpl.setUserInformation(userInfo);
 
         dp.setDialogAPDU(diRequestAPDUImpl);
 
         tcm.setDialogPortion(dp);
 
-        AsnOutputStream aos = new AsnOutputStream();
-
         // INVOKE Component
 
-        Invoke invComp = TcapFactory.createComponentInvoke();
-        invComp.setInvokeId(-128l);
+        ComponentImpl invComp = TcapFactory.createComponentInvoke();
+        invComp.getInvoke().setInvokeId(-128l);
 
         // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode(591L);
-        invComp.setOperationCode(oc);
+        OperationCode oc = TcapFactory.createLocalOperationCode();
+        ((LocalOperationCodeImpl)oc).setLocalOperationCode(591L);
+        invComp.getInvoke().setOperationCode(oc);
 
-        // Sequence of Parameter
-        Parameter p1 = TcapFactory.createParameter();
-        p1.setTagClass(Tag.CLASS_UNIVERSAL);
-        p1.setTag(0x04);
-        p1.setData(new byte[] { 0x0f });
-
-        Parameter p2 = TcapFactory.createParameter();
-        p2.setTagClass(Tag.CLASS_UNIVERSAL);
-        p2.setTag(0x04);
-        p2.setData(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+        TCBeginTestASN2 parameter=new TCBeginTestASN2();
+        ASNOctetString o1=new ASNOctetString();
+        o1.setValue(new byte[] { 0x0f });
+        parameter.setO1(o1);
+        
+        ASNOctetString o2=new ASNOctetString();
+        o2.setValue(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
                 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 });
+        parameter.setO2(o2);
+        
+        ASNOctetString o3=new ASNOctetString();
+        o3.setValue(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 });
+        parameter.setO2(o3);
+        
+        invComp.getInvoke().setParameter(parameter);
 
-        Parameter p3 = TcapFactory.createParameter();
-        p3.setTagClass(Tag.CLASS_CONTEXT_SPECIFIC);
-        p3.setTag(0x00);
-        p3.setData(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 });
+        ComponentPortionImpl componentPortion=new ComponentPortionImpl();
+        componentPortion.setComponents(Arrays.asList(new ComponentImpl[] { invComp }));
+        tcm.setComponent(componentPortion);
 
-        Parameter p = TcapFactory.createParameter();
-        p.setTagClass(Tag.CLASS_UNIVERSAL);
-        p.setTag(0x04);
-        p.setParameters(new Parameter[] { p1, p2, p3 });
-
-        invComp.setParameter(p);
-
-        tcm.setComponent(new Component[] { invComp });
-
-        tcm.encode(aos);
-
+        parser.encode(tcm);
+        
         //byte[] encodedData = aos.toByteArray();
 
         // Add more here?
     }
-
 }

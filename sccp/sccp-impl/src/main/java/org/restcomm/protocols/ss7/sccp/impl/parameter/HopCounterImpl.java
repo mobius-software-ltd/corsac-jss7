@@ -22,9 +22,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
@@ -52,35 +50,13 @@ public class HopCounterImpl extends AbstractParameter implements HopCounter {
     }
 
     @Override
-    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (in.read() != 1) {
-                throw new ParseException();
-            }
-            this.value = in.read() & 0x0F; // ?
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	buffer.writeByte(this.value & 0x0F);
     }
 
     @Override
-    public void encode(final OutputStream os, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            os.write(1);
-            os.write(this.value & 0x0F);
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        this.value = buffer.readByte() & 0x0F;
 
-    @Override
-    public void decode(final byte[] b, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        this.value = b[0] & 0x0F; // ?
-
-    }
-
-    @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return new byte[] { (byte) (this.value & 0x0F) };
     }
 }

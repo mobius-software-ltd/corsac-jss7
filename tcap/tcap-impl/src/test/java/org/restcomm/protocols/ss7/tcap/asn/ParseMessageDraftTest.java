@@ -24,21 +24,33 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
-import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.DraftParsedMessage;
 import org.restcomm.protocols.ss7.tcap.asn.EncodeException;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 @Test(groups = { "asn" })
 public class ParseMessageDraftTest {
 
+	@BeforeClass
+	public void setUp()
+	{
+		ASNGeneric.clear(ASNReturnResultParameterImpl.class);
+		ASNGeneric.registerAlternative(ASNReturnResultParameterImpl.class, TCEndTestASN.class);		
+	}
+	
     private byte[] dataTcBegin = new byte[] {
             // TCBegin
             0x62, 38,
@@ -131,11 +143,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
-        DraftParsedMessage msg = provider.parseMessageDraft(dataTcBegin);
+        DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcBegin));
 
-        assertEquals(msg.getMessageType(), MessageType.Begin);
-        assertEquals((long) msg.getOriginationDialogId(), 145031169);
-        assertNull(msg.getDestinationDialogId());
+        assertTrue(msg.getMessage() instanceof TCBeginMessageImpl);
+        assertEquals(Utils.decodeTransactionId(msg.getMessage().getOriginatingTransactionId(),stack.getSwapTcapIdBytes()), 145031169);
+        assertNull(msg.getMessage().getDestinationTransactionId());
         assertNull(msg.getParsingErrorReason());
     }
 
@@ -145,11 +157,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
-        DraftParsedMessage msg = provider.parseMessageDraft(dataTcContinue);
+        DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcContinue));
 
-        assertEquals(msg.getMessageType(), MessageType.Continue);
-        assertEquals((long) msg.getOriginationDialogId(), 145031169);
-        assertEquals((long) msg.getDestinationDialogId(), 144965633);
+        assertTrue(msg.getMessage() instanceof TCContinueMessageImpl);
+        assertEquals(Utils.decodeTransactionId(msg.getMessage().getOriginatingTransactionId(),stack.getSwapTcapIdBytes()), 145031169);
+        assertEquals(Utils.decodeTransactionId(msg.getMessage().getDestinationTransactionId(),stack.getSwapTcapIdBytes()), 144965633);
         assertNull(msg.getParsingErrorReason());
     }
 
@@ -159,11 +171,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
-        DraftParsedMessage msg = provider.parseMessageDraft(dataTcEnd);
+        DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcEnd));
 
-        assertEquals(msg.getMessageType(), MessageType.End);
-        assertNull(msg.getOriginationDialogId());
-        assertEquals((long) msg.getDestinationDialogId(), 144965633);
+        assertTrue(msg.getMessage() instanceof TCEndMessageImpl);
+        assertNull(msg.getMessage().getOriginatingTransactionId());
+        assertEquals(Utils.decodeTransactionId(msg.getMessage().getDestinationTransactionId(),stack.getSwapTcapIdBytes()), 144965633);
         assertNull(msg.getParsingErrorReason());
     }
 
@@ -173,11 +185,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
-        DraftParsedMessage msg = provider.parseMessageDraft(dataTcAbort);
+        DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcAbort));
 
-        assertEquals(msg.getMessageType(), MessageType.Abort);
-        assertNull(msg.getOriginationDialogId());
-        assertEquals((long) msg.getDestinationDialogId(), 2074424339);
+        assertTrue(msg.getMessage() instanceof TCAbortMessageImpl);
+        assertNull(msg.getMessage().getOriginatingTransactionId());
+        assertEquals(Utils.decodeTransactionId(msg.getMessage().getDestinationTransactionId(),stack.getSwapTcapIdBytes()), 2074424339);
         assertNull(msg.getParsingErrorReason());
     }
 
@@ -187,11 +199,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
-        DraftParsedMessage msg = provider.parseMessageDraft(dataTcUnidirectional);
+        DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcUnidirectional));
 
-        assertEquals(msg.getMessageType(), MessageType.Unidirectional);
-        assertNull(msg.getOriginationDialogId());
-        assertNull(msg.getDestinationDialogId());
+        assertTrue(msg.getMessage() instanceof TCUniMessageImpl);
+        assertNull(msg.getMessage().getOriginatingTransactionId());
+        assertNull(msg.getMessage().getDestinationTransactionId());
         assertNull(msg.getParsingErrorReason());
     }
 

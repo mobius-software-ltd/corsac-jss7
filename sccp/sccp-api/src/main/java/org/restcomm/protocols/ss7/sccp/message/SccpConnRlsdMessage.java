@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.parameter.Importance;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
@@ -41,8 +43,8 @@ public interface SccpConnRlsdMessage extends SccpConnMessage {
     ReleaseCause getReleaseCause();
     void setReleaseCause(ReleaseCause value);
 
-    byte[] getUserData();
-    void setUserData(byte[] data);
+    ByteBuf getUserData();
+    void setUserData(ByteBuf data);
 
     Importance getImportance();
     void setImportance(Importance importance);

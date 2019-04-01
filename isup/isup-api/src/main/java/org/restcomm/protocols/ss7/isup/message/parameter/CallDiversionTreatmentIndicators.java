@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:11:09:03 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -51,9 +53,9 @@ public interface CallDiversionTreatmentIndicators extends ISUPParameter {
      */
     int _CD_NOT_ALLOWED = 2;
 
-    byte[] getCallDivertedIndicators();
+    ByteBuf getCallDivertedIndicators();
 
-    void setCallDivertedIndicators(byte[] callDivertedIndicators);
+    void setCallDivertedIndicators(ByteBuf callDivertedIndicators);
 
     int getDiversionIndicator(byte b);
 }

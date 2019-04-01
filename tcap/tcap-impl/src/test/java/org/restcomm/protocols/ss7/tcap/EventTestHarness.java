@@ -26,6 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
@@ -51,10 +52,12 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 
@@ -66,7 +69,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public abstract class EventTestHarness implements TCListener {
-    public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+    public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
     protected List<TestEvent> observerdEvents = new ArrayList<TestEvent>();
 
     protected Dialog dialog;
@@ -78,8 +81,8 @@ public abstract class EventTestHarness implements TCListener {
     protected ParameterFactory parameterFactory;
     protected int sequence = 0;
 
-    protected ApplicationContextName acn;
-    protected UserInformation ui;
+    protected ApplicationContextNameImpl acn;
+    protected UserInformationImpl ui;
 
     protected PAbortCauseType pAbortCauseType;
 
@@ -121,12 +124,12 @@ public abstract class EventTestHarness implements TCListener {
 
     public void sendBegin() throws TCAPException, TCAPSendException {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send BEGIN");
-        ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         // UI is optional!
         TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
         tcbr.setApplicationContextName(acn);
-        this.dialog.send(tcbr);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.Begin, tcbr, sequence++));
+        this.dialog.send(tcbr);        
     }
 
     public void sendContinue() throws TCAPSendException, TCAPException {
@@ -164,7 +167,7 @@ public abstract class EventTestHarness implements TCListener {
 
     }
 
-    public void sendAbort(ApplicationContextName acn, UserInformation ui, DialogServiceUserType type) throws TCAPSendException {
+    public void sendAbort(ApplicationContextNameImpl acn, UserInformationImpl ui, DialogServiceUserType type) throws TCAPSendException {
 
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send ABORT");
         TCUserAbortRequest abort = this.tcapProvider.getDialogPrimitiveFactory().createUAbort(dialog);
@@ -184,16 +187,17 @@ public abstract class EventTestHarness implements TCListener {
         ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
 
         // create some INVOKE
-        Invoke invoke = cpFactory.createTCInvokeRequest(InvokeClass.Class4);
-        invoke.setInvokeId(this.dialog.getNewInvokeId());
-        OperationCode oc = cpFactory.createOperationCode();
-        oc.setLocalOperationCode(new Long(12));
-        invoke.setOperationCode(oc);
+        ComponentImpl invokeComponent = cpFactory.createTCInvokeRequest(InvokeClass.Class4);
+        invokeComponent.getInvoke().setInvokeId(this.dialog.getNewInvokeId());
+        
+        OperationCode oc = cpFactory.createLocalOperationCode();
+        ((LocalOperationCodeImpl)oc).setLocalOperationCode(new Long(12));
+        invokeComponent.getInvoke().setOperationCode(oc);
         // no parameter
-        this.dialog.sendComponent(invoke);
+        this.dialog.sendComponent(invokeComponent);
 
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send UNI");
-        ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         TCUniRequest tcur = this.tcapProvider.getDialogPrimitiveFactory().createUni(this.dialog);
         tcur.setApplicationContextName(acn);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.Uni, tcur, sequence++));
@@ -263,7 +267,7 @@ public abstract class EventTestHarness implements TCListener {
 
     }
 
-    public void onInvokeTimeout(Invoke tcInvokeRequest) {
+    public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]onInvokeTimeout");
         TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, tcInvokeRequest, sequence++);
         this.observerdEvents.add(te);
@@ -298,12 +302,11 @@ public abstract class EventTestHarness implements TCListener {
                     + expectedEvents.size() + "\n" + doStringCompare(expectedEvents, observerdEvents));
         }
 
-        for (int index = 0; index < expectedEvents.size(); index++) {
-            assertEquals(observerdEvents.get(index), expectedEvents.get(index), "Received event does not match, index[" + index
-                    + "]");
-        }
+        for(int i=0;i<observerdEvents.size();i++) {
+        	assertEquals(observerdEvents.get(i), expectedEvents.get(i));
+        }        
     }
-
+    
     protected static String doStringCompare(List<TestEvent> lst1, List<TestEvent> lst2) {
         StringBuilder sb = new StringBuilder();
         int size1 = lst1.size();

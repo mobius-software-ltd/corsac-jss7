@@ -24,10 +24,11 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
@@ -64,8 +65,8 @@ public class RedirectionInformationTest extends ParameterHarness {
     public void tearDown() {
     }
 
-    private byte[] getData() {
-        return new byte[] { 35, 20 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { 35, 20 });
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -87,11 +88,11 @@ public class RedirectionInformationTest extends ParameterHarness {
                 RedirectionInformation._ORR_NO_REPLY, 4, RedirectionInformation._RI_CALL_REROUTED);
         // int redirectingIndicator, int originalRedirectionReason, int redirectionCounter, int redirectionReason
 
-        byte[] data = getData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getData();
+        ByteBuf encodedData = Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
-
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "parameter" })
@@ -125,11 +126,11 @@ public class RedirectionInformationTest extends ParameterHarness {
 
     public RedirectionInformationTest() {
         super();
-        super.goodBodies.add(new byte[] { (byte) 0xC5, (byte) 0x03 });
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { (byte) 0xC5, (byte) 0x03 }));
 
-        super.badBodies.add(new byte[] { (byte) 0xC5, (byte) 0x0F });
-        super.badBodies.add(new byte[1]);
-        super.badBodies.add(new byte[3]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[] { (byte) 0xC5, (byte) 0x0F }));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[3]));
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -145,14 +146,17 @@ public class RedirectionInformationTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(int riCallDRnpr, int orrUna, int counter, int rrDeflectionIe) {
-        byte[] b = new byte[2];
+    private ByteBuf getBody(int riCallDRnpr, int orrUna, int counter, int rrDeflectionIe) {
+    	ByteBuf b = Unpooled.buffer(2);
 
-        b[0] = (byte) riCallDRnpr;
-        b[0] |= orrUna << 4;
+        byte b0 = (byte) riCallDRnpr;
+        b0 |= orrUna << 4;
 
-        b[1] = (byte) counter;
-        b[1] |= rrDeflectionIe << 4;
+        byte b1 = (byte) counter;
+        b1 |= rrDeflectionIe << 4;
+        
+        b.writeByte(b0);
+        b.writeByte(b1);
         return b;
     }
 
@@ -163,7 +167,7 @@ public class RedirectionInformationTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws IllegalArgumentException, ParameterException {
-        return new RedirectionInformationImpl(new byte[] { 0, 1 });
+        return new RedirectionInformationImpl(Unpooled.wrappedBuffer(new byte[] { 0, 1 }));
     }
 
 }

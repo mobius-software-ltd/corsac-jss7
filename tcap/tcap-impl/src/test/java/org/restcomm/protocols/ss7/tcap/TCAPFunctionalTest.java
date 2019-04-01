@@ -43,8 +43,9 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -222,23 +223,23 @@ public class TCAPFunctionalTest extends SccpHarness {
 
         @Override
         public void onTCContinue(TCContinueIndication ind) {
-            assertEquals(ind.getComponents().length, 2);
-            ReturnResultLast rrl = (ReturnResultLast) ind.getComponents()[0];
-            Invoke inv = (Invoke) ind.getComponents()[1];
+            assertEquals(ind.getComponents().size(), 2);
+            ReturnResultLastImpl rrl = ind.getComponents().get(0).getReturnResultLast();
+            InvokeImpl inv = ind.getComponents().get(1).getInvoke();
 
             // operationCode is not sent via ReturnResultLast because it does not contain a Parameter
             // so operationCode is taken from a sent Invoke
             assertEquals((long) rrl.getInvokeId(), 0);
-            assertEquals((long) rrl.getOperationCode().getLocalOperationCode(), 12);
+            assertEquals((long) ((LocalOperationCodeImpl)rrl.getOperationCode()).getLocalOperationCode(), 12);
 
             // second Invoke has its own operationCode and it has linkedId to the second sent Invoke
             assertEquals((long) inv.getInvokeId(), 0);
-            assertEquals((long) inv.getOperationCode().getLocalOperationCode(), 14);
+            assertEquals((long) ((LocalOperationCodeImpl)inv.getOperationCode()).getLocalOperationCode(), 14);
             assertEquals((long) inv.getLinkedId(), 1);
 
             // we should see operationCode of the second sent Invoke
-            Invoke linkedInv = inv.getLinkedInvoke();
-            assertEquals((long) linkedInv.getOperationCode().getLocalOperationCode(), 13);
+            InvokeImpl linkedInv = inv.getLinkedInvoke();
+            assertEquals((long) ((LocalOperationCodeImpl)linkedInv.getOperationCode()).getLocalOperationCode(), 13);
         }
 
         @Override
@@ -272,7 +273,7 @@ public class TCAPFunctionalTest extends SccpHarness {
         }
 
         @Override
-        public void onInvokeTimeout(Invoke tcInvokeRequest) {
+        public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
             // TODO Auto-generated method stub
 
         }

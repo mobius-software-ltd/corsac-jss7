@@ -38,9 +38,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SequenceNumber;
 import org.restcomm.protocols.ss7.sccp.parameter.SequencingSegmenting;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class SccpConnItMessageImpl extends SccpConnReferencedMessageImpl implements SccpConnItMessage {
     protected ProtocolClass protocolClass;
@@ -86,85 +85,62 @@ public class SccpConnItMessageImpl extends SccpConnReferencedMessageImpl impleme
     }
 
     @Override
-    public void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte[] buffer = new byte[3];
-            in.read(buffer);
-            LocalReferenceImpl ref = new LocalReferenceImpl();
-            ref.decode(buffer, factory, sccpProtocolVersion);
-            destinationLocalReferenceNumber = ref;
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	LocalReferenceImpl ref = new LocalReferenceImpl();
+        ref.decode(buffer, factory, sccpProtocolVersion);
+        destinationLocalReferenceNumber = ref;
 
-            in.read(buffer);
-            ref = new LocalReferenceImpl();
-            ref.decode(buffer, factory, sccpProtocolVersion);
-            sourceLocalReferenceNumber = ref;
+        ref = new LocalReferenceImpl();
+        ref.decode(buffer, factory, sccpProtocolVersion);
+        sourceLocalReferenceNumber = ref;
 
-            buffer = new byte[1];
-            in.read(buffer);
-            ProtocolClassImpl protocol = new ProtocolClassImpl();
-            protocol.decode(buffer, factory, sccpProtocolVersion);
-            protocolClass = protocol;
+        ProtocolClassImpl protocol = new ProtocolClassImpl();
+        protocol.decode(buffer, factory, sccpProtocolVersion);
+        protocolClass = protocol;
 
-            if (protocol.getProtocolClass() != 2) {
-                buffer = new byte[2];
-                in.read(buffer);
-                SequencingSegmentingImpl sequencing = new SequencingSegmentingImpl();
-                sequencing.decode(buffer, factory, sccpProtocolVersion);
-                sequencingSegmenting = sequencing;
+        if (protocol.getProtocolClass() != 2) {
+            SequencingSegmentingImpl sequencing = new SequencingSegmentingImpl();
+            sequencing.decode(buffer, factory, sccpProtocolVersion);
+            sequencingSegmenting = sequencing;
 
-                buffer = new byte[1];
-                in.read(buffer);
-                CreditImpl cred = new CreditImpl();
-                cred.decode(buffer, factory, sccpProtocolVersion);
-                credit = cred;
-            }
-        } catch (IOException e) {
-            throw new ParseException(e);
+            CreditImpl cred = new CreditImpl();
+            cred.decode(buffer, factory, sccpProtocolVersion);
+            credit = cred;
         }
     }
 
     @Override
     public EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger, boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (type == 0) {
-                return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
-            }
-            if (destinationLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
-            }
-            if (sourceLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
-            }
-            if (protocolClass == null) {
-                return new EncodingResultData(EncodingResult.ProtocolClassMissing, null, null, null);
-            }
-            if (sequencingSegmenting == null) {
-                return new EncodingResultData(EncodingResult.SequencingSegmentingMissing, null, null, null);
-            }
-            if (credit == null) {
-                return new EncodingResultData(EncodingResult.CreditMissing, null, null, null);
-            }
-
-            // 11 is sum of 6 fixed-length field lengths
-            ByteArrayOutputStream out = new ByteArrayOutputStream(11);
-
-            byte[] dlr = ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] slr = ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] proto = ((ProtocolClassImpl) protocolClass).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] seq = ((SequencingSegmentingImpl) sequencingSegmenting).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] cred = ((CreditImpl) credit).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-
-            out.write(type);
-            out.write(dlr);
-            out.write(slr);
-            out.write(proto);
-            out.write(seq);
-            out.write(cred);
-
-            return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-        } catch (IOException e) {
-            throw new ParseException(e);
+    	if (type == 0) {
+            return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
         }
+        if (destinationLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
+        }
+        if (sourceLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
+        }
+        if (protocolClass == null) {
+            return new EncodingResultData(EncodingResult.ProtocolClassMissing, null, null, null);
+        }
+        if (sequencingSegmenting == null) {
+            return new EncodingResultData(EncodingResult.SequencingSegmentingMissing, null, null, null);
+        }
+        if (credit == null) {
+            return new EncodingResultData(EncodingResult.CreditMissing, null, null, null);
+        }
+
+        // 11 is sum of 6 fixed-length field lengths
+        ByteBuf out = Unpooled.buffer(11);
+
+        out.writeByte(type);
+        ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((ProtocolClassImpl) protocolClass).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((SequencingSegmentingImpl) sequencingSegmenting).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((CreditImpl) credit).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+
+        return new EncodingResultData(EncodingResult.Success, out, null, null);
     }
 
     public boolean isMoreData() {

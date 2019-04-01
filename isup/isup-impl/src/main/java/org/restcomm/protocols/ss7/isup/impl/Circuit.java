@@ -22,7 +22,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -69,7 +71,6 @@ class Circuit {
     private final int dpc;
     private final ISUPProviderImpl provider;
 
-    private ByteArrayOutputStream bos = new ByteArrayOutputStream(300);
     private ScheduledExecutorService service;
     /**
      * @param cic
@@ -219,8 +220,6 @@ class Circuit {
      */
     public void send(ISUPMessage message) throws ParameterException, IOException {
     	try {
-            bos.reset();
-
             // FIXME: add SEG creation?
             Mtp3TransferPrimitive msg = decorate(message);
             // process timers
@@ -271,8 +270,8 @@ class Circuit {
      * @throws IOException
      */
     private Mtp3TransferPrimitive decorate(ISUPMessage message) throws ParameterException, IOException {
-        ((AbstractISUPMessage) message).encode(bos);
-        byte[] encoded = bos.toByteArray();
+    	ByteBuf buffer=Unpooled.buffer();
+        ((AbstractISUPMessage) message).encode(buffer);
         int opc = this.provider.getLocalSpc();
         int dpc = this.dpc;
         int si = Mtp3UserPartBaseImpl._SI_SERVICE_ISUP;
@@ -280,7 +279,7 @@ class Circuit {
         int sls = message.getSls() & 0x0F; // promote
 
         Mtp3TransferPrimitiveFactory factory = this.provider.stack.getMtp3UserPart().getMtp3TransferPrimitiveFactory();
-        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, encoded);
+        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, buffer);
         return msg;
     }
 

@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.TerminatingNetworkRoutingNumber;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TerminatingNetworkRouti
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class TerminatingNetworkRoutingNumberImpl extends AbstractNumber implements TerminatingNetworkRoutingNumber {
-	private static final long serialVersionUID = 1L;
-
 	// FIXME: shoudl we add max octets ?
     private int tnrnLengthIndicator;
     private int numberingPlanIndicator;
@@ -55,14 +52,8 @@ public class TerminatingNetworkRoutingNumberImpl extends AbstractNumber implemen
 
     }
 
-    public TerminatingNetworkRoutingNumberImpl(byte[] representation) throws ParameterException {
+    public TerminatingNetworkRoutingNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
-    }
-
-    public TerminatingNetworkRoutingNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     public TerminatingNetworkRoutingNumberImpl(int numberingPlanIndicator) {
@@ -85,28 +76,26 @@ public class TerminatingNetworkRoutingNumberImpl extends AbstractNumber implemen
         this.setAddress(address);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        return super.decode(b);
+    public void decode(ByteBuf b) throws ParameterException {
+        super.decode(b);
     }
 
-    public byte[] encode() throws ParameterException {
-        return super.encode();
+    public void encode(ByteBuf buffer) throws ParameterException {
+        super.encode(buffer);
     }
 
-    public int decodeHeader(ByteArrayInputStream bis) throws ParameterException {
-        if (bis.available() == 0) {
+    public void decodeHeader(ByteBuf buffer) throws ParameterException {
+        if (buffer.readableBytes() == 0) {
             throw new ParameterException("No more data to read.");
         }
-        int b = bis.read() & 0xff;
+        int b = buffer.readByte() & 0xff;
 
         this.oddFlag = (b & 0x80) >> 7;
         this.tnrnLengthIndicator = b & 0x0F;
         this.numberingPlanIndicator = (b >> 4) & 0x07;
-        return 1;
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
-
+    public void encodeHeader(ByteBuf buffer) {
         int b = 0;
         // Even is 000000000 == 0
         boolean isOdd = this.oddFlag == _FLAG_ODD;
@@ -114,49 +103,36 @@ public class TerminatingNetworkRoutingNumberImpl extends AbstractNumber implemen
             b |= 0x80;
         b |= this.tnrnLengthIndicator & 0x0F;
         b |= (this.numberingPlanIndicator & 0x07) << 4;
-        bos.write(b);
-        return 1;
+        buffer.writeByte(b);
     }
 
-    public int decodeBody(ByteArrayInputStream bis) throws ParameterException {
+    public void decodeBody(ByteBuf buffer) throws ParameterException {
         if (this.tnrnLengthIndicator > 0) {
-            if (bis.available() == 0) {
+            if (buffer.readableBytes() == 0) {
                 throw new ParameterException("No more data to read.");
             }
-            this.setNatureOfAddressIndicator(bis.read());
-            return 1;
-        } else {
-            return 0;
+            this.setNatureOfAddressIndicator(buffer.readByte());            
         }
     }
 
-    public int encodeBody(ByteArrayOutputStream bos) {
-
+    public void encodeBody(ByteBuf buffer) {
         if (this.tnrnLengthIndicator > 0) {
-            bos.write(this.natureOfAddressIndicator);
-            return 1;
-        } else {
-            return 0;
+        	buffer.writeByte(this.natureOfAddressIndicator);            
         }
     }
 
-    public int decodeDigits(ByteArrayInputStream bis) throws ParameterException {
+    public void decodeDigits(ByteBuf buffer) throws ParameterException {
         if (this.tnrnLengthIndicator - 1 > 0) {
-            if (bis.available() == 0) {
+            if (buffer.readableBytes() == 0) {
                 throw new ParameterException("No more data to read.");
             }
-            return super.decodeDigits(bis, this.tnrnLengthIndicator - 1);
-        } else {
-            return 0;
+            super.decodeDigits(buffer, this.tnrnLengthIndicator - 1);
         }
-
     }
 
-    public int encodeDigits(ByteArrayOutputStream bos) {
+    public void encodeDigits(ByteBuf buffer) {
         if (this.tnrnLengthIndicator - 1 > 0)
-            return super.encodeDigits(bos);
-        else
-            return 0;
+            super.encodeDigits(buffer);        
     }
 
     public void setAddress(String address) {
@@ -197,7 +173,6 @@ public class TerminatingNetworkRoutingNumberImpl extends AbstractNumber implemen
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 }

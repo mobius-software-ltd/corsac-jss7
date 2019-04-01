@@ -88,27 +88,10 @@ public class PayloadData {
     }
 
 	/**
-	 * @return the dataLength
-	 */
-	public int getDataLength() {
-		return dataLength;
-	}
-
-    /**
      * @return the byteBuf
      */
     public ByteBuf getByteBuf() {
         return byteBuf;
-    }
-
-    /**
-     * @return the data
-     */
-    public byte[] getData() {
-        byte[] array = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0, array);
-        ReferenceCountUtil.release(byteBuf);
-        return array;
     }
 
     public void releaseBuffer() {

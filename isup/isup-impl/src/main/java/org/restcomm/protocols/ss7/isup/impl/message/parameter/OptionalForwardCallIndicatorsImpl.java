@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OptionalForwardCallIndicators;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OptionalForwardCallIndi
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class OptionalForwardCallIndicatorsImpl extends AbstractISUPParameter implements OptionalForwardCallIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -49,13 +49,12 @@ public class OptionalForwardCallIndicatorsImpl extends AbstractISUPParameter imp
     private boolean simpleSegmentationIndicator;
     private boolean connectedLineIdentityRequestIndicator;
 
-    public OptionalForwardCallIndicatorsImpl(byte[] b) throws ParameterException {
+    public OptionalForwardCallIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public OptionalForwardCallIndicatorsImpl(int closedUserGroupCallIndicator, boolean simpleSegmentationIndicator,
-            boolean connectedLineIdentityRequestIndicator) {
+    public OptionalForwardCallIndicatorsImpl(int closedUserGroupCallIndicator, boolean simpleSegmentationIndicator,boolean connectedLineIdentityRequestIndicator) {
         super();
         this.closedUserGroupCallIndicator = closedUserGroupCallIndicator;
         this.simpleSegmentationIndicator = simpleSegmentationIndicator;
@@ -67,25 +66,23 @@ public class OptionalForwardCallIndicatorsImpl extends AbstractISUPParameter imp
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
-        this.closedUserGroupCallIndicator = (byte) (b[0] & 0x03);
-        this.simpleSegmentationIndicator = ((b[0] >> 2) & 0x01) == _TURN_ON;
-        this.connectedLineIdentityRequestIndicator = ((b[0] >> 7) & 0x01) == _TURN_ON;
-        return 1;
+        
+        byte curr=b.readByte();
+        this.closedUserGroupCallIndicator = (byte) (curr & 0x03);
+        this.simpleSegmentationIndicator = ((curr >> 2) & 0x01) == _TURN_ON;
+        this.connectedLineIdentityRequestIndicator = ((curr >> 7) & 0x01) == _TURN_ON;        
     }
 
-    public byte[] encode() throws ParameterException {
-
+    public void encode(ByteBuf buffer) throws ParameterException {
         int b0 = 0;
-
         b0 = this.closedUserGroupCallIndicator & 0x03;
         b0 |= (this.simpleSegmentationIndicator ? _TURN_ON : _TURN_OFF) << 2;
         b0 |= (this.connectedLineIdentityRequestIndicator ? _TURN_ON : _TURN_OFF) << 7;
-
-        return new byte[] { (byte) b0 };
+        buffer.writeByte((byte) b0);
     }
 
     public int getCode() {

@@ -21,6 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -41,8 +43,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
  *
  */
 public abstract class AbstractFacilityMessageImpl extends ISUPMessageImpl implements AbstractFacilityMessage {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _MANDATORY_VAR_COUNT = 0;
     private static final boolean _OPTIONAL_POSSIBLE = true;
 
@@ -78,27 +78,22 @@ public abstract class AbstractFacilityMessageImpl extends ISUPMessageImpl implem
         return true;
     }
 
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf buffer)
             throws ParameterException {
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-        if (b.length - index > 1) {
+        super.decodeMandatoryParameters(parameterFactory, buffer);
+        if (buffer.readableBytes() > 0) {
 
             // this.circuitIdentificationCode = b[index++];
             try {
-                byte[] facilityIndicator = new byte[1];
-                facilityIndicator[0] = b[index++];
-
+                ByteBuf facilityIndicator = buffer.slice(buffer.readerIndex(), 1);
                 FacilityIndicator bci = parameterFactory.createFacilityIndicator();
                 ((AbstractISUPParameter) bci).decode(facilityIndicator);
+                buffer.skipBytes(1);
                 this.setFacilityIndicator(bci);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
-
-            // return 3;
-            return index - localIndex;
         } else {
             throw new IllegalArgumentException("byte[] must have atleast four octets");
         }
@@ -106,13 +101,12 @@ public abstract class AbstractFacilityMessageImpl extends ISUPMessageImpl implem
     }
 
     @Override
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody,int parameterIndex)
             throws ParameterException {
     }
 
     @Override
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
-            throws ParameterException {
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode) throws ParameterException {
         switch (parameterCode & 0xFF) {
             case UserToUserIndicators._PARAMETER_CODE:
                 UserToUserIndicators u2ui = parameterFactory.createUserToUserIndicators();

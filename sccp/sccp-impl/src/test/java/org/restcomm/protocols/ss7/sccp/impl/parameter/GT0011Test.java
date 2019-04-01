@@ -28,14 +28,12 @@
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
+import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.BCDEvenEncodingScheme;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0011Impl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ParameterFactoryImpl;
@@ -51,7 +49,7 @@ import org.testng.annotations.Test;
  */
 public class GT0011Test {
 
-    private byte[] data = new byte[] { 0, 0x12, 0x09, 0x32, 0x26, 0x59, 0x18 };
+    private ByteBuf data = Unpooled.wrappedBuffer(new byte[] { 0, 0x12, 0x09, 0x32, 0x26, 0x59, 0x18 });
     private ParameterFactoryImpl factory = new ParameterFactoryImpl();
     public GT0011Test() {
     }
@@ -77,12 +75,9 @@ public class GT0011Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecode() throws Exception {
-        // wrap data with input stream
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-
         // create GT object and read data from stream
         GlobalTitle0011Impl gt1 = new GlobalTitle0011Impl();
-        gt1.decode(in, factory, SccpProtocolVersion.ITU);
+        gt1.decode(Unpooled.wrappedBuffer(data), factory, SccpProtocolVersion.ITU);
 
         // check results
         assertEquals(gt1.getTranslationType(), 0);
@@ -95,15 +90,10 @@ public class GT0011Test {
      */
     @Test(groups = { "parameter", "functional.encode" })
     public void testEncode() throws Exception {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ByteBuf bout = Unpooled.buffer();
         GlobalTitle0011Impl gt = new GlobalTitle0011Impl("9023629581",0, BCDEvenEncodingScheme.INSTANCE, NumberingPlan.ISDN_TELEPHONY);
-
         gt.encode(bout, false, SccpProtocolVersion.ITU);
-
-        byte[] res = bout.toByteArray();
-
-        boolean correct = Arrays.equals(data, res);
-        assertTrue(correct, "Incorrect encoding");
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data), bout);        
     }
 
     /*@Test(groups = { "parameter", "functional.encode" })

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -81,9 +83,9 @@ public interface GenericDigits extends ISUPParameter {
 
     void setTypeOfDigits(int typeOfDigits);
 
-    byte[] getEncodedDigits();
+    ByteBuf getEncodedDigits();
 
-    void setEncodedDigits(byte[] digits);
+    void setEncodedDigits(ByteBuf digits);
 
     /**
      * Return decoded digits string as for following rules: BCD_EVEN, BCD_ODD and IA5 are supported.

@@ -30,7 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +47,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class InvokingPivotReasonImpl extends AbstractInformationImpl implements InvokingPivotReason {
-	private static final long serialVersionUID = 1L;
-
 	private List<PivotReason> reasons = new ArrayList<PivotReason>();
 
 
@@ -72,32 +71,33 @@ public class InvokingPivotReasonImpl extends AbstractInformationImpl implements 
         return this.reasons.toArray(new PivotReason[this.reasons.size()]);
     }
     @Override
-    byte[] encode() throws ParameterException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    public void encode(ByteBuf buffer) throws ParameterException {
         for (int index = 0; index < this.reasons.size(); index++) {
             PivotReasonImpl ai = (PivotReasonImpl) this.reasons.get(index);
             ai.trim();
 
-            byte b = (byte) (ai.encode()[0] & 0x7F);
+            byte b = (byte) (ai.getPivotReason() & 0x7F);
             if (index + 1 == this.reasons.size()) {
                 b |= 0x80;
             }
-            baos.write(b);
-
+            buffer.writeByte(b);
         }
-        return baos.toByteArray();
     }
 
     @Override
-    void decode(byte[] data) throws ParameterException {
-        for(int index = 0;index<data.length;index++){
-            byte b = data[index];
+    public void decode(ByteBuf data) throws ParameterException {
+        while(data.readableBytes()>0){
+            byte b = data.readByte();
             PivotReasonImpl pr = new PivotReasonImpl();
             pr.setPivotReason((byte) (b & 0x7F));
-            if( (b & 0x80) == 0 && index +1 == data.length){
+            if( (b & 0x80) == 0 && data.readableBytes()==0){
                 throw new ParameterException("Extension bit incicates more bytes, but we ran out of them!");
             }
             this.reasons.add(pr);
         }
     }
+	@Override
+	public int getLength() {
+		return this.reasons.size();
+	}
 }

@@ -41,9 +41,5 @@ RedirectionInformation::= OCTET STRING (SIZE (2))
  *
  */
 public interface RedirectionInformationInap extends Serializable {
-
-    byte[] getData();
-
     RedirectionInformation getRedirectionInformation() throws INAPException;
-
 }

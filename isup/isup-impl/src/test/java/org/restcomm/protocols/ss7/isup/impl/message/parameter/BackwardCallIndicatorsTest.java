@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -49,14 +52,14 @@ public class BackwardCallIndicatorsTest extends ParameterHarness {
     public BackwardCallIndicatorsTest() {
         super();
 
-        super.badBodies.add(new byte[1]);
-        super.badBodies.add(new byte[3]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[3]));
 
-        super.goodBodies.add(getBody1());
-        super.goodBodies.add(getBody2());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody2()));
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
         byte[] body = new byte[2];
         // Chardi IND : 10 - charge
@@ -75,7 +78,7 @@ public class BackwardCallIndicatorsTest extends ParameterHarness {
         // SCCP m ind : 10 - connection oriented only
         // whole : 10011101
         body[1] = (byte) 0x9D;
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -93,7 +96,7 @@ public class BackwardCallIndicatorsTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody2() {
+    private ByteBuf getBody2() {
         byte[] body = new byte[2];
         // Chardi IND : 01 - no charge
         // Called part status ind: 10 - conn when free
@@ -111,7 +114,7 @@ public class BackwardCallIndicatorsTest extends ParameterHarness {
         // SCCP m ind : 10 - connection oriented only
         // whole : 10111101
         body[1] = (byte) 0xBD;
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -136,7 +139,7 @@ public class BackwardCallIndicatorsTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new org.restcomm.protocols.ss7.isup.impl.message.parameter.BackwardCallIndicatorsImpl(new byte[2]);
+        return new org.restcomm.protocols.ss7.isup.impl.message.parameter.BackwardCallIndicatorsImpl(Unpooled.wrappedBuffer(new byte[2]));
     }
 
 }

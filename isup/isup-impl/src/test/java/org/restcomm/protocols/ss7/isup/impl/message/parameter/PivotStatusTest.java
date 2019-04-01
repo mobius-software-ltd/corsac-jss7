@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -55,11 +58,11 @@ public class PivotStatusTest extends ParameterHarness {
         super.goodBodies.add(getBody1());
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
         //FIXME: ATM PivotStatus does not take into account extension bit, each byte is considered a separate status.
         //byte[] body = new byte[] { 0,1, (byte)(0x80 |2) };
         byte[] body = new byte[] { 0,1 ,2 };
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

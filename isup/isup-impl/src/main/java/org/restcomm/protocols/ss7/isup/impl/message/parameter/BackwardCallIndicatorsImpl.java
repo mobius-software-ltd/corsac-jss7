@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.BackwardCallIndicators;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.BackwardCallIndicators;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class BackwardCallIndicatorsImpl extends AbstractISUPParameter implements BackwardCallIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -97,41 +94,38 @@ public class BackwardCallIndicatorsImpl extends AbstractISUPParameter implements
      *
      * @param b
      */
-    public BackwardCallIndicatorsImpl(byte[] b) throws ParameterException {
+    public BackwardCallIndicatorsImpl(ByteBuf b) throws ParameterException {
         this.decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 2) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 2) {
             throw new ParameterException("byte[] must not be null or have different size than 2");
         }
 
-        int v = b[0];
+        int v = b.readByte();
         this.chargeIndicator = v & 0x03;
         this.calledPartysStatusIndicator = (v >> 2) & 0x03;
         this.calledPartysCategoryIndicator = (v >> 4) & 0x03;
         this.endToEndMethodIndicator = (v >> 6) & 0x03;
 
-        v = b[1];
+        v = b.readByte();
         this.interworkingIndicator = (v & 0x01) == _TURN_ON;
         this.endToEndInformationIndicator = ((v >> 1) & 0x01) == _TURN_ON;
         this.isdnUserPartIndicator = ((v >> 2) & 0x01) == _TURN_ON;
         this.holdingIndicator = ((v >> 3) & 0x01) == _TURN_ON;
         this.isdnAccessIndicator = ((v >> 4) & 0x01) == _TURN_ON;
         this.echoControlDeviceIndicator = ((v >> 5) & 0x01) == _TURN_ON;
-        this.sccpMethodIndicator = (v >> 6) & 0x03;
-        return 2;
+        this.sccpMethodIndicator = (v >> 6) & 0x03;        
     }
 
-    public byte[] encode() throws ParameterException {
-
-        byte[] b = new byte[2];
+    public void encode(ByteBuf b) throws ParameterException {
         int v = 0;
         v |= this.chargeIndicator & 0x03;
         v |= (this.calledPartysStatusIndicator & 0x03) << 2;
         v |= (this.calledPartysCategoryIndicator & 0x03) << 4;
         v |= (this.endToEndMethodIndicator & 0x03) << 6;
-        b[0] = (byte) v;
+        b.writeByte((byte) v);
         v = 0;
 
         v |= (this.interworkingIndicator ? _TURN_ON : _TURN_OFF);
@@ -142,18 +136,7 @@ public class BackwardCallIndicatorsImpl extends AbstractISUPParameter implements
         v |= (this.echoControlDeviceIndicator ? _TURN_ON : _TURN_OFF) << 5;
         v |= (this.sccpMethodIndicator & 0x03) << 6;
 
-        b[1] = (byte) v;
-        return b;
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        byte[] b = encode();
-        try {
-            bos.write(b);
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
+        b.writeByte((byte) v);
     }
 
     public int getChargeIndicator() {

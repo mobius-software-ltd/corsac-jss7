@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferReference;
 
@@ -40,11 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferReference;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallTransferReferenceImpl extends AbstractISUPParameter implements CallTransferReference {
-	private static final long serialVersionUID = 1L;
-
 	private int callTransferReference = 0;
 
-    public CallTransferReferenceImpl(byte[] b) throws ParameterException {
+    public CallTransferReferenceImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -59,16 +59,15 @@ public class CallTransferReferenceImpl extends AbstractISUPParameter implements 
         this.callTransferReference = callTransferReference;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
-        this.callTransferReference = b[0] & 0xFF;
-        return 1;
+        this.callTransferReference = b.readByte() & 0xFF;        
     }
 
-    public byte[] encode() throws ParameterException {
-        return new byte[] { (byte) this.callTransferReference };
+    public void encode(ByteBuf buffer) throws ParameterException {
+        buffer.writeByte((byte) this.callTransferReference);
     }
 
     public int getCallTransferReference() {

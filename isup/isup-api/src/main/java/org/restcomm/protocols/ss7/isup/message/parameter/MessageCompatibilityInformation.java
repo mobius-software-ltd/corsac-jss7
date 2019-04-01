@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import java.util.List;
+
 /*
  * TeleStax, Open Source Cloud Communications
  * Copyright 2011-2013, Telestax Inc and individual contributors
@@ -28,6 +30,6 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
 public interface MessageCompatibilityInformation  extends ISUPParameter {
     int _PARAMETER_CODE = 0x38;
 
-    void setMessageCompatibilityInstructionIndicators(MessageCompatibilityInstructionIndicator... indicators);
-    MessageCompatibilityInstructionIndicator[] getMessageCompatibilityInstructionIndicators();
+    void setMessageCompatibilityInstructionIndicators(List<MessageCompatibilityInstructionIndicator> indicators);
+    List<MessageCompatibilityInstructionIndicator> getMessageCompatibilityInstructionIndicators();
 }

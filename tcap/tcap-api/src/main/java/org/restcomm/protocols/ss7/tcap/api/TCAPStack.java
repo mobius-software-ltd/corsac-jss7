@@ -32,6 +32,12 @@ import org.restcomm.protocols.ss7.sccp.SccpStack;
  */
 public interface TCAPStack {
 
+	// default value of idle timeout and after TC_END remove of task.
+    public static final long _DIALOG_TIMEOUT = 60000;
+    public static final long _INVOKE_TIMEOUT = 30000;
+
+    public static final long _EMPTY_INVOKE_TIMEOUT = -1;
+    
     /**
      * Returns the name of this stack
      * @return
@@ -99,24 +105,7 @@ public interface TCAPStack {
      *
      * @return ending dialog id within the range
      */
-    long getDialogIdRangeEnd();
-
-    /**
-     * previewMode is needed for special processing mode. When PreviewMode in TCAP level we have: - stack only listen's incoming
-     * messages and sends nothing. send(), close(), sendComponent() and other such methods do nothing. - A TCAP Dialog is
-     * temporary. TCAP Dialog is discarded after any incoming message like TC-BEGIN or TC-CONTINUE has been processed - for any
-     * incoming messages (including TC-CONTINUE, TC-END, TC-ABORT) a new TCAP Dialog is created (end then deleted). - no timers
-     * and timeouts
-     *
-     * default state: no previewMode
-     */
-    void setPreviewMode(boolean val) throws Exception;
-
-    /**
-     *
-     * @return if areviewMode is active
-     */
-    boolean getPreviewMode();
+    long getDialogIdRangeEnd();    
 
     void setExtraSsns(List<Integer> extraSsnsNew) throws Exception;
 

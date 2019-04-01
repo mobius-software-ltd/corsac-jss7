@@ -27,26 +27,26 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
-import org.restcomm.protocols.ss7.tcap.asn.AbortSource;
+import org.restcomm.protocols.ss7.tcap.asn.ASNAbortSource;
 import org.restcomm.protocols.ss7.tcap.asn.AbortSourceType;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcap.asn.EncodeException;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 import org.restcomm.protocols.ss7.tcap.asn.TCAbortMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -72,40 +72,53 @@ public class TCAbortTest {
         return new byte[] { 0x7B, (byte) 0xA5, 0x34, 0x13 };
     }
 
+    @BeforeClass
+	public void setUp()
+	{		
+    	ASNGeneric.clear(ASNUserInformationObjectImpl.class);
+    	ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, TCAbortTestASN.class);    	
+	}
+	
     @Test(groups = { "functional.encode" })
-    public void testBasicTCAbortTestEncode() throws IOException, EncodeException, ParseException {
+    public void testBasicTCAbortTestEncode() throws ParseException, ASNException {
 
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCAbortMessageImpl.class);
+        
         // This Raw data is taken from ussd-abort- from msc2.txt
         byte[] expected = getDataDialogPort();
 
         TCAbortMessageImpl tcAbortMessage = new TCAbortMessageImpl();
         tcAbortMessage.setDestinationTransactionId(getDestTrId());
 
-        DialogPortion dp = TcapFactory.createDialogPortion();
+        DialogPortionImpl dp = TcapFactory.createDialogPortion();
         dp.setUnidirectional(false);
-        DialogAbortAPDU dapdu = TcapFactory.createDialogAPDUAbort();
-        AbortSource as = TcapFactory.createAbortSource();
+        DialogAbortAPDUImpl dapdu = TcapFactory.createDialogAPDUAbort();
+        ASNAbortSource as = TcapFactory.createAbortSource();
         as.setAbortSourceType(AbortSourceType.User);
         dapdu.setAbortSource(as);
 
         UserInformationImpl userInformation = new UserInformationImpl();
-        userInformation.setOid(true);
-        userInformation.setOidValue(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 });
+        
+        UserInformationExternalImpl userInfo=new UserInformationExternalImpl();
+        userInfo.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        userInformation.setAsn(true);
-        userInformation.setEncodeType(new byte[] { (byte) 0xA3, 0x03, (byte) 0x0A, 0x01, 0x00 });
+        TCAbortTestASN innerASN=new TCAbortTestASN();
+        innerASN.setValue(new byte[] { (byte) 0x0A, 0x01, 0x00 });
+        
+        ASNUserInformationObjectImpl userObject=new ASNUserInformationObjectImpl();
+        userObject.setValue(innerASN);
+        userInfo.setChildAsObject(userObject);
 
+        userInformation.setExternal(userInfo);
         dapdu.setUserInformation(userInformation);
 
         dp.setDialogAPDU(dapdu);
 
         tcAbortMessage.setDialogPortion(dp);
 
-        AsnOutputStream aos = new AsnOutputStream();
-
-        tcAbortMessage.encode(aos);
-
-        byte[] data = aos.toByteArray();
+        ByteBuf buffer=parser.encode(tcAbortMessage);
+        byte[] data = buffer.array();
 
         System.out.println(dump(data, data.length, false));
 
@@ -117,30 +130,28 @@ public class TCAbortTest {
         tcAbortMessage.setDestinationTransactionId(getDestTrId());
         tcAbortMessage.setPAbortCause(PAbortCauseType.AbnormalDialogue);
 
-        aos = new AsnOutputStream();
-        tcAbortMessage.encode(aos);
-        data = aos.toByteArray();
+        buffer=parser.encode(tcAbortMessage);        
+        data = buffer.array();
 
         TCAPTestUtils.compareArrays(expected, data);
-
     }
 
     @Test(groups = { "functional.decode" })
-    public void testBasicTCAbortTestDecode() throws IOException, ParseException {
+    public void testBasicTCAbortTestDecode() throws ParseException, ASNException {
 
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(TCAbortMessageImpl.class);
+        
         // This Raw data is taken from ussd-abort- from msc2.txt
         byte[] data = getDataDialogPort();
 
-        AsnInputStream ais = new AsnInputStream(data);
-        int tag = ais.readTag();
-        assertEquals(TCAbortMessage._TAG, tag, "Expected TCAbort");
+        Object output=parser.decode(Unpooled.wrappedBuffer(data)).getResult();
+        assertTrue(output instanceof TCAbortMessageImpl, "Expected TCAbort");
 
-        TCAbortMessageImpl impl = new TCAbortMessageImpl();
-        impl.decode(ais);
-
+        TCAbortMessageImpl impl = (TCAbortMessageImpl)output;
         assertTrue(Arrays.equals(impl.getDestinationTransactionId(), getDestTrId()));
 
-        DialogPortion dp = impl.getDialogPortion();
+        DialogPortionImpl dp = impl.getDialogPortion();
 
         assertNotNull(dp);
         assertFalse(dp.isUnidirectional());
@@ -150,13 +161,11 @@ public class TCAbortTest {
         assertNotNull(dialogApdu);
 
         data = getDataAbortCause();
-        ais = new AsnInputStream(data);
-        tag = ais.readTag();
-        assertEquals(TCAbortMessage._TAG, tag, "Expected TCAbort");
+        output=parser.decode(Unpooled.wrappedBuffer(data)).getResult();
+        assertTrue(output instanceof TCAbortMessageImpl, "Expected TCAbort");
 
-        impl = new TCAbortMessageImpl();
-        impl.decode(ais);
-
+        impl = (TCAbortMessageImpl)output;
+        
         assertTrue(Arrays.equals(impl.getDestinationTransactionId(), getDestTrId()));
         // assertTrue(2074424339 == impl.getDestinationTransactionId());
 

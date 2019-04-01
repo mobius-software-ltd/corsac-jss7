@@ -21,7 +21,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.Serializable;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 
@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
  * @author baranowb
  *
  */
-public interface Encodable extends Serializable {
+public interface Encodable {
     /**
      * Decodes this element from passed byte[] array. This array must contain only element data. however in case of constructor
      * elements it may contain more information elements that consist of tag, length and contents elements, this has to be
@@ -38,7 +38,7 @@ public interface Encodable extends Serializable {
      * @param b - array containing body of parameter.
      * @return
      */
-    int decode(byte[] b) throws ParameterException;
+    void decode(ByteBuf b) throws ParameterException;
 
     /**
      * Encodes elements as byte[].It contains body, tag and length should be added by enclosing element. ( See B.4/Q.763 - page
@@ -47,5 +47,5 @@ public interface Encodable extends Serializable {
      * @return byte[] with encoded element.
      * @throws IOException
      */
-    byte[] encode() throws ParameterException;
+    void encode(ByteBuf b) throws ParameterException;
 }

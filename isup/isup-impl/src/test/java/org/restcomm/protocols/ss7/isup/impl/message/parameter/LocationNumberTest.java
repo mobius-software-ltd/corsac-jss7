@@ -25,8 +25,8 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
@@ -60,12 +60,12 @@ public class LocationNumberTest {
     public void tearDown() {
     }
 
-    private byte[] getData() {
-        return new byte[] { (byte) 131, (byte) 193, 0x21, 0x43, 0x05 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 131, (byte) 193, 0x21, 0x43, 0x05 });
     }
 
-    private byte[] getData2() {
-        return new byte[] { 0, 11 };
+    private ByteBuf getData2() {
+        return Unpooled.wrappedBuffer(new byte[] { 0, 11 });
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -104,17 +104,19 @@ public class LocationNumberTest {
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator,
         // int addressRepresentationREstrictedIndicator, int screeningIndicator
 
-        byte[] data = getData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getData();
+        ByteBuf encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim = new LocationNumberImpl(0, "", 0, 0, LocationNumber._APRI_NOT_AVAILABLE, LocationNumber._SI_NETWORK_PROVIDED);
 
         data = getData2();
-        encodedData = prim.encode();
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "parameter" })

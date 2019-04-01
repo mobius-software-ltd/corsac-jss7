@@ -21,6 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,15 +35,13 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Status;
  *
  */
 public class PivotStatusImpl extends AbstractISUPParameter implements PivotStatus {
-	private static final long serialVersionUID = 1L;
-
 	private List<Status> statusList = new ArrayList<Status>();
 
     public PivotStatusImpl() {
         // TODO Auto-generated constructor stub
     }
 
-    public PivotStatusImpl(byte[] data) throws ParameterException {
+    public PivotStatusImpl(ByteBuf data) throws ParameterException {
         decode(data);
     }
 
@@ -51,23 +51,20 @@ public class PivotStatusImpl extends AbstractISUPParameter implements PivotStatu
     }
 
     @Override
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         //FIXME: ? this does not take into account case when extension bit is used.
-        for (byte v : b) {
+        while(b.readableBytes()>0) {
             Status s = new StatusImpl();
-            s.setStatus(v);
+            s.setStatus(b.readByte());
             this.statusList.add(s);
         }
-        return b.length;
     }
 
     @Override
-    public byte[] encode() throws ParameterException {
-        byte[] data = new byte[this.statusList.size()];
-        for (int index = 0; index < data.length; index++) {
-            data[index] = this.statusList.get(index).getStatus();
+    public void encode(ByteBuf buffer) throws ParameterException {
+        for (int index = 0; index < this.statusList.size(); index++) {
+        	buffer.writeByte(this.statusList.get(index).getStatus());
         }
-        return data;
     }
 
     @Override

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.parameter.Importance;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.RefusalCause;
@@ -39,8 +41,8 @@ public interface SccpConnCrefMessage extends SccpConnMessage {
     SccpAddress getCalledPartyAddress();
     void setCalledPartyAddress(SccpAddress address);
 
-    byte[] getUserData();
-    void setUserData(byte[] data);
+    ByteBuf getUserData();
+    void setUserData(ByteBuf data);
 
     RefusalCause getRefusalCause();
     void setRefusalCause(RefusalCause value);

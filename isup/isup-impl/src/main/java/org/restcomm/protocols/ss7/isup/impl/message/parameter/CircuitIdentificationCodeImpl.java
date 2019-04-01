@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitIdentificationCode;
 
@@ -73,20 +75,16 @@ public class CircuitIdentificationCodeImpl extends AbstractISUPParameter impleme
         throw new UnsupportedOperationException();
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 2) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 2) {
             throw new ParameterException("byte[] must not be null or has size equal to 2.");
         }
-        this.cic = (b[0] & 0xFF);
-        this.cic |= ((b[1] & 0x0F) << 8);
-        return b.length;
+        this.cic = (b.readByte() & 0xFF);
+        this.cic |= (b.readByte() << 8);        
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = new byte[2];
-        b[0] = (byte) this.cic;
-        b[1] = (byte) ((this.cic >> 8) & 0x0F);
-        return b;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) this.cic);
+    	buffer.writeByte((byte) ((this.cic >> 8) & 0x0F));        
     }
-
 }

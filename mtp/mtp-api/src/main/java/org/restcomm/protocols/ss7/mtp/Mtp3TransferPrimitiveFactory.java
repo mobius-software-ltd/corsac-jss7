@@ -21,6 +21,8 @@
  */
 package org.restcomm.protocols.ss7.mtp;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author amit bhayani
@@ -34,17 +36,17 @@ public class Mtp3TransferPrimitiveFactory {
         this.pointCodeFormat = pointCodeFormat;
     }
 
-    public Mtp3TransferPrimitive createMtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, byte[] data) {
+    public Mtp3TransferPrimitive createMtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data) {
         Mtp3TransferPrimitive mtp3TransferPrimitive = new Mtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data,
                 this.pointCodeFormat);
         return mtp3TransferPrimitive;
     }
 
-    public Mtp3TransferPrimitive createMtp3TransferPrimitive(byte[] msg) {
+    public Mtp3TransferPrimitive createMtp3TransferPrimitive(ByteBuf msg) {
         Mtp3TransferPrimitive mtp3TransferPrimitive = null;
 
         // sio
-        int sio = msg[0];
+        int sio = msg.readByte();
         int si = sio & 0x0F;
         int ssi = (sio & 0xF0) >> 4;
         int ni = ssi >> 2;
@@ -53,41 +55,52 @@ public class Mtp3TransferPrimitiveFactory {
         int dpc = 0;
         int opc = 0;
         int sls = 0;
-        byte[] data = null;
+        ByteBuf data = null;
 
         switch (this.pointCodeFormat) {
             case ITU:
                 // routing label
-                byte b1 = msg[1];
-                byte b2 = msg[2];
-                byte b3 = msg[3];
-                byte b4 = msg[4];
+                byte b1 = msg.readByte();
+                byte b2 = msg.readByte();
+                byte b3 = msg.readByte();
+                byte b4 = msg.readByte();
                 dpc = ((b2 & 0x3f) << 8) | (b1 & 0xff);
                 opc = ((b4 & 0x0f) << 10) | ((b3 & 0xff) << 2) | ((b2 & 0xc0) >> 6);
                 sls = ((b4 & 0xf0) >> 4);
 
                 // msu data
-                data = new byte[msg.length - 5];
-                System.arraycopy(msg, 5, data, 0, data.length);
+                data = msg.slice();
                 break;
             case ANSI_Sls8Bit:
-                dpc = ((msg[3] & 0xff) << 16) | ((msg[2] & 0xff) << 8) | (msg[1] & 0xff);
-                opc = ((msg[6] & 0xff) << 16) | ((msg[5] & 0xff) << 8) | (msg[4] & 0xff);
-                sls = (msg[7] & 0xff);
+            	 b1 = msg.readByte();
+                 b2 = msg.readByte();
+                 b3 = msg.readByte();                 
+                 dpc = ((b3 & 0xff) << 16) | ((b2 & 0xff) << 8) | (b1 & 0xff);
+                 
+                 b1 = msg.readByte();
+                 b2 = msg.readByte();
+                 b3 = msg.readByte();                 
+                 opc = ((b3 & 0xff) << 16) | ((b2 & 0xff) << 8) | (b1 & 0xff);
+                 sls = (msg.readByte() & 0xff);
 
                 // msu data
-                data = new byte[msg.length - 8];
-                System.arraycopy(msg, 8, data, 0, data.length);
+                data = msg.slice();
                 break;
             case ANSI_Sls5Bit:
-                dpc = ((msg[3] & 0xff) << 16) | ((msg[2] & 0xff) << 8) | (msg[1] & 0xff);
-                opc = ((msg[6] & 0xff) << 16) | ((msg[5] & 0xff) << 8) | (msg[4] & 0xff);
-                sls = (msg[7] & 0x1f);
+            	 b1 = msg.readByte();
+                 b2 = msg.readByte();
+                 b3 = msg.readByte();                 
+                 dpc = ((b3 & 0xff) << 16) | ((b2 & 0xff) << 8) | (b1 & 0xff);
+                
+                 b1 = msg.readByte();
+                 b2 = msg.readByte();
+                 b3 = msg.readByte();                 
+                 opc = ((b3 & 0xff) << 16) | ((b2 & 0xff) << 8) | (b1 & 0xff);
+                 sls = (msg.readByte() & 0x1f);
 
                 // msu data
-                data = new byte[msg.length - 8];
-                System.arraycopy(msg, 8, data, 0, data.length);
-                break;
+                 data = msg.slice();
+                 break;
 
 
             default:

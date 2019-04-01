@@ -23,8 +23,8 @@
 package org.restcomm.protocols.ss7.tcap.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 
 /**
  * @author baranowb
@@ -55,17 +55,17 @@ public interface TCBeginRequest extends DialogRequest {
      *
      * @return
      */
-    ApplicationContextName getApplicationContextName();
+    ApplicationContextNameImpl getApplicationContextName();
 
-    void setApplicationContextName(ApplicationContextName acn);
+    void setApplicationContextName(ApplicationContextNameImpl acn);
 
     /**
      * User information for this dialog.
      *
      * @return
      */
-    UserInformation getUserInformation();
+    UserInformationImpl getUserInformation();
 
-    void setUserInformation(UserInformation acn);
+    void setUserInformation(UserInformationImpl acn);
 
 }

@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.CorrelationId;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -39,15 +42,15 @@ public class CorrelationIdImpl extends ParameterImpl implements CorrelationId {
         this.tag = Parameter.Correlation_ID;
     }
 
-    protected CorrelationIdImpl(byte[] data) {
+    protected CorrelationIdImpl(ByteBuf data) {
         this.corrId = 0;
-        this.corrId |= data[0] & 0xFF;
+        this.corrId |= data.readByte() & 0xFF;
         this.corrId <<= 8;
-        this.corrId |= data[1] & 0xFF;
+        this.corrId |= data.readByte() & 0xFF;
         this.corrId <<= 8;
-        this.corrId |= data[2] & 0xFF;
+        this.corrId |= data.readByte() & 0xFF;
         this.corrId <<= 8;
-        this.corrId |= data[3] & 0xFF;
+        this.corrId |= data.readByte() & 0xFF;
         this.tag = Parameter.Correlation_ID;
     }
 
@@ -56,12 +59,12 @@ public class CorrelationIdImpl extends ParameterImpl implements CorrelationId {
     }
 
     @Override
-    protected byte[] getValue() {
-        byte[] data = new byte[4];
-        data[0] = (byte) (corrId >>> 24);
-        data[1] = (byte) (corrId >>> 16);
-        data[2] = (byte) (corrId >>> 8);
-        data[3] = (byte) (corrId);
+    protected ByteBuf getValue() {
+        ByteBuf data = Unpooled.buffer(4);
+        data.writeByte((byte) (corrId >>> 24));
+        data.writeByte((byte) (corrId >>> 16));
+        data.writeByte((byte) (corrId >>> 8));
+        data.writeByte((byte) (corrId));
 
         return data;
     }

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.m3ua.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * The Heartbeat Data parameter contents are defined by the sending node. The Heartbeat Data could include, for example, a
  * Heartbeat Sequence Number and/or Timestamp. The receiver of a BEAT message does not process this field, as it is only of
@@ -31,6 +33,6 @@ package org.restcomm.protocols.ss7.m3ua.parameter;
  *
  */
 public interface HeartbeatData extends Parameter {
-    byte[] getData();
+	ByteBuf getData();
 
 }

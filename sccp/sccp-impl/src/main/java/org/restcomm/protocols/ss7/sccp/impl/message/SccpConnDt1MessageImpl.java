@@ -35,9 +35,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SegmentingReassembling;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class SccpConnDt1MessageImpl extends SccpConnSegmentableMessageImpl implements SccpConnDt1Message {
     protected SegmentingReassembling segmentingReassembling;
@@ -61,92 +60,75 @@ public class SccpConnDt1MessageImpl extends SccpConnSegmentableMessageImpl imple
     }
 
     @Override
-    public void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte[] buffer = new byte[3];
-            in.read(buffer);
-            LocalReferenceImpl ref = new LocalReferenceImpl();
-            ref.decode(buffer, factory, sccpProtocolVersion);
-            destinationLocalReferenceNumber = ref;
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	LocalReferenceImpl ref = new LocalReferenceImpl();
+        ref.decode(buffer, factory, sccpProtocolVersion);
+        destinationLocalReferenceNumber = ref;
 
-            buffer = new byte[1];
-            in.read(buffer);
-            SegmentingReassemblingImpl segmenting = new SegmentingReassemblingImpl();
-            segmenting.decode(buffer, factory, sccpProtocolVersion);
-            segmentingReassembling = segmenting;
+        SegmentingReassemblingImpl segmenting = new SegmentingReassemblingImpl();
+        segmenting.decode(buffer, factory, sccpProtocolVersion);
+        segmentingReassembling = segmenting;
 
-            int dataPointer = in.read() & 0xFF;
-            in.mark(in.available());
+        int dataPointer = buffer.readByte() & 0xFF;
+        buffer.markReaderIndex();
 
-            in.skip(dataPointer - 1);
-            int len = in.read() & 0xff;
-
-            buffer = new byte[len];
-            in.read(buffer);
-
-            userData = buffer;
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+        buffer.skipBytes(dataPointer - 1);
+        int len = buffer.readByte() & 0xff;
+        userData = buffer.slice(buffer.readerIndex(), len);
     }
 
     @Override
     public EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger, boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (type == 0) {
-                return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
-            }
-            if (destinationLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
-            }
-            if (segmentingReassembling == null) {
-                return new EncodingResultData(EncodingResult.SegmentingReassemblingMissing, null, null, null);
-            }
-            if (userData == null) {
-                return new EncodingResultData(EncodingResult.DataMissed, null, null, null);
-            }
-
-            byte[] bf = new byte[0];
-            if (userData != null) {
-                bf = userData;
-            }
-
-            // 7 = 5 (fixed fields length) + 1 (variable fields pointers) + 1
-            // (variable fields lengths)
-            int fieldsLen = 7;
-            int availLen = maxMtp3UserDataLength - fieldsLen;
-
-            if (availLen > 256)
-                availLen = 256;
-
-            if (bf.length > availLen) { // message is too long
-                if (logger.isEnabledFor(Level.WARN)) {
-                    logger.warn(String.format(
-                            "Failure when sending a DT1 message: message is too long. SccpMessageSegment=%s", this));
-                }
-                return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_NOT_SUPPORTED);
-            }
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream(fieldsLen + bf.length);
-
-            byte[] dlr = ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] seg = ((SegmentingReassemblingImpl) segmentingReassembling).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-
-            out.write(type);
-            out.write(dlr);
-            out.write(seg);
-
-            // we have 1 pointers (data), cdp starts after 1 octets then
-            int len = 1;
-
-            out.write(len);
-            out.write((byte) bf.length);
-            out.write(bf);
-
-            return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-        } catch (IOException e) {
-            throw new ParseException(e);
+    	if (type == 0) {
+            return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
         }
+        if (destinationLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
+        }
+        if (segmentingReassembling == null) {
+            return new EncodingResultData(EncodingResult.SegmentingReassemblingMissing, null, null, null);
+        }
+        if (userData == null) {
+            return new EncodingResultData(EncodingResult.DataMissed, null, null, null);
+        }
+
+        ByteBuf bf = userData;
+        if(userData!=null)
+        	bf=Unpooled.wrappedBuffer(bf);
+        
+        // 7 = 5 (fixed fields length) + 1 (variable fields pointers) + 1
+        // (variable fields lengths)
+        int fieldsLen = 7;
+        int availLen = maxMtp3UserDataLength - fieldsLen;
+
+        if (availLen > 256)
+            availLen = 256;
+
+        int bfBytes=0;
+        if(bf!=null)
+        	bfBytes=bf.readableBytes();
+        
+        if (bfBytes > availLen) { // message is too long
+            if (logger.isEnabledFor(Level.WARN)) {
+                logger.warn(String.format(
+                        "Failure when sending a DT1 message: message is too long. SccpMessageSegment=%s", this));
+            }
+            return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_NOT_SUPPORTED);
+        }
+
+        ByteBuf output = Unpooled.buffer(fieldsLen+2);
+        output.writeByte(type);
+        ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(output,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((SegmentingReassemblingImpl) segmentingReassembling).encode(output,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        
+        // we have 1 pointers (data), cdp starts after 1 octets then
+        int len = 1;
+        output.writeByte(len);
+        output.writeByte((byte) bfBytes);
+        if(bf!=null)
+        	output=Unpooled.wrappedBuffer(output,bf);
+
+        return new EncodingResultData(EncodingResult.Success, output, null, null);
     }
 
     @Override
@@ -176,7 +158,7 @@ public class SccpConnDt1MessageImpl extends SccpConnSegmentableMessageImpl imple
         sb.append(this.outgoingDpc);
         sb.append(" DataLen=");
         if (this.userData != null)
-            sb.append(this.userData.length);
+            sb.append(this.userData.readableBytes());
 
         sb.append(" destLR=");
         if (this.destinationLocalReferenceNumber != null)

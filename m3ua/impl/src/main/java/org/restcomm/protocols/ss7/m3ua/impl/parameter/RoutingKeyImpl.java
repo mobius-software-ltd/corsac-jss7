@@ -53,13 +53,13 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
 
     private ByteBuf buf = Unpooled.buffer(256);
 
-    private byte[] value;
+    private ByteBuf value;
 
     public RoutingKeyImpl() {
         this.tag = Parameter.Routing_Key;
     }
 
-    protected RoutingKeyImpl(byte[] value) {
+    protected RoutingKeyImpl(ByteBuf value) {
         this.tag = Parameter.Routing_Key;
         this.value = value;
 
@@ -82,20 +82,17 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
         this.encode();
     }
 
-    private void decode(byte[] data) {
-        int pos = 0;
+    private void decode(ByteBuf data) {
         ArrayList<DestinationPointCode> dpcList = new ArrayList<DestinationPointCode>();
         ArrayList<ServiceIndicators> serIndList = new ArrayList<ServiceIndicators>();
         ArrayList<OPCList> opcListList = new ArrayList<OPCList>();
 
-        while (pos < data.length) {
-            short tag = (short) ((data[pos] & 0xff) << 8 | (data[pos + 1] & 0xff));
-            short len = (short) ((data[pos + 2] & 0xff) << 8 | (data[pos + 3] & 0xff));
+        while (data.readableBytes()>0) {
+            short tag = (short) ((data.readByte() & 0xff) << 8 | (data.readByte() & 0xff));
+            short len = (short) ((data.readByte() & 0xff) << 8 | (data.readByte() & 0xff));
 
-            byte[] value = new byte[len - 4];
-
-            System.arraycopy(data, pos + 4, value, 0, value.length);
-            pos += len;
+            ByteBuf value = data.slice(data.readerIndex(),len-4);
+            data.skipBytes(len-4);
             // parameters.put(tag, factory.createParameter(tag, value));
             switch (tag) {
                 case ParameterImpl.Local_Routing_Key_Identifier:
@@ -127,7 +124,8 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
 
             // The Parameter Length does not include any padding octets. We have
             // to consider padding here
-            pos += (pos % 4);
+            if(len%4!=0)
+            	data.skipBytes(len%4);            
         }// end of while
 
         this.dpc = new DestinationPointCode[dpcList.size()];
@@ -173,14 +171,12 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
             }
         }
 
-        int length = buf.readableBytes();
-        value = new byte[length];
-        buf.getBytes(buf.readerIndex(), value);
+        value = Unpooled.wrappedBuffer(buf);        
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     public DestinationPointCode[] getDestinationPointCodes() {

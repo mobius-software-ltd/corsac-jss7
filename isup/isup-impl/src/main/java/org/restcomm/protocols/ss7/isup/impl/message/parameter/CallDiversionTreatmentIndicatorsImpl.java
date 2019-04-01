@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallDiversionTreatmentIndicators;
 
@@ -40,42 +43,43 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallDiversionTreatmentI
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CallDiversionTreatmentIndicatorsImpl extends AbstractISUPParameter implements CallDiversionTreatmentIndicators {
-	private static final long serialVersionUID = 1L;
-
-	private byte[] callDivertedIndicators = null;
+	private ByteBuf callDivertedIndicators = null;
 
     public CallDiversionTreatmentIndicatorsImpl() {
         super();
 
     }
 
-    public CallDiversionTreatmentIndicatorsImpl(byte[] b) throws ParameterException {
+    public CallDiversionTreatmentIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length == 0) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() == 0) {
             throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
         }
-        this.callDivertedIndicators = b;
-        return b.length;
+        this.callDivertedIndicators = Unpooled.wrappedBuffer(b);
     }
 
-    public byte[] encode() throws ParameterException {
-        for (int index = 0; index < this.callDivertedIndicators.length; index++) {
-            this.callDivertedIndicators[index] = (byte) (this.callDivertedIndicators[index] & 0x03);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getCallDivertedIndicators();
+    	while(curr.readableBytes()>1) {
+    		buffer.writeByte((byte) (curr.readByte() & 0x03));
         }
 
-        this.callDivertedIndicators[this.callDivertedIndicators.length - 1] = (byte) ((this.callDivertedIndicators[this.callDivertedIndicators.length - 1]) | (0x01 << 7));
-        return this.callDivertedIndicators;
+    	if(curr.readableBytes()>0)
+    		buffer.writeByte((byte) (curr.readByte() | (0x01 << 7)));        
     }
 
-    public byte[] getCallDivertedIndicators() {
-        return callDivertedIndicators;
+    public ByteBuf getCallDivertedIndicators() {
+    	if(callDivertedIndicators==null)
+    		return null;
+    	
+    	return Unpooled.wrappedBuffer(callDivertedIndicators);
     }
 
-    public void setCallDivertedIndicators(byte[] callDivertedIndicators) {
+    public void setCallDivertedIndicators(ByteBuf callDivertedIndicators) {
         this.callDivertedIndicators = callDivertedIndicators;
     }
 

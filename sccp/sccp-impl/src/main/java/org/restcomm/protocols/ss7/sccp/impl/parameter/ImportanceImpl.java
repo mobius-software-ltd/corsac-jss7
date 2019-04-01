@@ -25,9 +25,7 @@
  */
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
@@ -58,38 +56,15 @@ public class ImportanceImpl extends AbstractParameter implements Importance {
     }
 
     @Override
-    public void decode(byte[] buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        this.importance = (byte) (buffer[0] & 0x07);
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        this.importance = (byte) (buffer.readByte() & 0x07);
 
     }
 
     @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         // TODO Auto-generated method stub
-        return new byte[] { (byte) (importance & 0x07) };
-    }
-
-    @Override
-    public void decode(InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (in.read() != 1) {
-                throw new ParseException();
-            }
-
-            this.importance = (byte) (in.read() & 0x07);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
-    }
-
-    @Override
-    public void encode(OutputStream os, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            os.write(1);
-            os.write(this.importance & 0x07);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+    	buffer.writeByte((byte) (importance & 0x07));
     }
 
     public int hashCode() {

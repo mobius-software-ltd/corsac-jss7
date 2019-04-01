@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.SegmentingReassembling;
 
@@ -37,6 +39,6 @@ public interface SccpConnDt1Message extends SccpConnMessage {
     SegmentingReassembling getSegmentingReassembling();
     void setSegmentingReassembling(SegmentingReassembling value);
 
-    byte[] getUserData();
-    void setUserData(byte[] data);
+    ByteBuf getUserData();
+    void setUserData(ByteBuf data);
 }

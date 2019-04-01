@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
@@ -35,16 +35,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
  * @author sergey vetyutnev
  */
 public class RedirectingNumberImpl extends CalledNumberImpl implements RedirectingNumber {
-	private static final long serialVersionUID = 1L;
-
-	public RedirectingNumberImpl(byte[] representation) throws ParameterException {
+	public RedirectingNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
-    }
-
-    public RedirectingNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     public RedirectingNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,
@@ -63,7 +55,6 @@ public class RedirectingNumberImpl extends CalledNumberImpl implements Redirecti
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 

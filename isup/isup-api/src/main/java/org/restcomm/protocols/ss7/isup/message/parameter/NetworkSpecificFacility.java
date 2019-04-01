@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:13:34:38 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -59,12 +61,12 @@ public interface NetworkSpecificFacility extends ISUPParameter {
 
     void setNetworkIdentificationPlan(byte networkdIdentificationPlan);
 
-    byte[] getNetworkIdentification();
+    ByteBuf getNetworkIdentification();
 
-    void setNetworkIdentification(byte[] networkdIdentification);
+    void setNetworkIdentification(ByteBuf networkdIdentification);
 
-    byte[] getNetworkSpecificaFacilityIndicator();
+    ByteBuf getNetworkSpecificaFacilityIndicator();
 
-    void setNetworkSpecificaFacilityIndicator(byte[] networkSpecificaFacilityIndicator);
+    void setNetworkSpecificaFacilityIndicator(ByteBuf networkSpecificaFacilityIndicator);
 
 }

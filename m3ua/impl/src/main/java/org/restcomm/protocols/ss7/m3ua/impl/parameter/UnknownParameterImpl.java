@@ -22,23 +22,26 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author kulikov
  */
 public class UnknownParameterImpl extends ParameterImpl {
 
-    private byte[] value;
+    private ByteBuf value;
 
-    protected UnknownParameterImpl(int tag, int length, byte[] value) {
+    protected UnknownParameterImpl(int tag, int length, ByteBuf value) {
         this.tag = (short) tag;
         this.length = (short) length;
         this.value = value;
     }
 
     @Override
-    protected byte[] getValue() {
-        return value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(value);
     }
 
     @Override

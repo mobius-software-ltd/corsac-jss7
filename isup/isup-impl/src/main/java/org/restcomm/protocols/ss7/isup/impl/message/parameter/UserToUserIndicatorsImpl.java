@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class UserToUserIndicatorsImpl extends AbstractISUPParameter implements UserToUserIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -51,7 +51,7 @@ public class UserToUserIndicatorsImpl extends AbstractISUPParameter implements U
     private int serviceThree;
     private boolean networkDiscardIndicator;
 
-    public UserToUserIndicatorsImpl(byte[] b) throws ParameterException {
+    public UserToUserIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -71,29 +71,29 @@ public class UserToUserIndicatorsImpl extends AbstractISUPParameter implements U
         this.networkDiscardIndicator = networkDiscardIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
         try {
-            this.setResponse((b[0] & 0x01) == _TURN_ON);
-            this.setServiceOne((b[0] >> 1));
-            this.setServiceTwo((b[0] >> 3));
-            this.setServiceThree((b[0] >> 5));
-            this.setNetworkDiscardIndicator(((b[0] >> 7) & 0x01) == _TURN_ON);
+        	byte curr=b.readByte();
+            this.setResponse((curr & 0x01) == _TURN_ON);
+            this.setServiceOne((curr >> 1));
+            this.setServiceTwo((curr >> 3));
+            this.setServiceThree((curr >> 5));
+            this.setNetworkDiscardIndicator(((curr >> 7) & 0x01) == _TURN_ON);
         } catch (Exception e) {
             throw new ParameterException(e);
         }
-        return 1;
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
         int v = this.response ? _TURN_ON : _TURN_OFF;
         v |= (this.serviceOne & 0x03) << 1;
         v |= (this.serviceTwo & 0x03) << 3;
         v |= (this.serviceThree & 0x03) << 5;
         v |= (this.networkDiscardIndicator ? _TURN_ON : _TURN_OFF) << 7;
-        return new byte[] { (byte) v };
+        buffer.writeByte((byte) v);
     }
 
     public boolean isResponse() {

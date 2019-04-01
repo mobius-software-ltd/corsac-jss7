@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -171,7 +173,7 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
 
         // here we have encoded msg, nothing more, need to add MTP3 label.
         // txDataQueue.add(message);
-        try {
+        try {        	
             this.mtp3UserPart.sendMessage(message);
         } catch (IOException e) {
             // log here Exceptions from MTP3 level
@@ -220,9 +222,14 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
             return;
 
         // 2(CIC) + 1(CODE)
-        byte[] payload = mtpMsg.getData();
-        int commandCode = payload[2];
-
+        ByteBuf payload = mtpMsg.getData();
+        if(payload.readableBytes()<3)
+        	throw new IllegalArgumentException("byte[] must have atleast three octets");
+        
+        payload.markReaderIndex();
+        payload.skipBytes(2);
+        int commandCode = payload.readByte();
+        payload.resetReaderIndex();
         AbstractISUPMessage msg = (AbstractISUPMessage) messageFactory.createCommand(commandCode);
         try {
             msg.decode(payload,messageFactory, parameterFactory);

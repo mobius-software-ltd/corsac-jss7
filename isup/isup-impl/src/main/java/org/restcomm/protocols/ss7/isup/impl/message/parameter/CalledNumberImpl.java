@@ -22,8 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledNumber;
@@ -36,26 +35,17 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledNumber;
  *
  */
 public abstract class CalledNumberImpl extends AbstractNAINumber implements CalledNumber {
-	private static final long serialVersionUID = 1L;
-
 	protected int numberingPlanIndicator;
     protected int addressRepresentationRestrictedIndicator;
 
-    public CalledNumberImpl(byte[] representation) throws ParameterException {
+    public CalledNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
 
     public CalledNumberImpl() {
         super();
-
     }
-
-    public CalledNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
-    }
-
+    
     public CalledNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,
             int addressRepresentationREstrictedIndicator) {
         super(natureOfAddresIndicator, address);
@@ -63,9 +53,9 @@ public abstract class CalledNumberImpl extends AbstractNAINumber implements Call
         this.addressRepresentationRestrictedIndicator = addressRepresentationREstrictedIndicator;
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         doAddressPresentationRestricted();
-        return super.encodeHeader(bos);
+        super.encodeHeader(buffer);
     }
 
     /*
@@ -73,13 +63,15 @@ public abstract class CalledNumberImpl extends AbstractNAINumber implements Call
      *
      * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
+    	if(buffer.readableBytes()==0) {
+    		throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+    	}
+    	
+        int b = buffer.readByte() & 0xff;
 
         this.numberingPlanIndicator = (b & 0x70) >> 4;
         this.addressRepresentationRestrictedIndicator = (b & 0x0c) >> 2;
-
-        return 1;
     }
 
     protected void doAddressPresentationRestricted() {
@@ -97,21 +89,19 @@ public abstract class CalledNumberImpl extends AbstractNAINumber implements Call
      * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
-    public int encodeBody(ByteArrayOutputStream bos) {
+    public void encodeBody(ByteBuf buffer) {
         int c = (this.numberingPlanIndicator & 0x07) << 4;
         c |= ((this.addressRepresentationRestrictedIndicator & 0x03) << 2);
 
-        bos.write(c);
-        return 1;
+        buffer.writeByte(c);        
     }
 
-    public int decodeDigits(ByteArrayInputStream bis) throws ParameterException {
+    public void decodeDigits(ByteBuf buffer) throws ParameterException {
 
         if (this.addressRepresentationRestrictedIndicator == _APRI_NOT_AVAILABLE) {
             this.setAddress("");
-            return 0;
         } else {
-            return super.decodeDigits(bis);
+            super.decodeDigits(buffer);
         }
     }
 

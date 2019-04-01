@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.parameter.Credit;
 import org.restcomm.protocols.ss7.sccp.parameter.Importance;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
@@ -49,8 +51,8 @@ public interface SccpConnCcMessage extends SccpConnMessage {
     Credit getCredit();
     void setCredit(Credit value);
 
-    byte[] getUserData();
-    void setUserData(byte[] data);
+    ByteBuf getUserData();
+    void setUserData(ByteBuf data);
 
     Importance getImportance();
     void setImportance(Importance importance);

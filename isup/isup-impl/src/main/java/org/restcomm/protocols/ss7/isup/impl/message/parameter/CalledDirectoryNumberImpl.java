@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledDirectoryNumber;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledDirectoryNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CalledDirectoryNumberImpl extends AbstractNAINumber implements CalledDirectoryNumber {
-	private static final long serialVersionUID = 1L;
-
 	protected int numberingPlanIndicator;
 
     protected int internalNetworkNumberIndicator;
@@ -52,19 +49,10 @@ public class CalledDirectoryNumberImpl extends AbstractNAINumber implements Call
     /**
      * @param representation
      */
-    public CalledDirectoryNumberImpl(byte[] representation) throws ParameterException {
+    public CalledDirectoryNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
 
         getNumberingPlanIndicator();
-    }
-
-    /**
-     *
-     * @param bis
-     */
-    public CalledDirectoryNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     public CalledDirectoryNumberImpl() {
@@ -79,34 +67,28 @@ public class CalledDirectoryNumberImpl extends AbstractNAINumber implements Call
         this.internalNetworkNumberIndicator = internalNetworkNumberIndicator;
     }
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        if (bis.available() == 0) {
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException {
+        if (buffer.readableBytes() == 0) {
             throw new IllegalArgumentException("No more data to read.");
         }
-        int b = bis.read() & 0xff;
+        int b = buffer.readByte() & 0xff;
 
         this.internalNetworkNumberIndicator = (b & 0x80) >> 7;
         this.numberingPlanIndicator = (b >> 4) & 0x07;
-
-        return 1;
     }
 
-    public int encodeBody(ByteArrayOutputStream bos) {
+    public void encodeBody(ByteBuf buffer) {
         int c = (this.numberingPlanIndicator & 0x07) << 4;
         c |= (this.internalNetworkNumberIndicator << 7);
-        bos.write(c);
-        return 1;
+        buffer.writeByte(c);
     }
 
     public int getNumberingPlanIndicator() {
-
         return this.numberingPlanIndicator;
     }
 
     public void setNumberingPlanIndicator(int numberingPlanIndicator) {
-
         this.numberingPlanIndicator = numberingPlanIndicator;
-
     }
 
     public int getInternalNetworkNumberIndicator() {

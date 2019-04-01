@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:14:06:12 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -37,8 +39,8 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
 public interface ServiceActivation extends ISUPParameter {
     int _PARAMETER_CODE = 0x33;
 
-    byte[] getFeatureCodes();
+    ByteBuf getFeatureCodes();
 
-    void setFeatureCodes(byte[] featureCodes);
+    void setFeatureCodes(ByteBuf featureCodes);
 
 }

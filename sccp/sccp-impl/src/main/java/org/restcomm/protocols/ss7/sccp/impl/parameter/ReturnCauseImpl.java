@@ -22,9 +22,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
@@ -67,39 +65,15 @@ public class ReturnCauseImpl extends AbstractParameter implements ReturnCause {
     }
 
     @Override
-    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (in.read() != 1) {
-                throw new ParseException();
-            }
-
-            this.digValue = in.read() & 0xFF;
-            this.value = ReturnCauseValue.getInstance(this.digValue);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
-    }
-
-    @Override
-    public void encode(OutputStream out, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            out.write(1);
-            out.write(this.digValue);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
-    }
-
-    @Override
-    public void decode(byte[] bb, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        this.digValue = bb[0] & 0xff;
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        this.digValue = buffer.readByte() & 0xff;
 
         this.value = ReturnCauseValue.getInstance(this.digValue);
     }
 
     @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return new byte[] { (byte) this.digValue };
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	buffer.writeByte((byte) this.digValue);
     }
 
     public String toString() {

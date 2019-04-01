@@ -21,6 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.InformationType;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeDuration;
@@ -30,8 +32,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  *
  */
 public class ReturnToInvokingExchangeDurationImpl extends AbstractInformationImpl implements ReturnToInvokingExchangeDuration {
-	private static final long serialVersionUID = 1L;
-
 	private int duration;
 
     public ReturnToInvokingExchangeDurationImpl() {
@@ -50,27 +50,29 @@ public class ReturnToInvokingExchangeDurationImpl extends AbstractInformationImp
     }
 
     @Override
-    byte[] encode() throws ParameterException {
-        byte[] data;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) this.duration);
         if(this.duration > 0xFF){
-            data = new byte[2];
-            data[1] = (byte) ((this.duration >> 8) & 0xFF);
-        } else {
-            data = new byte[1];
+        	buffer.writeByte((byte) ((this.duration >> 8) & 0xFF));
         }
-
-        data[0] = (byte) this.duration;
-        return data;
     }
 
     @Override
-    void decode(byte[] b) throws ParameterException {
-        if(b.length != 1 && b.length!=2){
-            throw new ParameterException("Wrong numbder of bytes: "+b.length);
+    public void decode(ByteBuf b) throws ParameterException {
+        if(b.readableBytes() != 1 && b.readableBytes()!=2){
+            throw new ParameterException("Wrong numbder of bytes: "+b.readableBytes());
         }
-        this.duration = (b[0] & 0xFF);
-        if(b.length == 2){
-             this.duration |= ((b[1] & 0xFF) << 8);
+        this.duration = (b.readByte() & 0xFF);
+        if(b.readableBytes() == 1){
+             this.duration |= ((b.readByte() & 0xFF) << 8);
         }
     }
+
+	@Override
+	public int getLength() {
+		if(this.duration > 0xFF)
+			return 2;
+		
+		return 1;
+	}
 }

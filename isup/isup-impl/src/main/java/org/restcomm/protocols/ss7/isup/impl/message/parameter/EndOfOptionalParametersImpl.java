@@ -30,7 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.EndOfOptionalParameters;
@@ -43,14 +43,12 @@ import org.restcomm.protocols.ss7.isup.message.parameter.EndOfOptionalParameters
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class EndOfOptionalParametersImpl extends AbstractISUPParameter implements EndOfOptionalParameters {
-	private static final long serialVersionUID = 1L;
-
 	public EndOfOptionalParametersImpl() {
         super();
 
     }
 
-    public EndOfOptionalParametersImpl(byte[] b) {
+    public EndOfOptionalParametersImpl(ByteBuf b) {
         super();
 
     }
@@ -60,23 +58,15 @@ public class EndOfOptionalParametersImpl extends AbstractISUPParameter implement
      */
     public static final int _PARAMETER_CODE = 0;
 
-    public int decode(byte[] b) throws ParameterException {
-
-        return 0;
+    public void decode(ByteBuf b) throws ParameterException {
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf b) throws ParameterException {
         // TODO Auto-generated method stub
-        return new byte[] { 0 };
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        bos.write(0);
-        return 1;
+        b.writeByte(0);
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 }

@@ -93,12 +93,12 @@ public class ParameterTest {
         return (short) ((data[2] & 0xff) << 8 | (data[3] & 0xff));
     }
 
-    private byte[] getValue(byte[] data) {
+    private ByteBuf getValue(byte[] data) {
         // reduce 4 for Tag + length bytes
         short length = (short) (getLen(data) - 4);
         byte[] value = new byte[length];
         System.arraycopy(data, 4, value, 0, length);
-        return value;
+        return Unpooled.wrappedBuffer(value);
     }
 
     @Test
@@ -137,11 +137,14 @@ public class ParameterTest {
         int dpc = 2200;
         int opc = 7892;
         int sls = 15;
-        ProtocolDataImpl p1 = (ProtocolDataImpl) factory.createProtocolData(opc, dpc, si, ni, mp, sls, userData);
+        ProtocolDataImpl p1 = (ProtocolDataImpl) factory.createProtocolData(opc, dpc, si, ni, mp, sls, Unpooled.wrappedBuffer(userData));
 
-        assertTrue(Arrays.equals(protocolData, p1.getValue()));
+        ByteBuf buf=p1.getValue();
+        byte[] p1Arr=new byte[buf.readableBytes()];
+        buf.readBytes(p1Arr);
+        assertTrue(Arrays.equals(protocolData, p1Arr));
 
-        ProtocolDataImpl p2 = (ProtocolDataImpl) factory.createProtocolData(protocolData);
+        ProtocolDataImpl p2 = (ProtocolDataImpl) factory.createProtocolData(Unpooled.wrappedBuffer(protocolData));
 
         assertEquals(p1.getTag(), p2.getTag());
         assertEquals(p1.getOpc(), p2.getOpc());
@@ -151,7 +154,14 @@ public class ParameterTest {
         assertEquals(p2.getMP(), p2.getMP());
         assertEquals(p2.getSLS(), p2.getSLS());
 
-        boolean isDataCorrect = Arrays.equals(p2.getData(), p2.getData());
+        buf=p1.getValue();
+        p1Arr=new byte[buf.readableBytes()];
+        buf.readBytes(p1Arr);
+        
+        ByteBuf buf2=p2.getValue();
+        byte[] p2Arr=new byte[buf2.readableBytes()];
+        buf2.readBytes(p2Arr);
+        boolean isDataCorrect = Arrays.equals(p1Arr, p2Arr);
         assertTrue(isDataCorrect, "Data mismatch");
     }
 
@@ -160,7 +170,7 @@ public class ParameterTest {
      */
     @Test
     public void testProtocolData1() throws IOException {
-        ProtocolDataImpl p1 = (ProtocolDataImpl) factory.createProtocolData(1408, 14150, 1, 1, 0, 1, new byte[] { 1, 2, 3, 4 });
+        ProtocolDataImpl p1 = (ProtocolDataImpl) factory.createProtocolData(1408, 14150, 1, 1, 0, 1, Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
         p1.write(out);
 
         int length = out.readableBytes();
@@ -177,7 +187,13 @@ public class ParameterTest {
         assertEquals(p1.getMP(), p2.getMP());
         assertEquals(p1.getSLS(), p2.getSLS());
 
-        boolean isDataCorrect = Arrays.equals(p1.getData(), p2.getData());
+        ByteBuf p1Buf=p1.getData();
+        ByteBuf p2Buf=p2.getData();
+        byte[] p1Arr=new byte[p1Buf.readableBytes()];
+        p1Buf.readBytes(p1Arr);
+        byte[] p2Arr=new byte[p2Buf.readableBytes()];
+        p2Buf.readBytes(p2Arr);
+        boolean isDataCorrect = Arrays.equals(p1Arr, p2Arr);
         assertTrue(isDataCorrect, "Data mismatch");
     }
 

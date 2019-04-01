@@ -25,8 +25,8 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -58,16 +58,16 @@ public class CauseIndicatorsTest {
     public void tearDown() {
     }
 
-    private byte[] getData() {
-        return new byte[] { (byte) 133, (byte) 149 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 133, (byte) 149 });
     }
 
-    private byte[] getData2() {
-        return new byte[] { (byte) 133, (byte) 149, 1, 2, (byte) 0xFF };
+    private ByteBuf getData2() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 133, (byte) 149, 1, 2, (byte) 0xFF });
     }
 
-    private byte[] getDiagnosticsData() {
-        return new byte[] { 1, 2, (byte) 0xFF };
+    private ByteBuf getDiagnosticsData() {
+        return Unpooled.wrappedBuffer(new byte[] { 1, 2, (byte) 0xFF });
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -101,18 +101,20 @@ public class CauseIndicatorsTest {
         CauseIndicatorsImpl prim = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_ITUT,
                 CauseIndicators._LOCATION_PRIVATE_NSRU, 0, CauseIndicators._CV_CALL_REJECTED, null);
 
-        byte[] data = getData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getData();
+        ByteBuf encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_ITUT, CauseIndicators._LOCATION_PRIVATE_NSRU, 0,
                 CauseIndicators._CV_CALL_REJECTED, getDiagnosticsData());
 
         data = getData2();
-        encodedData = prim.encode();
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         // TODO: add an encoding/decoding unittest for CodingStandard!=CauseIndicators._CODING_STANDARD_ITUT and
         // recomendations!=null (extra Recommendation byte)

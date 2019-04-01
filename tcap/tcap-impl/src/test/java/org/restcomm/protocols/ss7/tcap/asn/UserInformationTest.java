@@ -25,17 +25,22 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.restcomm.protocols.ss7.tcap.asn.EncodeException;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -46,6 +51,13 @@ import org.testng.annotations.Test;
 @Test(groups = { "asn" })
 public class UserInformationTest {
 
+	@BeforeClass
+	public void setUp()
+	{
+		ASNGeneric.clear(ASNUserInformationObjectImpl.class);
+		ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, UserInformationTestASN.class);		
+	}
+	
     @Test(groups = { "functional.decode" })
     public void testUserInformationDecode() throws Exception {
 
@@ -55,88 +67,103 @@ public class UserInformationTest {
                 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98, (byte) 0x86,
                 0x03, (byte) 0xf0, 0x00, 0x00 };
 
-        AsnInputStream asin = new AsnInputStream(data);
-        int tag = asin.readTag();
-        assertEquals(UserInformation._TAG, tag);
+        ASNParser parser=new ASNParser();
+        parser.loadClass(UserInformationImpl.class);
+        
+        ByteBuf buffer=Unpooled.wrappedBuffer(data);
+        Object output=parser.decode(buffer).getResult();
+        UserInformationImpl userInformation = (UserInformationImpl)output;
+        
+        assertTrue(userInformation.getExternal().isIDObjectIdentifier());
 
-        UserInformation userInformation = new UserInformationImpl();
-        userInformation.decode(asin);
+        List<Long> ids=Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L });
+        assertEquals(ids, userInformation.getExternal().getObjectIdentifier());
 
-        assertTrue(userInformation.isOid());
+        assertFalse(userInformation.getExternal().isIDIndirect());
 
-        assertTrue(Arrays.equals(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 }, userInformation.getOidValue()));
-
-        assertFalse(userInformation.isInteger());
-
-        assertTrue(userInformation.isAsn());
-        assertTrue(Arrays.equals(new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
+        assertTrue(userInformation.getExternal().isValueObject());
+        
+        ByteBuf innerBuffer=parser.encode(userInformation.getExternal().getChild().getValue());
+        byte[] outputData=innerBuffer.array();
+        byte[] expectedData=new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
                 (byte) 0x80, 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26,
-                (byte) 0x98, (byte) 0x86, 0x03, (byte) 0xf0, 0x00, 0x00 }, userInformation.getEncodeType()));
+                (byte) 0x98, (byte) 0x86, 0x03, (byte) 0xf0, 0x00, 0x00 };
+        assertTrue(Arrays.equals(expectedData, outputData));
 
     }
 
     @Test(groups = { "functional.encode" })
     public void testUserInformationEncode() throws IOException, EncodeException {
 
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(UserInformationImpl.class);
+        
         byte[] encodedData = new byte[] { (byte) 0xbe, 0x25, 0x28, 0x23, 0x06, 0x07, 0x04, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01,
                 (byte) 0xa0, 0x18, (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80, 0x03,
                 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98, (byte) 0x86,
                 0x03, (byte) 0xf0, 0x00, 0x00 };
 
-        UserInformation userInformation = new UserInformationImpl();
+        UserInformationImpl userInformation = new UserInformationImpl();
+        UserInformationExternalImpl external=new UserInformationExternalImpl();
+        external.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        userInformation.setOid(true);
-        userInformation.setOidValue(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 });
-
-        userInformation.setAsn(true);
-        userInformation.setEncodeType(new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
+        UserInformationTestASN demo=new UserInformationTestASN();
+        demo.setValue(new byte[] { (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
                 (byte) 0x80, 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26,
-                (byte) 0x98, (byte) 0x86, 0x03, (byte) 0xf0, 0x00, 0x00 });
+                (byte) 0x98, (byte) 0x86, 0x03, (byte) 0xf0 });
+               
+        ASNUserInformationObjectImpl child=new ASNUserInformationObjectImpl();
+        child.setValue(demo);
+        external.setChildAsObject(child);
 
-        AsnOutputStream asnos = new AsnOutputStream();
-        userInformation.encode(asnos);
+        userInformation.setExternal(external);
+        ByteBuf data=null;
+        try {
+        	data=parser.encode(userInformation);
+        }
+        catch(ASNException ex) {
+        	
+        }
 
-        byte[] userInfData = asnos.toByteArray();
+        assertFalse(data==null);
+        byte[] userInfData = data.array();
 
         TcBeginTest.dump(userInfData, userInfData.length, false);
         assertTrue(Arrays.equals(encodedData, userInfData));
 
     }
 
-    public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+    public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
 
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testFailuuure() throws Exception {
+    	
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(UserInformationImpl.class);
+        
         byte[] encoded = new byte[] { -66, 15, 40, 13, 6, 7, 4, 0, 0, 1, 0, 19, 2, -126, 2, 4, -112 };
 
-        UserInformation _ui = new UserInformationImpl();
-        _ui.setArbitrary(true);
-        BitSetStrictLength bs = new BitSetStrictLength(4);
-        bs.set(0);
-        bs.set(3);
-        _ui.setEncodeBitStringType(bs);
-        _ui.setAsn(false);
-        _ui.setOid(true);
-        _ui.setOidValue(_ACN_);
-        AsnOutputStream asnOutput = new AsnOutputStream();
-        _ui.encode(asnOutput);
-        byte[] buf = asnOutput.toByteArray();
+        UserInformationImpl _ui = new UserInformationImpl();
+        UserInformationExternalImpl external=new UserInformationExternalImpl();
+        ASNBitString bitString=new ASNBitString();
+        bitString.setBit(0);
+        bitString.setBit(3);
+        external.setChild(bitString);
+        external.setIdentifier(_ACN_);
+        _ui.setExternal(external);
+        ByteBuf data=parser.encode(_ui);
+        byte[] buf = data.array();
         assertTrue(Arrays.equals(encoded, buf));
 
-        AsnInputStream asnInput = new AsnInputStream(buf);
-        asnInput.readTag();
-        UserInformationImpl _ui2 = new UserInformationImpl();
-        _ui2.decode(asnInput);
-        assertTrue(_ui2.isOid());
-        assertTrue(_ui2.isArbitrary());
-        assertTrue(Arrays.equals(_ACN_, _ui2.getOidValue()));
-        BitSetStrictLength bs2 = _ui2.getEncodeBitStringType();
-        assertEquals(4, bs2.getStrictLength());
-        assertEquals(true, bs2.get(0));
-        assertEquals(false, bs2.get(1));
-        assertEquals(false, bs2.get(2));
-        assertEquals(true, bs2.get(3));
-
+        Object value=parser.decode(Unpooled.wrappedBuffer(buf)).getResult();
+        UserInformationImpl _ui2 = (UserInformationImpl)value;
+        assertTrue(_ui2.getExternal().isIDObjectIdentifier());
+        assertTrue(_ui2.getExternal().isValueBitString());
+        assertEquals(_ACN_, _ui2.getExternal().getObjectIdentifier());
+        ASNBitString bs2 = _ui2.getExternal().getBitString();
+        assertTrue(bs2.isBitSet(0));
+        assertFalse(bs2.isBitSet(1));
+        assertFalse(bs2.isBitSet(2));
+        assertTrue(bs2.isBitSet(3));
     }
-
 }

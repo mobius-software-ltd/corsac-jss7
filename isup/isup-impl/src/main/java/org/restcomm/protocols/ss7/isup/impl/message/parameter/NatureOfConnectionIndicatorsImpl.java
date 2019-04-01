@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.NatureOfConnectionIndicators;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NatureOfConnectionIndic
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class NatureOfConnectionIndicatorsImpl extends AbstractISUPParameter implements NatureOfConnectionIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -52,7 +49,7 @@ public class NatureOfConnectionIndicatorsImpl extends AbstractISUPParameter impl
     private int continuityCheckIndicator = 0;
     private boolean echoControlDeviceIndicator = false;
 
-    public NatureOfConnectionIndicatorsImpl(byte[] b) throws ParameterException {
+    public NatureOfConnectionIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -70,35 +67,23 @@ public class NatureOfConnectionIndicatorsImpl extends AbstractISUPParameter impl
         this.echoControlDeviceIndicator = echoControlDeviceIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null and must have length of 1");
         }
-        this.satelliteIndicator = (byte) (b[0] & 0x03);
-        this.continuityCheckIndicator = (byte) ((b[0] >> 2) & 0x03);
-        this.echoControlDeviceIndicator = ((b[0] >> 4) == _TURN_ON);
-
-        return 1;
+        
+        byte curr=b.readByte();
+        this.satelliteIndicator = (byte) (curr & 0x03);
+        this.continuityCheckIndicator = (byte) ((curr >> 2) & 0x03);
+        this.echoControlDeviceIndicator = ((curr >> 4) == _TURN_ON);
     }
 
-    public byte[] encode() throws ParameterException {
-
+    public void encode(ByteBuf buffer) throws ParameterException {
         int b0 = 0;
         b0 = this.satelliteIndicator & 0x03;
         b0 |= (this.continuityCheckIndicator & 0x03) << 2;
         b0 |= (this.echoControlDeviceIndicator ? _TURN_ON : _TURN_OFF) << 4;
-        return new byte[] { (byte) b0 };
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        byte[] b = this.encode();
-        try {
-            bos.write(b);
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
-
+        buffer.writeByte((byte) b0);
     }
 
     public int getSatelliteIndicator() {

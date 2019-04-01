@@ -22,7 +22,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -44,7 +46,7 @@ public class RedirectionNumberTest extends ParameterHarness {
      * @throws IOException
      */
     public RedirectionNumberTest() throws IOException {
-        super.badBodies.add(new byte[1]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
 
     }
 
@@ -61,21 +63,21 @@ public class RedirectionNumberTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(boolean isODD, int naiNetworkSpecific, int innRoutingAllowed, int npiTelex, byte[] dgits)
+    private ByteBuf getBody(boolean isODD, int naiNetworkSpecific, int innRoutingAllowed, int npiTelex, byte[] dgits)
             throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
 
         if (isODD) {
-            bos.write(0x80 | naiNetworkSpecific);
+            bos.writeByte(0x80 | naiNetworkSpecific);
         } else {
-            bos.write(naiNetworkSpecific);
+            bos.writeByte(naiNetworkSpecific);
         }
 
-        bos.write((innRoutingAllowed << 7) | (npiTelex << 4));
+        bos.writeByte((innRoutingAllowed << 7) | (npiTelex << 4));
 
-        bos.write(dgits);
-        return bos.toByteArray();
+        bos.writeBytes(dgits);
+        return bos;
     }
 
     /*

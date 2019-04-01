@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -88,7 +90,7 @@ public class CorrelationIDTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() {
-        return new CorrelationIDImpl(1, 1, new byte[2]);
+        return new CorrelationIDImpl(1, 1, Unpooled.wrappedBuffer(new byte[2]));
     }
 
 }

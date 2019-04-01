@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
@@ -35,7 +38,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.ServiceIndicators;
 public class ServiceIndicatorsImpl extends ParameterImpl implements ServiceIndicators {
 
     private short[] indicators;
-    private byte[] value = null;
+    private ByteBuf value = null;
 
     public ServiceIndicatorsImpl() {
         this.tag = Parameter.Service_Indicators;
@@ -47,11 +50,12 @@ public class ServiceIndicatorsImpl extends ParameterImpl implements ServiceIndic
         this.encode();
     }
 
-    protected ServiceIndicatorsImpl(byte[] value) {
+    protected ServiceIndicatorsImpl(ByteBuf value) {
         this.tag = Parameter.Service_Indicators;
-        this.indicators = new short[value.length];
-        for (int i = 0; i < value.length; i++) {
-            this.indicators[i] = value[i];
+        this.indicators = new short[value.readableBytes()];
+        int index=0;
+        while(value.readableBytes()>0) {
+            this.indicators[index++] = value.readByte();
         }
         this.value = value;
     }
@@ -59,17 +63,16 @@ public class ServiceIndicatorsImpl extends ParameterImpl implements ServiceIndic
     private void encode() {
         // create byte array taking into account data, point codes and
         // indicators;
-        this.value = new byte[indicators.length];
-        int count = 0;
+        this.value = Unpooled.buffer(indicators.length);
         // encode routing context
-        while (count < value.length) {
-            value[count] = (byte) indicators[count++];
+        for(short currIndicator:indicators) {
+            value.writeByte((byte) currIndicator);
         }
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     public short[] getIndicators() {

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
@@ -34,11 +36,11 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 public class EncodingResultData {
 
     private EncodingResult encodingResult;
-    private byte[] solidData;
-    private ArrayList<byte[]> segementedData;
+    private ByteBuf solidData;
+    private ArrayList<ByteBuf> segementedData;
     private ReturnCauseValue returnCause;
 
-    public EncodingResultData(EncodingResult encodingResult, byte[] solidData, ArrayList<byte[]> segementedData,
+    public EncodingResultData(EncodingResult encodingResult, ByteBuf solidData, ArrayList<ByteBuf> segementedData,
             ReturnCauseValue returnCause) {
         this.encodingResult = encodingResult;
         this.solidData = solidData;
@@ -50,11 +52,11 @@ public class EncodingResultData {
         return encodingResult;
     }
 
-    public byte[] getSolidData() {
+    public ByteBuf getSolidData() {
         return solidData;
     }
 
-    public ArrayList<byte[]> getSegementedData() {
+    public ArrayList<ByteBuf> getSegementedData() {
         return segementedData;
     }
 

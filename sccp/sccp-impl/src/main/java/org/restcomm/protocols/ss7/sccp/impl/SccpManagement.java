@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -102,22 +105,22 @@ public class SccpManagement {
     }
 
     public void onManagementMessage(SccpDataMessage message) {
-        byte[] data = message.getData();
-        int messgType = data[0] & 0xff;
-        int affectedSsn = data[1] & 0xff;
+        ByteBuf data = message.getData();
+        int messgType = data.readByte() & 0xff;
+        int affectedSsn = data.readByte() & 0xff;
         int affectedPc;
         int subsystemMultiplicity;
         int congestionLevel = 0;
         if (this.sccpStackImpl.getSccpProtocolVersion() == SccpProtocolVersion.ANSI) {
-            affectedPc = (data[2] & 0xff) | ((data[3] & 0xff) << 8) | ((data[4] & 0xff) << 16);
-            subsystemMultiplicity = data[5] & 0xff;
+            affectedPc = (data.readByte() & 0xff) | ((data.readByte() & 0xff) << 8) | ((data.readByte() & 0xff) << 16);
+            subsystemMultiplicity = data.readByte() & 0xff;
             if (messgType == SSC)
-                congestionLevel = data[6] & 0x0f;
+                congestionLevel = data.readByte() & 0x0f;
         } else {
-            affectedPc = (data[2] & 0xff) | ((data[3] & 0xff) << 8);
-            subsystemMultiplicity = data[4] & 0xff;
+            affectedPc = (data.readByte() & 0xff) | ((data.readByte() & 0xff) << 8);
+            subsystemMultiplicity = data.readByte() & 0xff;
             if (messgType == SSC)
-                congestionLevel = data[5] & 0x0f;
+                congestionLevel = data.readByte() & 0x0f;
         }
 
         switch (messgType) {
@@ -222,7 +225,7 @@ public class SccpManagement {
         SccpAddress calledAdd = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, dpc, 1);
         SccpAddress callingAdd = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, affectedPc, 1);
 
-        byte[] data = null;
+        ByteBuf data = null;
         if(messageTypeCode == SSC)
             data = createManagementMessageBody(messageTypeCode, affectedPc, affectedSsn, subsystemMultiplicityIndicator, congestionLevel);
         else
@@ -245,40 +248,41 @@ public class SccpManagement {
         }
     }
 
-    private byte[] createManagementMessageBody(int messageTypeCode, int affectedPc, int affectedSsn,
+    private ByteBuf createManagementMessageBody(int messageTypeCode, int affectedPc, int affectedSsn,
             int subsystemMultiplicityIndicator) {
         return createManagementMessageBody(messageTypeCode, affectedPc, affectedSsn, subsystemMultiplicityIndicator, -1);
     }
 
-    private byte[] createManagementMessageBody(int messageTypeCode, int affectedPc, int affectedSsn,
+    private ByteBuf createManagementMessageBody(int messageTypeCode, int affectedPc, int affectedSsn,
             int subsystemMultiplicityIndicator, int congestionLevel) {
-        byte[] data;
+    	ByteBuf data;
         if (this.sccpStackImpl.getSccpProtocolVersion() == SccpProtocolVersion.ANSI) {
             if (congestionLevel >= 0)
-                data = new byte[7];
+                data = Unpooled.buffer(7);
             else
-                data = new byte[6];
+                data = Unpooled.buffer(6);
         } else {
             if (congestionLevel >= 0)
-                data = new byte[6];
+                data = Unpooled.buffer(6);
             else
-                data = new byte[5];
+                data = Unpooled.buffer(5);
         }
-        data[0] = (byte) messageTypeCode;
-        data[1] = (byte) affectedSsn; // affected SSN
+        
+        data.writeByte((byte) messageTypeCode);
+        data.writeByte((byte) affectedSsn); // affected SSN
         if (this.sccpStackImpl.getSccpProtocolVersion() == SccpProtocolVersion.ANSI) {
-            data[2] = (byte) (affectedPc & 0x000000ff);
-            data[3] = (byte) ((affectedPc & 0x0000ff00) >> 8);
-            data[4] = (byte) ((affectedPc & 0x00ff0000) >> 16);
-            data[5] = (byte) subsystemMultiplicityIndicator;
+        	data.writeByte((byte) (affectedPc & 0x000000ff));
+        	data.writeByte((byte) ((affectedPc & 0x0000ff00) >> 8));
+        	data.writeByte((byte) ((affectedPc & 0x00ff0000) >> 16));
+        	data.writeByte((byte) subsystemMultiplicityIndicator);
             if (congestionLevel >= 0)
-                data[6] = (byte) congestionLevel;
+            	data.writeByte((byte) congestionLevel);
         } else {
-            data[2] = (byte) (affectedPc & 0x000000ff);
-            data[3] = (byte) ((affectedPc & 0x0000ff00) >> 8);
-            data[4] = (byte) subsystemMultiplicityIndicator;
+        	data.writeByte((byte) (affectedPc & 0x000000ff));
+        	data.writeByte((byte) ((affectedPc & 0x0000ff00) >> 8));
+        	data.writeByte((byte) subsystemMultiplicityIndicator);
             if (congestionLevel >= 0)
-                data[5] = (byte) congestionLevel;
+            	data.writeByte((byte) congestionLevel);
         }
         return data;
     }

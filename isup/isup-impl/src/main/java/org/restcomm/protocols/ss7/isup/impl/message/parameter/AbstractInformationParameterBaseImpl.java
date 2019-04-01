@@ -21,8 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,48 +36,35 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Information;
  *
  */
 abstract class AbstractInformationParameterBaseImpl extends AbstractISUPParameter{
-	private static final long serialVersionUID = 1L;
-
 	private List<Information> infos = new ArrayList<Information>();
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b.length < 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b.readableBytes() < 1) {
             throw new ParameterException();
         }
 
-        int index = 0;
         for (;;) {
-            byte tag = b[index++];
-            byte len = b[index++];
-            byte[] value = new byte[len];
-            System.arraycopy(b, index, value, 0, len);
-            index += len;
-
-            Information info = initializeInformation(tag,value);
+            byte tag = b.readByte();
+            byte len = b.readByte();
+            Information info = initializeInformation(tag,b.slice(b.readerIndex(), len));
+            b.skipBytes(len);
             this.infos.add(info);
-            if (index >= b.length) {
+            if (b.readableBytes()==0) {
                 break;
             }
         }
-        return b.length;
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf b) throws ParameterException {
         if (this.infos.size() == 0) {
             throw new ParameterException();
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
         for (Information info : this.infos) {
-            baos.write(info.getTag());
-            final byte[] value = ((AbstractInformationImpl)info).encode();
-            baos.write(value.length);
-            try {
-                baos.write(value);
-            } catch (IOException e) {
-                throw new ParameterException(e);
-            }
+            b.writeByte(info.getTag());
+            b.writeByte(((AbstractInformationImpl)info).getLength());
+            ((AbstractInformationImpl)info).encode(b);            
         }
-        return baos.toByteArray();
     }
 
     protected void setInformation(Information... infos) {
@@ -109,7 +96,7 @@ abstract class AbstractInformationParameterBaseImpl extends AbstractISUPParamete
     }
     protected abstract Map<Integer, Class<? extends AbstractInformationImpl>> getTagMapping();
 
-    protected AbstractInformationImpl initializeInformation(final int tag, final byte[] data) throws ParameterException{
+    protected AbstractInformationImpl initializeInformation(final int tag, final ByteBuf data) throws ParameterException{
         final int tagStripped = tag & 0xFF;
         final Map<Integer, Class<? extends AbstractInformationImpl>> tagMapping = getTagMapping();
         Class<? extends AbstractInformationImpl> clazz = tagMapping.get(tagStripped);

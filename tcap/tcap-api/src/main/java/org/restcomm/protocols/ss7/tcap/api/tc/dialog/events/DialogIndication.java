@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.tcap.api.tc.dialog.events;
 
-import java.io.Serializable;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 
-public interface DialogIndication extends Serializable {
+public interface DialogIndication {
 
     /**
      * Return dialog for this indication
@@ -41,7 +41,7 @@ public interface DialogIndication extends Serializable {
      *
      * @return
      */
-    Component[] getComponents();
+    List<ComponentImpl> getComponents();
 
     EventType getType();
 

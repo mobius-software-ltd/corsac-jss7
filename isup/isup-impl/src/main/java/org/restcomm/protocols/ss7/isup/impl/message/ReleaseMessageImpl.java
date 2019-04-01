@@ -29,6 +29,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -63,8 +65,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessT
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 class ReleaseMessageImpl extends ISUPMessageImpl implements ReleaseMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Release);
 
     private static final int _MANDATORY_VAR_COUNT = 1;
@@ -106,7 +106,7 @@ class ReleaseMessageImpl extends ISUPMessageImpl implements ReleaseMessage {
      * @param parameterCode
      * @throws ParameterException
      */
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         switch (parameterIndex) {
             case _INDEX_V_CauseIndicators:
@@ -126,7 +126,7 @@ class ReleaseMessageImpl extends ISUPMessageImpl implements ReleaseMessage {
      * @see org.mobicents.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
      */
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
 
         switch (parameterCode & 0xFF) {

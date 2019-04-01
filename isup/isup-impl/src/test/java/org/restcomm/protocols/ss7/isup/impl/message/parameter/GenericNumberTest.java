@@ -25,8 +25,8 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
@@ -61,12 +61,12 @@ public class GenericNumberTest {
     public void tearDown() {
     }
 
-    private byte[] getData() {
-        return new byte[] { 5, (byte) 131, (byte) 194, 0x21, 0x43, 0x05 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { 5, (byte) 131, (byte) 194, 0x21, 0x43, 0x05 });
     }
 
-    private byte[] getData2() {
-        return new byte[] { 8, 0, 11 };
+    private ByteBuf getData2() {
+        return Unpooled.wrappedBuffer(new byte[] { 8, 0, 11 });
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -107,10 +107,11 @@ public class GenericNumberTest {
         // addressRepresentationREstrictedIndicator,
         // boolean numberIncomplete, int screeningIndicator
 
-        byte[] data = getData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getData();
+        ByteBuf encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim = new GenericNumberImpl(0, "", GenericNumber._NQIA_REDIRECTING_NUMBER, 0, GenericNumber._APRI_NOT_AVAILABLE,
                 GenericNumber._NI_COMPLETE, GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
@@ -118,10 +119,11 @@ public class GenericNumberTest {
         // addressRepresentationREstrictedIndicator,
         // boolean numberIncomplete, int screeningIndicator
 
-        data = getData2();
-        encodedData = prim.encode();
+        data = getData2();        
+        encodedData = Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "parameter" })

@@ -33,9 +33,8 @@ import org.restcomm.protocols.ss7.sccp.message.SccpConnErrMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.ErrorCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class SccpConnErrMessageImpl extends SccpConnReferencedMessageImpl implements SccpConnErrMessage {
     protected ErrorCause errorCause;
@@ -59,22 +58,14 @@ public class SccpConnErrMessageImpl extends SccpConnReferencedMessageImpl implem
     }
 
     @Override
-    public void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte[] buffer = new byte[3];
-            in.read(buffer);
-            LocalReferenceImpl ref = new LocalReferenceImpl();
-            ref.decode(buffer, factory, sccpProtocolVersion);
-            destinationLocalReferenceNumber = ref;
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	LocalReferenceImpl ref = new LocalReferenceImpl();
+        ref.decode(buffer, factory, sccpProtocolVersion);
+        destinationLocalReferenceNumber = ref;
 
-            buffer = new byte[1];
-            in.read(buffer);
-            ErrorCauseImpl cause = new ErrorCauseImpl();
-            cause.decode(buffer, factory, sccpProtocolVersion);
-            errorCause = cause;
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+        ErrorCauseImpl cause = new ErrorCauseImpl();
+        cause.decode(buffer, factory, sccpProtocolVersion);
+        errorCause = cause;
     }
 
     @Override
@@ -82,27 +73,21 @@ public class SccpConnErrMessageImpl extends SccpConnReferencedMessageImpl implem
         if (type == 0) {
             return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
         }
-        try {
-            if (destinationLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
-            }
-            if (errorCause == null) {
-                return new EncodingResultData(EncodingResult.ErrorCauseMissing, null, null, null);
-            }
-
-            // 5 is sum of 3 fixed-length field lengths
-            ByteArrayOutputStream out = new ByteArrayOutputStream(5);
-
-            byte[] dlr = ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] cause = ((ErrorCauseImpl) errorCause).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-
-            out.write(type);
-            out.write(dlr);
-            out.write(cause);
-            return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-        } catch (IOException e) {
-            throw new ParseException(e);
+        
+        if (destinationLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
         }
+        if (errorCause == null) {
+            return new EncodingResultData(EncodingResult.ErrorCauseMissing, null, null, null);
+        }
+
+        // 5 is sum of 3 fixed-length field lengths
+        ByteBuf out = Unpooled.buffer(5);
+
+        out.writeByte(type);
+        ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((ErrorCauseImpl) errorCause).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        return new EncodingResultData(EncodingResult.Success, out, null, null);
     }
 
     @Override

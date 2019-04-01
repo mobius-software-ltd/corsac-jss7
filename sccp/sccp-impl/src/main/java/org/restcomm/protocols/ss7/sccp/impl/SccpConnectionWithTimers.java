@@ -15,6 +15,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCauseValue;
 
+import io.netty.buffer.Unpooled;
+
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -106,7 +108,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
                     return;
                 }
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), new byte[]{});
+                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
 
             } catch (Exception e) {
                 logger.error(e);
@@ -156,7 +158,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
                     return;
                 }
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.EXPIRATION_OF_RECEIVE_INACTIVITY_TIMER), new byte[] {});
+                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.EXPIRATION_OF_RECEIVE_INACTIVITY_TIMER), Unpooled.buffer());
 
             } catch (Exception e) {
                 logger.error(e);
@@ -184,7 +186,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
                     return;
                 }
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), new byte[]{});
+                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
                 intProcess.startTimer();
                 repeatRelProcess.startTimer();
 
@@ -214,7 +216,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
                     return;
                 }
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), new byte[]{});
+                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
                 repeatRelProcess.startTimer();
 
             } catch (Exception e) {
@@ -246,7 +248,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 
             SccpListener listener = getListener();
             if (listener != null) {
-                listener.onDisconnectIndication((SccpConnection) SccpConnectionWithTimers.this, new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), new byte[] {});
+                listener.onDisconnectIndication((SccpConnection) SccpConnectionWithTimers.this, new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
             }
             stack.removeConnection(getLocalReference());
         }
@@ -277,7 +279,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
                     return;
                 }
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), new byte[]{});
+                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
                 stack.removeConnection(getLocalReference());
 
             } catch (Exception e) {

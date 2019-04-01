@@ -32,6 +32,8 @@ package org.restcomm.protocols.ss7.isup.impl.message;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
@@ -50,7 +52,7 @@ public class SAMTest extends MessageHarness {
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
 
-        byte[] message = getDefaultBody();
+        ByteBuf message = getDefaultBody();
 
 
         SubsequentAddressMessage msg =  super.messageFactory.createSAM();
@@ -61,7 +63,7 @@ public class SAMTest extends MessageHarness {
         assertEquals(msg.getSubsequentNumber().getAddress(), "380683");
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
                 // CIC
                 0x0C, (byte) 0x0B,
@@ -78,7 +80,7 @@ public class SAMTest extends MessageHarness {
                         0x38,
                 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

@@ -28,8 +28,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
  *
  */
 public class PivotReasonImpl implements PivotReason {
-	private static final long serialVersionUID = 1L;
-
 	private byte pivotReason;
     //we need to know if that one was set.
     private Byte pivotPossibleAtPerformingExchange;
@@ -57,19 +55,6 @@ public class PivotReasonImpl implements PivotReason {
     @Override
     public void setPivotPossibleAtPerformingExchange(byte b) {
         this.pivotPossibleAtPerformingExchange = (byte) (b & 0x07);
-    }
-
-    public byte[] encode(){
-        byte[] data = null;
-        if(this.pivotPossibleAtPerformingExchange == null){
-            data = new byte[1];
-            data[0] = (byte) (0x80 | this.pivotReason);
-        } else {
-            data = new byte[2];
-            data[0] = this.pivotReason;
-            data[1] = this.pivotPossibleAtPerformingExchange;
-        }
-        return data;
     }
 
     /**

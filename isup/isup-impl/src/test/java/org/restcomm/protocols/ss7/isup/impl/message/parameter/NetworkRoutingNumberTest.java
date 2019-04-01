@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -51,12 +53,12 @@ public class NetworkRoutingNumberTest extends ParameterHarness {
      * @throws IOException
      */
     public NetworkRoutingNumberTest() throws IOException {
-        super.badBodies.add(new byte[1]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
 
-        super.goodBodies.add(getBody(false, getSixDigits(), NetworkRoutingNumberImpl._NPI_ISDN_NP,
-                NetworkRoutingNumberImpl._NAI_NRNI_NETWORK_SNF));
-        super.goodBodies.add(getBody(true, getFiveDigits(), NetworkRoutingNumberImpl._NPI_ISDN_NP,
-                NetworkRoutingNumberImpl._NAI_NRNI_NETWORK_SNF));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody(false, getSixDigits(), NetworkRoutingNumberImpl._NPI_ISDN_NP,
+                NetworkRoutingNumberImpl._NAI_NRNI_NETWORK_SNF)));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody(true, getFiveDigits(), NetworkRoutingNumberImpl._NPI_ISDN_NP,
+                NetworkRoutingNumberImpl._NAI_NRNI_NETWORK_SNF)));
         // This will fail, cause this body has APRI allowed, so hardcoded body
         // does nto match encoded body :)
         // super.goodBodies.add(getBody2());
@@ -86,17 +88,17 @@ public class NetworkRoutingNumberTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(boolean isODD, byte[] digits, int npiIsdnNp, int naiNrniNetworkSnf) throws IOException {
+    private ByteBuf getBody(boolean isODD, byte[] digits, int npiIsdnNp, int naiNrniNetworkSnf) throws IOException {
         int b = 0;
         if (isODD) {
             b |= 0x01 << 7;
         }
         b |= npiIsdnNp << 4;
         b |= naiNrniNetworkSnf;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(b);
-        bos.write(digits);
-        return bos.toByteArray();
+        ByteBuf bos = Unpooled.buffer();
+        bos.writeByte(b);
+        bos.writeBytes(digits);
+        return bos;
     }
 
     /*

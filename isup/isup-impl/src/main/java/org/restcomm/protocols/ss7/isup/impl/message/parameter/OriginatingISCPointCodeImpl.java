@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginatingISCPointCode;
 
@@ -40,20 +42,15 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginatingISCPointCode
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class OriginatingISCPointCodeImpl extends AbstractPointCode implements OriginatingISCPointCode {
-	private static final long serialVersionUID = 1L;
-
 	public int getCode() {
-
         return _PARAMETER_CODE;
     }
 
     public OriginatingISCPointCodeImpl() {
         super();
-
     }
 
-    public OriginatingISCPointCodeImpl(byte[] b) throws ParameterException {
+    public OriginatingISCPointCodeImpl(ByteBuf b) throws ParameterException {
         super(b);
-
     }
 }

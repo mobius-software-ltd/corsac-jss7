@@ -26,8 +26,8 @@
 			<artifactId>mtp</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mobicents.protocols.asn</groupId>
-			<artifactId>asn</artifactId>
+			<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
+			<artifactId>common</artifactId>
 		</dependency>
 	</dependencies>
 

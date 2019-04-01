@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
@@ -57,8 +57,8 @@ public class CallingPartyCategoryTest {
     public void tearDown() {
     }
 
-    private byte[] getData() {
-        return new byte[] { 9 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { 9 });
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -75,11 +75,11 @@ public class CallingPartyCategoryTest {
 
         CallingPartyCategoryImpl prim = new CallingPartyCategoryImpl(CallingPartyCategory._OPERATOR_NATIONAL);
 
-        byte[] data = getData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getData();
+        ByteBuf encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
-
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "parameter" })

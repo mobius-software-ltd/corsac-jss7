@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:13:44:52 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -69,9 +71,9 @@ public interface PivotCapability extends ISUPParameter {
      */
     boolean _ITRI_NOT_ALLOWED = true;
 
-    byte[] getPivotCapabilities();
+    ByteBuf getPivotCapabilities();
 
-    void setPivotCapabilities(byte[] pivotCapabilities);
+    void setPivotCapabilities(ByteBuf pivotCapabilities);
 
     byte createPivotCapabilityByte(boolean itriNotAllowed, int pivotPossibility);
 

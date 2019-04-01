@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -51,10 +53,10 @@ public class SubsequentNumberTest extends ParameterHarness {
      * @throws IOException
      */
     public SubsequentNumberTest() throws IOException {
-        super.badBodies.add(new byte[1]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
 
-        super.goodBodies.add(getBody(false, getSixDigits()));
-        super.goodBodies.add(getBody(true, getFiveDigits()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody(false, getSixDigits())));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody(true, getFiveDigits())));
         // This will fail, cause this body has APRI allowed, so hardcoded body
         // does nto match encoded body :)
         // super.goodBodies.add(getBody2());
@@ -80,16 +82,16 @@ public class SubsequentNumberTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(boolean isODD, byte[] digits) throws IOException {
+    private ByteBuf getBody(boolean isODD, byte[] digits) throws IOException {
         int b = 0;
         if (isODD) {
             b |= 0x01 << 7;
         }
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(b);
-        bos.write(digits);
+        ByteBuf bos = Unpooled.buffer();
+        bos.writeByte(b);
+        bos.writeBytes(digits);
 
-        return bos.toByteArray();
+        return bos;
     }
 
     public AbstractISUPParameter getTestedComponent() {

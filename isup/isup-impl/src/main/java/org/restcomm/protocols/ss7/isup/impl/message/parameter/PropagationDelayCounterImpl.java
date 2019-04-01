@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.PropagationDelayCounter;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PropagationDelayCounter
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class PropagationDelayCounterImpl extends AbstractISUPParameter implements PropagationDelayCounter {
-	private static final long serialVersionUID = 1L;
-
 	private int propagationDelay;
 
     public PropagationDelayCounterImpl() {
@@ -49,7 +49,7 @@ public class PropagationDelayCounterImpl extends AbstractISUPParameter implement
 
     }
 
-    public PropagationDelayCounterImpl(byte[] b) throws ParameterException {
+    public PropagationDelayCounterImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -59,22 +59,20 @@ public class PropagationDelayCounterImpl extends AbstractISUPParameter implement
         this.propagationDelay = propagationDelay;
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         // This one is other way around, as Eduardo might say.
-        if (b == null || b.length != 2) {
+        if (b == null || b.readableBytes() != 2) {
             throw new ParameterException("byte[] must  not be null and length must be 2");
         }
 
-        this.propagationDelay = b[0] << 8;
-        this.propagationDelay |= b[1];
-        return b.length;
+        this.propagationDelay = b.readByte() << 8;
+        this.propagationDelay |= b.readByte();        
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
 
-        byte b0 = (byte) (this.propagationDelay >> 8);
-        byte b1 = (byte) this.propagationDelay;
-        return new byte[] { b0, b1 };
+        buffer.writeByte((byte) (this.propagationDelay >> 8));
+        buffer.writeByte((byte) this.propagationDelay);        
     }
 
     public int getPropagationDelay() {

@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitAssigmentMap;
 
@@ -40,15 +42,13 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CircuitAssigmentMap;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CircuitAssigmentMapImpl extends AbstractISUPParameter implements CircuitAssigmentMap {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _CIRCUIT_ENABLED = 0x01;
 
     private int mapType = 0;
 
     private int mapFormat = 0;
 
-    public CircuitAssigmentMapImpl(byte[] b) throws ParameterException {
+    public CircuitAssigmentMapImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -64,29 +64,24 @@ public class CircuitAssigmentMapImpl extends AbstractISUPParameter implements Ci
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 5) {
+    public void decode(ByteBuf buffer) throws ParameterException {
+        if (buffer == null || buffer.readableBytes() != 5) {
             throw new ParameterException("byte[] must  not be null and length must  be 5");
         }
 
-        this.mapType = b[0] & 0x3F;
-        this.mapFormat = b[1];
-        this.mapFormat |= b[2] << 8;
-        this.mapFormat |= b[3] << 16;
-        this.mapFormat |= (b[4] & 0x7F) << 24;
-
-        return 5;
+        this.mapType = buffer.readByte() & 0x3F;
+        this.mapFormat = buffer.readByte();
+        this.mapFormat |= buffer.readByte() << 8;
+        this.mapFormat |= buffer.readByte() << 16;
+        this.mapFormat |= (buffer.readByte() & 0x7F) << 24;
     }
 
-    public byte[] encode() throws ParameterException {
-
-        byte[] b = new byte[5];
-        b[0] = (byte) (this.mapType & 0x3F);
-        b[1] = (byte) this.mapFormat;
-        b[2] = (byte) (this.mapFormat >> 8);
-        b[3] = (byte) (this.mapFormat >> 16);
-        b[4] = (byte) ((this.mapFormat >> 24) & 0x7F);
-        return b;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) (this.mapType & 0x3F));
+    	buffer.writeByte((byte) this.mapFormat);
+    	buffer.writeByte((byte) (this.mapFormat >> 8));
+    	buffer.writeByte((byte) (this.mapFormat >> 16));
+    	buffer.writeByte((byte) ((this.mapFormat >> 24) & 0x7F));        
     }
 
     public int getMapType() {

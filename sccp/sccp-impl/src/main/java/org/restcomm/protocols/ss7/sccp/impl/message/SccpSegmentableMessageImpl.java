@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SegmentationImpl;
@@ -40,17 +40,16 @@ import org.restcomm.protocols.ss7.sccp.parameter.Segmentation;
  */
 public abstract class SccpSegmentableMessageImpl extends SccpAddressedMessageImpl {
 
-    protected byte[] data;
+    protected ByteBuf data;
     protected SegmentationImpl segmentation;
 
     protected boolean isFullyRecieved;
     protected int remainingSegments;
-    protected ByteArrayOutputStream buffer;
-
+    
     protected SccpStackImpl.MessageReassemblyProcess mrp;
 
     protected SccpSegmentableMessageImpl(int maxDataLen, int type, int outgoingSls, int localSsn,
-            SccpAddress calledParty, SccpAddress callingParty, byte[] data, HopCounter hopCounter) {
+            SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, HopCounter hopCounter) {
         super(maxDataLen,type, outgoingSls, localSsn, calledParty, callingParty, hopCounter);
 
         this.data = data;
@@ -74,11 +73,11 @@ public abstract class SccpSegmentableMessageImpl extends SccpAddressedMessageImp
         return remainingSegments;
     }
 
-    public byte[] getData() {
-        return this.data;
+    public ByteBuf getData() {
+        return Unpooled.wrappedBuffer(this.data);
     }
 
-    public void setData(byte[] data) {
+    public void setData(ByteBuf data) {
         this.data = data;
     }
 
@@ -92,25 +91,12 @@ public abstract class SccpSegmentableMessageImpl extends SccpAddressedMessageImp
             return;
 
         this.remainingSegments = this.segmentation.getRemainingSegments();
-        this.buffer = new ByteArrayOutputStream(this.data.length * (this.remainingSegments + 1));
-        try {
-            this.buffer.write(this.data);
-        } catch (IOException e) {
-            // this can not occur
-            e.printStackTrace();
-        }
+        this.data = Unpooled.wrappedBuffer(this.data,Unpooled.buffer(this.data.readableBytes() * this.remainingSegments));
     }
 
     public void setReceivedNextSegment(SccpSegmentableMessageImpl nextSegement) {
-        try {
-            this.buffer.write(nextSegement.data);
-        } catch (IOException e) {
-            // this can not occur
-            e.printStackTrace();
-        }
-
+    	this.data.writeBytes(nextSegement.data);
         if (--this.remainingSegments == 0) {
-            this.data = this.buffer.toByteArray();
             this.isFullyRecieved = true;
         }
     }

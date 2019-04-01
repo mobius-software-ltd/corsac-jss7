@@ -32,8 +32,9 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -99,11 +100,11 @@ public class RangeAndStatusTest extends ParameterHarness {
         assertTrue(Arrays.equals(new byte[] { 0x0F, 0x02 }, stat));
     }
 
-    private byte[] getBody(byte rannge, byte[] enabled) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(rannge);
-        bos.write(enabled);
-        return bos.toByteArray();
+    private ByteBuf getBody(byte rannge, byte[] enabled) throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
+        bos.writeByte(rannge);
+        bos.writeBytes(enabled);
+        return bos;
     }
 
     /*
