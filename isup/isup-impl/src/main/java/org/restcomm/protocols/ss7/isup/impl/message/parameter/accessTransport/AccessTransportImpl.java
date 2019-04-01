@@ -30,7 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter.accessTransport;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
@@ -46,33 +46,22 @@ public class AccessTransportImpl extends AbstractISUPParameter implements Access
 
     // FIXME: Q763 3.3
 
-    private static final long serialVersionUID = 1L;
-
 	public AccessTransportImpl() {
         super();
 
     }
 
-    public AccessTransportImpl(byte[] b) throws ParameterException {
+    public AccessTransportImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        // TODO Auto-generated method stub
-        return 0;
+    public void decode(ByteBuf b) throws ParameterException {
     }
 
-    public byte[] encode() throws ParameterException {
-        // TODO Auto-generated method stub
-        return null;
+    public void encode(ByteBuf b) throws ParameterException {
     }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
+    
     public int getCode() {
         return _PARAMETER_CODE;
     }

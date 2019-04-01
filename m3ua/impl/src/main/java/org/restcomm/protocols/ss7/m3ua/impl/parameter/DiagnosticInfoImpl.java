@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.DiagnosticInfo;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -39,14 +42,16 @@ public class DiagnosticInfoImpl extends ParameterImpl implements DiagnosticInfo 
         this.tag = Parameter.Diagnostic_Information;
     }
 
-    public DiagnosticInfoImpl(byte[] value) {
+    public DiagnosticInfoImpl(ByteBuf value) {
         this.tag = Parameter.Diagnostic_Information;
-        this.info = new String(value);
+        byte[] data=new byte[value.readableBytes()];
+        value.readBytes(data);
+        this.info = new String(data);
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.info.getBytes();
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.info.getBytes());
     }
 
     public String getInfo() {

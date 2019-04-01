@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.parameter.HopCounter;
 import org.restcomm.protocols.ss7.sccp.parameter.Importance;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
@@ -40,7 +42,7 @@ public interface SccpDataMessage extends SccpAddressedMessage {
 
     HopCounter getHopCounter();
 
-    byte[] getData();
+    ByteBuf getData();
 
     Segmentation getSegmentation();
 
@@ -50,7 +52,7 @@ public interface SccpDataMessage extends SccpAddressedMessage {
 
     void setHopCounter(HopCounter hopCounter);
 
-    void setData(byte[] data);
+    void setData(ByteBuf data);
 
     void setImportance(Importance p);
 

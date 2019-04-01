@@ -26,8 +26,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
@@ -92,12 +93,12 @@ public class MessageSegmentationTest {
         this.stack.stop();
     }
 
-    public static byte[] getDataA() {
-        return dataA;
+    public static ByteBuf getDataA() {
+        return Unpooled.wrappedBuffer(dataA);
     }
 
-    public static byte[] getDataSegm1() {
-        return new byte[] { 17, (byte) 129, 15, 04, 06, 10, (byte) 250, 02, 66, 8, 04, 67, 2, 0, 8, (byte) 240, 0, 1, 2, 3, 4,
+    public static ByteBuf getDataSegm1() {
+        return Unpooled.wrappedBuffer(new byte[] { 17, (byte) 129, 15, 04, 06, 10, (byte) 250, 02, 66, 8, 04, 67, 2, 0, 8, (byte) 240, 0, 1, 2, 3, 4,
                 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
                 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
                 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
@@ -115,11 +116,11 @@ public class MessageSegmentationTest {
                 (byte) 212, (byte) 213, (byte) 214, (byte) 215, (byte) 216, (byte) 217, (byte) 218, (byte) 219, (byte) 220,
                 (byte) 221, (byte) 222, (byte) 223, (byte) 224, (byte) 225, (byte) 226, (byte) 227, (byte) 228, (byte) 229,
                 (byte) 230, (byte) 231, (byte) 232, (byte) 233, (byte) 234, (byte) 235, (byte) 236, (byte) 237, (byte) 238,
-                (byte) 239, 16, 4, (byte) 194, 1, 0, 0, 18, 1, 7, 0 };
+                (byte) 239, 16, 4, (byte) 194, 1, 0, 0, 18, 1, 7, 0 });
     }
 
-    public static byte[] getDataSegm2() {
-        return new byte[] { 17, (byte) 129, 15, 04, 06, 10, (byte) 250, 02, 66, 8, 04, 67, 2, 0, 8, (byte) 240, (byte) 240,
+    public static ByteBuf getDataSegm2() {
+        return Unpooled.wrappedBuffer(new byte[] { 17, (byte) 129, 15, 04, 06, 10, (byte) 250, 02, 66, 8, 04, 67, 2, 0, 8, (byte) 240, (byte) 240,
                 (byte) 241, (byte) 242, (byte) 243, (byte) 244, (byte) 245, (byte) 246, (byte) 247, (byte) 248, (byte) 249,
                 (byte) 250, (byte) 251, (byte) 252, (byte) 253, (byte) 254, (byte) 255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
                 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
@@ -137,55 +138,62 @@ public class MessageSegmentationTest {
                 (byte) 196, (byte) 197, (byte) 198, (byte) 199, (byte) 200, (byte) 201, (byte) 202, (byte) 203, (byte) 204,
                 (byte) 205, (byte) 206, (byte) 207, (byte) 208, (byte) 209, (byte) 210, (byte) 211, (byte) 212, (byte) 213,
                 (byte) 214, (byte) 215, (byte) 216, (byte) 217, (byte) 218, (byte) 219, (byte) 220, (byte) 221, (byte) 222,
-                (byte) 223, 16, 4, 65, 1, 0, 0, 18, 1, 7, 0 };
+                (byte) 223, 16, 4, 65, 1, 0, 0, 18, 1, 7, 0 });
     }
 
-    public static byte[] getDataSegm3() {
-        return new byte[] { 17, (byte) 129, 15, 04, 06, 10, (byte) 130, 02, 66, 8, 04, 67, 2, 0, 8, 120, (byte) 224,
+    public static ByteBuf getDataSegm3() {
+    	return Unpooled.wrappedBuffer(new byte[] { 17, (byte) 129, 15, 04, 06, 10, (byte) 130, 02, 66, 8, 04, 67, 2, 0, 8, 120, (byte) 224,
                 (byte) 225, (byte) 226, (byte) 227, (byte) 228, (byte) 229, (byte) 230, (byte) 231, (byte) 232, (byte) 233,
                 (byte) 234, (byte) 235, (byte) 236, (byte) 237, (byte) 238, (byte) 239, (byte) 240, (byte) 241, (byte) 242,
                 (byte) 243, (byte) 244, (byte) 245, (byte) 246, (byte) 247, (byte) 248, (byte) 249, (byte) 250, (byte) 251,
                 (byte) 252, (byte) 253, (byte) 254, (byte) 255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
                 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
                 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
-                74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 16, 4, 64, 1, 0, 0, 18, 1, 7, 0 };
+                74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 16, 4, 64, 1, 0, 0, 18, 1, 7, 0 });
     }
 
-    public static byte[] getDataSegm1_S() {
-        byte[] buf1 = new byte[getDataSegm1().length];
-        System.arraycopy(getDataSegm1(), 0, buf1, 0, buf1.length);
-        buf1[0] = 18;
-        buf1[1] = (byte) ReturnCauseValue.SEG_FAILURE.getValue();
-        buf1[buf1.length - 8] = (byte) (((int) buf1[buf1.length - 8]) - 64);
-        buf1[buf1.length - 7] = (byte) (buf1[buf1.length - 7] + 1);
-        return buf1;
+    private static ByteBuf getDataSegm_S(ByteBuf data) {
+    	ByteBuf buffer=Unpooled.copiedBuffer(data);
+    	int readableBytes=buffer.readableBytes();
+    	buffer.markReaderIndex();
+    	buffer.markWriterIndex();
+    	
+    	buffer.readerIndex(readableBytes-8);
+    	byte b1=buffer.readByte();
+    	byte b2=buffer.readByte();
+    	
+    	buffer.resetReaderIndex();
+    	
+    	buffer.writerIndex(0);
+    	buffer.writeByte(18);
+    	buffer.writeByte((byte) ReturnCauseValue.SEG_FAILURE.getValue());
+    	
+    	buffer.writerIndex(readableBytes-8);
+    	buffer.writeByte((byte) (b1 - 64));
+    	buffer.writeByte((byte) (b2 + 1));
+    	
+    	buffer.resetReaderIndex();
+    	buffer.resetWriterIndex();
+        return buffer;
+    }
+    
+    public static ByteBuf getDataSegm1_S() {
+    	return getDataSegm_S(getDataSegm1());
     }
 
-    public static byte[] getDataSegm2_S() {
-        byte[] buf1 = new byte[getDataSegm2().length];
-        System.arraycopy(getDataSegm2(), 0, buf1, 0, buf1.length);
-        buf1[0] = 18;
-        buf1[1] = (byte) ReturnCauseValue.SEG_FAILURE.getValue();
-        buf1[buf1.length - 8] = (byte) (((int) buf1[buf1.length - 8]) - 64);
-        buf1[buf1.length - 7] = (byte) (buf1[buf1.length - 7] + 1);
-        return buf1;
+    public static ByteBuf getDataSegm2_S() {
+    	return getDataSegm_S(getDataSegm2());
     }
 
-    public static byte[] getDataSegm3_S() {
-        byte[] buf1 = new byte[getDataSegm3().length];
-        System.arraycopy(getDataSegm3(), 0, buf1, 0, buf1.length);
-        buf1[0] = 18;
-        buf1[1] = (byte) ReturnCauseValue.SEG_FAILURE.getValue();
-        buf1[buf1.length - 8] = (byte) (((int) buf1[buf1.length - 8]) - 64);
-        buf1[buf1.length - 7] = (byte) (buf1[buf1.length - 7] + 1);
-        return buf1;
+    public static ByteBuf getDataSegm3_S() {
+    	return getDataSegm_S(getDataSegm3());
     }
 
     @Test(groups = { "SccpMessage", "functional.encode" })
     public void testEncode() throws Exception {
         //stack.getSccpProvider().getParameterFactory().createGlobalTitle
         // -- message length exceeds the max possible length
-        byte[] buf = new byte[3000];
+        ByteBuf buf = Unpooled.wrappedBuffer(new byte[3000]);
         SccpAddress calledAdd = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 0, 8);
         SccpAddress callingAdd = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
         SccpDataMessageImpl msg = (SccpDataMessageImpl) messageFactory.createDataMessageClass1(calledAdd, callingAdd, buf, 0,
@@ -220,10 +228,11 @@ public class MessageSegmentationTest {
         res = msg.encode(stack,LongMessageRuleType.XUDT_ENABLED, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
         assertEquals(res.getSegementedData().size(), 3);
-        assertTrue(Arrays.equals(res.getSegementedData().get(0), getDataSegm1()));
-        assertTrue(Arrays.equals(res.getSegementedData().get(1), getDataSegm2()));
-        assertTrue(Arrays.equals(res.getSegementedData().get(2), getDataSegm3()));
-
+        
+        assertByteBufs(res.getSegementedData().get(0),getDataSegm1());
+        assertByteBufs(res.getSegementedData().get(1),getDataSegm2());
+        assertByteBufs(res.getSegementedData().get(2),getDataSegm3());
+        
         // -- XUDTS message: a splitted to the 3 segments message
         ReturnCause rc = new ReturnCauseImpl(ReturnCauseValue.SEG_FAILURE);
         SccpNoticeMessageImpl msgNot = (SccpNoticeMessageImpl) messageFactory.createNoticeMessage(
@@ -232,18 +241,19 @@ public class MessageSegmentationTest {
         res = msgNot.encode(stack,LongMessageRuleType.XUDT_ENABLED, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
         assertEquals(res.getSegementedData().size(), 3);
-        assertTrue(Arrays.equals(res.getSegementedData().get(0), getDataSegm1_S()));
-        assertTrue(Arrays.equals(res.getSegementedData().get(1), getDataSegm2_S()));
-        assertTrue(Arrays.equals(res.getSegementedData().get(2), getDataSegm3_S()));
-
+        
+        assertByteBufs(res.getSegementedData().get(0),getDataSegm1_S());
+        assertByteBufs(res.getSegementedData().get(1),getDataSegm2_S());
+        assertByteBufs(res.getSegementedData().get(2),getDataSegm3_S());
+        
         // -- XUDT message: for splitting to the 3 segments message. This message is received from MTP as LUDT without
         // Segmentation field -> Error
         msg = (SccpDataMessageImpl) messageFactory.createDataMessageClass1(calledAdd, callingAdd, getDataA(), 0, 8, false,
                 null, imp);
         res = msg.encode(stack,LongMessageRuleType.LUDT_ENABLED, 2000, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
-        ByteArrayInputStream in = new ByteArrayInputStream(res.getSolidData());
-        int type = in.read();
+        ByteBuf in = Unpooled.wrappedBuffer(res.getSolidData());
+        int type = in.readByte();
         msg = (SccpDataMessageImpl) messageFactory.createMessage(type, 1, 2, 0, in, SccpProtocolVersion.ITU, 0);
         res = msg.encode(stack,LongMessageRuleType.XUDT_ENABLED, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.ReturnFailure);
@@ -255,8 +265,8 @@ public class MessageSegmentationTest {
                 null, imp);
         res = msg.encode(stack,LongMessageRuleType.LUDT_ENABLED_WITH_SEGMENTATION, 2000, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
-        in = new ByteArrayInputStream(res.getSolidData());
-        type = in.read();
+        in = Unpooled.wrappedBuffer(res.getSolidData());
+        type = in.readByte();
         msg = (SccpDataMessageImpl) messageFactory.createMessage(type, 1, 2, 0, in, SccpProtocolVersion.ITU, 0);
         res = msg.encode(stack,LongMessageRuleType.XUDT_ENABLED, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
@@ -264,7 +274,7 @@ public class MessageSegmentationTest {
 
         // -- XUDT message: big callingPartyAddress and calledPartyAddress fields when there length + data length > 254 and
         // Importance field present
-        byte[] bufx = new byte[225];
+        ByteBuf bufx = Unpooled.wrappedBuffer(new byte[225]);
         GlobalTitle gttt = stack.getSccpProvider().getParameterFactory().createGlobalTitle("1111114444444444",3,NumberingPlan.ISDN_TELEPHONY,  BCDEvenEncodingScheme.INSTANCE,NatureOfAddress.INTERNATIONAL); 
                 
         SccpAddress bigAdr = stack.getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, gttt,0,  8);
@@ -274,7 +284,7 @@ public class MessageSegmentationTest {
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
         assertNotNull(res.getSolidData());
 
-        bufx = new byte[226];
+        bufx = Unpooled.wrappedBuffer(new byte[226]);
         msg = (SccpDataMessageImpl) messageFactory.createDataMessageClass1(bigAdr, bigAdr, bufx, 0, 8, true, null, imp);
 
         res = msg.encode(stack,LongMessageRuleType.XUDT_ENABLED, 191, logger, false, SccpProtocolVersion.ITU);
@@ -293,21 +303,32 @@ public class MessageSegmentationTest {
 
     }
 
-    private byte[] getEncodedSegmentation() {
-        return new byte[] { -127, -96, -122, 1 };
+    private ByteBuf getEncodedSegmentation() {
+        return Unpooled.wrappedBuffer(new byte[] { -127, -96, -122, 1 });
     }
 
     @Test(groups = { "SccpMessage", "functional.encode" })
     public void testLocalRef() throws Exception {
         SegmentationImpl segm = new SegmentationImpl(true, false, (byte) 1, 100000);
-        byte[] buf = segm.encode(false, SccpProtocolVersion.ITU);
-        assertTrue(Arrays.equals(buf, getEncodedSegmentation()));
-
+        ByteBuf buf=Unpooled.buffer();
+        segm.encode(buf, false, SccpProtocolVersion.ITU);
+        assertByteBufs(Unpooled.wrappedBuffer(buf),getEncodedSegmentation());
+        
         segm = new SegmentationImpl();
         segm.decode(buf,null, SccpProtocolVersion.ITU);
         assertEquals(segm.getRemainingSegments(), 1);
         assertEquals(segm.getSegmentationLocalRef(), 100000);
         assertTrue(segm.isFirstSegIndication());
         assertFalse(segm.isClass1Selected());
+    }
+    
+    public static void assertByteBufs(ByteBuf actualBuf,ByteBuf expectedBuf) {
+    	byte[] actualArr=new byte[actualBuf.readableBytes()];
+        actualBuf.readBytes(actualArr);
+        
+        byte[] expectedArr=new byte[expectedBuf.readableBytes()];
+        expectedBuf.readBytes(expectedArr);
+        
+        assertTrue(Arrays.equals(actualArr, expectedArr));                
     }
 }

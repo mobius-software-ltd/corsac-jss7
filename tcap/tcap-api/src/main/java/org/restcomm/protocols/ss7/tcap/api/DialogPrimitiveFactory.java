@@ -22,14 +22,16 @@
 
 package org.restcomm.protocols.ss7.tcap.api;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 
 /**
  *
@@ -50,8 +52,7 @@ public interface DialogPrimitiveFactory {
 
     TCUniRequest createUni(Dialog d);
 
-    ApplicationContextName createApplicationContextName(long[] oid);
+    ApplicationContextNameImpl createApplicationContextName(List<Long> oid);
 
-    UserInformation createUserInformation();
-
+    UserInformationImpl createUserInformation();
 }

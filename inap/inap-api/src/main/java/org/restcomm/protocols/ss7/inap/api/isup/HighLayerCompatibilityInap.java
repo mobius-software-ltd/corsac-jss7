@@ -43,9 +43,5 @@ highLayerCompatibilityLength ::= 2
  *
  */
 public interface HighLayerCompatibilityInap extends Serializable {
-
-    byte[] getData();
-
     UserTeleserviceInformation getHighLayerCompatibility() throws INAPException;
-
 }

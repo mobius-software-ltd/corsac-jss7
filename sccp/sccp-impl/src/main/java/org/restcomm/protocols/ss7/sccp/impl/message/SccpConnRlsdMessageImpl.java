@@ -38,15 +38,16 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
-import java.io.InputStream;
 
 import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateRlsdFieldsLengthWithoutData;
 
 public class SccpConnRlsdMessageImpl extends SccpConnReferencedMessageImpl implements SccpConnRlsdMessage {
     protected ReleaseCause releaseCause;
-    protected byte[] userData;
+    protected ByteBuf userData;
     protected Importance importance;
 
     public SccpConnRlsdMessageImpl(int sls, int localSsn) {
@@ -68,12 +69,12 @@ public class SccpConnRlsdMessageImpl extends SccpConnReferencedMessageImpl imple
     }
 
     @Override
-    public byte[] getUserData() {
-        return userData;
+    public ByteBuf getUserData() {
+        return Unpooled.wrappedBuffer(userData);
     }
 
     @Override
-    public void setUserData(byte[] userData) {
+    public void setUserData(ByteBuf userData) {
         this.userData = userData;
     }
 
@@ -88,48 +89,46 @@ public class SccpConnRlsdMessageImpl extends SccpConnReferencedMessageImpl imple
     }
 
     @Override
-    public void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         try {
-            byte[] buffer = new byte[3];
-            in.read(buffer);
             LocalReferenceImpl ref = new LocalReferenceImpl();
             ref.decode(buffer, factory, sccpProtocolVersion);
             destinationLocalReferenceNumber = ref;
 
-            in.read(buffer);
             ref = new LocalReferenceImpl();
             ref.decode(buffer, factory, sccpProtocolVersion);
             sourceLocalReferenceNumber = ref;
 
-            buffer = new byte[1];
-            in.read(buffer);
             ReleaseCauseImpl cause = new ReleaseCauseImpl();
             cause.decode(buffer, factory, sccpProtocolVersion);
             releaseCause = cause;
 
-            int pointer = in.read() & 0xff;
-            in.mark(in.available());
+            int pointer = buffer.readByte() & 0xff;
+            buffer.markReaderIndex();
 
             if (pointer == 0) {
                 // we are done
                 return;
             }
-            if (pointer - 1 != in.skip(pointer - 1)) {
+            
+            try {
+            	buffer.skipBytes(pointer - 1);
+            }
+            catch(IndexOutOfBoundsException ex) {
                 throw new IOException("Not enough data in buffer");
             }
 
             int paramCode = 0;
-            int len;
             // EOP
-            while ((paramCode = in.read() & 0xFF) != 0) {
+            while ((paramCode = buffer.readByte() & 0xFF) != 0) {
                 if (paramCode != Parameter.DATA_PARAMETER_CODE
                         && paramCode != Importance.PARAMETER_CODE) {
                     throw new ParseException(String.format("Code %d is not supported for RLSD message", paramCode));
                 }
-                len = in.read() & 0xff;
-                buffer = new byte[len];
-                in.read(buffer);
-                decodeOptional(paramCode, buffer, sccpProtocolVersion);
+                
+                int len=buffer.readByte();
+                decodeOptional(paramCode, buffer.slice(buffer.readerIndex(), len), sccpProtocolVersion);
+	            buffer.skipBytes(len);
             }
         } catch (IOException e) {
             throw new ParseException(e);
@@ -138,89 +137,79 @@ public class SccpConnRlsdMessageImpl extends SccpConnReferencedMessageImpl imple
 
     @Override
     public EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger, boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (type == 0) {
-                return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
-            }
-            if (destinationLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
-            }
-            if (sourceLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
-            }
-            if (releaseCause == null) {
-                return new EncodingResultData(EncodingResult.ReleaseCauseMissing, null, null, null);
-            }
-
-            byte[] bf = new byte[0];
-            if (userData != null) {
-                bf = userData;
-            }
-
-            int fieldsLen = calculateRlsdFieldsLengthWithoutData(userData != null, importance != null);
-            int availLen = maxMtp3UserDataLength - fieldsLen;
-
-            if (availLen > 130)
-                availLen = 130;
-
-            if (bf.length > availLen) { // message is too long
-                if (logger.isEnabledFor(Level.WARN)) {
-                    logger.warn(String.format(
-                            "Failure when sending a RLSD message: message is too long. SccpMessageSegment=%s", this));
-                }
-                return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_NOT_SUPPORTED);
-            }
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream(fieldsLen + bf.length);
-
-            byte[] dlr = ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] slr = ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] rel = ((ReleaseCauseImpl)releaseCause).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-
-            out.write(type);
-            out.write(dlr);
-            out.write(slr);
-            out.write(rel);
-
-            // we have 1 pointers (optionals), cdp starts after 1 octets then
-            int len = 1;
-
-            boolean optionalPresent = false;
-            if (userData != null || importance != null) {
-                out.write(len); // optionals pointer
-
-                optionalPresent = true;
-            } else {
-                // in case there is no optional
-                out.write(0);
-            }
-
-            if (userData != null) {
-                out.write(Parameter.DATA_PARAMETER_CODE);
-                out.write(userData.length);
-                out.write(userData);
-            }
-            if (importance != null) {
-                out.write(Importance.PARAMETER_CODE);
-                byte[] b = ((ImportanceImpl)importance).encode(removeSPC, sccpProtocolVersion);
-                out.write(b.length);
-                out.write(b);
-            }
-
-            if (optionalPresent) {
-                out.write(0x00);
-            }
-
-            return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-        } catch (IOException e) {
-            throw new ParseException(e);
+    	if (type == 0) {
+            return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
         }
+        if (destinationLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
+        }
+        if (sourceLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
+        }
+        if (releaseCause == null) {
+            return new EncodingResultData(EncodingResult.ReleaseCauseMissing, null, null, null);
+        }
+
+        int fieldsLen = calculateRlsdFieldsLengthWithoutData(userData != null, importance != null);
+        int availLen = maxMtp3UserDataLength - fieldsLen;
+
+        if (availLen > 130)
+            availLen = 130;
+
+        int bfLength=0;
+        if(userData!=null)
+        	bfLength=userData.readableBytes();
+        
+        if (bfLength > availLen) { // message is too long
+            if (logger.isEnabledFor(Level.WARN)) {
+                logger.warn(String.format(
+                        "Failure when sending a RLSD message: message is too long. SccpMessageSegment=%s", this));
+            }
+            return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_NOT_SUPPORTED);
+        }
+
+        ByteBuf out = Unpooled.buffer(fieldsLen);
+
+        out.writeByte(type);
+        ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(out, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(out, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((ReleaseCauseImpl)releaseCause).encode(out, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+
+        // we have 1 pointers (optionals), cdp starts after 1 octets then
+        int len = 1;
+
+        boolean optionalPresent = false;
+        if (userData != null || importance != null) {
+            out.writeByte(len); // optionals pointer
+
+            optionalPresent = true;
+        } else {
+            // in case there is no optional
+            out.writeByte(0);
+        }
+
+        if (userData != null) {
+            out.writeByte(Parameter.DATA_PARAMETER_CODE);
+            out.writeByte(userData.readableBytes());
+            out=Unpooled.wrappedBuffer(out,userData);
+        }
+        if (importance != null) {
+            out.writeByte(Importance.PARAMETER_CODE);
+            out.writeByte(1);
+            ((ImportanceImpl)importance).encode(out, removeSPC, sccpProtocolVersion);                
+        }
+
+        if (optionalPresent) {
+            out.writeByte(0x00);
+        }
+
+        return new EncodingResultData(EncodingResult.Success, out, null, null);
     }
 
-    protected void decodeOptional(int code, byte[] buffer, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    protected void decodeOptional(int code, ByteBuf buffer, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         switch (code) {
             case Parameter.DATA_PARAMETER_CODE:
-                userData = buffer;
+                userData = Unpooled.wrappedBuffer(buffer);
                 break;
 
             case Importance.PARAMETER_CODE:
@@ -251,7 +240,7 @@ public class SccpConnRlsdMessageImpl extends SccpConnReferencedMessageImpl imple
         sb.append(this.outgoingDpc);
         sb.append(" DataLen=");
         if (this.userData != null)
-            sb.append(this.userData.length);
+            sb.append(this.userData.readableBytes());
 
         sb.append(" sourceLR=");
         if (this.sourceLocalReferenceNumber != null)

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +83,7 @@ public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
             this.messages.add(msg);
     }
 
-    public void sendTransferMessageToLocalUser(int opc, int dpc, byte[] data) {
+    public void sendTransferMessageToLocalUser(int opc, int dpc, ByteBuf data) {
         int si = Mtp3UserPartBaseImpl._SI_SERVICE_SCCP;
         int ni = 2;
         int mp = 0;

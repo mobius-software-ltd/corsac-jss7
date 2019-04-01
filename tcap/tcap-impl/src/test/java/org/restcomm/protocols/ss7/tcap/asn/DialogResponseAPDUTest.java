@@ -26,20 +26,19 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
-import org.restcomm.protocols.ss7.tcap.asn.Result;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.ResultType;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -65,38 +64,43 @@ public class DialogResponseAPDUTest {
                 1, 1, (byte) 163, 5, (byte) 162, 3, 2, 1, 2 };
     }
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    	ASNGeneric.clear(ASNUserInformationObjectImpl.class);
+    	ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, DialogResponseAPDUASN.class);    	
+    }
+
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testResponseAPDU() throws Exception {
 
-        byte[] b = getData();
-        AsnInputStream asnIs = new AsnInputStream(b);
-        int tag = asnIs.readTag();
-        assertEquals(1, tag);
-        DialogResponseAPDU d = TcapFactory.createDialogAPDUResponse();
-        d.decode(asnIs);
-        assertTrue(Arrays.equals(new long[] { 0, 4, 0, 0, 1, 0, 21, 2 }, d.getApplicationContextName().getOid()));
-        Result r = d.getResult();
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(DialogResponseAPDUImpl.class);
+    	
+    	Object output=parser.decode(Unpooled.wrappedBuffer(getData())).getResult();
+        assertTrue(output instanceof DialogResponseAPDUImpl);
+        DialogResponseAPDUImpl d = (DialogResponseAPDUImpl)output;
+        
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 21L, 2L }), d.getApplicationContextName().getValue());
+        ResultImpl r = d.getResult();
         assertEquals(ResultType.Accepted, r.getResultType());
-        ResultSourceDiagnostic diag = d.getResultSourceDiagnostic();
+        ResultSourceDiagnosticImpl diag = d.getResultSourceDiagnostic();
         assertNotNull(diag.getDialogServiceUserType());
         assertEquals(DialogServiceUserType.Null, diag.getDialogServiceUserType());
-        UserInformation ui = d.getUserInformation();
+        UserInformationImpl ui = d.getUserInformation();
         assertNotNull(ui);
-        assertNotNull(ui.getEncodeType());
-        ui.getEncodeType();
-        assertTrue(Arrays.equals(new byte[] { -95, 0 }, ui.getEncodeType()));
+        assertTrue(ui.getExternal().isValueObject());
+        assertTrue(ui.getExternal().getChild().getValue() instanceof DialogResponseAPDUASN);
+        assertTrue(((DialogResponseAPDUASN)ui.getExternal().getChild().getValue()).getLength()==0);
+        
+        ByteBuf buffer=parser.encode(d);
+        assertTrue(Arrays.equals(getData(), buffer.array()));
 
-        AsnOutputStream aos = new AsnOutputStream();
-        d.encode(aos);
-        assertTrue(Arrays.equals(b, aos.toByteArray()));
-
-        b = getData2();
-        asnIs = new AsnInputStream(b);
-        tag = asnIs.readTag();
-        assertEquals(1, tag);
-        d = TcapFactory.createDialogAPDUResponse();
-        d.decode(asnIs);
-        assertTrue(Arrays.equals(new long[] { 0, 4, 0, 0, 1, 0, 25, 2 }, d.getApplicationContextName().getOid()));
+        output=parser.decode(Unpooled.wrappedBuffer(getData2())).getResult();
+        assertTrue(output instanceof DialogResponseAPDUImpl);
+        d = (DialogResponseAPDUImpl)output;
+        
+        
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 25L, 2L }), d.getApplicationContextName().getValue());
         r = d.getResult();
         assertEquals(ResultType.RejectedPermanent, r.getResultType());
         diag = d.getResultSourceDiagnostic();
@@ -105,17 +109,14 @@ public class DialogResponseAPDUTest {
         ui = d.getUserInformation();
         assertNull(ui);
 
-        aos = new AsnOutputStream();
-        d.encode(aos);
-        assertTrue(Arrays.equals(b, aos.toByteArray()));
+        buffer=parser.encode(d);
+        assertTrue(Arrays.equals(getData2(), buffer.array()));
 
-        b = getData3();
-        asnIs = new AsnInputStream(b);
-        tag = asnIs.readTag();
-        assertEquals(1, tag);
-        d = TcapFactory.createDialogAPDUResponse();
-        d.decode(asnIs);
-        assertTrue(Arrays.equals(new long[] { 0, 4, 0, 0, 1, 0, 25, 2 }, d.getApplicationContextName().getOid()));
+        output=parser.decode(Unpooled.wrappedBuffer(getData3())).getResult();
+        assertTrue(output instanceof DialogResponseAPDUImpl);
+        d = (DialogResponseAPDUImpl)output;
+        
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 25L, 2L }), d.getApplicationContextName().getValue());
         r = d.getResult();
         assertEquals(ResultType.RejectedPermanent, r.getResultType());
         diag = d.getResultSourceDiagnostic();
@@ -124,9 +125,8 @@ public class DialogResponseAPDUTest {
         ui = d.getUserInformation();
         assertNull(ui);
 
-        aos = new AsnOutputStream();
-        d.encode(aos);
-        assertTrue(Arrays.equals(b, aos.toByteArray()));
+        buffer=parser.encode(d);
+        assertTrue(Arrays.equals(getData3(), buffer.array()));
     }
 
 }

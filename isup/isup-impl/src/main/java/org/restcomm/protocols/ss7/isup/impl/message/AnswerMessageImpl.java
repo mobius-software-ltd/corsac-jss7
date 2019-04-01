@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -71,8 +73,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessT
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.Answer);
     private static final int _MANDATORY_VAR_COUNT = 0;
 
@@ -615,7 +615,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
 
     }
 
-    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
 
         throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
@@ -627,7 +627,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody (byte [], int)
      */
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody,int parameterIndex)
             throws ParameterException {
         throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
 
@@ -639,7 +639,7 @@ class AnswerMessageImpl extends ISUPMessageImpl implements AnswerMessage {
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte [], byte)
      */
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
 
         switch (parameterCode & 0xFF) {

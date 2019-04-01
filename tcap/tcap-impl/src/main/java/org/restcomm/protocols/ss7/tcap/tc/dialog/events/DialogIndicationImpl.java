@@ -25,19 +25,19 @@
  */
 package org.restcomm.protocols.ss7.tcap.tc.dialog.events;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.DialogIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 
 /**
  * @author baranowb
  *
  */
 public abstract class DialogIndicationImpl implements DialogIndication {
-	private static final long serialVersionUID = 1L;
-
-	private Component[] components;
+	private List<ComponentImpl> components;
     private Dialog dialog;
     private Byte qos;
     private EventType type;
@@ -50,14 +50,14 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     /**
      * @return the components
      */
-    public Component[] getComponents() {
+    public List<ComponentImpl> getComponents() {
         return components;
     }
 
     /**
      * @param components the components to set
      */
-    public void setComponents(Component[] components) {
+    public void setComponents(List<ComponentImpl> components) {
         this.components = components;
     }
 

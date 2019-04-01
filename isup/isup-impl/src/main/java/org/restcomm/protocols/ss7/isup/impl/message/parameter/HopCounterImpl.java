@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.HopCounter;
 
@@ -40,11 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.HopCounter;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class HopCounterImpl extends AbstractISUPParameter implements HopCounter {
-	private static final long serialVersionUID = 1L;
-
 	private int hopCounter;
 
-    public HopCounterImpl(byte[] b) throws ParameterException {
+    public HopCounterImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -59,16 +59,15 @@ public class HopCounterImpl extends AbstractISUPParameter implements HopCounter 
         this.hopCounter = hopCounter;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null and length must be 1");
         }
-        this.hopCounter = b[0] & 0x1F;
-        return 1;
+        this.hopCounter = b.readByte() & 0x1F;        
     }
 
-    public byte[] encode() throws ParameterException {
-        return new byte[] { (byte) (this.hopCounter & 0x1F) };
+    public void encode(ByteBuf b) throws ParameterException {
+        b.writeByte((byte) (this.hopCounter & 0x1F));
     }
 
     public int getHopCounter() {

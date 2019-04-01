@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -48,10 +50,10 @@ public class MLPPPrecedenceTest extends ParameterHarness {
 
     public MLPPPrecedenceTest() {
         super();
-        super.goodBodies.add(new byte[6]);
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[6]));
 
-        super.badBodies.add(new byte[5]);
-        super.badBodies.add(new byte[7]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[5]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[7]));
 
     }
 
@@ -69,19 +71,17 @@ public class MLPPPrecedenceTest extends ParameterHarness {
         super.testValues(eci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(int lfbIndicatorAllowed, int precedenceLevel, byte[] bs, int mllpServiceDomain) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody(int lfbIndicatorAllowed, int precedenceLevel, byte[] bs, int mllpServiceDomain) throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         byte b = (byte) ((lfbIndicatorAllowed & 0x03) << 5);
         b |= precedenceLevel & 0x0F;
-        bos.write(b);
-        bos.write(bs);
+        bos.writeByte(b);
+        bos.writeBytes(bs);
 
-        bos.write(mllpServiceDomain >> 16);
-        bos.write(mllpServiceDomain >> 8);
-        bos.write(mllpServiceDomain);
-        byte[] bb = bos.toByteArray();
-        return bb;
-
+        bos.writeByte(mllpServiceDomain >> 16);
+        bos.writeByte(mllpServiceDomain >> 8);
+        bos.writeByte(mllpServiceDomain);
+        return bos;
     }
 
     /*
@@ -91,7 +91,7 @@ public class MLPPPrecedenceTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        MLPPPrecedenceImpl component = new MLPPPrecedenceImpl(new byte[6]);
+        MLPPPrecedenceImpl component = new MLPPPrecedenceImpl(Unpooled.wrappedBuffer(new byte[6]));
         return component;
     }
 

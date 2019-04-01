@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -77,9 +79,8 @@ public class TerminatingNetworkRoutingNumberTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(boolean isODD, int npiIsdn, int naiNationalSn, byte[] sixDigits, int tnrL) throws IOException {
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody(boolean isODD, int npiIsdn, int naiNationalSn, byte[] sixDigits, int tnrL) throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         int v = 0;
         if (isODD)
             v |= 0x80;
@@ -87,13 +88,13 @@ public class TerminatingNetworkRoutingNumberTest extends ParameterHarness {
         // v |= sixDigits.length + 1;
         v |= tnrL + 1;
 
-        bos.write(v);
+        bos.writeByte(v);
         if (tnrL != -1)
-            bos.write(naiNationalSn);
+            bos.writeByte(naiNationalSn);
         if (sixDigits != null && sixDigits.length > 0)
-            bos.write(sixDigits);
+            bos.writeBytes(sixDigits);
 
-        return bos.toByteArray();
+        return bos;
     }
 
     /*

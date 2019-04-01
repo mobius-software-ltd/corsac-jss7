@@ -22,8 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
@@ -36,8 +35,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
  * @author Oleg Kulikoff
  */
 public class GenericNumberImpl extends AbstractNAINumber implements GenericNumber {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -59,16 +56,10 @@ public class GenericNumberImpl extends AbstractNAINumber implements GenericNumbe
         this.screeningIndicator = screeningIndicator;
     }
 
-    public GenericNumberImpl(byte[] representation) throws ParameterException {
+    public GenericNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
-
-    public GenericNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
-    }
-
+    
     public GenericNumberImpl() {
         super();
 
@@ -80,14 +71,13 @@ public class GenericNumberImpl extends AbstractNAINumber implements GenericNumbe
      * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException {
+        int b = buffer.readByte() & 0xff;
 
         this.numberIncomplete = ((b & 0x80) >> 7) == _TURN_ON;
         this.numberingPlanIndicator = (b & 0x70) >> 4;
         this.addressRepresentationRestrictedIndicator = (b & 0x0c) >> 2;
-        this.screeningIndicator = (b & 0x03);
-        return 1;
+        this.screeningIndicator = (b & 0x03);        
     }
 
     /**
@@ -118,36 +108,31 @@ public class GenericNumberImpl extends AbstractNAINumber implements GenericNumbe
      * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
-    public int encodeBody(ByteArrayOutputStream bos) {
-
+    public void encodeBody(ByteBuf buffer) {
         int c = this.screeningIndicator;
         c |= (this.addressRepresentationRestrictedIndicator << 2);
         c |= (this.numberingPlanIndicator << 4);
         c |= ((this.numberIncomplete ? _TURN_ON : _TURN_OFF) << 7);
-
-        bos.write(c);
-
-        return 1;
+        buffer.writeByte(c);
     }
 
-    public int decodeHeader(ByteArrayInputStream bis) throws ParameterException {
-        this.numberQualifierIndicator = bis.read() & 0xff;
-        return super.decodeHeader(bis) + 1;
+    public void decodeHeader(ByteBuf buffer) throws ParameterException {
+        this.numberQualifierIndicator = buffer.readByte() & 0xff;
+        super.decodeHeader(buffer);
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         doAddressPresentationRestricted();
-        bos.write(this.numberQualifierIndicator);
-        return super.encodeHeader(bos) + 1;
+        buffer.writeByte(this.numberQualifierIndicator);
+        super.encodeHeader(buffer);
     }
 
-    public int decodeDigits(ByteArrayInputStream bis) throws ParameterException {
+    public void decodeDigits(ByteBuf buffer) throws ParameterException {
 
-        if (bis.available() != 0) {
-            return super.decodeDigits(bis);
+        if (buffer.readableBytes() != 0) {
+            super.decodeDigits(buffer);
         } else {
-            this.setAddress("");
-            return 0;
+            this.setAddress("");            
         }
     }
 

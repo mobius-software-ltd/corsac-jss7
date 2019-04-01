@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.LocalRKIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -32,25 +35,25 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
  */
 public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdentifier {
 
-    private byte[] value;
+    private ByteBuf value;
     private long id;
 
     public LocalRKIdentifierImpl() {
         this.tag = Parameter.Local_Routing_Key_Identifier;
     }
 
-    protected LocalRKIdentifierImpl(byte[] data) {
+    protected LocalRKIdentifierImpl(ByteBuf data) {
         this.tag = Parameter.Local_Routing_Key_Identifier;
         this.value = data;
 
         this.id = 0;
-        this.id |= data[0] & 0xFF;
+        this.id |= data.readByte() & 0xFF;
         this.id <<= 8;
-        this.id |= data[1] & 0xFF;
+        this.id |= data.readByte() & 0xFF;
         this.id <<= 8;
-        this.id |= data[2] & 0xFF;
+        this.id |= data.readByte() & 0xFF;
         this.id <<= 8;
-        this.id |= data[3] & 0xFF;
+        this.id |= data.readByte() & 0xFF;
     }
 
     protected LocalRKIdentifierImpl(long id) {
@@ -62,17 +65,17 @@ public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdent
     private void encode() {
         // create byte array taking into account data, point codes and
         // indicators;
-        this.value = new byte[4];
+        this.value = Unpooled.buffer(4);
         // encode routing context
-        value[0] = (byte) (this.id >> 24);
-        value[1] = (byte) (this.id >> 16);
-        value[2] = (byte) (this.id >> 8);
-        value[3] = (byte) (this.id);
+        value.writeByte((byte) (this.id >> 24));
+        value.writeByte((byte) (this.id >> 16));
+        value.writeByte((byte) (this.id >> 8));
+        value.writeByte((byte) (this.id));
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     public long getId() {

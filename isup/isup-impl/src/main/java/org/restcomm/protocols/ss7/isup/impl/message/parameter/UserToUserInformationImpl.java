@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserInformation;
 
@@ -47,27 +50,24 @@ public class UserToUserInformationImpl extends AbstractISUPParameter implements 
     // discriminator plus user information field described in ITU-T Recommendation Q.931.
     // This makes no sense...
 
-    private static final long serialVersionUID = 1L;
-	
-    private byte[] information;
+    private ByteBuf information;
 
     public UserToUserInformationImpl() {
         super();
 
     }
 
-    public UserToUserInformationImpl(byte[] b) throws ParameterException {
+    public UserToUserInformationImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         this.information = b;
-        return b.length;
     }
 
-    public byte[] encode() throws ParameterException {
-        return this.information;
+    public void encode(ByteBuf buffer) throws ParameterException {
+        buffer.writeBytes(getInformation());
     }
 
     public int getCode() {
@@ -75,11 +75,14 @@ public class UserToUserInformationImpl extends AbstractISUPParameter implements 
         return _PARAMETER_CODE;
     }
 
-    public byte[] getInformation() {
-        return this.information;
+    public ByteBuf getInformation() {
+    	if(information==null)
+        	return null;
+        
+        return Unpooled.wrappedBuffer(this.information);
     }
 
-    public void setInformation(byte[] b) {
+    public void setInformation(ByteBuf b) {
         this.information = b;
     }
 }

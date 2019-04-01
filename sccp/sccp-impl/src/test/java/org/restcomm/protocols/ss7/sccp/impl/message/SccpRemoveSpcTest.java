@@ -23,9 +23,8 @@
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
 import static org.testng.Assert.*;
-
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
@@ -67,21 +66,21 @@ public class SccpRemoveSpcTest {
         this.stack.stop();
     }
 
-    public byte[] getDataUdt_GT_WithDpc() {
-        return new byte[] { 9, 1, 3, 11, 19, 8, 11, -89, 5, 8, 0, 68, 68, 68, 8, 11, -90, 5, 8, 0, 85, 85, 85, 5, 22, 22, 22,
-                22, 22 };
+    public ByteBuf getDataUdt_GT_WithDpc() {
+        return Unpooled.wrappedBuffer(new byte[] { 9, 1, 3, 11, 19, 8, 11, -89, 5, 8, 0, 68, 68, 68, 8, 11, -90, 5, 8, 0, 85, 85, 85, 5, 22, 22, 22,
+                22, 22 });
     }
 
-    public byte[] getDataUdt_GT_WithOutDpc() {
-        return new byte[] { 9, 1, 3, 9, 15, 6, 10, 8, 0, 68, 68, 68, 6, 10, 8, 0, 85, 85, 85, 5, 22, 22, 22, 22, 22 };
+    public ByteBuf getDataUdt_GT_WithOutDpc() {
+        return Unpooled.wrappedBuffer(new byte[] { 9, 1, 3, 9, 15, 6, 10, 8, 0, 68, 68, 68, 6, 10, 8, 0, 85, 85, 85, 5, 22, 22, 22, 22, 22 });
     }
 
-    public byte[] getDataUdt_DpcSsn() {
-        return new byte[] { 9, 1, 3, 7, 11, 4, 67, -89, 5, 8, 4, 67, -90, 5, 8, 5, 22, 22, 22, 22, 22 };
+    public ByteBuf getDataUdt_DpcSsn() {
+        return Unpooled.wrappedBuffer(new byte[] { 9, 1, 3, 7, 11, 4, 67, -89, 5, 8, 4, 67, -90, 5, 8, 5, 22, 22, 22, 22, 22 });
     }
 
-    public byte[] getData() {
-        return new byte[] { 22, 22, 22, 22, 22 };
+    public ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { 22, 22, 22, 22, 22 });
     }
 
     @Test(groups = { "SccpMessage", "functional.decode" })
@@ -89,10 +88,9 @@ public class SccpRemoveSpcTest {
 
         // ---- Encoding based on GT - removeSpc on
         this.stack.setRemoveSpc(true);
-        byte[] b = this.getDataUdt_GT_WithOutDpc();
+        ByteBuf buf = this.getDataUdt_GT_WithOutDpc();
 
-        ByteArrayInputStream buf = new ByteArrayInputStream(b);
-        int type = buf.read();
+        int type = buf.readByte();
         SccpDataMessage testObjectDecoded = (SccpDataMessage) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
         assertNotNull(testObjectDecoded);
 
@@ -112,10 +110,8 @@ public class SccpRemoveSpcTest {
 
         // ---- Encoding based on GT - removeSpc off
         this.stack.setRemoveSpc(false);
-        b = this.getDataUdt_GT_WithDpc();
-
-        buf = new ByteArrayInputStream(b);
-        type = buf.read();
+        buf = this.getDataUdt_GT_WithDpc();
+        type = buf.readByte();
         testObjectDecoded = (SccpDataMessage) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
         assertNotNull(testObjectDecoded);
 
@@ -135,10 +131,8 @@ public class SccpRemoveSpcTest {
 
         // ---- Encoding based on DPC+SSN - removeSpc on
         this.stack.setRemoveSpc(true);
-        b = this.getDataUdt_DpcSsn();
-
-        buf = new ByteArrayInputStream(b);
-        type = buf.read();
+        buf = this.getDataUdt_DpcSsn();
+        type = buf.readByte();
         testObjectDecoded = (SccpDataMessage) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
         assertNotNull(testObjectDecoded);
 
@@ -158,10 +152,8 @@ public class SccpRemoveSpcTest {
 
         // ---- Encoding based on DPC+SSN - removeSpc off
         this.stack.setRemoveSpc(false);
-        b = this.getDataUdt_DpcSsn();
-
-        buf = new ByteArrayInputStream(b);
-        type = buf.read();
+        buf = this.getDataUdt_DpcSsn();
+        type = buf.readByte();
         testObjectDecoded = (SccpDataMessage) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
         assertNotNull(testObjectDecoded);
 
@@ -197,10 +189,7 @@ public class SccpRemoveSpcTest {
         EncodingResultData res = msg.encode(stack,LongMessageRuleType.LONG_MESSAGE_FORBBIDEN, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
 
-        logger.debug("*************\n" + Arrays.toString(res.getSolidData()));
-
-        assertTrue(Arrays.equals(res.getSolidData(), this.getDataUdt_GT_WithOutDpc()),
-                "A1: " + arrToString(res.getSolidData()) + " --- " + arrToString(this.getDataUdt_GT_WithOutDpc()));
+        MessageSegmentationTest.assertByteBufs(res.getSolidData(), this.getDataUdt_GT_WithOutDpc());
 
         // ---- removeSpc off
         this.stack.setRemoveSpc(false);
@@ -221,8 +210,7 @@ public class SccpRemoveSpcTest {
 //        s1 = s1 + "\n\nResult: " + b1;
 //        fail(s1);
         
-        assertTrue(Arrays.equals(res.getSolidData(), this.getDataUdt_GT_WithDpc()),
-                "B1: " + arrToString(res.getSolidData()) + " --- " + arrToString(this.getDataUdt_GT_WithDpc()));
+        MessageSegmentationTest.assertByteBufs(res.getSolidData(), this.getDataUdt_GT_WithDpc());
 
         // ---- Encoding based on DPC+SSN - removeSpc on
         // ---- removeSpc on
@@ -234,26 +222,13 @@ public class SccpRemoveSpcTest {
 
         res = msg.encode(stack,LongMessageRuleType.LONG_MESSAGE_FORBBIDEN, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
-        assertTrue(Arrays.equals(res.getSolidData(), this.getDataUdt_DpcSsn()));
+        MessageSegmentationTest.assertByteBufs(res.getSolidData(), this.getDataUdt_DpcSsn());
 
         // ---- removeSpc off
         this.stack.setRemoveSpc(false);
 
         res = msg.encode(stack,LongMessageRuleType.LONG_MESSAGE_FORBBIDEN, 272, logger, false, SccpProtocolVersion.ITU);
         assertEquals(res.getEncodingResult(), EncodingResult.Success);
-        assertTrue(Arrays.equals(res.getSolidData(), this.getDataUdt_DpcSsn()));
-    }
-
-    private String arrToString(byte[] arr) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Size=");
-        sb.append(arr.length);
-        sb.append("; ");
-        for (int i1 = 0; i1 < arr.length; i1++) {
-            if (i1 > 0)
-                sb.append(", ");
-            sb.append(arr[i1]);
-        }
-        return sb.toString();
+        MessageSegmentationTest.assertByteBufs(res.getSolidData(), this.getDataUdt_DpcSsn());
     }
 }

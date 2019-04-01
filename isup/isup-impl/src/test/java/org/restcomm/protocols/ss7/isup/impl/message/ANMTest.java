@@ -26,8 +26,11 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.ParameterHarness;
 import org.restcomm.protocols.ss7.isup.message.AnswerMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
@@ -45,7 +48,7 @@ public class ANMTest extends MessageHarness {
 
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
-        byte[] message = getDefaultBody();
+        ByteBuf message = getDefaultBody();
 
         // AnswerMessageImpl ANM=new AnswerMessageImpl(this,message);
         AnswerMessage ANM = super.messageFactory.createANM();
@@ -68,15 +71,15 @@ public class ANMTest extends MessageHarness {
             if (sa == null)
                 return;
 
-            byte[] b = sa.getFeatureCodes();
+            ByteBuf b = sa.getFeatureCodes();
             assertNotNull(b, "ServerActivation.getFeatureCodes() is null");
             if (b == null) {
                 return;
             }
-            assertEquals(b.length, 7, "Length of param is wrong");
-            if (b.length != 7)
+            assertEquals(b.readableBytes(), 7, "Length of param is wrong");
+            if (b.readableBytes() != 7)
                 return;
-            assertTrue(super.makeCompare(b, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 }),
+            assertTrue(ParameterHarness.byteBufEquals(b, Unpooled.wrappedBuffer(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 })),
                     "Content of ServiceActivation.getFeatureCodes is wrong");
 
         } catch (Exception e) {
@@ -86,7 +89,7 @@ public class ANMTest extends MessageHarness {
 
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
 
         0x0C, (byte) 0x0B, AnswerMessage.MESSAGE_CODE
@@ -102,7 +105,7 @@ public class ANMTest extends MessageHarness {
                 , 0x0
 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

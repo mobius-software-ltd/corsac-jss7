@@ -28,7 +28,7 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
-import java.io.Serializable;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:13:18:50 2009-07-23<br>
@@ -36,7 +36,7 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
-public interface ParameterCompatibilityInstructionIndicators extends Serializable{
+public interface ParameterCompatibilityInstructionIndicators {
 
     /**
      * See Q.763 3.41 Transit at intermediate exchange indicator : transit interpretation
@@ -151,9 +151,9 @@ public interface ParameterCompatibilityInstructionIndicators extends Serializabl
 
     void setSecondOctetPresent(boolean secondOctetPresenet);
 
-    byte[] getRaw();
+    ByteBuf getRaw();
 
-    void setRaw(byte[] raw);
+    void setRaw(ByteBuf raw);
 
     boolean isUseAsRaw();
 

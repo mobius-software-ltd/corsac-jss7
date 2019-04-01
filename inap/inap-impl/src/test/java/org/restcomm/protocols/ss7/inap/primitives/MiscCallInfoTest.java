@@ -26,16 +26,18 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoDpAssignment;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  *
@@ -54,21 +56,18 @@ public class MiscCallInfoTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        MiscCallInfoImpl elem = new MiscCallInfoImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(MiscCallInfoImpl.class);
+        ByteBuf data = Unpooled.wrappedBuffer(this.getData1());
+        ASNDecodeResult result=parser.decode(data);
+        MiscCallInfoImpl elem = (MiscCallInfoImpl)result.getResult();
         assertNotNull(elem.getMessageType());
         assertNull(elem.getDpAssignment());
         assertEquals(elem.getMessageType(), MiscCallInfoMessageType.notification);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new MiscCallInfoImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        data = Unpooled.wrappedBuffer(this.getData2());
+        result=parser.decode(data);
+        elem = (MiscCallInfoImpl)result.getResult();
         assertNotNull(elem.getMessageType());
         assertNotNull(elem.getDpAssignment());
         assertEquals(elem.getMessageType(), MiscCallInfoMessageType.request);
@@ -78,16 +77,20 @@ public class MiscCallInfoTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(MiscCallInfoImpl.class);
+        
         MiscCallInfoImpl elem = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 4);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        ByteBuf data=parser.encode(elem);
+        byte[] encodedData=new byte[data.readableBytes()];
+        data.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData1()));
 
         elem = new MiscCallInfoImpl(MiscCallInfoMessageType.request, MiscCallInfoDpAssignment.individualLine);
-        aos.reset();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 4);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        data=parser.encode(elem);
+        encodedData=new byte[data.readableBytes()];
+        data.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData2()));
 
     }
 

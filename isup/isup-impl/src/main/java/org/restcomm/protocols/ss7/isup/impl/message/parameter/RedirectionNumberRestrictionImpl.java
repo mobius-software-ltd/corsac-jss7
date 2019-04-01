@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumberRestriction;
 
@@ -41,8 +43,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumberRestri
  *
  */
 public class RedirectionNumberRestrictionImpl extends AbstractISUPParameter implements RedirectionNumberRestriction {
-	private static final long serialVersionUID = 1L;
-
 	private int presentationRestrictedIndicator;
 
     public RedirectionNumberRestrictionImpl(int presentationRestrictedIndicator) {
@@ -55,22 +55,21 @@ public class RedirectionNumberRestrictionImpl extends AbstractISUPParameter impl
 
     }
 
-    public RedirectionNumberRestrictionImpl(byte[] b) throws ParameterException {
+    public RedirectionNumberRestrictionImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
 
-        this.presentationRestrictedIndicator = (byte) (b[0] & 0x03);
-        return 1;
+        this.presentationRestrictedIndicator = (byte) (b.readByte() & 0x03);
     }
 
-    public byte[] encode() throws ParameterException {
-        return new byte[] { (byte) (this.presentationRestrictedIndicator & 0x03) };
+    public void encode(ByteBuf b) throws ParameterException {
+        b.writeByte((byte) (this.presentationRestrictedIndicator & 0x03));
     }
 
     public int getPresentationRestrictedIndicator() {

@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.m3ua.impl;
 
 import static org.testng.Assert.assertEquals;
+import io.netty.buffer.Unpooled;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -261,7 +262,7 @@ public class GatewayTest {
         public void sendPayload() throws Exception {
         	Mtp3TransferPrimitiveFactory factory = m3uaMgmt.getMtp3TransferPrimitiveFactory();
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 123, 1408, 1,
-                    new byte[] { 1, 2, 3, 4 });
+                    Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
             m3uaMgmt.sendMessage(mtp3TransferPrimitive);            
         }
     }
@@ -334,7 +335,7 @@ public class GatewayTest {
         public void sendPayload() throws Exception {
             Mtp3TransferPrimitiveFactory factory = m3uaMgmt.getMtp3TransferPrimitiveFactory();
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1408, 123, 1,
-                    new byte[] { 1, 2, 3, 4 });
+            		Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
             m3uaMgmt.sendMessage(mtp3TransferPrimitive);
         }
 

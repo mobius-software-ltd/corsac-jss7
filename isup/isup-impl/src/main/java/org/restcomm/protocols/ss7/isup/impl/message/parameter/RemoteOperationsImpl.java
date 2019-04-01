@@ -30,20 +30,18 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.message.parameter.Invoke;
-import org.restcomm.protocols.ss7.isup.message.parameter.Reject;
-import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperation;
+import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperations;
-import org.restcomm.protocols.ss7.isup.message.parameter.ReturnError;
-import org.restcomm.protocols.ss7.isup.message.parameter.ReturnResult;
+import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperationsPortionImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  * Start time:17:24:08 2009-04-02<br>
@@ -52,14 +50,17 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnResult;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RemoteOperationsImpl extends AbstractISUPParameter implements RemoteOperations {
-	private static final long serialVersionUID = 1L;
-
-	private List<RemoteOperation> remoteOperations = new ArrayList<RemoteOperation>();
+	private RemoteOperationsPortionImpl remoteOperations = new RemoteOperationsPortionImpl();
     private byte protocol = RemoteOperations.PROTOCOL_REMOTE_OPERATIONS;
 
+    private static ASNParser parser=new ASNParser();
+    
+    static {
+    	parser.loadClass(RemoteOperationsPortionImpl.class);
+    }
     // FIXME: XXX
     // Q.763 3.48, requires a lot of hacks
-    public RemoteOperationsImpl(byte[] b) throws ParameterException {
+    public RemoteOperationsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -69,70 +70,40 @@ public class RemoteOperationsImpl extends AbstractISUPParameter implements Remot
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b.length < 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b.readableBytes() < 1) {
             throw new ParameterException();
         }
-        this.protocol = (byte) (b[0] & 0x1F);
-        if ((b[0] & 0x80) > 0) {
-            if (b.length > 1) {
+        
+        byte curr=b.readByte();
+        this.protocol = (byte) (curr & 0x1F);
+        if ((curr & 0x80) > 0) {
+            if (b.readableBytes() > 1) {
                 throw new ParameterException();
             }
-            return 1;
+            return;
         }
 
         try {
-            AsnInputStream asnInputeStream = new AsnInputStream(b);
-            // skip first since its protocol + ext. bit
-            asnInputeStream.skip(1);
-            while (asnInputeStream.available() > 0) {
-                final int tag = asnInputeStream.readTag();
-                AbstractRemoteOperation aro = null;
-                switch (tag) {
-                    case Invoke._TAG:
-                        aro = new InvokeImpl();
-                        break;
-                    case ReturnResult._TAG:
-                        aro = new ReturnResultImpl();
-                        break;
-                    case ReturnError._TAG:
-                        aro = new ReturnErrorImpl();
-                        break;
-                    case Reject._TAG:
-                        aro = new RejectImpl();
-                        break;
-                    default:
-                        throw new ParameterException("Unknown tag: " + tag);
-                }
-                aro.decode(asnInputeStream);
-                this.remoteOperations.add(aro);
-                aro = null;
-            }
-        } catch (IOException e) {
+        	Object output=parser.decode(Unpooled.wrappedBuffer(b)); 
+        	if(!(output instanceof RemoteOperationsPortionImpl))
+        		throw new ParameterException("Invalid asn content found");
+        } catch (ASNException e) {
             throw new ParameterException(e);
         }
-        return b.length;
     }
 
-    public byte[] encode() throws ParameterException {
-        if (remoteOperations.size() == 0) {
-            return new byte[]{(byte) (0x80 | this.protocol)};
+    public void encode(ByteBuf buffer) throws ParameterException {
+        if (remoteOperations.getComponents()==null || remoteOperations.getComponents().size() == 0) {
+        	buffer.writeByte(0x80);
+        	buffer.writeByte(this.protocol);            
         } else {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //ext. bit set to zero since more will come
-            baos.write(protocol);
-            AsnOutputStream aos = new AsnOutputStream();
-            for(RemoteOperation ro:this.remoteOperations){
-                //TODO: should this do more?
-                AbstractRemoteOperation aro = (AbstractRemoteOperation) ro;
-                aro.encode(aos);
-            }
-            try {
-                baos.write(aos.toByteArray());
-            } catch (IOException e) {
-                throw new ParameterException(e);
-            }
-            return baos.toByteArray();
+        	try {
+        		parser.encode(remoteOperations);
+        	}
+        	catch(ASNException ex) {
+        		throw new ParameterException(ex.getMessage());
+        	}
         }
     }
 
@@ -152,18 +123,18 @@ public class RemoteOperationsImpl extends AbstractISUPParameter implements Remot
     }
 
     @Override
-    public void setOperations(RemoteOperation... operations) {
-        this.remoteOperations.clear();
-        for (RemoteOperation ro : operations) {
-            if (ro != null) {
-                this.remoteOperations.add(ro);
-            }
-        }
+    public void setOperations(List<RemoteOperationImpl> operations) {
+    	if(this.remoteOperations==null)
+    		this.remoteOperations=new RemoteOperationsPortionImpl();
+    	
+    	this.remoteOperations.setComponents(operations);        
     }
 
     @Override
-    public RemoteOperation[] getOperations() {
-        return this.remoteOperations.toArray(new RemoteOperation[this.remoteOperations.size()]);
+    public List<RemoteOperationImpl> getOperations() {
+    	if(this.remoteOperations==null)
+    		return null;
+    	
+        return this.remoteOperations.getComponents();
     }
-
 }

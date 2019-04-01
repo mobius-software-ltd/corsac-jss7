@@ -21,6 +21,12 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.PerformingPivotIndicatorImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.PivotReasonImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
@@ -49,18 +55,19 @@ public class PerformingPivotIndicatorTest {
         PivotReasonImpl pr2 = new PivotReasonImpl();
         pr2.setPivotReason((byte) 21);
         pr2.setPivotPossibleAtPerformingExchange((byte) 3);
-        ppi.setReason(pr1, pr2);
-        byte[] b = ppi.encode();
+        ppi.setReason(Arrays.asList(new PivotReason [] {pr1, pr2}));
+        ByteBuf b = Unpooled.buffer();
+        ppi.encode(b);
         ppi = new PerformingPivotIndicatorImpl();
         ppi.decode(b);
-        PivotReason[] reasons = ppi.getReason();
+        List<PivotReason> reasons = ppi.getReason();
         Assert.assertNotNull(reasons);
-        Assert.assertEquals(reasons.length, 2);
-        Assert.assertNotNull(reasons[0]);
-        Assert.assertNotNull(reasons[1]);
-        Assert.assertEquals(reasons[0].getPivotReason(), (byte) 1);
-        Assert.assertEquals(reasons[0].getPivotPossibleAtPerformingExchange(), (byte) 5);
-        Assert.assertEquals(reasons[1].getPivotReason(), (byte) 21);
-        Assert.assertEquals(reasons[1].getPivotPossibleAtPerformingExchange(), (byte) 3);
+        Assert.assertEquals(reasons.size(), 2);
+        Assert.assertNotNull(reasons.get(0));
+        Assert.assertNotNull(reasons.get(1));
+        Assert.assertEquals(reasons.get(0).getPivotReason(), (byte) 1);
+        Assert.assertEquals(reasons.get(0).getPivotPossibleAtPerformingExchange(), (byte) 5);
+        Assert.assertEquals(reasons.get(1).getPivotReason(), (byte) 21);
+        Assert.assertEquals(reasons.get(1).getPivotPossibleAtPerformingExchange(), (byte) 3);
     }
 }

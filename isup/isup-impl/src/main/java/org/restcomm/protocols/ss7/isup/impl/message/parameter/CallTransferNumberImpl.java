@@ -28,8 +28,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferNumber;
@@ -41,8 +40,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferNumber;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class CallTransferNumberImpl extends AbstractNAINumber implements CallTransferNumber {
-	private static final long serialVersionUID = 1L;
-
 	protected int numberingPlanIndicator;
 
     protected int addressRepresentationREstrictedIndicator;
@@ -53,27 +50,14 @@ public class CallTransferNumberImpl extends AbstractNAINumber implements CallTra
      * @param representation
      * @throws ParameterException
      */
-    public CallTransferNumberImpl(byte[] representation) throws ParameterException {
+    public CallTransferNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
 
     public CallTransferNumberImpl() {
         super();
-
     }
-
-    /**
-     * tttttt
-     *
-     * @param bis
-     * @throws ParameterException
-     */
-    public CallTransferNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
-    }
-
+    
     public CallTransferNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,
             int addressRepresentationREstrictedIndicator, int screeningIndicator) {
         super(natureOfAddresIndicator, address);
@@ -82,9 +66,9 @@ public class CallTransferNumberImpl extends AbstractNAINumber implements CallTra
         this.screeningIndicator = screeningIndicator;
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         doAddressPresentationRestricted();
-        return super.encodeHeader(bos);
+        super.encodeHeader(buffer);
     }
 
     /**
@@ -115,13 +99,16 @@ public class CallTransferNumberImpl extends AbstractNAINumber implements CallTra
      * @see org.restcomm.protocols.ss7.isup.message.parameter.AbstractNumber#decodeBody(java.io.ByteArrayInputStream)
      */
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
+    	if(buffer.readableBytes()==0) {
+            throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+        }
+    		
+        int b = buffer.readByte() & 0xff;
 
         this.numberingPlanIndicator = (b & 0x70) >> 4;
         this.addressRepresentationREstrictedIndicator = (b & 0x0c) >> 2;
-        this.screeningIndicator = (b & 0x03);
-        return 1;
+        this.screeningIndicator = (b & 0x03);        
     }
 
     /*
@@ -135,13 +122,12 @@ public class CallTransferNumberImpl extends AbstractNAINumber implements CallTra
      * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
-    public int encodeBody(ByteArrayOutputStream bos) {
+    public void encodeBody(ByteBuf buffer) {
         int c = this.numberingPlanIndicator << 4;
 
         c |= (this.addressRepresentationREstrictedIndicator << 2);
         c |= (this.screeningIndicator);
-        bos.write(c & 0x7F);
-        return 1;
+        buffer.writeByte(c & 0x7F);        
     }
 
     public int getNumberingPlanIndicator() {

@@ -22,8 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
@@ -36,20 +35,13 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public abstract class AbstractNAINumber extends AbstractNumber implements NAINumber {
-	private static final long serialVersionUID = 1L;
-
-    /**
+	/**
      * Holds nature of address indicator bits - those are 7 first bits from ususaly top byte (first bit is even/odd flag.)
      */
     protected int natureOfAddresIndicator;
 
-    public AbstractNAINumber(byte[] representation) throws ParameterException {
-        super(representation);
-
-    }
-
-    public AbstractNAINumber(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
+    public AbstractNAINumber(ByteBuf buffer) throws ParameterException {
+        super(buffer);
 
     }
 
@@ -62,10 +54,8 @@ public abstract class AbstractNAINumber extends AbstractNumber implements NAINum
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(b);
-
-        return this.decode(bis);
+    public void decode(ByteBuf b) throws ParameterException {
+        super.decode(b);
     }
 
     public int getNatureOfAddressIndicator() {
@@ -82,7 +72,7 @@ public abstract class AbstractNAINumber extends AbstractNumber implements NAINum
      * @param bis
      * @return - number of bytes encoded.
      */
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         int b = this.natureOfAddresIndicator & 0x7f;
         // Even is 000000000 == 0
         boolean isOdd = this.oddFlag == _FLAG_ODD;
@@ -90,9 +80,7 @@ public abstract class AbstractNAINumber extends AbstractNumber implements NAINum
         if (isOdd)
             b |= 0x80;
 
-        bos.write(b);
-
-        return 1;
+        buffer.writeByte(b);
     }
 
     /**
@@ -104,15 +92,13 @@ public abstract class AbstractNAINumber extends AbstractNumber implements NAINum
      * @return - number of bytes reads
      * @throws IllegalArgumentException - thrown if read error is encountered.
      */
-    public int decodeHeader(ByteArrayInputStream bis) throws ParameterException {
-        if (bis.available() == 0) {
+    public void decodeHeader(ByteBuf buffer) throws ParameterException {
+        if (buffer.readableBytes() == 0) {
             throw new ParameterException("No more data to read.");
         }
-        int b = bis.read() & 0xff;
+        int b = buffer.readByte() & 0xff;
 
         this.oddFlag = (b & 0x80) >> 7;
         this.natureOfAddresIndicator = b & 0x7f;
-
-        return 1;
     }
 }

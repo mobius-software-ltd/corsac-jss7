@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.QueryOnReleaseCapability;
 
@@ -40,37 +43,38 @@ import org.restcomm.protocols.ss7.isup.message.parameter.QueryOnReleaseCapabilit
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class QueryOnReleaseCapabilityImpl extends AbstractISUPParameter implements QueryOnReleaseCapability {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
-    private byte[] capabilities;
+    private ByteBuf capabilities;
 
     public QueryOnReleaseCapabilityImpl() {
         super();
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        this.setCapabilities(b);
-        return b.length;
+    public void decode(ByteBuf b) throws ParameterException {
+        this.setCapabilities(b);        
     }
 
-    public byte[] encode() throws ParameterException {
-        for (int index = 0; index < this.capabilities.length; index++) {
-            this.capabilities[index] = (byte) (this.capabilities[index] & 0x7F);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getCapabilities();
+        while(curr.readableBytes()>1) {
+        	buffer.writeByte((byte) (curr.readByte() & 0x7F));
         }
 
-        this.capabilities[this.capabilities.length - 1] = (byte) ((this.capabilities[this.capabilities.length - 1]) | (0x01 << 7));
-        return this.capabilities;
+        if(curr.readableBytes()>0)
+        	buffer.writeByte((byte) (curr.readByte() | (0x01 << 7)));        
     }
 
-    public byte[] getCapabilities() {
-        return capabilities;
+    public ByteBuf getCapabilities() {
+        if(capabilities==null)
+        	return null;
+        
+        return Unpooled.wrappedBuffer(capabilities);
     }
 
-    public void setCapabilities(byte[] capabilities) {
-        if (capabilities == null || capabilities.length == 0) {
+    public void setCapabilities(ByteBuf capabilities) {
+        if (capabilities == null || capabilities.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
         this.capabilities = capabilities;

@@ -119,18 +119,19 @@ public class TestEvent implements Serializable {
         // return false;
         // } else if (!eventSource.equals(other.eventSource))
         // return false;
-        if (eventType != other.eventType)
-            return false;
-        if (sent != other.sent)
-            return false;
-        if (sequence != other.sequence)
-            return false;
+        if (eventType != other.eventType) {
+        	return false;
+        }
+        if (sent != other.sent) {
+        	return false;
+        }
+                
         if (timestamp != other.timestamp) {
-            long v = timestamp - other.timestamp;
+        	long v = timestamp - other.timestamp;
             v = Math.abs(v);
-            // 600ms, this can happen if we run tests concurrently and its not a big deal :)
-            if (v > 600) {
-                return false;
+            // 1s, this can happen if we run tests concurrently and its not a big deal :)
+            if (v > 1000) {
+            	return false;
             }
         }
 

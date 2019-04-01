@@ -125,7 +125,7 @@ public class MessageTest {
         PayloadDataImpl msg = (PayloadDataImpl) messageFactory.createMessage(MessageClass.TRANSFER_MESSAGES,
                 MessageType.PAYLOAD);
         byte[] payload = new byte[] { 1, 2, 3, 4 };
-        ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 14150, 1, 1, 0, 0, payload);
+        ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 14150, 1, 1, 0, 0, Unpooled.wrappedBuffer(payload));
         msg.setData(p1);
         msg.encode(byteBuf);
 
@@ -140,8 +140,16 @@ public class MessageTest {
         assertEquals(p1.getNI(), p2.getNI());
         assertEquals(p1.getMP(), p2.getMP());
         assertEquals(p1.getSLS(), p2.getSLS());
-        assertEquals(payload, p1.getData());
-        assertEquals(payload, p2.getData());
+        
+        ByteBuf p1Buf=p1.getData();
+        byte[] p1Arr=new byte[p1Buf.readableBytes()];
+        p1Buf.readBytes(p1Arr);
+        assertEquals(payload, p1Arr);
+        
+        ByteBuf p2Buf=p2.getData();
+        byte[] p2Arr=new byte[p2Buf.readableBytes()];
+        p2Buf.readBytes(p2Arr);
+        assertEquals(payload, p2Arr);
     }
 
     @Test
@@ -151,7 +159,7 @@ public class MessageTest {
         PayloadDataImpl msg = (PayloadDataImpl) messageFactory.createMessage(MessageClass.TRANSFER_MESSAGES,
                 MessageType.PAYLOAD);
         byte[] payload = new byte[] { 1, 2, 3, 4, 5 };
-        ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 14150, 1, 1, 0, 0, payload);
+        ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 14150, 1, 1, 0, 0, Unpooled.wrappedBuffer(payload));
         msg.setData(p1);
         msg.encode(byteBuf);
 
@@ -166,8 +174,16 @@ public class MessageTest {
         assertEquals(p1.getNI(), p2.getNI());
         assertEquals(p1.getMP(), p2.getMP());
         assertEquals(p1.getSLS(), p2.getSLS());
-        assertEquals(payload, p1.getData());
-        assertEquals(payload, p2.getData());
+        
+        ByteBuf p1Buf=p1.getData();
+        byte[] p1Arr=new byte[p1Buf.readableBytes()];
+        p1Buf.readBytes(p1Arr);
+        assertEquals(payload, p1Arr);
+        
+        ByteBuf p2Buf=p2.getData();
+        byte[] p2Arr=new byte[p2Buf.readableBytes()];
+        p2Buf.readBytes(p2Arr);
+        assertEquals(payload, p2Arr);
     }
 
     @Test
@@ -603,8 +619,8 @@ public class MessageTest {
 
         PayloadDataImpl payloadMsg = (PayloadDataImpl) messageFactory.createMessage(MessageClass.TRANSFER_MESSAGES,
                 MessageType.PAYLOAD);
-        ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 14150, 1, 1, 0, 0, new byte[] { 1, 2, 3,
-                4 });
+        ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 14150, 1, 1, 0, 0, Unpooled.wrappedBuffer(new byte[] { 1, 2, 3,
+                4 }));
         payloadMsg.setData(p1);
         payloadMsg.encode(byteBuf);
 
@@ -657,7 +673,7 @@ public class MessageTest {
         Heartbeat heartbeat = (Heartbeat) messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE,
                 MessageType.HEARTBEAT);
 
-        HeartbeatData hrBtData = parmFactory.createHeartbeatData(heratbeatData);
+        HeartbeatData hrBtData = parmFactory.createHeartbeatData(Unpooled.wrappedBuffer(heratbeatData));
 
         heartbeat.setHeartbeatData(hrBtData);
 
@@ -673,7 +689,10 @@ public class MessageTest {
         assertTrue((m3uaMessageImpl instanceof HeartbeatImpl));
         assertNotNull(((HeartbeatImpl) m3uaMessageImpl).getHeartbeatData());
 
-        assertTrue(Arrays.equals(heratbeatData, ((HeartbeatImpl) m3uaMessageImpl).getHeartbeatData().getData()));
+        ByteBuf hbData=((HeartbeatImpl) m3uaMessageImpl).getHeartbeatData().getData();
+        byte[] hbDataArr=new byte[hbData.readableBytes()];
+        hbData.readBytes(hbDataArr);
+        assertTrue(Arrays.equals(heratbeatData, hbDataArr));
 
     }
 
@@ -690,7 +709,7 @@ public class MessageTest {
         HeartbeatAck heartbeatAck = (HeartbeatAck) messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE,
                 MessageType.HEARTBEAT_ACK);
 
-        HeartbeatData hrBtData = parmFactory.createHeartbeatData(heratbeatAckData);
+        HeartbeatData hrBtData = parmFactory.createHeartbeatData(Unpooled.wrappedBuffer(heratbeatAckData));
 
         heartbeatAck.setHeartbeatData(hrBtData);
 
@@ -706,7 +725,10 @@ public class MessageTest {
         assertTrue((m3uaMessageImpl instanceof HeartbeatAckImpl));
         assertNotNull(((HeartbeatAckImpl) m3uaMessageImpl).getHeartbeatData());
 
-        assertTrue(Arrays.equals(heratbeatAckData, ((HeartbeatAckImpl) m3uaMessageImpl).getHeartbeatData().getData()));
+        ByteBuf hbData=((HeartbeatAckImpl) m3uaMessageImpl).getHeartbeatData().getData();
+        byte[] hbDataArr=new byte[hbData.readableBytes()];
+        hbData.readBytes(hbDataArr);
+        assertTrue(Arrays.equals(heratbeatAckData, hbDataArr));
 
     }
 }

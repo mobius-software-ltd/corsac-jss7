@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -49,8 +51,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class IdentificationRequestMessageImpl extends ISUPMessageImpl implements IdentificationRequestMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.IdentificationRequest);
     private static final int _MANDATORY_VAR_COUNT = 0;
     private static final boolean _HAS_MANDATORY = true;
@@ -76,13 +76,13 @@ public class IdentificationRequestMessageImpl extends ISUPMessageImpl implements
         super.o_Parameters.put(_INDEX_O_EndOfOptionalParameters, _END_OF_OPTIONAL_PARAMETERS);
     }
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         // TODO Auto-generated method stub
 
     }
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         switch (parameterCode & 0xFF) {
             case MessageCompatibilityInformation._PARAMETER_CODE:

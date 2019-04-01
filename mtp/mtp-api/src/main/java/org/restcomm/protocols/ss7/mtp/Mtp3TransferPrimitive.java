@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  * @author sergey vetyutnev
  * @author amit bhayani
@@ -35,11 +38,11 @@ public class Mtp3TransferPrimitive {
     protected final int opc;
     protected final int dpc;
     protected final int sls;
-    protected final byte[] data;
+    protected final ByteBuf data;
 
     private final RoutingLabelFormat pointCodeFormat;
 
-    protected Mtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, byte[] data,
+    protected Mtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,
             RoutingLabelFormat pointCodeFormat) {
         this.si = si;
         this.ni = ni;
@@ -76,76 +79,76 @@ public class Mtp3TransferPrimitive {
         return this.sls;
     }
 
-    public byte[] getData() {
-        return this.data;
+    public ByteBuf getData() {
+        return Unpooled.wrappedBuffer(this.data);
     }
 
-    public byte[] encodeMtp3() {
-
-        byte[] res = null;
+    public ByteBuf encodeMtp3() {
+    	
+        ByteBuf res = null;
         int ssi = 0;
 
         switch (this.pointCodeFormat) {
             case ITU:
 
-                res = new byte[this.data.length + 5];
-
+                ByteBuf headerBuffer=Unpooled.buffer(5);
+                
                 // sio
                 ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
-                res[0] = (byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F));
+                headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
 
                 // routing label
-                res[1] = (byte) this.dpc;
-                res[2] = (byte) (((this.dpc >> 8) & 0x3F) | ((this.opc & 0x03) << 6));
-                res[3] = (byte) (this.opc >> 2);
-                res[4] = (byte) (((this.opc >> 10) & 0x0F) | ((this.sls & 0x0F) << 4));
+                headerBuffer.writeByte((byte) this.dpc);
+                headerBuffer.writeByte((byte) (((this.dpc >> 8) & 0x3F) | ((this.opc & 0x03) << 6)));
+                headerBuffer.writeByte((byte) (this.opc >> 2));
+                headerBuffer.writeByte((byte) (((this.opc >> 10) & 0x0F) | ((this.sls & 0x0F) << 4)));
 
                 // msu data
-                System.arraycopy(this.data, 0, res, 5, this.data.length);
+                res=Unpooled.wrappedBuffer(headerBuffer,this.data);                
 
                 break;
 
             case ANSI_Sls8Bit:
-                res = new byte[this.data.length + 8];
-
+            	headerBuffer=Unpooled.buffer(8);
+                                
                 // sio
                 ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
-                res[0] = (byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F));
+                headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
 
-                res[1] = (byte) this.dpc;
-                res[2] = (byte) (this.dpc >> 8);
-                res[3] = (byte) (this.dpc >> 16);
+                headerBuffer.writeByte((byte) this.dpc);
+                headerBuffer.writeByte((byte) (this.dpc >> 8));
+                headerBuffer.writeByte((byte) (this.dpc >> 16));
 
-                res[4] = (byte) this.opc;
-                res[5] = (byte) (this.opc >> 8);
-                res[6] = (byte) (this.opc >> 16);
+                headerBuffer.writeByte((byte) this.opc);
+                headerBuffer.writeByte((byte) (this.opc >> 8));
+                headerBuffer.writeByte((byte) (this.opc >> 16));
 
-                res[7] = (byte) this.sls;
+                headerBuffer.writeByte((byte) this.sls);
 
                 // msu data
-                System.arraycopy(this.data, 0, res, 8, this.data.length);
+                res=Unpooled.wrappedBuffer(headerBuffer,this.data);                
 
                 break;
 
             case ANSI_Sls5Bit:
-                res = new byte[this.data.length + 8];
-
+            	headerBuffer=Unpooled.buffer(8);
+                
                 // sio
                 ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
-                res[0] = (byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F));
+                headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
 
-                res[1] = (byte) this.dpc;
-                res[2] = (byte) (this.dpc >> 8);
-                res[3] = (byte) (this.dpc >> 16);
+                headerBuffer.writeByte((byte) this.dpc);
+                headerBuffer.writeByte((byte) (this.dpc >> 8));
+                headerBuffer.writeByte((byte) (this.dpc >> 16));
 
-                res[4] = (byte) this.opc;
-                res[5] = (byte) (this.opc >> 8);
-                res[6] = (byte) (this.opc >> 16);
+                headerBuffer.writeByte((byte) this.opc);
+                headerBuffer.writeByte((byte) (this.opc >> 8));
+                headerBuffer.writeByte((byte) (this.opc >> 16));
 
-                res[7] = (byte) (this.sls & 0x1F);
+                headerBuffer.writeByte((byte) (this.sls & 0x1F));
 
                 // msu data
-                System.arraycopy(this.data, 0, res, 8, this.data.length);
+                res=Unpooled.wrappedBuffer(headerBuffer,this.data);                
 
                 break;
 
@@ -170,7 +173,7 @@ public class Mtp3TransferPrimitive {
 
         if (this.data != null) {
             sb.append(", MsgLen=");
-            sb.append(this.data.length);
+            sb.append(this.data.readableBytes());
         }
 
         sb.append(", NI=");

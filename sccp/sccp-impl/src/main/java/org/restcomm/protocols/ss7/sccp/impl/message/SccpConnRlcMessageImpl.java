@@ -31,9 +31,8 @@ import org.restcomm.protocols.ss7.sccp.message.ParseException;
 import org.restcomm.protocols.ss7.sccp.message.SccpConnRlcMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class SccpConnRlcMessageImpl extends SccpConnReferencedMessageImpl implements SccpConnRlcMessage {
 
@@ -46,49 +45,35 @@ public class SccpConnRlcMessageImpl extends SccpConnReferencedMessageImpl implem
     }
 
     @Override
-    public void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte[] buffer = new byte[3];
-            in.read(buffer);
-            LocalReferenceImpl ref = new LocalReferenceImpl();
-            ref.decode(buffer, factory, sccpProtocolVersion);
-            destinationLocalReferenceNumber = ref;
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	LocalReferenceImpl ref = new LocalReferenceImpl();
+        ref.decode(buffer, factory, sccpProtocolVersion);
+        destinationLocalReferenceNumber = ref;
 
-            in.read(buffer);
-            ref = new LocalReferenceImpl();
-            ref.decode(buffer, factory, sccpProtocolVersion);
-            sourceLocalReferenceNumber = ref;
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+        ref = new LocalReferenceImpl();
+        ref.decode(buffer, factory, sccpProtocolVersion);
+        sourceLocalReferenceNumber = ref;
     }
 
     @Override
     public EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger, boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (type == 0) {
-                return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
-            }
-            if (destinationLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
-            }
-            if (sourceLocalReferenceNumber == null) {
-                return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
-            }
-
-            // 7 is sum of 3 fixed-length field lengths
-            ByteArrayOutputStream out = new ByteArrayOutputStream(7);
-
-            byte[] dlr = ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] slr = ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-
-            out.write(type);
-            out.write(dlr);
-            out.write(slr);
-            return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-        } catch (IOException e) {
-            throw new ParseException(e);
+    	if (type == 0) {
+            return new EncodingResultData(EncodingResult.MessageTypeMissing, null, null, null);
         }
+        if (destinationLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.DestinationLocalReferenceNumberMissing, null, null, null);
+        }
+        if (sourceLocalReferenceNumber == null) {
+            return new EncodingResultData(EncodingResult.SourceLocalReferenceNumberMissing, null, null, null);
+        }
+
+        // 7 is sum of 3 fixed-length field lengths
+        ByteBuf out = Unpooled.buffer(7);
+
+        out.writeByte(type);
+        ((LocalReferenceImpl) destinationLocalReferenceNumber).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((LocalReferenceImpl) sourceLocalReferenceNumber).encode(out,sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        return new EncodingResultData(EncodingResult.Success, out, null, null);
     }
 
     @Override

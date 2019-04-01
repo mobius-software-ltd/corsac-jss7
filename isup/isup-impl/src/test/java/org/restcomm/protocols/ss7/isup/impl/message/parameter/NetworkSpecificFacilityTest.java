@@ -31,8 +31,9 @@
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -66,8 +67,11 @@ public class NetworkSpecificFacilityTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
 
         // now some custom part?
-        byte[] body = bci.encode();
+        ByteBuf buf=Unpooled.buffer(255);
+        bci.encode(buf);
 
+        byte[] body=new byte[buf.readableBytes()];
+        buf.readBytes(body);
         for (int index = 2; index < 8; index++) {
             if (index == 7) {
                 if (((body[index] >> 7) & 0x01) != 0) {
@@ -81,14 +85,14 @@ public class NetworkSpecificFacilityTest extends ParameterHarness {
         }
     }
 
-    private byte[] getBody(int _TNI, int _NIP, byte[] ntwrkID, byte[] ntwrSpecificFacilityIndicator) throws IOException {
+    private ByteBuf getBody(int _TNI, int _NIP, byte[] ntwrkID, byte[] ntwrSpecificFacilityIndicator) throws IOException {
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    	ByteBuf bos = Unpooled.buffer();
         int v = _NIP;
         v |= _TNI << 4;
         if (ntwrkID != null) {
-            bos.write(ntwrkID.length);
-            bos.write(v);
+            bos.writeByte(ntwrkID.length);
+            bos.writeByte(v);
             for (int index = 0; index < ntwrkID.length; index++) {
                 if (index == ntwrkID.length - 1) {
                     ntwrkID[index] |= 0x01 << 7;
@@ -96,14 +100,14 @@ public class NetworkSpecificFacilityTest extends ParameterHarness {
                     ntwrkID[index] &= 0x7F;
                 }
             }
-            bos.write(ntwrkID);
+            bos.writeBytes(ntwrkID);
         } else {
             v |= 0x01 << 7;
-            bos.write(v);
+            bos.writeByte(v);
         }
 
-        bos.write(ntwrSpecificFacilityIndicator);
-        return bos.toByteArray();
+        bos.writeBytes(ntwrSpecificFacilityIndicator);
+        return bos;
     }
 
     /*
@@ -113,7 +117,7 @@ public class NetworkSpecificFacilityTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new NetworkSpecificFacilityImpl(new byte[] { 1, (byte) 0xFF, 1, 2, 2 });
+        return new NetworkSpecificFacilityImpl(Unpooled.wrappedBuffer(new byte[] { 1, (byte) 0xFF, 1, 2, 2 }));
     }
 
 }

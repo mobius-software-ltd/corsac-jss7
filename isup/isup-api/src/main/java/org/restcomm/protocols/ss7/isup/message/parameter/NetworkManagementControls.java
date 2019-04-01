@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import java.util.List;
+
 /**
  * Start time:13:32:08 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -41,8 +43,7 @@ public interface NetworkManagementControls extends ISUPParameter {
 
     byte createTAREnabledByte(boolean enabled);
 
-    byte[] getNetworkManagementControls();
+    List<Boolean> getNetworkManagementControls();
 
-    void setNetworkManagementControls(byte[] networkManagementControls) throws IllegalArgumentException;
-
+    void setNetworkManagementControls(List<Boolean> networkManagementControls) throws IllegalArgumentException;
 }

@@ -27,6 +27,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -962,8 +963,8 @@ public class SgFSMTest {
         testAssociation2.clearRxMessages();
 
         for (int sls = 0; sls < 256; sls++) {
-            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, new byte[] {
-                    1, 2, 3, 4 });
+            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
+                    1, 2, 3, 4 }));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -998,8 +999,8 @@ public class SgFSMTest {
         testAssociation2.clearRxMessages();
 
         for (int sls = 0; sls < 256; sls++) {
-            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, new byte[] {
-                    1, 2, 3, 4 });
+            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
+                    1, 2, 3, 4 }));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1112,8 +1113,8 @@ public class SgFSMTest {
         testAssociation2.clearRxMessages();
 
         for (int sls = 0; sls < 256; sls++) {
-            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, new byte[] {
-                    1, 2, 3, 4 });
+            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
+                    1, 2, 3, 4 }));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1147,8 +1148,8 @@ public class SgFSMTest {
         testAssociation2.clearRxMessages();
 
         for (int sls = 0; sls < 256; sls++) {
-            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, new byte[] {
-                    1, 2, 3, 4 });
+            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
+                    1, 2, 3, 4 }));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1318,8 +1319,8 @@ public class SgFSMTest {
         // int si, int ni, int mp, int opc, int dpc, int sls, byte[] data,
         // RoutingLabelFormat pointCodeFormat
         for (int sls = 0; sls < 256; sls++) {
-            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, new byte[] {
-                    1, 2, 3, 4 });
+            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
+                    1, 2, 3, 4 }));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1355,8 +1356,8 @@ public class SgFSMTest {
         // int si, int ni, int mp, int opc, int dpc, int sls, byte[] data,
         // RoutingLabelFormat pointCodeFormat
         for (int sls = 0; sls < 256; sls++) {
-            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, new byte[] {
-                    1, 2, 3, 4 });
+            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
+                    1, 2, 3, 4 }));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1592,7 +1593,7 @@ public class SgFSMTest {
         PayloadDataImpl payload = (PayloadDataImpl) messageFactory.createMessage(MessageClass.TRANSFER_MESSAGES,
                 MessageType.PAYLOAD);
         ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 123, 3, 1, 0, 1,
-                new byte[] { 1, 2, 3, 4 });
+        		Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
         payload.setRoutingContext(rc);
         payload.setData(p1);
 

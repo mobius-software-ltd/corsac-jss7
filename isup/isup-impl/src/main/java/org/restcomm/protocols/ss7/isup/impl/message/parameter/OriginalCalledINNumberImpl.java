@@ -30,7 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledINNumber;
@@ -42,27 +42,16 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledINNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class OriginalCalledINNumberImpl extends CalledNumberImpl implements OriginalCalledINNumber {
-	private static final long serialVersionUID = 1L;
-
-	public OriginalCalledINNumberImpl(byte[] representation) throws ParameterException {
+	public OriginalCalledINNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
 
-    public OriginalCalledINNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
-    }
-
-    public OriginalCalledINNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,
-            int addressRepresentationREstrictedIndicator) {
+    public OriginalCalledINNumberImpl(int natureOfAddresIndicator, String address, int numberingPlanIndicator,int addressRepresentationREstrictedIndicator) {
         super(natureOfAddresIndicator, address, numberingPlanIndicator, addressRepresentationREstrictedIndicator);
-
     }
 
     public OriginalCalledINNumberImpl() {
         super();
-
     }
 
     protected String getPrimitiveName() {
@@ -70,7 +59,6 @@ public class OriginalCalledINNumberImpl extends CalledNumberImpl implements Orig
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
 }

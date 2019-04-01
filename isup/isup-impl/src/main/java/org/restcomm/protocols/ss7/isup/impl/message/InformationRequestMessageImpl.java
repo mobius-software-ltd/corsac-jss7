@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -50,8 +52,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class InformationRequestMessageImpl extends ISUPMessageImpl implements InformationRequestMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.InformationRequest);
     
 	static final int _INDEX_F_MessageType = 0;
@@ -125,26 +125,21 @@ public class InformationRequestMessageImpl extends ISUPMessageImpl implements In
      *
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters (byte[], int)
      */
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-        if (b.length - index > 1) {
+        super.decodeMandatoryParameters(parameterFactory, b);
+        if (b.readableBytes() > 1) {
 
             try {
-                byte[] informationInd = new byte[2];
-                informationInd[0] = b[index++];
-                informationInd[1] = b[index++];
+                ByteBuf informationInd = b.slice(b.readerIndex(), 2);
                 InformationRequestIndicators bci = parameterFactory.createInformationRequestIndicators();
                 ((AbstractISUPParameter) bci).decode(informationInd);
+                b.skipBytes(2);
                 this.setInformationRequestIndicators(bci);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
-
-            // return 3;
-            return index - localIndex;
         } else {
             throw new IllegalArgumentException("byte[] must have atleast 2 octets");
         }
@@ -157,7 +152,7 @@ public class InformationRequestMessageImpl extends ISUPMessageImpl implements In
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody (byte[], int)
      */
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory,ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         throw new UnsupportedOperationException();
     }
@@ -167,7 +162,7 @@ public class InformationRequestMessageImpl extends ISUPMessageImpl implements In
      *
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte [], byte)
      */
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
 
         switch (parameterCode & 0xFF) {

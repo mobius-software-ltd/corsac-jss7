@@ -21,11 +21,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.indicator.AddressIndicator;
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
@@ -140,113 +136,86 @@ public class SccpAddressImpl extends AbstractParameter implements SccpAddress {
     }
 
     @Override
-    public void decode(final InputStream bin, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            int b = bin.read() & 0xff;
-            this.ai = new AddressIndicator((byte) b, sccpProtocolVersion);
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	int b = buffer.readByte() & 0xff;
+        this.ai = new AddressIndicator((byte) b, sccpProtocolVersion);
 
-            if (sccpProtocolVersion == SccpProtocolVersion.ANSI) {
-                if (this.ai.isSSNPresent()) {
-                    this.ssn = bin.read() & 0xff;
-                }
-
-                if (this.ai.isPCPresent()) {
-                    int b1 = bin.read() & 0xff;
-                    int b2 = bin.read() & 0xff;
-                    int b3 = bin.read() & 0xff;
-
-                    this.pc = (b3 << 16) | (b2 << 8) | b1;
-                }
-            } else {
-                if (this.ai.isPCPresent()) {
-                    int b1 = bin.read() & 0xff;
-                    int b2 = bin.read() & 0xff;
-
-                    this.pc = ((b2 & 0x3f) << 8) | b1;
-                }
-
-                if (this.ai.isSSNPresent()) {
-                    this.ssn = bin.read() & 0xff;
-                }
+        if (sccpProtocolVersion == SccpProtocolVersion.ANSI) {
+            if (this.ai.isSSNPresent()) {
+                this.ssn = buffer.readByte() & 0xff;
             }
 
-            if(this.ai.getGlobalTitleIndicator()!=GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED){
-                this.gt = factory.createGlobalTitle(this.ai.getGlobalTitleIndicator());
-                ((AbstractGlobalTitle) this.gt).decode(bin, factory, sccpProtocolVersion);
+            if (this.ai.isPCPresent()) {
+                int b1 = buffer.readByte() & 0xff;
+                int b2 = buffer.readByte() & 0xff;
+                int b3 = buffer.readByte() & 0xff;
+
+                this.pc = (b3 << 16) | (b2 << 8) | b1;
             }
-        } catch (IOException e) {
-            throw new ParseException(e);
+        } else {
+            if (this.ai.isPCPresent()) {
+                int b1 = buffer.readByte() & 0xff;
+                int b2 = buffer.readByte() & 0xff;
+
+                this.pc = ((b2 & 0x3f) << 8) | b1;
+            }
+
+            if (this.ai.isSSNPresent()) {
+                this.ssn = buffer.readByte() & 0xff;
+            }
+        }
+
+        if(this.ai.getGlobalTitleIndicator()!=GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED){
+            this.gt = factory.createGlobalTitle(this.ai.getGlobalTitleIndicator());
+            ((AbstractGlobalTitle) this.gt).decode(buffer, factory, sccpProtocolVersion);
         }
     }
 
     @Override
-    public void encode(final OutputStream os, final boolean removeSpc, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte aiValue = ai.getValue(sccpProtocolVersion);
+    public void encode(ByteBuf buffer, final boolean removeSpc, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	byte aiValue = ai.getValue(sccpProtocolVersion);
 
-            if (sccpProtocolVersion == SccpProtocolVersion.ANSI) {
-                if (removeSpc && ((aiValue & ROUTE_ON_PC_FLAG) == 0x00)) {
-                    // Routing on GT so lets remove PC flag
+        if (sccpProtocolVersion == SccpProtocolVersion.ANSI) {
+            if (removeSpc && ((aiValue & ROUTE_ON_PC_FLAG) == 0x00)) {
+                // Routing on GT so lets remove PC flag
 
-                    aiValue = (byte) (aiValue & REMOVE_PC_FLAG_ANSI);
-                }
-
-                os.write(aiValue);
-
-                if (ai.isSSNPresent()) {
-                    os.write((byte) this.ssn);
-                }
-
-                if ((aiValue & PC_PRESENT_FLAG_ANSI) == PC_PRESENT_FLAG_ANSI) {
-                    // If Point Code included in SCCP Address
-                    byte b1 = (byte) this.pc;
-                    byte b2 = (byte) (this.pc >> 8);
-                    byte b3 = (byte) (this.pc >> 16);
-
-                    os.write(b1);
-                    os.write(b2);
-                    os.write(b3);
-                }
-            } else {
-                if (removeSpc && ((aiValue & ROUTE_ON_PC_FLAG) == 0x00)) {
-                    // Routing on GT so lets remove PC flag
-
-                    aiValue = (byte) (aiValue & REMOVE_PC_FLAG);
-                }
-
-                os.write(aiValue);
-
-                if ((aiValue & PC_PRESENT_FLAG) == PC_PRESENT_FLAG) {
-                    // If Point Code included in SCCP Address
-                    byte b1 = (byte) this.pc;
-                    byte b2 = (byte) ((this.pc >> 8) & 0x3f);
-
-                    os.write(b1);
-                    os.write(b2);
-                }
-
-                if (ai.isSSNPresent()) {
-                    os.write((byte) this.ssn);
-                }
+                aiValue = (byte) (aiValue & REMOVE_PC_FLAG_ANSI);
             }
 
-            if (ai.getGlobalTitleIndicator() != GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED) {
-                ((AbstractGlobalTitle) this.gt).encode(os, removeSpc, sccpProtocolVersion);
+            buffer.writeByte(aiValue);
+
+            if (ai.isSSNPresent()) {
+            	buffer.writeByte((byte) this.ssn);
             }
-        } catch (IOException e) {
-            throw new ParseException(e);
+
+            if ((aiValue & PC_PRESENT_FLAG_ANSI) == PC_PRESENT_FLAG_ANSI) {
+                // If Point Code included in SCCP Address
+            	buffer.writeByte((byte) this.pc);
+            	buffer.writeByte((byte) (this.pc >> 8));
+            	buffer.writeByte((byte) (this.pc >> 16));
+            }
+        } else {
+            if (removeSpc && ((aiValue & ROUTE_ON_PC_FLAG) == 0x00)) {
+                // Routing on GT so lets remove PC flag
+
+                aiValue = (byte) (aiValue & REMOVE_PC_FLAG);
+            }
+
+            buffer.writeByte(aiValue);
+
+            if ((aiValue & PC_PRESENT_FLAG) == PC_PRESENT_FLAG) {
+                // If Point Code included in SCCP Address
+            	buffer.writeByte((byte) this.pc);
+            	buffer.writeByte(((this.pc >> 8) & 0x3f));
+            }
+
+            if (ai.isSSNPresent()) {
+            	buffer.writeByte((byte) this.ssn);
+            }
         }
-    }
 
-    public void decode(final byte[] b, final ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        ByteArrayInputStream bin = new ByteArrayInputStream(b);
-        this.decode(bin, factory, sccpProtocolVersion);
-    }
-
-    @Override
-    public byte[] encode(boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        this.encode(baos, removeSPC, sccpProtocolVersion);
-        return baos.toByteArray();
+        if (ai.getGlobalTitleIndicator() != GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED) {
+            ((AbstractGlobalTitle) this.gt).encode(buffer, removeSpc, sccpProtocolVersion);
+        }
     }
 }

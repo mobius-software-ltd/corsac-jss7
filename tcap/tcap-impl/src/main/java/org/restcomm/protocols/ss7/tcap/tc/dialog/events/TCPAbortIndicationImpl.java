@@ -35,8 +35,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
  *
  */
 public class TCPAbortIndicationImpl extends DialogIndicationImpl implements TCPAbortIndication {
-	private static final long serialVersionUID = 1L;
-
 	// This indication is used to inform user of abnormal cases.
     private PAbortCauseType cause;
 

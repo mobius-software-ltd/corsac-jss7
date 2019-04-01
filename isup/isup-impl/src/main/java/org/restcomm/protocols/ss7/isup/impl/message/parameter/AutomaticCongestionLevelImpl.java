@@ -30,7 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.AutomaticCongestionLevel;
@@ -42,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.AutomaticCongestionLeve
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class AutomaticCongestionLevelImpl extends AbstractISUPParameter implements AutomaticCongestionLevel {
-	private static final long serialVersionUID = 1L;
-
 	private int automaticCongestionLevel = 0;
 
     public AutomaticCongestionLevelImpl() {
@@ -51,27 +49,20 @@ public class AutomaticCongestionLevelImpl extends AbstractISUPParameter implemen
 
     }
 
-    public AutomaticCongestionLevelImpl(byte[] b) throws ParameterException {
+    public AutomaticCongestionLevelImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null or have different size than 1");
         }
-        this.automaticCongestionLevel = b[0];
-        return 1;
+        this.automaticCongestionLevel = b.readByte();        
     }
 
-    public byte[] encode() throws ParameterException {
-
-        return new byte[] { (byte) this.automaticCongestionLevel };
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        bos.write(this.automaticCongestionLevel);
-        return 1;
+    public void encode(ByteBuf b) throws ParameterException {
+    	b.writeByte((byte) this.automaticCongestionLevel);
     }
 
     public int getAutomaticCongestionLevel() {

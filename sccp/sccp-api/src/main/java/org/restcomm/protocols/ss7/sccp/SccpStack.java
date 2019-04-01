@@ -97,20 +97,6 @@ public interface SccpStack {
     boolean isRespectPc();
 
     /**
-     * Stack only listens for incoming messages and does not send anything out of stack. Messages are silently dropped.
-     *
-     * @param previewMode
-     */
-    void setPreviewMode(boolean previewMode) throws Exception;
-
-    /**
-     * Returns if previeMode is enabled
-     *
-     * @return
-     */
-    boolean isPreviewMode();
-
-    /**
      * Protocol version that is processed by SCCP (ITU / ANSI)
      * @param sccpProtocolVersion
      */

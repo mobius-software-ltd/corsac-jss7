@@ -29,6 +29,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.message.BlockingMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 
@@ -40,13 +43,13 @@ import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
  */
 public class BLOTest extends MessageHarness {
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
 
         0x0C, (byte) 0x0B, BlockingMessage.MESSAGE_CODE
 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

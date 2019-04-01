@@ -30,7 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.AccessDeliveryInformation;
@@ -43,8 +43,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.AccessDeliveryInformati
  *
  */
 public class AccessDeliveryInformationImpl extends AbstractISUPParameter implements AccessDeliveryInformation {
-	private static final long serialVersionUID = 1L;
-
 	private int accessDeliveryIndicator;
 
     public AccessDeliveryInformationImpl(int accessDeliveryIndicator) {
@@ -57,28 +55,20 @@ public class AccessDeliveryInformationImpl extends AbstractISUPParameter impleme
 
     }
 
-    public AccessDeliveryInformationImpl(byte[] representation) throws ParameterException {
+    public AccessDeliveryInformationImpl(ByteBuf representation) throws ParameterException {
         super();
         this.decode(representation);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new IllegalArgumentException("byte[] must not be null or have different size than 1");
         }
-        this.accessDeliveryIndicator = (byte) (b[0] & 0x01);
-
-        return 1;
+        this.accessDeliveryIndicator = (byte) (b.readByte() & 0x01);
     }
 
-    public byte[] encode() throws ParameterException {
-
-        return new byte[] { (byte) this.accessDeliveryIndicator };
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        bos.write(this.accessDeliveryIndicator);
-        return 1;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte(this.accessDeliveryIndicator);        
     }
 
     public int getAccessDeliveryIndicator() {

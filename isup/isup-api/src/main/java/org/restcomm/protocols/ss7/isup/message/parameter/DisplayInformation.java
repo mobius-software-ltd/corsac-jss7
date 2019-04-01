@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:12:39:58 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -37,7 +39,7 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
 public interface DisplayInformation extends ISUPParameter {
     int _PARAMETER_CODE = 0x73;
 
-    byte[] getInfo();
+    ByteBuf getInfo();
 
-    void setInfo(byte[] info) throws IllegalArgumentException;
+    void setInfo(ByteBuf info) throws IllegalArgumentException;
 }

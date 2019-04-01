@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ConnectionRequest;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ConnectionRequest;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ConnectionRequestImpl extends AbstractISUPParameter implements ConnectionRequest {
-	private static final long serialVersionUID = 1L;
-
 	private int localReference;
     // should we use here SignalingPointCode class? XXx
     private int signalingPointCode;
@@ -50,7 +50,7 @@ public class ConnectionRequestImpl extends AbstractISUPParameter implements Conn
     private boolean creditSet = false;
     private int credit;
 
-    public ConnectionRequestImpl(byte[] b) throws ParameterException {
+    public ConnectionRequestImpl(ByteBuf b) throws ParameterException {
         decode(b);
     }
 
@@ -67,7 +67,7 @@ public class ConnectionRequestImpl extends AbstractISUPParameter implements Conn
         this.credit = credit;
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         if (b == null) {
             throw new ParameterException("byte[] must not be null");
         }
@@ -76,45 +76,38 @@ public class ConnectionRequestImpl extends AbstractISUPParameter implements Conn
         // throw new ParameterException("For protocol version 1 length of this parameter must be 7 octets");
         // }
 
-        if (b.length != 5 && b.length != 7) {
+        if (b.readableBytes() != 5 && b.readableBytes() != 7) {
             throw new ParameterException("byte[] length must be 5 or 7");
         }
 
         // FIXME: This is not mentioned, is it inverted as usually or not ?
-        this.localReference |= b[0];
-        this.localReference |= b[1] << 8;
-        this.localReference |= b[2] << 16;
+        this.localReference |= b.readByte();
+        this.localReference |= b.readByte() << 8;
+        this.localReference |= b.readByte() << 16;
 
-        this.signalingPointCode = b[3];
-        this.signalingPointCode |= (b[4] & 0x3F) << 8;
+        this.signalingPointCode = b.readByte();
+        this.signalingPointCode |= (b.readByte() & 0x3F) << 8;
 
-        if (b.length == 7) {
+        if (b.readableBytes()>0) {
             this.creditSet = true;
             this.protocolClassSet = true;
-            this.protocolClass = b[5];
-            this.credit = b[6];
+            this.protocolClass = b.readByte();
+            this.credit = b.readByte();
         }
-        return 0;
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = null;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) this.localReference);
+    	buffer.writeByte((byte) (this.localReference >> 8));
+    	buffer.writeByte((byte) (this.localReference >> 16));
+
+    	buffer.writeByte((byte) this.signalingPointCode);
+    	buffer.writeByte((byte) ((this.signalingPointCode >> 8) & 0x3F));
+        
         if (this.creditSet || this.protocolClassSet) {
-            b = new byte[7];
-
-            b[5] = (byte) this.protocolClass;
-            b[6] = (byte) this.credit;
-        } else {
-            b = new byte[5];
+        	buffer.writeByte((byte) this.protocolClass);
+        	buffer.writeByte((byte) this.credit);
         }
-
-        b[0] = (byte) this.localReference;
-        b[1] = (byte) (this.localReference >> 8);
-        b[2] = (byte) (this.localReference >> 16);
-
-        b[3] = (byte) this.signalingPointCode;
-        b[4] = (byte) ((this.signalingPointCode >> 8) & 0x3F);
-        return b;
     }
 
     public int getLocalReference() {

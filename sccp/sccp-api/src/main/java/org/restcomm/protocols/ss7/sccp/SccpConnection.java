@@ -8,6 +8,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 public interface SccpConnection {
@@ -52,7 +54,7 @@ public interface SccpConnection {
      * @param data
      * @return
      */
-    void send(byte[] data) throws Exception;
+    void send(ByteBuf data) throws Exception;
 
     /**
      * Get connection state
@@ -98,7 +100,7 @@ public interface SccpConnection {
      * @param data This parameter is optional
      * @return
      */
-    void refuse(RefusalCause reason, byte[] data) throws Exception;
+    void refuse(RefusalCause reason, ByteBuf data) throws Exception;
 
     /**
      * Disconnect established connection
@@ -107,7 +109,7 @@ public interface SccpConnection {
      * @param data This parameter is optional
      * @return
      */
-    void disconnect(ReleaseCause reason, byte[] data) throws Exception;
+    void disconnect(ReleaseCause reason, ByteBuf data) throws Exception;
 
     /**
      * Accept new connection
@@ -116,7 +118,7 @@ public interface SccpConnection {
      * @param credit This parameter is optional
      * @return
      */
-    void confirm(SccpAddress respondingAddress, Credit credit, byte[] data) throws Exception;
+    void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data) throws Exception;
 
     /**
      * Accept new connection

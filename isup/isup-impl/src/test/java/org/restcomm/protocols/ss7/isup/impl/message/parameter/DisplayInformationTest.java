@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -49,13 +52,13 @@ public class DisplayInformationTest extends ParameterHarness {
     public DisplayInformationTest() {
         super();
 
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
        byte[] body = new byte[]{0x01,(byte) 0x81};
-       return body;
+       return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -64,7 +67,7 @@ public class DisplayInformationTest extends ParameterHarness {
         DisplayInformationImpl at = new DisplayInformationImpl(getBody1());
 
         String[] methodNames = { "getInfo" };
-        Object[] expectedValues = { new byte[]{0x01,(byte) 0x81} };
+        Object[] expectedValues = { Unpooled.wrappedBuffer(new byte[]{0x01,(byte) 0x81}) };
 
         super.testValues(at, methodNames, expectedValues);
     }

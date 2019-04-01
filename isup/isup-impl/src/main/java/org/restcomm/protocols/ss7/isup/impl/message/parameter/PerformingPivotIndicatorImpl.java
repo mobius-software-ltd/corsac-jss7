@@ -30,8 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +47,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class PerformingPivotIndicatorImpl extends AbstractInformationImpl implements PerformingPivotIndicator {
-	private static final long serialVersionUID = 1L;
-
 	private List<PivotReason> reasons = new ArrayList<PivotReason>();
 
     public PerformingPivotIndicatorImpl() {
@@ -57,7 +55,7 @@ public class PerformingPivotIndicatorImpl extends AbstractInformationImpl implem
     }
 
     @Override
-    public void setReason(PivotReason... reasons) {
+    public void setReason(List<PivotReason> reasons) {
         this.reasons.clear();
         if(reasons == null){
             return;
@@ -70,39 +68,50 @@ public class PerformingPivotIndicatorImpl extends AbstractInformationImpl implem
     }
 
     @Override
-    public PivotReason[] getReason() {
-        return this.reasons.toArray(new PivotReason[this.reasons.size()]);
+    public List<PivotReason> getReason() {
+        return this.reasons;
     }
 
     @Override
-    byte[] encode() throws ParameterException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    public void encode(ByteBuf buffer) throws ParameterException {
         for(PivotReason pr:this.reasons){
             PivotReasonImpl ai = (PivotReasonImpl) pr;
-            try {
-                baos.write(ai.encode());
-            } catch (IOException e) {
-                throw new ParameterException(e);
+            if(ai.getPivotPossibleAtPerformingExchange()!=0x00) {
+                buffer.writeByte(ai.getPivotReason() & 0x7F);
+            	buffer.writeByte((ai.getPivotPossibleAtPerformingExchange() & 0x07) | 0x80);
+            }
+            else {
+            	buffer.writeByte((ai.getPivotReason() & 0x7F) | 0x80);            	
             }
         }
-        return baos.toByteArray();
     }
 
     @Override
-    void decode(byte[] data) throws ParameterException {
-        for(int index = 0;index<data.length;index++){
-            byte b = data[index];
+    public void decode(ByteBuf data) throws ParameterException {
+        while(data.readableBytes()>0){
+            byte b = data.readByte();
             PivotReasonImpl pr = new PivotReasonImpl();
             pr.setPivotReason((byte) (b & 0x7F));
             if( (b & 0x80) == 0){
-                if (index +1 == data.length){
+                if (data.readableBytes()==0){
                     throw new ParameterException("Extension bit incicates more bytes, but we ran out of them!");
                 }
-                b = data[++index];
+                b = data.readByte();
                 pr.setPivotPossibleAtPerformingExchange((byte) (b & 0x07));
             }
             this.reasons.add(pr);
         }
     }
 
+	@Override
+	public int getLength() {
+		int length=0;
+		for(PivotReason curr:reasons)
+			if(curr.getPivotPossibleAtPerformingExchange() == 0)
+				length+=1;
+			else
+				length+=2;
+		
+		return length;
+	}
 }

@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.tcap;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
@@ -54,25 +56,25 @@ public class TestSccpListener implements SccpListener {
 
     @Override
     public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress,
-            ProtocolClass clazz, Credit credit, byte[] data, Importance importance) throws Exception {
+            ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void onConnectConfirm(SccpConnection conn, byte[] data) {
+    public void onConnectConfirm(SccpConnection conn, ByteBuf data) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, byte[] data) {
+    public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, byte[] data) {
+    public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data) {
         // TODO Auto-generated method stub
         
     }
@@ -96,7 +98,7 @@ public class TestSccpListener implements SccpListener {
     }
 
     @Override
-    public void onData(SccpConnection conn, byte[] data) {
+    public void onData(SccpConnection conn, ByteBuf data) {
         // TODO Auto-generated method stub
         
     }

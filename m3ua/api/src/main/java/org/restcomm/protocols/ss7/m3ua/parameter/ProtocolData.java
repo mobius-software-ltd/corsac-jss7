@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.m3ua.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Protocl data parameter.
  *
@@ -75,5 +77,5 @@ public interface ProtocolData extends Parameter {
      *
      * @return binary message.
      */
-    byte[] getData();
+    ByteBuf getData();
 }

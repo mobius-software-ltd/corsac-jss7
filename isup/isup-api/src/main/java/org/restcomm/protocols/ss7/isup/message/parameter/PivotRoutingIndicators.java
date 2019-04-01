@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:13:49:29 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -60,7 +62,7 @@ public interface PivotRoutingIndicators extends ISUPParameter {
      */
     int _PRI_ITRP = 4;
 
-    byte[] getPivotRoutingIndicators();
+    ByteBuf getPivotRoutingIndicators();
 
-    void setPivotRoutingIndicators(byte[] pivotRoutingIndicators);
+    void setPivotRoutingIndicators(ByteBuf pivotRoutingIndicators);
 }

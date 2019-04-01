@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.stack.timers;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ISUPTimeoutEvent;
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupQueryMessage;
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupQueryResponseMessage;
@@ -94,9 +97,9 @@ public class CQMTest extends SingleTimers {
         ans.setRangeAndStatus(ras);
 
         CircuitStateIndicator ci = super.provider.getParameterFactory().createCircuitStateIndicator();
-        byte[] state = new byte[2];
-        state[0] = ci.createCircuitState(CircuitStateIndicator._MBS_LAR_BLOCKED, CircuitStateIndicator._CPS_CIB, CircuitStateIndicator._HBS_LAR_BLOCKED);
-        state[1] = ci.createCircuitState(CircuitStateIndicator._MBS_LAR_BLOCKED, CircuitStateIndicator._CPS_COB, CircuitStateIndicator._HBS_LAR_BLOCKED);
+        ByteBuf state = Unpooled.buffer(2);
+        state.writeByte(ci.createCircuitState(CircuitStateIndicator._MBS_LAR_BLOCKED, CircuitStateIndicator._CPS_CIB, CircuitStateIndicator._HBS_LAR_BLOCKED));
+        state.writeByte(ci.createCircuitState(CircuitStateIndicator._MBS_LAR_BLOCKED, CircuitStateIndicator._CPS_COB, CircuitStateIndicator._HBS_LAR_BLOCKED));
         ci.setCircuitState(state);
         ans.setCircuitStateIndicator(ci);
         return ans;

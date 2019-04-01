@@ -25,15 +25,16 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.tcap.asn.DialogUniAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -44,26 +45,34 @@ import org.testng.annotations.Test;
 public class DialogUniAPDUTest {
 
     private byte[] getData() {
-        return new byte[] { 96, 27, (byte) 128, 2, 7, (byte) 128, (byte) 161, 6, 6, 4, 4, 2, 2, 2, (byte) 190, 13, 40, 11, 6,
-                4, 1, 1, 2, 3, (byte) 160, 3, 11, 22, 33 };
+        return new byte[] { 96, 29, (byte) 128, 2, 7, (byte) 128, (byte) 161, 6, 6, 4, 4, 2, 2, 2, (byte) 190, 15, 40, 13, 6,
+                4, 1, 1, 2, 3, (byte) 160, 5, (byte) 160, 3, 11, 22, 33 };
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    	ASNGeneric.clear(ASNUserInformationObjectImpl.class);
+    	ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, TCBeginTestASN3.class);    	
     }
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
 
-        byte[] b = getData();
-        AsnInputStream asnIs = new AsnInputStream(b);
-        int tag = asnIs.readTag();
-        assertEquals(0, tag);
-        DialogUniAPDU d = TcapFactory.createDialogAPDUUni();
-        d.decode(asnIs);
-        assertTrue(Arrays.equals(new long[] { 0, 4, 2, 2, 2 }, d.getApplicationContextName().getOid()));
-        UserInformation ui = d.getUserInformation();
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(DialogRequestAPDUImpl.class);
+    	
+    	Object output=parser.decode(Unpooled.wrappedBuffer(getData())).getResult();
+        assertTrue(output instanceof DialogRequestAPDUImpl);
+        DialogRequestAPDUImpl d = (DialogRequestAPDUImpl)output;
+        
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 2L, 2L, 2L }), d.getApplicationContextName().getValue());
+        UserInformationImpl ui = d.getUserInformation();
         assertNotNull(ui);
-        assertTrue(Arrays.equals(new byte[] { 11, 22, 33 }, ui.getEncodeType()));
+        assertTrue(ui.getExternal().isValueObject());
+        assertTrue(ui.getExternal().getChild().getValue() instanceof TCBeginTestASN3);
+        assertTrue(Arrays.equals(new byte[] { 11, 22, 33 }, ((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getValue()));
 
-        AsnOutputStream aos = new AsnOutputStream();
-        d.encode(aos);
-        assertTrue(Arrays.equals(b, aos.toByteArray()));
+        ByteBuf buffer=parser.encode(d);
+        assertTrue(Arrays.equals(getData(), buffer.array()));
     }
 }

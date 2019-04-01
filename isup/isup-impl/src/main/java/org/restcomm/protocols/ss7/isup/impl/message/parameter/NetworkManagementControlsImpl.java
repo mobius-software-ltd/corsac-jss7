@@ -30,6 +30,11 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.NetworkManagementControls;
 
@@ -40,14 +45,12 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NetworkManagementContro
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class NetworkManagementControlsImpl extends AbstractISUPParameter implements NetworkManagementControls {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
     // FIXME - should we switch to boolean[] - its a slight perf loss :P
-    private byte[] networkManagementControls = null;
+    private List<Boolean> networkManagementControls = null;
 
-    public NetworkManagementControlsImpl(byte[] b) throws ParameterException {
+    public NetworkManagementControlsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -57,23 +60,30 @@ public class NetworkManagementControlsImpl extends AbstractISUPParameter impleme
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        try {
-            setNetworkManagementControls(b);
-        } catch (Exception e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
+    public void decode(ByteBuf b) throws ParameterException {
+    	List<Boolean> nmc=new ArrayList<Boolean>();
+    	while(b.readableBytes()>0) {    		
+    		if((b.readByte() & 0x01)!=0)
+    			nmc.add(true);
+    		else
+    			nmc.add(false);
+    	}
+    	
+    	setNetworkManagementControls(nmc);
     }
 
-    public byte[] encode() throws ParameterException {
-
-        for (int index = 0; index < this.networkManagementControls.length; index++) {
-            this.networkManagementControls[index] = (byte) (this.networkManagementControls[index] & 0x01);
+    public void encode(ByteBuf buffer) throws ParameterException {
+        for (int index = 0; index < this.networkManagementControls.size()-1; index++) {
+        	if(this.networkManagementControls.get(index))
+        		buffer.writeByte(0x01);
+        	else
+        		buffer.writeByte(0x00);
         }
-
-        this.networkManagementControls[this.networkManagementControls.length - 1] = (byte) ((this.networkManagementControls[this.networkManagementControls.length - 1]) | (0x01 << 7));
-        return this.networkManagementControls;
+         
+        if(this.networkManagementControls.get(this.networkManagementControls.size() - 1))
+    		buffer.writeByte(0x81);
+    	else
+    		buffer.writeByte(0x80);        
     }
 
     public boolean isTARControlEnabled(byte b) {
@@ -84,12 +94,12 @@ public class NetworkManagementControlsImpl extends AbstractISUPParameter impleme
         return (byte) (enabled ? _TURN_ON : _TURN_OFF);
     }
 
-    public byte[] getNetworkManagementControls() {
+    public List<Boolean> getNetworkManagementControls() {
         return networkManagementControls;
     }
 
-    public void setNetworkManagementControls(byte[] networkManagementControls) throws IllegalArgumentException {
-        if (networkManagementControls == null || networkManagementControls.length == 0) {
+    public void setNetworkManagementControls(List<Boolean> networkManagementControls) throws IllegalArgumentException {
+        if (networkManagementControls == null || networkManagementControls.size() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
         this.networkManagementControls = networkManagementControls;

@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -48,8 +50,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class CircuitGroupUnblockingAckMessageImpl extends ISUPMessageImpl implements CircuitGroupUnblockingAckMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.CircuitGroupUnblockingAck);
     private static final int _MANDATORY_VAR_COUNT = 1;
 
@@ -90,16 +90,14 @@ public class CircuitGroupUnblockingAckMessageImpl extends ISUPMessageImpl implem
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters(byte[], int)
      */
 
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-        if (b.length - index > 1) {
+        super.decodeMandatoryParameters(parameterFactory, b);
+        if (b.readableBytes()>0) {
             CircuitGroupSuperVisionMessageType cgsvmt = parameterFactory.createCircuitGroupSuperVisionMessageType();
-            ((AbstractISUPParameter) cgsvmt).decode(new byte[] { b[index] });
+            ((AbstractISUPParameter) cgsvmt).decode(b.slice(b.readerIndex(),1));
             this.setSupervisionType(cgsvmt);
-            index++;
-            return index - localIndex;
+            b.skipBytes(1);
         } else {
             throw new IllegalArgumentException("byte[] must have atleast four octets");
         }
@@ -111,7 +109,7 @@ public class CircuitGroupUnblockingAckMessageImpl extends ISUPMessageImpl implem
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody(byte [], int)
      */
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         switch (parameterIndex) {
             case _INDEX_V_RangeAndStatus:
@@ -133,7 +131,7 @@ public class CircuitGroupUnblockingAckMessageImpl extends ISUPMessageImpl implem
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
      */
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         throw new ParameterException("This message does not support optional parameters");
 

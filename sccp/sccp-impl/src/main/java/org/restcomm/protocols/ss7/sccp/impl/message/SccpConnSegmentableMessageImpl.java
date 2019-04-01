@@ -1,11 +1,14 @@
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SccpConnSegmentableMessageImpl extends SccpConnReferencedMessageImpl {
-    protected byte[] userData;
-    private List<byte[]> buffer = new ArrayList<>();
+    protected ByteBuf userData;
+    private List<ByteBuf> buffer = new ArrayList<>();
     private boolean isFullyReceived;
 
     protected SccpConnSegmentableMessageImpl(int maxDataLen, int type, int sls, int localSsn) {
@@ -16,11 +19,11 @@ public abstract class SccpConnSegmentableMessageImpl extends SccpConnReferencedM
         super(maxDataLen, type, incomingOpc, incomingDpc, incomingSls, networkId);
     }
 
-    public byte[] getUserData() {
-        return userData;
+    public ByteBuf getUserData() {
+        return Unpooled.wrappedBuffer(userData);
     }
 
-    public void setUserData(byte[] userData) {
+    public void setUserData(ByteBuf userData) {
         this.userData = userData;
     }
 
@@ -39,19 +42,7 @@ public abstract class SccpConnSegmentableMessageImpl extends SccpConnReferencedM
         this.buffer.add(nextSegment.userData);
 
         if (!nextSegment.isMoreData()) {
-
-            int totalLength = 0;
-            for (int i = 0; i < buffer.size(); i++) {
-                totalLength += buffer.get(i).length;
-            }
-            byte[] allData = new byte[totalLength];
-            int pos = 0;
-            for (int i = 0; i < buffer.size(); i++) {
-                System.arraycopy(buffer.get(i),0, allData,pos         , buffer.get(i).length);
-                pos += buffer.get(i).length;
-            }
-
-            userData = allData;
+            userData=Unpooled.wrappedBuffer(buffer.toArray(new ByteBuf[0]));
             this.buffer.clear();
             this.isFullyReceived = true;
         }

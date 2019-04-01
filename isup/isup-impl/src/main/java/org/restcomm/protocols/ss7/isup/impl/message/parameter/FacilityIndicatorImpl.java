@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.FacilityIndicator;
 
@@ -40,11 +42,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.FacilityIndicator;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class FacilityIndicatorImpl extends AbstractISUPParameter implements FacilityIndicator {
-	private static final long serialVersionUID = 1L;
-
 	private byte facilityIndicator = 0;
 
-    public FacilityIndicatorImpl(byte[] b) throws ParameterException {
+    public FacilityIndicatorImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -59,18 +59,16 @@ public class FacilityIndicatorImpl extends AbstractISUPParameter implements Faci
         this.facilityIndicator = facilityIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null or have different size than 1");
         }
 
-        this.facilityIndicator = b[0];
-        return 1;
+        this.facilityIndicator = b.readByte();
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = { (byte) this.facilityIndicator };
-        return b;
+    public void encode(ByteBuf b) throws ParameterException {
+        b.writeByte((byte) this.facilityIndicator);        
     }
 
     public byte getFacilityIndicator() {

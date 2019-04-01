@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnItMessageImpl;
@@ -22,7 +24,7 @@ public class SccpConnectionImpl extends SccpConnectionWithCouplingImpl implement
     	super.sendMessage(message);
     }
 
-    protected void callListenerOnData(byte[] data) {
+    protected void callListenerOnData(ByteBuf data) {
         SccpListener listener = getListener();
         if (listener != null) { // when listener is absent it's handled by SccpRoutingControl
             listener.onData(this, data);

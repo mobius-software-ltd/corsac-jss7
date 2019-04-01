@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -49,17 +52,17 @@ public class MessageCompatibiltyInformationTest extends ParameterHarness {
     public MessageCompatibiltyInformationTest() {
         super();
 
-        super.badBodies.add(new byte[1]);
-        super.badBodies.add(new byte[3]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[3]));
 
-        super.goodBodies.add(getBody1());
-        super.goodBodies.add(getBody2());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody2()));
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
         byte[] body = new byte[] { (byte) 0x81 };
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -78,10 +81,10 @@ public class MessageCompatibiltyInformationTest extends ParameterHarness {
         testValues(at, "getMessageCompatibilityInstructionIndicators", getterMethodNames, expectedValues);
     }
 
-    private byte[] getBody2() {
+    private ByteBuf getBody2() {
 
         byte[] body = new byte[] { 0x42, (byte) 0x81 };
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
     public void testBody2EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,

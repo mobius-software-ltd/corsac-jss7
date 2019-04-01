@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:12:11:30 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -205,8 +207,8 @@ public interface CauseIndicators extends ISUPParameter {
 
     void setCauseValue(int causeValue);
 
-    byte[] getDiagnostics();
+    ByteBuf getDiagnostics();
 
-    void setDiagnostics(byte[] diagnostics);
+    void setDiagnostics(ByteBuf diagnostics);
 
 }

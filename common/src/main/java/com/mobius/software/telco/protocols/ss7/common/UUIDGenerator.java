@@ -1,7 +1,7 @@
 package com.mobius.software.telco.protocols.ss7.common;
 
 /*
- * Mobius Software LTD, Open Source Cloud Communications
+ * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
  * by the @authors tag.
  *

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.parameter.Importance;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCause;
 import org.restcomm.protocols.ss7.sccp.parameter.Segmentation;
@@ -37,7 +39,7 @@ public interface SccpNoticeMessage extends SccpAddressedMessage {
 
     ReturnCause getReturnCause();
 
-    byte[] getData();
+    ByteBuf getData();
 
     Segmentation getSegmentation();
 
@@ -45,7 +47,7 @@ public interface SccpNoticeMessage extends SccpAddressedMessage {
 
     void setReturnCause(ReturnCause rc);
 
-    void setData(byte[] data);
+    void setData(ByteBuf data);
 
     void setImportance(Importance p);
 

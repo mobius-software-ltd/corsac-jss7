@@ -30,9 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardGVNS;
@@ -47,8 +45,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TerminatingNetworkRouti
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ForwardGVNSImpl extends AbstractISUPParameter implements ForwardGVNS {
-	private static final long serialVersionUID = 1L;
-
 	// FIXME: we must add in numbers below max digits check - in case of max octets - only odd digits number is valid
     private OriginatingParticipatingServiceProviderImpl opServiceProvider = null;
     private GVNSUserGroupImpl gvnsUserGroup = null;
@@ -62,7 +58,7 @@ public class ForwardGVNSImpl extends AbstractISUPParameter implements ForwardGVN
         this.tnRoutingNumber = tnRoutingNumber;
     }
 
-    public ForwardGVNSImpl(byte[] b) throws ParameterException {
+    public ForwardGVNSImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -72,25 +68,22 @@ public class ForwardGVNSImpl extends AbstractISUPParameter implements ForwardGVN
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         // Add kength ? || b.length != xxx
         if (b == null) {
             throw new ParameterException("byte[] must  not be null");
         }
-        ByteArrayInputStream bis = new ByteArrayInputStream(b);
+        
         this.opServiceProvider = new OriginatingParticipatingServiceProviderImpl();
         this.gvnsUserGroup = new GVNSUserGroupImpl();
         this.tnRoutingNumber = new TerminatingNetworkRoutingNumberImpl();
 
-        int count = 0;
-        count += this.opServiceProvider.decode(bis);
-        count += this.gvnsUserGroup.decode(bis);
-        count += this.tnRoutingNumber.decode(bis);
-
-        return count;
+        this.opServiceProvider.decode(b);
+        this.gvnsUserGroup.decode(b);
+        this.tnRoutingNumber.decode(b);
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf b) throws ParameterException {
 
         if (this.opServiceProvider == null) {
             throw new IllegalArgumentException("OriginatingParticipatingServiceProvider must not be null.");
@@ -101,15 +94,10 @@ public class ForwardGVNSImpl extends AbstractISUPParameter implements ForwardGVN
         if (this.tnRoutingNumber == null) {
             throw new IllegalArgumentException("TerminatingNetworkRoutingNumber must not be null.");
         }
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            bos.write(this.opServiceProvider.encode());
-            bos.write(this.gvnsUserGroup.encode());
-            bos.write(this.tnRoutingNumber.encode());
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return bos.toByteArray();
+        
+        this.opServiceProvider.encode(b);
+        this.gvnsUserGroup.encode(b);
+        this.tnRoutingNumber.encode(b);       
     }
 
     public OriginatingParticipatingServiceProvider getOpServiceProvider() {

@@ -21,6 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.Information;
 import org.restcomm.protocols.ss7.isup.message.parameter.InformationType;
@@ -30,8 +32,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.InformationType;
  *
  */
 public abstract class AbstractInformationImpl implements Information {
-	private static final long serialVersionUID = 1L;
-
 	protected final InformationType type;
     protected int tag;
     public AbstractInformationImpl(InformationType type) {
@@ -50,7 +50,9 @@ public abstract class AbstractInformationImpl implements Information {
         this.tag = tag;
     }
 
-    abstract byte[] encode() throws ParameterException;
+    abstract void encode(ByteBuf b) throws ParameterException;
 
-    abstract void decode(byte[] b) throws ParameterException;
+    abstract void decode(ByteBuf b) throws ParameterException;
+    
+    public abstract int getLength();
 }

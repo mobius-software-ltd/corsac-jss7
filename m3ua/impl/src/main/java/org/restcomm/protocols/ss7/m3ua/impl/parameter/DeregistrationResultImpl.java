@@ -39,8 +39,6 @@ public class DeregistrationResultImpl extends ParameterImpl implements Deregistr
 
     private RoutingContext rc;
     private DeregistrationStatus status;
-    private byte[] value;
-
     private ByteBuf buf = Unpooled.buffer(16);
 
     public DeregistrationResultImpl(RoutingContext rc, DeregistrationStatus status) {
@@ -51,18 +49,14 @@ public class DeregistrationResultImpl extends ParameterImpl implements Deregistr
         this.encode();
     }
 
-    public DeregistrationResultImpl(byte[] data) {
+    public DeregistrationResultImpl(ByteBuf data) {
         this.tag = Parameter.Deregistration_Result;
-        int pos = 0;
+        while (data.readableBytes()>0) {
+            short tag = (short) ((data.readByte() & 0xff) << 8 | (data.readByte() & 0xff));
+            short len = (short) ((data.readByte() & 0xff) << 8 | (data.readByte() & 0xff));
 
-        while (pos < data.length) {
-            short tag = (short) ((data[pos] & 0xff) << 8 | (data[pos + 1] & 0xff));
-            short len = (short) ((data[pos + 2] & 0xff) << 8 | (data[pos + 3] & 0xff));
-
-            byte[] value = new byte[len - 4];
-
-            System.arraycopy(data, pos + 4, value, 0, value.length);
-            pos += len;
+            ByteBuf value = data.slice(data.readerIndex(),len - 4);
+            data.skipBytes(len-4);
             // parameters.put(tag, factory.createParameter(tag, value));
             switch (tag) {
                 case ParameterImpl.Routing_Context:
@@ -77,22 +71,19 @@ public class DeregistrationResultImpl extends ParameterImpl implements Deregistr
 
             // The Parameter Length does not include any padding octets. We have
             // to consider padding here
-            pos += (pos % 4);
+            if(len%4!=0)
+            	data.skipBytes(len%4);
         }// end of while
     }
 
     private void encode() {
         ((RoutingContextImpl) this.rc).write(buf);
         ((DeregistrationStatusImpl) this.status).write(buf);
-
-        int length = buf.readableBytes();
-        value = new byte[length];
-        buf.getBytes(buf.readerIndex(), value);
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.buf);
     }
 
     public DeregistrationStatus getDeregistrationStatus() {

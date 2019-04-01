@@ -28,15 +28,13 @@
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
+import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.BCDEvenEncodingScheme;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.BCDOddEncodingScheme;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0100Impl;
@@ -54,9 +52,9 @@ import org.testng.annotations.Test;
  */
 public class GT0100Test {
 
-    private byte[] dataEven = new byte[] { 0, 0x12, 0x03, 0x09, 0x32, 0x26, 0x59, 0x18 }; // Es.Even -> 0x12 & 0x0F
-    private byte[] dataOdd = new byte[] { 0, 0x11, 0x03, 0x09, 0x32, 0x26, 0x59, 0x08 }; // Es.Odd -> 0x11 & 0x0F - thus leading
-    private byte[] dataHex = new byte[] { 0, 17, 3, 9, -94, -53, 89, 8 };
+    private ByteBuf dataEven = Unpooled.wrappedBuffer(new byte[] { 0, 0x12, 0x03, 0x09, 0x32, 0x26, 0x59, 0x18 }); // Es.Even -> 0x12 & 0x0F
+    private ByteBuf dataOdd = Unpooled.wrappedBuffer(new byte[] { 0, 0x11, 0x03, 0x09, 0x32, 0x26, 0x59, 0x08 }); // Es.Odd -> 0x11 & 0x0F - thus leading
+    private ByteBuf dataHex = Unpooled.wrappedBuffer(new byte[] { 0, 17, 3, 9, -94, -53, 89, 8 });
     private ParameterFactoryImpl factory = new ParameterFactoryImpl();
 
     public GT0100Test() {
@@ -83,12 +81,9 @@ public class GT0100Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeEven() throws Exception {
-        // wrap data with input stream
-        ByteArrayInputStream in = new ByteArrayInputStream(dataEven);
-
-        // create GT object and read data from stream
+    	// create GT object and read data from stream
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
-        gt1.decode(in, factory, SccpProtocolVersion.ITU);
+        gt1.decode(Unpooled.wrappedBuffer(dataEven), factory, SccpProtocolVersion.ITU);
 
         // check results
         assertEquals(gt1.getTranslationType(), 0);
@@ -101,15 +96,10 @@ public class GT0100Test {
      */
     @Test(groups = { "parameter", "functional.encode" })
     public void testEncodeEven() throws Exception {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ByteBuf bout = Unpooled.buffer();
         GlobalTitle0100Impl gt = new GlobalTitle0100Impl("9023629581",0, BCDEvenEncodingScheme.INSTANCE,NumberingPlan.ISDN_TELEPHONY, NatureOfAddress.NATIONAL);
-
         gt.encode(bout, false, SccpProtocolVersion.ITU);
-
-        byte[] res = bout.toByteArray();
-
-        boolean correct = Arrays.equals(dataEven, res);
-        assertTrue(correct, "Incorrect encoding");
+        MessageSegmentationTest.assertByteBufs(dataEven, bout);
     }
 
     /**
@@ -117,12 +107,9 @@ public class GT0100Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeOdd() throws Exception {
-        // wrap data with input stream
-        ByteArrayInputStream in = new ByteArrayInputStream(dataOdd);
-
         // create GT object and read data from stream
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
-        gt1.decode(in, factory, SccpProtocolVersion.ITU);
+        gt1.decode(Unpooled.wrappedBuffer(dataOdd), factory, SccpProtocolVersion.ITU);
 
         // check results
         assertEquals(gt1.getTranslationType(), 0);
@@ -132,36 +119,23 @@ public class GT0100Test {
 
     @Test(groups = { "parameter", "functional.encode" })
     public void testEncodeHex() throws Exception {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ByteBuf bout = Unpooled.buffer();
         GlobalTitle0100Impl gt = new GlobalTitle0100Impl("902ABC958",0, BCDOddEncodingScheme.INSTANCE,NumberingPlan.ISDN_TELEPHONY, NatureOfAddress.NATIONAL);
-
         gt.encode(bout, false, SccpProtocolVersion.ITU);
-
-        byte[] res = bout.toByteArray();
-
-        boolean correct = Arrays.equals(dataHex, res);
-        assertTrue(correct, "Incorrect encoding");
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(dataHex), bout);
 
 
-        bout = new ByteArrayOutputStream();
+        bout = Unpooled.buffer();
         gt = new GlobalTitle0100Impl("902abc958",0, BCDOddEncodingScheme.INSTANCE,NumberingPlan.ISDN_TELEPHONY, NatureOfAddress.NATIONAL);
-
         gt.encode(bout, false, SccpProtocolVersion.ITU);
-
-        res = bout.toByteArray();
-
-        correct = Arrays.equals(dataHex, res);
-        assertTrue(correct, "Incorrect encoding");
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(dataHex), bout);
     }
 
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeHex() throws Exception {
-        // wrap data with input stream
-        ByteArrayInputStream in = new ByteArrayInputStream(dataHex);
-
         // create GT object and read data from stream
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
-        gt1.decode(in, factory, SccpProtocolVersion.ITU);
+        gt1.decode(Unpooled.wrappedBuffer(dataHex), factory, SccpProtocolVersion.ITU);
 
         // check results
         assertEquals(gt1.getTranslationType(), 0);
@@ -174,16 +148,10 @@ public class GT0100Test {
      */
     @Test(groups = { "parameter", "functional.encode" })
     public void testEncodeOdd() throws Exception {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-   
+        ByteBuf bout = Unpooled.buffer();
         GlobalTitle0100Impl gt = new GlobalTitle0100Impl("902362958",0, BCDOddEncodingScheme.INSTANCE,NumberingPlan.ISDN_TELEPHONY, NatureOfAddress.NATIONAL);
-
         gt.encode(bout, false, SccpProtocolVersion.ITU);
-
-        byte[] res = bout.toByteArray();
-
-        boolean correct = Arrays.equals(dataOdd, res);
-        assertTrue(correct, "Incorrect encoding");
+        MessageSegmentationTest.assertByteBufs(dataOdd, bout);        
     }
 
     /*@Test(groups = { "parameter", "functional.encode" })

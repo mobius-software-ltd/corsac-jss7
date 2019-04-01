@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.restcomm.protocols.ss7.isup.ISUPMessageFactory;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CircuitIdentificationCodeImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.AddressCompleteMessage;
 import org.restcomm.protocols.ss7.isup.message.AnswerMessage;
@@ -2424,9 +2425,9 @@ public class ISUPMessageFactoryImpl implements ISUPMessageFactory {
     @Override
     public ISUPMessage createCommand(int commandCode, int cic) {
         ISUPMessage msg = createCommand(commandCode);
-        CircuitIdentificationCode code = this.parameterFactory.createCircuitIdentificationCode();
-        code.setCIC(cic);
-        msg.setCircuitIdentificationCode(code);
+        CircuitIdentificationCodeImpl cicValue=new CircuitIdentificationCodeImpl();
+        cicValue.setCIC(cic);
+        msg.setCircuitIdentificationCode(cicValue);
         return msg;
     }
 

@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.isup.message;
 
-import java.io.Serializable;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitIdentificationCode;
 import org.restcomm.protocols.ss7.isup.message.parameter.ISUPParameter;
@@ -35,7 +33,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
-public interface ISUPMessage extends Serializable{
+public interface ISUPMessage {
 
     /**
      * Sets sls to be used when this message is send. If message is received, it contians sls of link on which it has been

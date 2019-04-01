@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
@@ -57,24 +57,24 @@ public class UserServiceInformationTest {
     public void tearDown() {
     }
 
-    private byte[] getData() {
-        return new byte[] { (byte) 184, (byte) 209 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 184, (byte) 209 });
     }
 
-    private byte[] getData2() {
-        return new byte[] { (byte) 184, (byte) 216, (byte) 147 };
+    private ByteBuf getData2() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 184, (byte) 216, (byte) 147 });
     }
 
-    private byte[] getData3() {
-        return new byte[] { -128, -112, -95, -62, -30 };
+    private ByteBuf getData3() {
+        return Unpooled.wrappedBuffer(new byte[] { -128, -112, -95, -62, -30 });
     }
 
-    private byte[] getData4() {
-        return new byte[] { -112, -112, 35, 96, 6, 59, -128 };
+    private ByteBuf getData4() {
+        return Unpooled.wrappedBuffer(new byte[] { -112, -112, 35, 96, 6, 59, -128 });
     }
 
-    private byte[] getData5() {
-        return new byte[] { -112, -112, 35, 72, 70, 59, -36 };
+    private ByteBuf getData5() {
+        return Unpooled.wrappedBuffer(new byte[] { -112, -112, 35, 72, 70, 59, -36 });
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -264,10 +264,11 @@ public class UserServiceInformationTest {
         prim.setTransferMode(UserServiceInformation._TM_PACKET);
         prim.setInformationTransferRate(UserServiceInformation._ITR_64x2);
 
-        byte[] data = getData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getData();
+        ByteBuf encodedData = Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim = new UserServiceInformationImpl();
         prim.setCodingStandart(UserServiceInformation._CS_INTERNATIONAL);
@@ -277,9 +278,10 @@ public class UserServiceInformationTest {
         prim.setCustomInformationTransferRate(19);
 
         data = getData2();
-        encodedData = prim.encode();
+        encodedData = Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim = new UserServiceInformationImpl();
         prim.setCodingStandart(UserServiceInformation._CS_CCITT);
@@ -291,9 +293,10 @@ public class UserServiceInformationTest {
         prim.setL3UserInformation(UserServiceInformation._L3_Q931);
 
         data = getData3();
-        encodedData = prim.encode();
+        encodedData = Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         // TODO: now tested only for a case l1UserInformation = 0 && l2UserInformation == 0 && l2UserInformation == 0
         // we need to test other case encoding/decoding

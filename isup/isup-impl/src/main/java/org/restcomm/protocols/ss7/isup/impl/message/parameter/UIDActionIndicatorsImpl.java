@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UIDActionIndicators;
 
@@ -41,14 +44,12 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UIDActionIndicators;
  *
  */
 public class UIDActionIndicatorsImpl extends AbstractISUPParameter implements UIDActionIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
-    private byte[] udiActionIndicators = null;
+    private ByteBuf udiActionIndicators = null;
 
-    public UIDActionIndicatorsImpl(byte[] udiActionIndicators) throws ParameterException {
+    public UIDActionIndicatorsImpl(ByteBuf udiActionIndicators) throws ParameterException {
         super();
         decode(udiActionIndicators);
     }
@@ -58,30 +59,29 @@ public class UIDActionIndicatorsImpl extends AbstractISUPParameter implements UI
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        try {
-            setUdiActionIndicators(b);
-        } catch (Exception e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
+    public void decode(ByteBuf b) throws ParameterException {
+    	setUdiActionIndicators(b);
     }
 
-    public byte[] encode() throws ParameterException {
-        for (int index = 0; index < this.udiActionIndicators.length; index++) {
-            this.udiActionIndicators[index] = (byte) (this.udiActionIndicators[index] & 0x7F);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getUdiActionIndicators();
+        while(curr.readableBytes()>1) {
+        	buffer.writeByte((byte) (curr.readByte() & 0x7F));
         }
 
-        this.udiActionIndicators[this.udiActionIndicators.length - 1] = (byte) ((this.udiActionIndicators[this.udiActionIndicators.length - 1]) | (0x01 << 7));
-        return this.udiActionIndicators;
+        if(curr.readableBytes()>0)
+        	buffer.writeByte((byte) ((curr.readByte()) | (0x01 << 7)));
     }
 
-    public byte[] getUdiActionIndicators() {
-        return udiActionIndicators;
+    public ByteBuf getUdiActionIndicators() {
+    	if(udiActionIndicators==null)
+        	return null;
+        
+        return Unpooled.wrappedBuffer(udiActionIndicators);
     }
 
-    public void setUdiActionIndicators(byte[] udiActionIndicators) {
-        if (udiActionIndicators == null || udiActionIndicators.length == 0) {
+    public void setUdiActionIndicators(ByteBuf udiActionIndicators) {
+        if (udiActionIndicators == null || udiActionIndicators.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
         this.udiActionIndicators = udiActionIndicators;

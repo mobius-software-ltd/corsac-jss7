@@ -86,10 +86,9 @@ public abstract class M3UAMessageImpl implements M3UAMessage {
             if (data.readableBytes() < len - 4) {
                 return;
             }
-
-            byte[] value = new byte[len - 4];
-            data.readBytes(value);
-            parameters.put(tag, factory.createParameter(tag, value));
+            
+            parameters.put(tag, factory.createParameter(tag, data.slice(data.readerIndex(), len-4)));
+            data.skipBytes(len-4);
 
             // The Parameter Length does not include any padding octets. We have
             // to consider padding here

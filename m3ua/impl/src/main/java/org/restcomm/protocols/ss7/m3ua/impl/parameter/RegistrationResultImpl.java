@@ -38,20 +38,15 @@ public class RegistrationResultImpl extends ParameterImpl implements Registratio
     private RoutingContext rc;
 
     private ByteBuf buf = Unpooled.buffer(24);
-    private byte[] value;
-
-    public RegistrationResultImpl(byte[] data) {
+    
+    public RegistrationResultImpl(ByteBuf data) {
         this.tag = Parameter.Registration_Result;
-        int pos = 0;
+        while (data.readableBytes()>0) {
+            short tag = (short) ((data.readByte() & 0xff) << 8 | (data.readByte() & 0xff));
+            short len = (short) ((data.readByte() & 0xff) << 8 | (data.readByte() & 0xff));
 
-        while (pos < data.length) {
-            short tag = (short) ((data[pos] & 0xff) << 8 | (data[pos + 1] & 0xff));
-            short len = (short) ((data[pos + 2] & 0xff) << 8 | (data[pos + 3] & 0xff));
-
-            byte[] value = new byte[len - 4];
-
-            System.arraycopy(data, pos + 4, value, 0, value.length);
-            pos += len;
+            ByteBuf value = data.slice(data.readerIndex(),len - 4);
+            data.skipBytes(len-4);
             // parameters.put(tag, factory.createParameter(tag, value));
             switch (tag) {
                 case ParameterImpl.Local_Routing_Key_Identifier:
@@ -70,7 +65,8 @@ public class RegistrationResultImpl extends ParameterImpl implements Registratio
 
             // The Parameter Length does not include any padding octets. We have
             // to consider padding here
-            pos += (pos % 4);
+            if(len%4!=0)
+            	data.skipBytes(len%4);
         }// end of while
     }
 
@@ -88,16 +84,12 @@ public class RegistrationResultImpl extends ParameterImpl implements Registratio
 
         ((RoutingContextImpl) rc).write(buf);
 
-        ((RegistrationStatusImpl) this.status).write(buf);
-
-        int length = buf.readableBytes();
-        value = new byte[length];
-        buf.getBytes(buf.readerIndex(), value);
+        ((RegistrationStatusImpl) this.status).write(buf);        
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.buf);
     }
 
     public LocalRKIdentifier getLocalRKIdentifier() {

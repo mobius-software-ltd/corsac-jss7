@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 import org.restcomm.protocols.ss7.m3ua.parameter.Status;
 
@@ -41,29 +44,29 @@ public class StatusImpl extends ParameterImpl implements Status {
         this.tag = Parameter.Status;
     }
 
-    public StatusImpl(byte[] data) {
+    public StatusImpl(ByteBuf data) {
         this.tag = Parameter.Status;
 
         this.type = 0;
-        this.type |= data[0] & 0xFF;
+        this.type |= data.readByte() & 0xFF;
         this.type <<= 8;
-        this.type |= data[1] & 0xFF;
+        this.type |= data.readByte() & 0xFF;
 
         this.info = 0;
-        this.info |= data[2] & 0xFF;
+        this.info |= data.readByte() & 0xFF;
         this.info <<= 8;
-        this.info |= data[3] & 0xFF;
+        this.info |= data.readByte() & 0xFF;
 
     }
 
     @Override
-    protected byte[] getValue() {
-        byte[] data = new byte[4];
-        data[0] = (byte) (type >>> 8);
-        data[1] = (byte) (type);
+    protected ByteBuf getValue() {
+        ByteBuf data = Unpooled.buffer(4);
+        data.writeByte((byte) (type >>> 8));
+        data.writeByte((byte) (type));
 
-        data[2] = (byte) (info >>> 8);
-        data[3] = (byte) (info);
+        data.writeByte((byte) (info >>> 8));
+        data.writeByte((byte) (info));
 
         return data;
     }

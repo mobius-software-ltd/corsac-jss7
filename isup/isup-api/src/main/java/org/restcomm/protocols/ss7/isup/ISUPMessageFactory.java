@@ -136,7 +136,7 @@ public interface ISUPMessageFactory {
     ConfusionMessage createCNF(int cic);
 
     ISUPMessage createCommand(int commandCode);
-
+    
     ISUPMessage createCommand(int commandCode, int cic);
 
     ConnectMessage createCON();

@@ -27,131 +27,22 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.accessTransport.AccessTransportImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.AccessDeliveryInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.ApplicationTransport;
-import org.restcomm.protocols.ss7.isup.message.parameter.AutomaticCongestionLevel;
-import org.restcomm.protocols.ss7.isup.message.parameter.BackwardCallIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.BackwardGVNS;
-import org.restcomm.protocols.ss7.isup.message.parameter.CCNRPossibleIndicator;
-import org.restcomm.protocols.ss7.isup.message.parameter.CCSS;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallDiversionInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallDiversionTreatmentIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallHistoryInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallOfferingTreatmentIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferReference;
-import org.restcomm.protocols.ss7.isup.message.parameter.CalledDirectoryNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.CalledINNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
-import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.ChargedPartyIdentification;
-import org.restcomm.protocols.ss7.isup.message.parameter.CircuitAssigmentMap;
-import org.restcomm.protocols.ss7.isup.message.parameter.CircuitGroupSuperVisionMessageType;
-import org.restcomm.protocols.ss7.isup.message.parameter.CircuitIdentificationCode;
-import org.restcomm.protocols.ss7.isup.message.parameter.CircuitStateIndicator;
-import org.restcomm.protocols.ss7.isup.message.parameter.ClosedUserGroupInterlockCode;
-import org.restcomm.protocols.ss7.isup.message.parameter.CollectCallRequest;
-import org.restcomm.protocols.ss7.isup.message.parameter.ConferenceTreatmentIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.ConnectedNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.ConnectionRequest;
-import org.restcomm.protocols.ss7.isup.message.parameter.ContinuityIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.CorrelationID;
-import org.restcomm.protocols.ss7.isup.message.parameter.DisplayInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.EchoControlInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.EventInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.FacilityIndicator;
-import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.ForwardGVNS;
-import org.restcomm.protocols.ss7.isup.message.parameter.GVNSUserGroup;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericNotificationIndicator;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericReference;
-import org.restcomm.protocols.ss7.isup.message.parameter.HTRInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.HopCounter;
-import org.restcomm.protocols.ss7.isup.message.parameter.InformationIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.InformationRequestIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.InvokingPivotReason;
-import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.LoopPreventionIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.MCIDRequestIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.MCIDResponseIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.MLPPPrecedence;
-import org.restcomm.protocols.ss7.isup.message.parameter.NatureOfConnectionIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.NetworkManagementControls;
-import org.restcomm.protocols.ss7.isup.message.parameter.NetworkRoutingNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.NetworkSpecificFacility;
-import org.restcomm.protocols.ss7.isup.message.parameter.OptionalBackwardCallIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.OptionalForwardCallIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledINNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.OriginatingISCPointCode;
-import org.restcomm.protocols.ss7.isup.message.parameter.OriginatingParticipatingServiceProvider;
-import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityInstructionIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.PerformingPivotIndicator;
-import org.restcomm.protocols.ss7.isup.message.parameter.PivotCapability;
-import org.restcomm.protocols.ss7.isup.message.parameter.PivotCounter;
-import org.restcomm.protocols.ss7.isup.message.parameter.PivotRoutingBackwardInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.PivotRoutingForwardInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.PivotRoutingIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.PivotStatus;
-import org.restcomm.protocols.ss7.isup.message.parameter.PropagationDelayCounter;
-import org.restcomm.protocols.ss7.isup.message.parameter.QueryOnReleaseCapability;
-import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectBackwardInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectCapability;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectCounter;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectStatus;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumberRestriction;
-import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperations;
-import org.restcomm.protocols.ss7.isup.message.parameter.Reserved;
-import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeCallIdentifier;
-import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangePossible;
-import org.restcomm.protocols.ss7.isup.message.parameter.SCFID;
-import org.restcomm.protocols.ss7.isup.message.parameter.ServiceActivation;
-import org.restcomm.protocols.ss7.isup.message.parameter.SignalingPointCode;
-import org.restcomm.protocols.ss7.isup.message.parameter.SubsequentNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.SuspendResumeIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.Status;
-import org.restcomm.protocols.ss7.isup.message.parameter.TerminatingNetworkRoutingNumber;
-import org.restcomm.protocols.ss7.isup.message.parameter.TransimissionMediumRequierementPrime;
-import org.restcomm.protocols.ss7.isup.message.parameter.TransitNetworkSelection;
-import org.restcomm.protocols.ss7.isup.message.parameter.TransmissionMediumRequirement;
-import org.restcomm.protocols.ss7.isup.message.parameter.TransmissionMediumUsed;
-import org.restcomm.protocols.ss7.isup.message.parameter.UIDActionIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.UIDCapabilityIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformationPrime;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserInformation;
-import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
+import org.restcomm.protocols.ss7.isup.message.parameter.*;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
+import org.restcomm.protocols.ss7.isup.message.parameter.GlobalOperationCodeImpl;
+import org.restcomm.protocols.ss7.isup.message.parameter.LocalErrorCodeImpl;
+import org.restcomm.protocols.ss7.isup.message.parameter.LocalOperationCodeImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.PerformingRedirectIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.ErrorCode;
-import org.restcomm.protocols.ss7.isup.message.parameter.Problem;
-import org.restcomm.protocols.ss7.isup.message.parameter.Parameter;
-import org.restcomm.protocols.ss7.isup.message.parameter.Reject;
-import org.restcomm.protocols.ss7.isup.message.parameter.ReturnResult;
 import org.restcomm.protocols.ss7.isup.message.parameter.OperationCode;
-import org.restcomm.protocols.ss7.isup.message.parameter.Invoke;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectForwardInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityInstructionIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingRedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeDuration;
-import org.restcomm.protocols.ss7.isup.message.parameter.ReturnError;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingPivotReasonType;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingRedirectReasonType;
-
 
 /**
  * Simple factory.
@@ -335,9 +226,20 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
         return new EchoControlInformationImpl();
     }
 
-    @Override
-    public ErrorCode createErrorCode() {
-        return new ErrorCodeImpl();
+    public OperationCode createLocalOperationCode() {
+        return new LocalOperationCodeImpl();
+    }
+
+    public OperationCode createGlobalOperationCode() {
+        return new GlobalOperationCodeImpl();
+    }
+
+    public ErrorCode createLocalErrorCode() {
+        return new LocalErrorCodeImpl();
+    }
+
+    public ErrorCode createGlobalErrorCode() {
+        return new GlobalErrorCodeImpl();
     }
 
     public EventInformation createEventInformation() {
@@ -405,7 +307,7 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
     }
 
     @Override
-    public Invoke createInvoke() {
+    public InvokeImpl createInvoke() {
         return new InvokeImpl();
     }
 
@@ -498,11 +400,6 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
         return new NetworkSpecificFacilityImpl();
     }
 
-    @Override
-    public OperationCode createOperationCode() {
-        return new OperationCodeImpl();
-    }
-
     public OptionalBackwardCallIndicators createOptionalBackwardCallIndicators() {
 
         return new OptionalBackwardCallIndicatorsImpl();
@@ -531,11 +428,6 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
     public OriginatingParticipatingServiceProvider createOriginatingParticipatingServiceProvider() {
 
         return new OriginatingParticipatingServiceProviderImpl();
-    }
-
-    @Override
-    public Parameter createParameter() {
-        return new ParameterImpl();
     }
 
     public ParameterCompatibilityInformation createParameterCompatibilityInformation() {
@@ -596,7 +488,7 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
     }
 
     @Override
-    public Problem createProblem() {
+    public ProblemImpl createProblem() {
         return new ProblemImpl();
     }
 
@@ -666,7 +558,7 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
     }
 
     @Override
-    public Reject createReject() {
+    public RejectImpl createReject() {
         return new RejectImpl();
     }
 
@@ -681,12 +573,12 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
     }
 
     @Override
-    public ReturnError createReturnError() {
+    public ReturnErrorImpl createReturnError() {
         return new ReturnErrorImpl();
     }
 
     @Override
-    public ReturnResult createReturnResult() {
+    public ReturnResultImpl createReturnResult() {
         return new ReturnResultImpl();
     }
 

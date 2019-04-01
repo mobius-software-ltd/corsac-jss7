@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.mtp;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
@@ -38,19 +40,19 @@ import org.testng.annotations.Test;
  */
 public class Mtp3TransferMessageTest {
 
-    private byte[] getMsg() {
-        return new byte[] { (byte) 0x83, (byte) 232, 3, (byte) 244, (byte) 161, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    private ByteBuf getMsg() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 0x83, (byte) 232, 3, (byte) 244, (byte) 161, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
     }
 
-    private byte[] getAnsiMsg(boolean is8Bit) {
+    private ByteBuf getAnsiMsg(boolean is8Bit) {
         if(is8Bit)
-            return new byte[] { (byte) 0x83, (byte) 232, 3, 0,  (byte) 208, 7, 0, 33, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            return Unpooled.wrappedBuffer(new byte[] { (byte) 0x83, (byte) 232, 3, 0,  (byte) 208, 7, 0, 33, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
         else
-            return new byte[] { (byte) 0x83, (byte) 232, 3, 0,  (byte) 208, 7, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            return Unpooled.wrappedBuffer(new byte[] { (byte) 0x83, (byte) 232, 3, 0,  (byte) 208, 7, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
     }
 
-    private byte[] getData() {
-        return new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
     }
 
     // si = 3 (SCCP)
@@ -72,7 +74,14 @@ public class Mtp3TransferMessageTest {
         assertEquals(msg.getDpc(), 1000);
         assertEquals(msg.getOpc(), 2000);
         assertEquals(msg.getSls(), 10);
-        assertTrue(Arrays.equals(msg.getData(), this.getData()));
+        
+        ByteBuf expectedBuf=this.getData();
+        byte[] expected=new byte[expectedBuf.readableBytes()];
+        expectedBuf.readBytes(expected);
+        
+        byte[] real=new byte[msg.getData().readableBytes()];
+        msg.getData().readBytes(real);
+        assertTrue(Arrays.equals(expected, real));
 
     }
 
@@ -87,7 +96,14 @@ public class Mtp3TransferMessageTest {
         assertEquals(msg.getDpc(), 1000);
         assertEquals(msg.getOpc(), 2000);
         assertEquals(msg.getSls(), 33);
-        assertTrue(Arrays.equals(msg.getData(), this.getData()));
+        
+        ByteBuf expectedBuf=this.getData();
+        byte[] expected=new byte[expectedBuf.readableBytes()];
+        expectedBuf.readBytes(expected);
+        
+        byte[] real=new byte[msg.getData().readableBytes()];
+        msg.getData().readBytes(real);
+        assertTrue(Arrays.equals(expected, real));
 
     }
 
@@ -102,7 +118,14 @@ public class Mtp3TransferMessageTest {
         assertEquals(msg.getDpc(), 1000);
         assertEquals(msg.getOpc(), 2000);
         assertEquals(msg.getSls(), 10);
-        assertTrue(Arrays.equals(msg.getData(), this.getData()));
+        
+        ByteBuf expectedBuf=this.getData();
+        byte[] expected=new byte[expectedBuf.readableBytes()];
+        expectedBuf.readBytes(expected);
+        
+        byte[] real=new byte[msg.getData().readableBytes()];
+        msg.getData().readBytes(real);
+        assertTrue(Arrays.equals(expected, real));
     }
 
     @Test(groups = { "Mtp3TransferMessageTest", "encodeItu" })
@@ -110,9 +133,14 @@ public class Mtp3TransferMessageTest {
         Mtp3TransferPrimitiveFactory factory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ITU);
         Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 10, this.getData());
 
-        byte[] res = msg.encodeMtp3();
-
-        assertTrue(Arrays.equals(res, this.getMsg()));
+        ByteBuf expectedBuf=this.getMsg();
+        byte[] expected=new byte[expectedBuf.readableBytes()];
+        expectedBuf.readBytes(expected);
+        
+        ByteBuf res = msg.encodeMtp3();
+        byte[] real=new byte[res.readableBytes()];
+        res.readBytes(real);
+        assertTrue(Arrays.equals(expected, real));
 
     }
     
@@ -121,9 +149,14 @@ public class Mtp3TransferMessageTest {
         Mtp3TransferPrimitiveFactory factory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ANSI_Sls8Bit);
         Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 33, this.getData());
 
-        byte[] res = msg.encodeMtp3();
-
-        assertTrue(Arrays.equals(res, this.getAnsiMsg(true)));
+        ByteBuf expectedBuf=this.getAnsiMsg(true);
+        byte[] expected=new byte[expectedBuf.readableBytes()];
+        expectedBuf.readBytes(expected);
+        
+        ByteBuf res = msg.encodeMtp3();
+        byte[] real=new byte[res.readableBytes()];
+        res.readBytes(real);
+        assertTrue(Arrays.equals(expected, real));
     }
   
     @Test(groups = { "Mtp3TransferMessageTest", "encodeAnsiSls5Bit" })
@@ -131,9 +164,13 @@ public class Mtp3TransferMessageTest {
         Mtp3TransferPrimitiveFactory factory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ANSI_Sls5Bit);
         Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 10, this.getData());
 
-        byte[] res = msg.encodeMtp3();
-
-        assertTrue(Arrays.equals(res, this.getAnsiMsg(false)));
+        ByteBuf expectedBuf=this.getAnsiMsg(false);
+        byte[] expected=new byte[expectedBuf.readableBytes()];
+        expectedBuf.readBytes(expected);
+        
+        ByteBuf res = msg.encodeMtp3();
+        byte[] real=new byte[res.readableBytes()];
+        res.readBytes(real);
+        assertTrue(Arrays.equals(expected, real));
   }
-
 }

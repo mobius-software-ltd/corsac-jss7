@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.InformationRequestIndicatorsImpl;
@@ -52,7 +55,7 @@ public class InformationRequestIndicatorsTest extends ParameterHarness {
         // super.badBodies.add(new byte[1]);
     }
 
-    private byte[] getBody(boolean callingPartAddressRequestIndicator, boolean holdingIndicator,
+    private ByteBuf getBody(boolean callingPartAddressRequestIndicator, boolean holdingIndicator,
             boolean callingpartysCategoryRequestIndicator, boolean chargeInformationRequestIndicator,
             boolean maliciousCallIdentificationRequestIndicator, int reserved) {
 
@@ -66,7 +69,7 @@ public class InformationRequestIndicatorsTest extends ParameterHarness {
 
         b1 |= (reserved & 0x0F) << 4;
 
-        return new byte[] { (byte) b0, (byte) b1 };
+        return Unpooled.wrappedBuffer(new byte[] { (byte) b0, (byte) b1 });
 
     }
 
@@ -97,7 +100,7 @@ public class InformationRequestIndicatorsTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new InformationRequestIndicatorsImpl(new byte[2]);
+        return new InformationRequestIndicatorsImpl(Unpooled.wrappedBuffer(new byte[2]));
     }
 
 }

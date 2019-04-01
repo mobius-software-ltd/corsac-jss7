@@ -44,7 +44,7 @@ DialoguePortion ::= [PRIVATE 25] IMPLICIT SEQUENCE {
 }
 
  */
-public interface DialogPortion extends Encodable {
+public interface DialogPortion {
 
     int _TAG_DIALOG_PORTION = 25;
 
@@ -57,16 +57,16 @@ public interface DialogPortion extends Encodable {
 
     void setApplicationContext(ApplicationContext val);
 
-    UserInformation getUserInformation();
+    UserInformationImpl getUserInformation();
 
-    void setUserInformation(UserInformation val);
+    void setUserInformation(UserInformationImpl val);
 
     SecurityContext getSecurityContext();
 
     void setSecurityContext(SecurityContext val);
 
-    Confidentiality getConfidentiality();
+    ConfidentialityImpl getConfidentiality();
 
-    void setConfidentiality(Confidentiality val);
+    void setConfidentiality(ConfidentialityImpl val);
 
 }

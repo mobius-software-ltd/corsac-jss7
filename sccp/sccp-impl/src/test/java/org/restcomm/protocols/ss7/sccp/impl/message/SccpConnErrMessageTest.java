@@ -36,7 +36,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -57,13 +58,13 @@ public class SccpConnErrMessageTest {
     public void tearDown() {
     }
 
-    public byte[] getDataErr() {
-        return new byte[] { 0x0F, 0x00, 0x00, 0x01, 0x01 };
+    public ByteBuf getDataErr() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x0F, 0x00, 0x00, 0x01, 0x01 });
     }
     @Test(groups = { "SccpMessage", "functional.decode" })
     public void testDecode() throws Exception {
-        ByteArrayInputStream buf = new ByteArrayInputStream(this.getDataErr());
-        int type = buf.read();
+    	ByteBuf buf = this.getDataErr();
+        int type = buf.readByte();
         SccpConnErrMessageImpl testObjectDecoded = (SccpConnErrMessageImpl) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
 
         assertNotNull(testObjectDecoded);
@@ -79,6 +80,6 @@ public class SccpConnErrMessageTest {
 
         EncodingResultData encoded = original.encode(stack,LongMessageRuleType.LONG_MESSAGE_FORBBIDEN, 272, logger, false, SccpProtocolVersion.ITU);
 
-        assertEquals(encoded.getSolidData(), this.getDataErr());
+        MessageSegmentationTest.assertByteBufs(encoded.getSolidData(), this.getDataErr());
     }
 }

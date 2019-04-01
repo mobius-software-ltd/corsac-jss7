@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectCapability;
 
@@ -40,44 +43,45 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectCapability;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class RedirectCapabilityImpl extends AbstractISUPParameter implements RedirectCapability {
-	private static final long serialVersionUID = 1L;
-
-	private byte[] capabilities;
+	private ByteBuf capabilities;
 
     public RedirectCapabilityImpl() {
         super();
 
     }
 
-    public RedirectCapabilityImpl(byte[] capabilities) throws ParameterException {
+    public RedirectCapabilityImpl(ByteBuf capabilities) throws ParameterException {
         super();
         decode(capabilities);
     }
 
-    public int decode(byte[] b) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         try {
             this.setCapabilities(b);
         } catch (Exception e) {
             throw new ParameterException(e);
         }
-        return b.length;
     }
 
-    public byte[] encode() throws ParameterException {
-        for (int index = 0; index < this.capabilities.length; index++) {
-            this.capabilities[index] = (byte) (this.capabilities[index] & 0x07);
+    public void encode(ByteBuf b) throws ParameterException {
+    	ByteBuf curr=getCapabilities();
+        while(curr.readableBytes()>1) {
+            b.writeByte((byte) (curr.readByte() & 0x07));
         }
 
-        this.capabilities[this.capabilities.length - 1] = (byte) ((this.capabilities[this.capabilities.length - 1]) | (0x01 << 7));
-        return this.capabilities;
+        if(curr.readableBytes()>0)
+        	b.writeByte((byte) (curr.readByte() | (0x01 << 7)));        
     }
 
-    public byte[] getCapabilities() {
-        return capabilities;
+    public ByteBuf getCapabilities() {
+    	if(capabilities==null)
+        	return null;
+        
+        return Unpooled.wrappedBuffer(capabilities);
     }
 
-    public void setCapabilities(byte[] capabilities) {
-        if (capabilities == null || capabilities.length == 0) {
+    public void setCapabilities(ByteBuf capabilities) {
+        if (capabilities == null || capabilities.readableBytes() == 0) {
             throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
         }
         this.capabilities = capabilities;

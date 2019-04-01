@@ -26,23 +26,27 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcap.asn.EncodeException;
-import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnErrorParameterImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
+import org.restcomm.protocols.ss7.tcap.asn.comp.GlobalErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.LocalErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -53,9 +57,16 @@ import org.testng.annotations.Test;
 @Test(groups = { "asn" })
 public class ReturnErrorTest {
 
+	@BeforeClass
+	public void setUp() {
+		ASNGeneric.clear(ASNReturnErrorParameterImpl.class);
+		ASNGeneric.registerAlternative(ASNReturnErrorParameterImpl.class, TCBeginTestASN3.class);		
+	}
+	
     private byte[] getDataWithoutParameter() {
         return new byte[] {
-                // 0xA3 - Return ReturnError TAG
+        		108, 8, //Component Impl
+        		// 0xA3 - Return ReturnError TAG
                 (byte) 0xA3,
                 // 0x06 - Len
                 0x06,
@@ -75,7 +86,8 @@ public class ReturnErrorTest {
 
     private byte[] getDataWithParameter() {
         return new byte[] {
-                // 0xA3 - Return ReturnError TAG
+        		108, 0x1B, //Component Tag
+        		// 0xA3 - Return ReturnError TAG
                 (byte) 0xA3,
                 // 0x06 - Len
                 0x19,
@@ -104,7 +116,7 @@ public class ReturnErrorTest {
     }
 
     private byte[] getDataLongErrorCode() {
-        return new byte[] { -93, 8, 2, 1, -1, 6, 3, 40, 22, 33 };
+        return new byte[] { 108, 10,-93, 8, 2, 1, -1, 6, 3, 40, 22, 33 };
     }
 
     private byte[] getParameterData() {
@@ -112,101 +124,100 @@ public class ReturnErrorTest {
     }
 
     @Test(groups = { "functional.decode" })
-    public void testDecode() throws IOException, ParseException {
-
+    public void testDecode() throws ASNException {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ComponentImpl.class);
+    	
         byte[] b = getDataWithoutParameter();
-        AsnInputStream asnIs = new AsnInputStream(b);
-        Component comp = TcapFactory.createComponent(asnIs);
+        Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof ComponentImpl);
+        ComponentImpl comp = (ComponentImpl)output;
 
         assertEquals(ComponentType.ReturnError, comp.getType(), "Wrong component Type");
-        ReturnError re = (ReturnError) comp;
+        ReturnErrorImpl re = comp.getReturnError();
         assertEquals(new Long(5), re.getInvokeId(), "Wrong invoke ID");
         assertNotNull(re.getErrorCode(), "No error code.");
         ErrorCode ec = re.getErrorCode();
         assertEquals(ErrorCodeType.Local, ec.getErrorType(), "Wrong error code type.");
-        long lec = ec.getLocalErrorCode();
+        long lec = ((LocalErrorCodeImpl)ec).getLocalErrorCode();
         assertEquals(lec, 15, "wrong data content.");
         assertNull(re.getParameter());
 
         b = getDataWithParameter();
-        asnIs = new AsnInputStream(b);
-        comp = TcapFactory.createComponent(asnIs);
+        output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof ComponentImpl);
+        comp = (ComponentImpl)output;
 
         assertEquals(ComponentType.ReturnError, comp.getType(), "Wrong component Type");
-        re = (ReturnError) comp;
+        re = comp.getReturnError();
         assertEquals(new Long(5), re.getInvokeId(), "Wrong invoke ID");
         assertNotNull(re.getErrorCode(), "No error code.");
         ec = re.getErrorCode();
         assertEquals(ErrorCodeType.Local, ec.getErrorType(), "Wrong error code type.");
-        lec = ec.getLocalErrorCode();
+        lec = ((LocalErrorCodeImpl)ec).getLocalErrorCode();
         assertEquals(lec, 15, "wrong data content.");
 
         assertNotNull(re.getParameter(), "Parameter should not be null");
-        Parameter p = re.getParameter();
-        assertEquals(0x00, p.getTag(), "Wrong parameter tag."); // 0x00 - since A is for tag class etc.
-        assertEquals(Tag.CLASS_CONTEXT_SPECIFIC, p.getTagClass(), "Wrong parameter tagClass.");
-        assertNotNull(p.getParameters(), "Parameters array is null.");
-        assertEquals(4, p.getParameters().length, "Wrong number of parameters in array.");
-        assertTrue(Arrays.equals(this.getParameterData(), p.getData()));
+        Object p = re.getParameter();
+        assertTrue(p instanceof TCBeginTestASN3);
+        assertTrue(Arrays.equals(this.getParameterData(), ((TCBeginTestASN3)p).getValue()));
 
         b = getDataLongErrorCode();
-        asnIs = new AsnInputStream(b);
-        comp = TcapFactory.createComponent(asnIs);
+        output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof ComponentImpl);
+        comp = (ComponentImpl)output;
 
         assertEquals(ComponentType.ReturnError, comp.getType(), "Wrong component Type");
-        re = (ReturnError) comp;
+        re = comp.getReturnError();
         assertEquals(new Long(-1L), re.getInvokeId(), "Wrong invoke ID");
         assertNotNull(re.getErrorCode(), "No error code.");
         ec = re.getErrorCode();
         assertEquals(ErrorCodeType.Global, ec.getErrorType(), "Wrong error code type.");
-        long[] gec = ec.getGlobalErrorCode();
-        assertTrue(Arrays.equals(new long[] { 1, 0, 22, 33 }, gec), "wrong data content.");
+        List<Long> gec = ((GlobalErrorCodeImpl)ec).getGlobalErrorCode();
+        assertEquals(Arrays.asList(new Long[] { 1L, 0L, 22L, 33L }), gec, "wrong data content.");
         assertNull(re.getParameter());
     }
 
     @Test(groups = { "functional.encode" })
-    public void testEncode() throws IOException, EncodeException {
-
+    public void testEncode() throws ASNException {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ComponentImpl.class);
+    	
         byte[] expected = this.getDataWithoutParameter();
-        ReturnError re = TcapFactory.createComponentReturnError();
-        re.setInvokeId(5l);
-        ErrorCode ec = TcapFactory.createErrorCode();
-        ec.setLocalErrorCode(15L);
-        re.setErrorCode(ec);
+        ComponentImpl re = TcapFactory.createComponentReturnError();
+        re.getReturnError().setInvokeId(5l);
+        ErrorCode ec = TcapFactory.createLocalErrorCode();
+        ((LocalErrorCodeImpl)ec).setLocalErrorCode(15L);
+        re.getReturnError().setErrorCode(ec);
 
-        AsnOutputStream asnos = new AsnOutputStream();
-        re.encode(asnos);
-        byte[] encodedData = asnos.toByteArray();
+        ByteBuf buffer=parser.encode(re);
+        byte[] encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getDataWithParameter();
         re = TcapFactory.createComponentReturnError();
-        re.setInvokeId(5l);
-        ec = TcapFactory.createErrorCode();
-        ec.setLocalErrorCode(15L);
-        re.setErrorCode(ec);
-        Parameter pm = TcapFactory.createParameter();
-        pm.setTagClass(Tag.CLASS_CONTEXT_SPECIFIC);
-        pm.setTag(0);
-        pm.setPrimitive(false);
-        pm.setData(getParameterData());
-        re.setParameter(pm);
+        re.getReturnError().setInvokeId(5l);
+        ec = TcapFactory.createLocalErrorCode();
+        ((LocalErrorCodeImpl)ec).setLocalErrorCode(15L);
+        re.getReturnError().setErrorCode(ec);
+        
+        TCBeginTestASN3 pm=new TCBeginTestASN3();
+        pm.setValue(getParameterData());
+        re.getReturnError().setParameter(pm);
 
-        asnos = new AsnOutputStream();
-        re.encode(asnos);
-        encodedData = asnos.toByteArray();
+        buffer=parser.encode(re);
+        encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getDataLongErrorCode();
         re = TcapFactory.createComponentReturnError();
-        re.setInvokeId(-1L);
-        ec = TcapFactory.createErrorCode();
-        ec.setGlobalErrorCode(new long[] { 1, 0, 22, 33 });
-        re.setErrorCode(ec);
+        re.getReturnError().setInvokeId(-1L);
+        ec = TcapFactory.createGlobalErrorCode();
+        ((GlobalErrorCodeImpl)ec).setGlobalErrorCode(Arrays.asList(new Long[] { 1L, 0L, 22L, 33L }));
+        re.getReturnError().setErrorCode(ec);
 
-        asnos = new AsnOutputStream();
-        re.encode(asnos);
-        encodedData = asnos.toByteArray();
-        assertTrue(Arrays.equals(expected, encodedData));
+        buffer=parser.encode(re);
+        encodedData = buffer.array();
+        assertTrue(Arrays.equals(expected, encodedData));        
     }
 }

@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.mobicents.commons.HexTools;
 import org.restcomm.protocols.ss7.m3ua.parameter.HeartbeatData;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
@@ -32,24 +35,29 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
  *
  */
 public class HeartbeatDataImpl extends ParameterImpl implements HeartbeatData {
-    private byte[] value = null;
+    private ByteBuf value = null;
 
-    protected HeartbeatDataImpl(byte[] value) {
+    protected HeartbeatDataImpl(ByteBuf value) {
         this.tag = Parameter.Heartbeat_Data;
         this.value = value;
     }
 
-    public byte[] getData() {
-        return this.value;
+    public ByteBuf getData() {
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     @Override
     public String toString() {
-        return String.format("HeartbeatData : data = %s ", HexTools.dump(this.value, 0));
+    	byte[] data=new byte[value.readableBytes()];
+    	value.markReaderIndex();
+    	value.readBytes(data);
+    	value.resetReaderIndex();
+    	
+        return String.format("HeartbeatData : data = %s ", HexTools.dump(data, 0));
     }
 }

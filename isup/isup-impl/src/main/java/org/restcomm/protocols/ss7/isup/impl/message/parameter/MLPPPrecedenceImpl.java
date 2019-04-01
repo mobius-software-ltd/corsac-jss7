@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.MLPPPrecedence;
 
@@ -40,25 +43,23 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MLPPPrecedence;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class MLPPPrecedenceImpl extends AbstractISUPParameter implements MLPPPrecedence {
-	private static final long serialVersionUID = 1L;
-
 	private int lfb;
     private int precedenceLevel;
     private int mllpServiceDomain;
     // FIXME: ensure zero in first digit.?
-    private byte[] niDigits;
+    private ByteBuf niDigits;
 
     public MLPPPrecedenceImpl() {
         super();
 
     }
 
-    public MLPPPrecedenceImpl(byte[] b) throws ParameterException {
+    public MLPPPrecedenceImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public MLPPPrecedenceImpl(byte lfb, byte precedenceLevel, int mllpServiceDomain, byte[] niDigits) {
+    public MLPPPrecedenceImpl(byte lfb, byte precedenceLevel, int mllpServiceDomain, ByteBuf niDigits) {
         super();
         this.lfb = lfb;
         this.precedenceLevel = precedenceLevel;
@@ -66,46 +67,48 @@ public class MLPPPrecedenceImpl extends AbstractISUPParameter implements MLPPPre
         setNiDigits(niDigits);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 6) {
+    public void decode(ByteBuf buffer) throws ParameterException {
+        if (buffer == null || buffer.readableBytes() != 6) {
             throw new ParameterException("byte[] must  not be null and length must  be 6");
         }
 
-        this.precedenceLevel = (byte) (b[0] & 0x0F);
-        this.lfb = (byte) ((b[0] >> 5) & 0x03);
+        byte b=buffer.readByte();
+        this.precedenceLevel = (byte) (b & 0x0F);
+        this.lfb = (byte) ((b >> 5) & 0x03);
         byte v = 0;
-        this.niDigits = new byte[4];
+        
+        this.niDigits = Unpooled.buffer(4);
         for (int i = 0; i < 2; i++) {
             v = 0;
-            v = b[i + 1];
-            this.niDigits[i * 2] = (byte) (v & 0x0F);
-            this.niDigits[i * 2 + 1] = (byte) ((v >> 4) & 0x0F);
+            v = buffer.readByte();
+            this.niDigits.writeByte((byte) (v & 0x0F));
+            this.niDigits.writeByte((byte) ((v >> 4) & 0x0F));
         }
 
-        this.mllpServiceDomain = b[3] << 16;
-        this.mllpServiceDomain |= b[4] << 8;
-        this.mllpServiceDomain |= b[5];
-        return 6;
+        this.mllpServiceDomain = buffer.readByte() << 16;
+        this.mllpServiceDomain |= buffer.readByte() << 8;
+        this.mllpServiceDomain |= buffer.readByte();        
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = new byte[6];
-        b[0] = (byte) ((this.lfb & 0x03) << 5);
-        b[0] |= this.precedenceLevel & 0x0F;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	byte b= (byte) ((this.lfb & 0x03) << 5);
+        b |= this.precedenceLevel & 0x0F;
+        buffer.writeByte(b);
+        
         byte v = 0;
+        ByteBuf curr=getNiDigits();
         for (int i = 0; i < 2; i++) {
             v = 0;
 
-            v |= (this.niDigits[i * 2] & 0x0F) << 4;
-            v |= (this.niDigits[i * 2 + 1] & 0x0F);
+            v |= (curr.readByte() & 0x0F) << 4;
+            v |= (curr.readByte() & 0x0F);
 
-            b[i + 1] = v;
+            buffer.writeByte(v);
         }
 
-        b[3] = (byte) (this.mllpServiceDomain >> 16);
-        b[4] = (byte) (this.mllpServiceDomain >> 8);
-        b[5] = (byte) this.mllpServiceDomain;
-        return b;
+        buffer.writeByte((byte) (this.mllpServiceDomain >> 16));
+        buffer.writeByte((byte) (this.mllpServiceDomain >> 8));
+        buffer.writeByte((byte) this.mllpServiceDomain);        
     }
 
     public byte getLfb() {
@@ -132,12 +135,15 @@ public class MLPPPrecedenceImpl extends AbstractISUPParameter implements MLPPPre
         this.mllpServiceDomain = mllpServiceDomain;
     }
 
-    public byte[] getNiDigits() {
-        return niDigits;
+    public ByteBuf getNiDigits() {
+    	if(niDigits==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(niDigits);
     }
 
-    public void setNiDigits(byte[] niDigits) {
-        if (niDigits == null || niDigits.length != 4) {
+    public void setNiDigits(ByteBuf niDigits) {
+        if (niDigits == null || niDigits.readableBytes() != 4) {
             throw new IllegalArgumentException();
         }
         this.niDigits = niDigits;
@@ -165,8 +171,9 @@ public class MLPPPrecedenceImpl extends AbstractISUPParameter implements MLPPPre
         if (niDigits != null) {
             sb.append(", ");
             sb.append("niDigits=");
-            for (int i1 = 1; i1 < niDigits.length; i1++) {
-                sb.append((int) niDigits[i1]);
+            ByteBuf curr=getNiDigits();
+            while(curr.readableBytes()>0) {
+                sb.append((int) curr.readByte());
                 sb.append(", ");
             }
         }

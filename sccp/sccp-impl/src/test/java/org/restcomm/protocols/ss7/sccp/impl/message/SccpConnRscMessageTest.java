@@ -34,7 +34,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -55,14 +56,14 @@ public class SccpConnRscMessageTest {
     public void tearDown() {
     }
 
-    public byte[] getDataRsc() {
-        return new byte[] { 0x0E, 0x00, 0x00, 0x01, 0x00, 0x00, 0x02  };
+    public ByteBuf getDataRsc() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x0E, 0x00, 0x00, 0x01, 0x00, 0x00, 0x02  });
     }
 
     @Test(groups = { "SccpMessage", "functional.decode" })
     public void testDecode() throws Exception {
-        ByteArrayInputStream buf = new ByteArrayInputStream(this.getDataRsc());
-        int type = buf.read();
+    	ByteBuf buf = this.getDataRsc();
+        int type = buf.readByte();
         SccpConnRscMessageImpl testObjectDecoded = (SccpConnRscMessageImpl) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
 
         assertNotNull(testObjectDecoded);
@@ -78,6 +79,6 @@ public class SccpConnRscMessageTest {
 
         EncodingResultData encoded = original.encode(stack,LongMessageRuleType.LONG_MESSAGE_FORBBIDEN, 272, logger, false, SccpProtocolVersion.ITU);
 
-        assertEquals(encoded.getSolidData(), this.getDataRsc());
+        MessageSegmentationTest.assertByteBufs(encoded.getSolidData(), this.getDataRsc());
     }
 }

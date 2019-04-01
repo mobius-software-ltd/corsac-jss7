@@ -34,8 +34,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
  *
  */
 public abstract class DialogRequestImpl implements DialogRequest {
-	private static final long serialVersionUID = 1L;
-
 	private Dialog dialog;
     private EventType type;
 

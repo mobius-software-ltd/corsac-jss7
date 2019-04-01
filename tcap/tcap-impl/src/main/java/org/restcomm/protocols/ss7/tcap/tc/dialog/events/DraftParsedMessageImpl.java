@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcap.tc.dialog.events;
 
-import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.DraftParsedMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 
 /**
  * @author sergey vetyutnev
@@ -31,59 +31,21 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.DraftParsedMessage;
  */
 public class DraftParsedMessageImpl implements DraftParsedMessage {
 
-    private MessageType messageType = MessageType.Unknown;
-    private Long originationDialogId;
-    private Long destinationDialogId;
+    private TCUnifiedMessage message;
     private String parsingErrorReason;
 
-    @Override
-    public MessageType getMessageType() {
-        return messageType;
-    }
-
-    public void setMessageType(MessageType val) {
-        messageType = val;
-    }
-
-    @Override
-    public Long getOriginationDialogId() {
-        return originationDialogId;
-    }
-
-    public void setOriginationDialogId(Long val) {
-        originationDialogId = val;
-    }
-
-    @Override
-    public Long getDestinationDialogId() {
-        return destinationDialogId;
-    }
-
-    public void setDestinationDialogId(Long val) {
-        destinationDialogId = val;
-    }
-
-    @Override
-    public String getParsingErrorReason() {
-        return parsingErrorReason;
-    }
-
-    public void setParsingErrorReason(String val) {
-        parsingErrorReason = val;
-    }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append("DraftParsedMessage [");
-        sb.append(messageType);
-        if (originationDialogId != null) {
+        if (message.getOriginatingTransactionId() != null) {
             sb.append(", originationDialogId=");
-            sb.append(originationDialogId);
+            sb.append(message.getOriginatingTransactionId());
         }
-        if (destinationDialogId != null) {
+        if (message.getDestinationTransactionId() != null) {
             sb.append(", destinationDialogId=");
-            sb.append(destinationDialogId);
+            sb.append(message.getDestinationTransactionId());
         }
         if (parsingErrorReason != null) {
             sb.append(", parsingErrorReason=");
@@ -94,4 +56,22 @@ public class DraftParsedMessageImpl implements DraftParsedMessage {
         return sb.toString();
     }
 
+
+	@Override
+	public TCUnifiedMessage getMessage() {
+		return message;
+	}
+
+	@Override
+	public String getParsingErrorReason() {
+		return parsingErrorReason;
+	}
+
+	public void setMessage(TCUnifiedMessage message) {
+		this.message = message;
+	}
+
+	public void setParsingErrorReason(String parsingErrorReason) {
+		this.parsingErrorReason = parsingErrorReason;
+	}
 }

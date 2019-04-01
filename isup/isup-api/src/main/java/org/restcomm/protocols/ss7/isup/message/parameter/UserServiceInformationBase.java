@@ -851,20 +851,4 @@ public interface UserServiceInformationBase extends ISUPParameter {
     boolean isByte5dIsPresent();
 
     void setByte5dIsPresent(boolean byte5dIsPresent);
-
-    /**
-     * Returns the encoded data from the original message
-     * @return
-     */
-    byte[] getData();
-
-    /**
-     * You can specify by this method encoded message. If this parameter is specified than when sending this data will be used
-     * for message encoding and all other parameters will be ignored. Leave this field as null if you want ISUP stack encode
-     * source parameters.
-     *
-     * @param data
-     */
-    void setData(byte[] data);
-
 }

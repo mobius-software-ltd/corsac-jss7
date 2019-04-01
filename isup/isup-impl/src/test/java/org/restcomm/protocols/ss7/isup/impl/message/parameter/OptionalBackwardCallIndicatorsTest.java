@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -51,8 +54,8 @@ public class OptionalBackwardCallIndicatorsTest extends ParameterHarness {
 
     public OptionalBackwardCallIndicatorsTest() {
         super();
-        super.goodBodies.add(new byte[] { 8 });
-        super.badBodies.add(new byte[] { 8, 8 });
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { 8 }));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[] { 8, 8 }));
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -71,12 +74,12 @@ public class OptionalBackwardCallIndicatorsTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(boolean ibiiAvailable, boolean cdiNoIndication, boolean ssirNoAdditionalInfo, boolean mllpuiUser) {
+    private ByteBuf getBody(boolean ibiiAvailable, boolean cdiNoIndication, boolean ssirNoAdditionalInfo, boolean mllpuiUser) {
         byte b = (byte) ((ibiiAvailable ? _TURN_ON : _TURN_OFF));
         b |= ((cdiNoIndication ? _TURN_ON : _TURN_OFF) << 1);
         b |= ((ssirNoAdditionalInfo ? _TURN_ON : _TURN_OFF) << 2);
         b |= ((mllpuiUser ? _TURN_ON : _TURN_OFF) << 3);
-        return new byte[] { b };
+        return Unpooled.wrappedBuffer(new byte[] { b });
     }
 
     /*

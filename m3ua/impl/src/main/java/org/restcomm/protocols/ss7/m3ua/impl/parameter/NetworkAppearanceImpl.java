@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -42,15 +45,15 @@ public class NetworkAppearanceImpl extends ParameterImpl implements NetworkAppea
         this.tag = Parameter.Network_Appearance;
     }
 
-    protected NetworkAppearanceImpl(byte[] data) {
+    protected NetworkAppearanceImpl(ByteBuf data) {
         this.value = 0;
-        this.value |= data[0] & 0xFF;
+        this.value |= data.readByte() & 0xFF;
         this.value <<= 8;
-        this.value |= data[1] & 0xFF;
+        this.value |= data.readByte() & 0xFF;
         this.value <<= 8;
-        this.value |= data[2] & 0xFF;
+        this.value |= data.readByte() & 0xFF;
         this.value <<= 8;
-        this.value |= data[3] & 0xFF;
+        this.value |= data.readByte() & 0xFF;
         this.tag = Parameter.Network_Appearance;
     }
 
@@ -59,12 +62,12 @@ public class NetworkAppearanceImpl extends ParameterImpl implements NetworkAppea
     }
 
     @Override
-    protected byte[] getValue() {
-        byte[] data = new byte[4];
-        data[0] = (byte) (value >>> 24);
-        data[1] = (byte) (value >>> 16);
-        data[2] = (byte) (value >>> 8);
-        data[3] = (byte) (value);
+    protected ByteBuf getValue() {
+        ByteBuf data = Unpooled.buffer(4);
+        data.writeByte((byte) (value >>> 24));
+        data.writeByte((byte) (value >>> 16));
+        data.writeByte((byte) (value >>> 8));
+        data.writeByte((byte) (value));
 
         return data;
     }

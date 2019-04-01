@@ -30,7 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
@@ -45,8 +45,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  *
  */
 public class MessageTypeImpl extends AbstractISUPParameter implements MessageType {
-	private static final long serialVersionUID = 1L;
-
 	// we even cant use -1, since it may be avlid value, ech, those binary protocols.
     private MessageName messageName;
 
@@ -65,19 +63,15 @@ public class MessageTypeImpl extends AbstractISUPParameter implements MessageTyp
         this.messageName = messageName;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1)
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1)
             throw new ParameterException();
-        return 1;
+        
+        this.messageName=MessageName.fromInt(b.readByte());
     }
 
-    public byte[] encode() throws ParameterException {
-        return new byte[] { (byte) this.messageName.getCode() };
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        bos.write(this.messageName.getCode());
-        return 1;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) this.messageName.getCode());
     }
 
     public int getCode() {

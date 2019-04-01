@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.DestinationPointCode;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -34,23 +37,23 @@ public class DestinationPointCodeImpl extends ParameterImpl implements Destinati
 
     private int destPC = 0;
     private short mask = 0;
-    private byte[] value;
+    private ByteBuf value;
 
     public DestinationPointCodeImpl() {
         this.tag = Parameter.Destination_Point_Code;
     }
 
-    protected DestinationPointCodeImpl(byte[] value) {
+    protected DestinationPointCodeImpl(ByteBuf value) {
         this.tag = Parameter.Destination_Point_Code;
         this.value = value;
-        this.mask = value[0];
+        this.mask = value.readByte();
 
         destPC = 0;
-        destPC |= value[1] & 0xFF;
+        destPC |= value.readByte() & 0xFF;
         destPC <<= 8;
-        destPC |= value[2] & 0xFF;
+        destPC |= value.readByte() & 0xFF;
         destPC <<= 8;
-        destPC |= value[3] & 0xFF;
+        destPC |= value.readByte() & 0xFF;
     }
 
     protected DestinationPointCodeImpl(int pc, short mask) {
@@ -63,13 +66,13 @@ public class DestinationPointCodeImpl extends ParameterImpl implements Destinati
     private void encode() {
         // create byte array taking into account data, point codes and
         // indicators;
-        this.value = new byte[4];
+        this.value = Unpooled.buffer(4);
         // encode point code with mask
-        value[0] = (byte) this.mask;// Mask
+        value.writeByte((byte) this.mask);// Mask
 
-        value[1] = (byte) (destPC >> 16);
-        value[2] = (byte) (destPC >> 8);
-        value[3] = (byte) (destPC);
+        value.writeByte((byte) (destPC >> 16));
+        value.writeByte((byte) (destPC >> 8));
+        value.writeByte((byte) (destPC));
     }
 
     public int getPointCode() {
@@ -77,8 +80,8 @@ public class DestinationPointCodeImpl extends ParameterImpl implements Destinati
     }
 
     @Override
-    protected byte[] getValue() {
-        return value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(value);
     }
 
     public short getMask() {

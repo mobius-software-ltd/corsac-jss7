@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 import org.apache.log4j.Level;
@@ -67,8 +69,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
@@ -164,8 +164,6 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     // SccpListener's for SCCP user -> SCCP -> SCCP user transit (without MTP part)
     protected int deliveryTransferMessageThreadCount = 4;
     
-    private boolean previewMode = false;
-
     protected volatile State state = State.IDLE;
 
     // provider ref, this can be real provider or pipe, for tests.
@@ -290,13 +288,6 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
             this.sccpProtocolVersion = sccpProtocolVersion;
     }
 
-    public void setPreviewMode(boolean previewMode) throws Exception {
-        if (!this.isStarted())
-            throw new Exception("PreviewMode parameter can be updated only when SCCP stack is running");
-
-        this.previewMode = previewMode;
-    }
-
     public int getDeliveryMessageThreadCount() {
         return this.deliveryTransferMessageThreadCount;
     }
@@ -359,10 +350,6 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
     public SccpProtocolVersion getSccpProtocolVersion() {
         return this.sccpProtocolVersion;
-    }
-
-    public boolean isPreviewMode() {
-        return this.previewMode;
     }
 
     public int getSstTimerDuration_Min() {
@@ -769,7 +756,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         }
 
         if (message.getCalledPartyAddress() == null || message.getCallingPartyAddress() == null || message.getData() == null
-                || message.getData().length == 0) {
+                || message.getData().readableBytes() == 0) {
             logger.error("Message to send must has filled CalledPartyAddress, CallingPartyAddress and data fields");
             throw new IOException("Message to send must has filled CalledPartyAddress, CallingPartyAddress and data fields");
         }
@@ -828,19 +815,21 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
         try {
             int fieldsLen = 0;
-            byte[] cdp = ((SccpAddressImpl) calledPartyAddress).encode(isRemoveSpc(), this.getSccpProtocolVersion());
-            byte[] cnp = ((SccpAddressImpl) callingPartyAddress).encode(isRemoveSpc(), this.getSccpProtocolVersion());
+            ByteBuf cdp=Unpooled.buffer();
+            ByteBuf cnp=Unpooled.buffer();
+            ((SccpAddressImpl) calledPartyAddress).encode(cdp, isRemoveSpc(), this.getSccpProtocolVersion());
+            ((SccpAddressImpl) callingPartyAddress).encode(cnp, isRemoveSpc(), this.getSccpProtocolVersion());
             switch (lmrt) {
                 case LONG_MESSAGE_FORBBIDEN:
-                    fieldsLen = calculateUdtFieldsLengthWithoutData(cdp.length, cnp.length);
+                    fieldsLen = calculateUdtFieldsLengthWithoutData(cdp.readableBytes(), cnp.readableBytes());
                     break;
                 case LUDT_ENABLED:
                 case LUDT_ENABLED_WITH_SEGMENTATION:
-                    fieldsLen = calculateLudtFieldsLengthWithoutData(cdp.length, cnp.length, true, true);
+                    fieldsLen = calculateLudtFieldsLengthWithoutData(cdp.readableBytes(), cnp.readableBytes(), true, true);
                     break;
                 case XUDT_ENABLED:
-                    fieldsLen = calculateXudtFieldsLengthWithoutData(cdp.length, cnp.length, true, true);
-                    int fieldsLen2 = calculateXudtFieldsLengthWithoutData2(cdp.length, cnp.length);
+                    fieldsLen = calculateXudtFieldsLengthWithoutData(cdp.readableBytes(), cnp.readableBytes(), true, true);
+                    int fieldsLen2 = calculateXudtFieldsLengthWithoutData2(cdp.readableBytes(), cnp.readableBytes());
                     if (fieldsLen > fieldsLen2)
                         fieldsLen = fieldsLen2;
                     break;
@@ -984,7 +973,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
         try {
             // checking if incoming dpc is local
-            if (!this.isPreviewMode() && !this.router.spcIsLocal(dpc)) {
+            if (!this.router.spcIsLocal(dpc)) {
 
                 // incoming dpc is not local - trying to find the target SAP and
                 // send a message to MTP3 (MTP transit function)
@@ -1043,10 +1032,9 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
             }
 
             // decoding of a message
-            ByteArrayInputStream bais = new ByteArrayInputStream(mtp3Msg.getData());
-            DataInputStream in = new DataInputStream(bais);
-            int mt = in.readUnsignedByte();
-            msg = ((MessageFactoryImpl) sccpProvider.getMessageFactory()).createMessage(mt, mtp3Msg.getOpc(), mtp3Msg.getDpc(), mtp3Msg.getSls(), in,
+            ByteBuf data=mtp3Msg.getData();
+            int mt = data.readUnsignedByte();
+            msg = ((MessageFactoryImpl) sccpProvider.getMessageFactory()).createMessage(mt, mtp3Msg.getOpc(), mtp3Msg.getDpc(), mtp3Msg.getSls(), data,
                     this.sccpProtocolVersion, 0);
 
             // finding sap and networkId for a message
@@ -1080,7 +1068,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
             // when segmented messages - make a reassembly operation
             if (msg instanceof SccpSegmentableMessageImpl) {
-                SccpSegmentableMessageImpl sgmMsg = (SccpSegmentableMessageImpl) msg;
+            	SccpSegmentableMessageImpl sgmMsg = (SccpSegmentableMessageImpl) msg;
                 SegmentationImpl segm = (SegmentationImpl) sgmMsg.getSegmentation();
                 if (segm != null) {
                     // segmentation info is present - segmentation is possible
@@ -1089,10 +1077,9 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                         // the single segment - no reassembly is needed
                         sgmMsg.setReceivedSingleSegment();
                     } else {
-
+                        
                         // multiple segments - reassembly is needed
                         if (segm.isFirstSegIndication()) {
-
                             // first segment
                             sgmMsg.setReceivedFirstSegment();
                             MessageReassemblyProcess msp = new MessageReassemblyProcess(segm.getSegmentationLocalRef(),

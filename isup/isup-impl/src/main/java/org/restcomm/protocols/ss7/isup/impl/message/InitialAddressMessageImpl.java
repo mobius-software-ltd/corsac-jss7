@@ -29,6 +29,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -109,8 +111,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessT
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class InitialAddressMessageImpl extends ISUPMessageImpl implements InitialAddressMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.InitialAddress);
     private static final int _MANDATORY_VAR_COUNT = 1;
     // mandatory fixed L
@@ -208,61 +208,53 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
      * @see org.mobicents.isup.messages.ISUPMessage#decodeMandatoryParameters(byte[], int)
      */
 
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-        if (b.length - index > 5) {
+        super.decodeMandatoryParameters(parameterFactory, b);
+        if (b.readableBytes() > 4) {
 
             try {
-                byte[] natureOfConnectionIndicators = new byte[1];
-                natureOfConnectionIndicators[0] = b[index++];
-
+                ByteBuf natureOfConnectionIndicators = b.slice(b.readerIndex(), 1);
                 NatureOfConnectionIndicators _nai = parameterFactory.createNatureOfConnectionIndicators();
                 ((AbstractISUPParameter) _nai).decode(natureOfConnectionIndicators);
                 this.setNatureOfConnectionIndicators(_nai);
+                b.skipBytes(1);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse NatureOfConnectionIndicators due to: ", e);
             }
 
             try {
-                byte[] body = new byte[2];
-                body[0] = b[index++];
-                body[1] = b[index++];
-
+            	ByteBuf body = b.slice(b.readerIndex(), 2);
                 ForwardCallIndicators v = parameterFactory.createForwardCallIndicators();
                 ((AbstractISUPParameter) v).decode(body);
                 this.setForwardCallIndicators(v);
+                b.skipBytes(2);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse ForwardCallIndicators due to: ", e);
             }
 
             try {
-                byte[] body = new byte[1];
-                body[0] = b[index++];
-
+            	ByteBuf body = b.slice(b.readerIndex(), 1);
                 CallingPartyCategory v = parameterFactory.createCallingPartyCategory();
                 ((AbstractISUPParameter) v).decode(body);
                 this.setCallingPartCategory(v);
+                b.skipBytes(1);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse CallingPartyCategory due to: ", e);
             }
             try {
-                byte[] body = new byte[1];
-                body[0] = b[index++];
-
+            	ByteBuf body = b.slice(b.readerIndex(), 1);
                 TransmissionMediumRequirement v = parameterFactory.createTransmissionMediumRequirement();
                 ((AbstractISUPParameter) v).decode(body);
                 this.setTransmissionMediumRequirement(v);
+                b.skipBytes(1);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse TransmissionMediumRequirement due to: ", e);
             }
-
-            return index - localIndex;
         } else {
             throw new ParameterException("byte[] must have atleast eight octets");
         }
@@ -273,7 +265,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
      * @param parameterCode
      * @throws ParameterException
      */
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         switch (parameterIndex) {
             case _INDEX_V_CalledPartyNumber:
@@ -293,7 +285,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
      * @see org.mobicents.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
      */
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
 
         // TODO Auto-generated method stub

@@ -32,8 +32,9 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -144,27 +145,27 @@ public class ParameterCompatibilityInformationTest extends ParameterHarness {
 
     }
 
-    private byte[] getBody1() {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody1() {
+    	ByteBuf bos = Unpooled.buffer();
 
-        bos.write(1);
-        bos.write(0x80 | 0x2B);
-        bos.write(3);
+        bos.writeByte(1);
+        bos.writeByte(0x80 | 0x2B);
+        bos.writeByte(3);
 
-        bos.write(2);
-        bos.write(0x80 | 0x2B);
-        bos.write(0x80 | 3);
-        bos.write(12);
+        bos.writeByte(2);
+        bos.writeByte(0x80 | 0x2B);
+        bos.writeByte(0x80 | 3);
+        bos.writeByte(12);
 
-        bos.write(3);
-        bos.write(0x80 | 0x2F);
-        bos.write(1);
+        bos.writeByte(3);
+        bos.writeByte(0x80 | 0x2F);
+        bos.writeByte(1);
 
-        bos.write(4);
-        bos.write(0x80 | 0x3B);
-        bos.write(2);
+        bos.writeByte(4);
+        bos.writeByte(0x80 | 0x3B);
+        bos.writeByte(2);
 
-        return bos.toByteArray();
+        return bos;
     }
 
     public AbstractISUPParameter getTestedComponent() {

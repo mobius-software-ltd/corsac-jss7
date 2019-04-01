@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.SuspendResumeIndicators;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.SuspendResumeIndicators
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class SuspendResumeIndicatorsImpl extends AbstractISUPParameter implements SuspendResumeIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -52,7 +52,7 @@ public class SuspendResumeIndicatorsImpl extends AbstractISUPParameter implement
 
     }
 
-    public SuspendResumeIndicatorsImpl(byte[] b) throws ParameterException {
+    public SuspendResumeIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -62,18 +62,16 @@ public class SuspendResumeIndicatorsImpl extends AbstractISUPParameter implement
         this.suspendResumeIndicator = suspendResumeIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
 
-        this.suspendResumeIndicator = (b[0] & 0x01) == _TURN_ON;
-
-        return 1;
+        this.suspendResumeIndicator = (b.readByte() & 0x01) == _TURN_ON;
     }
 
-    public byte[] encode() throws ParameterException {
-        return new byte[] { (byte) (this.suspendResumeIndicator ? _TURN_ON : _TURN_OFF) };
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) (this.suspendResumeIndicator ? _TURN_ON : _TURN_OFF));
     }
 
     public boolean isSuspendResumeIndicator() {

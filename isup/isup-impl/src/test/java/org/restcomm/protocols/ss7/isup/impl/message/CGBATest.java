@@ -34,6 +34,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupBlockingAckMessage;
@@ -53,7 +55,7 @@ public class CGBATest extends MessageHarness {
 
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
-        byte[] message = getDefaultBody();
+        ByteBuf message = getDefaultBody();
 
         CircuitGroupBlockingAckMessage cgb = super.messageFactory.createCGBA();
         ((AbstractISUPMessage) cgb).decode(message, messageFactory,parameterFactory);
@@ -83,7 +85,7 @@ public class CGBATest extends MessageHarness {
 
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
 
         0x0C, (byte) 0x0B, CircuitGroupBlockingAckMessage.MESSAGE_CODE
@@ -93,7 +95,7 @@ public class CGBATest extends MessageHarness {
                 // no optional, so no pointer
                 // RangeAndStatus._PARAMETER_CODE
                 , 0x04, 0x11, 0x02, 0x03, 0x04 };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

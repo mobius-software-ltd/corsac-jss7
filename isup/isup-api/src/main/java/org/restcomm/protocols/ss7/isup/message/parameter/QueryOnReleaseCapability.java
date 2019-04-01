@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:13:51:18 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -48,9 +50,9 @@ public interface QueryOnReleaseCapability extends ISUPParameter {
      */
     boolean _QoRI_SUPPORT = true;
 
-    byte[] getCapabilities();
+    ByteBuf getCapabilities();
 
-    void setCapabilities(byte[] capabilities);
+    void setCapabilities(ByteBuf capabilities);
 
     boolean isQoRSupport(byte b);
 

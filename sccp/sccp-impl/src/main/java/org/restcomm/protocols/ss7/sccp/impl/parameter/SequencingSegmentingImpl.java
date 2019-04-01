@@ -28,9 +28,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SequenceNumber;
 import org.restcomm.protocols.ss7.sccp.parameter.SequencingSegmenting;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 public class SequencingSegmentingImpl extends AbstractParameter implements SequencingSegmenting {
 	private static final long serialVersionUID = 1L;
@@ -77,49 +75,23 @@ public class SequencingSegmentingImpl extends AbstractParameter implements Seque
     public void setMoreData(boolean moreData) {
         this.moreData = moreData;
     }
-
+    
     @Override
-    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (in.read() != 2) {
-                throw new ParseException();
-            }
-            this.sendSequenceNumber = new SequenceNumberImpl((byte)(in.read() >> 1 & 0x7F));
-            int secondOctet = in.read();
-            this.receiveSequenceNumber = new SequenceNumberImpl((byte)(secondOctet >> 1 & 0x7F));
-            this.moreData = (secondOctet & 0x01) == 1;
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
-
-    @Override
-    public void encode(final OutputStream os, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            os.write(2);
-            os.write(this.sendSequenceNumber.getValue() << 1 & 0xFE);
-            os.write(this.receiveSequenceNumber.getValue() << 1 & 0xFE | ((moreData) ? 1 : 0));
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
-
-    @Override
-    public void decode(final byte[] b, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        if (b.length < 2) {
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        if (buffer.readableBytes() < 2) {
             throw new ParseException();
         }
-        this.sendSequenceNumber = new SequenceNumberImpl((byte)(b[0] >> 1 & 0x7F));
-        this.receiveSequenceNumber = new SequenceNumberImpl((byte)(b[1] >> 1 & 0x7F));
-        this.moreData = (b[1] & 0x01) == 1;
+        this.sendSequenceNumber = new SequenceNumberImpl((byte)(buffer.readByte() >> 1 & 0x7F));
+        
+        byte b=buffer.readByte();
+        this.receiveSequenceNumber = new SequenceNumberImpl((byte)(b >> 1 & 0x7F));
+        this.moreData = (b & 0x01) == 1;
     }
 
     @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return new byte[] {
-                (byte) (this.sendSequenceNumber.getValue() << 1 & 0xFE),
-                (byte) (this.receiveSequenceNumber.getValue() << 1 & 0xFE | ((moreData) ? 1 : 0))
-        };
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	buffer.writeByte((byte) (this.sendSequenceNumber.getValue() << 1 & 0xFE));
+    	buffer.writeByte((byte) (this.receiveSequenceNumber.getValue() << 1 & 0xFE | ((moreData) ? 1 : 0)));
     }
 
     @Override

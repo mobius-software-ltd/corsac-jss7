@@ -21,9 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,15 +35,13 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityIns
  *
  */
 public class MessageCompatibilityInformationImpl extends AbstractISUPParameter implements MessageCompatibilityInformation {
-	private static final long serialVersionUID = 1L;
-
 	private List<MessageCompatibilityInstructionIndicator> indicators = new LinkedList<MessageCompatibilityInstructionIndicator>();
 
     public MessageCompatibilityInformationImpl() {
         // TODO Auto-generated constructor stub
     }
 
-    public MessageCompatibilityInformationImpl(byte[] body) throws ParameterException {
+    public MessageCompatibilityInformationImpl(ByteBuf body) throws ParameterException {
         decode(body);
     }
 
@@ -54,7 +51,7 @@ public class MessageCompatibilityInformationImpl extends AbstractISUPParameter i
     }
 
     @Override
-    public void setMessageCompatibilityInstructionIndicators(MessageCompatibilityInstructionIndicator... indicators) {
+    public void setMessageCompatibilityInstructionIndicators(List<MessageCompatibilityInstructionIndicator> indicators) {
         this.indicators.clear();
         for(MessageCompatibilityInstructionIndicator i:indicators){
             if(i == null)
@@ -64,52 +61,46 @@ public class MessageCompatibilityInformationImpl extends AbstractISUPParameter i
     }
 
     @Override
-    public MessageCompatibilityInstructionIndicator[] getMessageCompatibilityInstructionIndicators() {
-        return this.indicators.toArray(new MessageCompatibilityInstructionIndicator[this.indicators.size()]);
+    public List<MessageCompatibilityInstructionIndicator> getMessageCompatibilityInstructionIndicators() {
+        return indicators;
     }
 
     @Override
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length == 0) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() == 0) {
             throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
         }
-        final int limit = b.length -1;
-        for(int index = 0;index<b.length;index++){
-            int v = b[index];
-            if(index==limit){
+
+        while(b.readableBytes()>0){
+            int v = b.readByte();
+            if(b.readableBytes()==0){
                 if( (v & 0x7F) == 0){
-                    throw new ParameterException("Extension bit indicates more content, but byte[] is done... "+Arrays.toString(b));
+                    throw new ParameterException("Extension bit indicates more content, but byte[] is done...");
                 }
             } else {
                 if( (v & 0x7F) == 1){
-                    throw new ParameterException("Extension bit indicates end of content, but byte[] is not done... "+Arrays.toString(b));
+                    throw new ParameterException("Extension bit indicates end of content, but byte[] is not done...");
                 }
             }
             MessageCompatibilityInstructionIndicatorImpl instructions = new MessageCompatibilityInstructionIndicatorImpl();
-            instructions.decode(new byte[]{(byte)v});
+            instructions.decode((byte)v);
             this.indicators.add(instructions);
         }
-        return b.length;
     }
 
     @Override
-    public byte[] encode() throws ParameterException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(this.indicators.size());
+    public void encode(ByteBuf buffer) throws ParameterException {
         final int limit = this.indicators.size() -1;
         for(int index = 0;index<this.indicators.size();index++){
-            byte[] val = ((MessageCompatibilityInstructionIndicatorImpl)this.indicators.get(index)).encode();
+            byte val=((MessageCompatibilityInstructionIndicatorImpl)this.indicators.get(index)).encode();
             if(index==limit){
-                val[0] = (byte)(val[0] & 0x7F | 0x80);
+                val = (byte)(val & 0x7F | 0x80);
             } else {
-                val[0] = (byte)(val[0] & 0x7F);
+                val = (byte)(val & 0x7F);
             }
-            try {
-                baos.write(val);
-            } catch (IOException e) {
-                throw new ParameterException(e);
-            }
-        }
-        return baos.toByteArray();
+            
+            buffer.writeByte(val);
+        }        
     }
 
 }

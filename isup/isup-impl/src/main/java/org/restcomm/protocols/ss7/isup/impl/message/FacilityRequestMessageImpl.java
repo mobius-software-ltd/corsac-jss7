@@ -43,8 +43,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class FacilityRequestMessageImpl extends AbstractFacilityMessageImpl implements FacilityRequestMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.FacilityRequest);
 
     FacilityRequestMessageImpl(Set<Integer> mandatoryCodes, Set<Integer> mandatoryVariableCodes, Set<Integer> optionalCodes,

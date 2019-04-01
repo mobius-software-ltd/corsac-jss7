@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.MessageTypeImpl;
@@ -42,8 +44,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class ChargeInformationMessageImpl extends ISUPMessageImpl implements ChargeInformationMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.ChargeInformation);
 
     /**
@@ -61,7 +61,7 @@ public class ChargeInformationMessageImpl extends ISUPMessageImpl implements Cha
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody(byte[], int)
      */
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         // TODO Auto-generated method stub
 
@@ -73,7 +73,7 @@ public class ChargeInformationMessageImpl extends ISUPMessageImpl implements Cha
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
      */
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         // TODO Auto-generated method stub
 

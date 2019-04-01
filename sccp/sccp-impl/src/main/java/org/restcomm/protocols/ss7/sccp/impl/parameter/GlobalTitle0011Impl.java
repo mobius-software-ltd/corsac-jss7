@@ -21,9 +21,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
@@ -89,32 +87,24 @@ public class GlobalTitle0011Impl extends AbstractGlobalTitle implements GlobalTi
     }
 
     @Override
-    public void decode(final InputStream in,final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try{
-        this.translationType = in.read() & 0xff;
+    public void decode(ByteBuf buffer,final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	this.translationType = buffer.readByte() & 0xff;
 
-        int b = in.read() & 0xff;
+        int b = buffer.readByte() & 0xff;
 
         this.encodingScheme = factory.createEncodingScheme((byte) (b & 0x0f));
         this.numberingPlan = NumberingPlan.valueOf((b & 0xf0) >> 4);
-        super.digits = this.encodingScheme.decode(in);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+        super.digits = this.encodingScheme.decode(buffer);
     }
 
     @Override
-    public void encode(OutputStream out, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try{
-        if(super.digits == null){
+    public void encode(ByteBuf buffer,final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	if(super.digits == null){
             throw new IllegalStateException();
         }
-        out.write(this.translationType);
-        out.write((this.numberingPlan.getValue() << 4) | this.encodingScheme.getSchemeCode());
-        this.encodingScheme.encode(digits, out);
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
+        buffer.writeByte(this.translationType);
+        buffer.writeByte((this.numberingPlan.getValue() << 4) | this.encodingScheme.getSchemeCode());
+        this.encodingScheme.encode(digits, buffer);
     }
 
     @Override

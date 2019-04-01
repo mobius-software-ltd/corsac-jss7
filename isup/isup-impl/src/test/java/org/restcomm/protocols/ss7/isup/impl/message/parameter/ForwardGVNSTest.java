@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -61,7 +63,7 @@ public class ForwardGVNSTest extends ParameterHarness {
 
     }
 
-    private byte[] getBody(String bs, String bs2, String bs3) throws ParameterException, IOException {
+    private ByteBuf getBody(String bs, String bs2, String bs3) throws ParameterException, IOException {
         // those are tested in other junits.
         OriginatingParticipatingServiceProviderImpl ops = new OriginatingParticipatingServiceProviderImpl();
         ops.setAddress(bs);
@@ -74,16 +76,14 @@ public class ForwardGVNSTest extends ParameterHarness {
         return getBody(ops, gvns, tnrn);
     }
 
-    private byte[] getBody(OriginatingParticipatingServiceProvider ops, GVNSUserGroup gnvs, TerminatingNetworkRoutingNumber tnrn)
+    private ByteBuf getBody(OriginatingParticipatingServiceProvider ops, GVNSUserGroup gnvs, TerminatingNetworkRoutingNumber tnrn)
             throws ParameterException, IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    	ByteBuf bos = Unpooled.buffer();
         // bit weird tests...
-        bos.write(((AbstractISUPParameter) ops).encode());
-        bos.write(((AbstractISUPParameter) gnvs).encode());
-        bos.write(((AbstractISUPParameter) tnrn).encode());
-
-        return bos.toByteArray();
-
+    	((AbstractISUPParameter) ops).encode(bos);        
+        ((AbstractISUPParameter) gnvs).encode(bos);
+        ((AbstractISUPParameter) tnrn).encode(bos);
+        return bos;
     }
 
     /*

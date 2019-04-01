@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -50,20 +53,20 @@ public class CallHistoryInformationTest extends ParameterHarness {
      * @throws IOException
      */
     public CallHistoryInformationTest() throws IOException {
-        super.badBodies.add(new byte[1]);
-        super.badBodies.add(new byte[3]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[3]));
 
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
 
     }
 
-    private byte[] getBody1() throws IOException {
+    private ByteBuf getBody1() throws IOException {
 
         // we will use odd number of digits, so we leave zero as MSB
         byte[] body = new byte[2];
         body[0] = 12;
         body[1] = 120;
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -83,7 +86,7 @@ public class CallHistoryInformationTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new CallHistoryInformationImpl(new byte[2]);
+        return new CallHistoryInformationImpl(Unpooled.wrappedBuffer(new byte[2]));
     }
 
 }

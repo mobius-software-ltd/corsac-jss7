@@ -21,6 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.ASPIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.AffectedPointCode;
 import org.restcomm.protocols.ss7.m3ua.parameter.ConcernedDPC;
@@ -54,11 +56,11 @@ import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication.CongestionL
  * @author kulikov
  */
 public class ParameterFactoryImpl implements ParameterFactory {
-    public ProtocolData createProtocolData(int opc, int dpc, int si, int ni, int mp, int sls, byte[] data) {
+    public ProtocolData createProtocolData(int opc, int dpc, int si, int ni, int mp, int sls, ByteBuf data) {
         return new ProtocolDataImpl(opc, dpc, si, ni, mp, sls, data);
     }
 
-    public ProtocolData createProtocolData(byte[] payloadData) {
+    public ProtocolData createProtocolData(ByteBuf payloadData) {
         ProtocolDataImpl p = new ProtocolDataImpl(payloadData);
         return p;
     }
@@ -152,11 +154,11 @@ public class ParameterFactoryImpl implements ParameterFactory {
         return new StatusImpl(type, info);
     }
 
-    public HeartbeatData createHeartbeatData(byte[] data) {
+    public HeartbeatData createHeartbeatData(ByteBuf data) {
         return new HeartbeatDataImpl(data);
     }
 
-    public Parameter createParameter(int tag, byte[] value) {
+    public Parameter createParameter(int tag, ByteBuf value) {
         ParameterImpl p = null;
         switch (tag) {
             case ParameterImpl.Protocol_Data:
@@ -232,7 +234,7 @@ public class ParameterFactoryImpl implements ParameterFactory {
                 p = new HeartbeatDataImpl(value);
                 break;
             default:
-                p = new UnknownParameterImpl(tag, value.length, value);
+                p = new UnknownParameterImpl(tag, value.readableBytes(), value);
                 break;
         }
         return p;

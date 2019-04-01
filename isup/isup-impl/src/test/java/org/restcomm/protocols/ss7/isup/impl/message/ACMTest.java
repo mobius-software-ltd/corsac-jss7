@@ -34,6 +34,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.AddressCompleteMessage;
@@ -54,7 +56,7 @@ public class ACMTest extends MessageHarness {
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
 
-        byte[] message = getDefaultBody();
+         ByteBuf message = getDefaultBody();
 
         // AddressCompleteMessageImpl acm=new
         // AddressCompleteMessageImpl(this,message);
@@ -82,13 +84,13 @@ public class ACMTest extends MessageHarness {
 
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
 
         0x0C, (byte) 0x0B, 0x06, 0x01, 0x20, 0x01, 0x29, 0x01, 0x01, 0x12, 0x02, (byte) 0x82, (byte) 0x9C, 0x00
 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

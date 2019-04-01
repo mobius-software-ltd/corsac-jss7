@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CCNRPossibleIndicator;
 
@@ -40,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CCNRPossibleIndicator;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class CCNRPossibleIndicatorImpl extends AbstractISUPParameter implements CCNRPossibleIndicator {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -57,23 +57,21 @@ public class CCNRPossibleIndicatorImpl extends AbstractISUPParameter implements 
         this.ccnrPossible = ccnrPossible;
     }
 
-    public CCNRPossibleIndicatorImpl(byte[] b) throws ParameterException {
+    public CCNRPossibleIndicatorImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must not be null and length must be 1");
         }
 
-        this.ccnrPossible = (b[0] & 0x01) == _TURN_ON;
-
-        return 1;
+        this.ccnrPossible = (b.readByte() & 0x01) == _TURN_ON;
     }
 
-    public byte[] encode() throws ParameterException {
-        return new byte[] { (byte) (this.ccnrPossible ? _TURN_ON : _TURN_OFF) };
+    public void encode(ByteBuf buffer) throws ParameterException {
+        buffer.writeByte((byte) (this.ccnrPossible ? _TURN_ON : _TURN_OFF));
     }
 
     public boolean isCcnrPossible() {

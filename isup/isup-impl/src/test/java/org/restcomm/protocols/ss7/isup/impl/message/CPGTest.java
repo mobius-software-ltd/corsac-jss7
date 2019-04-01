@@ -31,6 +31,8 @@ package org.restcomm.protocols.ss7.isup.impl.message;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.CallProgressMessage;
@@ -51,7 +53,7 @@ public class CPGTest extends MessageHarness {
 
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Parameters() throws Exception {
-        byte[] message = getDefaultBody();
+        ByteBuf message = getDefaultBody();
 
         // CallProgressMessage cpg=new CallProgressMessageImpl(this,message);
         CallProgressMessage cpg = super.messageFactory.createCPG(0);
@@ -109,7 +111,7 @@ public class CPGTest extends MessageHarness {
 
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         // FIXME: for now we strip MTP part
         byte[] message = { 0x0C, (byte) 0x0B, CallProgressMessage.MESSAGE_CODE
                 // EventInformation
@@ -131,7 +133,7 @@ public class CPGTest extends MessageHarness {
                 , 0x00
 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

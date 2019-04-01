@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.log4j.Level;
@@ -59,7 +60,7 @@ public abstract class SccpDataNoticeTemplateMessageImpl extends SccpSegmentableM
 
     protected ImportanceImpl importance;
     protected SccpDataNoticeTemplateMessageImpl(int maxDataLen,int type, int outgoingSls, int localSsn,
-            SccpAddress calledParty, SccpAddress callingParty, byte[] data, HopCounter hopCounter, Importance importance) {
+            SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, HopCounter hopCounter, Importance importance) {
         super(maxDataLen,type, outgoingSls, localSsn, calledParty, callingParty, data, hopCounter);
         this.importance = (ImportanceImpl) importance;
     }
@@ -81,185 +82,192 @@ public abstract class SccpDataNoticeTemplateMessageImpl extends SccpSegmentableM
 
     protected abstract boolean getSecondParamaterPresent();
 
-    protected abstract byte[] getSecondParamaterData(boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException;
+    protected abstract void getSecondParamaterData(ByteBuf data,boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException;
 
-    protected abstract void setSecondParamaterData(int data, SccpProtocolVersion sccpProtocolVersion) throws ParseException;
+    protected abstract void setSecondParamaterData(ByteBuf data, SccpProtocolVersion sccpProtocolVersion) throws ParseException;
 
     @Override
-    public void decode(InputStream in, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    public void decode(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         try {
             switch (this.type) {
                 case SccpMessage.MESSAGE_TYPE_UDT:
                 case SccpMessage.MESSAGE_TYPE_UDTS: {
-                    this.setSecondParamaterData(in.read(), sccpProtocolVersion);
+                    this.setSecondParamaterData(buffer, sccpProtocolVersion);
 
-                    int cpaPointer = in.read() & 0xff;
-                    in.mark(in.available());
-
-                    in.skip(cpaPointer - 1);
-                    int len = in.read() & 0xff;
-
-                    byte[] buffer = new byte[len];
-                    in.read(buffer);
-
-                    super.calledParty = createAddress(buffer,factory,sccpProtocolVersion);
-
-
-                    in.reset();
-                    cpaPointer = in.read() & 0xff;
-                    in.mark(in.available());
-
-                    in.skip(cpaPointer - 1);
-                    len = in.read() & 0xff;
-
-                    buffer = new byte[len];
-                    in.read(buffer);
-
-                    super.callingParty = createAddress(buffer,factory,sccpProtocolVersion);
-
-                    in.reset();
-                    cpaPointer = in.read() & 0xff;
-
-                    in.skip(cpaPointer - 1);
-                    len = in.read() & 0xff;
-
-                    data = new byte[len];
-                    in.read(data);
+                    int cpaPointer = buffer.readByte() & 0xff;
+                    buffer.markReaderIndex();
+                    buffer.skipBytes(cpaPointer - 1);
+                    int len=buffer.readByte() & 0xFF;
+                    super.calledParty = createAddress(buffer.slice(buffer.readerIndex(), len),factory,sccpProtocolVersion);
+                    
+                    buffer.resetReaderIndex();
+                    cpaPointer = buffer.readByte() & 0xff;
+                    buffer.markReaderIndex();
+                    buffer.skipBytes(cpaPointer - 1);
+                    len=buffer.readByte() & 0xFF;
+                    super.callingParty = createAddress(buffer.slice(buffer.readerIndex(), len),factory,sccpProtocolVersion);
+                    buffer.resetReaderIndex();
+                    
+                    cpaPointer = buffer.readByte() & 0xff;
+                    buffer.markReaderIndex();
+                    buffer.skipBytes(cpaPointer - 1);
+                    len=buffer.readByte() & 0xFF;
+                    this.data=buffer.slice(buffer.readerIndex(), len);
                 }
-                    break;
+                break;
 
                 case SccpMessage.MESSAGE_TYPE_XUDT:
                 case SccpMessage.MESSAGE_TYPE_XUDTS: {
-                    this.setSecondParamaterData(in.read(), sccpProtocolVersion);
+                    this.setSecondParamaterData(buffer, sccpProtocolVersion);
 
-                    this.hopCounter = new HopCounterImpl((byte) in.read());
+                    this.hopCounter = new HopCounterImpl((byte) buffer.readByte());
                     if (this.hopCounter.getValue() > HopCounter.COUNT_HIGH
                             || this.hopCounter.getValue() <= HopCounter.COUNT_LOW) {
                         throw new IOException("Hop Counter must be between 1 and 15, it is: " + this.hopCounter);
                     }
 
-                    int pointer = in.read() & 0xff;
-                    in.mark(in.available());
-                    if (pointer - 1 != in.skip(pointer - 1)) {
+                    int pointer = buffer.readByte() & 0xff;
+                    buffer.markReaderIndex();
+                    try {
+                    	buffer.skipBytes(pointer - 1);
+                    }
+                    catch(IndexOutOfBoundsException ex) {
                         throw new IOException("Not enough data in buffer");
                     }
-                    int len = in.read() & 0xff;
+                    
+                    int len = buffer.readByte() & 0xff;
+                    calledParty = createAddress(buffer.slice(buffer.readerIndex(),len),factory,sccpProtocolVersion);
 
-                    byte[] buffer = new byte[len];
-                    in.read(buffer);
+                    buffer.resetReaderIndex();
 
-                    calledParty = createAddress(buffer,factory,sccpProtocolVersion);
+                    pointer = buffer.readByte() & 0xff;
+                    buffer.markReaderIndex();
 
-                    in.reset();
-
-                    pointer = in.read() & 0xff;
-
-                    in.mark(in.available());
-
-                    if (pointer - 1 != in.skip(pointer - 1)) {
+                    try {
+                    	buffer.skipBytes(pointer - 1);
+                    }
+                    catch(IndexOutOfBoundsException ex) {
                         throw new IOException("Not enough data in buffer");
                     }
-                    len = in.read() & 0xff;
+                    
+                    len = buffer.readByte() & 0xff;
+                    callingParty = createAddress(buffer.slice(buffer.readerIndex(), len),factory,sccpProtocolVersion);
 
-                    buffer = new byte[len];
-                    in.read(buffer);
+                    buffer.resetReaderIndex();
 
-                    callingParty = createAddress(buffer,factory,sccpProtocolVersion);
-
-                    in.reset();
-                    pointer = in.read() & 0xff;
-                    in.mark(in.available());
-                    if (pointer - 1 != in.skip(pointer - 1)) {
+                    pointer = buffer.readByte() & 0xff;
+                    buffer.markReaderIndex();
+                    
+                    try {
+                    	buffer.skipBytes(pointer - 1);
+                    }
+                    catch(IndexOutOfBoundsException ex) {
                         throw new IOException("Not enough data in buffer");
                     }
-                    len = in.read() & 0xff;
+                    
+                    len = buffer.readByte() & 0xff;
+                    data=buffer.slice(buffer.readerIndex(), len);
+                    
+                    buffer.resetReaderIndex();
 
-                    data = new byte[len];
-                    in.read(data);
-
-                    in.reset();
-                    pointer = in.read() & 0xff;
-                    in.mark(in.available());
+                    pointer = buffer.readByte() & 0xff;
+                    buffer.markReaderIndex();
 
                     if (pointer == 0) {
                         // we are done
                         return;
                     }
-                    if (pointer - 1 != in.skip(pointer - 1)) {
+                    
+                    try {
+                    	buffer.skipBytes(pointer - 1);
+                    }
+                    catch(IndexOutOfBoundsException ex) {
                         throw new IOException("Not enough data in buffer");
                     }
 
                     int paramCode = 0;
                     // EOP
-                    while ((paramCode = in.read() & 0xFF) != 0) {
-                        len = in.read() & 0xff;
-                        buffer = new byte[len];
-                        in.read(buffer);
-                        this.decodeOptional(paramCode, buffer, sccpProtocolVersion);
+                    while ((paramCode = buffer.readByte() & 0xFF) != 0) {
+                        len = buffer.readByte() & 0xff;
+                        this.decodeOptional(paramCode, buffer.slice(buffer.readerIndex(), len), sccpProtocolVersion);
+                        buffer.skipBytes(len);
                     }
                 }
                     break;
 
                 case SccpMessage.MESSAGE_TYPE_LUDT:
                 case SccpMessage.MESSAGE_TYPE_LUDTS: {
-                    this.setSecondParamaterData(in.read(), sccpProtocolVersion);
+                    this.setSecondParamaterData(buffer, sccpProtocolVersion);
 
-                    this.hopCounter = new HopCounterImpl((byte) in.read());
+                    this.hopCounter = new HopCounterImpl((byte) buffer.readByte());
                     if (this.hopCounter.getValue() > HopCounter.COUNT_HIGH
                             || this.hopCounter.getValue() <= HopCounter.COUNT_LOW) {
                         throw new IOException("Hop Counter must be between 1 and 15, it is: " + this.hopCounter);
                     }
 
-                    int pointer = (in.read() & 0xff) + ((in.read() & 0xff) << 8);
-                    in.mark(in.available());
-                    if (pointer - 1 != in.skip(pointer - 1)) {
+                    int pointer = (buffer.readByte() & 0xff) + ((buffer.readByte() & 0xff) << 8);
+                    buffer.markReaderIndex();
+                    
+                    try {
+                    	buffer.skipBytes(pointer - 1);
+                    }
+                    catch(IndexOutOfBoundsException ex) {
                         throw new IOException("Not enough data in buffer");
                     }
-                    int len = in.read() & 0xff;
-                    byte[] buffer = new byte[len];
-                    in.read(buffer);
-                    calledParty = createAddress(buffer,factory,sccpProtocolVersion);
+                    
+                    int len = buffer.readByte() & 0xff;
+                    calledParty = createAddress(buffer.slice(buffer.readerIndex(), len),factory,sccpProtocolVersion);
 
-                    in.reset();
-                    pointer = (in.read() & 0xff) + ((in.read() & 0xff) << 8);
-                    in.mark(in.available());
-                    if (pointer - 1 != in.skip(pointer - 1)) {
+                    buffer.resetReaderIndex();
+                    pointer = (buffer.readByte() & 0xff) + ((buffer.readByte() & 0xff) << 8);
+                    buffer.markReaderIndex();
+
+                    try {
+                    	buffer.skipBytes(pointer - 1);
+                    }
+                    catch(IndexOutOfBoundsException ex) {
                         throw new IOException("Not enough data in buffer");
                     }
-                    len = in.read() & 0xff;
-                    buffer = new byte[len];
-                    in.read(buffer);
-                    callingParty = createAddress(buffer,factory,sccpProtocolVersion);
+                    
+                    len = buffer.readByte() & 0xff;
+                    callingParty = createAddress(buffer.slice(buffer.readerIndex(), len),factory,sccpProtocolVersion);
 
-                    in.reset();
-                    pointer = (in.read() & 0xff) + ((in.read() & 0xff) << 8);
-                    in.mark(in.available());
-                    if (pointer - 1 != in.skip(pointer - 1)) {
+                    buffer.resetReaderIndex();
+                    pointer = (buffer.readByte() & 0xff) + ((buffer.readByte() & 0xff) << 8);
+                    buffer.markReaderIndex();
+
+                    try {
+                    	buffer.skipBytes(pointer - 1);
+                    }
+                    catch(IndexOutOfBoundsException ex) {
                         throw new IOException("Not enough data in buffer");
                     }
-                    len = (in.read() & 0xff) + ((in.read() & 0xff) << 8);
-                    data = new byte[len];
-                    in.read(data);
-
-                    in.reset();
-                    pointer = (in.read() & 0xff) + ((in.read() & 0xff) << 8);
-                    in.mark(in.available());
+                    
+                    len = (buffer.readByte() & 0xff) + ((buffer.readByte() & 0xff) << 8);
+                    data = buffer.slice(buffer.readerIndex(), len);
+                    
+                    buffer.resetReaderIndex();
+                    pointer = (buffer.readByte() & 0xff) + ((buffer.readByte() & 0xff) << 8);
+                    buffer.markReaderIndex();
 
                     if (pointer == 0) {
                         // we are done
                         return;
                     }
-                    if (pointer - 1 != in.skip(pointer - 1)) {
+                    
+                    try {
+                    	buffer.skipBytes(pointer - 1);
+                    }
+                    catch(IndexOutOfBoundsException ex) {
                         throw new IOException("Not enough data in buffer");
                     }
 
                     int paramCode = 0;
                     // EOP
-                    while ((paramCode = in.read() & 0xFF) != 0) {
-                        len = in.read() & 0xff;
-                        buffer = new byte[len];
-                        in.read(buffer);
-                        this.decodeOptional(paramCode, buffer, sccpProtocolVersion);
+                    while ((paramCode = buffer.readByte() & 0xFF) != 0) {
+                        len = buffer.readByte() & 0xff;
+                        this.decodeOptional(paramCode, buffer.slice(buffer.readerIndex(), len), sccpProtocolVersion);
+                        buffer.skipBytes(len);
                     }
                 }
                     break;
@@ -269,7 +277,7 @@ public abstract class SccpDataNoticeTemplateMessageImpl extends SccpSegmentableM
         }
     }
 
-    private void decodeOptional(int code, byte[] buffer, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    private void decodeOptional(int code, ByteBuf buffer, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
 
         switch (code) {
             case Segmentation.PARAMETER_CODE:
@@ -289,345 +297,342 @@ public abstract class SccpDataNoticeTemplateMessageImpl extends SccpSegmentableM
     @Override
     public EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger,
             boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            byte[] bf = this.getData();
-            if (bf == null || bf.length == 0)
-                return new EncodingResultData(EncodingResult.DataMissed, null, null, null);
-            if (bf.length > super.maxDataLen)
-                return new EncodingResultData(EncodingResult.DataMaxLengthExceeded, null, null, null);
+    	ByteBuf data=Unpooled.wrappedBuffer(this.getData());
+        if (data == null || data.readableBytes() == 0)
+            return new EncodingResultData(EncodingResult.DataMissed, null, null, null);
+        if (data.readableBytes() > super.maxDataLen)
+            return new EncodingResultData(EncodingResult.DataMaxLengthExceeded, null, null, null);
 
-            if (calledParty == null)
-                return new EncodingResultData(EncodingResult.CalledPartyAddressMissing, null, null, null);
-            if (callingParty == null)
-                return new EncodingResultData(EncodingResult.CallingPartyAddressMissing, null, null, null);
-            if (!this.getSecondParamaterPresent())
-                return new EncodingResultData(EncodingResult.ProtocolClassMissing, null, null, null);
+        if (calledParty == null)
+            return new EncodingResultData(EncodingResult.CalledPartyAddressMissing, null, null, null);
+        if (callingParty == null)
+            return new EncodingResultData(EncodingResult.CallingPartyAddressMissing, null, null, null);
+        if (!this.getSecondParamaterPresent())
+            return new EncodingResultData(EncodingResult.ProtocolClassMissing, null, null, null);
 
-            byte[] cdp = ((SccpAddressImpl) super.calledParty).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
-            byte[] cnp = ((SccpAddressImpl) super.callingParty).encode(sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ByteBuf cdp=Unpooled.buffer();
+        ByteBuf cnp=Unpooled.buffer();
+        ((SccpAddressImpl) super.calledParty).encode(cdp, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
+        ((SccpAddressImpl) super.callingParty).encode(cnp, sccpStackImpl.isRemoveSpc(), sccpStackImpl.getSccpProtocolVersion());
 
-            if (longMessageRuleType == null)
-                longMessageRuleType = LongMessageRuleType.LONG_MESSAGE_FORBBIDEN;
-            if (this.isMtpOriginated && this.type == SccpMessage.MESSAGE_TYPE_UDT || this.type == SccpMessage.MESSAGE_TYPE_UDTS)
-                // if we have received an UDT message from MTP3, leave UDT style
-                // if this is UDTS message, leave this type
-                longMessageRuleType = LongMessageRuleType.LONG_MESSAGE_FORBBIDEN;
+        if (longMessageRuleType == null)
+            longMessageRuleType = LongMessageRuleType.LONG_MESSAGE_FORBBIDEN;
+        if (this.isMtpOriginated && this.type == SccpMessage.MESSAGE_TYPE_UDT || this.type == SccpMessage.MESSAGE_TYPE_UDTS)
+            // if we have received an UDT message from MTP3, leave UDT style
+            // if this is UDTS message, leave this type
+            longMessageRuleType = LongMessageRuleType.LONG_MESSAGE_FORBBIDEN;
 
-            boolean isServiceMessage = true;
-            if (this instanceof SccpDataMessageImpl)
-                isServiceMessage = false;
+        boolean isServiceMessage = true;
+        if (this instanceof SccpDataMessageImpl)
+            isServiceMessage = false;
 
-            int fieldsLen = calculateUdtFieldsLengthWithoutData(cdp.length, cnp.length);
-            int availLen = maxMtp3UserDataLength - fieldsLen;
-            if (availLen > 254)
-                availLen = 254;
-            if (sccpProtocolVersion == SccpProtocolVersion.ANSI && availLen > 252)
-                availLen = 252;
+        int fieldsLen = calculateUdtFieldsLengthWithoutData(cdp.readableBytes(), cnp.readableBytes());
+        int availLen = maxMtp3UserDataLength - fieldsLen;
+        if (availLen > 254)
+            availLen = 254;
+        if (sccpProtocolVersion == SccpProtocolVersion.ANSI && availLen > 252)
+            availLen = 252;
 
-            Boolean useShortMessage=false;
-            if (longMessageRuleType == LongMessageRuleType.LONG_MESSAGE_FORBBIDEN)
-                useShortMessage=true;
-            else if(longMessageRuleType == LongMessageRuleType.XUDT_ENABLED && bf.length <= availLen)
-                useShortMessage=true;
+        Boolean useShortMessage=false;
+        if (longMessageRuleType == LongMessageRuleType.LONG_MESSAGE_FORBBIDEN)
+            useShortMessage=true;
+        else if(longMessageRuleType == LongMessageRuleType.XUDT_ENABLED && data.readableBytes() <= availLen)
+            useShortMessage=true;
 
-            if (useShortMessage) {
-                // use UDT / UDTS
-                if (bf.length > availLen) { // message is too long to encode UDT
-                    if (logger.isEnabledFor(Level.WARN)) {
-                        logger.warn(String.format(
-                                "Failure when sending a UDT message: message is too long. SccpMessageSegment=%s", this));
-                    }
-                    return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_NOT_SUPPORTED);
+        if (useShortMessage) {
+            // use UDT / UDTS
+            if (data.readableBytes() > availLen) { // message is too long to encode UDT
+                if (logger.isEnabledFor(Level.WARN)) {
+                    logger.warn(String.format(
+                            "Failure when sending a UDT message: message is too long. SccpMessageSegment=%s", this));
                 }
+                return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_NOT_SUPPORTED);
+            }
 
-                ByteArrayOutputStream out = new ByteArrayOutputStream(fieldsLen + bf.length);
+            ByteBuf out = Unpooled.buffer(fieldsLen);
 
-                if (isServiceMessage)
-                    this.type = SccpMessage.MESSAGE_TYPE_UDTS;
-                else
-                    this.type = SccpMessage.MESSAGE_TYPE_UDT;
-                out.write(this.type);
-                out.write(this.getSecondParamaterData(removeSPC, sccpProtocolVersion));
+            if (isServiceMessage)
+                this.type = SccpMessage.MESSAGE_TYPE_UDTS;
+            else
+                this.type = SccpMessage.MESSAGE_TYPE_UDT;
+            
+            out.writeByte(this.type);
+            this.getSecondParamaterData(out,removeSPC, sccpProtocolVersion);
 
-                int len = 3;
-                out.write(len);
+            int len = 3;
+            out.writeByte(len);
 
-                len = (cdp.length + 3);
-                out.write(len);
+            len = (cdp.readableBytes() + 3);
+            out.writeByte(len);
 
-                len += (cnp.length);
-                out.write(len);
+            len += (cnp.readableBytes());
+            out.writeByte(len);
 
-                out.write((byte) cdp.length);
-                out.write(cdp);
+            out.writeByte((byte) cdp.readableBytes());
+            out.writeBytes(cdp);
 
-                out.write((byte) cnp.length);
-                out.write(cnp);
+            out.writeByte((byte) cnp.readableBytes());
+            out.writeBytes(cnp);
 
-                out.write((byte) bf.length);
-                out.write(bf);
+            out.writeByte(data.readableBytes());
+            out=Unpooled.wrappedBuffer(out,data);
 
-                return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-            } else if (longMessageRuleType == LongMessageRuleType.XUDT_ENABLED) {
+            return new EncodingResultData(EncodingResult.Success, out, null, null);
+        } else if (longMessageRuleType == LongMessageRuleType.XUDT_ENABLED) {
 
-                // use XUDT / XUDTS
-                if (isServiceMessage)
-                    this.type = SccpMessage.MESSAGE_TYPE_XUDTS;
-                else
-                    this.type = SccpMessage.MESSAGE_TYPE_XUDT;
-                if (this.hopCounter == null)
-                    this.hopCounter = new HopCounterImpl(15);
+            // use XUDT / XUDTS
+            if (isServiceMessage)
+                this.type = SccpMessage.MESSAGE_TYPE_XUDTS;
+            else
+                this.type = SccpMessage.MESSAGE_TYPE_XUDT;
+            if (this.hopCounter == null)
+                this.hopCounter = new HopCounterImpl(15);
 
-                int fieldsLenX = calculateXudtFieldsLengthWithoutData(cdp.length, cnp.length, false,
-                        this.importance != null);
-                int fieldsLen2 = calculateXudtFieldsLengthWithoutData2(cdp.length, cnp.length);
-                int availLenX = maxMtp3UserDataLength - fieldsLenX;
-                if (availLenX > fieldsLen2)
-                    availLenX = fieldsLen2;
-                int fieldsLenXSegm = calculateXudtFieldsLengthWithoutData(cdp.length, cnp.length, true,
-                        this.importance != null);
-                int availLenXSegm = maxMtp3UserDataLength - fieldsLenXSegm;
-                if (availLenXSegm > fieldsLen2)
-                    availLenXSegm = fieldsLen2;
+            int fieldsLenX = calculateXudtFieldsLengthWithoutData(cdp.readableBytes(), cnp.readableBytes(), false,
+                    this.importance != null);
+            int fieldsLen2 = calculateXudtFieldsLengthWithoutData2(cdp.readableBytes(), cnp.readableBytes());
+            int availLenX = maxMtp3UserDataLength - fieldsLenX;
+            if (availLenX > fieldsLen2)
+                availLenX = fieldsLen2;
+            int fieldsLenXSegm = calculateXudtFieldsLengthWithoutData(cdp.readableBytes(), cnp.readableBytes(), true,
+                    this.importance != null);
+            int availLenXSegm = maxMtp3UserDataLength - fieldsLenXSegm;
+            if (availLenXSegm > fieldsLen2)
+                availLenXSegm = fieldsLen2;
 
-                if (bf.length <= availLenX && bf.length <= sccpStackImpl.getZMarginXudtMessage()) {
-                    // one segment
-                    ByteArrayOutputStream out = new ByteArrayOutputStream(fieldsLenX + bf.length);
+            if (data.readableBytes() <= availLenX && data.readableBytes() <= sccpStackImpl.getZMarginXudtMessage()) {
+                // one segment
+                ByteBuf out = Unpooled.buffer(fieldsLenX);
 
-                    out.write(this.type);
+                out.writeByte(this.type);
 
-                    out.write(this.getSecondParamaterData(removeSPC, sccpProtocolVersion));
-                    out.write(this.hopCounter.getValue());
+                this.getSecondParamaterData(out, removeSPC, sccpProtocolVersion);
+                out.writeByte(this.hopCounter.getValue());
 
-                    // we have 4 pointers, cdp,cnp,data and optionalm, cdp starts after 4 octests than
-                    int len = 4;
-                    out.write(len);
+                // we have 4 pointers, cdp,cnp,data and optionalm, cdp starts after 4 octests than
+                int len = 4;
+                out.writeByte(len);
 
-                    len += cdp.length;
-                    out.write(len);
+                len += cdp.readableBytes();
+                out.writeByte(len);
 
-                    len += cnp.length;
-                    out.write(len);
-                    boolean optionalPresent = false;
-                    if (importance != null) {
-                        len += (bf.length);
-                        out.write(len);
-                        optionalPresent = true;
-                    } else {
-                        // in case there is no optional
-                        out.write(0);
-                    }
-
-                    out.write((byte) cdp.length);
-                    out.write(cdp);
-
-                    out.write((byte) cnp.length);
-                    out.write(cnp);
-
-                    out.write((byte) bf.length);
-                    out.write(bf);
-
-                    if (importance != null) {
-                        out.write(Importance.PARAMETER_CODE);
-                        byte[] b = importance.encode(removeSPC, sccpProtocolVersion);
-                        out.write(b.length);
-                        out.write(b);
-                    }
-
-                    if (optionalPresent)
-                        out.write(0x00);
-
-                    return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
-                } else {
-                    // several segments
-                    if (bf.length > availLenXSegm * 16) {
-                        if (logger.isEnabledFor(Level.WARN)) {
-                            logger.warn(String.format(
-                                    "Failure when segmenting a message XUDT: message is too long. SccpMessageSegment=%s", this));
-                        }
-                        return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_FAILURE);
-                    }
-                    int segmLen;
-                    if (bf.length <= sccpStackImpl.getZMarginXudtMessage() * 16)
-                        segmLen = sccpStackImpl.getZMarginXudtMessage();
-                    else
-                        segmLen = availLenXSegm;
-                    if (segmLen > availLenXSegm)
-                        segmLen = availLenXSegm;
-                    int segmCount = (bf.length - 1) / segmLen + 1;
-
-                    if (this.isMtpOriginated) {
-                        if (this.segmentation == null) {
-                            // MTP3 originated message - we may make segmentation
-                            // only if incoming message has a "Segmentation" field
-                            if (logger.isEnabledFor(Level.WARN)) {
-                                logger.warn(String
-                                        .format("Failure when segmenting a message: message is not locally originated but \"segmentation\" field is absent. SccpMessageSegment=%s",
-                                                this));
-                            }
-                            return new EncodingResultData(EncodingResult.ReturnFailure, null, null,
-                                    ReturnCauseValue.SEG_FAILURE);
-                        }
-
-                        this.segmentation = new SegmentationImpl(true, this.segmentation.isClass1Selected(), (byte) segmCount,
-                                this.segmentation.getSegmentationLocalRef());
-                    } else {
-                        this.segmentation = new SegmentationImpl(true, this.getIsProtocolClass1(), (byte) segmCount,
-                                sccpStackImpl.newSegmentationLocalRef());
-                    }
-
-                    byte[] importanceBuf = null;
-                    if (importance != null) {
-                        importanceBuf = importance.encode(removeSPC, sccpProtocolVersion);
-                    }
-
-                    ArrayList<byte[]> res = new ArrayList<byte[]>();
-                    for (int num = 0; num < segmCount; num++) {
-                        int fst = num * segmLen;
-                        int last = fst + segmLen;
-                        if (last > bf.length)
-                            last = bf.length;
-                        int mLen = last - fst;
-
-                        ByteArrayOutputStream out = new ByteArrayOutputStream(fieldsLenXSegm + mLen);
-
-                        out.write(this.type);
-
-                        out.write(this.getSecondParamaterData(removeSPC, sccpProtocolVersion));
-                        out.write(this.hopCounter.getValue());
-
-                        // we have 4 pointers, cdp,cnp,data and optionalm, cdp starts after 4 octests than
-                        int len = 4;
-                        out.write(len);
-
-                        len += cdp.length;
-                        out.write(len);
-
-                        len += cnp.length;
-                        out.write(len);
-
-                        len += (mLen);
-                        out.write(len);
-
-                        out.write((byte) cdp.length);
-                        out.write(cdp);
-
-                        out.write((byte) cnp.length);
-                        out.write(cnp);
-
-                        out.write((byte) mLen);
-                        out.write(bf, fst, mLen);
-
-                        out.write(Segmentation.PARAMETER_CODE);
-                        segmentation.setRemainingSegments((byte) (segmentation.getRemainingSegments() - 1));
-                        byte[] b = segmentation.encode(removeSPC, sccpProtocolVersion);
-                        out.write(b.length);
-                        out.write(b);
-                        segmentation.setFirstSegIndication(false);
-
-                        if (importanceBuf != null) {
-                            out.write(Importance.PARAMETER_CODE);
-                            out.write(importanceBuf.length);
-                            out.write(importanceBuf);
-                        }
-
-                        out.write(0x00);
-
-                        res.add(out.toByteArray());
-                    }
-
-                    return new EncodingResultData(EncodingResult.Success, null, res, null);
-                }
-            } else {
-
-                // use LUDT / LUDTS
-                if (isServiceMessage)
-                    this.type = SccpMessage.MESSAGE_TYPE_LUDTS;
-                else
-                    this.type = SccpMessage.MESSAGE_TYPE_LUDT;
-                if (this.hopCounter == null)
-                    this.hopCounter = new HopCounterImpl(15);
-
-                if (longMessageRuleType == LongMessageRuleType.LUDT_ENABLED_WITH_SEGMENTATION) {
-                    this.segmentation = new SegmentationImpl(true, this.getIsProtocolClass1(), (byte) 0,
-                            sccpStackImpl.newSegmentationLocalRef());
-                }
-                int fieldsLenL = calculateLudtFieldsLengthWithoutData(cdp.length, cnp.length,
-                        this.segmentation != null, this.importance != null);
-                availLen = maxMtp3UserDataLength - fieldsLenL;
-                if (bf.length > availLen) { // message is too long to encode LUDT
-                    if (logger.isEnabledFor(Level.WARN)) {
-                        logger.warn(String.format(
-                                "Failure when sending a LUDT message: message is too long. SccpMessageSegment=%s", this));
-                    }
-                    return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_FAILURE);
-                }
-
-                ByteArrayOutputStream out = new ByteArrayOutputStream(fieldsLenL + bf.length);
-
-                out.write(this.type);
-
-                out.write(this.getSecondParamaterData(removeSPC, sccpProtocolVersion));
-                out.write(this.hopCounter.getValue());
-
-                // we have 4 pointers, cdp,cnp,data and optionalm, cdp starts after 8 octests than
-                int len = 7;
-                out.write(len & 0xFF);
-                out.write((len >> 8) & 0xFF);
-
-                len += cdp.length - 1;
-                out.write(len & 0xFF);
-                out.write((len >> 8) & 0xFF);
-
-                len += cnp.length - 1;
-                out.write(len & 0xFF);
-                out.write((len >> 8) & 0xFF);
+                len += cnp.readableBytes();
+                out.writeByte(len);
                 boolean optionalPresent = false;
-                if (importance != null || segmentation != null) {
-                    len += (bf.length);
-                    out.write(len & 0xFF);
-                    out.write((len >> 8) & 0xFF);
+                
+                if (importance != null) {
+                    len += (data.readableBytes());
+                    out.writeByte(len);
                     optionalPresent = true;
                 } else {
                     // in case there is no optional
-                    out.write(0);
-                    out.write(0);
+                    out.writeByte(0);
                 }
 
-                out.write((byte) cdp.length);
-                out.write(cdp);
+                out.writeByte((byte) cdp.readableBytes());
+                out.writeBytes(cdp);
 
-                out.write((byte) cnp.length);
-                out.write(cnp);
+                out.writeByte((byte) cnp.readableBytes());
+                out.writeBytes(cnp);
 
-                out.write(bf.length & 0xFF);
-                out.write((bf.length >> 8) & 0xFF);
-                out.write(bf);
+                out.writeByte(data.readableBytes());
+                out=Unpooled.wrappedBuffer(out,data);
 
-                if (segmentation != null) {
-                    out.write(Segmentation.PARAMETER_CODE);
-                    byte[] b = segmentation.encode(removeSPC, sccpProtocolVersion);
-                    out.write(b.length);
-                    out.write(b);
-                }
                 if (importance != null) {
-                    out.write(Importance.PARAMETER_CODE);
-                    byte[] b = importance.encode(removeSPC, sccpProtocolVersion);
-                    out.write(b.length);
-                    out.write(b);
+                    out.writeByte(Importance.PARAMETER_CODE);
+                    out.writeByte(1);
+                    importance.encode(out, removeSPC, sccpProtocolVersion);                        
                 }
 
                 if (optionalPresent)
-                    out.write(0x00);
+                    out.writeByte(0x00);
 
-                return new EncodingResultData(EncodingResult.Success, out.toByteArray(), null, null);
+                return new EncodingResultData(EncodingResult.Success, out, null, null);
+            } else {
+                // several segments
+                if (data.readableBytes() > availLenXSegm * 16) {
+                    if (logger.isEnabledFor(Level.WARN)) {
+                        logger.warn(String.format(
+                                "Failure when segmenting a message XUDT: message is too long. SccpMessageSegment=%s", this));
+                    }
+                    return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_FAILURE);
+                }
+                int segmLen;
+                if (data.readableBytes() <= sccpStackImpl.getZMarginXudtMessage() * 16)
+                    segmLen = sccpStackImpl.getZMarginXudtMessage();
+                else
+                    segmLen = availLenXSegm;
+                if (segmLen > availLenXSegm)
+                    segmLen = availLenXSegm;
+                int segmCount = (data.readableBytes() - 1) / segmLen + 1;
+
+                if (this.isMtpOriginated) {
+                    if (this.segmentation == null) {
+                        // MTP3 originated message - we may make segmentation
+                        // only if incoming message has a "Segmentation" field
+                        if (logger.isEnabledFor(Level.WARN)) {
+                            logger.warn(String
+                                    .format("Failure when segmenting a message: message is not locally originated but \"segmentation\" field is absent. SccpMessageSegment=%s",
+                                            this));
+                        }
+                        return new EncodingResultData(EncodingResult.ReturnFailure, null, null,
+                                ReturnCauseValue.SEG_FAILURE);
+                    }
+
+                    this.segmentation = new SegmentationImpl(true, this.segmentation.isClass1Selected(), (byte) segmCount,
+                            this.segmentation.getSegmentationLocalRef());
+                } else {
+                    this.segmentation = new SegmentationImpl(true, this.getIsProtocolClass1(), (byte) segmCount,
+                            sccpStackImpl.newSegmentationLocalRef());
+                }
+
+                ArrayList<ByteBuf> res = new ArrayList<ByteBuf>();
+                int totalBytes=data.readableBytes();
+                for (int num = 0; num < segmCount; num++) {
+                    int fst = num * segmLen;
+                    int last = fst + segmLen;
+                    if (last > totalBytes)
+                        last = totalBytes;
+                    int mLen = last - fst;
+
+                    ByteBuf out = Unpooled.buffer(fieldsLenXSegm + mLen);
+
+                    out.writeByte(this.type);
+
+                    this.getSecondParamaterData(out,removeSPC, sccpProtocolVersion);
+                    out.writeByte(this.hopCounter.getValue());
+
+                    // we have 4 pointers, cdp,cnp,data and optionalm, cdp starts after 4 octests than
+                    int len = 4;
+                    out.writeByte(len);
+
+                    len += cdp.readableBytes();
+                    out.writeByte(len);
+
+                    len += cnp.readableBytes();
+                    out.writeByte(len);
+
+                    len += (mLen);
+                    out.writeByte(len);
+
+                    out.writeByte((byte) cdp.readableBytes());
+                    out.writeBytes(Unpooled.wrappedBuffer(cdp));
+
+                    out.writeByte((byte) cnp.readableBytes());
+                    out.writeBytes(Unpooled.wrappedBuffer(cnp));
+
+                    out.writeByte((byte) mLen);
+                    out=Unpooled.wrappedBuffer(out,data.slice(data.readerIndex(), mLen));
+                    data.skipBytes(mLen);
+                    data.retain();
+                    
+                    out.writeByte(Segmentation.PARAMETER_CODE);
+                    
+                    segmentation.setRemainingSegments((byte) (segmentation.getRemainingSegments() - 1));
+                    
+                    out.writeByte(4);
+                    segmentation.encode(out, removeSPC, sccpProtocolVersion);                        
+                    segmentation.setFirstSegIndication(false);
+
+                    if (importance != null) {
+                        out.writeByte(Importance.PARAMETER_CODE);
+                        out.writeByte(1);
+                        importance.encode(out, removeSPC, sccpProtocolVersion);                            
+                    }
+
+                    out.writeByte(0x00);
+
+                    res.add(out);
+                    
+                }
+
+                return new EncodingResultData(EncodingResult.Success, null, res, null);
             }
-        } catch (IOException e) {
-            throw new ParseException(e);
+        } else {
+
+            // use LUDT / LUDTS
+            if (isServiceMessage)
+                this.type = SccpMessage.MESSAGE_TYPE_LUDTS;
+            else
+                this.type = SccpMessage.MESSAGE_TYPE_LUDT;
+            if (this.hopCounter == null)
+                this.hopCounter = new HopCounterImpl(15);
+
+            if (longMessageRuleType == LongMessageRuleType.LUDT_ENABLED_WITH_SEGMENTATION) {
+                this.segmentation = new SegmentationImpl(true, this.getIsProtocolClass1(), (byte) 0,
+                        sccpStackImpl.newSegmentationLocalRef());
+            }
+            int fieldsLenL = calculateLudtFieldsLengthWithoutData(cdp.readableBytes(), cnp.readableBytes(),
+                    this.segmentation != null, this.importance != null);
+            availLen = maxMtp3UserDataLength - fieldsLenL;
+            if (data.readableBytes() > availLen) { // message is too long to encode LUDT
+                if (logger.isEnabledFor(Level.WARN)) {
+                    logger.warn(String.format(
+                            "Failure when sending a LUDT message: message is too long. SccpMessageSegment=%s", this));
+                }
+                return new EncodingResultData(EncodingResult.ReturnFailure, null, null, ReturnCauseValue.SEG_FAILURE);
+            }
+
+            ByteBuf out = Unpooled.buffer(fieldsLenL);
+
+            out.writeByte(this.type);
+
+            this.getSecondParamaterData(out, removeSPC, sccpProtocolVersion);
+            out.writeByte(this.hopCounter.getValue());
+
+            // we have 4 pointers, cdp,cnp,data and optionalm, cdp starts after 8 octests than
+            int len = 7;
+            out.writeByte(len & 0xFF);
+            out.writeByte((len >> 8) & 0xFF);
+
+            len += cdp.readableBytes() - 1;
+            out.writeByte(len & 0xFF);
+            out.writeByte((len >> 8) & 0xFF);
+
+            len += cnp.readableBytes() - 1;
+            out.writeByte(len & 0xFF);
+            out.writeByte((len >> 8) & 0xFF);
+            boolean optionalPresent = false;
+            if (importance != null || segmentation != null) {
+                len += data.readableBytes();
+                out.writeByte(len & 0xFF);
+                out.writeByte((len >> 8) & 0xFF);
+                optionalPresent = true;
+            } else {
+                // in case there is no optional
+                out.writeByte(0);
+                out.writeByte(0);
+            }
+
+            out.writeByte((byte) cdp.readableBytes());
+            out.writeBytes(cdp);
+
+            out.writeByte((byte) cnp.readableBytes());
+            out.writeBytes(cnp);
+
+            out.writeByte(data.readableBytes() & 0xFF);
+            out.writeByte((data.readableBytes() >> 8) & 0xFF);
+            out=Unpooled.wrappedBuffer(out,data);
+
+            if (segmentation != null) {
+                out.writeByte(Segmentation.PARAMETER_CODE);
+                out.writeByte(4);
+                segmentation.encode(out, removeSPC, sccpProtocolVersion);                    
+            }
+            if (importance != null) {
+                out.writeByte(Importance.PARAMETER_CODE);
+                out.writeByte(1);
+                importance.encode(out,removeSPC, sccpProtocolVersion);                    
+            }
+
+            if (optionalPresent)
+                out.writeByte(0x00);
+
+            return new EncodingResultData(EncodingResult.Success, out, null, null);
         }
     }
 
-    protected SccpAddress createAddress(byte[] buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    protected SccpAddress createAddress(ByteBuf buffer, ParameterFactory factory, SccpProtocolVersion sccpProtocolVersion) throws ParseException {
         SccpAddressImpl addressImpl = new SccpAddressImpl();
         addressImpl.decode(buffer, factory, sccpProtocolVersion);
         return addressImpl;

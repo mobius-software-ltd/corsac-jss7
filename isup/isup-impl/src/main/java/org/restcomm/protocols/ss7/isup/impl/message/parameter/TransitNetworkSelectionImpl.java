@@ -30,9 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -45,8 +43,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TransitNetworkSelection
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class TransitNetworkSelectionImpl extends AbstractISUPParameter implements TransitNetworkSelection {
-	private static final long serialVersionUID = 1L;
-
 	protected static final Logger logger = Logger.getLogger(TransitNetworkSelectionImpl.class);
 
     // FIXME: Oleg is this correct?
@@ -71,7 +67,7 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
         this.networkIdentificationPlan = networkIdentificationPlan;
     }
 
-    public TransitNetworkSelectionImpl(byte[] b) throws ParameterException {
+    public TransitNetworkSelectionImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -81,84 +77,37 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
 
     }
 
-    public byte[] encode() throws ParameterException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
+    public void encode(ByteBuf buffer) throws ParameterException {
         if (logger.isDebugEnabled()) {
             logger.debug("[" + this.getClass().getSimpleName() + "]Encoding header");
         }
-        int count = encodeHeader(bos);
-        if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding header, write count: " + count);
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding body");
-        }
-
-        count += encodeDigits(bos);
-        if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding digits, write count: " + count);
-        }
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        // out.write(tag);
-        // Util.encodeLength(count, out);
-        try {
-            out.write(bos.toByteArray());
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return out.toByteArray();
-    }
-
-    public int encode(ByteArrayOutputStream out) throws ParameterException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
+        encodeHeader(buffer);
         if (logger.isDebugEnabled()) {
             logger.debug("[" + this.getClass().getSimpleName() + "]Encoding header");
-        }
-        int count = encodeHeader(bos);
-        if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding header, write count: " + count);
             logger.debug("[" + this.getClass().getSimpleName() + "]Encoding body");
         }
 
-        count += encodeDigits(bos);
+        encodeDigits(buffer);
         if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding digits, write count: " + count);
+            logger.debug("[" + this.getClass().getSimpleName() + "]Encoding digits");
         }
-
-        // count += tag.length;
-        // out.write(tag);
-        // count += Util.encodeLength(count, out);
-        try {
-            out.write(bos.toByteArray());
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return count;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(b);
-
-        return this.decode(bis);
-    }
-
-    protected int decode(ByteArrayInputStream bis) throws ParameterException {
+    public void decode(ByteBuf b) throws ParameterException {
         if (logger.isDebugEnabled()) {
             logger.debug("[" + this.getClass().getSimpleName() + "]Decoding header");
         }
 
-        int count = decodeHeader(bis);
+        decodeHeader(b);
         if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding header, read count: " + count);
+            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding header");
             logger.debug("[" + this.getClass().getSimpleName() + "]Decoding body");
         }
 
-        count += decodeDigits(bis);
+        decodeDigits(b);
         if (logger.isDebugEnabled()) {
-            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding digits, read count: " + count);
-        }
-        return count;
+            logger.debug("[" + this.getClass().getSimpleName() + "]Decoding digits");
+        }        
     }
 
     /**
@@ -168,12 +117,11 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
      * @return - number of bytes encoded
      *
      */
-    public int encodeDigits(ByteArrayOutputStream bos) {
+    public void encodeDigits(ByteBuf buffer) {
         boolean isOdd = this.oddFlag == _FLAG_ODD;
 
         byte b = 0;
         int count = (!isOdd) ? address.length() : address.length() - 1;
-        int bytesCount = 0;
         for (int i = 0; i < count - 1; i += 2) {
             String ds1 = address.substring(i, i + 1);
             String ds2 = address.substring(i + 1, i + 2);
@@ -182,8 +130,7 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
             int d2 = Integer.parseInt(ds2, 16);
 
             b = (byte) (d2 << 4 | d1);
-            bos.write(b);
-            bytesCount++;
+            buffer.writeByte(b);
         }
 
         if (isOdd) {
@@ -191,11 +138,8 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
             int d = Integer.parseInt(ds1);
 
             b = (byte) (d & 0x0f);
-            bos.write(b);
-            bytesCount++;
+            buffer.writeByte(b);
         }
-
-        return bytesCount;
     }
 
     /**
@@ -206,17 +150,16 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
      * @return - number of bytes reads throws IllegalArgumentException - thrown if read error is encountered.
      * @throws ParameterException - thrown if read error is encountered.
      */
-    public int decodeDigits(ByteArrayInputStream bis) throws ParameterException {
-        if (bis.available() == 0) {
+    public void decodeDigits(ByteBuf buffer) throws ParameterException {
+        if (buffer.readableBytes() == 0) {
             throw new ParameterException("No more data to read.");
         }
         // FIXME: we could spare time by passing length arg - or getting it from
         // bis??
-        int count = 0;
         address = "";
         int b = 0;
-        while (bis.available() - 1 > 0) {
-            b = (byte) bis.read();
+        while (buffer.readableBytes() - 1 > 0) {
+            b = (byte) buffer.readByte();
 
             int d1 = b & 0x0f;
             int d2 = (b & 0xf0) >> 4;
@@ -225,13 +168,12 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
 
         }
 
-        b = bis.read() & 0xff;
+        b = buffer.readByte() & 0xff;
         address += Integer.toHexString((b & 0x0f));
 
         if (oddFlag != 1) {
             address += Integer.toHexString((b & 0xf0) >> 4);
         }
-        return count;
     }
 
     /**
@@ -243,16 +185,15 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
      * @return - number of bytes reads
      * @throws ParameterException - thrown if read error is encountered.
      */
-    public int decodeHeader(ByteArrayInputStream bis) throws ParameterException {
-        if (bis.available() == 0) {
+    public void decodeHeader(ByteBuf buffer) throws ParameterException {
+        if (buffer.readableBytes() == 0) {
             throw new ParameterException("No more data to read.");
         }
-        int b = bis.read() & 0xff;
+        int b = buffer.readByte() & 0xff;
 
         this.oddFlag = (b & 0x80) >> 7;
         this.setTypeOfNetworkIdentification((b >> 4));
         this.setNetworkIdentificationPlan(b);
-        return 1;
     }
 
     /**
@@ -261,16 +202,14 @@ public class TransitNetworkSelectionImpl extends AbstractISUPParameter implement
      * @param bis
      * @return - number of bytes encoded.
      */
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         int b = this.networkIdentificationPlan & 0x0F;
         b |= (this.typeOfNetworkIdentification & 0x07) << 4;
         // Even is 000000000 == 0
         boolean isOdd = this.oddFlag == _FLAG_ODD;
         if (isOdd)
             b |= 0x80;
-        bos.write(b);
-
-        return 1;
+        buffer.writeByte(b);
     }
 
     public int getTypeOfNetworkIdentification() {

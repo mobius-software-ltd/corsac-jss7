@@ -34,6 +34,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupUnblockingMessage;
@@ -53,7 +55,7 @@ public class CGUTest extends MessageHarness {
 
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
-        byte[] message = getDefaultBody();
+        ByteBuf message = getDefaultBody();
 
         // CircuitGroupUnblockingMessage cgb=new CircuitGroupUnblockingMessageImpl(this,message);
         CircuitGroupUnblockingMessage cgb = super.messageFactory.createCGU(0);
@@ -83,7 +85,7 @@ public class CGUTest extends MessageHarness {
 
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         // FIXME: for now we strip MTP part
         byte[] message = {
 
@@ -96,7 +98,7 @@ public class CGUTest extends MessageHarness {
                 , 0x04, 0x11, 0x02, 0x03, 0x04
 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

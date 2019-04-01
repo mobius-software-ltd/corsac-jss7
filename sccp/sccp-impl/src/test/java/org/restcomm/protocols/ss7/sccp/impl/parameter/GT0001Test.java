@@ -28,14 +28,12 @@
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
+import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0001Impl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ParameterFactoryImpl;
 import org.testng.annotations.AfterClass;
@@ -51,8 +49,8 @@ import org.testng.annotations.Test;
  */
 public class GT0001Test {
 
-    private byte[] dataEven = new byte[] { 3, 0x09, 0x32, 0x26, 0x59, 0x18 };
-    private byte[] dataOdd = new byte[] { (byte) (3 | 0x80), 0x09, 0x32, 0x26, 0x59, 0x08 };
+    private ByteBuf dataEven = Unpooled.wrappedBuffer(new byte[] { 3, 0x09, 0x32, 0x26, 0x59, 0x18 });
+    private ByteBuf dataOdd = Unpooled.wrappedBuffer(new byte[] { (byte) (3 | 0x80), 0x09, 0x32, 0x26, 0x59, 0x08 });
     private ParameterFactoryImpl factory = new ParameterFactoryImpl();
 
     public GT0001Test() {
@@ -79,12 +77,10 @@ public class GT0001Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeEven() throws Exception {
-        // wrap data with input stream
-        ByteArrayInputStream in = new ByteArrayInputStream(dataEven);
-
-        // create GT object and read data from stream
+    	
+    	// create GT object and read data from stream
         GlobalTitle0001Impl gt1 = new GlobalTitle0001Impl();
-        gt1.decode(in, factory, SccpProtocolVersion.ITU);
+        gt1.decode(Unpooled.wrappedBuffer(dataEven), factory, SccpProtocolVersion.ITU);
 
         // check results
         assertEquals(gt1.getNatureOfAddress(), NatureOfAddress.NATIONAL);
@@ -96,15 +92,10 @@ public class GT0001Test {
      */
     @Test(groups = { "parameter", "functional.encode" })
     public void testEncodeEven() throws Exception {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ByteBuf bout = Unpooled.buffer();
         GlobalTitle0001Impl gt = new GlobalTitle0001Impl( "9023629581",NatureOfAddress.NATIONAL);
-
         gt.encode(bout, false, SccpProtocolVersion.ITU);
-
-        byte[] res = bout.toByteArray();
-
-        boolean correct = Arrays.equals(dataEven, res);
-        assertTrue(correct, "Incorrect encoding");
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(dataEven), bout);
     }
 
     /**
@@ -112,12 +103,9 @@ public class GT0001Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeOdd() throws Exception {
-        // wrap data with input stream
-        ByteArrayInputStream in = new ByteArrayInputStream(dataOdd);
-
         // create GT object and read data from stream
         GlobalTitle0001Impl gt1 = new GlobalTitle0001Impl();
-        gt1.decode(in, factory, SccpProtocolVersion.ITU);
+        gt1.decode(Unpooled.wrappedBuffer(dataOdd), factory, SccpProtocolVersion.ITU);
         // check results
         assertEquals(gt1.getNatureOfAddress(), NatureOfAddress.NATIONAL);
         assertEquals(gt1.getDigits(), "902362958");
@@ -128,15 +116,10 @@ public class GT0001Test {
      */
     @Test(groups = { "parameter", "functional.encode" })
     public void testEncodeOdd() throws Exception {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    	ByteBuf bout = Unpooled.buffer();
         GlobalTitle0001Impl gt = new GlobalTitle0001Impl("902362958",NatureOfAddress.NATIONAL);
-
         gt.encode(bout, false, SccpProtocolVersion.ITU);
-
-        byte[] res = bout.toByteArray();
-
-        boolean correct = Arrays.equals(dataOdd, res);
-        assertTrue(correct, "Incorrect encoding");
+        MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(dataOdd), bout);
     }
 
     /*@Test(groups = { "parameter", "functional.encode" })

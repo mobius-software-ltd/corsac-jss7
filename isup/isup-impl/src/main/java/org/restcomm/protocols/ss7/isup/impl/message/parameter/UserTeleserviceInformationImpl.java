@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 
@@ -33,8 +35,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformat
  * @author sergey vetyutnev
  */
 public class UserTeleserviceInformationImpl extends AbstractISUPParameter implements UserTeleserviceInformation {
-	private static final long serialVersionUID = 1L;
-
 	private int codingStandard;
     private int interpretation;
     private int presentationMethod;
@@ -81,77 +81,70 @@ public class UserTeleserviceInformationImpl extends AbstractISUPParameter implem
         this.setEHighLayerCharIdentification(eHighLayerCharIdentification);
     }
 
-    public UserTeleserviceInformationImpl(byte[] b) throws ParameterException {
+    public UserTeleserviceInformationImpl(ByteBuf b) throws ParameterException {
         super();
         // FIXME: this is only elementID
 
         decode(b);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length < 2) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() < 2) {
             throw new ParameterException("byte[] must not be null and length must be greater than  1");
         }
 
+        byte b0=b.readByte(),b1=b.readByte();
         try {
-            this.setPresentationMethod(b[0]);
-            this.setInterpretation((b[0] >> 2));
-            this.setCodingStandard((b[0] >> 5));
-            this.setHighLayerCharIdentification(b[1]);
+        	this.setPresentationMethod(b0);
+            this.setInterpretation((b0 >> 2));
+            this.setCodingStandard((b0 >> 5));
+            this.setHighLayerCharIdentification(b1);
         } catch (Exception e) {
             throw new ParameterException(e);
         }
-        boolean ext = ((b[1] >> 7) & 0x01) == 0;
-        if (ext && b.length < 3) {
+        
+        boolean ext = ((b1 >> 7) & 0x01) == 0;
+        if (ext && b.readableBytes()==0) {
             throw new ParameterException(
                     "byte[] indicates extension to high layer cahracteristic indicator, however there isnt enough bytes");
         }
         if (!ext) {
-            return b.length;
+            return;
         }
 
         // FIXME: add check for excesive byte?, it should not happen though?
         if (this.highLayerCharIdentification == _HLCI_MAINTAINENCE || this.highLayerCharIdentification == _HLCI_MANAGEMENT) {
-            this.setEHighLayerCharIdentification(b[2] & 0x7F);
+            this.setEHighLayerCharIdentification(b.readByte() & 0x7F);
             // } else if ((this.highLayerCharIdentification >= _HLCI_AUDIO_VID_LOW_RANGE && this.highLayerCharIdentification <=
             // _HLCI_AUDIO_VID_HIGH_RANGE)
             // || (this.highLayerCharIdentification >= _HLCI_AUDIO_VID_LOW_RANGE2 && this.highLayerCharIdentification <=
             // _HLCI_AUDIO_VID_HIGH_RANGE2)) {
         } else if ((this.highLayerCharIdentification >= _HLCI_VIDEOTELEPHONY && this.highLayerCharIdentification <= _HLCI_AUDIO_VID_HIGH_RANGE2)) {
-            this.setEVideoTelephonyCharIdentification(b[2] & 0x7F);
+            this.setEVideoTelephonyCharIdentification(b.readByte() & 0x7F);
         } else {
             // logger.warning("HLCI indicates value which does not allow for extension, but its present....");
         }
-        return b.length;
     }
 
-    public byte[] encode() throws ParameterException {
-        byte[] b = null;
-        if (this.eHighLayerCharIdentificationPresent || this.eVideoTelephonyCharIdentificationPresent) {
-            b = new byte[3];
-        } else {
-            b = new byte[2];
-        }
-
+    public void encode(ByteBuf buffer) {
         int v = 0;
         v = this.presentationMethod & 0x03;
         v |= (this.interpretation & 0x07) << 2;
         v |= (this.codingStandard & 0x03) << 5;
         v |= 0x80;
 
-        b[0] = (byte) v;
-        b[1] = (byte) (this.highLayerCharIdentification & 0x7F);
+        buffer.writeByte((byte) v);
+        byte b1=(byte) (this.highLayerCharIdentification & 0x7F);        
         if (this.eHighLayerCharIdentificationPresent || this.eVideoTelephonyCharIdentificationPresent) {
-
+        	buffer.writeByte(b1);
             if (this.eHighLayerCharIdentificationPresent) {
-                b[2] = (byte) (0x80 | (this.eHighLayerCharIdentification & 0x7F));
+            	buffer.writeByte((byte) (0x80 | (this.eHighLayerCharIdentification & 0x7F)));
             } else {
-                b[2] = (byte) (0x80 | (this.eVideoTelephonyCharIdentification & 0x7F));
+            	buffer.writeByte((byte) (0x80 | (this.eVideoTelephonyCharIdentification & 0x7F)));
             }
-            return b;
         } else {
-            b[1] |= 0x80;
-            return b;
+            b1 |= 0x80;
+            buffer.writeByte(b1);
         }
     }
 

@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,10 +48,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
-public class PivotRoutingBackwardInformationImpl extends AbstractInformationParameterBaseImpl implements
-        PivotRoutingBackwardInformation {
-	private static final long serialVersionUID = 1L;
-
+public class PivotRoutingBackwardInformationImpl extends AbstractInformationParameterBaseImpl implements PivotRoutingBackwardInformation {
 	private static final Map<Integer, Class<? extends AbstractInformationImpl>> tagMapping;
 
     static{
@@ -60,7 +59,7 @@ public class PivotRoutingBackwardInformationImpl extends AbstractInformationPara
 
         tagMapping = Collections.unmodifiableMap(tmp);
     }
-    public PivotRoutingBackwardInformationImpl(byte[] pivotRoutingIndicators) throws ParameterException {
+    public PivotRoutingBackwardInformationImpl(ByteBuf pivotRoutingIndicators) throws ParameterException {
         super();
         decode(pivotRoutingIndicators);
     }

@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.FacilityMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
@@ -49,7 +52,7 @@ public class FACTest extends MessageHarness {
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
 
-        byte[] message = getDefaultBody();
+    	ByteBuf message = getDefaultBody();
 
 
         FacilityMessage msg = super.messageFactory.createFAC();
@@ -58,7 +61,7 @@ public class FACTest extends MessageHarness {
         
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
                 // CIC
                 0x0C, (byte) 0x0B,
@@ -84,7 +87,7 @@ public class FACTest extends MessageHarness {
                0x00
                 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

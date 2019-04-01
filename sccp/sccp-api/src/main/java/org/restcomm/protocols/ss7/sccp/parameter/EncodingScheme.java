@@ -22,8 +22,7 @@
 
 package org.restcomm.protocols.ss7.sccp.parameter;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
 
@@ -41,8 +40,8 @@ public interface EncodingScheme {
      */
     byte getSchemeCode();
 
-    void encode(String digits, OutputStream out) throws ParseException;
+    void encode(String digits, ByteBuf buffer) throws ParseException;
 
-    String decode(InputStream is) throws ParseException;
+    String decode(ByteBuf buffer) throws ParseException;
 
 }

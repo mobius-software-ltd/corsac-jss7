@@ -26,6 +26,9 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.util.BcdHelper;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import javax.xml.bind.DatatypeConverter;
 
 import java.io.UnsupportedEncodingException;
@@ -39,20 +42,18 @@ import java.nio.charset.Charset;
  * @author <a href="mailto:grzegorz.figiel@pro-ids.com"> Grzegorz Figiel </a>
  */
 public class GenericDigitsImpl extends AbstractISUPParameter implements GenericDigits {
-	private static final long serialVersionUID = 1L;
-
 	private static final Charset asciiCharset = Charset.forName("ASCII");
 
     private int encodingScheme;
     private int typeOfDigits;
-    private byte[] digits;
+    private ByteBuf digits;
 
-    public GenericDigitsImpl(byte[] b) throws ParameterException {
+    public GenericDigitsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
 
-    public GenericDigitsImpl(int encodingScheme, int typeOfDigits, byte[] digits) {
+    public GenericDigitsImpl(int encodingScheme, int typeOfDigits, ByteBuf digits) {
         super();
         this.encodingScheme = encodingScheme;
         this.typeOfDigits = typeOfDigits;
@@ -71,17 +72,20 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
     }
 
     public String getDecodedDigits() throws UnsupportedEncodingException {
+    	ByteBuf buffer=getEncodedDigits();
+    	byte[] data=new byte[buffer.readableBytes()];
+    	buffer.readBytes(data);
+    	
         switch (encodingScheme) {
             case GenericDigits._ENCODING_SCHEME_BCD_EVEN:
             case GenericDigits._ENCODING_SCHEME_BCD_ODD:
-                return BcdHelper.bcdDecodeToHexString(encodingScheme, digits);
+                return BcdHelper.bcdDecodeToHexString(encodingScheme, data);
             case GenericDigits._ENCODING_SCHEME_IA5:
-                return new String(digits, asciiCharset);
+                return new String(data, asciiCharset);
             default:
                 //TODO: add other encoding schemas support
                 throw new UnsupportedEncodingException("Specified GenericDigits encoding: " + encodingScheme + " is unsupported");
         }
-
     }
 
     public void setDecodedDigits(int encodingScheme, String digits) throws UnsupportedEncodingException {
@@ -99,11 +103,11 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
                         throw new UnsupportedEncodingException("SCHEME_BCD_EVEN is possible only for odd digits count");
                 }
                 this.encodingScheme = encodingScheme;
-                this.setEncodedDigits(BcdHelper.encodeHexStringToBCD(digits));
+                this.setEncodedDigits(Unpooled.wrappedBuffer(BcdHelper.encodeHexStringToBCD(digits)));
                 break;
             case GenericDigits._ENCODING_SCHEME_IA5:
                 this.encodingScheme = encodingScheme;
-                this.setEncodedDigits(digits.getBytes(asciiCharset));
+                this.setEncodedDigits(Unpooled.wrappedBuffer(digits.getBytes(asciiCharset)));
                 break;
             default:
                 //TODO: add other encoding schemas support
@@ -111,32 +115,23 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
         }
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length < 2) {
+    public void decode(ByteBuf buffer) throws ParameterException {
+        if (buffer == null || buffer.readableBytes() < 2) {
             throw new ParameterException("byte[] must not be null or has size less than 2");
         }
-        this.typeOfDigits = b[0] & 0x1F;
-        this.encodingScheme = (b[0] >> 5) & 0x07;
-        this.digits = new byte[b.length - 1];
-
-        for (int index = 1; index < b.length; index++) {
-            this.digits[index - 1] = b[index];
-        }
-        return 1 + this.digits.length;
+        
+        byte b=buffer.readByte();
+        this.typeOfDigits = b & 0x1F;
+        this.encodingScheme = (b >> 5) & 0x07;
+        this.digits = buffer.slice(buffer.readerIndex(),buffer.readableBytes());
     }
 
-    public byte[] encode() throws ParameterException {
-
-        byte[] b = new byte[this.digits.length + 1];
-
-        b[0] |= this.typeOfDigits & 0x1F;
-        b[0] |= ((this.encodingScheme & 0x07) << 5);
-
-        for (int index = 1; index < b.length; index++) {
-            b[index] = (byte) this.digits[index - 1];
-        }
-        return b;
-
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	byte b=0;
+        b |= this.typeOfDigits & 0x1F;
+        b |= ((this.encodingScheme & 0x07) << 5);
+        buffer.writeByte(b);
+        buffer.writeBytes(getEncodedDigits());
     }
 
     public int getEncodingScheme() {
@@ -155,11 +150,14 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
         this.typeOfDigits = typeOfDigits;
     }
 
-    public byte[] getEncodedDigits() {
-        return digits;
+    public ByteBuf getEncodedDigits() {
+    	if(digits==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(digits);
     }
 
-    public void setEncodedDigits(byte[] digits) {
+    public void setEncodedDigits(ByteBuf digits) {
         if (digits == null)
             throw new IllegalArgumentException("Digits must not be null");
         this.digits = digits;
@@ -178,8 +176,12 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
         sb.append(", typeOfDigits=");
         sb.append(typeOfDigits);
         if (digits != null) {
+        	ByteBuf buffer=getEncodedDigits();
+        	byte[] data=new byte[buffer.readableBytes()];
+        	buffer.readBytes(data);
+        	
             sb.append(", encodedDigits=[");
-            sb.append(DatatypeConverter.printHexBinary(digits));
+            sb.append(DatatypeConverter.printHexBinary(data));
             sb.append("]");
 
             try {

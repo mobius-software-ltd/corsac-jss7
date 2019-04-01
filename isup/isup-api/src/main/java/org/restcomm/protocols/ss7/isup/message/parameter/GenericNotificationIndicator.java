@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import java.util.List;
+
 /**
  * Start time:13:04:54 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -137,7 +139,7 @@ public interface GenericNotificationIndicator extends ISUPParameter {
      */
     int _NI_RCID = 0x8B;
 
-    int[] getNotificationIndicator();
+    List<Integer> getNotificationIndicator();
 
-    void setNotificationIndicator(int[] notificationIndicator) throws IllegalArgumentException;
+    void setNotificationIndicator(List<Integer> notificationIndicator) throws IllegalArgumentException;
 }

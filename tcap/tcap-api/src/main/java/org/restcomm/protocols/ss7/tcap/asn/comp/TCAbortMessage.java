@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcap.asn.Encodable;
+import org.restcomm.protocols.ss7.tcap.asn.ParseException;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  * This message represents Abort messages (P and U). According to Q.773:<br>
@@ -47,35 +48,11 @@ import org.restcomm.protocols.ss7.tcap.asn.Encodable;
  * @author baranowb
  *
  */
-public interface TCAbortMessage extends Encodable {
 
-    int _TAG = 0x07;
-    boolean _TAG_PC_PRIMITIVE = false;
-    int _TAG_CLASS = Tag.CLASS_APPLICATION;
-
-    int _TAG_P = 0x0A;
-    boolean _TAG_P_PC_PRIMITIVE = true;
-    int _TAG_CLASS_P = Tag.CLASS_APPLICATION;
-
-    int _TAG_DTX = 0x09;
-    boolean _TAG_DTX_PC_PRIMITIVE = true;
-    int _TAG_CLASS_DTX = Tag.CLASS_APPLICATION;
-
-    // mandatory
-    byte[] getDestinationTransactionId();
-
-    void setDestinationTransactionId(byte[] t);
-
+@ASNTag(asnClass=ASNClass.APPLICATION,tag=0x07,constructed=true,lengthIndefinite=false)
+public interface TCAbortMessage extends TCUnifiedMessage {
     // optionals
-    PAbortCauseType getPAbortCause();
+    PAbortCauseType getPAbortCause() throws ParseException;
 
     void setPAbortCause(PAbortCauseType t);
-
-    DialogPortion getDialogPortion();
-
-    void setDialogPortion(DialogPortion dp);
-
-    // External getUserDefinedReason();
-    //
-    // void setUserDefinedReason(External dp);
 }

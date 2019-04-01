@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.tcap;
 
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnInputStream;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
@@ -45,16 +44,18 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
-import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.ParseException;
-import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersion;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersionImpl;
+import org.restcomm.protocols.ss7.tcap.asn.TCBeginMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  * Test for call flow.
@@ -71,7 +72,7 @@ public class ProtocolVersionTest extends SccpHarness {
     private SccpAddress peer2Address;
     private Client client;
     private TestSccpListener sccpListener;
-    private ProtocolVersion pv;
+    private ProtocolVersionImpl pv;
 
     public ProtocolVersionTest() {
 
@@ -161,7 +162,7 @@ public class ProtocolVersionTest extends SccpHarness {
         client.startClientDialog();
         EventTestHarness.waitFor(WAIT_TIME);
         client.sendBegin();
-        EventTestHarness.waitFor(WAIT_TIME);
+        EventTestHarness.waitFor(WAIT_TIME);        
         assertNull(pv);
     }
 
@@ -178,53 +179,31 @@ public class ProtocolVersionTest extends SccpHarness {
     private class TestSccpListener implements SccpListener {
 
         private static final long serialVersionUID = 1L;
-
+        private ASNParser parser=new ASNParser(true);
+        
+        private TestSccpListener() {
+        	parser.loadClass(TCBeginMessageImpl.class);
+        }
+        
         @Override
         public void onMessage(SccpDataMessage message) {
-            AsnInputStream ais = new AsnInputStream(message.getData());
-            int tag;
-            try
-            {
-                tag = ais.readTag();
-                
-            }
-            catch(IOException ex) {
-                try
-                {
-                    ais.close();
-                }
-                catch(IOException ex1) {
-                    
-                }
-                
-                return;
-            }       
-            
-            switch (tag) {
-                case TCBeginMessage._TAG:
-                    TCBeginMessage tcb = null;
-                    try {
-                        tcb = TcapFactory.createTCBeginMessage(ais);
-                    } catch (ParseException e) {
+        	ByteBuf buffer=Unpooled.wrappedBuffer(message.getData());
+        	Object output=null;
+        	try {
+        		output=parser.decode(buffer).getResult();
+        	}
+        	catch(ASNException ex) {
+        		
+        	}
+        	
+            if(output!=null && output instanceof TCBeginMessage) {
+            	TCBeginMessage tcb=(TCBeginMessage)output;
+            	if(tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDUImpl) {
+                            pv=((DialogRequestAPDUImpl)tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
+            	} 
                         
-                    }
-                    
-                    if(tcb!=null)
-                    {
-                        if(tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU) {
-                            pv=((DialogRequestAPDU)tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
-                        } 
-                        System.out.println("PROTOCOL VERSION IS : " + pv);
-                    }
-                    break;
-            }      
-            try
-            {
-                ais.close();
-            }
-            catch(IOException ex1) {
-                
-            }
+            	System.out.println("PROTOCOL VERSION IS : " + pv);
+            }            
         }
 
         @Override
@@ -246,25 +225,25 @@ public class ProtocolVersionTest extends SccpHarness {
 
         @Override
         public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress,
-                ProtocolClass clazz, Credit credit, byte[] data, Importance importance) throws Exception {
+                ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
             // TODO Auto-generated method stub
             
         }
 
         @Override
-        public void onConnectConfirm(SccpConnection conn, byte[] data) {
+        public void onConnectConfirm(SccpConnection conn, ByteBuf data) {
             // TODO Auto-generated method stub
             
         }
 
         @Override
-        public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, byte[] data) {
+        public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data) {
             // TODO Auto-generated method stub
             
         }
 
         @Override
-        public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, byte[] data) {
+        public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data) {
             // TODO Auto-generated method stub
             
         }
@@ -288,7 +267,7 @@ public class ProtocolVersionTest extends SccpHarness {
         }
 
         @Override
-        public void onData(SccpConnection conn, byte[] data) {
+        public void onData(SccpConnection conn, ByteBuf data) {
             // TODO Auto-generated method stub
             
         }

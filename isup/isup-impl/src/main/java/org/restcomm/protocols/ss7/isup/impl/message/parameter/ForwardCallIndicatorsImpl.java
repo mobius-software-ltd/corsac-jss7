@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ForwardCallIndicatorsImpl extends AbstractISUPParameter implements ForwardCallIndicators {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -62,7 +59,7 @@ public class ForwardCallIndicatorsImpl extends AbstractISUPParameter implements 
 
     }
 
-    public ForwardCallIndicatorsImpl(byte[] b) throws ParameterException {
+    public ForwardCallIndicatorsImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -81,13 +78,13 @@ public class ForwardCallIndicatorsImpl extends AbstractISUPParameter implements 
         this.isdnAccessIndicator = isdnAccessIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 2) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 2) {
             throw new IllegalArgumentException("byte[] must not be null or have different size than 2");
         }
         int v = 0;
 
-        v = b[0];
+        v = b.readByte();
 
         this.nationalCallIdentificator = (v & 0x01) == _TURN_ON;
         this.endToEndMethodIndicator = (v >> 1) & 0x03;
@@ -96,40 +93,27 @@ public class ForwardCallIndicatorsImpl extends AbstractISUPParameter implements 
         this.isdnUserPartIndicator = ((v >> 5) & 0x01) == _TURN_ON;
         this.isdnUserPartReferenceIndicator = (v >> 6) & 0x03;
 
-        v = b[1];
+        v = b.readByte();
 
         this.isdnAccessIndicator = (v & 0x01) == _TURN_ON;
         // FIXME: should we allow older bytes to pass ?
         this.sccpMethodIndicator = (v >> 1) & 0x03;
-
-        return 2;
     }
 
-    public byte[] encode() throws ParameterException {
-
-        byte[] b = new byte[2];
-
-        b[0] |= this.nationalCallIdentificator ? _TURN_ON : _TURN_OFF;
-        b[0] |= (this.endToEndMethodIndicator & 0x03) << 1;
-        b[0] |= (this.interworkingIndicator ? _TURN_ON : _TURN_OFF) << 3;
-        b[0] |= (this.endToEndInformationIndicator ? _TURN_ON : _TURN_OFF) << 4;
-        b[0] |= (this.isdnUserPartIndicator ? _TURN_ON : _TURN_OFF) << 5;
-        b[0] |= (this.isdnUserPartReferenceIndicator & 0x03) << 6;
-
-        b[1] = (byte) (this.isdnAccessIndicator ? _TURN_ON : _TURN_OFF);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	byte b=0;
+        b |= this.nationalCallIdentificator ? _TURN_ON : _TURN_OFF;
+        b |= (this.endToEndMethodIndicator & 0x03) << 1;
+        b |= (this.interworkingIndicator ? _TURN_ON : _TURN_OFF) << 3;
+        b |= (this.endToEndInformationIndicator ? _TURN_ON : _TURN_OFF) << 4;
+        b |= (this.isdnUserPartIndicator ? _TURN_ON : _TURN_OFF) << 5;
+        b |= (this.isdnUserPartReferenceIndicator & 0x03) << 6;
+        buffer.writeByte(b);
+        
+        b = (byte) (this.isdnAccessIndicator ? _TURN_ON : _TURN_OFF);
         // FIXME should we allow here older bytes to pass
-        b[1] |= (this.sccpMethodIndicator & 0x03) << 1;
-        return b;
-    }
-
-    public int encode(ByteArrayOutputStream bos) throws ParameterException {
-        byte[] b = this.encode();
-        try {
-            bos.write(b);
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-        return b.length;
+        b |= (this.sccpMethodIndicator & 0x03) << 1;
+        buffer.writeByte(b);
     }
 
     public boolean isNationalCallIdentificator() {

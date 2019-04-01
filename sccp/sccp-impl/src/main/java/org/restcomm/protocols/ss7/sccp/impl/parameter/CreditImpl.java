@@ -27,9 +27,7 @@ import org.restcomm.protocols.ss7.sccp.message.ParseException;
 import org.restcomm.protocols.ss7.sccp.parameter.Credit;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 public class CreditImpl extends AbstractParameter implements Credit {
 	private static final long serialVersionUID = 1L;
@@ -52,39 +50,18 @@ public class CreditImpl extends AbstractParameter implements Credit {
     }
 
     @Override
-    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (in.read() != 1) {
-                throw new ParseException();
-            }
-            this.value = (byte)in.read();
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
-
-    @Override
-    public void encode(final OutputStream os, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            os.write(1);
-            os.write(this.value);
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
-
-    @Override
-    public void decode(final byte[] b, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        if (b.length < 1) {
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	if (buffer.readableBytes() < 1) {
             throw new ParseException();
         }
-        this.value = b[0];
+        this.value = buffer.readByte();
     }
 
     @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return new byte[] { this.value };
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	buffer.writeByte(this.value);
     }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

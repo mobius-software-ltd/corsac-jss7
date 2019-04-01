@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -61,7 +64,7 @@ public class RedirectBackwardInformationTest {
 
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
         byte[] body = new byte[] {
           //3.100.1 duration
@@ -89,7 +92,7 @@ public class RedirectBackwardInformationTest {
                   0x02,
                   (byte)(0x80| 0x03)
         };
-        return body;
+        return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -155,7 +158,8 @@ public class RedirectBackwardInformationTest {
         irr.setReason(rr1,rr2);
         parameter.setInvokingRedirectReason(irr);
 
-        byte[] data = parameter.encode();
+        ByteBuf data = Unpooled.buffer();
+        parameter.encode(data);
         parameter = new RedirectBackwardInformationImpl();
         parameter.decode(data);
 

@@ -34,6 +34,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupQueryResponseMessage;
@@ -54,7 +56,7 @@ public class CQRTest extends MessageHarness {
 
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
-        byte[] message = getDefaultBody();
+        ByteBuf message = getDefaultBody();
         // CircuitGroupQueryResponseMessage grs=new CircuitGroupQueryResponseMessageImpl(this,message);
         CircuitGroupQueryResponseMessage grs = super.messageFactory.createCQR();
         ((AbstractISUPMessage) grs).decode(message, messageFactory,parameterFactory);
@@ -79,13 +81,13 @@ public class CQRTest extends MessageHarness {
             if (CSI == null)
                 return;
             assertNotNull(CSI.getCircuitState(), "CircuitStateIndicator getCircuitState return is null, it should not be");
-            byte[] circuitState = CSI.getCircuitState();
-            assertEquals(circuitState.length, 3, "CircuitStateIndicator.getCircuitState() length is nto correct");
-            assertEquals(CSI.getMaintenanceBlockingState(circuitState[0]), 1,
+            ByteBuf circuitState = CSI.getCircuitState();
+            assertEquals(circuitState.readableBytes(), 3, "CircuitStateIndicator.getCircuitState() length is nto correct");
+            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 1,
                     "CircuitStateIndicator.getCircuitState()[0] value is not correct");
-            assertEquals(CSI.getMaintenanceBlockingState(circuitState[1]), 2,
+            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 2,
                     "CircuitStateIndicator.getCircuitState()[1] value is not correct");
-            assertEquals(CSI.getMaintenanceBlockingState(circuitState[2]), 3,
+            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 3,
                     "CircuitStateIndicator.getCircuitState()[2] value is not correct");
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +96,7 @@ public class CQRTest extends MessageHarness {
 
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         // FIXME: for now we strip MTP part
         byte[] message = {
 
@@ -111,7 +113,7 @@ public class CQRTest extends MessageHarness {
 
         };
 
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

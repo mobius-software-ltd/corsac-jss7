@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.m3ua.parameter.OPCList;
@@ -34,7 +37,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
  */
 public class OPCListImpl extends ParameterImpl implements OPCList {
 
-    private byte[] value;
+    private ByteBuf value;
     private int[] pointCodes;
     private short[] masks;
 
@@ -42,23 +45,22 @@ public class OPCListImpl extends ParameterImpl implements OPCList {
         this.tag = Parameter.Originating_Point_Code_List;
     }
 
-    protected OPCListImpl(byte[] value) {
+    protected OPCListImpl(ByteBuf value) {
         this.tag = Parameter.Originating_Point_Code_List;
 
-        int count = 0;
         int arrSize = 0;
-        pointCodes = new int[(value.length / 4)];
-        masks = new short[(value.length / 4)];
+        pointCodes = new int[(value.readableBytes() / 4)];
+        masks = new short[(value.readableBytes() / 4)];
 
-        while (count < value.length) {
-            masks[arrSize] = value[count++];
+        while (value.readableBytes()>0) {
+            masks[arrSize] = value.readByte();
 
             pointCodes[arrSize] = 0;
-            pointCodes[arrSize] |= value[count++] & 0xFF;
+            pointCodes[arrSize] |= value.readByte() & 0xFF;
             pointCodes[arrSize] <<= 8;
-            pointCodes[arrSize] |= value[count++] & 0xFF;
+            pointCodes[arrSize] |= value.readByte() & 0xFF;
             pointCodes[arrSize] <<= 8;
-            pointCodes[arrSize++] |= value[count++] & 0xFF;
+            pointCodes[arrSize++] |= value.readByte() & 0xFF;
         }
         this.value = value;
     }
@@ -74,23 +76,21 @@ public class OPCListImpl extends ParameterImpl implements OPCList {
         // create byte array taking into account data, point codes and
         // indicators;
 
-        this.value = new byte[(pointCodes.length * 4)];
+        this.value = Unpooled.buffer((pointCodes.length * 4));
 
-        int count = 0;
-        int arrSize = 0;
         // encode routing context
-        while (count < value.length) {
-            value[count++] = (byte) (masks[arrSize]);
+        for(int arrSize = 0;arrSize<masks.length; arrSize++) {
+            value.writeByte((byte) (masks[arrSize]));
 
-            value[count++] = (byte) (pointCodes[arrSize] >>> 16);
-            value[count++] = (byte) (pointCodes[arrSize] >>> 8);
-            value[count++] = (byte) (pointCodes[arrSize++]);
+            value.writeByte((byte) (pointCodes[arrSize] >>> 16));
+            value.writeByte((byte) (pointCodes[arrSize] >>> 8));
+            value.writeByte((byte) (pointCodes[arrSize]));
         }
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     public short[] getMasks() {

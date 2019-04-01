@@ -23,6 +23,8 @@
 package org.restcomm.protocols.ss7.sccp.impl.messageflow;
 
 import static org.testng.Assert.assertEquals;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
@@ -99,20 +101,20 @@ public class MessageMultiSapTest extends SccpHarness {
         super.tearDown();
     }
 
-    public byte[] getDataSrc() {
-        return new byte[] { 11, 12, 13, 14, 15 };
+    public ByteBuf getDataSrc() {
+        return Unpooled.wrappedBuffer(new byte[] { 11, 12, 13, 14, 15 });
     }
 
-    public byte[] getDataUdt1() {
-        return new byte[] { 9, 0, 3, 5, 8, 2, 66, 8, 4, 67, 11, 0, 6, 5, 11, 12, 13, 14, 15 };
+    public ByteBuf getDataUdt1() {
+        return Unpooled.wrappedBuffer(new byte[] { 9, 0, 3, 5, 8, 2, 66, 8, 4, 67, 11, 0, 6, 5, 11, 12, 13, 14, 15 });
     }
 
-    public byte[] getDataUdt2() {
-        return new byte[] { 9, 0, 3, 7, 10, 4, 67, 2, 0, 8, 4, 67, 11, 0, 6, 5, 11, 12, 13, 14, 15 };
+    public ByteBuf getDataUdt2() {
+        return Unpooled.wrappedBuffer(new byte[] { 9, 0, 3, 7, 10, 4, 67, 2, 0, 8, 4, 67, 11, 0, 6, 5, 11, 12, 13, 14, 15 });
     }
 
-    public byte[] getDataUdt3() {
-        return new byte[] { 9, 0, 3, 5, 7, 2, 66, 8, 2, 66, 8, 5, 11, 12, 13, 14, 15 };
+    public ByteBuf getDataUdt3() {
+        return Unpooled.wrappedBuffer(new byte[] { 9, 0, 3, 5, 7, 2, 66, 8, 2, 66, 8, 5, 11, 12, 13, 14, 15 });
     }
 
     @Test(groups = { "SccpMessage", "functional.transfer" })

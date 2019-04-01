@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
@@ -35,28 +38,27 @@ import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
 public class RoutingContextImpl extends ParameterImpl implements RoutingContext {
 
     private long[] rcs = null;
-    private byte[] value;
+    private ByteBuf value;
 
     public RoutingContextImpl() {
         this.tag = Parameter.Routing_Context;
     }
 
-    protected RoutingContextImpl(byte[] value) {
+    protected RoutingContextImpl(ByteBuf value) {
         this.tag = Parameter.Routing_Context;
 
-        int count = 0;
         int arrSize = 0;
-        rcs = new long[(value.length / 4)];
+        rcs = new long[(value.readableBytes() / 4)];
 
-        while (count < value.length) {
+        while (value.readableBytes()>0) {
             rcs[arrSize] = 0;
-            rcs[arrSize] |= value[count++] & 0xFF;
+            rcs[arrSize] |= value.readByte() & 0xFF;
             rcs[arrSize] <<= 8;
-            rcs[arrSize] |= value[count++] & 0xFF;
+            rcs[arrSize] |= value.readByte() & 0xFF;
             rcs[arrSize] <<= 8;
-            rcs[arrSize] |= value[count++] & 0xFF;
+            rcs[arrSize] |= value.readByte() & 0xFF;
             rcs[arrSize] <<= 8;
-            rcs[arrSize++] |= value[count++] & 0xFF;
+            rcs[arrSize++] |= value.readByte() & 0xFF;
         }
 
         this.value = value;
@@ -71,15 +73,12 @@ public class RoutingContextImpl extends ParameterImpl implements RoutingContext 
     private void encode() {
         // create byte array taking into account data, point codes and
         // indicators;
-        this.value = new byte[(rcs.length * 4)];
-        int count = 0;
-        int arrSize = 0;
-        // encode routing context
-        while (count < value.length) {
-            value[count++] = (byte) (rcs[arrSize] >>> 24);
-            value[count++] = (byte) (rcs[arrSize] >>> 16);
-            value[count++] = (byte) (rcs[arrSize] >>> 8);
-            value[count++] = (byte) (rcs[arrSize++]);
+        this.value = Unpooled.buffer((rcs.length * 4));
+        for(int arrSize = 0;arrSize<rcs.length;arrSize++) {        	
+            value.writeByte((byte) (rcs[arrSize] >>> 24));
+            value.writeByte((byte) (rcs[arrSize] >>> 16));
+            value.writeByte((byte) (rcs[arrSize] >>> 8));
+            value.writeByte((byte) (rcs[arrSize]));
         }
     }
 
@@ -88,8 +87,8 @@ public class RoutingContextImpl extends ParameterImpl implements RoutingContext 
     }
 
     @Override
-    protected byte[] getValue() {
-        return value;
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(value);
     }
 
     @Override

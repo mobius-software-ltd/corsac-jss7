@@ -33,6 +33,8 @@ package org.restcomm.protocols.ss7.isup.impl.message;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.FacilityRejectedMessage;
@@ -50,8 +52,7 @@ public class FRJTest extends MessageHarness {
 
     @Test(groups = { "functional.encode", "functional.decode", "message" })
     public void testTwo_Params() throws Exception {
-
-        byte[] message = getDefaultBody();
+        ByteBuf message = getDefaultBody();
 
         FacilityRejectedMessage msg = super.messageFactory.createFRJ();
         ((AbstractISUPMessage) msg).decode(message, messageFactory, parameterFactory);
@@ -67,7 +68,7 @@ public class FRJTest extends MessageHarness {
         assertNull(msg.getCauseIndicators().getDiagnostics());
     }
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         byte[] message = {
                 // CIC
                 0x0C, (byte) 0x0B,
@@ -85,7 +86,7 @@ public class FRJTest extends MessageHarness {
                     (byte) 0x8C
                 
         };
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {

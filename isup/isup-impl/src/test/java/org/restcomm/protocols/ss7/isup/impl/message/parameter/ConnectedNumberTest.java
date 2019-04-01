@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -54,52 +56,52 @@ public class ConnectedNumberTest extends ParameterHarness {
     public ConnectedNumberTest() throws IOException {
 //        super.badBodies.add(new byte[1]);
 //
-        super.goodBodies.add(getBody1());
-        super.goodBodies.add(getBody2());
-        super.goodBodies.add(getBody3());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody2()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody3()));
     }
 
-    private byte[] getBody1() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody1() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
         // 0 because - _APRI_NOT_AVAILABLE
         int v = 0;
-        bos.write(v);
+        bos.writeByte(v);
         v = 0;
         v = ConnectedNumberImpl._APRI_NOT_AVAILABLE << 2;
         v |= ConnectedNumberImpl._SI_NETWORK_PROVIDED;
-        bos.write(v & 0x7F);
-        return bos.toByteArray();
+        bos.writeByte(v & 0x7F);
+        return bos;
     }
 
-    private byte[] getBody2() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody2() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
 
         // We have odd number
         int v = ConnectedNumber._NAI_SUBSCRIBER_NUMBER | (0x01 << 7);
-        bos.write(v);
+        bos.writeByte(v);
         v = 0;
         v = ConnectedNumberImpl._NPI_TELEX << 4;
         v |= ConnectedNumberImpl._APRI_ALLOWED << 2;
         v |= ConnectedNumberImpl._SI_NETWORK_PROVIDED;
-        bos.write(v & 0x7F);
-        bos.write(super.getFiveDigits());
-        return bos.toByteArray();
+        bos.writeByte(v & 0x7F);
+        bos.writeBytes(super.getFiveDigits());
+        return bos;
     }
 
-    private byte[] getBody3() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody3() throws IOException {
+        ByteBuf bos = Unpooled.buffer();
 
         // We have odd number
         int v = ConnectedNumber._NAI_SUBSCRIBER_NUMBER;
-        bos.write(v);
+        bos.writeByte(v);
         v = 0;
         v = ConnectedNumberImpl._NPI_TELEX << 4;
         v |= ConnectedNumberImpl._APRI_ALLOWED << 2;
         v |= ConnectedNumberImpl._SI_NETWORK_PROVIDED;
-        bos.write(v & 0x7F);
-        bos.write(super.getSixDigits());
-        return bos.toByteArray();
+        bos.writeByte(v & 0x7F);
+        bos.writeBytes(super.getSixDigits());
+        return bos;
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

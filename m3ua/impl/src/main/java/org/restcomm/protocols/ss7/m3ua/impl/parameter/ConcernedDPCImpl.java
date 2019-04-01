@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.ConcernedDPC;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -39,28 +42,29 @@ public class ConcernedDPCImpl extends ParameterImpl implements ConcernedDPC {
         this.tag = Parameter.Concerned_Destination;
     }
 
-    protected ConcernedDPCImpl(byte[] data) {
+    protected ConcernedDPCImpl(ByteBuf data) {
         // data[0] is reserved
-
+    	data.skipBytes(1);
+    	
         this.pointCode = 0;
-        this.pointCode |= data[1] & 0xFF;
+        this.pointCode |= data.readByte() & 0xFF;
         this.pointCode <<= 8;
-        this.pointCode |= data[2] & 0xFF;
+        this.pointCode |= data.readByte() & 0xFF;
         this.pointCode <<= 8;
-        this.pointCode |= data[3] & 0xFF;
+        this.pointCode |= data.readByte() & 0xFF;
         this.tag = Parameter.Concerned_Destination;
     }
 
     @Override
-    protected byte[] getValue() {
-        byte[] data = new byte[4];
+    protected ByteBuf getValue() {
+        ByteBuf data = Unpooled.buffer(4);
         // reserved
-        data[0] = 0;
+        data.writeByte(0);
 
         // DPC
-        data[1] = (byte) (pointCode >>> 16);
-        data[2] = (byte) (pointCode >>> 8);
-        data[3] = (byte) (pointCode);
+        data.writeByte((byte) (pointCode >>> 16));
+        data.writeByte((byte) (pointCode >>> 8));
+        data.writeByte((byte) (pointCode));
 
         return data;
     }

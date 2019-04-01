@@ -44,9 +44,5 @@ CallingPartysCategory::= OCTET STRING (SIZE (1))
  *
  */
 public interface CallingPartysCategoryInap extends Serializable {
-
-    byte[] getData();
-
     CallingPartyCategory getCallingPartyCategory() throws INAPException;
-
 }

@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.AbstractPointCodeInterface;
 
@@ -40,28 +42,21 @@ import org.restcomm.protocols.ss7.isup.message.parameter.AbstractPointCodeInterf
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public abstract class AbstractPointCode extends AbstractISUPParameter implements AbstractPointCodeInterface {
-	private static final long serialVersionUID = 1L;
-
 	protected int signalingPointCode;
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 2) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 2) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
 
-        this.signalingPointCode = b[0];
+        this.signalingPointCode = b.readByte();
         // FIXME: should we kill spare bits ?
-        this.signalingPointCode |= b[1] << 8;
-        return 1;
+        this.signalingPointCode |= b.readByte() << 8;
     }
 
-    public byte[] encode() throws ParameterException {
-
-        byte[] b = new byte[2];
-        b[0] = (byte) this.signalingPointCode;
-        b[1] = (byte) (this.signalingPointCode >> 8);
-
-        return b;
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) this.signalingPointCode);
+    	buffer.writeByte((byte) (this.signalingPointCode >> 8));
     }
 
     public AbstractPointCode() {
@@ -69,7 +64,7 @@ public abstract class AbstractPointCode extends AbstractISUPParameter implements
 
     }
 
-    public AbstractPointCode(byte[] b) throws ParameterException {
+    public AbstractPointCode(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }

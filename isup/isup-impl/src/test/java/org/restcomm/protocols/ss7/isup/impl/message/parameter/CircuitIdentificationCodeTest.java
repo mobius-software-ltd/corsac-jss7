@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -50,25 +53,25 @@ public class CircuitIdentificationCodeTest extends ParameterHarness {
      * @throws IOException
      */
     public CircuitIdentificationCodeTest() throws IOException {
-        super.goodBodies.add(getBody1());
-        super.goodBodies.add(getBody2());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody2()));
 
-        super.badBodies.add(new byte[1]);
-        super.badBodies.add(new byte[3]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[3]));
     }
 
-    private byte[] getBody1() throws IOException {
+    private ByteBuf getBody1() throws IOException {
         //ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // we will use odd number of digits, so we leave zero as MSB
 
-        return new byte[] { (byte) 0xFF, 0x0F };
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 0xFF, 0x0F });
     }
 
-    private byte[] getBody2() throws IOException {
+    private ByteBuf getBody2() throws IOException {
         //ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // we will use odd number of digits, so we leave zero as MSB
 
-        return new byte[] { (byte) 0xAB, 0x0C };
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 0xAB, 0x0C });
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

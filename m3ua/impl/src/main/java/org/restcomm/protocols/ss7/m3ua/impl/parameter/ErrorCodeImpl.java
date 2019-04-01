@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.ErrorCode;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -39,25 +42,25 @@ public class ErrorCodeImpl extends ParameterImpl implements ErrorCode {
         this.tag = Parameter.Error_Code;
     }
 
-    public ErrorCodeImpl(byte[] data) {
+    public ErrorCodeImpl(ByteBuf data) {
         this.code = 0;
-        this.code |= data[0] & 0xFF;
+        this.code |= data.readByte() & 0xFF;
         this.code <<= 8;
-        this.code |= data[1] & 0xFF;
+        this.code |= data.readByte() & 0xFF;
         this.code <<= 8;
-        this.code |= data[2] & 0xFF;
+        this.code |= data.readByte() & 0xFF;
         this.code <<= 8;
-        this.code |= data[3] & 0xFF;
+        this.code |= data.readByte() & 0xFF;
         this.tag = Parameter.Error_Code;
     }
 
     @Override
-    protected byte[] getValue() {
-        byte[] data = new byte[4];
-        data[0] = (byte) (code >>> 24);
-        data[1] = (byte) (code >>> 16);
-        data[2] = (byte) (code >>> 8);
-        data[3] = (byte) (code);
+    protected ByteBuf getValue() {
+    	ByteBuf data = Unpooled.buffer(4);
+        data.writeByte((byte) (code >>> 24));
+        data.writeByte((byte) (code >>> 16));
+        data.writeByte((byte) (code >>> 8));
+        data.writeByte((byte) (code));
 
         return data;
     }

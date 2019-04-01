@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.BackwardGVNS;
 
@@ -40,11 +43,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.BackwardGVNS;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class BackwardGVNSImpl extends AbstractISUPParameter implements BackwardGVNS {
-	private static final long serialVersionUID = 1L;
+	private ByteBuf backwardGVNS = null;
 
-	private byte[] backwardGVNS = null;
-
-    public BackwardGVNSImpl(byte[] backwardGVNS) throws ParameterException {
+    public BackwardGVNSImpl(ByteBuf backwardGVNS) throws ParameterException {
         super();
         decode(backwardGVNS);
     }
@@ -54,31 +55,33 @@ public class BackwardGVNSImpl extends AbstractISUPParameter implements BackwardG
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length == 0) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() == 0) {
             throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
         }
-        this.backwardGVNS = b;
-        return b.length;
+        this.backwardGVNS = Unpooled.wrappedBuffer(b);
     }
 
-    public byte[] encode() throws ParameterException {
-
-        for (int index = 0; index < this.backwardGVNS.length; index++) {
-            this.backwardGVNS[index] = (byte) (this.backwardGVNS[index] & 0x7F);
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	ByteBuf curr=getBackwardGVNS();
+    	while(curr.readableBytes()>1) {
+    		buffer.writeByte((byte) (curr.readByte() & 0x7F));
         }
 
-        this.backwardGVNS[this.backwardGVNS.length - 1] = (byte) (this.backwardGVNS[this.backwardGVNS.length - 1] & (1 << 7));
-        return this.backwardGVNS;
+    	if(curr.readableBytes()>0)
+    		buffer.writeByte((byte) (curr.readByte() & (1 << 7)));
     }
 
-    public byte[] getBackwardGVNS() {
-        return backwardGVNS;
+    public ByteBuf getBackwardGVNS() {
+    	if(this.backwardGVNS==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(backwardGVNS);
     }
 
-    public void setBackwardGVNS(byte[] backwardGVNS) {
-        if (backwardGVNS == null || backwardGVNS.length == 0) {
-            throw new IllegalArgumentException("byte[] must  not be null and length must  be greater than 0");
+    public void setBackwardGVNS(ByteBuf backwardGVNS) {
+        if (backwardGVNS == null || backwardGVNS.readableBytes() == 0) {
+            throw new IllegalArgumentException("ByteBuf must  not be null and length must  be greater than 0");
         }
         this.backwardGVNS = backwardGVNS;
     }

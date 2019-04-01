@@ -22,8 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
@@ -35,8 +34,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class LocationNumberImpl extends AbstractNAINumber implements LocationNumber {
-	private static final long serialVersionUID = 1L;
-
 	protected int numberingPlanIndicator;
     protected int internalNetworkNumberIndicator;
     protected int addressRepresentationRestrictedIndicator;
@@ -51,19 +48,12 @@ public class LocationNumberImpl extends AbstractNAINumber implements LocationNum
         this.screeningIndicator = screeningIndicator;
     }
 
-    public LocationNumberImpl(byte[] representation) throws ParameterException {
+    public LocationNumberImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
     }
 
     public LocationNumberImpl() {
         super();
-
-    }
-
-    public LocationNumberImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     /*
@@ -72,20 +62,19 @@ public class LocationNumberImpl extends AbstractNAINumber implements LocationNum
      * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException {
+        int b = buffer.readByte() & 0xff;
 
         this.internalNetworkNumberIndicator = (b & 0x80) >> 7;
         this.numberingPlanIndicator = (b & 0x70) >> 4;
         this.addressRepresentationRestrictedIndicator = (b & 0x0c) >> 2;
-        this.screeningIndicator = (b & 0x03);
-        return 1;
+        this.screeningIndicator = (b & 0x03);        
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         doAddressPresentationRestricted();
 
-        return super.encodeHeader(bos);
+        super.encodeHeader(buffer);
     }
 
     /**
@@ -116,23 +105,19 @@ public class LocationNumberImpl extends AbstractNAINumber implements LocationNum
      * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
-    public int encodeBody(ByteArrayOutputStream bos) {
+    public void encodeBody(ByteBuf buffer) {
         int c = this.numberingPlanIndicator << 4;
         c |= (this.internalNetworkNumberIndicator << 7);
         c |= (this.addressRepresentationRestrictedIndicator << 2);
         c |= (this.screeningIndicator);
-        bos.write(c);
-        return 1;
-
+        buffer.writeByte(c);
     }
 
-    public int decodeDigits(ByteArrayInputStream bis) throws ParameterException {
-
-        if (bis.available() != 0) {
-            return super.decodeDigits(bis);
+    public void decodeDigits(ByteBuf buffer) throws ParameterException {
+        if (buffer.readableBytes() != 0) {
+            super.decodeDigits(buffer);
         } else {
-            this.setAddress("");
-            return 0;
+            this.setAddress("");            
         }
     }
 

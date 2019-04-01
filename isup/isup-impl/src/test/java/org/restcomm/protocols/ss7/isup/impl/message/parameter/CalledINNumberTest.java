@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -52,33 +54,33 @@ public class CalledINNumberTest extends ParameterHarness {
      * @throws IOException
      */
     public CalledINNumberTest() throws IOException {
-        super.badBodies.add(new byte[1]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
 
-        super.goodBodies.add(getBody1());
-        super.goodBodies.add(getBody2());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody2()));
     }
 
-    private byte[] getBody1() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody1() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
 
-        bos.write(CalledINNumber._NAI_SUBSCRIBER_NUMBER);
+        bos.writeByte(CalledINNumber._NAI_SUBSCRIBER_NUMBER);
         int v = CalledINNumberImpl._APRI_ALLOWED << 2;
         v |= CalledINNumberImpl._NPI_ISDN << 4;
-        bos.write(v);
-        bos.write(super.getSixDigits());
-        return bos.toByteArray();
+        bos.writeByte(v);
+        bos.writeBytes(super.getSixDigits());
+        return bos;
     }
 
-    private byte[] getBody2() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody2() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
 
-        bos.write(CalledINNumber._NAI_SUBSCRIBER_NUMBER | (0x01 << 7));
+        bos.writeByte(CalledINNumber._NAI_SUBSCRIBER_NUMBER | (0x01 << 7));
         int v = CalledINNumberImpl._APRI_ALLOWED << 2;
         v |= CalledINNumberImpl._NPI_ISDN << 4;
-        bos.write(v);
-        bos.write(super.getFiveDigits());
-        return bos.toByteArray();
+        bos.writeByte(v);
+        bos.writeBytes(super.getFiveDigits());
+        return bos;
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

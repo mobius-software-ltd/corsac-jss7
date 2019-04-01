@@ -31,7 +31,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -58,24 +59,24 @@ public class GenericDigitsTest {
     public void tearDown() {
     }
 
-    private byte[] getEvenData() {
-        return new byte[] { 3, 0x21, 0x43, 0x65 }; // "123456" EVEN
+    private ByteBuf getEvenData() {
+        return Unpooled.wrappedBuffer(new byte[] { 3, 0x21, 0x43, 0x65 }); // "123456" EVEN
     }
 
-    private byte[] getOddData() {
-        return new byte[] { 35, 0x21, 0x43, 0x65, 0x07 }; // "1234567" ODD
+    private ByteBuf getOddData() {
+        return Unpooled.wrappedBuffer(new byte[] { 35, 0x21, 0x43, 0x65, 0x07 }); // "1234567" ODD
     }
 
-    private byte[] getEncodedEvenData() {
-        return new byte[] { 0x21, 0x43, 0x65 };
+    private ByteBuf getEncodedEvenData() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x21, 0x43, 0x65 });
     }
 
-    private byte[] getEncodedOddData() {
-        return new byte[] { 0x21, 0x43, 0x65, 0x07 };
+    private ByteBuf getEncodedOddData() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x21, 0x43, 0x65, 0x07 });
     }
 
-    private byte[] getIA5Data() {
-        return new byte[] { 67, 65, 66, 97, 98, 49, 50 }; // "ABab12"
+    private ByteBuf getIA5Data() {
+        return Unpooled.wrappedBuffer(new byte[] { 67, 65, 66, 97, 98, 49, 50 }); // "ABab12"
     }
 
     private String digitsEvenString = "123456";
@@ -115,15 +116,17 @@ public class GenericDigitsTest {
                                                        getEncodedEvenData());
         // int encodingScheme, int typeOfDigits, byte[] digits
 
-        byte[] data = getEvenData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getEvenData();
+        ByteBuf encodedData = Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
 
         prim = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BCD_EVEN, GenericDigits._TOD_BGCI, "123456");
-        encodedData = prim.encode();
-        assertTrue(Arrays.equals(data, encodedData));
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
     }
 
@@ -134,15 +137,17 @@ public class GenericDigitsTest {
                                                        getEncodedOddData());
         // int encodingScheme, int typeOfDigits, byte[] digits
 
-        byte[] data = getOddData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getOddData();
+        ByteBuf encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
 
         prim = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BCD_ODD, GenericDigits._TOD_BGCI, "1234567");
-        encodedData = prim.encode();
-        assertTrue(Arrays.equals(data, encodedData));
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
     @Test(groups = { "functional.encode", "parameter" })
@@ -153,16 +158,18 @@ public class GenericDigitsTest {
         prim.setTypeOfDigits(GenericDigits._TOD_BGCI);
         assertTrue(digitsEvenString.equals(prim.getDecodedDigits()));
 
-        byte[] data = getEvenData();
-        byte[] encodedData = prim.encode();
-        assertTrue(Arrays.equals(data, encodedData));
+        ByteBuf data = getEvenData();
+        ByteBuf encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim.setDecodedDigits(GenericDigits._ENCODING_SCHEME_BCD_ODD, digitsOddString );
         prim.setTypeOfDigits(GenericDigits._TOD_BGCI);
         assertTrue(digitsOddString.equals(prim.getDecodedDigits()));
         data = getOddData();
-        encodedData = prim.encode();
-        assertTrue(Arrays.equals(data, encodedData));
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -183,8 +190,10 @@ public class GenericDigitsTest {
         GenericDigitsImpl prim = new GenericDigitsImpl();
         prim.setDecodedDigits(GenericDigits._ENCODING_SCHEME_IA5, digitsIA5String);
         prim.setTypeOfDigits(GenericDigits._TOD_BGCI);
-
-        assertEquals(getIA5Data(), prim.encode());
+        
+        ByteBuf data=Unpooled.buffer();
+        prim.encode(data);
+        assertEquals(getIA5Data(), data);
     }
 
     @Test(groups = { "functional.decode", "parameter" })

@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnSegmentableMessageImpl;
 import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
@@ -48,11 +50,11 @@ abstract class SccpConnectionWithTransmitQueueImpl extends SccpConnectionBaseImp
         super.reset(reason);
     }
 
-    public void disconnect(ReleaseCause reason, byte[] data) throws Exception {
+    public void disconnect(ReleaseCause reason, ByteBuf data) throws Exception {
         super.disconnect(reason, data);
     }
 
-    public void refuse(RefusalCause reason, byte[] data) throws Exception {
+    public void refuse(RefusalCause reason, ByteBuf data) throws Exception {
         super.refuse(reason, data);
     }
 }

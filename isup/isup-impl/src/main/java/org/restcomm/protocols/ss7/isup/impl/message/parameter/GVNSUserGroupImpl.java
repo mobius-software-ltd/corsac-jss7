@@ -30,8 +30,7 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GVNSUserGroup;
@@ -43,8 +42,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GVNSUserGroup;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class GVNSUserGroupImpl extends AbstractNumber implements GVNSUserGroup {
-	private static final long serialVersionUID = 1L;
-
 	// FIXME: shoudl we add max octets ?
     private int gugLengthIndicator;
 
@@ -52,14 +49,8 @@ public class GVNSUserGroupImpl extends AbstractNumber implements GVNSUserGroup {
 
     }
 
-    public GVNSUserGroupImpl(byte[] representation) throws ParameterException {
+    public GVNSUserGroupImpl(ByteBuf representation) throws ParameterException {
         super(representation);
-
-    }
-
-    public GVNSUserGroupImpl(ByteArrayInputStream bis) throws ParameterException {
-        super(bis);
-
     }
 
     public GVNSUserGroupImpl(String address) {
@@ -67,49 +58,43 @@ public class GVNSUserGroupImpl extends AbstractNumber implements GVNSUserGroup {
 
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        return super.decode(b);
+    public void decode(ByteBuf b) throws ParameterException {
+        super.decode(b);
     }
 
-    public byte[] encode() throws ParameterException {
-        return super.encode();
+    public void encode(ByteBuf b) throws ParameterException {
+        super.encode(b);
     }
 
-    public int decodeHeader(ByteArrayInputStream bis) throws IllegalArgumentException {
-        int b = bis.read() & 0xff;
+    public void decodeHeader(ByteBuf buffer) throws IllegalArgumentException {
+        int b = buffer.readByte() & 0xff;
 
         this.oddFlag = (b & 0x80) >> 7;
-        this.gugLengthIndicator = b & 0x0F;
-        return 1;
+        this.gugLengthIndicator = b & 0x0F;        
     }
 
-    public int encodeHeader(ByteArrayOutputStream bos) {
+    public void encodeHeader(ByteBuf buffer) {
         int b = 0;
         // Even is 000000000 == 0
         boolean isOdd = this.oddFlag == _FLAG_ODD;
         if (isOdd)
             b |= 0x80;
         b |= this.gugLengthIndicator & 0x0F;
-        bos.write(b);
-        return 1;
+        buffer.writeByte(b);        
     }
 
-    public int decodeBody(ByteArrayInputStream bis) throws IllegalArgumentException {
-
-        return 0;
+    public void decodeBody(ByteBuf buffer) throws IllegalArgumentException {        
     }
 
-    public int encodeBody(ByteArrayOutputStream bos) {
-
-        return 0;
+    public void encodeBody(ByteBuf buffer) {        
     }
 
     public int getGugLengthIndicator() {
         return gugLengthIndicator;
     }
 
-    public int decodeDigits(ByteArrayInputStream bis) throws IllegalArgumentException, ParameterException {
-        return super.decodeDigits(bis, this.gugLengthIndicator);
+    public void decodeDigits(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
+        super.decodeDigits(buffer, this.gugLengthIndicator);
     }
 
     public void setAddress(String address) {

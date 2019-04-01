@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.m3ua.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication.CongestionLevel;
 
 /**
@@ -43,9 +45,9 @@ public interface ParameterFactory {
      * @param data message payload
      * @return Protocol data parameter
      */
-    ProtocolData createProtocolData(int opc, int dpc, int si, int ni, int mp, int sls, byte[] data);
+    ProtocolData createProtocolData(int opc, int dpc, int si, int ni, int mp, int sls, ByteBuf data);
 
-    ProtocolData createProtocolData(byte[] payloadData);
+    ProtocolData createProtocolData(ByteBuf payloadData);
 
     NetworkAppearance createNetworkAppearance(long netApp);
 
@@ -92,6 +94,6 @@ public interface ParameterFactory {
 
     Status createStatus(int type, int info);
 
-    HeartbeatData createHeartbeatData(byte[] data);
+    HeartbeatData createHeartbeatData(ByteBuf data);
 
 }

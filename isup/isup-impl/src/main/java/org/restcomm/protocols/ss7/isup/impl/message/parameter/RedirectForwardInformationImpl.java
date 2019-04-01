@@ -21,6 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,8 +39,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  *
  */
 public class RedirectForwardInformationImpl extends AbstractInformationParameterBaseImpl implements RedirectForwardInformation {
-	private static final long serialVersionUID = 1L;
-
 	private static final Map<Integer, Class<? extends AbstractInformationImpl>> tagMapping;
 
     static{
@@ -55,7 +55,7 @@ public class RedirectForwardInformationImpl extends AbstractInformationParameter
         // TODO Auto-generated constructor stub
     }
 
-    public RedirectForwardInformationImpl(byte[] data) throws ParameterException {
+    public RedirectForwardInformationImpl(ByteBuf data) throws ParameterException {
         decode(data);
     }
 

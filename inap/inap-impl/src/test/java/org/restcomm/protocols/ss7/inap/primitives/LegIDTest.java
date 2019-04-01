@@ -24,16 +24,18 @@ package org.restcomm.protocols.ss7.inap.primitives;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  *
@@ -52,40 +54,41 @@ public class LegIDTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        LegIDImpl legId = new LegIDImpl();
-        ais.readTag();
-        legId.decodeAll(ais);
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ReceivingLegIDImpl.class);
+    	parser.loadClass(SendingLegIDImpl.class);
+    	
+        ByteBuf data = Unpooled.wrappedBuffer(this.getData1());
+        ASNDecodeResult result=parser.decode(data);        
+        SendingLegIDImpl legId = (SendingLegIDImpl)result.getResult();
         assertNotNull(legId.getSendingSideID());
-        assertNull(legId.getReceivingSideID());
         assertEquals(legId.getSendingSideID(), LegType.leg2);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        legId = new LegIDImpl();
-        ais.readTag();
-        legId.decodeAll(ais);
-        assertNull(legId.getSendingSideID());
-        assertNotNull(legId.getReceivingSideID());
-        assertEquals(legId.getReceivingSideID(), LegType.leg1);
+        data =  Unpooled.wrappedBuffer(this.getData2());
+        result=parser.decode(data);        
+        ReceivingLegIDImpl rLegId=(ReceivingLegIDImpl)result.getResult();
+        assertNotNull(rLegId.getReceivingSideID());
+        assertEquals(rLegId.getReceivingSideID(), LegType.leg1);
 
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ReceivingLegIDImpl.class);
+    	parser.loadClass(SendingLegIDImpl.class);
+    	        
+    	SendingLegIDImpl legId = new SendingLegIDImpl(LegType.leg2);
+        ByteBuf data=parser.encode(legId);
+        byte[] encodedData=new byte[data.readableBytes()];
+        data.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData1()));
 
-        LegIDImpl legId = new LegIDImpl(true, LegType.leg2);
-        AsnOutputStream aos = new AsnOutputStream();
-        legId.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
-
-        legId = new LegIDImpl(false, LegType.leg1);
-        aos.reset();
-        legId.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
-
+        ReceivingLegIDImpl rLegId = new ReceivingLegIDImpl(LegType.leg1);
+        data=parser.encode(rLegId);
+        encodedData=new byte[data.readableBytes()];
+        data.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData2()));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "primitives" })

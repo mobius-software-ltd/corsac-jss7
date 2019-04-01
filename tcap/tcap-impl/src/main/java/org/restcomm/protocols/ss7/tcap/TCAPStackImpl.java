@@ -48,11 +48,6 @@ public class TCAPStackImpl implements TCAPStack {
     protected static final String USER_DIR_KEY = "user.dir";
     protected static final String PERSIST_FILE_NAME = "management.xml";
     
-    // default value of idle timeout and after TC_END remove of task.
-    public static final long _DIALOG_TIMEOUT = 60000;
-    public static final long _INVOKE_TIMEOUT = 30000;
-
-    public static final long _EMPTY_INVOKE_TIMEOUT = -1;
     // TCAP state data, it is used ONLY on client side
     protected TCAPProviderImpl tcapProvider;
     protected ScheduledExecutorService service;
@@ -71,7 +66,6 @@ public class TCAPStackImpl implements TCAPStack {
     // TODO: make this configurable
     private long dialogIdRangeStart = 1;
     private long dialogIdRangeEnd = Integer.MAX_VALUE;
-    private boolean previewMode = false;
     private ConcurrentHashMap<Integer,Integer> extraSsns = new ConcurrentHashMap<Integer,Integer>();
     private boolean doNotSendProtocolVersion = false;
     
@@ -241,19 +235,6 @@ public class TCAPStackImpl implements TCAPStack {
 
     public long getDialogIdRangeEnd() {
         return dialogIdRangeEnd;
-    }
-
-    public void setPreviewMode(boolean val) throws Exception {
-        if (this.started)
-            throw new Exception("PreviewMode parameter can be updated only when TCAP stack is NOT running");
-
-        previewMode = val;
-
-//        this.store();
-    }
-
-    public boolean getPreviewMode() {
-        return previewMode;
     }
 
     public void setExtraSsns(List<Integer> extraSsnsNew) throws Exception {

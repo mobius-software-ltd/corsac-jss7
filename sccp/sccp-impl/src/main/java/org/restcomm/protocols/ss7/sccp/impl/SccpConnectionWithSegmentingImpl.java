@@ -8,8 +8,9 @@ import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers {
@@ -57,22 +58,22 @@ abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers
         }
     }
 
-    public void send(byte[] data) throws Exception {
+    public void send(ByteBuf data) throws Exception {
 
-        if (data.length <= 255) {
+        if (data.readableBytes() <= 255) {
             sendDataMessageSegment(data, false);
         } else {
-            int chunks = (int) Math.ceil(data.length / 255.0);
+            int chunks = (int) Math.ceil(data.readableBytes() / 255.0);
             int pos = 0;
-            List<byte[]> chunkData = new ArrayList<>();
+            List<ByteBuf> chunkData = new ArrayList<>();
             for (int i = 0; i < chunks; i++) {
                 int copyBytes;
                 if (i != chunks - 1) {
-                    copyBytes = 255;
-                    chunkData.add(Arrays.copyOfRange(data, pos, pos + 255));
+                    copyBytes = 255;                    
+                    chunkData.add(data.slice(data.readerIndex() + pos, copyBytes));
                 } else {
-                    copyBytes = data.length - i * 255;
-                    chunkData.add(Arrays.copyOfRange(data, pos, pos + copyBytes));
+                    copyBytes = data.readableBytes() - i * 255;
+                    chunkData.add(data.slice(data.readerIndex() + pos, copyBytes));
                 }
 
                 pos += copyBytes;
@@ -83,8 +84,8 @@ abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers
         }
     }
 
-    private void sendDataMessageSegment(byte[] data, boolean moreData) throws Exception {
-        if (data.length > 255) {
+    private void sendDataMessageSegment(ByteBuf data, boolean moreData) throws Exception {
+        if (data.readableBytes() > 255) {
             logger.error("Message data is too lengthy");
             throw new IllegalArgumentException("Message data is too lengthy");
         }

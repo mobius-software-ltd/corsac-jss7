@@ -19,8 +19,6 @@ package org.restcomm.protocols.ss7.sctp.proxy;
  *
  */
 
-import org.mobicents.commons.HexTools;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.ReferenceCountUtil;
@@ -88,27 +86,10 @@ public class PayloadData {
     }
 
 	/**
-	 * @return the dataLength
-	 */
-	public int getDataLength() {
-		return dataLength;
-	}
-
-    /**
      * @return the byteBuf
      */
     public ByteBuf getByteBuf() {
         return byteBuf;
-    }
-
-    /**
-     * @return the data
-     */
-    public byte[] getData() {
-        byte[] array = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0, array);
-        ReferenceCountUtil.release(byteBuf);
-        return array;
     }
 
     public void releaseBuffer() {
@@ -171,7 +152,7 @@ public class PayloadData {
         StringBuffer sb = new StringBuffer();
         sb.append("PayloadData [dataLength=").append(dataLength).append(", complete=").append(complete).append(", unordered=")
                 .append(unordered).append(", payloadProtocolId=").append(payloadProtocolId).append(", streamNumber=")
-                .append(streamNumber).append(", data=\n").append(HexTools.dump(array, 0)).append("]");
+                .append(streamNumber).append("]");
         return sb.toString();
 	}
 

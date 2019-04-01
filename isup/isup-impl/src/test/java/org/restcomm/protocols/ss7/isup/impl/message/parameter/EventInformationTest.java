@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.EventInformationImpl;
@@ -45,11 +48,11 @@ public class EventInformationTest extends ParameterHarness {
 
     public EventInformationTest() {
         super();
-        super.goodBodies.add(new byte[] { 67 });
-        super.badBodies.add(new byte[2]);
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { 67 }));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[2]));
     }
 
-    private byte[] getBody(int _EI, boolean _RI) {
+    private ByteBuf getBody(int _EI, boolean _RI) {
         byte[] b = new byte[1];
         int v = _EI;
         if (_RI)
@@ -57,7 +60,7 @@ public class EventInformationTest extends ParameterHarness {
 
         b[0] = (byte) v;
 
-        return b;
+        return Unpooled.wrappedBuffer(b);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -77,7 +80,7 @@ public class EventInformationTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new EventInformationImpl(new byte[1]);
+        return new EventInformationImpl(Unpooled.wrappedBuffer(new byte[1]));
     }
 
 }

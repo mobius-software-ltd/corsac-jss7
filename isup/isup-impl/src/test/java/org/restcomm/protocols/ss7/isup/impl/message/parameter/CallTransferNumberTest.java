@@ -22,7 +22,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -41,28 +43,28 @@ public class CallTransferNumberTest extends ParameterHarness {
      * @throws IOException
      */
     public CallTransferNumberTest() throws IOException {
-        super.badBodies.add(new byte[1]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
 
-        super.goodBodies.add(getBody1());
-        super.goodBodies.add(getBody2());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody2()));
     }
 
-    private byte[] getBody1() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody1() throws IOException {
+        ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
-        bos.write(CallTransferNumberImpl._NAI_NATIONAL_SN);
-        bos.write((CallTransferNumberImpl._NPI_ISDN << 4) | (CallTransferNumberImpl._APRI_RESTRICTED << 2)
+        bos.writeByte(CallTransferNumberImpl._NAI_NATIONAL_SN);
+        bos.writeByte((CallTransferNumberImpl._NPI_ISDN << 4) | (CallTransferNumberImpl._APRI_RESTRICTED << 2)
                 | (CallTransferNumberImpl._SI_USER_PROVIDED_VERIFIED_FAILED));
-        bos.write(getEightDigits());
-        return bos.toByteArray();
+        bos.writeBytes(getEightDigits());
+        return bos;
     }
 
-    private byte[] getBody2() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(0x80 | CallTransferNumberImpl._NAI_NRNCWCDN);
-        bos.write((CallTransferNumberImpl._NPI_TELEX << 4) | (CallTransferNumberImpl._APRI_ALLOWED << 2) | (CallTransferNumberImpl._SI_NETWORK_PROVIDED));
-        bos.write(getSevenDigits());
-        return bos.toByteArray();
+    private ByteBuf getBody2() throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
+        bos.writeByte(0x80 | CallTransferNumberImpl._NAI_NRNCWCDN);
+        bos.writeByte((CallTransferNumberImpl._NPI_TELEX << 4) | (CallTransferNumberImpl._APRI_ALLOWED << 2) | (CallTransferNumberImpl._SI_NETWORK_PROVIDED));
+        bos.writeBytes(getSevenDigits());
+        return bos;
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })

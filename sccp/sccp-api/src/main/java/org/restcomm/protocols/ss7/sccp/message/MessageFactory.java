@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.sccp.parameter.Credit;
@@ -51,7 +53,7 @@ public interface MessageFactory extends Serializable {
      * @param importance This parameter is optional
      * @return
      */
-    SccpDataMessage createDataMessageClass0(SccpAddress calledParty, SccpAddress callingParty, byte[] data,
+    SccpDataMessage createDataMessageClass0(SccpAddress calledParty, SccpAddress callingParty, ByteBuf data,
             int localSsn, boolean returnMessageOnError, HopCounter hopCounter, Importance importance);
 
     /**
@@ -67,7 +69,7 @@ public interface MessageFactory extends Serializable {
      * @param importance This parameter is optional
      * @return
      */
-    SccpDataMessage createDataMessageClass1(SccpAddress calledParty, SccpAddress callingParty, byte[] data, int sls,
+    SccpDataMessage createDataMessageClass1(SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, int sls,
             int localSsn, boolean returnMessageOnError, HopCounter hopCounter, Importance importance);
 
     // SccpNoticeMessage createNoticeMessage(ReturnCause returnCause, int outgoingSls, SccpAddress calledParty,
@@ -83,7 +85,7 @@ public interface MessageFactory extends Serializable {
      * @param importance This parameter is optional
      * @return
      */
-    SccpConnCrMessage createConnectMessageClass2(int localSsn, SccpAddress calledParty, SccpAddress callingParty, byte[] data, Importance importance);
+    SccpConnCrMessage createConnectMessageClass2(int localSsn, SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, Importance importance);
 
     /**
      * Create a SCCP connection request message (class 3)
@@ -95,5 +97,5 @@ public interface MessageFactory extends Serializable {
      * @param importance This parameter is optional
      * @return
      */
-    SccpConnCrMessage createConnectMessageClass3(int localSsn, SccpAddress calledParty, SccpAddress callingParty, Credit credit, byte[] data, Importance importance);
+    SccpConnCrMessage createConnectMessageClass3(int localSsn, SccpAddress calledParty, SccpAddress callingParty, Credit credit, ByteBuf data, Importance importance);
 }

@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityInstructionIndicators;
 
@@ -40,8 +43,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ParameterCompatibilityInstructionIndicatorsImpl implements ParameterCompatibilityInstructionIndicators, Encodable {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _TURN_ON = 1;
     private static final int _TURN_OFF = 0;
 
@@ -57,10 +58,10 @@ public class ParameterCompatibilityInstructionIndicatorsImpl implements Paramete
 
     private boolean secondOctetPresenet;
 
-    private byte[] raw;
+    private ByteBuf raw;
     private boolean useAsRaw;
 
-    public ParameterCompatibilityInstructionIndicatorsImpl(final byte code, final byte[] b) throws ParameterException {
+    public ParameterCompatibilityInstructionIndicatorsImpl(final byte code, final ByteBuf b) throws ParameterException {
         super();
         this.parameterCode = code;
         decode(b);
@@ -78,7 +79,7 @@ public class ParameterCompatibilityInstructionIndicatorsImpl implements Paramete
      * @param userAsRaw
      * @throws ParameterException
      */
-    public ParameterCompatibilityInstructionIndicatorsImpl(final byte code, final byte[] b, final boolean userAsRaw) throws ParameterException {
+    public ParameterCompatibilityInstructionIndicatorsImpl(final byte code, final ByteBuf b, final boolean userAsRaw) throws ParameterException {
         super();
         this.parameterCode = code;
         this.raw = b;
@@ -114,67 +115,48 @@ public class ParameterCompatibilityInstructionIndicatorsImpl implements Paramete
         this.setBandInterworkingIndicator(bandInterworkingIndicator);
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length < 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() < 1) {
             throw new ParameterException("byte[] must  not be null and length must  be greater than  0");
         }
 
         // XXX: Cheat, we read only defined in Q763 2 octets, rest we ignore...
-        int index = 0;
-        int v = b[index];
-
-        try {
-            // watch extension byte
-            do {
-                v = b[index];
-                if (index == 0) {
-                    this.transitAtIntermediateExchangeIndicator = (v & 0x01) == _TURN_ON;
-                    this.releaseCallindicator = ((v >> 1) & 0x01) == _TURN_ON;
-                    this.sendNotificationIndicator = ((v >> 2) & 0x01) == _TURN_ON;
-                    this.discardMessageIndicator = ((v >> 3) & 0x01) == _TURN_ON;
-                    this.discardParameterIndicator = ((v >> 4) & 0x01) == _TURN_ON;
-                    this.passOnNotPossibleIndicator = ((v >> 5) & 0x03);
-                } else if (index == 1) {
-                    this.setBandInterworkingIndicator((v & 0x03));
-                } else {
-                    // if (logger.isLoggable(Level.FINEST)) {
-                    // logger.finest("Skipping octets with index[" + index + "] in " + this.getClass().getName() +
-                    // ". This should not be called for us .... Instead one should use raw");
-                    // }
-                    break;
-                }
-                index++;
-
-            } while ((((v >> 7) & 0x01) != 0));
-        } catch (ArrayIndexOutOfBoundsException aioobe) {
-            aioobe.printStackTrace();
-            throw new ParameterException("Failed to parse passed value due to wrong encoding.", aioobe);
-        }
-        return b.length;
+        int v = b.readByte();
+        this.transitAtIntermediateExchangeIndicator = (v & 0x01) == _TURN_ON;
+        this.releaseCallindicator = ((v >> 1) & 0x01) == _TURN_ON;
+        this.sendNotificationIndicator = ((v >> 2) & 0x01) == _TURN_ON;
+        this.discardMessageIndicator = ((v >> 3) & 0x01) == _TURN_ON;
+        this.discardParameterIndicator = ((v >> 4) & 0x01) == _TURN_ON;
+        this.passOnNotPossibleIndicator = ((v >> 5) & 0x03);
+        if((((v >> 7) & 0x01) == 0))
+        	return;
+        
+        v = b.readByte();
+        this.setBandInterworkingIndicator((v & 0x03));
     }
 
-    public byte[] encode() throws ParameterException {
+    public void encode(ByteBuf buffer) throws ParameterException {
         if (this.useAsRaw) {
             // FIXME: make sure we properly encode ext bit?
-            return this.raw;
+        	buffer.writeBytes(getRaw());
+        	return;
         }
-        byte[] b = null;
+        
+        byte b=0;
+        b |= (this.transitAtIntermediateExchangeIndicator ? _TURN_ON : _TURN_OFF);
+        b |= (this.releaseCallindicator ? _TURN_ON : _TURN_OFF) << 1;
+        b |= (this.sendNotificationIndicator ? _TURN_ON : _TURN_OFF) << 2;
+        b |= (this.discardMessageIndicator ? _TURN_ON : _TURN_OFF) << 3;
+        b |= (this.discardParameterIndicator ? _TURN_ON : _TURN_OFF) << 4;
+        b |= this.passOnNotPossibleIndicator << 5;
+        if (this.secondOctetPresenet) 
+        	b|=0x80;
+        
+        buffer.writeByte(b);
+        
         if (this.secondOctetPresenet) {
-            b = new byte[2];
-            b[1] = (byte) ((this.bandInterworkingIndicator & 0x03));
-            b[0] = (byte) 0x80;
-        } else {
-            b = new byte[1];
+        	buffer.writeByte((byte) ((this.bandInterworkingIndicator & 0x03)));            
         }
-
-        b[0] |= (this.transitAtIntermediateExchangeIndicator ? _TURN_ON : _TURN_OFF);
-        b[0] |= (this.releaseCallindicator ? _TURN_ON : _TURN_OFF) << 1;
-        b[0] |= (this.sendNotificationIndicator ? _TURN_ON : _TURN_OFF) << 2;
-        b[0] |= (this.discardMessageIndicator ? _TURN_ON : _TURN_OFF) << 3;
-        b[0] |= (this.discardParameterIndicator ? _TURN_ON : _TURN_OFF) << 4;
-        b[0] |= this.passOnNotPossibleIndicator << 5;
-
-        return b;
     }
 
     @Override
@@ -252,11 +234,14 @@ public class ParameterCompatibilityInstructionIndicatorsImpl implements Paramete
         this.secondOctetPresenet = secondOctetPresenet;
     }
 
-    public byte[] getRaw() {
-        return raw;
+    public ByteBuf getRaw() {
+    	if(raw==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(raw);
     }
 
-    public void setRaw(byte[] raw) {
+    public void setRaw(ByteBuf raw) {
         this.raw = raw;
     }
 
@@ -305,8 +290,9 @@ public class ParameterCompatibilityInstructionIndicatorsImpl implements Paramete
         if (raw != null) {
             sb.append(", ");
             sb.append("raw=");
-            for (int i1 = 1; i1 < raw.length; i1++) {
-                sb.append((int) raw[i1]);
+            ByteBuf curr=getRaw();
+            while(curr.readableBytes()>0) {
+                sb.append((int) curr.readByte());
                 sb.append(", ");
             }
         }

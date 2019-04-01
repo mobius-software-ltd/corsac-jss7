@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -29,20 +31,20 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
  */
 public class ByteArrayContainer {
 
-    private byte[] data;
+    private ByteBuf data;
 
     public ByteArrayContainer() {
     }
 
-    public ByteArrayContainer(byte[] val) {
+    public ByteArrayContainer(ByteBuf val) {
         this.data = val;
     }
 
-    public byte[] getData() {
+    public ByteBuf getData() {
         return data;
     }
 
-    public void setData(byte[] val) {
+    public void setData(ByteBuf val) {
         data = val;
     }
 }

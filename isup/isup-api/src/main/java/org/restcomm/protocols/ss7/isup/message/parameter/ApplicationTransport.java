@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:10:55:57 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -104,7 +106,7 @@ public interface ApplicationTransport extends ISUPParameter {
     void setSegmentationLocalReference(Byte v);
 
     //TODO hack this.
-    byte[] getEncapsulatedApplicationInformation();
+    ByteBuf getEncapsulatedApplicationInformation();
 
-    void setEncapsulatedApplicationInformation(byte[] v);
+    void setEncapsulatedApplicationInformation(ByteBuf v);
 }

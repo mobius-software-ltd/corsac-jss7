@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,8 +53,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.SuspendResumeIndicators
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class SuspendMessageImpl extends ISUPMessageImpl implements SuspendMessage {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _MANDATORY_VAR_COUNT = 0;
 
     static final int _INDEX_F_MessageType = 0;
@@ -85,30 +85,27 @@ public class SuspendMessageImpl extends ISUPMessageImpl implements SuspendMessag
         super.o_Parameters.put(_INDEX_O_EndOfOptionalParameters, _END_OF_OPTIONAL_PARAMETERS);
     }
 
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-
-        if (b.length - index > 0) {
-            byte[] si = new byte[1];
-            si[0]=b[index++];
+        super.decodeMandatoryParameters(parameterFactory, b);
+        if (b.readableBytes() > 0) {
+            ByteBuf si = b.slice(b.readerIndex(), 1);
             SuspendResumeIndicators sri = parameterFactory.createSuspendResumeIndicators();
             ((AbstractISUPParameter)sri).decode(si);
             this.setSuspendResumeIndicators(sri);
-            return index - localIndex;
+            b.skipBytes(1);
         } else {
             throw new ParameterException("byte[] must have atleast eight octets");
         }
     }
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
         // TODO Auto-generated method stub
 
     }
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         switch (parameterCode & 0xFF) {
             case CallReference._PARAMETER_CODE:

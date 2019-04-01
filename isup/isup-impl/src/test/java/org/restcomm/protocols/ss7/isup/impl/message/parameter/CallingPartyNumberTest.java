@@ -25,8 +25,8 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
@@ -59,16 +59,16 @@ public class CallingPartyNumberTest {
     public void tearDown() {
     }
 
-    private byte[] getData() {
-        return new byte[] { (byte) 0x83, (byte) 0xC2, 0x21, 0x43, 0x05 };
+    private ByteBuf getData() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 0x83, (byte) 0xC2, 0x21, 0x43, 0x05 });
     }
 
-    private byte[] getData2() {
-        return new byte[] { (byte) 0x03, (byte) 0xC2, 0x21, 0x43, 0x65 };
+    private ByteBuf getData2() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 0x03, (byte) 0xC2, 0x21, 0x43, 0x65 });
     }
 
-    private byte[] getData3() {
-        return new byte[] { (byte) 0x00, 0x0B };
+    private ByteBuf getData3() {
+        return Unpooled.wrappedBuffer(new byte[] { (byte) 0x00, 0x0B });
     }
 
     @Test(groups = { "functional.decode", "parameter" })
@@ -117,28 +117,31 @@ public class CallingPartyNumberTest {
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int numberIncompleteIndicator,
         // int addressRepresentationREstrictedIndicator, int screeningIndicator
 
-        byte[] data = getData();
-        byte[] encodedData = prim.encode();
+        ByteBuf data = getData();
+        ByteBuf encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim = new CallingPartyNumberImpl(NAINumber._NAI_NATIONAL_SN, "123456", CallingPartyNumber._NPI_TELEX,
                 CallingPartyNumber._NI_INCOMPLETE, CallingPartyNumber._APRI_ALLOWED,
                 CallingPartyNumber._SI_USER_PROVIDED_FAILED);
 
         data = getData2();
-        encodedData = prim.encode();
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
 
         prim = new CallingPartyNumberImpl(NAINumber._NAI_NATIONAL_SN, "123456", CallingPartyNumber._NPI_TELEX,
                 CallingPartyNumber._NI_INCOMPLETE, CallingPartyNumber._APRI_NOT_AVAILABLE,
                 CallingPartyNumber._SI_USER_PROVIDED_FAILED);
 
         data = getData3();
-        encodedData = prim.encode();
+        encodedData=Unpooled.buffer();
+        prim.encode(encodedData);
 
-        assertTrue(Arrays.equals(data, encodedData));
+        assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "parameter" })

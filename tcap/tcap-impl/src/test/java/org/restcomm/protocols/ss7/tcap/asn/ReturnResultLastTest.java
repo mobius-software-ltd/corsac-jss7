@@ -26,23 +26,25 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcap.asn.EncodeException;
-import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -53,20 +55,26 @@ import org.testng.annotations.Test;
 @Test(groups = { "asn" })
 public class ReturnResultLastTest {
 
+	@BeforeClass
+	public void setUp() {
+		ASNGeneric.clear(ASNReturnResultParameterImpl.class);
+		ASNGeneric.registerAlternative(ASNReturnResultParameterImpl.class, TCEndTestASN.class);		
+	}
+	
     private byte[] getLDataEmpty() {
-        return new byte[] { (byte) 162, 3, 2, 1, 0 };
+        return new byte[] { 108, 5, (byte) 162, 3, 2, 1, 0 };
     }
 
     private byte[] getNLDataEmpty() {
-        return new byte[] { (byte) 167, 3, 2, 1, 0 };
+        return new byte[] { 108, 5, (byte) 167, 3, 2, 1, 0 };
     }
 
     private byte[] getLDataCommon() {
-        return new byte[] { (byte) 162, 19, 2, 1, 1, 48, 14, 2, 1, 45, 48, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        return new byte[] { 108, 21, (byte) 162, 19, 2, 1, 1, 48, 14, 2, 1, 45, 48, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     }
 
     private byte[] getNLDataCommon() {
-        return new byte[] { (byte) 167, 19, 2, 1, 1, 48, 14, 2, 1, 45, 48, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        return new byte[] { 108, 21, (byte) 167, 19, 2, 1, 1, 48, 14, 2, 1, 45, 48, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     }
 
     private byte[] getParameterData() {
@@ -74,122 +82,110 @@ public class ReturnResultLastTest {
     }
 
     @Test(groups = { "functional.decode" })
-    public void testDecodeWithParaSequ() throws IOException, ParseException {
-
+    public void testDecodeWithParaSequ() throws ASNException {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ComponentImpl.class);
+    	
         byte[] b = this.getLDataEmpty();
-        AsnInputStream asnIs = new AsnInputStream(b);
-        Component comp = TcapFactory.createComponent(asnIs);
+        Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        ComponentImpl comp = (ComponentImpl)output;
         assertEquals(ComponentType.ReturnResultLast, comp.getType());
 
-        ReturnResultLast rrl = (ReturnResultLast) comp;
+        ReturnResultLastImpl rrl = comp.getReturnResultLast();
         assertTrue(0L == rrl.getInvokeId());
         OperationCode oc = rrl.getOperationCode();
         assertNull(oc);
-        Parameter p = rrl.getParameter();
-        assertNull(p);
+        assertNull(rrl.getParameter());
 
         b = this.getNLDataEmpty();
-        asnIs = new AsnInputStream(b);
-        comp = TcapFactory.createComponent(asnIs);
+        output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        comp = (ComponentImpl)output;
         assertEquals(ComponentType.ReturnResult, comp.getType());
 
-        ReturnResult rr = (ReturnResult) comp;
+        ReturnResultImpl rr = comp.getReturnResult();
         assertTrue(0L == rr.getInvokeId());
         oc = rr.getOperationCode();
         assertNull(oc);
-        p = rr.getParameter();
-        assertNull(p);
+        assertNull(rr.getParameter());
 
         b = this.getLDataCommon();
-        asnIs = new AsnInputStream(b);
-        comp = TcapFactory.createComponent(asnIs);
+        output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        comp = (ComponentImpl)output;
         assertEquals(ComponentType.ReturnResultLast, comp.getType());
 
-        rrl = (ReturnResultLast) comp;
+        rrl = comp.getReturnResultLast();
         assertTrue(1L == rrl.getInvokeId());
         oc = rrl.getOperationCode();
         assertNotNull(oc);
-        assertTrue(45 == oc.getLocalOperationCode());
-        p = rrl.getParameter();
+        assertTrue(45 == ((LocalOperationCodeImpl)oc).getLocalOperationCode());
+        Object p = rrl.getParameter();
         assertNotNull(p);
-        assertEquals(Tag.CLASS_UNIVERSAL, p.getTagClass());
-        assertEquals(false, p.isPrimitive());
-        assertEquals(Tag.SEQUENCE, p.getTag());
-        assertTrue(Arrays.equals(this.getParameterData(), p.getData()));
+        assertTrue(p instanceof TCEndTestASN);
+        assertTrue(Arrays.equals(this.getParameterData(), ((TCEndTestASN)p).getValue()));
 
         b = this.getNLDataCommon();
-        asnIs = new AsnInputStream(b);
-        comp = TcapFactory.createComponent(asnIs);
+        output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        comp = (ComponentImpl)output;
         assertEquals(ComponentType.ReturnResult, comp.getType());
 
-        rr = (ReturnResult) comp;
+        rr = comp.getReturnResult();
         assertTrue(1L == rr.getInvokeId());
         oc = rr.getOperationCode();
         assertNotNull(oc);
-        assertTrue(45 == oc.getLocalOperationCode());
+        assertTrue(45 == ((LocalOperationCodeImpl)oc).getLocalOperationCode());
         p = rr.getParameter();
         assertNotNull(p);
-        assertEquals(Tag.CLASS_UNIVERSAL, p.getTagClass());
-        assertEquals(false, p.isPrimitive());
-        assertEquals(Tag.SEQUENCE, p.getTag());
-        assertTrue(Arrays.equals(this.getParameterData(), p.getData()));
+        assertTrue(p instanceof TCEndTestASN);
+        assertTrue(Arrays.equals(this.getParameterData(), ((TCEndTestASN)p).getValue()));        
     }
 
     @Test(groups = { "functional.decode" })
-    public void testEncode() throws IOException, EncodeException {
-
+    public void testEncode() throws ASNException {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ComponentImpl.class);
+    	
         byte[] expected = this.getLDataEmpty();
-        ReturnResultLast rrl = TcapFactory.createComponentReturnResultLast();
-        rrl.setInvokeId(0l);
+        ComponentImpl rrl = TcapFactory.createComponentReturnResultLast();
+        rrl.getReturnResultLast().setInvokeId(0l);
 
-        AsnOutputStream asnos = new AsnOutputStream();
-        rrl.encode(asnos);
-        byte[] encodedData = asnos.toByteArray();
+        ByteBuf buffer=parser.encode(rrl);
+        byte[] encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getNLDataEmpty();
-        ReturnResult rr = TcapFactory.createComponentReturnResult();
-        rr.setInvokeId(0l);
+        ComponentImpl rr = TcapFactory.createComponentReturnResult();
+        rr.getReturnResult().setInvokeId(0l);
 
-        asnos = new AsnOutputStream();
-        rr.encode(asnos);
-        encodedData = asnos.toByteArray();
+        buffer=parser.encode(rr);
+        encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getLDataCommon();
         rrl = TcapFactory.createComponentReturnResultLast();
-        rrl.setInvokeId(1l);
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode(45L);
-        rrl.setOperationCode(oc);
-        Parameter pm = TcapFactory.createParameter();
-        pm.setTagClass(Tag.CLASS_UNIVERSAL);
-        pm.setTag(Tag.SEQUENCE);
-        pm.setPrimitive(false);
-        pm.setData(getParameterData());
-        rrl.setParameter(pm);
+        rrl.getReturnResultLast().setInvokeId(1l);
+        OperationCode oc = TcapFactory.createLocalOperationCode();
+        ((LocalOperationCodeImpl)oc).setLocalOperationCode(45L);
+        rrl.getReturnResultLast().setOperationCode(oc);
+        TCEndTestASN parameter=new TCEndTestASN();
+        parameter.setValue(getParameterData());
+        rrl.getReturnResultLast().setParameter(parameter);
 
-        asnos = new AsnOutputStream();
-        rrl.encode(asnos);
-        encodedData = asnos.toByteArray();
+        buffer=parser.encode(rrl);
+        encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getNLDataCommon();
         rr = TcapFactory.createComponentReturnResult();
-        rr.setInvokeId(1l);
-        oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode(45L);
-        rr.setOperationCode(oc);
-        pm = TcapFactory.createParameter();
-        pm.setTagClass(Tag.CLASS_UNIVERSAL);
-        pm.setTag(Tag.SEQUENCE);
-        pm.setPrimitive(false);
-        pm.setData(getParameterData());
-        rr.setParameter(pm);
+        rr.getReturnResult().setInvokeId(1l);
+        oc = TcapFactory.createLocalOperationCode();
+        ((LocalOperationCodeImpl)oc).setLocalOperationCode(45L);
+        rr.getReturnResult().setOperationCode(oc);
+        parameter=new TCEndTestASN();
+        parameter.setValue(getParameterData());
+        rr.getReturnResult().setParameter(parameter);
 
-        asnos = new AsnOutputStream();
-        rr.encode(asnos);
-        encodedData = asnos.toByteArray();
+        buffer=parser.encode(rr);
+        encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
     }
 

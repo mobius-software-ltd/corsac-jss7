@@ -21,13 +21,11 @@
 
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
-import java.io.Serializable;
-
 /**
  * @author baranowb
  *
  */
-public interface PivotReason extends Serializable{
+public interface PivotReason {
 
     byte REASON_UKNOWN = 0;
     byte REASON_SERVICE_PROVIDER_PORTABILITY = 0x01;

@@ -24,6 +24,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -246,7 +248,7 @@ public abstract class SccpConnectionBaseImpl {
         reset(reason);
     }
 
-    public void disconnect(ReleaseCause reason, byte[] data) throws Exception {
+    public void disconnect(ReleaseCause reason, ByteBuf data) throws Exception {
         if (reason.getValue().isError()) {
             logger.warn(String.format("Disconnecting connection to DPC=%d, SSN=%d, DLR=%s due to %s", getRemoteDpc(),
                     getRemoteSsn(), getRemoteReference(), reason));
@@ -270,7 +272,7 @@ public abstract class SccpConnectionBaseImpl {
         }
     }
 
-    public void refuse(RefusalCause reason, byte[] data) throws Exception {
+    public void refuse(RefusalCause reason, ByteBuf data) throws Exception {
         if (logger.isDebugEnabled()) {
             logger.debug(String.format("Refusing connection from DPC=%d, SSN=%d, DLR=%s due to %s", getRemoteDpc(),
                     getRemoteSsn(), getRemoteReference(), reason));
@@ -284,7 +286,7 @@ public abstract class SccpConnectionBaseImpl {
         stack.removeConnection(getLocalReference());
     }
 
-    public void confirm(SccpAddress respondingAddress, Credit credit, byte[] data) throws Exception {
+    public void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data) throws Exception {
         if (logger.isDebugEnabled()) {
             logger.debug(String.format("Confirming connection from DPC=%d, SSN=%d, DLR=%s", getRemoteDpc(),
                     getRemoteSsn(), getRemoteReference()));
@@ -366,5 +368,5 @@ public abstract class SccpConnectionBaseImpl {
 
     public abstract void prepareMessageForSending(SccpConnSegmentableMessageImpl message);
     protected abstract void prepareMessageForSending(SccpConnItMessageImpl message);
-    protected abstract void callListenerOnData(byte[] data);
+    protected abstract void callListenerOnData(ByteBuf data);
 }

@@ -28,6 +28,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -584,8 +585,8 @@ public class RemSgFSMTest {
         testAssociation2.clearRxMessages();
 
         for (int sls = 0; sls < 256; sls++) {
-            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, new byte[] {
-                    1, 2, 3, 4 });
+            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
+                    1, 2, 3, 4 }));
             clientM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -621,8 +622,8 @@ public class RemSgFSMTest {
         testAssociation2.clearRxMessages();
 
         for (int sls = 0; sls < 256; sls++) {
-            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, new byte[] {
-                    1, 2, 3, 4 });
+            Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
+                    1, 2, 3, 4 }));
             clientM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1381,7 +1382,7 @@ public class RemSgFSMTest {
         PayloadDataImpl payload = (PayloadDataImpl) messageFactory.createMessage(MessageClass.TRANSFER_MESSAGES,
                 MessageType.PAYLOAD);
         ProtocolDataImpl p1 = (ProtocolDataImpl) parmFactory.createProtocolData(1408, 123, 3, 1, 0, 1,
-                new byte[] { 1, 2, 3, 4 });
+        		Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
         payload.setRoutingContext(rc);
         payload.setData(p1);
 

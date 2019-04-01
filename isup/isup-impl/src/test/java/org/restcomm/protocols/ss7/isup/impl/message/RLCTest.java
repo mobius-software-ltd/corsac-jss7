@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.ReleaseCompleteMessage;
@@ -37,7 +40,7 @@ import org.testng.annotations.Test;
  */
 public class RLCTest extends MessageHarness {
 
-    protected byte[] getDefaultBody() {
+    protected ByteBuf getDefaultBody() {
         // FIXME: for now we strip MTP part
         byte[] message = {
 
@@ -45,7 +48,7 @@ public class RLCTest extends MessageHarness {
 
         };
 
-        return message;
+        return Unpooled.wrappedBuffer(message);
     }
 
     protected ISUPMessage getDefaultMessage() {
@@ -59,7 +62,8 @@ public class RLCTest extends MessageHarness {
         final ReleaseCompleteMessage releaseCompleteMessage = super.messageFactory.createRLC(1);
         releaseCompleteMessage.setCauseIndicators(causeIndicators);
         releaseCompleteMessage.setSls(2);
-        final byte[] encoded = ((AbstractISUPMessage) releaseCompleteMessage).encode();
+        final ByteBuf encoded = Unpooled.buffer();
+        ((AbstractISUPMessage) releaseCompleteMessage).encode(encoded);
         final AbstractISUPMessage msg = (AbstractISUPMessage) getDefaultMessage();
         msg.decode(encoded, messageFactory,parameterFactory);
         final ReleaseCompleteMessage decodedRLC = (ReleaseCompleteMessage) msg;

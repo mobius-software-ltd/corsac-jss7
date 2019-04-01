@@ -30,8 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.NetworkSpecificFacility;
@@ -43,8 +43,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NetworkSpecificFacility
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class NetworkSpecificFacilityImpl extends AbstractISUPParameter implements NetworkSpecificFacility {
-	private static final long serialVersionUID = 1L;
-
 	/**
      * This tells us to include byte 1a - sets lengthOfNetworkIdentification to 1+networkdIdentification.length
      */
@@ -55,10 +53,10 @@ public class NetworkSpecificFacilityImpl extends AbstractISUPParameter implement
     private int networkIdentificationPlan;
     // FIXME: ext bit: indicated as to be used as in 3.25 but on specs id
     // different...
-    private byte[] networkIdentification;
-    private byte[] networkSpecificaFacilityIndicator;
+    private ByteBuf networkIdentification;
+    private ByteBuf networkSpecificaFacilityIndicator;
 
-    public NetworkSpecificFacilityImpl(byte[] b) throws ParameterException {
+    public NetworkSpecificFacilityImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -69,7 +67,7 @@ public class NetworkSpecificFacilityImpl extends AbstractISUPParameter implement
     }
 
     public NetworkSpecificFacilityImpl(boolean includeNetworkIdentification, byte typeOfNetworkIdentification,
-            byte networkdIdentificationPlan, byte[] networkdIdentification, byte[] networkSpecificaFacilityIndicator) {
+            byte networkdIdentificationPlan, ByteBuf networkdIdentification, ByteBuf networkSpecificaFacilityIndicator) {
         super();
         this.includeNetworkIdentification = includeNetworkIdentification;
         this.typeOfNetworkIdentification = typeOfNetworkIdentification;
@@ -78,87 +76,67 @@ public class NetworkSpecificFacilityImpl extends AbstractISUPParameter implement
         this.networkSpecificaFacilityIndicator = networkSpecificaFacilityIndicator;
     }
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length < 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() < 1) {
             throw new ParameterException("byte[] must nto be null or have length greater than 1");
         }
         // try {
-        int shift = 0;
-        this.lengthOfNetworkIdentification = b[shift++];
+        this.lengthOfNetworkIdentification = b.readByte();
 
         // FIXME: We ignore ext bit, we dont need it ? ?????
-        this.typeOfNetworkIdentification = (byte) ((b[shift] >> 4) & 0x07);
-        this.networkIdentificationPlan = (byte) (b[shift] & 0x0F);
-        shift++;
+        byte curr=b.readByte();
+        this.typeOfNetworkIdentification = (byte) ((curr >> 4) & 0x07);
+        this.networkIdentificationPlan = (byte) (curr & 0x0F);
+        
         if (this.lengthOfNetworkIdentification > 0) {
-
-            byte[] _networkId = new byte[this.lengthOfNetworkIdentification];
-            for (int i = 0; i < this.lengthOfNetworkIdentification; i++, shift++) {
-
-                _networkId[i] = (byte) (b[shift] | 0x80);
+        	ByteBuf _networkId=Unpooled.buffer(this.lengthOfNetworkIdentification);
+            for (int i = 0; i < this.lengthOfNetworkIdentification-1; i++) {
+                _networkId.writeByte((byte) (b.readByte() | 0x80));
             }
 
             // now lets set it.
-            if (_networkId.length > 0) {
-
-                _networkId[_networkId.length - 1] = (byte) (_networkId[_networkId.length - 1] & 0x7F);
-            }
-
+            _networkId.writeByte((byte) (b.readByte() & 0x7F));            
             this.setNetworkIdentification(_networkId);
         }
 
-        if (shift + 1 == b.length) {
+        if (b.readableBytes()==0) {
             throw new ParameterException("There is no facility indicator. This part is mandatory!!!");
         }
-        byte[] _facility = new byte[b.length - shift - 1];
-        // -1 cause shift counts from 0
-        System.arraycopy(b, shift, _facility, 0, b.length - shift - 1);
-        this.setNetworkSpecificaFacilityIndicator(_facility);
-        return b.length;
-        // } catch (ArrayIndexOutOfBoundsException aioobe) {
-        // throw new IllegalArgumentException("Failed to parse due to: ",
-        // aioobe);
-        // }
+        
+        ByteBuf _facility=b.slice(b.readerIndex(), b.readableBytes());
+        this.setNetworkSpecificaFacilityIndicator(_facility);        
     }
 
-    public byte[] encode() throws ParameterException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-        bos.write(this.lengthOfNetworkIdentification);
+    public void encode(ByteBuf buffer) throws ParameterException {
+        buffer.writeByte(this.lengthOfNetworkIdentification);
         // This should always be set to true if there is network ID
         if (this.includeNetworkIdentification) {
             int b1 = 0;
             b1 = ((this.typeOfNetworkIdentification & 0x07) << 4);
             b1 |= (this.networkIdentificationPlan & 0x0F);
 
-            if (this.networkIdentification != null && this.networkIdentification.length > 0) {
+            ByteBuf curr=getNetworkIdentification();
+            if (curr != null && curr.readableBytes() > 0) {
                 b1 |= 0x80;
-                bos.write(b1);
-                for (int index = 0; index < this.networkIdentification.length; index++) {
-                    if (index == this.networkIdentification.length - 1) {
-
-                        bos.write(this.networkIdentification[index] & 0x7F);
-
+                buffer.writeByte(b1);
+                while(curr.readableBytes()>0) {
+                	byte currByte=curr.readByte();
+                    if (curr.readableBytes()==0) {
+                        buffer.writeByte(currByte & 0x7F);
                     } else {
-                        bos.write(this.networkIdentification[index] | (0x01 << 7));
-
+                    	buffer.writeByte(currByte | (0x01 << 7));
                     }
                 }
             } else {
-                bos.write(b1 & 0x7F);
+            	buffer.writeByte(b1 & 0x7F);
             }
         }
 
         if (this.networkSpecificaFacilityIndicator == null) {
             throw new IllegalArgumentException("Network Specific Facility must not be null");
         }
-        try {
-            bos.write(this.networkSpecificaFacilityIndicator);
-        } catch (IOException e) {
-            throw new ParameterException(e);
-        }
-
-        return bos.toByteArray();
+        
+        buffer.writeBytes(getNetworkSpecificaFacilityIndicator());
     }
 
     public boolean isIncludeNetworkIdentification() {
@@ -185,13 +163,16 @@ public class NetworkSpecificFacilityImpl extends AbstractISUPParameter implement
         this.networkIdentificationPlan = networkdIdentificationPlan;
     }
 
-    public byte[] getNetworkIdentification() {
-        return networkIdentification;
+    public ByteBuf getNetworkIdentification() {
+    	if(networkIdentification==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(networkIdentification);
     }
 
-    public void setNetworkIdentification(byte[] networkdIdentification) {
+    public void setNetworkIdentification(ByteBuf networkdIdentification) {
 
-        if (networkdIdentification != null && networkdIdentification.length > Byte.MAX_VALUE * 2 - 1) {
+        if (networkdIdentification != null && networkdIdentification.readableBytes() > Byte.MAX_VALUE * 2 - 1) {
             throw new IllegalArgumentException("Length of Network Identification part must not be greater than: "
                     + (Byte.MAX_VALUE * 2 - 1));
         }
@@ -201,11 +182,14 @@ public class NetworkSpecificFacilityImpl extends AbstractISUPParameter implement
 
     }
 
-    public byte[] getNetworkSpecificaFacilityIndicator() {
-        return networkSpecificaFacilityIndicator;
+    public ByteBuf getNetworkSpecificaFacilityIndicator() {
+    	if(networkSpecificaFacilityIndicator==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(networkSpecificaFacilityIndicator);
     }
 
-    public void setNetworkSpecificaFacilityIndicator(byte[] networkSpecificaFacilityIndicator) {
+    public void setNetworkSpecificaFacilityIndicator(ByteBuf networkSpecificaFacilityIndicator) {
         this.networkSpecificaFacilityIndicator = networkSpecificaFacilityIndicator;
     }
 

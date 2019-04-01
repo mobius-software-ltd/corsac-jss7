@@ -38,7 +38,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -60,26 +61,25 @@ public class SccpConnCrefMessageTest {
     public void tearDown() {
     }
 
-    public byte[] getDataCrefNoOptParams() {
-        return new byte[] { 0x03, 0x00, 0x00, 0x02, 0x09, 0x00 };
+    public ByteBuf getDataCrefNoOptParams() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x03, 0x00, 0x00, 0x02, 0x09, 0x00 });
     }
 
-    public byte[] getDataCrefOneOptParam() {
-        return new byte[] { 0x03, 0x00, 0x00, 0x02, 0x09, 0x01, 0x03, 0x02, 0x42, 0x08, 0x00 };
-
+    public ByteBuf getDataCrefOneOptParam() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x03, 0x00, 0x00, 0x02, 0x09, 0x01, 0x03, 0x02, 0x42, 0x08, 0x00 });
     }
 
-    public byte[] getDataCrefAllParams() {
-        return new byte[] {
+    public ByteBuf getDataCrefAllParams() {
+        return Unpooled.wrappedBuffer(new byte[] {
                 0x03, 0x00, 0x00, 0x02, 0x09, 0x01, 0x03, 0x02, 0x42, 0x08, 0x0F, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05, 0x12, 0x01, 0x07, 0x00
-        };
+        });
     }
 
     @Test(groups = { "SccpMessage", "functional.decode" })
     public void testDecode() throws Exception {
         // ---- no optional params
-        ByteArrayInputStream buf = new ByteArrayInputStream(this.getDataCrefNoOptParams());
-        int type = buf.read();
+        ByteBuf buf = this.getDataCrefNoOptParams();
+        int type = buf.readByte();
         SccpConnCrefMessageImpl testObjectDecoded = (SccpConnCrefMessageImpl) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
 
         assertNotNull(testObjectDecoded);
@@ -87,8 +87,8 @@ public class SccpConnCrefMessageTest {
         assertEquals(testObjectDecoded.getRefusalCause().getValue(), RefusalCauseValue.ACCESS_CONGESTION);
 
         // ---- one optional param
-        buf = new ByteArrayInputStream(this.getDataCrefOneOptParam());
-        type = buf.read();
+        buf = this.getDataCrefOneOptParam();
+        type = buf.readByte();
         testObjectDecoded = (SccpConnCrefMessageImpl) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
 
         assertNotNull(testObjectDecoded);
@@ -101,8 +101,8 @@ public class SccpConnCrefMessageTest {
 
 
         // ---- all param
-        buf = new ByteArrayInputStream(this.getDataCrefAllParams());
-        type = buf.read();
+        buf = this.getDataCrefAllParams();
+        type = buf.readByte();
         testObjectDecoded = (SccpConnCrefMessageImpl) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
 
         assertNotNull(testObjectDecoded);
@@ -112,7 +112,7 @@ public class SccpConnCrefMessageTest {
         assertEquals(testObjectDecoded.getCalledPartyAddress().getSignalingPointCode(), 0);
         assertEquals(testObjectDecoded.getCalledPartyAddress().getSubsystemNumber(), 8);
         assertNull(testObjectDecoded.getCalledPartyAddress().getGlobalTitle());
-        assertEquals(testObjectDecoded.getUserData(), new byte[]{1, 2, 3, 4, 5});
+        MessageSegmentationTest.assertByteBufs(testObjectDecoded.getUserData(), Unpooled.wrappedBuffer(new byte[]{1, 2, 3, 4, 5}));
         assertEquals(testObjectDecoded.getImportance().getValue(), 7);
     }
 
@@ -142,11 +142,11 @@ public class SccpConnCrefMessageTest {
         original.setDestinationLocalReferenceNumber(new LocalReferenceImpl(2));
         original.setRefusalCause(new RefusalCauseImpl(RefusalCauseValue.ACCESS_CONGESTION));
         original.setCalledPartyAddress(stack.getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null,0,  8));
-        original.setUserData(new byte[] {1, 2, 3, 4, 5});
+        original.setUserData(Unpooled.wrappedBuffer(new byte[] {1, 2, 3, 4, 5}));
         original.setImportance(new ImportanceImpl((byte)15));
 
         encoded = original.encode(stack, LongMessageRuleType.LONG_MESSAGE_FORBBIDEN, 272, logger, false, SccpProtocolVersion.ITU);
 
-        assertEquals(encoded.getSolidData(), this.getDataCrefAllParams());
+        MessageSegmentationTest.assertByteBufs(encoded.getSolidData(), this.getDataCrefAllParams());
     }
 }

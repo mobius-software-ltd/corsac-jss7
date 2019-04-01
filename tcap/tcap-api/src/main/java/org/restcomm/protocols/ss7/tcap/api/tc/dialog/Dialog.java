@@ -32,9 +32,10 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 
 /**
  * Interface for class representing Dialog/Transaction.
@@ -99,14 +100,14 @@ public interface Dialog extends Serializable {
      *
      * @return the acn
      */
-    ApplicationContextName getApplicationContextName();
+    ApplicationContextNameImpl getApplicationContextName();
 
     /**
      * Last sent/received UI
      *
      * @return the ui
      */
-    UserInformation getUserInformation();
+    UserInformationImpl getUserInformation();
 
     /**
      * returns new, unique for this dialog, invocation id to be used in TC_INVOKE. If there is no free invoke id, it returns
@@ -186,7 +187,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendComponent(Component componentRequest) throws TCAPSendException;
+    void sendComponent(ComponentImpl componentRequest) throws TCAPSendException;
 
     /**
      * If a TCAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this
@@ -268,43 +269,7 @@ public interface Dialog extends Serializable {
      *
      * @return
      */
-    int getMaxUserDataLength();
-
-    /**
-     * Return the TCAP message length (in bytes) that will be after encoding This value must not exceed getMaxUserDataLength()
-     * value
-     *
-     * @param event
-     * @return
-     */
-    int getDataLength(TCBeginRequest event) throws TCAPSendException;
-
-    /**
-     * Return the TCAP message length (in bytes) that will be after encoding This value must not exceed getMaxUserDataLength()
-     * value
-     *
-     * @param event
-     * @return
-     */
-    int getDataLength(TCContinueRequest event) throws TCAPSendException;
-
-    /**
-     * Return the TCAP message length (in bytes) that will be after encoding This value must not exceed getMaxUserDataLength()
-     * value
-     *
-     * @param event
-     * @return
-     */
-    int getDataLength(TCEndRequest event) throws TCAPSendException;
-
-    /**
-     * Return the TCAP message length (in bytes) that will be after encoding This value must not exceed getMaxUserDataLength()
-     * value
-     *
-     * @param event
-     * @return
-     */
-    int getDataLength(TCUniRequest event) throws TCAPSendException;
+    int getMaxUserDataLength();    
 
     /**
      * Getting from the Dialog a user-defined object to save relating to the Dialog information
@@ -319,12 +284,6 @@ public interface Dialog extends Serializable {
      * @param userObject
      */
     void setUserObject(Object userObject);
-
-    /**
-     *
-     * @return Returns if a dialog works in preview mode
-     */
-    boolean getPreviewMode();
 
     /**
     *
@@ -344,4 +303,7 @@ public interface Dialog extends Serializable {
      */
     long getStartTimeDialog();
 
+    public void operationEnded(InvokeImpl tcInvokeRequestImpl);
+
+    public void operationTimedOut(InvokeImpl invoke);    
 }

@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +135,7 @@ public class User extends BaseSccpListener implements SccpListener {
         // udt.setData(new byte[10]);
         // provider.send(udt,1);
 
-        SccpDataMessage udt = messageFactory.createDataMessageClass0(dest, address, new byte[10], ssn, false, null, null);
+        SccpDataMessage udt = messageFactory.createDataMessageClass0(dest, address, Unpooled.wrappedBuffer(new byte[10]), ssn, false, null, null);
         provider.send(udt);
     }
 
@@ -206,19 +209,21 @@ public class User extends BaseSccpListener implements SccpListener {
     }
 
     @Override
-    public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress, ProtocolClass clazz, Credit credit, byte[] data, Importance importance) throws Exception {
+    public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress, ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
         if (!refuseConnections) {
             conn.confirm(calledAddress, (options.confirmCredit != null) ? options.confirmCredit : credit, options.sendConfirmData);
         } else {
-            conn.refuse(new RefusalCauseImpl(RefusalCauseValue.END_USER_ORIGINATED), new byte[] { 0x31, 0x32, 0x33, 0x34 });
+            conn.refuse(new RefusalCauseImpl(RefusalCauseValue.END_USER_ORIGINATED), Unpooled.wrappedBuffer(new byte[] { 0x31, 0x32, 0x33, 0x34 }));
             stats.refusedCount++;
         }
     }
 
     @Override
-    public void onConnectConfirm(SccpConnection conn, byte[] data) {
-        if (data != null && data.length > 0) {
-            this.receivedData.add(data);
+    public void onConnectConfirm(SccpConnection conn, ByteBuf data) {
+        if (data != null && data.readableBytes() > 0) {
+        	byte[] dataArr=new byte[data.readableBytes()];
+    		data.readBytes(dataArr);
+    		this.receivedData.add(dataArr);
         }
     }
 
@@ -233,12 +238,12 @@ public class User extends BaseSccpListener implements SccpListener {
     }
 
     @Override
-    public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, byte[] data) {
+    public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data) {
         stats.refusedCount++;
     }
 
     @Override
-    public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, byte[] data) {
+    public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data) {
         stats.releaseCause = reason;
     }
 
@@ -260,8 +265,14 @@ public class User extends BaseSccpListener implements SccpListener {
     }
 
     @Override
-    public void onData(SccpConnection conn, byte[] data) {
-        receivedData.add(data);
+    public void onData(SccpConnection conn, ByteBuf data) {
+    	if(data==null)
+    		receivedData.add(null);
+    	else {
+    		byte[] dataArr=new byte[data.readableBytes()];
+    		data.readBytes(dataArr);
+    		receivedData.add(dataArr);
+    	}
     }
 
     public ConcurrentLinkedQueue<byte[]> getReceivedData() {
@@ -293,11 +304,11 @@ public class User extends BaseSccpListener implements SccpListener {
     }
 
     public static class UserOptions {
-        private byte[] sendConfirmData;
+        private ByteBuf sendConfirmData;
         public Credit confirmCredit;
 
-        public void setSendConfirmData(byte[] data) {
-            this.sendConfirmData = data;
+        public void setSendConfirmData(ByteBuf data) {
+            this.sendConfirmData = Unpooled.wrappedBuffer(data);
         }
     }
 }

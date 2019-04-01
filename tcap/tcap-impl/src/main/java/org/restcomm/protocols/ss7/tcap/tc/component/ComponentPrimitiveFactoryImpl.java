@@ -28,18 +28,11 @@ package org.restcomm.protocols.ss7.tcap.tc.component;
 import org.restcomm.protocols.ss7.tcap.TCAPProviderImpl;
 import org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.asn.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  * @author baranowb
@@ -58,10 +51,10 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory#createTCInvokeRequest()
      */
-    public Invoke createTCInvokeRequest() {
+    public ComponentImpl createTCInvokeRequest() {
 
-        InvokeImpl t = (InvokeImpl) TcapFactory.createComponentInvoke();
-        t.setProvider(provider);
+    	ComponentImpl t = TcapFactory.createComponentInvoke();
+        t.getInvoke().setProvider(provider);
         return t;
     }
 
@@ -70,10 +63,10 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCInvokeRequest()
      */
-    public Invoke createTCInvokeRequest(InvokeClass invokeClass) {
+    public ComponentImpl createTCInvokeRequest(InvokeClass invokeClass) {
 
-        InvokeImpl t = (InvokeImpl) TcapFactory.createComponentInvoke(invokeClass);
-        t.setProvider(provider);
+    	ComponentImpl t = TcapFactory.createComponentInvoke(invokeClass);
+        t.getInvoke().setProvider(provider);
         return t;
     }
 
@@ -82,12 +75,12 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCRejectRequest()
      */
-    public Reject createTCRejectRequest() {
+    public ComponentImpl createTCRejectRequest() {
 
         return TcapFactory.createComponentReject();
     }
 
-    public ReturnError createTCReturnErrorRequest() {
+    public ComponentImpl createTCReturnErrorRequest() {
 
         return TcapFactory.createComponentReturnError();
     }
@@ -97,43 +90,34 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCResultRequest(boolean)
      */
-    public ReturnResultLast createTCResultLastRequest() {
+    public ComponentImpl createTCResultLastRequest() {
 
         return TcapFactory.createComponentReturnResultLast();
 
     }
 
-    public ReturnResult createTCResultRequest() {
+    public ComponentImpl createTCResultRequest() {
 
         return TcapFactory.createComponentReturnResult();
     }
 
-    public OperationCode createOperationCode() {
-        return TcapFactory.createOperationCode();
+    public OperationCode createLocalOperationCode() {
+        return TcapFactory.createLocalOperationCode();
     }
 
-    public ErrorCode createErrorCode() {
-        return TcapFactory.createErrorCode();
+    public OperationCode createGlobalOperationCode() {
+        return TcapFactory.createGlobalOperationCode();
     }
 
-    public Parameter createParameter() {
-        return TcapFactory.createParameter();
+    public ErrorCode createLocalErrorCode() {
+        return TcapFactory.createLocalErrorCode();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory#createParameter(int, int, boolean)
-     */
-    public Parameter createParameter(int tag, int tagClass, boolean isPrimitive) {
-        Parameter p = TcapFactory.createParameter();
-        p.setTag(tag);
-        p.setTagClass(tagClass);
-        p.setPrimitive(isPrimitive);
-        return p;
+    public ErrorCode createGlobalErrorCode() {
+        return TcapFactory.createGlobalErrorCode();
     }
 
-    public Problem createProblem(ProblemType pt) {
-        return TcapFactory.createProblem(pt);
+    public ProblemImpl createProblem() {
+        return TcapFactory.createProblem();
     }
 }

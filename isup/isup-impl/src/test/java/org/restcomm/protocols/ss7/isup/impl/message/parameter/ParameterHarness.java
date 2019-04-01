@@ -33,6 +33,8 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,41 +74,57 @@ public abstract class ParameterHarness {
 
     // FIXME: add code to check values :)
 
-    protected List<byte[]> goodBodies = new ArrayList<byte[]>();
+    protected List<ByteBuf> goodBodies = new ArrayList<ByteBuf>();
 
-    protected List<byte[]> badBodies = new ArrayList<byte[]>();
+    protected List<ByteBuf> badBodies = new ArrayList<ByteBuf>();
 
-    protected String dumpData(byte[] b) {
+    protected String dumpData(ByteBuf b) {
+    	ByteBuf copy=Unpooled.wrappedBuffer(b);
+    	byte[] innerArray=new byte[copy.readableBytes()];
+    	copy.readBytes(innerArray);
         String s = "\n";
-        for (byte bb : b) {
+        for (byte bb : innerArray) {
             s += Integer.toHexString(bb & 0xFF)+"\n";
         }
 
         return s;
     }
 
-    protected String makeCompare(byte[] hardcodedBody, byte[] elementEncoded) {
+    public static Boolean byteBufEquals(ByteBuf value1,ByteBuf value2) {
+    	ByteBuf value1Wrapper=Unpooled.wrappedBuffer(value1);
+    	ByteBuf value2Wrapper=Unpooled.wrappedBuffer(value2);
+    	byte[] value1Arr=new byte[value1Wrapper.readableBytes()];
+    	byte[] value2Arr=new byte[value2Wrapper.readableBytes()];
+    	value1Wrapper.readBytes(value1Arr);
+    	value2Wrapper.readBytes(value2Arr);
+    	return Arrays.equals(value1Arr, value2Arr);
+    }
+    
+    protected String makeCompare(ByteBuf hardcodedBodyValue, ByteBuf elementEncodedValue) {
+    	ByteBuf hardcodedBody=Unpooled.wrappedBuffer(hardcodedBodyValue);
+    	ByteBuf elementEncoded=Unpooled.wrappedBuffer(elementEncodedValue);
+    	
         int totalLength = 0;
         if (hardcodedBody == null || elementEncoded == null) {
             return "One arg is null";
         }
-        if (hardcodedBody.length >= elementEncoded.length) {
-            totalLength = hardcodedBody.length;
+        if (hardcodedBody.readableBytes() >= elementEncoded.readableBytes()) {
+            totalLength = hardcodedBody.readableBytes();
         } else {
-            totalLength = elementEncoded.length;
+            totalLength = elementEncoded.readableBytes();
         }
 
         String out = "";
 
         for (int index = 0; index < totalLength; index++) {
-            if (hardcodedBody.length > index) {
-                out += "hardcodedBody[" + Integer.toHexString(hardcodedBody[index]) + "]";
+            if (hardcodedBody.readableBytes() > 0) {
+                out += "hardcodedBody[" + Integer.toHexString(hardcodedBody.readByte()) + "]";
             } else {
                 out += "hardcodedBody[NOP]";
             }
 
-            if (elementEncoded.length > index) {
-                out += "elementEncoded[" + Integer.toHexString(elementEncoded[index]) + "]";
+            if (elementEncoded.readableBytes() > 0) {
+                out += "elementEncoded[" + Integer.toHexString(elementEncoded.readByte()) + "]";
             } else {
                 out += "elementEncoded[NOP]";
             }
@@ -114,39 +132,7 @@ public abstract class ParameterHarness {
         }
 
         return out;
-    }
-
-    public String makeCompare(int[] hardcodedBody, int[] elementEncoded) {
-
-        int totalLength = 0;
-        if (hardcodedBody == null || elementEncoded == null) {
-            return "One arg is null";
-        }
-        if (hardcodedBody.length >= elementEncoded.length) {
-            totalLength = hardcodedBody.length;
-        } else {
-            totalLength = elementEncoded.length;
-        }
-
-        String out = "";
-
-        for (int index = 0; index < totalLength; index++) {
-            if (hardcodedBody.length > index) {
-                out += "hardcodedBody[" + Integer.toHexString(hardcodedBody[index]) + "]";
-            } else {
-                out += "hardcodedBody[NOP]";
-            }
-
-            if (elementEncoded.length > index) {
-                out += "elementEncoded[" + Integer.toHexString(elementEncoded[index]) + "]";
-            } else {
-                out += "elementEncoded[NOP]";
-            }
-            out += "\n";
-        }
-
-        return out;
-    }
+    }    
 
     protected String makeCompare(Object hardcodedBody, Object elementEncoded) {
         int totalLength = 0;
@@ -184,27 +170,28 @@ public abstract class ParameterHarness {
     public void testDecodeEncode() throws IOException, ParameterException {
 
         for (int index = 0; index < this.goodBodies.size(); index++) {
-            byte[] goodBody = this.goodBodies.get(index);
-            AbstractISUPParameter component = this.getTestedComponent();
-            doTestDecode(goodBody, true, component, index);
-            byte[] encodedBody = component.encode();
-            boolean equal = Arrays.equals(goodBody, encodedBody);
-            assertTrue(equal, "Body index: " + index + "\n" + makeCompare(goodBody, encodedBody));
+        	ByteBuf goodBody = this.goodBodies.get(index);
+        	AbstractISUPParameter component = this.getTestedComponent();
+            doTestDecode(Unpooled.wrappedBuffer(goodBody), true, component, index);
+            ByteBuf output=Unpooled.buffer(255);
+            component.encode(output);
+            boolean equal = byteBufEquals(goodBody, output);
+            assertTrue(equal, "Body index: " + index + "\n" + makeCompare(goodBody, output));
 
         }
+        
         for (int index = 0; index < this.badBodies.size(); index++) {
 
-            byte[] badBody = this.badBodies.get(index);
+            ByteBuf badBody = this.badBodies.get(index);
             AbstractISUPParameter component = this.getTestedComponent();
             doTestDecode(badBody, false, component, index);
             // TODO: make some tests here?
         }
-
     }
 
     public abstract AbstractISUPParameter getTestedComponent() throws ParameterException;
 
-    protected void doTestDecode(byte[] presumableBody, boolean shouldPass, AbstractISUPParameter component, int index)
+    protected void doTestDecode(ByteBuf presumableBody, boolean shouldPass, AbstractISUPParameter component, int index)
             throws ParameterException {
         try {
             component.decode(presumableBody);
@@ -236,9 +223,18 @@ public abstract class ParameterHarness {
             final Object[][] expectedValues) {
         try {
             Method m = component.getClass().getMethod(getMethodName);
-            Object[] parts = (Object[]) m.invoke(component, (Object[])null);
-            for (int index = 0; index < parts.length; index++) {
-                testValues(parts[index], getterMethodNames, expectedValues[index]);
+            Object result=m.invoke(component, (Object[])null);
+            if(result instanceof List) {
+            	@SuppressWarnings("rawtypes")
+				List parts = (List)result;
+	            for (int index = 0; index < parts.size(); index++) {
+	                testValues(parts.get(index), getterMethodNames, expectedValues[index]);
+	            }
+            } else {
+	            Object[] parts = (Object[])result;
+	            for (int index = 0; index < parts.length; index++) {
+	                testValues(parts[index], getterMethodNames, expectedValues[index]);
+	            }
             }
         } catch (Exception e) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -267,7 +263,11 @@ public abstract class ParameterHarness {
                             "Failed to validate values in component: " + component.getClass().getName() + ". Value of: "
                                     + getterMethodNames[index] + ":\n"
                                     + makeCompare( expectedValues[index],v));
-                } else {
+                }
+                else if(expectedValues[index] != null && expectedValues[index] instanceof ByteBuf) {
+                	assertTrue(byteBufEquals((ByteBuf)v,(ByteBuf)expectedValues[index]));
+                }
+                else {
                     assertEquals(v, expectedValues[index], "Failed to validate values in component: "
                             + component.getClass().getName() + ". Value of: " + getterMethodNames[index]);
                 }

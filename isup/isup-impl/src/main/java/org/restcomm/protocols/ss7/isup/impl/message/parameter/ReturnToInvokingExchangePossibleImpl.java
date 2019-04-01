@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.InformationType;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangePossible;
@@ -41,23 +43,23 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchang
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class ReturnToInvokingExchangePossibleImpl extends AbstractInformationImpl implements ReturnToInvokingExchangePossible {
-	private static final long serialVersionUID = 1L;
-
 	//its empty param, its existence is information.
-    private static final byte[] DATA = new byte[]{};
     public ReturnToInvokingExchangePossibleImpl() {
         super(InformationType.ReturnToInvokingExchangePossible);
         //This is always 0x01;
         super.tag = 0x01;
     }
 
-    public void decode(byte[] b) throws ParameterException {
-        return;
+    public void decode(ByteBuf b) throws ParameterException {        
     }
 
-    public byte[] encode() throws ParameterException {
-        return DATA;
+    public void encode(ByteBuf b) throws ParameterException {        
     }
+
+	@Override
+	public int getLength() {
+		return 0;
+	}
 
 
 }

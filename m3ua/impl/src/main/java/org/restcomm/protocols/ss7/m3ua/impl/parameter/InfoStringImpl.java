@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.m3ua.parameter.InfoString;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 
@@ -34,9 +37,11 @@ public class InfoStringImpl extends ParameterImpl implements InfoString {
 
     private String string;
 
-    protected InfoStringImpl(byte[] value) {
+    protected InfoStringImpl(ByteBuf value) {
         this.tag = Parameter.INFO_String;
-        this.string = new String(value);
+        byte[] data=new byte[value.readableBytes()];
+        value.readBytes(data);
+        this.string = new String(data);
     }
 
     protected InfoStringImpl(String string) {
@@ -49,8 +54,8 @@ public class InfoStringImpl extends ParameterImpl implements InfoString {
     }
 
     @Override
-    protected byte[] getValue() {
-        return this.string.getBytes();
+    protected ByteBuf getValue() {
+        return Unpooled.wrappedBuffer(this.string.getBytes());
     }
 
     @Override

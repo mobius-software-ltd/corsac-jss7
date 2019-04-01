@@ -21,14 +21,12 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
 
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.message.ParseException;
 import org.restcomm.protocols.ss7.sccp.parameter.EncodingScheme;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
-import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
 /**
  * @author baranowb
@@ -57,15 +55,8 @@ public abstract class AbstractGlobalTitle extends AbstractParameter implements G
     }
 
     @Override
-    public void decode(byte[] b, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        this.decode(new ByteArrayInputStream(b), factory, sccpProtocolVersion);
-    }
-
-    @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        this.encodingScheme.encode(digits, baos);
-        return baos.toByteArray();
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        this.encodingScheme.encode(digits, buffer);        
     }
 
     @Override

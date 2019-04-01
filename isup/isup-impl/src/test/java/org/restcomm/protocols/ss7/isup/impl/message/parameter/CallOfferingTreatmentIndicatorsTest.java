@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -49,16 +52,16 @@ public class CallOfferingTreatmentIndicatorsTest extends ParameterHarness {
     public CallOfferingTreatmentIndicatorsTest() {
         super();
 
-        super.goodBodies.add(getBody1());
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody1()));
     }
 
-    private byte[] getBody1() {
+    private ByteBuf getBody1() {
 
        byte[] body = new byte[]{
-               CallOfferingTreatmentIndicatorsImpl._CTBOI_COA,
+               (byte)(CallOfferingTreatmentIndicatorsImpl._CTBOI_COA | 0x80),
                CallOfferingTreatmentIndicatorsImpl._CTBOI_NO_INDICATION
        };
-       return body;
+       return Unpooled.wrappedBuffer(body);
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -67,8 +70,7 @@ public class CallOfferingTreatmentIndicatorsTest extends ParameterHarness {
         CallOfferingTreatmentIndicatorsImpl at = new CallOfferingTreatmentIndicatorsImpl(getBody1());
 
         String[] methodNames = { "getCallOfferingTreatmentIndicators" };
-        Object[] expectedValues = { new byte[]{CallOfferingTreatmentIndicatorsImpl._CTBOI_COA,
-                CallOfferingTreatmentIndicatorsImpl._CTBOI_NO_INDICATION} };
+        Object[] expectedValues = { getBody1() };
 
         super.testValues(at, methodNames, expectedValues);
     }

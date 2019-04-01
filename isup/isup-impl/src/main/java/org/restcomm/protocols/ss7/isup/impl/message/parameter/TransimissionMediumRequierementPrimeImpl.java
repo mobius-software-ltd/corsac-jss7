@@ -30,6 +30,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.TransimissionMediumRequierementPrime;
 
@@ -39,10 +41,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TransimissionMediumRequ
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
-public class TransimissionMediumRequierementPrimeImpl extends AbstractISUPParameter implements
-        TransimissionMediumRequierementPrime {
-	private static final long serialVersionUID = 1L;
-
+public class TransimissionMediumRequierementPrimeImpl extends AbstractISUPParameter implements TransimissionMediumRequierementPrime {
 	public TransimissionMediumRequierementPrimeImpl() {
         super();
 
@@ -53,7 +52,7 @@ public class TransimissionMediumRequierementPrimeImpl extends AbstractISUPParame
         this.transimissionMediumRequirement = transimissionMediumRequirement;
     }
 
-    public TransimissionMediumRequierementPrimeImpl(byte[] b) throws ParameterException {
+    public TransimissionMediumRequierementPrimeImpl(ByteBuf b) throws ParameterException {
         super();
         decode(b);
     }
@@ -63,18 +62,16 @@ public class TransimissionMediumRequierementPrimeImpl extends AbstractISUPParame
 
     // FIXME: again wrapper class but hell there is a lot of statics....
 
-    public int decode(byte[] b) throws ParameterException {
-        if (b == null || b.length != 1) {
+    public void decode(ByteBuf b) throws ParameterException {
+        if (b == null || b.readableBytes() != 1) {
             throw new ParameterException("byte[] must  not be null and length must  be 1");
         }
 
-        this.transimissionMediumRequirement = b[0];
-
-        return 1;
+        this.transimissionMediumRequirement = b.readByte();
     }
 
-    public byte[] encode() throws ParameterException {
-        return new byte[] { (byte) this.transimissionMediumRequirement };
+    public void encode(ByteBuf buffer) throws ParameterException {
+    	buffer.writeByte((byte) this.transimissionMediumRequirement);
     }
 
     public int getTransimissionMediumRequirement() {
@@ -86,8 +83,6 @@ public class TransimissionMediumRequierementPrimeImpl extends AbstractISUPParame
     }
 
     public int getCode() {
-
         return _PARAMETER_CODE;
     }
-
 }

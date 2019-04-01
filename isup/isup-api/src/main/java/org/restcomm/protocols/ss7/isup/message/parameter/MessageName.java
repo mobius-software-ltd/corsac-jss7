@@ -28,6 +28,9 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.restcomm.protocols.ss7.isup.message.AddressCompleteMessage;
 import org.restcomm.protocols.ss7.isup.message.AnswerMessage;
 import org.restcomm.protocols.ss7.isup.message.ApplicationTransportMessage;
@@ -133,6 +136,21 @@ public enum MessageName {
     PreReleaseInformation(PreReleaseInformationMessage.MESSAGE_CODE),
     SubsequentDirectoryNumber(SubsequentDirectoryNumberMessage.MESSAGE_CODE);
 
+    private static final Map<Integer, MessageName> intToTypeMap = new HashMap<Integer, MessageName>();
+	static 
+	{
+	    for (MessageName type : MessageName.values()) 
+	    {
+	        intToTypeMap.put(type.code, type);
+	    }
+	}
+
+	public static MessageName fromInt(int i) 
+	{
+		MessageName type = intToTypeMap.get(Integer.valueOf(i));
+	    return type;
+	}
+	
     private int code;
 
     private MessageName(int code) {

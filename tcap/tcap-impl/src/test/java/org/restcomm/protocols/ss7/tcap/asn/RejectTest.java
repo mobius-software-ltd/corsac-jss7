@@ -25,23 +25,25 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.tcap.asn.EncodeException;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  *
@@ -52,33 +54,37 @@ import org.testng.annotations.Test;
 public class RejectTest {
 
     private byte[] getData() {
-        return new byte[] { (byte) 164, 6, 2, 1, 1, (byte) 129, 1, 2 };
+        return new byte[] { 108, 8, (byte) 164, 6, 2, 1, 1, (byte) 129, 1, 2 };
     }
 
     private byte[] getDataNullInvokeId() {
-        return new byte[] { -92, 5, 5, 0, -128, 1, 0 };
+        return new byte[] { 108, 7, -92, 5, 5, 0, -128, 1, 0 };
     }
 
     @Test(groups = { "functional.decode" })
-    public void testDecode() throws IOException, ParseException {
-
+    public void testDecode() throws ParseException, ASNException {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ComponentImpl.class);
+    	
         byte[] b = getData();
-        AsnInputStream asnIs = new AsnInputStream(b);
-        Component comp = TcapFactory.createComponent(asnIs);
+        Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof ComponentImpl);
+        ComponentImpl comp = (ComponentImpl)output;
 
         assertEquals(ComponentType.Reject, comp.getType(), "Wrong component Type");
-        Reject rej = (Reject) comp;
+        RejectImpl rej = comp.getReject();
         assertEquals(new Long(1), rej.getInvokeId(), "Wrong invoke ID");
-        Problem prb = rej.getProblem();
+        ProblemImpl prb = rej.getProblem();
         assertEquals(ProblemType.Invoke, prb.getType());
         assertEquals(InvokeProblemType.MistypedParameter, prb.getInvokeProblemType());
 
         b = getDataNullInvokeId();
-        asnIs = new AsnInputStream(b);
-        comp = TcapFactory.createComponent(asnIs);
+        output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
+        assertTrue(output instanceof ComponentImpl);
+        comp = (ComponentImpl)output;
 
         assertEquals(ComponentType.Reject, comp.getType(), "Wrong component Type");
-        rej = (Reject) comp;
+        rej = comp.getReject();
         assertNull(rej.getInvokeId());
         prb = rej.getProblem();
         assertEquals(ProblemType.General, prb.getType());
@@ -86,29 +92,29 @@ public class RejectTest {
     }
 
     @Test(groups = { "functional.encode" })
-    public void testEncode() throws IOException, EncodeException {
-
+    public void testEncode() throws EncodeException, ASNException {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ComponentImpl.class);
+    	
         byte[] expected = this.getData();
-        Reject rej = TcapFactory.createComponentReject();
-        rej.setInvokeId(1L);
-        Problem prb = TcapFactory.createProblem(ProblemType.Invoke);
+        ComponentImpl rej = TcapFactory.createComponentReject();
+        rej.getReject().setInvokeId(1L);
+        ProblemImpl prb = TcapFactory.createProblem();
         prb.setInvokeProblemType(InvokeProblemType.MistypedParameter);
-        rej.setProblem(prb);
+        rej.getReject().setProblem(prb);
 
-        AsnOutputStream asnos = new AsnOutputStream();
-        rej.encode(asnos);
-        byte[] encodedData = asnos.toByteArray();
+        ByteBuf buffer=parser.encode(rej);
+        byte[] encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getDataNullInvokeId();
         rej = TcapFactory.createComponentReject();
-        prb = TcapFactory.createProblem(ProblemType.General);
+        prb = TcapFactory.createProblem();
         prb.setGeneralProblemType(GeneralProblemType.UnrecognizedComponent);
-        rej.setProblem(prb);
+        rej.getReject().setProblem(prb);
 
-        asnos = new AsnOutputStream();
-        rej.encode(asnos);
-        encodedData = asnos.toByteArray();
+        buffer=parser.encode(rej);
+        encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
     }
 }

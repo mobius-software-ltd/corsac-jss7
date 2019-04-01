@@ -22,7 +22,10 @@
 
 package org.restcomm.protocols.ss7.tcap.api;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
+import java.util.concurrent.Future;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -83,8 +86,6 @@ public interface TCAPProvider extends Serializable {
 
     void removeTCListener(TCListener lst);
 
-    boolean getPreviewMode();
-
     /**
      * @return current count of active TCAP dialogs
      */
@@ -96,7 +97,9 @@ public interface TCAPProvider extends Serializable {
      * @param data
      * @return
      */
-    DraftParsedMessage parseMessageDraft(byte[] data);
+    DraftParsedMessage parseMessageDraft(ByteBuf data);
+
+    Future<?> createOperationTimer(Runnable operationTimerTask, long invokeTimeout);
 
     /**
      * @return TCAP Stack

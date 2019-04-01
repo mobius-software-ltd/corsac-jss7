@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -52,14 +54,14 @@ public class HTRInformationTest extends ParameterHarness {
      * @throws IOException
      */
     public HTRInformationTest() throws IOException {
-        super.badBodies.add(new byte[1]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
 
-        super.goodBodies.add(getBody(true, HTRInformation._NAI_NATIONAL_SN, HTRInformationImpl._NPI_ISDN, getFiveDigits()));
+        super.goodBodies.add(Unpooled.wrappedBuffer(getBody(true, HTRInformation._NAI_NATIONAL_SN, HTRInformationImpl._NPI_ISDN, getFiveDigits())));
 
     }
 
-    private byte[] getBody(boolean isODD, int _NAI, int _NPI, byte[] digits) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody(boolean isODD, int _NAI, int _NPI, byte[] digits) throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
 
         int nai = _NAI;
@@ -69,10 +71,10 @@ public class HTRInformationTest extends ParameterHarness {
 
         bit3 |= _NPI << 4;
 
-        bos.write(nai);
-        bos.write(bit3);
-        bos.write(digits);
-        return bos.toByteArray();
+        bos.writeByte(nai);
+        bos.writeByte(bit3);
+        bos.writeBytes(digits);
+        return bos;
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -93,7 +95,7 @@ public class HTRInformationTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new HTRInformationImpl(new byte[3]);
+        return new HTRInformationImpl(Unpooled.wrappedBuffer(new byte[3]));
     }
 
 }

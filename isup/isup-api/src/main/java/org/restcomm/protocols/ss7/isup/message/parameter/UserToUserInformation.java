@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:14:24:19 2009-07-23<br>
  * Project: mobicents-isup-stack<br>
@@ -38,7 +40,7 @@ public interface UserToUserInformation extends ISUPParameter {
     // FIXME: fill this!
     int _PARAMETER_CODE = 0x20;
 
-    byte[] getInformation();
+    ByteBuf getInformation();
 
-    void setInformation(byte[] b);
+    void setInformation(ByteBuf b);
 }

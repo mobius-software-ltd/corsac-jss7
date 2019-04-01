@@ -30,7 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -51,7 +53,7 @@ public class TransitNetworkSelectionTest extends ParameterHarness {
      * @throws IOException
      */
     public TransitNetworkSelectionTest() throws IOException {
-        super.badBodies.add(new byte[1]);
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[1]));
 
     }
 
@@ -67,18 +69,18 @@ public class TransitNetworkSelectionTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    private byte[] getBody(boolean isODD, int _NIP, int _TONI, byte[] digits) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    private ByteBuf getBody(boolean isODD, int _NIP, int _TONI, byte[] digits) throws IOException {
+    	ByteBuf bos = Unpooled.buffer();
         // we will use odd number of digits, so we leave zero as MSB
 
         if (isODD) {
-            bos.write(0x80 | (_TONI << 4) | _NIP);
+            bos.writeByte(0x80 | (_TONI << 4) | _NIP);
         } else {
-            bos.write((_TONI << 4) | _NIP);
+            bos.writeByte((_TONI << 4) | _NIP);
         }
 
-        bos.write(digits);
-        return bos.toByteArray();
+        bos.writeBytes(digits);
+        return bos;
     }
 
     /*

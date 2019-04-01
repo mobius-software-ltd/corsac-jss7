@@ -34,7 +34,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -55,20 +56,20 @@ public class SccpConnDt1MessageTest {
     public void tearDown() {
     }
 
-    public byte[] getDataDt1() {
-        return new byte[] { 0x06, 0x00, 0x00, 0x01, 0x00, 0x01, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };
+    public ByteBuf getDataDt1() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x06, 0x00, 0x00, 0x01, 0x00, 0x01, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 });
     }
 
     @Test(groups = { "SccpMessage", "functional.decode" })
     public void testDecode() throws Exception {
-        ByteArrayInputStream buf = new ByteArrayInputStream(this.getDataDt1());
-        int type = buf.read();
+    	ByteBuf buf = this.getDataDt1();
+        int type = buf.readByte();
         SccpConnDt1MessageImpl testObjectDecoded = (SccpConnDt1MessageImpl) messageFactory.createMessage(type, 1, 2, 0, buf, SccpProtocolVersion.ITU, 0);
 
         assertNotNull(testObjectDecoded);
         assertEquals(testObjectDecoded.getDestinationLocalReferenceNumber().getValue(), 1);
         assertEquals(testObjectDecoded.getSegmentingReassembling().isMoreData(), false);
-        assertEquals(testObjectDecoded.getUserData(), new byte[] {1, 2, 3, 4, 5});
+        MessageSegmentationTest.assertByteBufs(testObjectDecoded.getUserData(), Unpooled.wrappedBuffer(new byte[] {1, 2, 3, 4, 5}));
     }
 
     @Test(groups = { "SccpMessage", "functional.encode" })
@@ -76,10 +77,10 @@ public class SccpConnDt1MessageTest {
         SccpConnDt1MessageImpl original = new SccpConnDt1MessageImpl(stack.getMaxDataMessage(), 0, 0);
         original.setDestinationLocalReferenceNumber(new LocalReferenceImpl(1));
         original.setSegmentingReassembling(new SegmentingReassemblingImpl(false));
-        original.setUserData(new byte[] {1, 2, 3, 4, 5});
+        original.setUserData(Unpooled.wrappedBuffer(new byte[] {1, 2, 3, 4, 5}));
 
         EncodingResultData encoded = original.encode(stack,LongMessageRuleType.LONG_MESSAGE_FORBBIDEN, 272, logger, false, SccpProtocolVersion.ITU);
 
-        assertEquals(encoded.getSolidData(), this.getDataDt1());
+        MessageSegmentationTest.assertByteBufs(encoded.getSolidData(), this.getDataDt1());
     }
 }

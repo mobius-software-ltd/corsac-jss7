@@ -15,7 +15,7 @@
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version> <!-- 2.4.2 -->
 		<concurrent.version>1.3.4</concurrent.version>
 		<log4j.version>1.2.14</log4j.version>
-		<junit.version>3.8.1</junit.version>
+		<junit.version>4.11</junit.version>
 		<testng.version>6.2</testng.version>
 		<compiler.plugin.version>2.0.2</compiler.plugin.version>
 		<compile.source>1.7</compile.source>
@@ -40,35 +40,11 @@
 
 	<!-- declare our babies -->
 	<dependencyManagement>
-		<dependencies>
-			<!-- ASN -->
-			<dependency>
-				<groupId>org.mobicents.protocols.asn</groupId>
-				<artifactId>asn</artifactId>
-				<version>${asn.version}</version>
-			</dependency>
-			<!-- STREAM -->
-			<dependency>
-				<groupId>org.mobicents.protocols.stream</groupId>
-				<artifactId>stream</artifactId>
-				<version>${stream.version}</version>
-			</dependency>
-			<!-- utils -->
-			<dependency>
-				<groupId>org.mobicents.commons</groupId>
-				<artifactId>commons</artifactId>
-				<version>${commons.version}</version>
-			</dependency>			
+		<dependencies>			
 			<!-- Common -->
 			<dependency>
 				<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
 				<artifactId>common</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<!-- Clock -->
-			<dependency>
-				<groupId>com.mobius-software.telco.protocols.ss7.clock</groupId>
-				<artifactId>clock</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

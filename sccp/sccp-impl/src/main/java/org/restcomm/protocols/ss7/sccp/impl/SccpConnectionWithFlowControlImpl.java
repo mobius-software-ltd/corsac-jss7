@@ -17,6 +17,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -43,7 +45,7 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
         super.establish(message);
     }
 
-    public void confirm(SccpAddress respondingAddress, Credit credit, byte[] data) throws Exception {
+    public void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data) throws Exception {
         if (getState() != CR_RECEIVED) {
             logger.error(String.format("Trying to confirm connection in non-compatible state %s", getState()));
             throw new IllegalStateException(String.format("Trying to confirm connection in non-compatible state %s", getState()));

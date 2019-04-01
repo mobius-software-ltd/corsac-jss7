@@ -28,9 +28,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCauseValue;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import io.netty.buffer.ByteBuf;
 
 public class ReleaseCauseImpl extends AbstractParameter  implements ReleaseCause {
 	private static final long serialVersionUID = 1L;
@@ -63,40 +61,17 @@ public class ReleaseCauseImpl extends AbstractParameter  implements ReleaseCause
     }
 
     @Override
-    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            if (in.read() != 1) {
-                throw new ParseException();
-            }
-            this.digValue = in.read();
-            this.value = ReleaseCauseValue.getInstance(digValue);
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
-
-    @Override
-    public void encode(final OutputStream os, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        try {
-            os.write(1);
-            os.write(this.digValue);
-        } catch (IOException ioe) {
-            throw new ParseException(ioe);
-        }
-    }
-
-    @Override
-    public void decode(final byte[] b, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        if (b.length < 1) {
+    public void decode(ByteBuf buffer, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        if (buffer.readableBytes() < 1) {
             throw new ParseException();
         }
-        this.digValue = b[0];
+        this.digValue = buffer.readByte();
         this.value = ReleaseCauseValue.getInstance(digValue);
     }
 
     @Override
-    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
-        return new byte[] { (byte)this.digValue };
+    public void encode(ByteBuf buffer, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+    	buffer.writeByte((byte)this.digValue);
     }
 
     public String toString() {

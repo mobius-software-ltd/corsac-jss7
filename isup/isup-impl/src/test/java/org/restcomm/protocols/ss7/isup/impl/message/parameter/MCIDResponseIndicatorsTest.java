@@ -30,6 +30,9 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.MCIDResponseIndicatorsImpl;
@@ -47,17 +50,17 @@ public class MCIDResponseIndicatorsTest extends ParameterHarness {
 
     public MCIDResponseIndicatorsTest() {
         super();
-        super.goodBodies.add(new byte[] { 3 });
-        super.badBodies.add(new byte[2]);
+        super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { 3 }));
+        super.badBodies.add(Unpooled.wrappedBuffer(new byte[2]));
     }
 
-    private byte[] getBody(boolean mcidRequest, boolean holdingRequested) {
+    private ByteBuf getBody(boolean mcidRequest, boolean holdingRequested) {
         int b0 = 0;
 
         b0 |= (mcidRequest ? _TURN_ON : _TURN_OFF);
         b0 |= ((holdingRequested ? _TURN_ON : _TURN_OFF)) << 1;
 
-        return new byte[] { (byte) b0 };
+        return Unpooled.wrappedBuffer(new byte[] { (byte) b0 });
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
@@ -78,7 +81,7 @@ public class MCIDResponseIndicatorsTest extends ParameterHarness {
      */
 
     public AbstractISUPParameter getTestedComponent() throws ParameterException {
-        return new MCIDResponseIndicatorsImpl(new byte[1]);
+        return new MCIDResponseIndicatorsImpl(Unpooled.wrappedBuffer(new byte[1]));
     }
 
 }

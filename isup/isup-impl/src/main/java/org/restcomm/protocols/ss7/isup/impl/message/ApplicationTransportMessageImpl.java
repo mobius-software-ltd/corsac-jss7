@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -49,8 +51,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class ApplicationTransportMessageImpl extends ISUPMessageImpl implements ApplicationTransportMessage {
-	private static final long serialVersionUID = 1L;
-
 	private static final int _MANDATORY_VAR_COUNT = 0;
 
     static final int _INDEX_F_MessageType = 0;
@@ -76,12 +76,12 @@ public class ApplicationTransportMessageImpl extends ISUPMessageImpl implements 
         super.o_Parameters.put(_INDEX_O_EndOfOptionalParameters, _END_OF_OPTIONAL_PARAMETERS);
     }
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody,int parameterIndex)
             throws ParameterException {
         return;
     }
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         switch (parameterCode & 0xFF) {
             case MessageCompatibilityInformation._PARAMETER_CODE:

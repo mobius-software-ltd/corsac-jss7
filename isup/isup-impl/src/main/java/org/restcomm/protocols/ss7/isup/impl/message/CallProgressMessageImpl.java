@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -77,8 +79,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessT
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
 public class CallProgressMessageImpl extends ISUPMessageImpl implements CallProgressMessage {
-	private static final long serialVersionUID = 1L;
-
 	public static final MessageType _MESSAGE_TYPE = new MessageTypeImpl(MessageName.CallProgress);
     private static final int _MANDATORY_VAR_COUNT = 0;
 
@@ -132,25 +132,20 @@ public class CallProgressMessageImpl extends ISUPMessageImpl implements CallProg
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters (byte[], int)
      */
 
-    protected int decodeMandatoryParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
-
-        int localIndex = index;
-        index += super.decodeMandatoryParameters(parameterFactory, b, index);
-        if (b.length - index > 1) {
+        super.decodeMandatoryParameters(parameterFactory, b);
+        if (b.readableBytes()>0) {
             try {
-                byte[] eventInformation = new byte[1];
-                eventInformation[0] = b[index++];
-
+                ByteBuf eventInformation = b.slice(b.readerIndex(), 1);
                 EventInformation _ei = parameterFactory.createEventInformation();
                 ((AbstractISUPParameter) _ei).decode(eventInformation);
                 this.setEventInformation(_ei);
+                b.skipBytes(1);
             } catch (Exception e) {
                 // AIOOBE or IllegalArg
                 throw new ParameterException("Failed to parse EventInformation due to: ", e);
             }
-
-            return index - localIndex;
         } else {
             throw new ParameterException("byte[] must have atleast four octets");
         }
@@ -162,7 +157,7 @@ public class CallProgressMessageImpl extends ISUPMessageImpl implements CallProg
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody (byte [], int)
      */
 
-    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, int parameterIndex)
+    protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
             throws ParameterException {
 
     }
@@ -173,7 +168,7 @@ public class CallProgressMessageImpl extends ISUPMessageImpl implements CallProg
      * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte [], byte)
      */
 
-    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, byte[] parameterBody, byte parameterCode)
+    protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
             throws ParameterException {
         switch (parameterCode & 0xFF) {
             case CauseIndicators._PARAMETER_CODE:
