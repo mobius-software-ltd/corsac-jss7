@@ -2,8 +2,6 @@ package com.mobius.software.telco.protocols.ss7.common;
 
 import java.util.List;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 
 /*
@@ -31,7 +29,6 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 *
 */
 
-@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x08,constructed=true,lengthIndefinite=false)
 public interface External
 {
 	public void setIdentifier(Long value);

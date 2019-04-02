@@ -48,6 +48,30 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>compile</phase>
+						<configuration>
+							<compilerArgument>-proc:none</compilerArgument>
+							<includes>
+								<include>com/mobius/software/telco/protocols/ss7/asn/ASNTagAnnotationProcessor.java</include>
+								<include>com/mobius/software/telco/protocols/ss7/asn/annotations/ASNTag.java</include>
+								<include>com/mobius/software/telco/protocols/ss7/asn/ASNClass.java</include>
+								<include>com/mobius/software/telco/protocols/ss7/asn/annotations/ASNDecode.java</include>
+								<include>com/mobius/software/telco/protocols/ss7/asn/annotations/ASNEncode.java</include>
+								<include>com/mobius/software/telco/protocols/ss7/asn/annotations/ASNLength.java</include>								
+							</includes>
+						</configuration>
+					</execution>						
+					<execution>
+						<id>compiler-project</id>	
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>			
 		</plugins>
 		<finalName>async-commons-${project.version}</finalName>

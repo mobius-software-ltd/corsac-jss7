@@ -63,12 +63,21 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 			}
 			else {
 				final TypeElement typeElement = ( TypeElement )annotatedElement;
-				String className=typeElement.getQualifiedName().toString();
 				
-				List<? extends Element> innerElements=annotatedElement.getEnclosedElements();
-				
+				String className=typeElement.getQualifiedName().toString();				
+				List<? extends Element> innerElements=annotatedElement.getEnclosedElements();				
 				List<ExecutableElement> methods=ElementFilter.methodsIn(innerElements);
 				List<VariableElement> fields=ElementFilter.fieldsIn(innerElements);
+				
+				TypeMirror mirror=typeElement.getSuperclass();
+				while(mirror.getKind()!=TypeKind.NONE)
+				{
+					TypeElement parentTypeElement = processingEnv.getElementUtils().getTypeElement(mirror.toString());
+					innerElements=parentTypeElement.getEnclosedElements();				
+					methods.addAll(ElementFilter.methodsIn(innerElements));
+					fields.addAll(ElementFilter.fieldsIn(innerElements));
+					mirror=parentTypeElement.getSuperclass();
+				}
 				
 				Boolean hasSubTag=false;
 				Integer lengthTags=0;
