@@ -20,43 +20,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.m3ua.impl.parameter;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import org.restcomm.protocols.ss7.m3ua.parameter.HeartbeatData;
-import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
-
 /**
  *
- * @author amit bhayani
+ */
+package org.restcomm.protocols.ss7.isup.message.parameter;
+
+/**
+ * @author baranowb
  *
  */
-public class HeartbeatDataImpl extends ParameterImpl implements HeartbeatData {
-    private ByteBuf value = null;
+public enum OperationCodeType {
 
-    protected HeartbeatDataImpl(ByteBuf value) {
-        this.tag = Parameter.Heartbeat_Data;
-        this.value = value;
-    }
+    Local, Global
 
-    public ByteBuf getData() {
-        return Unpooled.wrappedBuffer(this.value);
-    }
-
-    @Override
-    protected ByteBuf getValue() {
-        return Unpooled.wrappedBuffer(this.value);
-    }
-
-    @Override
-    public String toString() {
-    	byte[] data=new byte[value.readableBytes()];
-    	value.markReaderIndex();
-    	value.readBytes(data);
-    	value.resetReaderIndex();
-    	
-        return String.format("HeartbeatData");
-    }
 }
