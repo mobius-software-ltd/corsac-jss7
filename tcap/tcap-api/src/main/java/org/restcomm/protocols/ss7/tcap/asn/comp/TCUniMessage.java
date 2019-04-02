@@ -25,14 +25,10 @@
  */
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-
 /**
  * @author baranowb
  *
  */
-@ASNTag(asnClass=ASNClass.APPLICATION,tag=0x01,constructed=true,lengthIndefinite=false)
 public interface TCUniMessage extends TCUnifiedMessage {
     // mandatory
 	ComponentPortionImpl getComponent();

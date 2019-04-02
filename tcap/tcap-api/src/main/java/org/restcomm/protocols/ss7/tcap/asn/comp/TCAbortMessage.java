@@ -24,9 +24,6 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-
 /**
  * This message represents Abort messages (P and U). According to Q.773:<br>
  *
@@ -49,7 +46,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 
-@ASNTag(asnClass=ASNClass.APPLICATION,tag=0x07,constructed=true,lengthIndefinite=false)
 public interface TCAbortMessage extends TCUnifiedMessage {
     // optionals
     PAbortCauseType getPAbortCause() throws ParseException;
