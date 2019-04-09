@@ -353,12 +353,13 @@ class Circuit {
         this.t1t5encodedREL = encoded;
         this.t1t5REL = rel;
 
-        // it is started always.
-        startT1();
-
         if (!this.t5.isActive()) {
             startT5();
         }
+
+        // it is started always.
+        startT1();
+
     }
 
     /**
@@ -398,11 +399,12 @@ class Circuit {
     private void startBLOTimers(Mtp3TransferPrimitive encoded, BlockingMessage message) {
         this.t12t13BLO = message;
         this.t12t13encodedBLO = encoded;
-        // it is started always.
-        startT12();
 
         if (!this.t13.isActive())
             startT13();
+
+        // it is started always.
+        startT12();
     }
 
     /**
@@ -420,11 +422,13 @@ class Circuit {
     private void startUBLTimers(Mtp3TransferPrimitive encoded, UnblockingMessage message) {
         this.t14t15UBL = message;
         this.t14t15encodedUBL = encoded;
-        // it is started always.
-        startT14();
 
         if (!this.t15.isActive())
             startT15();
+
+        // it is started always.
+        startT14();
+
     }
 
     /**
@@ -443,11 +447,13 @@ class Circuit {
     private void startRSCTimers(Mtp3TransferPrimitive encoded, ResetCircuitMessage message) {
         this.t16t17RSC = message;
         this.t16t17encodedRSC = encoded;
-        // it is started always.
+   
+	    if (!this.t17.isActive())
+	        startT17();
+	     // it is started always.
         startT16();
 
-        if (!this.t17.isActive())
-            startT17();
+
     }
 
     /**
@@ -500,11 +506,12 @@ class Circuit {
     private void startGRSTimers(Mtp3TransferPrimitive encoded, CircuitGroupResetMessage message) {
         this.t22t23GRS = message;
         this.t22t23encodedGRS = encoded;
-        // it is started always.
-        startT22();
 
         if (!this.t23.isActive())
             startT23();
+        // it is started always.
+        startT22();
+
     }
 
     /**
@@ -522,11 +529,12 @@ class Circuit {
     private void startCGUTimers(Mtp3TransferPrimitive encoded, CircuitGroupUnblockingMessage message) {
         this.t20t21CGU = message;
         this.t20t21encodedCGU = encoded;
-        // it is started always.
-        startT20();
 
         if (!this.t21.isActive())
             startT21();
+        // it is started always.
+        startT20();
+
     }
 
     /**
@@ -544,11 +552,13 @@ class Circuit {
     private void startCGBTimers(Mtp3TransferPrimitive encoded, CircuitGroupBlockingMessage message) {
         this.t18t19CGB = message;
         this.t18t19encodedCGB = encoded;
-        // it is started always.
-        startT18();
 
         if (!this.t19.isActive())
             startT19();
+        // it is started always.
+        startT18();
+
+
     }
 
     /**
