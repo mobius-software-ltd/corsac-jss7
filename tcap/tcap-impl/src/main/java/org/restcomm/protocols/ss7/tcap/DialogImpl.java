@@ -1569,7 +1569,7 @@ public class DialogImpl implements Dialog {
             if (d.idleTimerActionTaken.get()) {
                 startIdleTimer();
             } else {
-                if (remoteTransactionId != null)
+                if (remoteTransactionId != null && !getState().equals(TRPseudoState.Expunged))
                     sendAbnormalDialog();
                 else
                     release();
