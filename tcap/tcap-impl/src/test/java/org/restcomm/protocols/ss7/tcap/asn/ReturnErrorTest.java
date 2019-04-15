@@ -160,7 +160,7 @@ public class ReturnErrorTest {
         assertNotNull(re.getParameter(), "Parameter should not be null");
         Object p = re.getParameter();
         assertTrue(p instanceof TCBeginTestASN3);
-        assertTrue(Arrays.equals(this.getParameterData(), ((TCBeginTestASN3)p).getValue()));
+        assertTrue(InvokeTest.byteBufEquals(Unpooled.wrappedBuffer(this.getParameterData()), ((TCBeginTestASN3)p).getValue()));
 
         b = getDataLongErrorCode();
         output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
@@ -202,7 +202,7 @@ public class ReturnErrorTest {
         re.getReturnError().setErrorCode(ec);
         
         TCBeginTestASN3 pm=new TCBeginTestASN3();
-        pm.setValue(getParameterData());
+        pm.setValue(Unpooled.wrappedBuffer(getParameterData()));
         re.getReturnError().setParameter(pm);
 
         buffer=parser.encode(re);

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.MessageType;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
 
 /**
@@ -31,67 +31,48 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessa
  */
 public class DraftParsedMessageImpl implements DraftParsedMessage {
 
-    private MessageType messageType = MessageType.Unknown;
-    private Long originationDialogId;
-    private Long destinationDialogId;
-    private String parsingErrorReason;
+	 private TCUnifiedMessage message;
+	 private String parsingErrorReason;
 
-    @Override
-    public MessageType getMessageType() {
-        return messageType;
-    }
+	 public String toString() {
+		 StringBuilder sb = new StringBuilder();
 
-    public void setMessageType(MessageType val) {
-        messageType = val;
-    }
+		 sb.append("DraftParsedMessage [");
+		 if (message.getOriginatingTransactionId() != null) {
+			 sb.append(", originationDialogId=");
+			 sb.append(message.getOriginatingTransactionId());
+		 }
 
-    @Override
-    public Long getOriginationDialogId() {
-        return originationDialogId;
-    }
+		 if (message.getDestinationTransactionId() != null) {
+			 sb.append(", destinationDialogId=");
+			 sb.append(message.getDestinationTransactionId());
+		 }
+	        
+		 if (parsingErrorReason != null) {
+			 sb.append(", parsingErrorReason=");
+			 sb.append(parsingErrorReason);
+		 }
+	        
+		 sb.append("]");
+		 return sb.toString();
+	 }
 
-    public void setOriginationDialogId(Long val) {
-        originationDialogId = val;
-    }
 
-    @Override
-    public Long getDestinationDialogId() {
-        return destinationDialogId;
-    }
+	 @Override
+	 public TCUnifiedMessage getMessage() {
+		 return message;
+	 }
 
-    public void setDestinationDialogId(Long val) {
-        destinationDialogId = val;
-    }
+	 @Override
+	 public String getParsingErrorReason() {
+		 return parsingErrorReason;
+	 }
 
-    @Override
-    public String getParsingErrorReason() {
-        return parsingErrorReason;
-    }
+	 public void setMessage(TCUnifiedMessage message) {
+		 this.message = message;
+	 }
 
-    public void setParsingErrorReason(String val) {
-        parsingErrorReason = val;
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("DraftParsedMessage [");
-        sb.append(messageType);
-        if (originationDialogId != null) {
-            sb.append(", originationDialogId=");
-            sb.append(originationDialogId);
-        }
-        if (destinationDialogId != null) {
-            sb.append(", destinationDialogId=");
-            sb.append(destinationDialogId);
-        }
-        if (parsingErrorReason != null) {
-            sb.append(", parsingErrorReason=");
-            sb.append(parsingErrorReason);
-        }
-        sb.append("]");
-
-        return sb.toString();
-    }
-
+	 public void setParsingErrorReason(String parsingErrorReason) {
+		 this.parsingErrorReason = parsingErrorReason;
+	 }
 }

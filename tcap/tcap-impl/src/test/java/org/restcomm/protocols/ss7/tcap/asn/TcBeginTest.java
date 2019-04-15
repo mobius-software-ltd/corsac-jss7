@@ -94,7 +94,7 @@ public class TcBeginTest {
     	
     	TCBeginMessage tcm = TcapFactory.createTCBeginMessage();
         // tcm.setOriginatingTransactionId(1358955064L);
-        tcm.setOriginatingTransactionId(new byte[] { 0x51, 0x00, 0x02, 0x38 });
+        tcm.setOriginatingTransactionId(Unpooled.wrappedBuffer(new byte[] { 0x51, 0x00, 0x02, 0x38 }));
 
         // Create Dialog Portion
         DialogPortionImpl dp = TcapFactory.createDialogPortion(); 
@@ -111,9 +111,9 @@ public class TcBeginTest {
         
         UserInformationExternalImpl external=new UserInformationExternalImpl();
         external.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
-        external.setChild(new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80,
+        external.setChild(Unpooled.wrappedBuffer(new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80,
                 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98,
-                (byte) 0x86, 0x03, (byte) 0xf0, 0x00, 0x00 });
+                (byte) 0x86, 0x03, (byte) 0xf0, 0x00, 0x00 }));
 
         userInfo.setExternal(external);
         diRequestAPDUImpl.setUserInformation(userInfo);
@@ -134,14 +134,14 @@ public class TcBeginTest {
 
         // Sequence of Parameter
         ASNOctetString p1=new ASNOctetString();
-        p1.setValue(new byte[] { 0x0f });
+        p1.setValue(Unpooled.wrappedBuffer(new byte[] { 0x0f }));
 
         ASNOctetString p2=new ASNOctetString();
-        p2.setValue(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
-                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 });
+        p2.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
 
         ASNOctetString p3=new ASNOctetString();
-        p3.setValue(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 });
+        p3.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 }));
 
         TCBeginTestASN1 p = new TCBeginTestASN1();
         p.setO1(Arrays.asList(new ASNOctetString[] {p1, p2}));
@@ -209,7 +209,7 @@ public class TcBeginTest {
         TCBeginMessage tcm = (TCBeginMessage)value;
 
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(), "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 8, (byte) 0xA5, 0, 1 }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA5, 0, 1 })),
                 "Originating transaction id does not match");
         assertNotNull(tcm.getDialogPortion(), "Dialog portion should not be null");
 
@@ -265,7 +265,7 @@ public class TcBeginTest {
         TCBeginMessage tcm = (TCBeginMessageImpl)output;
 
         // assertEquals(436208353L, tcm.getOriginatingTransactionId(), "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x1A, 0x00, 0x02, (byte) 0xE1 }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x1A, 0x00, 0x02, (byte) 0xE1 })),
                 "Originating transaction id does not match");
         assertNotNull(tcm.getDialogPortion(), "Dialog portion should not be null");
 
@@ -338,7 +338,7 @@ public class TcBeginTest {
         assertNull(tcm.getDialogPortion(), "Dialog portion should not be present");
 
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(), "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01 }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01 })),
                 "Originating transaction id does not match");
         // comp portion
         assertNotNull(tcm.getComponent(), "Component portion should be present");
@@ -413,7 +413,7 @@ public class TcBeginTest {
         assertNull(tcm.getComponent(), "Component portion should not be present");
         assertNotNull(tcm.getDialogPortion(), "Dialog portion should not be null");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(), "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01 }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01 })),
                 "Originating transaction id does not match");
 
         assertFalse(tcm.getDialogPortion().isUnidirectional(), "Dialog should not be Uni");
@@ -469,7 +469,7 @@ public class TcBeginTest {
         assertNull(tcm.getDialogPortion(), "Dialog portion should be null");
         assertNull(tcm.getComponent(), "Component portion should not be present");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(), "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01 }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01 })),
                 "Originating transaction id does not match");
 
         ByteBuf outputBuf=parser.encode(tcm);
@@ -550,7 +550,7 @@ public class TcBeginTest {
         TCBeginMessage tcm = (TCBeginMessageImpl)output;
 
         // universal
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01 }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01 })),
                 "Originating transaction id does not match");
 
         // dialog portion
@@ -693,7 +693,7 @@ public class TcBeginTest {
         
         TCBeginMessage tcm = TcapFactory.createTCBeginMessage();
         // tcm.setOriginatingTransactionId(1358955064L);
-        tcm.setOriginatingTransactionId(new byte[] { 0x51, 0x00, 0x02, 0x38 });
+        tcm.setOriginatingTransactionId(Unpooled.wrappedBuffer(new byte[] { 0x51, 0x00, 0x02, 0x38 }));
 
         // Create Dialog Portion
         DialogPortionImpl dp = TcapFactory.createDialogPortion();
@@ -710,9 +710,9 @@ public class TcBeginTest {
         external.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
         
         UserInformationTestASN innerASN=new UserInformationTestASN();
-        innerASN.setValue(new byte[] { (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80,
+        innerASN.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80,
                 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98,
-                (byte) 0x86, 0x03, (byte) 0xf0 });
+                (byte) 0x86, 0x03, (byte) 0xf0 }));
         
         ASNUserInformationObjectImpl object=new ASNUserInformationObjectImpl();
         object.setValue(innerASN);
@@ -740,16 +740,16 @@ public class TcBeginTest {
 
         TCBeginTestASN2 parameter=new TCBeginTestASN2();
         ASNOctetString o1=new ASNOctetString();
-        o1.setValue(new byte[] { 0x0f });
+        o1.setValue(Unpooled.wrappedBuffer(new byte[] { 0x0f }));
         parameter.setO1(o1);
         
         ASNOctetString o2=new ASNOctetString();
-        o2.setValue(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
-                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 });
+        o2.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
         parameter.setO2(o2);
         
         ASNOctetString o3=new ASNOctetString();
-        o3.setValue(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 });
+        o3.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 }));
         parameter.setO2(o3);
         
         invComp.getInvoke().setParameter(parameter);

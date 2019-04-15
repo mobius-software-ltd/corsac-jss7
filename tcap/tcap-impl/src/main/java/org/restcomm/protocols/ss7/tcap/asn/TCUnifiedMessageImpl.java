@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -47,14 +49,14 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
     public TCUnifiedMessageImpl() {
     }
 
-    public byte[] getOriginatingTransactionId() {
+    public ByteBuf getOriginatingTransactionId() {
     	if(originatingTransactionId==null)
     		return null;
     	
         return originatingTransactionId.getValue();
     }
 
-    public byte[] getDestinationTransactionId() {
+    public ByteBuf getDestinationTransactionId() {
     	if(destinationTransactionId==null)
     		return null;
     	
@@ -62,7 +64,7 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
     }
 
 	@Override
-	public void setOriginatingTransactionId(byte[] t) {
+	public void setOriginatingTransactionId(ByteBuf t) {
 		if(t==null)
 			return;
 		
@@ -71,7 +73,7 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 	}
 
 	@Override
-	public void setDestinationTransactionId(byte[] t) {
+	public void setDestinationTransactionId(ByteBuf t) {
 		if(t==null)
 			return;
 		

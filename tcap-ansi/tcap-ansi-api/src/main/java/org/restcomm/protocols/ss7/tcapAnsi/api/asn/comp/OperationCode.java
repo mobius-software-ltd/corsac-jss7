@@ -26,8 +26,6 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Encodable;
-
 /**
  * @author baranowb
  * @author sergey vetyutnev
@@ -39,19 +37,10 @@ OperationCode ::= CHOICE {
 
  *
  */
-public interface OperationCode extends Encodable {
+public interface OperationCode {
 
     int _TAG_NATIONAL = 16;
     int _TAG_PRIVATE = 17;
 
     OperationCodeType getOperationType();
-
-    void setNationalOperationCode(Long nationalOperationCode);
-
-    void setPrivateOperationCode(Long privateOperationCode);
-
-    Long getNationalOperationCode();
-
-    Long getPrivateOperationCode();
-
 }

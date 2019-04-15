@@ -121,7 +121,7 @@ public class ReturnResultLastTest {
         Object p = rrl.getParameter();
         assertNotNull(p);
         assertTrue(p instanceof TCEndTestASN);
-        assertTrue(Arrays.equals(this.getParameterData(), ((TCEndTestASN)p).getValue()));
+        assertTrue(InvokeTest.byteBufEquals(Unpooled.wrappedBuffer(this.getParameterData()), ((TCEndTestASN)p).getValue()));
 
         b = this.getNLDataCommon();
         output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
@@ -136,7 +136,7 @@ public class ReturnResultLastTest {
         p = rr.getParameter();
         assertNotNull(p);
         assertTrue(p instanceof TCEndTestASN);
-        assertTrue(Arrays.equals(this.getParameterData(), ((TCEndTestASN)p).getValue()));        
+        assertTrue(InvokeTest.byteBufEquals(Unpooled.wrappedBuffer(this.getParameterData()), ((TCEndTestASN)p).getValue()));        
     }
 
     @Test(groups = { "functional.decode" })
@@ -167,7 +167,7 @@ public class ReturnResultLastTest {
         ((LocalOperationCodeImpl)oc).setLocalOperationCode(45L);
         rrl.getReturnResultLast().setOperationCode(oc);
         TCEndTestASN parameter=new TCEndTestASN();
-        parameter.setValue(getParameterData());
+        parameter.setValue(Unpooled.wrappedBuffer(getParameterData()));
         rrl.getReturnResultLast().setParameter(parameter);
 
         buffer=parser.encode(rrl);
@@ -181,7 +181,7 @@ public class ReturnResultLastTest {
         ((LocalOperationCodeImpl)oc).setLocalOperationCode(45L);
         rr.getReturnResult().setOperationCode(oc);
         parameter=new TCEndTestASN();
-        parameter.setValue(getParameterData());
+        parameter.setValue(Unpooled.wrappedBuffer(getParameterData()));
         rr.getReturnResult().setParameter(parameter);
 
         buffer=parser.encode(rr);

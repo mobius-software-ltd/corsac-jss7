@@ -24,21 +24,21 @@ package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 
 public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements TCUserAbortIndication {
 	private static final long serialVersionUID = 1L;
 
-	private UserInformation userInformation;
+	private UserInformationImpl userInformation;
     private ApplicationContext acn;
     private SecurityContext securityContext;
-    private Confidentiality confidentiality;
-    private UserInformationElement userAbortInformation;
+    private ConfidentialityImpl confidentiality;
+    private UserInformationExternalImpl userAbortInformation;
     private SccpAddress originatingAddress;
 
 
@@ -46,7 +46,7 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
         super(EventType.Abort);
     }
 
-    public UserInformation getUserInformation() {
+    public UserInformationImpl getUserInformation() {
 
         return userInformation;
     }
@@ -54,7 +54,7 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
     /**
      * @param userInformation the userInformation to set
      */
-    public void setUserInformation(UserInformation userInformation) {
+    public void setUserInformation(UserInformationImpl userInformation) {
         this.userInformation = userInformation;
     }
 
@@ -76,20 +76,20 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
     }
 
     @Override
-    public Confidentiality getConfidentiality() {
+    public ConfidentialityImpl getConfidentiality() {
         return confidentiality;
     }
 
-    public void setConfidentiality(Confidentiality val) {
+    public void setConfidentiality(ConfidentialityImpl val) {
         confidentiality = val;
     }
 
     @Override
-    public UserInformationElement getUserAbortInformation() {
+    public UserInformationExternalImpl getUserAbortInformation() {
         return userAbortInformation;
     }
 
-    public void setUserAbortInformation(UserInformationElement val) {
+    public void setUserAbortInformation(UserInformationExternalImpl val) {
         userAbortInformation = val;
     }
 

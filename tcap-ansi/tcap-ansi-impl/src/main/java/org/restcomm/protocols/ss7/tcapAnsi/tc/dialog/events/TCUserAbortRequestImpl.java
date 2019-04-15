@@ -24,10 +24,10 @@ package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortRequest;
 
@@ -42,10 +42,10 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
 
 	// fields
     private ApplicationContext applicationContextName;
-    private UserInformation userInformation;
+    private UserInformationImpl userInformation;
     private SecurityContext securityContext;
-    private Confidentiality confidentiality;
-    private UserInformationElement userAbortInformation;
+    private ConfidentialityImpl confidentiality;
+    private UserInformationExternalImpl userAbortInformation;
     private SccpAddress originatingAddress;
 
     TCUserAbortRequestImpl() {
@@ -60,7 +60,7 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
         return this.applicationContextName;
     }
 
-    public UserInformation getUserInformation() {
+    public UserInformationImpl getUserInformation() {
         return this.userInformation;
     }
 
@@ -72,7 +72,7 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
         this.applicationContextName = acn;
     }
 
-    public void setUserInformation(UserInformation userInformation) {
+    public void setUserInformation(UserInformationImpl userInformation) {
         this.userInformation = userInformation;
 
     }
@@ -96,22 +96,22 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
     }
 
     @Override
-    public Confidentiality getConfidentiality() {
+    public ConfidentialityImpl getConfidentiality() {
         return confidentiality;
     }
 
     @Override
-    public void setConfidentiality(Confidentiality val) {
+    public void setConfidentiality(ConfidentialityImpl val) {
         confidentiality = val;
     }
 
     @Override
-    public UserInformationElement getUserAbortInformation() {
+    public UserInformationExternalImpl getUserAbortInformation() {
         return userAbortInformation;
     }
 
     @Override
-    public void setUserAbortInformation(UserInformationElement val) {
+    public void setUserAbortInformation(UserInformationExternalImpl val) {
         userAbortInformation = val;
     }
 

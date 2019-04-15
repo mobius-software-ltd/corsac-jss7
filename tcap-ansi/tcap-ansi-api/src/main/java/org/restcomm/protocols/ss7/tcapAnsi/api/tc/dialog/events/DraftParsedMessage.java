@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.MessageType;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
 
 /**
  * @author sergey vetyutnev
@@ -30,12 +30,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.MessageType;
  */
 public interface DraftParsedMessage {
 
-    MessageType getMessageType();
-
-    Long getOriginationDialogId();
-
-    Long getDestinationDialogId();
+	TCUnifiedMessage getMessage();
 
     String getParsingErrorReason();
-
 }

@@ -529,7 +529,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     	return messageParser.encode(msg);
     }
     
-    protected void sendProviderAbort(PAbortCauseType pAbortCause, byte[] remoteTransactionId, SccpAddress remoteAddress,
+    protected void sendProviderAbort(PAbortCauseType pAbortCause, ByteBuf remoteTransactionId, SccpAddress remoteAddress,
             SccpAddress localAddress, int seqControl, int networkId, int remotePc) {
         
     	TCAbortMessageImpl msg = (TCAbortMessageImpl) TcapFactory.createTCAbortMessage();
@@ -537,7 +537,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         msg.setPAbortCause(pAbortCause);
 
         try {
-        	System.out.println(msg.toString());
         	ByteBuf buffer=messageParser.encode(msg);
             this.send(buffer, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber(), remotePc);
         } catch (Exception e) {
@@ -547,7 +546,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         }
     }
 
-    protected void sendProviderAbort(DialogServiceProviderType pt, byte[] remoteTransactionId, SccpAddress remoteAddress,
+    protected void sendProviderAbort(DialogServiceProviderType pt, ByteBuf remoteTransactionId, SccpAddress remoteAddress,
             SccpAddress localAddress, int seqControl, ApplicationContextNameImpl acn, int networkId, int remotePc) {
         
     	DialogPortionImpl dp = TcapFactory.createDialogPortion();
@@ -592,7 +591,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
             }
             catch(ASNException ex) {
                 logger.error("ParseException when parsing TCMessage: " + ex.toString(), ex);
-                this.sendProviderAbort(PAbortCauseType.BadlyFormattedTxPortion,new byte[0], remoteAddress, localAddress,message.getSls(), message.getNetworkId(), message.getIncomingOpc());                
+                this.sendProviderAbort(PAbortCauseType.BadlyFormattedTxPortion,Unpooled.EMPTY_BUFFER, remoteAddress, localAddress,message.getSls(), message.getNetworkId(), message.getIncomingOpc());                
                 return;           	
             }
             
@@ -673,8 +672,9 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
 	            		unrecognizedPackageType(message, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());                    
 	            	}
             	}
-            	else
+            	else {
             		unrecognizedPackageType(message,  realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
+            	}
             }
             else {
             	unrecognizedPackageType(message, null, localAddress, remoteAddress, message.getNetworkId());
@@ -685,10 +685,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         }
     }
 
-    private void unrecognizedPackageType(SccpDataMessage message,byte[] transactionID, SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws ParseException {
-        byte[] realTransactionID=transactionID;
-        if(realTransactionID==null)
-        	realTransactionID=new byte[0];
+    private void unrecognizedPackageType(SccpDataMessage message,ByteBuf transactionID, SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws ParseException {
+    	ByteBuf realTransactionID=transactionID;
         
         logger.error(String.format("Rx unidentified.SccpMessage=%s", message));
         this.sendProviderAbort(PAbortCauseType.UnrecognizedMessageType, realTransactionID, remoteAddress, localAddress, message.getSls(), networkId, message.getIncomingOpc());        

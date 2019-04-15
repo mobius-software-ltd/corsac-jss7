@@ -30,8 +30,6 @@ import static org.testng.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.util.Arrays;
-
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
@@ -98,10 +96,10 @@ public class TcContinueTest {
 
         assertNull(tcm.getDialogPortion(), "Dialog portion should not be present");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
                 "Originating transaction id does not match");
         // assertEquals(144965633L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getDestinationTransactionId(), new byte[] { 8, (byte) 0xA4, 0, 1, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })),
                 "Destination transaction id does not match");
 
         assertNotNull(tcm.getComponent(), "Component portion should be present");
@@ -178,9 +176,9 @@ public class TcContinueTest {
         assertNull(tcm.getDialogPortion(), "Dialog portion should not be present");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
         // assertEquals(144965633L,tcm.getDestinationTransactionId(),"Desination transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
                 "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getDestinationTransactionId(), new byte[] { 8, (byte) 0xA4, 0, 1, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })),
                 "Destination transaction id does not match");
 
         assertNotNull(tcm.getComponent(), "Component portion should be present");
@@ -266,9 +264,9 @@ public class TcContinueTest {
         assertNull(tcm.getDialogPortion(), "Dialog portion should not be present");
         // assertEquals(144965633L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
                 "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getDestinationTransactionId(), new byte[] { 8, (byte) 0xA4, 0, 1, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })),
                 "Destination transaction id does not match");
         // comp portion
         assertNotNull(tcm.getComponent(), "Component portion should be present");
@@ -346,9 +344,9 @@ public class TcContinueTest {
         assertNotNull(tcm.getDialogPortion(), "Dialog portion should not be null");
         // assertEquals(145031169L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
                 "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getDestinationTransactionId(), new byte[] { 8, (byte) 0xA5, 0, 1, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA5, 0, 1, })),
                 "Destination transaction id does not match");
 
         assertFalse(tcm.getDialogPortion().isUnidirectional(), "Dialog should not be Uni");
@@ -406,9 +404,9 @@ public class TcContinueTest {
         assertNull(tcm.getComponent(), "Component portion should not be present");
         // assertEquals(145031169L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
                 "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getDestinationTransactionId(), new byte[] { 8, (byte) 0xA5, 0, 1, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA5, 0, 1, })),
                 "Destination transaction id does not match");
 
         ByteBuf buffer=parser.encode(tcm);
@@ -501,9 +499,9 @@ public class TcContinueTest {
         // universal
         // assertEquals(144965633L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getOriginatingTransactionId(), new byte[] { 0x08, (byte) 0xA5, 0, 0x01, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
                 "Originating transaction id does not match");
-        assertTrue(Arrays.equals(tcm.getDestinationTransactionId(), new byte[] { 8, (byte) 0xA4, 0, 1, }),
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })),
                 "Destination transaction id does not match");
 
         // dialog portion

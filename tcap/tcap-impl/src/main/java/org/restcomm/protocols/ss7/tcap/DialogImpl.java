@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.tcap;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +127,7 @@ public class DialogImpl implements Dialog {
 
     private Long localTransactionIdObject;
     private long localTransactionId;
-    private byte[] remoteTransactionId;
+    private ByteBuf remoteTransactionId;
     private Long remoteTransactionIdObject;
 
     private SccpAddress localAddress;
@@ -931,8 +932,8 @@ public class DialogImpl implements Dialog {
     /**
      * @param remoteTransactionId the remoteTransactionId to set
      */
-    void setRemoteTransactionId(byte[] remoteTransactionId) {
-        this.remoteTransactionId = remoteTransactionId;
+    void setRemoteTransactionId(ByteBuf remoteTransactionId) {
+        this.remoteTransactionId = Unpooled.wrappedBuffer(remoteTransactionId);        
     }
 
     /**

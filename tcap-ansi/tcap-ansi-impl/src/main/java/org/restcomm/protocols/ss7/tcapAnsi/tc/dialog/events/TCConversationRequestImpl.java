@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationRequest;
 
@@ -42,10 +42,10 @@ public class TCConversationRequestImpl extends DialogRequestImpl implements TCCo
 
     // fields
     private ApplicationContext applicationContextName;
-    private UserInformation userInformation;
+    private UserInformationImpl userInformation;
     private boolean dialogTermitationPermission;
     private SecurityContext securityContext;
-    private Confidentiality confidentiality;
+    private ConfidentialityImpl confidentiality;
 
     TCConversationRequestImpl(boolean dialogTermitationPermission) {
         super(dialogTermitationPermission ? EventType.ConversationWithPerm : EventType.ConversationWithoutPerm);
@@ -77,7 +77,7 @@ public class TCConversationRequestImpl extends DialogRequestImpl implements TCCo
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getUserInformation()
      */
-    public UserInformation getUserInformation() {
+    public UserInformationImpl getUserInformation() {
 
         return this.userInformation;
     }
@@ -110,7 +110,7 @@ public class TCConversationRequestImpl extends DialogRequestImpl implements TCCo
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest#
      * setUserInformation(org.restcomm.protocols.ss7.tcap.asn.UserInformation)
      */
-    public void setUserInformation(UserInformation acn) {
+    public void setUserInformation(UserInformationImpl acn) {
         this.userInformation = acn;
 
     }
@@ -148,12 +148,12 @@ public class TCConversationRequestImpl extends DialogRequestImpl implements TCCo
     }
 
     @Override
-    public Confidentiality getConfidentiality() {
+    public ConfidentialityImpl getConfidentiality() {
         return confidentiality;
     }
 
     @Override
-    public void setConfidentiality(Confidentiality val) {
+    public void setConfidentiality(ConfidentialityImpl val) {
         confidentiality = val;
     }
 

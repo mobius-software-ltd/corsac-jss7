@@ -22,14 +22,17 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCode;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLast;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLast;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 
 /**
@@ -44,9 +47,9 @@ public interface ComponentPrimitiveFactory {
      *
      * @return return new instance of ({@link Invoke}
      */
-    Invoke createTCInvokeRequestNotLast();
+    InvokeNotLastImpl createTCInvokeRequestNotLast();
 
-    Invoke createTCInvokeRequestLast();
+    InvokeLastImpl createTCInvokeRequestLast();
 
     /**
      * <p>
@@ -62,24 +65,27 @@ public interface ComponentPrimitiveFactory {
      * @param invokeClass The Class of Operation
      * @return new instance of ({@link Invoke}
      */
-    Invoke createTCInvokeRequestNotLast(InvokeClass invokeClass);
+    InvokeNotLastImpl createTCInvokeRequestNotLast(InvokeClass invokeClass);
 
-    Invoke createTCInvokeRequestLast(InvokeClass invokeClass);
+    InvokeLastImpl createTCInvokeRequestLast(InvokeClass invokeClass);
 
-    Reject createTCRejectRequest();
+    RejectImpl createTCRejectRequest();
 
-    ReturnResultLast createTCResultLastRequest();
+    ReturnResultLastImpl createTCResultLastRequest();
 
-    ReturnResultNotLast createTCResultNotLastRequest();
+    ReturnResultNotLastImpl createTCResultNotLastRequest();
 
-    ReturnError createTCReturnErrorRequest();
+    ReturnErrorImpl createTCReturnErrorRequest();
 
-    OperationCode createOperationCode();
+    NationalOperationCodeImpl createNationalOperationCode();
 
-    ErrorCode createErrorCode();
+    PrivateOperationCodeImpl createPrivateOperationCode();
+
+    NationalErrorCodeImpl createNationalErrorCode();
+
+    PrivateErrorCodeImpl createPrivateErrorCode();
 
     Parameter createParameter();
 
     Parameter createParameter(int tag, int tagClass, boolean isPrimitive);
-
 }

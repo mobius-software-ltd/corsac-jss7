@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 
 public interface DialogIndication extends Serializable {
@@ -41,7 +41,7 @@ public interface DialogIndication extends Serializable {
      *
      * @return
      */
-    Component[] getComponents();
+    ComponentPortionImpl getComponents();
 
     EventType getType();
 

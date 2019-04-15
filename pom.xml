@@ -33,9 +33,9 @@
 		<module>sccp</module>
 		<module>tcap</module>
 		<module>tcap-ansi</module>
-		<module>map</module>
+		<!-- module>map</module>
 		<module>inap</module>
-		<module>cap</module>
+		<module>cap</module -->
 	</modules>
 
 	<!-- declare our babies -->

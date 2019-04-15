@@ -20,27 +20,31 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-/**
- *
- */
-
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Encodable;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 
 /**
  * @author baranowb
+ * @author amit bhayani
+ * @author sergey vetyutnev
  *
  */
-public interface Component extends Encodable {
-
-    int _TAG_INVOKE_ID = 15;
-
-
-    void setCorrelationId(Long i);
-
-    Long getCorrelationId();
-
-    ComponentType getType();
-
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=13,constructed=false,lengthIndefinite=false)
+public class InvokeNotLastImpl extends InvokeImpl {
+	public ComponentType getType() {
+        return ComponentType.InvokeNotLast;
+    }
+	
+	public InvokeNotLastImpl() {
+		super();
+	}
+	
+	public InvokeNotLastImpl(InvokeClass invokeClass) {
+		super(invokeClass);
+	}
 }

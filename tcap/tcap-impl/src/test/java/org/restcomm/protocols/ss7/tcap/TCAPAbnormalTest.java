@@ -361,7 +361,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         UserInformationImpl userInformation = TcapFactory.createUserInformation();
         UserInformationExternalImpl external=new UserInformationExternalImpl();
         external.setIdentifier(Arrays.asList(new Long[] { 1L, 2L, 3L }));
-        external.setChild(new byte[] { 11, 22, 33 });
+        external.setChild(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
         userInformation.setExternal(external);
         server.sendAbort(null, userInformation, null);
         Thread.sleep(WAIT_TIME);

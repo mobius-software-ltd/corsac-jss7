@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 
 /**
  *
@@ -43,21 +43,20 @@ public interface TCUniRequest extends DialogRequest {
 
     void setOriginatingAddress(SccpAddress dest);
 
-
     ApplicationContext getApplicationContextName();
 
     void setApplicationContextName(ApplicationContext acn);
 
-    UserInformation getUserInformation();
+    UserInformationImpl getUserInformation();
 
-    void setUserInformation(UserInformation acn);
+    void setUserInformation(UserInformationImpl acn);
 
     SecurityContext getSecurityContext();
 
     void setSecurityContext(SecurityContext val);
 
-    Confidentiality getConfidentiality();
+    ConfidentialityImpl getConfidentiality();
 
-    void setConfidentiality(Confidentiality val);
+    void setConfidentiality(ConfidentialityImpl val);
 
 }

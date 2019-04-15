@@ -22,20 +22,18 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLast;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  * @author baranowb
- * @author amit bhayani
  * @author sergey vetyutnev
  *
  */
-public class ReturnResultNotLastImpl extends ReturnImpl implements ReturnResultNotLast {
-	private static final long serialVersionUID = 1L;
-
-	public ComponentType getType() {
-        return ComponentType.ReturnResultNotLast;
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=3,constructed=true,lengthIndefinite=false)
+public class TCQueryMessageImplWithPerm extends TCConversationMessageImpl {
+	@Override
+    public boolean getDialogTermitationPermission() {
+        return true;
     }
-
 }

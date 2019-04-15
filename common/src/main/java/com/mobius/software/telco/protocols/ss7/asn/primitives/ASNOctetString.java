@@ -26,6 +26,7 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 */
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
@@ -35,35 +36,38 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class ASNOctetString {
-	private byte[] value;
+	private ByteBuf value;
 	
-	public byte[] getValue() {
-		return value;
+	public ByteBuf getValue() {
+		return Unpooled.wrappedBuffer(value);
 	}
 
-	public void setValue(byte[] value) {
-		this.value = value;
+	public void setValue(ByteBuf value) {
+		this.value = Unpooled.wrappedBuffer(value);				
 	}
 
 	@ASNLength
 	public Integer getLength() {
-		return getLength(value);
+		return getLength(getValue());
 	}
 	
 	@ASNEncode
 	public void encode(ByteBuf buffer) {
-		buffer.writeBytes(value);
+		buffer.writeBytes(getValue());
 	}
 	
 	@ASNDecode
 	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
-		value=new byte[buffer.readableBytes()];
-		buffer.readBytes(value);
+		if(buffer.readableBytes()>0)
+			value=Unpooled.wrappedBuffer(buffer);
+		else
+			value=Unpooled.EMPTY_BUFFER;
+		
 		return false;
 	}
 	
-	public static int getLength(byte[] value)
+	public static int getLength(ByteBuf value)
 	{
-		return value.length;
+		return value.readableBytes();
 	}
 }

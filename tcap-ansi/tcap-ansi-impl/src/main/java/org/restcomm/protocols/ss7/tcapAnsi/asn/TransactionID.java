@@ -22,11 +22,20 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
+import io.netty.buffer.ByteBuf;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 /**
  *
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=7,constructed=false,lengthIndefinite=false)
 public class TransactionID {
     private byte[] firstElem;
     private byte[] secondElem;
@@ -46,4 +55,40 @@ public class TransactionID {
     public void setSecondElem(byte[] secondElem) {
         this.secondElem = secondElem;
     }
+    
+    @ASNLength
+	public Integer getLength() {
+		if(firstElem!=null) {
+			if(secondElem!=null)
+				return 8;
+			
+			return 4;
+		}
+		
+		return 0;
+	}
+	
+	@ASNEncode
+	public void encode(ByteBuf buffer) {
+		if(firstElem!=null)
+			buffer.writeBytes(firstElem);
+		
+		if(secondElem!=null)
+			buffer.writeBytes(secondElem);
+	}
+	
+	@ASNDecode
+	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+		if(buffer.readableBytes()>=4) {
+			firstElem=new byte[4];
+			buffer.readBytes(firstElem);
+		}			
+		
+		if(buffer.readableBytes()>=4) {
+			secondElem=new byte[4];
+			buffer.readBytes(secondElem);
+		}			
+		
+		return false;
+	}
 }

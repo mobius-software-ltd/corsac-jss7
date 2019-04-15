@@ -31,15 +31,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=27,constructed=false,lengthIndefinite=false)
 public class IntegerApplicationContextNameImpl extends ASNInteger implements ApplicationContext {
-	public void setLocalErrorCode(Long localErrorCode) {
-        this.setValue(localErrorCode);
-    }
-
-    public Long getLocalErrorCode() {
-        return this.getValue();
-    }
-    
-    public ApplicationContextNameType getType() {
+	public ApplicationContextNameType getType() {
         return ApplicationContextNameType.Integer;
     }
 

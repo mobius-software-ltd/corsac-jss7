@@ -26,9 +26,11 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
@@ -55,12 +57,12 @@ public interface DialogPrimitiveFactory {
 
     TCUniRequest createUni(Dialog d);
 
-    ApplicationContext createApplicationContext(long[] val);
+    ApplicationContext createApplicationContext(List<Long> val);
 
     ApplicationContext createApplicationContext(long val);
 
-    UserInformation createUserInformation();
+    UserInformationImpl createUserInformation();
 
-    UserInformationElement createUserInformationElement();
+    UserInformationExternalImpl createUserInformationElement();
 
 }

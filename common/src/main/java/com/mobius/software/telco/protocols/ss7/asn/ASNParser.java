@@ -116,7 +116,6 @@ public class ASNParser
 			return decode(buffer,skipErrors, null, classMapping,cachedElements,null);
 		}
 		catch(Exception ex) {
-			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}
@@ -473,7 +472,8 @@ public class ASNParser
 		try {
 			return getLengthWithHeader(null, value, cachedElements);			
 		}
-		catch(Exception ex) {			
+		catch(Exception ex) {	
+			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}

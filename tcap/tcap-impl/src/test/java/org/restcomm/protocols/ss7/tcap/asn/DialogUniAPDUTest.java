@@ -70,7 +70,7 @@ public class DialogUniAPDUTest {
         assertNotNull(ui);
         assertTrue(ui.getExternal().isValueObject());
         assertTrue(ui.getExternal().getChild().getValue() instanceof TCBeginTestASN3);
-        assertTrue(Arrays.equals(new byte[] { 11, 22, 33 }, ((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getValue()));
+        assertTrue(InvokeTest.byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }), ((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getValue()));
 
         ByteBuf buffer=parser.encode(d);
         assertTrue(Arrays.equals(getData(), buffer.array()));

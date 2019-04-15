@@ -22,9 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Encodable;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 
 /**
  *
@@ -44,26 +43,12 @@ Abort ::= SEQUENCE {
 
  *
  */
-public interface TCAbortMessage extends Encodable {
-
-    int _TAG_ABORT = 22;
-    int _TAG_P_ABORT_CAUSE = 23;
-    int _TAG_USER_ABORT_INFORMATION = 24;
-
-    byte[] getDestinationTransactionId();
-
-    void setDestinationTransactionId(byte[] t);
-
-    DialogPortion getDialogPortion();
-
-    void setDialogPortion(DialogPortion dp);
-
-    PAbortCause getPAbortCause();
+public interface TCAbortMessage extends TCUnifiedMessage {
+    PAbortCause getPAbortCause() throws ParseException;
 
     void setPAbortCause(PAbortCause t);
 
-    UserInformationElement getUserAbortInformation();
+    UserInformationExternalImpl getUserAbortInformation();
 
-    void setUserAbortInformation(UserInformationElement uai);
-
+    void setUserAbortInformation(UserInformationExternalImpl uai);
 }

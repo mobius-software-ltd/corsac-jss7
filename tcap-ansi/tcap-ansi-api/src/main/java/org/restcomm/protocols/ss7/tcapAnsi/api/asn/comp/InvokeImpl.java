@@ -20,29 +20,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcapAnsi.asn;
+package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcapAnsi.DialogImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.TCAPProviderImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.EncodeException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.OperationState;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  * @author baranowb
@@ -50,25 +42,23 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.OperationState;
  * @author sergey vetyutnev
  *
  */
-public class InvokeImpl implements Invoke {
-	private static final long serialVersionUID = 1L;
-
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=12,constructed=false,lengthIndefinite=false)
+public abstract class InvokeImpl implements BaseComponent {
 	// local to stack
     private InvokeClass invokeClass = InvokeClass.Class1;
-    private long invokeTimeout = TCAPStackImpl._EMPTY_INVOKE_TIMEOUT;
+    private long invokeTimeout = TCAPStack._EMPTY_INVOKE_TIMEOUT;
     private OperationState state = OperationState.Idle;
     private AtomicReference<Future<?>> timerFuture=new AtomicReference<Future<?>>();
     private OperationTimerTask operationTimerTask = new OperationTimerTask(this);
-    private TCAPProviderImpl provider;
-    private DialogImpl dialog;
+    private TCAPProvider provider;
+    private Dialog dialog;
 
-    private Long invokeId;
-    private Long correlationId;
-    private Invoke correlationInvoke;
-    private OperationCode operationCode;
+    protected ASNCorrelationID correlationId=new ASNCorrelationID();
+    private InvokeImpl correlationInvoke;
     private Parameter parameter;
-    private boolean notLast;
-
+    private NationalOperationCodeImpl nationalOperationCode;
+    private PrivateOperationCodeImpl privateOperationCode;
+    
     public InvokeImpl() {
         // Set Default Class
         this.invokeClass = InvokeClass.Class1;
@@ -82,38 +72,36 @@ public class InvokeImpl implements Invoke {
         }
     }
 
-
-    @Override
     public InvokeClass getInvokeClass() {
         return this.invokeClass;
     }
 
-    @Override
     public boolean isNotLast() {
-        return notLast;
+        return getType()==ComponentType.InvokeNotLast;
     }
 
-    @Override
-    public void setNotLast(boolean val) {
-        notLast = val;
-    }
-
-    @Override
     public Long getInvokeId() {
-        return this.invokeId;
+    	Byte value=correlationId.getFirstValue();
+        if(value==null)
+        	return null;
+        
+        return value.longValue();
     }
 
-    @Override
     public void setInvokeId(Long i) {
         if ((i == null) || (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
-        this.invokeId = i;
+        this.correlationId.setFirstValue(i.byteValue());
     }
 
     @Override
     public Long getCorrelationId() {
-        return this.correlationId;
+    	Byte value=correlationId.getSecondValue();
+        if(value==null)
+        	return null;
+        
+        return value.longValue();
     }
 
     @Override
@@ -121,46 +109,42 @@ public class InvokeImpl implements Invoke {
         if ((i == null) || (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Correlation ID our of range: <-128,127>: " + i);
         }
-        this.correlationId = i;
+        this.correlationId.setSecondValue(i.byteValue());
     }
 
-    @Override
-    public Invoke getCorrelationInvoke() {
+    public InvokeImpl getCorrelationInvoke() {
         return this.correlationInvoke;
     }
 
-    @Override
-    public void setCorrelationInvoke(Invoke val) {
+    public void setCorrelationInvoke(InvokeImpl val) {
         this.correlationInvoke = val;
     }
 
-    @Override
     public OperationCode getOperationCode() {
-        return this.operationCode;
+    	if(nationalOperationCode!=null)
+    		return nationalOperationCode;
+    	
+        return this.privateOperationCode;
     }
 
-    @Override
     public void setOperationCode(OperationCode i) {
-        this.operationCode = i;
-
+    	if(i instanceof NationalOperationCodeImpl) {
+    		this.nationalOperationCode=(NationalOperationCodeImpl)i;
+    		this.privateOperationCode=null;
+    	} else if(i instanceof PrivateOperationCodeImpl) {
+    		this.nationalOperationCode=null;
+    		this.privateOperationCode=(PrivateOperationCodeImpl)i;
+    	} else {
+    		throw new IllegalArgumentException("Unsupported Operation Code");
+    	}
     }
-
-    @Override
+    
     public Parameter getParameter() {
         return this.parameter;
     }
 
-    @Override
     public void setParameter(Parameter p) {
         this.parameter = p;
-    }
-
-    @Override
-    public ComponentType getType() {
-        if (this.isNotLast())
-            return ComponentType.InvokeNotLast;
-        else
-            return ComponentType.InvokeLast;
     }
 
 
@@ -169,51 +153,9 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.Encodable#decode(org.mobicents.protocols .asn.AsnInputStream)
      */
-    public void decode(AsnInputStream ais) throws ParseException {
-
-        this.correlationId = null;
-        this.correlationInvoke = null;
-        this.operationCode = null;
-        this.parameter = null;
-
-        try {
-            if (ais.getTag() == Invoke._TAG_INVOKE_NOT_LAST)
-                this.setNotLast(true);
-            else
-                this.setNotLast(false);
-
-            AsnInputStream localAis = ais.readSequenceStream();
-
-            // invokeId & correlationId
-            byte[] buf = TcapFactory.readComponentId(localAis, 0, 2);
-            if (buf.length >= 1)
-                this.setInvokeId((long) buf[0]);
-            if (buf.length >= 2)
-                this.setCorrelationId((long) buf[1]);
-
-            // operationCode
-            if (localAis.available() == 0)
-                throw new ParseException(RejectProblem.generalBadlyStructuredCompPortion, "OperationCode is not found when decoding Invoke");
-            int tag = localAis.readTag();
-            if ((tag != OperationCode._TAG_NATIONAL && tag != OperationCode._TAG_PRIVATE) || localAis.getTagClass() != Tag.CLASS_PRIVATE
-                    || !localAis.isTagPrimitive()) {
-                throw new ParseException(RejectProblem.generalIncorrectComponentPortion,
-                        "OperationCode in Invoke has bad tag or tag class or is not primitive: tag=" + tag + ", tagClass=" + localAis.getTagClass());
-            }
-            this.operationCode = TcapFactory.createOperationCode(localAis);
-
-            // Parameter
-            this.parameter = TcapFactory.readParameter(localAis);
-        } catch (IOException e) {
-            throw new ParseException(RejectProblem.generalBadlyStructuredCompPortion,
-                    "IOException while decoding Invoke: " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new ParseException(RejectProblem.generalBadlyStructuredCompPortion,
-                    "AsnException while decoding Invoke: " + e.getMessage(), e);
-        } catch (ParseException e) {
-            e.setInvokeId(this.invokeId);
-            throw e;
-        }
+    public void decode() {
+    	// Parameter
+        this.parameter = TcapFactory.readParameter(localAis);
     }
 
     /*
@@ -221,50 +163,12 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.Encodable#encode(org.mobicents.protocols .asn.AsnOutputStream)
      */
-    public void encode(AsnOutputStream aos) throws EncodeException {
-        if (this.operationCode == null)
-            throw new EncodeException("Error encoding Invoke: operationCode is mandatory but is not set");
-
-        try {
-            // tag
-            if (this.notLast)
-                aos.writeTag(Tag.CLASS_PRIVATE, false, Invoke._TAG_INVOKE_NOT_LAST);
-            else
-                aos.writeTag(Tag.CLASS_PRIVATE, false, Invoke._TAG_INVOKE_LAST);
-            int pos = aos.StartContentDefiniteLength();
-
-            // invokeId and correlationId
-            byte[] buf;
-            if (this.invokeId != null) {
-                if (this.correlationId != null) {
-                    buf = new byte[2];
-                    buf[0] = (byte) (long) this.invokeId;
-                    buf[1] = (byte) (long) this.correlationId;
-                } else {
-                    buf = new byte[1];
-                    buf[0] = (byte) (long) this.invokeId;
-                }
-            } else {
-                buf = new byte[0];
-            }
-            aos.writeOctetString(Tag.CLASS_PRIVATE, Component._TAG_INVOKE_ID, buf);
-
-            // operationCode
-            this.operationCode.encode(aos);
-
-            // parameters
-            if (this.parameter != null)
-                this.parameter.encode(aos);
-            else
-                ParameterImpl.encodeEmptyParameter(aos);
-
-            aos.FinalizeContent(pos);
-
-        } catch (IOException e) {
-            throw new EncodeException("IOException while encoding Invoke: " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new EncodeException("AsnException while encoding Invoke: " + e.getMessage(), e);
-        }
+    public void encode() {
+    	// parameters
+        if (this.parameter != null)
+            this.parameter.encode(aos);
+        else
+            ParameterImpl.encodeEmptyParameter(aos);        
     }
 
     /**
@@ -288,28 +192,28 @@ public class InvokeImpl implements Invoke {
     /**
      * @return the provider
      */
-    public TCAPProviderImpl getProvider() {
+    public TCAPProvider getProvider() {
         return provider;
     }
 
     /**
      * @param provider the provider to set
      */
-    public void setProvider(TCAPProviderImpl provider) {
+    public void setProvider(TCAPProvider provider) {
         this.provider = provider;
     }
 
     /**
      * @return the dialog
      */
-    public DialogImpl getDialog() {
+    public Dialog getDialog() {
         return dialog;
     }
 
     /**
      * @param dialog the dialog to set
      */
-    public void setDialog(DialogImpl dialog) {
+    public void setDialog(Dialog dialog) {
         this.dialog = dialog;
     }
 
@@ -371,7 +275,7 @@ public class InvokeImpl implements Invoke {
     }
 
     public void startTimer() {
-        if (this.dialog == null || this.dialog.getPreviewMode())
+        if (this.dialog == null)
             return;
 
         this.stopTimer();
@@ -415,7 +319,7 @@ public class InvokeImpl implements Invoke {
             timerFuture.set(null);
             setState(OperationState.Idle);
             // TC-L-CANCEL
-            ((DialogImpl) invoke.dialog).operationTimedOut(invoke);
+            ((Dialog) invoke.dialog).operationTimedOut(invoke);
         }
 
     }

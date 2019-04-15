@@ -1,5 +1,7 @@
 package com.mobius.software.telco.protocols.ss7.common;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -72,7 +74,7 @@ public abstract class ExternalImpl<T extends ASNGeneric>
 		this.objectIdentifier.setValue(ids);
 	}
 	
-	public void setChild(byte[] value) {
+	public void setChild(ByteBuf value) {
 		this.childString=new ASNOctetString();
 		this.childString.setValue(value);
 		this.child=null;
@@ -139,7 +141,7 @@ public abstract class ExternalImpl<T extends ASNGeneric>
 		return child;
 	}
 
-	public byte[] getChildString() {
+	public ByteBuf getChildString() {
 		if(childString==null)
 			return null;
 		

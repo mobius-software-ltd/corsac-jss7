@@ -106,11 +106,11 @@ public class InvokeTest {
         InvokeTestASN invokeParameter=new InvokeTestASN();
         
         ASNOctetString o1=new ASNOctetString();
-        o1.setValue(new byte[] { 0x0F });
+        o1.setValue(Unpooled.wrappedBuffer(new byte[] { 0x0F }));
         
         ASNOctetString o2=new ASNOctetString();
-        o2.setValue(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
-                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 });
+        o2.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
         
         invokeParameter.setO1(Arrays.asList(new ASNOctetString[] { o1 }));
         invokeParameter.setO2(o2);
@@ -130,7 +130,7 @@ public class InvokeTest {
         invoke.getInvoke().setOperationCode(oc);
 
         ASNOctetString pm=new ASNOctetString();
-        pm.setValue(new byte[] { 11, 22, 33 });
+        pm.setValue(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
         invoke.getInvoke().setParameter(pm);
         
         buffer=parser.encode(invoke);
@@ -159,9 +159,9 @@ public class InvokeTest {
                
         assertTrue(invokeComp.getInvoke().getParameter() instanceof InvokeTestASN);
         InvokeTestASN parameter=(InvokeTestASN)invokeComp.getInvoke().getParameter();
-        assertTrue(Arrays.equals(new byte[] { 0x0f }, parameter.getO1().get(0).getValue()));
-        assertTrue(Arrays.equals(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62,
-                0x36, 0x19, 0x0e, 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }, parameter.getO2().getValue()));
+        assertTrue(byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 0x0f }), parameter.getO1().get(0).getValue()));
+        assertTrue(byteBufEquals(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62,
+                0x36, 0x19, 0x0e, 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }), parameter.getO2().getValue()));
 
         b = this.getDataFull();
 
@@ -178,7 +178,16 @@ public class InvokeTest {
         assertEquals(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }), ((GlobalOperationCodeImpl)oc).getGlobalOperationCode());
 
         assertTrue(invokeComp.getInvoke().getParameter() instanceof ASNOctetString);
-        assertTrue(Arrays.equals(new byte[] { 11, 22, 33 }, ((ASNOctetString)invokeComp.getInvoke().getParameter()).getValue()));
+        assertTrue(byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }), ((ASNOctetString)invokeComp.getInvoke().getParameter()).getValue()));
     }
 
+    public static Boolean byteBufEquals(ByteBuf value1,ByteBuf value2) {
+    	ByteBuf value1Wrapper=Unpooled.wrappedBuffer(value1);
+    	ByteBuf value2Wrapper=Unpooled.wrappedBuffer(value2);
+    	byte[] value1Arr=new byte[value1Wrapper.readableBytes()];
+    	byte[] value2Arr=new byte[value2Wrapper.readableBytes()];
+    	value1Wrapper.readBytes(value1Arr);
+    	value2Wrapper.readBytes(value2Arr);
+    	return Arrays.equals(value1Arr, value2Arr);
+    } 
 }

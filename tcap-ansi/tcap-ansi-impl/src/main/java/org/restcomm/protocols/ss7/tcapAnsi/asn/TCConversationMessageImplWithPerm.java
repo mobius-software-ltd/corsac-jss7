@@ -20,27 +20,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-/**
- *
- */
+package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
- * Super interface for Returns.
- *
  * @author baranowb
- * @author amit bhayani
+ * @author sergey vetyutnev
  *
  */
-public interface Return extends Component {
-
-    void setParameter(Parameter p);
-
-    Parameter getParameter();
-
-    void setOperationCode(OperationCode i);
-
-    OperationCode getOperationCode();
-
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=6,constructed=true,lengthIndefinite=false)
+public class TCConversationMessageImplWithPerm extends TCConversationMessageImpl {
+	@Override
+    public boolean getDialogTermitationPermission() {
+        return true;
+    }
 }

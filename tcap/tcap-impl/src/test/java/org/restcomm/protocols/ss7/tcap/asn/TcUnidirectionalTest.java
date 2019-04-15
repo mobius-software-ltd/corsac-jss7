@@ -89,7 +89,7 @@ public class TcUnidirectionalTest {
         ((LocalOperationCodeImpl)oc).setLocalOperationCode(591L);
         invComp.getInvoke().setOperationCode(oc);
         ASNOctetString p=new ASNOctetString();
-        p.setValue(new byte[] { 1, 2, 3 });
+        p.setValue(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }));
         invComp.getInvoke().setParameter(p);
         
         ComponentPortionImpl componentPortion=new ComponentPortionImpl();

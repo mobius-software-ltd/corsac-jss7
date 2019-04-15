@@ -30,7 +30,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 */
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,lengthIndefinite=false)
-public class IntegerSecurityContextImpl extends ASNInteger implements ApplicationContext {
+public class IntegerSecurityContextImpl extends ASNInteger implements SecurityContext {
 	public void setLocalErrorCode(Long localErrorCode) {
         this.setValue(localErrorCode);
     }
@@ -39,8 +39,8 @@ public class IntegerSecurityContextImpl extends ASNInteger implements Applicatio
         return this.getValue();
     }
     
-    public ApplicationContextNameType getType() {
-        return ApplicationContextNameType.Integer;
+    public SecurityContextType getType() {
+        return SecurityContextType.Integer;
     }
 
     public String getStringValue() {
@@ -52,8 +52,8 @@ public class IntegerSecurityContextImpl extends ASNInteger implements Applicatio
 
     public String toString() {
         if (this.getValue() != null)
-            return "ApplicationContextName[ApplicationContextNameType=Integer, data=" + this.getValue().toString() + "]";
+            return "SecurityContext[SecurityContextType=Integer, data=" + this.getValue().toString() + "]";
         else
-            return "ApplicationContextName[empty]";
+            return "SecurityContext[empty]";
     }
 }

@@ -22,7 +22,10 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,9 +38,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
@@ -56,29 +56,28 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.api.DialogPrimitiveFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.api.MessageType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCAbortMessageImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCNoticeIndicationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCResponseMessageImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUnidentifiedMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TransactionID;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.Utils;
@@ -121,9 +120,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
 //    private transient FastMap<Long, DialogImpl> dialogs = new FastMap<Long, DialogImpl>();
     private transient ConcurrentHashMap<Long, DialogImpl> dialogs = new ConcurrentHashMap<Long, DialogImpl>();
     
-//    protected transient FastMap<PrevewDialogDataKey, PreviewDialogData> dialogPreviewList = new FastMap<PrevewDialogDataKey, PreviewDialogData>();
-    protected transient ConcurrentHashMap<PreviewDialogDataKey, PreviewDialogData> dialogPreviewList = new ConcurrentHashMap<PreviewDialogDataKey, PreviewDialogData>();
-
     private AtomicInteger seqControl = new AtomicInteger(1);
     private int ssn;
     private AtomicLong curDialogId = new AtomicLong(0);
@@ -138,10 +134,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         this.componentPrimitiveFactory = new ComponentPrimitiveFactoryImpl(this);
         this.dialogPrimitiveFactory = new DialogPrimitiveFactoryImpl(this.componentPrimitiveFactory);
         this.service=service;
-    }
-
-    public boolean getPreviewMode() {
-        return this.stack.getPreviewMode();
     }
 
     /*
@@ -290,10 +282,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     private DialogImpl _getDialog(SccpAddress localAddress, SccpAddress remoteAddress, boolean structured, int seqControl, Long id)
             throws TCAPException {
 
-        if (this.stack.getPreviewMode()) {
-            throw new TCAPException("Can not create a Dialog in a PreviewMode");
-        }
-
         if (localAddress == null) {
             throw new NullPointerException("LocalAddress must not be null");
         }
@@ -306,15 +294,13 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
             }
         }
         if (structured) {
-            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl,
-                    this.stack.getPreviewMode());
+            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl);
 
             this.dialogs.put(id, di);
             
             return di;
         } else {
-            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl,
-                    this.stack.getPreviewMode());
+            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl);
             
             return di;
         }
@@ -336,11 +322,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         return this.dialogs.size();
     }
 
-    public void send(byte[] data, boolean returnMessageOnError, SccpAddress destinationAddress, SccpAddress originatingAddress,
+    public void send(ByteBuf data, boolean returnMessageOnError, SccpAddress destinationAddress, SccpAddress originatingAddress,
             int seqControl, int networkId, int localSsn) throws IOException {
-        if (this.stack.getPreviewMode())
-            return;
-
         SccpDataMessage msg = messageFactory.createDataMessageClass1(destinationAddress, originatingAddress, data, seqControl,
                 localSsn, returnMessageOnError, null, null);
         msg.setNetworkId(networkId);
@@ -536,14 +519,10 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         }
 
         this.dialogs.clear();
-        this.dialogPreviewList.clear();
     }
 
     protected void sendProviderAbort(PAbortCause pAbortCause, byte[] remoteTransactionId, SccpAddress remoteAddress,
             SccpAddress localAddress, int seqControl, int networkId) {
-        if (this.stack.getPreviewMode())
-            return;
-
         TCAbortMessageImpl msg = (TCAbortMessageImpl) TcapFactory.createTCAbortMessage();
         msg.setDestinationTransactionId(remoteTransactionId);
         msg.setPAbortCause(pAbortCause);
@@ -561,20 +540,21 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
 
     protected void sendRejectAsProviderAbort(PAbortCause pAbortCause, byte[] remoteTransactionId, SccpAddress remoteAddress,
             SccpAddress localAddress, int seqControl, int networkId) {
-        if (this.stack.getPreviewMode())
-            return;
-
         RejectProblem rp = RejectProblem.getFromPAbortCause(pAbortCause);
         if (rp == null)
             rp = RejectProblem.transactionBadlyStructuredTransPortion;
 
         TCResponseMessageImpl msg = (TCResponseMessageImpl) TcapFactory.createTCResponseMessage();
         msg.setDestinationTransactionId(remoteTransactionId);
-        Component[] cc = new Component[1];
-        Reject r = TcapFactory.createComponentReject();
+        ComponentPortionImpl cPortion=new ComponentPortionImpl();
+        List<ComponentImpl> cc = new ArrayList<ComponentImpl>(1);
+        RejectImpl r = TcapFactory.createComponentReject();
         r.setProblem(rp);
-        cc[0] = r;
-        msg.setComponent(cc);
+        ComponentImpl curr=new ComponentImpl();
+        curr.setReject(r);
+        cc.add(curr);
+        cPortion.setComponents(cc);
+        msg.setComponent(cPortion);
 
         AsnOutputStream aos = new AsnOutputStream();
         try {
@@ -617,7 +597,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
                         // parsing OriginatingTransactionId
                         ais = new AsnInputStream(data);
                         tag = ais.readTag();
-                        TCUnidentifiedMessage tcUnidentified = new TCUnidentifiedMessage();
+                        TCUnifiedMessage tcUnidentified = new TCUnifiedMessage();
                         tcUnidentified.decode(ais);
                         if (tcUnidentified.getOriginatingTransactionId() != null) {
                             boolean isDP = false;
@@ -703,7 +683,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
                         // parsing OriginatingTransactionId
                         ais = new AsnInputStream(data);
                         tag = ais.readTag();
-                        TCUnidentifiedMessage tcUnidentified = new TCUnidentifiedMessage();
+                        TCUnifiedMessage tcUnidentified = new TCUnifiedMessage();
                         tcUnidentified.decode(ais);
                         if (tcUnidentified.getOriginatingTransactionId() != null) {
                             if (tcUnidentified.isDialogPortionExists()) {
@@ -872,7 +852,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         }
 
         logger.error(String.format("Rx unidentified messageType=%s. SccpMessage=%s", tag, message));
-        TCUnidentifiedMessage tcUnidentified = new TCUnidentifiedMessage();
+        TCUnifiedMessage tcUnidentified = new TCUnifiedMessage();
         try {
             tcUnidentified.decode(ais);
         } catch (ParseException e) {
@@ -894,11 +874,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     }
 
     public void onNotice(SccpNoticeMessage msg) {
-
-        if (this.stack.getPreviewMode()) {
-            return;
-        }
-
         DialogImpl dialog = null;
 
         try {
@@ -908,7 +883,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
             // this should have TC message tag :)
             ais.readTag();
 
-            TCUnidentifiedMessage tcUnidentified = new TCUnidentifiedMessage();
+            TCUnifiedMessage tcUnidentified = new TCUnifiedMessage();
             tcUnidentified.decode(ais);
 
             if (tcUnidentified.getOriginatingTransactionId() != null) {
@@ -937,24 +912,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         }
     }
 
-    protected Dialog createPreviewDialog(PreviewDialogDataKey ky, SccpAddress localAddress, SccpAddress remoteAddress,
-            int seqControl) throws TCAPException {
-        Long dialogId = this.getAvailableTxIdPreview();
-        PreviewDialogData pdd = new PreviewDialogData(this, dialogId);
-        pdd.setPrevewDialogDataKey1(ky);
-        PreviewDialogData pddx = this.dialogPreviewList.putIfAbsent(ky, pdd);
-        if (pddx != null) {
-            this.removePreviewDialog(pddx);
-            throw new TCAPException("Dialog with trId=" + ky.origTxId + " is already exists - we ignore it and drops curent dialog");
-        }
-
-        DialogImpl di = new DialogImpl(localAddress, remoteAddress, seqControl, this.service, this, pdd, false);
-
-        pdd.startIdleTimer();
-
-        return di;
-    }
-
     protected Long getAvailableTxIdPreview() throws TCAPException {
         while (true) {
 //            Long id;
@@ -973,67 +930,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
             return id;
         }
     }
-
-    protected Dialog getPreviewDialog(PreviewDialogDataKey ky1, PreviewDialogDataKey ky2, SccpAddress localAddress,
-            SccpAddress remoteAddress, int seqControl) {
-
-        PreviewDialogData pdd = this.dialogPreviewList.get(ky1);
-        DialogImpl di = null;
-        boolean sideB = false;
-        if (pdd != null) {
-            sideB = pdd.getPrevewDialogDataKey1().equals(ky1);
-            di = new DialogImpl(localAddress, remoteAddress, seqControl, this.service, this, pdd, sideB);
-        } else {
-            if (ky2 != null)
-                pdd = this.dialogPreviewList.get(ky2);
-            if (pdd != null) {
-                sideB = pdd.getPrevewDialogDataKey1().equals(ky1);
-                di = new DialogImpl(localAddress, remoteAddress, seqControl, this.service, this, pdd, sideB);
-            } else {
-                return null;
-            }
-        }
-
-        pdd.restartIdleTimer();
-
-        if (pdd.getPrevewDialogDataKey2() == null && ky2 != null) {
-            if (pdd.getPrevewDialogDataKey1().equals(ky1))
-                pdd.setPrevewDialogDataKey2(ky2);
-            else
-                pdd.setPrevewDialogDataKey2(ky1);
-            this.dialogPreviewList.put(pdd.getPrevewDialogDataKey2(), pdd);
-        }
-
-        return di;
-
-        // }
-
-    }
-
-    protected void removePreviewDialog(DialogImpl di) {
-
-        PreviewDialogData pdd = this.dialogPreviewList.get(di.prevewDialogData.getPrevewDialogDataKey1());
-        if (pdd == null && di.prevewDialogData.getPrevewDialogDataKey2() != null) {
-            pdd = this.dialogPreviewList.get(di.prevewDialogData.getPrevewDialogDataKey2());
-        }
-
-        if (pdd != null)
-            removePreviewDialog(pdd);
-
-        this.doRelease(di);
-    }
-
-    protected void removePreviewDialog(PreviewDialogData pdd) {
-
-        this.dialogPreviewList.remove(pdd.getPrevewDialogDataKey1());
-        if (pdd.getPrevewDialogDataKey2() != null) {
-            this.dialogPreviewList.remove(pdd.getPrevewDialogDataKey2());
-        }
-
-        pdd.stopIdleTimer();
-
-        // TODO ??? : create Dialog and invoke "this.doRelease(di);"
-    }
+    
     @Override
     public void onCoordResponse(int ssn, int multiplicityIndicator) {
         // TODO Auto-generated method stub
@@ -1160,22 +1057,22 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     }
 
     @Override
-    public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress, ProtocolClass clazz, Credit credit, byte[] data, Importance importance) throws Exception {
+    public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress, ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
         // TODO Auto-generated method stub
     }
 
     @Override
-    public void onConnectConfirm(SccpConnection conn, byte[] data) {
+    public void onConnectConfirm(SccpConnection conn, ByteBuf data) {
         // TODO Auto-generated method stub
     }
 
     @Override
-    public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, byte[] data) {
+    public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data) {
         // TODO Auto-generated method stub
     }
 
     @Override
-    public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, byte[] data) {
+    public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data) {
         // TODO Auto-generated method stub
     }
 
@@ -1195,7 +1092,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     }
 
     @Override
-    public void onData(SccpConnection conn, byte[] data) {
+    public void onData(SccpConnection conn, ByteBuf data) {
         // TODO Auto-generated method stub
     }
 

@@ -357,55 +357,50 @@ public class ASNPrimitivesTest
 		Random random=new Random();
 		random.nextBytes(plainBytes);
 		
-		byte[] encodedOctetString = new byte[2+plainBytes.length];		
-		encodedOctetString[0]=0x4;
-		encodedOctetString[1]=(byte)plainBytes.length;
-		System.arraycopy(plainBytes, 0, encodedOctetString, 2, plainBytes.length);
+		ByteBuf encodedOctetString = Unpooled.buffer(2+plainBytes.length);		
+		encodedOctetString.writeByte(0x4);
+		encodedOctetString.writeByte((byte)plainBytes.length);
+		encodedOctetString.writeBytes(plainBytes);
 		
-		byte[] plainLongBytes=new byte[plainBytes.length*50];
+		ByteBuf plainLongBytes=Unpooled.buffer(plainBytes.length*50);
 		for(int i=0;i<50;i++)
-			System.arraycopy(plainBytes, 0, plainLongBytes, i*plainBytes.length, plainBytes.length);
-		
-		Integer longLength=ASNParser.getLengthLength(plainLongBytes.length);		
+			plainLongBytes.writeBytes(plainBytes);
+			
+		Integer longLength=ASNParser.getLengthLength(plainLongBytes.readableBytes());		
 		assertEquals(longLength,new Integer(2));
 		
-		byte[] longLengthBytes=new byte[3];
-		ByteBuf longLengthBuf=Unpooled.wrappedBuffer(longLengthBytes);
-		longLengthBuf.resetWriterIndex();
-		ASNParser.encodeLength(longLengthBuf, false, plainLongBytes.length);
+		ByteBuf longLengthBytes=Unpooled.buffer(3);
+		longLengthBytes.resetWriterIndex();
+		ASNParser.encodeLength(longLengthBytes, false, plainLongBytes.readableBytes());
 		
-		byte[] encodedLongOctetString = new byte[1+plainLongBytes.length+longLengthBytes.length];		
-		encodedLongOctetString[0]=0x04;
-		System.arraycopy(longLengthBytes, 0, encodedLongOctetString, 1, longLengthBytes.length);
-		System.arraycopy(plainLongBytes, 0, encodedLongOctetString, 1+longLengthBytes.length, plainLongBytes.length);
+		ByteBuf encodedLongOctetString = Unpooled.buffer(1+plainLongBytes.readableBytes()+longLengthBytes.readableBytes());		
+		encodedLongOctetString.writeByte(0x04);
+		encodedLongOctetString.writeBytes(longLengthBytes);
+		encodedLongOctetString.writeBytes(Unpooled.wrappedBuffer(plainLongBytes));
 		
 		ASNOctetString value=new ASNOctetString();
-		value.setValue(plainBytes);
+		value.setValue(Unpooled.wrappedBuffer(plainBytes));
 		
 		ASNOctetString longValue=new ASNOctetString();
-		longValue.setValue(plainLongBytes);
+		longValue.setValue(Unpooled.wrappedBuffer(plainLongBytes));
 		
 		try
 		{
 			ByteBuf encoded=parser.encode(value);
-			byte[] encodedRealData=new byte[encoded.readableBytes()];
-			encoded.readBytes(encodedRealData);
-			assertTrue(Arrays.equals(encodedOctetString, encodedRealData));
+			assertTrue(byteBufEquals(encodedOctetString, encoded));
 			
 			encoded=parser.encode(longValue);
-			encodedRealData=new byte[encoded.readableBytes()];
-			encoded.readBytes(encodedRealData);
-			assertTrue(Arrays.equals(encodedLongOctetString, encodedRealData));
+			assertTrue(byteBufEquals(encodedLongOctetString, encoded));
 			
 			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(encodedOctetString);
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
 			assertTrue(decodedValue instanceof ASNOctetString);
-			assertTrue(Arrays.equals(((ASNOctetString)decodedValue).getValue(),plainBytes));
+			assertTrue(byteBufEquals(((ASNOctetString)decodedValue).getValue(),Unpooled.wrappedBuffer(plainBytes)));
 			
 			bufferToDecode=Unpooled.wrappedBuffer(encodedLongOctetString);
 			decodedValue=parser.decode(bufferToDecode).getResult();
 			assertTrue(decodedValue instanceof ASNOctetString);
-			assertTrue(Arrays.equals(((ASNOctetString)decodedValue).getValue(),plainLongBytes));
+			assertTrue(byteBufEquals(((ASNOctetString)decodedValue).getValue(),plainLongBytes));
 		}
 		catch(Exception ex)
 		{
@@ -497,4 +492,14 @@ public class ASNPrimitivesTest
 	public static boolean listEqualsIgnoreOrder(List<?> list1, List<?> list2) {
 	    return new HashSet<>(list1).equals(new HashSet<>(list2));
 	}
+	
+	public static Boolean byteBufEquals(ByteBuf value1,ByteBuf value2) {
+    	ByteBuf value1Wrapper=Unpooled.wrappedBuffer(value1);
+    	ByteBuf value2Wrapper=Unpooled.wrappedBuffer(value2);
+    	byte[] value1Arr=new byte[value1Wrapper.readableBytes()];
+    	byte[] value2Arr=new byte[value2Wrapper.readableBytes()];
+    	value1Wrapper.readBytes(value1Arr);
+    	value2Wrapper.readBytes(value2Arr);
+    	return Arrays.equals(value1Arr, value2Arr);
+    }        
 }

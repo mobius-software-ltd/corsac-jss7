@@ -28,9 +28,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseRequest;
@@ -60,9 +61,9 @@ public interface Dialog extends Serializable {
      */
     Long getRemoteDialogId();
 
-    ProtocolVersion getProtocolVersion();
+    ProtocolVersionImpl getProtocolVersion();
 
-    void setProtocolVersion(ProtocolVersion protocolVersion);
+    void setProtocolVersion(ProtocolVersionImpl protocolVersion);
 
     /**
      * Gets local sccp address
@@ -111,7 +112,7 @@ public interface Dialog extends Serializable {
      *
      * @return the ui
      */
-    UserInformation getUserInformation();
+    UserInformationImpl getUserInformation();
 
     /**
      * returns new, unique for this dialog, invocation id to be used in TC_INVOKE. If there is no free invoke id, it returns
@@ -170,7 +171,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendComponent(Component componentRequest) throws TCAPSendException;
+    void sendComponent(ComponentImpl componentRequest) throws TCAPSendException;
 
     /**
      * If a TCAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this
@@ -303,10 +304,8 @@ public interface Dialog extends Serializable {
      * @param userObject
      */
     void setUserObject(Object userObject);
-
-    /**
-     *
-     * @return Returns if a dialog works in preview mode
-     */
-    boolean getPreviewMode();
+    
+    void operationEnded(InvokeImpl tcInvokeRequestImpl);
+    
+    void operationTimedOut(InvokeImpl invoke);
 }

@@ -33,7 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifie
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,lengthIndefinite=false)
-public class ObjectSecurityContextImpl extends ASNObjectIdentifier implements ApplicationContext {
+public class ObjectSecurityContextImpl extends ASNObjectIdentifier implements SecurityContext {
 	public void setObjectId(List<Long> objectId) {
         this.setValue(objectId);
     }
@@ -42,8 +42,8 @@ public class ObjectSecurityContextImpl extends ASNObjectIdentifier implements Ap
         return this.getValue();
     }
 
-    public ApplicationContextNameType getType() {
-        return ApplicationContextNameType.ObjectId;
+    public SecurityContextType getType() {
+        return SecurityContextType.ObjectId;
     }
 
     public String getStringValue() {
@@ -55,8 +55,8 @@ public class ObjectSecurityContextImpl extends ASNObjectIdentifier implements Ap
 
     public String toString() {
         if (this.getValue() != null)
-            return "ApplicationContextName[ApplicationContextNameType=ObjectId, data=" + this.getValue().toString() + "]";
+            return "SecurityContext[SecurityContextType=ObjectId, data=" + this.getValue().toString() + "]";
         else
-            return "ApplicationContextName[empty]";
+            return "SecurityContext[empty]";
     }
 }

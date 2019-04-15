@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 
@@ -42,10 +42,10 @@ public class TCQueryRequestImpl extends DialogRequestImpl implements TCQueryRequ
 
     // fields
     private ApplicationContext applicationContextName;
-    private UserInformation userInformation;
+    private UserInformationImpl userInformation;
     private boolean dialogTermitationPermission;
     private SecurityContext securityContext;
-    private Confidentiality confidentiality;
+    private ConfidentialityImpl confidentiality;
 
     TCQueryRequestImpl(boolean dialogTermitationPermission) {
         super(dialogTermitationPermission ? EventType.QueryWithPerm : EventType.QueryWithoutPerm);
@@ -87,7 +87,7 @@ public class TCQueryRequestImpl extends DialogRequestImpl implements TCQueryRequ
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getUserInformation()
      */
-    public UserInformation getUserInformation() {
+    public UserInformationImpl getUserInformation() {
 
         return this.userInformation;
     }
@@ -131,7 +131,7 @@ public class TCQueryRequestImpl extends DialogRequestImpl implements TCQueryRequ
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest#
      * setUserInformation(org.restcomm.protocols.ss7.tcap.asn.UserInformation)
      */
-    public void setUserInformation(UserInformation ui) {
+    public void setUserInformation(UserInformationImpl ui) {
         this.userInformation = ui;
 
     }
@@ -169,12 +169,12 @@ public class TCQueryRequestImpl extends DialogRequestImpl implements TCQueryRequ
     }
 
     @Override
-    public Confidentiality getConfidentiality() {
+    public ConfidentialityImpl getConfidentiality() {
         return confidentiality;
     }
 
     @Override
-    public void setConfidentiality(Confidentiality val) {
+    public void setConfidentiality(ConfidentialityImpl val) {
         confidentiality = val;
     }
 

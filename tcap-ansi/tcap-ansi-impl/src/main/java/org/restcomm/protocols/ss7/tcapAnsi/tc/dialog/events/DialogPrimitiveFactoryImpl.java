@@ -22,11 +22,13 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.api.DialogPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationRequest;
@@ -197,7 +199,7 @@ public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.DialogPrimitiveFactory #createApplicationContextName()
      */
-    public ApplicationContext createApplicationContext(long[] oid) {
+    public ApplicationContext createApplicationContext(List<Long> oid) {
         return TcapFactory.createApplicationContext(oid);
     }
 
@@ -215,12 +217,12 @@ public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.DialogPrimitiveFactory #createUserInformation()
      */
-    public UserInformation createUserInformation() {
+    public UserInformationImpl createUserInformation() {
         return TcapFactory.createUserInformation();
     }
 
     @Override
-    public UserInformationElement createUserInformationElement() {
+    public UserInformationExternalImpl createUserInformationElement() {
         return TcapFactory.createUserInformationElement();
     }
 

@@ -88,7 +88,7 @@ public class DialogAbortAPDUTest {
         ui = d.getUserInformation();
         assertNotNull(ui);
         assertTrue(ui.getExternal().getChild().getValue() instanceof TCBeginTestASN3);
-        assertTrue(Arrays.equals(new byte[] { 1, 2, 3 }, ((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getValue()));
+        assertTrue(InvokeTest.byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }), ((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getValue()));
 
         buffer=parser.encode(d);
         assertTrue(Arrays.equals(getData2(), buffer.array()));

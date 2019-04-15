@@ -55,8 +55,8 @@ public class ObjectApplicationContextNameImpl extends ASNObjectIdentifier implem
 
     public String toString() {
         if (this.getValue() != null)
-            return "ApplicationContextName[ApplicationContextNameType=ObjectId, data=" + this.getValue().toString() + "]";
+            return "ApplicationContext[ApplicationContextType=ObjectId, data=" + this.getValue().toString() + "]";
         else
-            return "ApplicationContextName[empty]";
+            return "ApplicationContext[empty]";
     }
 }

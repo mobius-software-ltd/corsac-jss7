@@ -68,8 +68,8 @@ public class TCAbortTest {
         return new byte[] { 103, 9, 73, 4, 123, -91, 52, 19, 74, 1, 126 };
     }
 
-    private byte[] getDestTrId() {
-        return new byte[] { 0x7B, (byte) 0xA5, 0x34, 0x13 };
+    private ByteBuf getDestTrId() {
+        return Unpooled.wrappedBuffer(new byte[] { 0x7B, (byte) 0xA5, 0x34, 0x13 });
     }
 
     @BeforeClass
@@ -104,7 +104,7 @@ public class TCAbortTest {
         userInfo.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
         TCAbortTestASN innerASN=new TCAbortTestASN();
-        innerASN.setValue(new byte[] { (byte) 0x0A, 0x01, 0x00 });
+        innerASN.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0x0A, 0x01, 0x00 }));
         
         ASNUserInformationObjectImpl userObject=new ASNUserInformationObjectImpl();
         userObject.setValue(innerASN);
@@ -149,7 +149,7 @@ public class TCAbortTest {
         assertTrue(output instanceof TCAbortMessageImpl, "Expected TCAbort");
 
         TCAbortMessageImpl impl = (TCAbortMessageImpl)output;
-        assertTrue(Arrays.equals(impl.getDestinationTransactionId(), getDestTrId()));
+        assertTrue(InvokeTest.byteBufEquals(impl.getDestinationTransactionId(), getDestTrId()));
 
         DialogPortionImpl dp = impl.getDialogPortion();
 
@@ -166,7 +166,7 @@ public class TCAbortTest {
 
         impl = (TCAbortMessageImpl)output;
         
-        assertTrue(Arrays.equals(impl.getDestinationTransactionId(), getDestTrId()));
+        assertTrue(InvokeTest.byteBufEquals(impl.getDestinationTransactionId(), getDestTrId()));
         // assertTrue(2074424339 == impl.getDestinationTransactionId());
 
         dp = impl.getDialogPortion();

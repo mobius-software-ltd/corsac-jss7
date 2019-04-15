@@ -25,17 +25,19 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 *
 */
 
+import io.netty.buffer.ByteBuf;
+
 import org.restcomm.protocols.ss7.tcap.asn.DialogPortionImpl;
 
 public interface TCUnifiedMessage {
 	// mandatory
-    byte[] getOriginatingTransactionId();
+	ByteBuf getOriginatingTransactionId();
 
-    void setOriginatingTransactionId(byte[] t);
+    void setOriginatingTransactionId(ByteBuf t);
 
-    byte[] getDestinationTransactionId();
+    ByteBuf getDestinationTransactionId();
 
-    void setDestinationTransactionId(byte[] t);
+    void setDestinationTransactionId(ByteBuf t);
 
     DialogPortionImpl getDialogPortion();
 

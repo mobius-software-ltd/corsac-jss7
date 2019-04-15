@@ -20,10 +20,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcapAnsi.asn;
+package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLast;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 
 /**
  * @author baranowb
@@ -31,11 +32,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLast;
  * @author sergey vetyutnev
  *
  */
-public class ReturnResultLastImpl extends ReturnImpl implements ReturnResultLast {
-	private static final long serialVersionUID = 1L;
-
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=10,constructed=false,lengthIndefinite=false)
+public class ReturnResultLastImpl extends ReturnImpl {
 	public ComponentType getType() {
         return ComponentType.ReturnResultLast;
     }
-
 }

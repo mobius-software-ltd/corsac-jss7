@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
+import io.netty.buffer.Unpooled;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -131,11 +133,11 @@ public class Client extends EventTestHarness {
         invoke.getInvoke().setOperationCode(oc);
 
         ASNOctetString p1=new ASNOctetString();
-        p1.setValue(new byte[] { 0x0F });
+        p1.setValue(Unpooled.wrappedBuffer(new byte[] { 0x0F }));
         
         ASNOctetString p2=new ASNOctetString();
-        p2.setValue(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
-                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 });
+        p2.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
 
         CompoundParameter c1=new CompoundParameter();
         c1.setO1(Arrays.asList(new ASNOctetString[] { p1,p2}));

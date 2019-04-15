@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 import static org.testng.Assert.*;
 
 import org.mobicents.protocols.asn.AsnInputStream;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUnidentifiedMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
 import org.testng.annotations.Test;
 
 @Test(groups = { "asn" })
@@ -42,7 +42,7 @@ public class TcUnidentifiedTest {
         // 1
         AsnInputStream ais = new AsnInputStream(this.data1);
         
-        TCUnidentifiedMessage tcm = new TCUnidentifiedMessage();
+        TCUnifiedMessage tcm = new TCUnifiedMessage();
         tcm.decode(ais);
 
         assertEquals(tcm.getOriginatingTransactionId(), trIdO);

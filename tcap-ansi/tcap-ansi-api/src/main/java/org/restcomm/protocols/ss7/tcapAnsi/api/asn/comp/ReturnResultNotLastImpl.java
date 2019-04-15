@@ -20,18 +20,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-/**
- *
- */
-
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 
 /**
  * @author baranowb
+ * @author amit bhayani
+ * @author sergey vetyutnev
  *
  */
-public interface ReturnResultLast extends Return {
-
-    int _TAG_RETURN_RESULT_LAST = 10;
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=14,constructed=false,lengthIndefinite=false)
+public class ReturnResultNotLastImpl extends ReturnImpl {
+	public ComponentType getType() {
+        return ComponentType.ReturnResultNotLast;
+    }
 
 }
