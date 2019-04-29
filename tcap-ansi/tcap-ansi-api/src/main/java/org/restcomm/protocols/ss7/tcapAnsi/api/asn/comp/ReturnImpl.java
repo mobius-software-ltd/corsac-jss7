@@ -22,10 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
-import java.io.IOException;
-
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
-
 /**
  * @author baranowb
  * @author amit bhayani
@@ -34,9 +30,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
  */
 public abstract class ReturnImpl implements BaseComponent {
 	protected ASNCorrelationID correlationId=new ASNCorrelationID();
-    protected Parameter parameter;
     private NationalOperationCodeImpl nationalOperationCode;
     private PrivateOperationCodeImpl privateOperationCode;
+    
+    private ASNReturnSetParameterImpl setParameter=new ASNReturnSetParameterImpl();
+    private ASNReturnParameterImpl seqParameter=null;
     
     public OperationCode getOperationCode() {
     	if(nationalOperationCode!=null)
@@ -57,12 +55,25 @@ public abstract class ReturnImpl implements BaseComponent {
     	}
     }
 
-    public Parameter getParameter() {
-        return this.parameter;
+    public Object getParameter() {
+        if(this.setParameter!=null)
+        	return this.setParameter.getValue();
+        else if(this.seqParameter!=null)
+        	return this.seqParameter.getValue();
+        
+        return null;
     }
 
-    public void setParameter(Parameter p) {
-        this.parameter = p;
+    public void setSetParameter(Object p) {
+    	this.setParameter = new ASNReturnSetParameterImpl();
+        this.setParameter.setValue(p);
+        this.seqParameter=null;        
+    }
+
+    public void setSeqParameter(Object p) {
+    	this.seqParameter = new ASNReturnParameterImpl();
+        this.seqParameter.setValue(p);
+        this.setParameter=null;        
     }
 
     public Long getCorrelationId() {
@@ -78,33 +89,6 @@ public abstract class ReturnImpl implements BaseComponent {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
         this.correlationId.setFirstValue(i.byteValue());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Encodable#decode(org.mobicents.protocols .asn.AsnInputStream)
-     */
-    public void decode() {
-
-        this.correlationId = null;
-        this.parameter = null;
-
-        // Parameter
-        this.parameter = TcapFactory.readParameter(localAis);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Encodable#encode(org.mobicents.protocols .asn.AsnOutputStream)
-     */
-    public void encode() {
-        // parameters
-        if (this.parameter != null)
-            this.parameter.encode(aos);
-        else
-            ParameterImpl.encodeEmptyParameter(aos);        
     }
 
     @Override

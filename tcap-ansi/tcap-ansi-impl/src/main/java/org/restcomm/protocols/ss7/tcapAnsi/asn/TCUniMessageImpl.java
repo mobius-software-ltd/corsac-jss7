@@ -26,11 +26,15 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 /**
  * @author baranowb
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=1,constructed=true,lengthIndefinite=false)
 public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessage {
 	private ComponentPortionImpl component;
 

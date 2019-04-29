@@ -23,15 +23,17 @@
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import static org.testng.Assert.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLast;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLast;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  *
@@ -41,7 +43,7 @@ import org.testng.annotations.Test;
 @Test(groups = { "asn" })
 public class ReturnResultTest {
 
-    private byte[] data1 = new byte[] { (byte) 0xea, 0x1d, (byte) 0xcf, 0x01, 0x00, (byte) 0xf2, 0x18, (byte) 0x89, 0x04, (byte) 0xfe, 0x3a, 0x2f, (byte) 0xe5,
+    private byte[] data1 = new byte[] { (byte) 0xea, 0x1f, (byte) 0xcf, 0x01, 0x00, (byte) 0xf2, 0x1a, 0x04, 0x18, (byte) 0x89, 0x04, (byte) 0xfe, 0x3a, 0x2f, (byte) 0xe5,
             (byte) 0x9f, (byte) 0x81, 0x38, 0x05, 0x00, 0x00, 0x00, 0x26, 0x31, (byte) 0x95, 0x03, 0x00, 0x0c, 0x06, (byte) 0x9f, 0x31, 0x01, 0x00 };
 
     private byte[] data2 = new byte[] { -18, 5, -49, 1, -1, -14, 0 };
@@ -51,66 +53,54 @@ public class ReturnResultTest {
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ReturnResultLastImpl.class);
+    	parser.loadClass(ReturnResultNotLastImpl.class);
+    	
         // 1
-        AsnInputStream ais = new AsnInputStream(this.data1);
-        int tag = ais.readTag();
-        assertEquals(tag, ReturnResultLast._TAG_RETURN_RESULT_LAST);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
+    	assertTrue(result.getResult() instanceof ReturnResultLastImpl);        
 
-        ReturnResultLast rrl = TcapFactory.createComponentReturnResultLast();
-        rrl.decode(ais);
-
-        assertEquals((long) rrl.getCorrelationId(), 0);
-        Parameter p = rrl.getParameter();
-        assertEquals(p.getTag(), 18);
-        assertEquals(p.getTagClass(), Tag.CLASS_PRIVATE);
-        assertFalse(p.isPrimitive());
-        assertEquals(p.getData(), parData);
+    	ReturnResultLastImpl rrl = (ReturnResultLastImpl)result.getResult();
+        
+        assertEquals((long) rrl.getCorrelationId(), 0);        
+        assertTrue(rrl.getParameter() instanceof ASNOctetString);
+        UserInformationElementTest.byteBufEquals(((ASNOctetString)rrl.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
         // 2
-        ais = new AsnInputStream(this.data2);
-        tag = ais.readTag();
-        assertEquals(tag, ReturnResultNotLast._TAG_RETURN_RESULT_NOT_LAST);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
+        result=parser.decode(Unpooled.wrappedBuffer(this.data2));
+    	assertTrue(result.getResult() instanceof ReturnResultNotLastImpl);        
 
-        ReturnResultNotLast rrnl = TcapFactory.createComponentReturnResultNotLast();
-        rrnl.decode(ais);
-
+    	ReturnResultNotLastImpl rrnl = (ReturnResultNotLastImpl)result.getResult();
+        
         assertEquals((long) rrnl.getCorrelationId(), -1);
-        p = rrnl.getParameter();
-        assertEquals(p.getTag(), 18);
-        assertEquals(p.getTagClass(), Tag.CLASS_PRIVATE);
-        assertFalse(p.isPrimitive());
-        assertEquals(p.getData(), new byte[0]);
+        assertNull(rrnl.getParameter());
     }
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ReturnResultLastImpl.class);
+    	parser.loadClass(ReturnResultNotLastImpl.class);
+    	
         // 1
-        ReturnResultLast rrl = TcapFactory.createComponentReturnResultLast();
+        ReturnResultLastImpl rrl = TcapFactory.createComponentReturnResultLast();
         rrl.setCorrelationId(0L);
-        Parameter p = TcapFactory.createParameterSet();
-        p.setData(parData);
-        rrl.setParameter(p);
+        ASNOctetString p=new ASNOctetString();
+        p.setValue(Unpooled.wrappedBuffer(parData));
+        rrl.setSetParameter(p);        
 
-        AsnOutputStream aos = new AsnOutputStream();
-        rrl.encode(aos);
-        byte[] encodedData = aos.toByteArray();
-        byte[] expectedData = data1;
-        assertEquals(encodedData, expectedData);
+        ByteBuf encodedData=parser.encode(rrl);
+        ByteBuf expectedData = Unpooled.wrappedBuffer(data1);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
         // 2
-        ReturnResultNotLast rrnl = TcapFactory.createComponentReturnResultNotLast();
+        ReturnResultNotLastImpl rrnl = TcapFactory.createComponentReturnResultNotLast();
         rrnl.setCorrelationId(-1L);
-        p = TcapFactory.createParameterSet();
-        rrnl.setParameter(p);
+        rrl.setSetParameter(null);
 
-        aos = new AsnOutputStream();
-        rrnl.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data2;
-        assertEquals(encodedData, expectedData);
+        encodedData=parser.encode(rrl);
+        expectedData = Unpooled.wrappedBuffer(data2);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
     }
 }

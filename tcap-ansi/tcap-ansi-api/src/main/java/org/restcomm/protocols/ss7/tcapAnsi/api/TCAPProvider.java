@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
 import java.util.concurrent.Future;
 
@@ -95,7 +97,7 @@ public interface TCAPProvider extends Serializable {
      * @param data
      * @return
      */
-    DraftParsedMessage parseMessageDraft(byte[] data);
+    DraftParsedMessage parseMessageDraft(ByteBuf data);
 
     Future<?> createOperationTimer(Runnable operationTimerTask, long invokeTimeout);
 }

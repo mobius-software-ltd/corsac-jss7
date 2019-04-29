@@ -23,24 +23,30 @@
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import static org.testng.Assert.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerSecurityContextImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ObjectSecurityContextImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.SecurityContextImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationElementImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
 *
@@ -50,101 +56,91 @@ import org.testng.annotations.Test;
 @Test(groups = { "asn" })
 public class DialogPortionTest {
 
-    private byte[] data1 = new byte[] { -7, 33, -38, 1, 3, -3, 20, 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 1, 2, 3, 4, 5, 6, 7, -128, 1, 10, -94, 3, -128,
+    private byte[] data1 = new byte[] { -7, 33, -38, 1, 3, -3, 20, 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 4, 5, 3, 4, 5, 6, 7, -128, 1, 10, -94, 3, -128,
             1, 20 };
 
     private byte[] data2 = new byte[] { -7, 11, -37, 1, 30, -127, 1, 42, -94, 3, -127, 1, 44 };    
 
-    private byte[] dataValue = new byte[] { 1, 2, 3, 4, 5, 6, 7 };
+    private byte[] dataValue = new byte[] { 3, 4, 5, 6, 7 };
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(DialogPortionImpl.class);
         // 1
-        AsnInputStream ais = new AsnInputStream(this.data1);
-        int tag = ais.readTag();
-        assertEquals(tag, DialogPortion._TAG_DIALOG_PORTION);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        DialogPortion dp = TcapFactory.createDialogPortion();
-        dp.decode(ais);
-
-        assertNull(dp.getApplicationContext());
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data1));
+    	assertTrue(result.getResult() instanceof DialogPortionImpl);
+    	DialogPortionImpl dp=(DialogPortionImpl)result.getResult();
+        
+    	assertNull(dp.getApplicationContext());
         assertTrue(dp.getProtocolVersion().isT1_114_2000Supported());
-        UserInformation ui = dp.getUserInformation();
-        assertTrue(Arrays.equals(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 }, ui.getUserInformationElements()[0].getOidValue()));
-        assertEquals(dataValue, ui.getUserInformationElements()[0].getEncodeType());
+        UserInformationImpl ui = dp.getUserInformation();
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), ui.getExternal().get(0).getObjectIdentifier());
+        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)ui.getExternal().get(0).getChild().getValue()).getValue());
 
         SecurityContext sc = dp.getSecurityContext();
-        assertEquals((long) sc.getIntegerSecurityId(), 10);
-        Confidentiality con = dp.getConfidentiality();
+        assertEquals((long) ((IntegerSecurityContextImpl)sc).getInteger(), 10);
+        ConfidentialityImpl con = dp.getConfidentiality();
         assertEquals((long) con.getIntegerConfidentialityId(), 20);
 
         // 2
-        ais = new AsnInputStream(this.data2);
-        tag = ais.readTag();
-        assertEquals(tag, DialogPortion._TAG_DIALOG_PORTION);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        dp = TcapFactory.createDialogPortion();
-        dp.decode(ais);
-
-        assertNull(dp.getProtocolVersion());
-        assertEquals(dp.getApplicationContext().getInteger(), 30);
+        result=parser.decode(Unpooled.wrappedBuffer(data2));
+    	assertTrue(result.getResult() instanceof DialogPortionImpl);
+    	dp=(DialogPortionImpl)result.getResult();
+        
+    	assertNull(dp.getProtocolVersion());
+    	assertEquals(((IntegerApplicationContextNameImpl)dp.getApplicationContext()).getValue(), new Long(30L));
         assertNull(dp.getUserInformation());
 
         sc = dp.getSecurityContext();
-        assertTrue(Arrays.equals(sc.getObjectSecurityId(), new long[] { 1, 2 }));
+        assertEquals(((ObjectSecurityContextImpl)sc).getObjectId(), Arrays.asList(new Long[] { 1L, 2L }));
         con = dp.getConfidentiality();
-        assertTrue(Arrays.equals(con.getObjectConfidentialityId(), new long[] { 1, 4 }));
+        assertEquals(con.getObjectConfidentialityId(), Arrays.asList(new Long[] { 1L, 4L }));
     }
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(DialogPortionImpl.class);
         // 1
-        DialogPortion dp = TcapFactory.createDialogPortion();
-        ProtocolVersion pv = TcapFactory.createProtocolVersionFull();
+        DialogPortionImpl dp = TcapFactory.createDialogPortion();
+        ProtocolVersionImpl pv = TcapFactory.createProtocolVersionFull();
         dp.setProtocolVersion(pv);
-        UserInformation ui = TcapFactory.createUserInformation();
-        UserInformationElement[] uie = new UserInformationElement[1];
-        uie[0] = new UserInformationElementImpl();
-        uie[0].setOid(true);
-        uie[0].setOidValue(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 });
-        uie[0].setAsn(true);
-        uie[0].setEncodeType(dataValue);
-        ui.setUserInformationElements(uie);
+        UserInformationImpl ui = TcapFactory.createUserInformation();
+        List<UserInformationExternalImpl> uie = new ArrayList<UserInformationExternalImpl>(1);
+        UserInformationExternalImpl currElement=new UserInformationExternalImpl();
+        currElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
+        
+        ASNOctetString innerValue=new ASNOctetString();
+        innerValue.setValue(Unpooled.wrappedBuffer(dataValue));        
+        ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
+        childObject.setValue(innerValue);
+        currElement.setChildAsObject(childObject);
+        uie.add(currElement);
+        ui.setExternal(uie);
         dp.setUserInformation(ui);
-        SecurityContext sc = new SecurityContextImpl();
-        sc.setIntegerSecurityId(10L);
+        IntegerSecurityContextImpl sc = new IntegerSecurityContextImpl();
+        sc.setInteger(10L);
         dp.setSecurityContext(sc);
-        Confidentiality con = new ConfidentialityImpl();
+        ConfidentialityImpl con = new ConfidentialityImpl();
         con.setIntegerConfidentialityId(20L);
         dp.setConfidentiality(con);
 
-        AsnOutputStream aos = new AsnOutputStream();
-        dp.encode(aos);
-        byte[] encodedData = aos.toByteArray();
-        byte[] expectedData = data1;
-        assertEquals(encodedData, expectedData);
+        ByteBuf output=parser.encode(dp);
+        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(data1),output);
 
         // 2
         dp = TcapFactory.createDialogPortion();
         ApplicationContext ac = TcapFactory.createApplicationContext(30);
         dp.setApplicationContext(ac);
-        sc = new SecurityContextImpl();
-        sc.setObjectSecurityId(new long[] { 1, 2 });
-        dp.setSecurityContext(sc);
+        ObjectSecurityContextImpl osc = new ObjectSecurityContextImpl();
+        osc.setObjectId(Arrays.asList(new Long[] { 1L, 2L }));
+        dp.setSecurityContext(osc);
         con = new ConfidentialityImpl();
-        con.setObjectConfidentialityId(new long[] { 1, 4 });
+        con.setObjectConfidentialityId(Arrays.asList(new Long[] { 1L, 4L }));
         dp.setConfidentiality(con);
 
-        aos = new AsnOutputStream();
-        dp.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data2;
-        assertEquals(encodedData, expectedData);
-
+        output=parser.encode(dp);
+        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(data2),output);
     }
-
 }

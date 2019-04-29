@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
-import java.io.IOException;
-
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -34,10 +32,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=12,constructed=false,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=12,constructed=true,lengthIndefinite=false)
 public class RejectImpl implements BaseComponent {
 	protected ASNCorrelationID correlationId=new ASNCorrelationID();
     private ASNRejectProblemType rejectProblem;
+    
+    @SuppressWarnings("unused")
+	private ASNEmptyParameterImpl parameter=new ASNEmptyParameterImpl();
+    
     private boolean localOriginated = false;
 
 
@@ -78,27 +80,6 @@ public class RejectImpl implements BaseComponent {
 
     public void setLocalOriginated(boolean p) {
         localOriginated = p;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Encodable#decode(org.mobicents.protocols .asn.AsnInputStream)
-     */
-    public void decode() {
-    	// Empty parameter
-        // we do not parse an empty parameter because it is useless                
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Encodable#encode(org.mobicents.protocols .asn.AsnOutputStream)
-     */
-    public void encode() {
-        // Empty parameter
-        aos.writeTag(Tag.CLASS_PRIVATE, false, Parameter._TAG_SEQUENCE);
-        aos.writeLength(0);
     }
 
     public String toString() {

@@ -31,11 +31,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,lengthIndefinite=false)
 public class IntegerSecurityContextImpl extends ASNInteger implements SecurityContext {
-	public void setLocalErrorCode(Long localErrorCode) {
-        this.setValue(localErrorCode);
+	public void setInteger(Long value) {
+        this.setValue(value);
     }
 
-    public Long getLocalErrorCode() {
+    public Long getInteger() {
         return this.getValue();
     }
     

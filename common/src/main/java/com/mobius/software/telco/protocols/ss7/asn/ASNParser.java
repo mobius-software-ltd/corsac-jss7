@@ -116,6 +116,7 @@ public class ASNParser
 			return decode(buffer,skipErrors, null, classMapping,cachedElements,null);
 		}
 		catch(Exception ex) {
+			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}
@@ -125,7 +126,6 @@ public class ASNParser
 		int oldIndex=buffer.readerIndex();
 		buffer.markReaderIndex();
 		ASNHeaderWithLength header=readHeader(buffer);
-		
 		ASNHeader currHeader=new ASNHeader(header.getAsnClass(), header.getIsConstructed(), header.getAsnTag(), header.getIndefiniteLength(),index);
 		Class<?> effectiveClass=classMapping.get(currHeader);
 		if(effectiveClass==null) {
@@ -163,7 +163,6 @@ public class ASNParser
 		
 		Constructor<?> ctor = effectiveClass.getConstructor();
 		Object currObject = ctor.newInstance(new Object[] {  });
-		
 		Boolean hadErrors=false;
 		if(!cachedData.getSubFieldsFound()) {
 			Method[] methods=effectiveClass.getMethods();
@@ -177,7 +176,6 @@ public class ASNParser
 		}
 		else {
 			int remainingBytes=buffer.readableBytes();
-			
 			remainingBytes-=header.getLength();
 			int innerIndex=0;
 			while(buffer.readableBytes()>remainingBytes) {
@@ -245,7 +243,7 @@ public class ASNParser
 			if(!gotEOF)
 				throw new ASNException("Invalid tag encoding found");
 		}
-		
+				
 		currData=buffer.readByte();
 		int length=0;
 		boolean indefiniteLength=false;
@@ -254,6 +252,8 @@ public class ASNParser
 			for(int i=0;i<lengthLength;i++)
 				length=(length<<8) | (buffer.readByte() & 0x0FF);						
 		}
+		else if(currData!=-128)
+			length=currData;
 		else
 		{
 			length=currData & 0x7F;
@@ -276,7 +276,7 @@ public class ASNParser
 					}
 				}
 				
-				if(!gotEOF) {
+				if(!gotEOF) {					
 					//throw new ASNException("Invalid length encoding found");
 					length=0;
 					indefiniteLength=false;
@@ -308,7 +308,6 @@ public class ASNParser
 			return buffer;
 		}
 		catch(Exception ex) {	
-			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}
@@ -472,8 +471,7 @@ public class ASNParser
 		try {
 			return getLengthWithHeader(null, value, cachedElements);			
 		}
-		catch(Exception ex) {	
-			ex.printStackTrace();
+		catch(Exception ex) {
 			throw new ASNException(ex.getMessage());
 		}
 	}

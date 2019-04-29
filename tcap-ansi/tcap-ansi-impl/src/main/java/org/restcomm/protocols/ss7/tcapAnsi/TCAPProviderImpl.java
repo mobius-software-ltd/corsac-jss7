@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.tcapAnsi;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,26 +61,26 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCAbortMessageImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TCConversationMessageImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TCConversationMessageImplWithPerm;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCNoticeIndicationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TCQueryMessageImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TCQueryMessageImplWithPerm;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCResponseMessageImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUniMessageImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUnifiedMessageImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.TransactionID;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.Utils;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.component.ComponentPrimitiveFactoryImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.DialogPrimitiveFactoryImpl;
@@ -90,6 +91,10 @@ import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCQueryIndicationImp
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCResponseIndicationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCUniIndicationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCUserAbortIndicationImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  * @author amit bhayani
@@ -124,6 +129,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     private int ssn;
     private AtomicLong curDialogId = new AtomicLong(0);
 
+    private ASNParser messageParser=new ASNParser(true);
+    
     protected TCAPProviderImpl(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn,ScheduledExecutorService service) {
         super();
         this.sccpProvider = sccpProvider;
@@ -134,6 +141,14 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         this.componentPrimitiveFactory = new ComponentPrimitiveFactoryImpl(this);
         this.dialogPrimitiveFactory = new DialogPrimitiveFactoryImpl(this.componentPrimitiveFactory);
         this.service=service;
+        
+        messageParser.loadClass(TCConversationMessageImpl.class);
+        messageParser.loadClass(TCConversationMessageImplWithPerm.class);
+        messageParser.loadClass(TCQueryMessageImpl.class);
+        messageParser.loadClass(TCQueryMessageImplWithPerm.class);
+        messageParser.loadClass(TCResponseMessageImpl.class);
+        messageParser.loadClass(TCAbortMessageImpl.class);
+        messageParser.loadClass(TCUniMessageImpl.class);
     }
 
     /*
@@ -294,13 +309,13 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
             }
         }
         if (structured) {
-            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl);
+            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl,messageParser);
 
             this.dialogs.put(id, di);
             
             return di;
         } else {
-            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl);
+            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl,messageParser);
             
             return di;
         }
@@ -430,11 +445,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
 
     public void release(DialogImpl d) {
         Long did = d.getLocalDialogId();
-
-        if (!d.getPreviewMode()) {
-        	this.dialogs.remove(did);
-            this.doRelease(d);
-        }
+        this.dialogs.remove(did);
+        this.doRelease(d);
     }
 
     private void doRelease(DialogImpl d) {
@@ -527,10 +539,9 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         msg.setDestinationTransactionId(remoteTransactionId);
         msg.setPAbortCause(pAbortCause);
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            msg.encode(aos);
-            this.send(aos.toByteArray(), false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber());
+        	ByteBuf output=messageParser.encode(msg);
+            this.send(output, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber());
         } catch (Exception e) {
             if (logger.isEnabledFor(Level.ERROR)) {
                 logger.error("Failed to send message: ", e);
@@ -540,7 +551,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
 
     protected void sendRejectAsProviderAbort(PAbortCause pAbortCause, byte[] remoteTransactionId, SccpAddress remoteAddress,
             SccpAddress localAddress, int seqControl, int networkId) {
-        RejectProblem rp = RejectProblem.getFromPAbortCause(pAbortCause);
+    	RejectProblem rp = RejectProblem.getFromPAbortCause(pAbortCause);
         if (rp == null)
             rp = RejectProblem.transactionBadlyStructuredTransPortion;
 
@@ -556,10 +567,9 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         cPortion.setComponents(cc);
         msg.setComponent(cPortion);
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            msg.encode(aos);
-            this.send(aos.toByteArray(), false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber());
+            ByteBuf output=messageParser.encode(msg);
+            this.send(output, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber());
         } catch (Exception e) {
             if (logger.isEnabledFor(Level.ERROR)) {
                 logger.error("Failed to send message: ", e);
@@ -570,274 +580,112 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     public void onMessage(SccpDataMessage message) {
 
         try {
-            byte[] data = message.getData();
+        	ByteBuf data = message.getData();
             SccpAddress localAddress = message.getCalledPartyAddress();
             SccpAddress remoteAddress = message.getCallingPartyAddress();
 
-            // asnData - it should pass
-            AsnInputStream ais = new AsnInputStream(data);
-
-            // this should have TC message tag :)
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() != Tag.CLASS_PRIVATE) {
-                unrecognizedPackageType(message, localAddress, remoteAddress, ais, tag, message.getNetworkId());
+            ASNDecodeResult output=null;
+            try {
+            	output=messageParser.decode(Unpooled.wrappedBuffer(data));
+            }
+            catch(ASNException ex) {
+                logger.error("ParseException when parsing TCMessage: " + ex.toString(), ex);
+                this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, null, remoteAddress, localAddress,message.getSls(), message.getNetworkId());                
                 return;
             }
 
-            switch (tag) {
-                case TCConversationMessage._TAG_CONVERSATION_WITH_PERM:
-                case TCConversationMessage._TAG_CONVERSATION_WITHOUT_PERM:
-                    TCConversationMessage tcm = null;
-                    try {
-                        tcm = TcapFactory.createTCConversationMessage(ais);
-                    } catch (ParseException e) {
-                        logger.error("ParseException when parsing TCConversationMessage: " + e.toString(), e);
-
-                        // parsing OriginatingTransactionId
-                        ais = new AsnInputStream(data);
-                        tag = ais.readTag();
-                        TCUnifiedMessage tcUnidentified = new TCUnifiedMessage();
-                        tcUnidentified.decode(ais);
-                        if (tcUnidentified.getOriginatingTransactionId() != null) {
-                            boolean isDP = false;
-                            if (tcUnidentified.isDialogPortionExists()) {
-                                isDP = true;
+            if(output.getResult() instanceof TCUnifiedMessageImpl) {
+				TCUnifiedMessageImpl realMessage=(TCUnifiedMessageImpl)output.getResult();
+				if(!output.getHadErrors() && realMessage.validate()) {
+            		if(realMessage instanceof TCConversationMessageImpl) {
+            			TCConversationMessageImpl tcm=(TCConversationMessageImpl)realMessage;
+            			long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
+                        DialogImpl di = this.dialogs.get(dialogId);
+                        if (di == null) {
+                            logger.warn("TC-Conversation: No dialog/transaction for id: " + dialogId);
+                            if (tcm.getDialogPortion() != null) {
+                                this.sendProviderAbort(PAbortCause.UnassignedRespondingTransactionID,
+                                        tcm.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
+                                        message.getNetworkId());
                             } else {
-                                Dialog ddi = null;
-                                if (tcUnidentified.getDestinationTransactionId() != null) {
-                                    long dialogId = Utils.decodeTransactionId(tcUnidentified.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-                                    ddi = this.dialogs.get(dialogId);
-                                }
-                                if (ddi != null && ddi.getProtocolVersion() != null)
-                                    isDP = true;
+                                this.sendRejectAsProviderAbort(PAbortCause.UnassignedRespondingTransactionID,
+                                        tcm.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
+                                        message.getNetworkId());
                             }
-                            if (isDP) {
-                                if (e.getPAbortCauseType() != null) {
-                                    this.sendProviderAbort(e.getPAbortCauseType(),
-                                            tcUnidentified.getOriginatingTransactionId(), remoteAddress, localAddress,
-                                            message.getSls(), message.getNetworkId());
-                                } else {
-                                    this.sendProviderAbort(PAbortCause.BadlyStructuredDialoguePortion,
-                                            tcUnidentified.getOriginatingTransactionId(), remoteAddress, localAddress,
-                                            message.getSls(), message.getNetworkId());
-                                }
-                            } else {
-                                if (e.getPAbortCauseType() != null) {
-                                    this.sendRejectAsProviderAbort(e.getPAbortCauseType(),
-                                            tcUnidentified.getOriginatingTransactionId(), remoteAddress, localAddress,
-                                            message.getSls(), message.getNetworkId());
-                                } else {
-                                    this.sendRejectAsProviderAbort(PAbortCause.BadlyStructuredTransactionPortion,
-                                            tcUnidentified.getOriginatingTransactionId(), remoteAddress, localAddress,
-                                            message.getSls(), message.getNetworkId());
-                                }
-                            }
-                        }
-                        return;
-                    }
-
-                    long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-                    DialogImpl di;
-                    if (this.stack.getPreviewMode()) {
-                        PreviewDialogDataKey ky1 = new PreviewDialogDataKey(message.getIncomingDpc(), (message
-                                .getCalledPartyAddress().getGlobalTitle() != null ? message.getCalledPartyAddress()
-                                .getGlobalTitle().getDigits() : null), message.getCalledPartyAddress().getSubsystemNumber(),
-                                dialogId);
-                        long dId = Utils.decodeTransactionId(tcm.getOriginatingTransactionId(), this.stack.getSwapTcapIdBytes());
-                        PreviewDialogDataKey ky2 = new PreviewDialogDataKey(message.getIncomingOpc(), (message
-                                .getCallingPartyAddress().getGlobalTitle() != null ? message.getCallingPartyAddress()
-                                .getGlobalTitle().getDigits() : null), message.getCallingPartyAddress().getSubsystemNumber(),
-                                dId);
-                        di = (DialogImpl) this.getPreviewDialog(ky1, ky2, localAddress, remoteAddress, 0);
-                        setSsnToDialog(di, message.getCalledPartyAddress().getSubsystemNumber());
-                    } else {
-                        di = this.dialogs.get(dialogId);
-                    }
-                    if (di == null) {
-                        logger.warn("TC-Conversation: No dialog/transaction for id: " + dialogId);
-                        if (tcm.getDialogPortion() != null) {
-                            this.sendProviderAbort(PAbortCause.UnassignedRespondingTransactionID,
-                                    tcm.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
-                                    message.getNetworkId());
                         } else {
-                            this.sendRejectAsProviderAbort(PAbortCause.UnassignedRespondingTransactionID,
-                                    tcm.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
-                                    message.getNetworkId());
-                        }
-                    } else {
-                        di.processConversation(tcm, localAddress, remoteAddress,
-                                tag == TCConversationMessage._TAG_CONVERSATION_WITH_PERM);
-                    }
-
-                    break;
-
-                case TCQueryMessage._TAG_QUERY_WITH_PERM:
-                case TCQueryMessage._TAG_QUERY_WITHOUT_PERM:
-                    TCQueryMessage tcb = null;
-                    try {
-                        tcb = TcapFactory.createTCQueryMessage(ais);
-                    } catch (ParseException e) {
-                        logger.error("ParseException when parsing TCQueryMessage: " + e.toString(), e);
-
-                        // parsing OriginatingTransactionId
-                        ais = new AsnInputStream(data);
-                        tag = ais.readTag();
-                        TCUnifiedMessage tcUnidentified = new TCUnifiedMessage();
-                        tcUnidentified.decode(ais);
-                        if (tcUnidentified.getOriginatingTransactionId() != null) {
-                            if (tcUnidentified.isDialogPortionExists()) {
-                                if (e.getPAbortCauseType() != null) {
-                                    this.sendProviderAbort(e.getPAbortCauseType(),
-                                            tcUnidentified.getOriginatingTransactionId(), remoteAddress, localAddress,
-                                            message.getSls(), message.getNetworkId());
-                                } else {
-                                    this.sendProviderAbort(PAbortCause.BadlyStructuredDialoguePortion,
-                                            tcUnidentified.getOriginatingTransactionId(), remoteAddress, localAddress,
-                                            message.getSls(), message.getNetworkId());
-                                }
+                            di.processConversation(tcm, localAddress, remoteAddress,tcm.getDialogTermitationPermission());
+                        }                        
+            		} else if(realMessage instanceof TCQueryMessageImpl) {
+            			TCQueryMessageImpl tcb=(TCQueryMessageImpl)realMessage;
+            			DialogImpl di = null;
+                        try {
+                        	di = (DialogImpl) this.getNewDialog(localAddress, remoteAddress, message.getSls(), null);
+                            setSsnToDialog(di, message.getCalledPartyAddress().getSubsystemNumber());
+                        } catch (TCAPException e) {
+                            if (tcb.getDialogPortion() != null) {
+                                this.sendProviderAbort(PAbortCause.ResourceUnavailable, tcb.getOriginatingTransactionId(),
+                                        remoteAddress, localAddress, message.getSls(), message.getNetworkId());
                             } else {
-                                if (e.getPAbortCauseType() != null) {
-                                    this.sendRejectAsProviderAbort(e.getPAbortCauseType(),
-                                            tcUnidentified.getOriginatingTransactionId(), remoteAddress, localAddress,
-                                            message.getSls(), message.getNetworkId());
-                                } else {
-                                    this.sendRejectAsProviderAbort(PAbortCause.BadlyStructuredTransactionPortion,
-                                            tcUnidentified.getOriginatingTransactionId(), remoteAddress, localAddress,
-                                            message.getSls(), message.getNetworkId());
-                                }
+                                this.sendRejectAsProviderAbort(PAbortCause.ResourceUnavailable, tcb.getOriginatingTransactionId(),
+                                        remoteAddress, localAddress, message.getSls(), message.getNetworkId());
                             }
-                        }
-                        return;
-                    }
-
-                    di = null;
-                    try {
-                        if (this.stack.getPreviewMode()) {
-                            long dId = Utils.decodeTransactionId(tcb.getOriginatingTransactionId(), this.stack.getSwapTcapIdBytes());
-                            PreviewDialogDataKey ky = new PreviewDialogDataKey(message.getIncomingOpc(), (message
-                                    .getCallingPartyAddress().getGlobalTitle() != null ? message.getCallingPartyAddress()
-                                    .getGlobalTitle().getDigits() : null), message.getCallingPartyAddress()
-                                    .getSubsystemNumber(), dId);
-                            di = (DialogImpl) this.createPreviewDialog(ky, localAddress, remoteAddress, 0);
-                            setSsnToDialog(di, message.getCalledPartyAddress().getSubsystemNumber());
-                        } else {
-                            di = (DialogImpl) this.getNewDialog(localAddress, remoteAddress, message.getSls(), null);
-                            setSsnToDialog(di, message.getCalledPartyAddress().getSubsystemNumber());
+                            logger.error("Can not add a new dialog when receiving TCBeginMessage: " + e.getMessage(), e);
+                            return;
                         }
 
-                    } catch (TCAPException e) {
                         if (tcb.getDialogPortion() != null) {
-                            this.sendProviderAbort(PAbortCause.ResourceUnavailable, tcb.getOriginatingTransactionId(),
-                                    remoteAddress, localAddress, message.getSls(), message.getNetworkId());
+                            if (tcb.getDialogPortion().getProtocolVersion() != null) {
+                                di.setProtocolVersion(tcb.getDialogPortion().getProtocolVersion());
+                            } else {
+                                ProtocolVersionImpl pv = TcapFactory.createProtocolVersionEmpty();
+                                di.setProtocolVersion(pv);
+                            }
+                        }
+
+                        di.setNetworkId(message.getNetworkId());
+                        di.processQuery(tcb, localAddress, remoteAddress, tcb.getDialogTermitationPermission());                        
+            		} else if(realMessage instanceof TCResponseMessageImpl) {
+            			TCResponseMessageImpl teb=(TCResponseMessageImpl)realMessage;
+            			Long dialogId = Utils.decodeTransactionId(teb.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
+                        DialogImpl di = this.dialogs.get(dialogId);
+                        if (di == null) {
+                            logger.warn("TC-Response: No dialog/transaction for id: " + dialogId);
                         } else {
-                            this.sendRejectAsProviderAbort(PAbortCause.ResourceUnavailable, tcb.getOriginatingTransactionId(),
-                                    remoteAddress, localAddress, message.getSls(), message.getNetworkId());
+                            di.processResponse(teb, localAddress, remoteAddress);
                         }
-                        logger.error("Can not add a new dialog when receiving TCBeginMessage: " + e.getMessage(), e);
-                        return;
-                    }
-
-                    if (tcb.getDialogPortion() != null) {
-                        if (tcb.getDialogPortion().getProtocolVersion() != null) {
-                            di.setProtocolVersion(tcb.getDialogPortion().getProtocolVersion());
+            		} else if(realMessage instanceof TCAbortMessageImpl) {
+            			TCAbortMessageImpl tub=(TCAbortMessageImpl)realMessage;            			
+            			Long dialogId = null;
+            			DialogImpl di = null; 
+            			if(tub.getDestinationTransactionId()!=null) {
+            				dialogId= Utils.decodeTransactionId(tub.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());                        
+            				di = this.dialogs.get(dialogId);                        
+            			}
+            			
+                        if (di == null) {
+                            logger.warn("TC-ABORT: No dialog/transaction for id: " + dialogId);
                         } else {
-                            ProtocolVersion pv = TcapFactory.createProtocolVersionEmpty();
-                            di.setProtocolVersion(pv);
+                            di.processAbort(tub, localAddress, remoteAddress);
                         }
-                    }
-
-                    di.setNetworkId(message.getNetworkId());
-                    di.processQuery(tcb, localAddress, remoteAddress, tag == TCQueryMessage._TAG_QUERY_WITH_PERM);
-
-                    if (this.stack.getPreviewMode()) {
-                        di.getPrevewDialogData().setLastACN(di.getApplicationContextName());
-                        di.getPrevewDialogData().setOperationsSentB(di.operationsSent);
-                        di.getPrevewDialogData().setOperationsSentA(di.operationsSentA);
-                    }
-
-                    break;
-
-                case TCResponseMessage._TAG_RESPONSE:
-                    TCResponseMessage teb = null;
-                    try {
-                        teb = TcapFactory.createTCResponseMessage(ais);
-                    } catch (ParseException e) {
-                        logger.error("ParseException when parsing TCResponseMessage: " + e.toString(), e);
-                        return;
-                    }
-
-                    dialogId = Utils.decodeTransactionId(teb.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-                    if (this.stack.getPreviewMode()) {
-                        PreviewDialogDataKey ky = new PreviewDialogDataKey(message.getIncomingDpc(), (message
-                                .getCalledPartyAddress().getGlobalTitle() != null ? message.getCalledPartyAddress()
-                                .getGlobalTitle().getDigits() : null), message.getCalledPartyAddress().getSubsystemNumber(),
-                                dialogId);
-                        di = (DialogImpl) this.getPreviewDialog(ky, null, localAddress, remoteAddress, 0);
-                        setSsnToDialog(di, message.getCalledPartyAddress().getSubsystemNumber());
-                    } else {
-                        di = this.dialogs.get(dialogId);
-                    }
-                    if (di == null) {
-                        logger.warn("TC-Response: No dialog/transaction for id: " + dialogId);
-                    } else {
-                        di.processResponse(teb, localAddress, remoteAddress);
-
-                        if (this.stack.getPreviewMode()) {
-                            this.removePreviewDialog(di);
-                        }
-                    }
-                    break;
-
-                case TCAbortMessage._TAG_ABORT:
-                    TCAbortMessage tub = null;
-                    try {
-                        tub = TcapFactory.createTCAbortMessage(ais);
-                    } catch (ParseException e) {
-                        logger.error("ParseException when parsing TCAbortMessage: " + e.toString(), e);
-                        return;
-                    }
-
-                    dialogId = Utils.decodeTransactionId(tub.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-                    if (this.stack.getPreviewMode()) {
-                        long dId = Utils.decodeTransactionId(tub.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-                        PreviewDialogDataKey ky = new PreviewDialogDataKey(message.getIncomingDpc(), (message
-                                .getCalledPartyAddress().getGlobalTitle() != null ? message.getCalledPartyAddress()
-                                .getGlobalTitle().getDigits() : null), message.getCalledPartyAddress().getSubsystemNumber(),
-                                dId);
-                        di = (DialogImpl) this.getPreviewDialog(ky, null, localAddress, remoteAddress, 0);
-                        setSsnToDialog(di, message.getCalledPartyAddress().getSubsystemNumber());
-                    } else {
-                        di = this.dialogs.get(dialogId);
-                    }
-                    if (di == null) {
-                        logger.warn("TC-ABORT: No dialog/transaction for id: " + dialogId);
-                    } else {
-                        di.processAbort(tub, localAddress, remoteAddress);
-
-                        if (this.stack.getPreviewMode()) {
-                            this.removePreviewDialog(di);
-                        }
-                    }
-                    break;
-
-                case TCUniMessage._TAG_UNI:
-                    TCUniMessage tcuni;
-                    try {
-                        tcuni = TcapFactory.createTCUniMessage(ais);
-                    } catch (ParseException e) {
-                        logger.error("ParseException when parsing TCUniMessage: " + e.toString(), e);
-                        return;
-                    }
-
-                    DialogImpl uniDialog = (DialogImpl) this.getNewUnstructuredDialog(localAddress, remoteAddress);
-                    setSsnToDialog(uniDialog, message.getCalledPartyAddress().getSubsystemNumber());
-                    uniDialog.processUni(tcuni, localAddress, remoteAddress);
-                    break;
-
-                default:
-                    unrecognizedPackageType(message, localAddress, remoteAddress, ais, tag, message.getNetworkId());
-                    break;
+            		} else if(realMessage instanceof TCUniMessageImpl) {
+            			TCUniMessageImpl tcuni=(TCUniMessageImpl)realMessage;
+            			DialogImpl uniDialog = (DialogImpl) this.getNewUnstructuredDialog(localAddress, remoteAddress);
+                        setSsnToDialog(uniDialog, message.getCalledPartyAddress().getSubsystemNumber());
+                        uniDialog.processUni(tcuni, localAddress, remoteAddress);                        
+            		}
+            		else {
+            			unrecognizedPackageType(message,  realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
+            		}   		
+            	}            	
+            	else {
+            		if(output.getHadErrors())
+            			this.sendRejectAsProviderAbort(PAbortCause.UnrecognizedDialoguePortionID ,realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,message.getSls(), message.getNetworkId());
+            		else
+            			this.sendRejectAsProviderAbort(PAbortCause.UnrecognizedPackageType ,realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,message.getSls(), message.getNetworkId());
+            	}
+            }
+            else {
+            	unrecognizedPackageType(message, null, localAddress, remoteAddress, message.getNetworkId());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -845,50 +693,27 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         }
     }
 
-    private void unrecognizedPackageType(SccpDataMessage message, SccpAddress localAddress, SccpAddress remoteAddress, AsnInputStream ais, int tag,
-            int networkId) {
-        if (this.stack.getPreviewMode()) {
-            return;
-        }
-
-        logger.error(String.format("Rx unidentified messageType=%s. SccpMessage=%s", tag, message));
-        TCUnifiedMessage tcUnidentified = new TCUnifiedMessage();
-        try {
-            tcUnidentified.decode(ais);
-        } catch (ParseException e) {
-            // we do nothing
-        }
-
-        if (tcUnidentified.getOriginatingTransactionId() != null) {
-            byte[] otid = tcUnidentified.getOriginatingTransactionId();
-
-            if (tcUnidentified.getDestinationTransactionId() != null) {
-                Utils.decodeTransactionId(tcUnidentified.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-                this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, otid, remoteAddress, localAddress, message.getSls(), networkId);
-            } else {
-                this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, otid, remoteAddress, localAddress, message.getSls(), networkId);
-            }
-        } else {
-            this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, new byte[4], remoteAddress, localAddress, message.getSls(), networkId);
-        }
+    private void unrecognizedPackageType(SccpDataMessage message,byte[] transactionID, SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws ParseException {
+    	logger.error(String.format("Rx unidentified.SccpMessage=%s", message));
+        this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, transactionID, remoteAddress, localAddress, message.getSls(), networkId);        
     }
 
     public void onNotice(SccpNoticeMessage msg) {
-        DialogImpl dialog = null;
+    	DialogImpl dialog = null;
 
         try {
-            byte[] data = msg.getData();
-            AsnInputStream ais = new AsnInputStream(data);
-
-            // this should have TC message tag :)
-            ais.readTag();
-
-            TCUnifiedMessage tcUnidentified = new TCUnifiedMessage();
-            tcUnidentified.decode(ais);
-
-            if (tcUnidentified.getOriginatingTransactionId() != null) {
-                long otid = Utils.decodeTransactionId(tcUnidentified.getOriginatingTransactionId(), this.stack.getSwapTcapIdBytes());
-                dialog = this.dialogs.get(otid);
+            ByteBuf data = msg.getData();
+            ASNDecodeResult output=messageParser.decode(Unpooled.wrappedBuffer(data));
+            
+            if(output.getHadErrors()) {
+            	logger.error(String.format("Error while decoding Rx SccpNoticeMessage=%s", msg));
+            }
+            else if(output.getResult() instanceof TCUnifiedMessageImpl) {
+	            TCUnifiedMessageImpl tcUnidentified = (TCUnifiedMessageImpl)output.getResult();
+	            if (tcUnidentified.getOriginatingTransactionId() != null) {
+	                long otid = Utils.decodeTransactionId(tcUnidentified.getOriginatingTransactionId(), this.stack.getSwapTcapIdBytes());
+	                dialog = this.dialogs.get(otid);
+	            }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -938,102 +763,16 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     }
 
     @Override
-    public DraftParsedMessage parseMessageDraft(byte[] data) {
-        try {
+    public DraftParsedMessage parseMessageDraft(ByteBuf data) {
+    	try {
             DraftParsedMessageImpl res = new DraftParsedMessageImpl();
-
-            AsnInputStream ais = new AsnInputStream(data);
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() != Tag.CLASS_PRIVATE) {
-                res.setParsingErrorReason("Message tag class must be CLASS_PRIVATE");
-                ais.close();
+            ASNDecodeResult output=messageParser.decode(data);
+            if (!(output.getResult() instanceof TCUnifiedMessageImpl)) {
+                res.setParsingErrorReason("Invalid message found");
                 return res;
             }
 
-            switch (tag) {
-                case TCConversationMessage._TAG_CONVERSATION_WITH_PERM:
-                case TCConversationMessage._TAG_CONVERSATION_WITHOUT_PERM:
-                    AsnInputStream localAis = ais.readSequenceStream();
-
-                    // transaction portion
-                    TransactionID tid = TcapFactory.readTransactionID(localAis);
-                    if (tid.getFirstElem() == null || tid.getSecondElem() == null) {
-                        res.setParsingErrorReason("TCTCConversationMessage decoding error: a message does not contain both both origination and resination transactionId");
-                        return res;
-                    }
-                    byte[] originatingTransactionId = tid.getFirstElem();
-                    res.setOriginationDialogId(Utils.decodeTransactionId(originatingTransactionId, this.stack.getSwapTcapIdBytes()));
-
-                    byte[] destinationTransactionId = tid.getSecondElem();
-                    res.setDestinationDialogId(Utils.decodeTransactionId(destinationTransactionId, this.stack.getSwapTcapIdBytes()));
-
-                    if (tag == TCConversationMessage._TAG_CONVERSATION_WITH_PERM)
-                        res.setMessageType(MessageType.ConversationWithPerm);
-                    else
-                        res.setMessageType(MessageType.ConversationWithoutPerm);
-                    break;
-
-                case TCQueryMessage._TAG_QUERY_WITH_PERM:
-                case TCQueryMessage._TAG_QUERY_WITHOUT_PERM:
-                    localAis = ais.readSequenceStream();
-
-                    // transaction portion
-                    tid = TcapFactory.readTransactionID(localAis);
-                    if (tid.getFirstElem() == null || tid.getSecondElem() != null) {
-                        res.setParsingErrorReason("TCQueryMessage decoding error: transactionId must contain only one transactionId");
-                        return res;
-                    }
-                    originatingTransactionId = tid.getFirstElem();
-                    res.setOriginationDialogId(Utils.decodeTransactionId(originatingTransactionId, this.stack.getSwapTcapIdBytes()));
-
-                    if (tag == TCQueryMessage._TAG_QUERY_WITH_PERM)
-                        res.setMessageType(MessageType.QueryWithPerm);
-                    else
-                        res.setMessageType(MessageType.QueryWithoutPerm);
-                    break;
-
-                case TCResponseMessage._TAG_RESPONSE:
-                    localAis = ais.readSequenceStream();
-
-                    // transaction portion
-                    tid = TcapFactory.readTransactionID(localAis);
-                    if (tid.getFirstElem() == null || tid.getSecondElem() != null) {
-                        res.setParsingErrorReason("TCResponseMessage decoding error: transactionId must contain only one transactionId");
-                        return res;
-                    }
-                    destinationTransactionId = tid.getFirstElem();
-                    res.setDestinationDialogId(Utils.decodeTransactionId(destinationTransactionId, this.stack.getSwapTcapIdBytes()));
-
-                    res.setMessageType(MessageType.Response);
-                    break;
-
-                case TCAbortMessage._TAG_ABORT:
-                    localAis = ais.readSequenceStream();
-
-                    // transaction portion
-                    tid = TcapFactory.readTransactionID(localAis);
-                    if (tid.getFirstElem() == null || tid.getSecondElem() != null) {
-                        res.setParsingErrorReason("TCAbortMessage decoding error: transactionId must contain only one transactionId");
-                        return res;
-                    }
-                    destinationTransactionId = tid.getFirstElem();
-                    res.setDestinationDialogId(Utils.decodeTransactionId(destinationTransactionId, this.stack.getSwapTcapIdBytes()));
-
-                    res.setMessageType(MessageType.Abort);
-                    break;
-
-                case TCUniMessage._TAG_UNI:
-                    res.setMessageType(MessageType.Unidirectional);
-                    break;
-
-                default:
-                    res.setParsingErrorReason("Unrecognized message tag");
-                    break;
-            }
-
-            ais.close();
+            res.setMessage((TCUnifiedMessageImpl)output.getResult());
             return res;
         }
         catch (Exception e) {

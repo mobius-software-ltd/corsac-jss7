@@ -23,14 +23,16 @@
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import static org.testng.Assert.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  *
@@ -46,28 +48,22 @@ public class RejectTest {
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(RejectImpl.class);
+    	
         // 1
-        AsnInputStream ais = new AsnInputStream(this.data1);
-        int tag = ais.readTag();
-        assertEquals(tag, Reject._TAG_REJECT);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        Reject rej = TcapFactory.createComponentReject();
-        rej.decode(ais);
-
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
+    	assertTrue(result.getResult() instanceof RejectImpl);
+        RejectImpl rej = (RejectImpl)result.getResult();
+        
         assertEquals((long) rej.getCorrelationId(), 5);
         assertEquals(rej.getProblem(), RejectProblem.invokeIncorrectParameter);
         assertFalse(rej.isLocalOriginated());
 
         // 2
-        ais = new AsnInputStream(this.data2);
-        tag = ais.readTag();
-        assertEquals(tag, Reject._TAG_REJECT);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        rej = TcapFactory.createComponentReject();
-        rej.decode(ais);
+        result=parser.decode(Unpooled.wrappedBuffer(this.data2));
+    	assertTrue(result.getResult() instanceof RejectImpl);
+        rej = (RejectImpl)result.getResult();
 
         assertNull(rej.getCorrelationId());
         assertEquals(rej.getProblem(), RejectProblem.invokeIncorrectParameter);
@@ -76,26 +72,24 @@ public class RejectTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(RejectImpl.class);
+    	        
         // 1
-        Reject rej = TcapFactory.createComponentReject();
+        RejectImpl rej = TcapFactory.createComponentReject();
         rej.setCorrelationId(5L);
         rej.setProblem(RejectProblem.invokeIncorrectParameter);
 
-        AsnOutputStream aos = new AsnOutputStream();
-        rej.encode(aos);
-        byte[] encodedData = aos.toByteArray();
-        byte[] expectedData = data1;
-        assertEquals(encodedData, expectedData);
+        ByteBuf encodedData=parser.encode(rej);
+        ByteBuf expectedData = Unpooled.wrappedBuffer(data1);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
         // 2
         rej = TcapFactory.createComponentReject();
         rej.setProblem(RejectProblem.invokeIncorrectParameter);
 
-        aos = new AsnOutputStream();
-        rej.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data2;
-        assertEquals(encodedData, expectedData);
+        encodedData=parser.encode(rej);
+        expectedData = Unpooled.wrappedBuffer(data2);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
     }
 }

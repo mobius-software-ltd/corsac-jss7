@@ -37,7 +37,7 @@ UserInformation ::= [PRIVATE 29] IMPLICIT SEQUENCE OF EXTERNAL
 External Identifier = Tag.EXTERNAL
 
 */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x1D,constructed=true,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=0x1D,constructed=true,lengthIndefinite=false)
 public class UserInformationImpl {	
 	private List<UserInformationExternalImpl> ext;
 

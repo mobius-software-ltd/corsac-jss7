@@ -23,20 +23,25 @@
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import static org.testng.Assert.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationElementImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  *
@@ -51,22 +56,21 @@ public class TcAbortTest {
 
     private byte[] data2 = new byte[] { -10, 13, -57, 4, 20, 0, 0, 0, -7, 3, -37, 1, 111, -8, 0 };
 
-    private byte[] data3 = new byte[] { -10, 28, -57, 4, 20, 0, 0, 0, -8, 20, 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 1, 2, 3, 4, 5, 6, 7 };
+    private byte[] data3 = new byte[] { -10, 28, -57, 4, 20, 0, 0, 0, -8, 20, 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 4, 5, 3, 4, 5, 6, 7 };
 
     private byte[] trId = new byte[] { 20, 0, 0, 0 };
 
-    private byte[] dataValue = new byte[] { 1, 2, 3, 4, 5, 6, 7 };
+    private byte[] dataValue = new byte[] { 3, 4, 5, 6, 7 };
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(TCAbortMessageImpl.class);
+    	
         // 1
-        AsnInputStream ais = new AsnInputStream(this.data1);
-        int tag = ais.readTag();
-        assertEquals(tag, TCAbortMessage._TAG_ABORT);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        TCAbortMessage tcm = TcapFactory.createTCAbortMessage(ais);
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
+        assertTrue(result.getResult() instanceof TCAbortMessageImpl);
+        TCAbortMessage tcm = (TCAbortMessageImpl)result.getResult();
 
         assertEquals(tcm.getDestinationTransactionId(), trId);
         assertNull(tcm.getDialogPortion());
@@ -74,81 +78,76 @@ public class TcAbortTest {
         assertEquals(tcm.getPAbortCause(), PAbortCause.ResourceUnavailable);
 
         // 2
-        ais = new AsnInputStream(this.data2);
-        tag = ais.readTag();
-        assertEquals(tag, TCAbortMessage._TAG_ABORT);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        tcm = TcapFactory.createTCAbortMessage(ais);
+        result=parser.decode(Unpooled.wrappedBuffer(this.data2));
+        assertTrue(result.getResult() instanceof TCAbortMessageImpl);
+        tcm = (TCAbortMessageImpl)result.getResult();
 
         assertEquals(tcm.getDestinationTransactionId(), trId);
-        assertNull(tcm.getUserAbortInformation());
+        assertNull(tcm.getUserAbortInformation().getExternal());
         assertNull(tcm.getPAbortCause());
-        DialogPortion dp = tcm.getDialogPortion();
-        assertEquals(dp.getApplicationContext().getInteger(), 111);
+        DialogPortionImpl dp = tcm.getDialogPortion();
+        assertEquals(((IntegerApplicationContextNameImpl)dp.getApplicationContext()).getValue(), new Long(111L));
 
         // 3
-        ais = new AsnInputStream(this.data3);
-        tag = ais.readTag();
-        assertEquals(tag, TCAbortMessage._TAG_ABORT);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        tcm = TcapFactory.createTCAbortMessage(ais);
+        result=parser.decode(Unpooled.wrappedBuffer(this.data3));
+        assertTrue(result.getResult() instanceof TCAbortMessageImpl);
+        tcm = (TCAbortMessageImpl)result.getResult();
 
         assertEquals(tcm.getDestinationTransactionId(), trId);
         assertNull(tcm.getPAbortCause());
         assertNull(tcm.getDialogPortion());
 
-        UserInformationElement uie = tcm.getUserAbortInformation();
-        assertTrue(uie.isOid());
-        assertTrue(Arrays.equals(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 }, uie.getOidValue()));
-
+        UserInformationImpl uie = tcm.getUserAbortInformation();
+        assertTrue(uie.getExternal().get(0).isIDObjectIdentifier());
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), uie.getExternal().get(0).getObjectIdentifier());
     }
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(TCAbortMessageImpl.class);
+    	
         // 1
         TCAbortMessage tcm = TcapFactory.createTCAbortMessage();
         tcm.setDestinationTransactionId(trId);
         tcm.setPAbortCause(PAbortCause.ResourceUnavailable);
 
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encodedData = aos.toByteArray();
-        byte[] expectedData = data1;
-        assertEquals(encodedData, expectedData);
+        ByteBuf buffer=parser.encode(tcm);
+        ByteBuf expectedData = Unpooled.wrappedBuffer(data1);
+        UserInformationElementTest.byteBufEquals(buffer, expectedData);
 
         // 2
         tcm = TcapFactory.createTCAbortMessage();
         tcm.setDestinationTransactionId(trId);
-        DialogPortion dp = TcapFactory.createDialogPortion();
+        DialogPortionImpl dp = TcapFactory.createDialogPortion();
         ApplicationContext ac = TcapFactory.createApplicationContext(111);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 
-        aos = new AsnOutputStream();
-        tcm.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data2;
-        assertEquals(encodedData, expectedData);
+        buffer=parser.encode(tcm);
+        expectedData = Unpooled.wrappedBuffer(data2);
+        UserInformationElementTest.byteBufEquals(buffer, expectedData);
 
         // 3
         tcm = TcapFactory.createTCAbortMessage();
         tcm.setDestinationTransactionId(trId);
-        UserInformationElement uai = new UserInformationElementImpl();
-        uai.setOid(true);
-        uai.setOidValue(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 });
+        UserInformationExternalImpl uai = new UserInformationExternalImpl();
+        uai.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        uai.setAsn(true);
-        uai.setEncodeType(dataValue);
-        tcm.setUserAbortInformation(uai);
+        ASNOctetString innerValue=new ASNOctetString();
+        innerValue.setValue(Unpooled.wrappedBuffer(dataValue));
+        
+        ASNUserInformationObjectImpl value=new ASNUserInformationObjectImpl();
+        value.setValue(innerValue);
+        uai.setChildAsObject(value);
+        
+        UserInformationImpl abortInfo=new UserInformationImpl();
+        abortInfo.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uai }));
+        tcm.setUserAbortInformation(abortInfo);
 
-        aos = new AsnOutputStream();
-        tcm.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data3;
-        assertEquals(encodedData, expectedData);
+        buffer=parser.encode(tcm);
+        expectedData = Unpooled.wrappedBuffer(data3);
+        UserInformationElementTest.byteBufEquals(buffer, expectedData);
 
     }
 

@@ -26,7 +26,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 
 /**
@@ -44,7 +43,7 @@ public interface TCUserAbortIndication extends DialogIndication {
 
     ConfidentialityImpl getConfidentiality();
 
-    UserInformationExternalImpl getUserAbortInformation();
+    UserInformationImpl getUserAbortInformation();
 
     SccpAddress getOriginatingAddress();
 }

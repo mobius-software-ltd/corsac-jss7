@@ -1,4 +1,4 @@
-package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
+package org.restcomm.protocols.ss7.tcapAnsi;
 
 /*
  * Mobius Software LTD
@@ -25,27 +25,11 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 *
 */
 
-import java.util.List;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,lengthIndefinite=false)
-public class ComponentPortionImpl {
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=16,constructed=true,lengthIndefinite=false)
+public class ComponentTestASN extends ASNOctetString {
 
-	@ASNWildcard
-	List<ComponentImpl> components;
-
-	public List<ComponentImpl> getComponents() {
-		return components;
-	}
-
-	public void setComponents(List<ComponentImpl> components) {
-		this.components = components;
-	}
-	
-	public String toString() {
-		return "ComponentPortion[" + components + "]";
-	}
 }

@@ -37,7 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=25,constructed=false,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=25,constructed=true,lengthIndefinite=false)
 public class DialogPortionImpl {
 	private ProtocolVersionImpl protocolVersion;
     private IntegerApplicationContextNameImpl intApplicationContext;
@@ -93,6 +93,9 @@ public class DialogPortionImpl {
     }
 
     public void setSecurityContext(SecurityContext val) {
+    	if(val==null)
+    		return;
+    	
         if(val instanceof IntegerSecurityContextImpl) {
     		this.intSecurityContext=(IntegerSecurityContextImpl)val;
     		this.objSecurityContext=null;

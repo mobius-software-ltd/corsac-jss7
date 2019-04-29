@@ -25,19 +25,20 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.EncodeException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationElementImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
 *
@@ -46,57 +47,52 @@ import org.testng.annotations.Test;
 */
 public class UserInformationTest {
 
-    private byte[] data = new byte[] { (byte) 253, 20, 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 1, 2, 3, 4, 5, 6, 7 };
+    private byte[] data = new byte[] { (byte) 253, 20, 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 4, 5, 3, 4, 5, 6, 7 };
 
-    private byte[] dataValue = new byte[] { 1, 2, 3, 4, 5, 6, 7 };
+    private byte[] dataValue = new byte[] { 3, 4, 5, 6, 7 };
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(UserInformationImpl.class);
+    	
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertTrue(result.getResult() instanceof UserInformationImpl);
+        UserInformationImpl userInformation = (UserInformationImpl)result.getResult();
+        
+        assertEquals(userInformation.getExternal().size(), 1);
+        UserInformationExternalImpl userInformationElement = userInformation.getExternal().get(0);
 
-        AsnInputStream asin = new AsnInputStream(data);
-        int tag = asin.readTag();
-        assertEquals(UserInformation._TAG_USER_INFORMATION, tag);
-        assertEquals(Tag.CLASS_PRIVATE, asin.getTagClass());
-        assertFalse(asin.isTagPrimitive());
+        assertTrue(userInformationElement.isIDObjectIdentifier());
 
-        UserInformation userInformation = new UserInformationImpl();
-        userInformation.decode(asin);
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), userInformationElement.getObjectIdentifier());
 
-        assertEquals(userInformation.getUserInformationElements().length, 1);
-        UserInformationElement userInformationElement = userInformation.getUserInformationElements()[0];
+        assertFalse(userInformationElement.isIDIndirect());
 
-        assertTrue(userInformationElement.isOid());
-
-        assertTrue(Arrays.equals(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 }, userInformationElement.getOidValue()));
-
-        assertFalse(userInformationElement.isInteger());
-
-        assertTrue(userInformationElement.isAsn());
-        assertEquals(dataValue, userInformationElement.getEncodeType());
-
+        assertTrue(userInformationElement.isValueObject());
+        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)userInformationElement.getChild().getValue()).getValue());
     }
 
     @Test(groups = { "functional.encode" })
-    public void testUserInformationEncode() throws IOException, EncodeException {
+    public void testUserInformationEncode() throws ASNException {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(UserInformationImpl.class);
+    	
+        UserInformationExternalImpl userInformationElement = new UserInformationExternalImpl();
+        userInformationElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        UserInformationElement userInformationElement = new UserInformationElementImpl();
+        ASNOctetString value=new ASNOctetString();
+        value.setValue(Unpooled.wrappedBuffer(dataValue));
+        
+        ASNUserInformationObjectImpl userObj=new ASNUserInformationObjectImpl();
+        userObj.setValue(value);
+        userInformationElement.setChildAsObject(userObj);
+        
+        UserInformationImpl userInformation = new UserInformationImpl();
+        userInformation.setExternal(Arrays.asList(new UserInformationExternalImpl[] { userInformationElement }));
 
-        userInformationElement.setOid(true);
-        userInformationElement.setOidValue(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 });
-
-        userInformationElement.setAsn(true);
-        userInformationElement.setEncodeType(dataValue);
-
-        UserInformation userInformation = new UserInformationImpl();
-        userInformation.setUserInformationElements(new UserInformationElement[] { userInformationElement });
-
-        AsnOutputStream asnos = new AsnOutputStream();
-        userInformation.encode(asnos);
-
-        byte[] userInfData = asnos.toByteArray();
-
-        assertTrue(Arrays.equals(data, userInfData));
-
+        ByteBuf output=parser.encode(userInformation);
+        assertTrue(UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(data), output));
     }
 
 }

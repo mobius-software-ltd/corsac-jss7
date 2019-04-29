@@ -23,15 +23,21 @@
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import static org.testng.Assert.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ASNInvokeSetParameterImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  *
@@ -42,7 +48,7 @@ import org.testng.annotations.Test;
 @Test(groups = { "asn" })
 public class InvokeTest {
 
-    private byte[] data1 = new byte[] { (byte) 233, 41, (byte) 207, 1, 0, (byte) 209, 2, 9, 53, (byte) 242, 32, (byte) 159, 105, 0, (byte) 159, 116, 0,
+    private byte[] data1 = new byte[] { (byte) 233, 43, (byte) 207, 1, 0, (byte) 209, 2, 9, 53, (byte) 242, 34, 4, 32, (byte) 159, 105, 0, (byte) 159, 116, 0,
             (byte) 159, (byte) 129, 0, 1, 8, (byte) 136, 5, 22, 25, 50, 4, 0, (byte) 159, (byte) 129, 65, 1, 1, (byte) 159, (byte) 129, 67, 5, 34, 34, 34, 34,
             34 };    
 
@@ -55,116 +61,89 @@ public class InvokeTest {
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(InvokeNotLastImpl.class);
+    	parser.loadClass(InvokeLastImpl.class);
         // 1
-        AsnInputStream ais = new AsnInputStream(this.data1);
-        int tag = ais.readTag();
-        assertEquals(tag, Invoke._TAG_INVOKE_LAST);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        Invoke inv = TcapFactory.createComponentInvoke();
-        inv.decode(ais);
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
+    	assertTrue(result.getResult() instanceof InvokeLastImpl);
+        InvokeImpl inv=(InvokeImpl)result.getResult();
 
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
-        assertEquals((long) inv.getOperationCode().getPrivateOperationCode(), 2357);
-        Parameter p = inv.getParameter();
-        assertEquals(p.getTag(), 18);
-        assertEquals(p.getTagClass(), Tag.CLASS_PRIVATE);
-        assertFalse(p.isPrimitive());
-        assertEquals(p.getData(), parData);
+        assertEquals((long) ((PrivateOperationCodeImpl)inv.getOperationCode()).getOperationCode(), 2357);
+        assertTrue(inv.getParameter() instanceof ASNOctetString);
+        UserInformationElementTest.byteBufEquals(((ASNOctetString)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
         // 2
-        ais = new AsnInputStream(this.data2);
-        tag = ais.readTag();
-        assertEquals(tag, Invoke._TAG_INVOKE_NOT_LAST);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        inv = TcapFactory.createComponentInvoke();
-        inv.decode(ais);
-
+        result=parser.decode(Unpooled.wrappedBuffer(this.data2));
+    	assertTrue(result.getResult() instanceof InvokeNotLastImpl);
+        inv=(InvokeImpl)result.getResult();        
         assertTrue(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 20);
         assertEquals((long) inv.getCorrelationId(), 10);
-        assertEquals((long) inv.getOperationCode().getNationalOperationCode(), -13);
-        p = inv.getParameter();
-        assertEquals(p.getTag(), 18);
-        assertEquals(p.getTagClass(), Tag.CLASS_PRIVATE);
-        assertFalse(p.isPrimitive());
-        assertEquals(p.getData(), new byte[0]);
+        assertEquals((long) ((NationalOperationCodeImpl)inv.getOperationCode()).getOperationCode(), -13);
+        assertNull(inv.getParameter());        
 
         // 3
-        ais = new AsnInputStream(this.data3);
-        tag = ais.readTag();
-        assertEquals(tag, Invoke._TAG_INVOKE_NOT_LAST);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        inv = TcapFactory.createComponentInvoke();
-        inv.decode(ais);
+        result=parser.decode(Unpooled.wrappedBuffer(this.data3));
+    	assertTrue(result.getResult() instanceof InvokeNotLastImpl);
+        inv=(InvokeImpl)result.getResult();        
 
         assertTrue(inv.isNotLast());
         assertNull(inv.getInvokeId());
         assertNull(inv.getCorrelationId());
-        assertEquals((long) inv.getOperationCode().getNationalOperationCode(), -13);
-        p = inv.getParameter();
-        assertEquals(p.getTag(), 18);
-        assertEquals(p.getTagClass(), Tag.CLASS_PRIVATE);
-        assertFalse(p.isPrimitive());
-        assertEquals(p.getData(), new byte[0]);
+        assertEquals((long) ((NationalOperationCodeImpl)inv.getOperationCode()).getOperationCode(), -13);
+        assertNull(inv.getParameter());
     }
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(InvokeNotLastImpl.class);
+    	parser.loadClass(InvokeLastImpl.class);
         // 1
-        Invoke inv = TcapFactory.createComponentInvoke();
+        InvokeImpl inv = TcapFactory.createComponentInvokeLast();
         inv.setInvokeId(0L);
-        inv.setNotLast(false);
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setPrivateOperationCode(2357L);
+        PrivateOperationCodeImpl oc = TcapFactory.createPrivateOperationCode();
+        oc.setOperationCode(2357L);
         inv.setOperationCode(oc);
-        Parameter p = TcapFactory.createParameterSet();
-        p.setData(parData);
-        inv.setParameter(p);
+        ASNInvokeSetParameterImpl p=new ASNInvokeSetParameterImpl();
+        ASNOctetString innerValue=new ASNOctetString();
+        innerValue.setValue(Unpooled.wrappedBuffer(parData));
+        p.setValue(innerValue);
+        inv.setSetParameter(p);
 
-        AsnOutputStream aos = new AsnOutputStream();
-        inv.encode(aos);
-        byte[] encodedData = aos.toByteArray();
-        byte[] expectedData = data1;
-        assertEquals(encodedData, expectedData);
+        ByteBuf encodedData=parser.encode(inv);
+        ByteBuf expectedData = Unpooled.wrappedBuffer(data1);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
         // 2
-        inv = TcapFactory.createComponentInvoke();
+        inv = TcapFactory.createComponentInvokeNotLast();
         inv.setInvokeId(20L);
         inv.setCorrelationId(10L);
-        inv.setNotLast(true);
-        oc = TcapFactory.createOperationCode();
-        oc.setNationalOperationCode(-13L);
-        inv.setOperationCode(oc);
-        p = TcapFactory.createParameterSet();
-        inv.setParameter(p);
+        NationalOperationCodeImpl noc = TcapFactory.createNationalOperationCode();
+        noc.setOperationCode(-13L);
+        inv.setOperationCode(noc);
+        p=new ASNInvokeSetParameterImpl();
+        inv.setSetParameter(p);
 
-        aos = new AsnOutputStream();
-        inv.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data2;
-        assertEquals(encodedData, expectedData);
+        encodedData=parser.encode(inv);
+        expectedData = Unpooled.wrappedBuffer(data2);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
         // 3
-        inv = TcapFactory.createComponentInvoke();
-        inv.setNotLast(true);
-        oc = TcapFactory.createOperationCode();
-        oc.setNationalOperationCode(-13L);
-        inv.setOperationCode(oc);
-        p = TcapFactory.createParameterSet();
-        inv.setParameter(p);
+        inv = TcapFactory.createComponentInvokeNotLast();
+        noc = TcapFactory.createNationalOperationCode();
+        noc.setOperationCode(-13L);
+        inv.setOperationCode(noc);
+        p=new ASNInvokeSetParameterImpl();
+        inv.setSetParameter(p);
 
-        aos = new AsnOutputStream();
-        inv.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data3;
-        assertEquals(encodedData, expectedData);
+        encodedData=parser.encode(inv);
+        expectedData = Unpooled.wrappedBuffer(data2);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
     }
 
 }

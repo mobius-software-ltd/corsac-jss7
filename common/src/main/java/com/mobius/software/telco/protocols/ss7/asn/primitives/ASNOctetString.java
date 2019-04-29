@@ -39,6 +39,9 @@ public class ASNOctetString {
 	private ByteBuf value;
 	
 	public ByteBuf getValue() {
+		if(value==null)
+			return Unpooled.EMPTY_BUFFER;
+		
 		return Unpooled.wrappedBuffer(value);
 	}
 
@@ -67,7 +70,7 @@ public class ASNOctetString {
 	}
 	
 	public static int getLength(ByteBuf value)
-	{
+	{		
 		return value.readableBytes();
 	}
 }

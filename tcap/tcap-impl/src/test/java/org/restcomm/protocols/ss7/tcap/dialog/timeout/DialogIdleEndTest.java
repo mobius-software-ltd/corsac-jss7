@@ -575,9 +575,9 @@ public class DialogIdleEndTest extends SccpHarness {
         }
 
         client.startClientDialog();
-        client.waitFor(_WAIT);
+        EventTestHarness.waitFor(_WAIT);
         client.sendBegin();
-        client.waitFor(_WAIT * 7);
+        EventTestHarness.waitFor(_WAIT * 7);
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
 

@@ -26,7 +26,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 
 /**
@@ -63,8 +62,8 @@ public interface TCUserAbortRequest extends DialogRequest {
     void setConfidentiality(ConfidentialityImpl val);
 
 
-    UserInformationExternalImpl getUserAbortInformation();
+    UserInformationImpl getUserAbortInformation();
 
-    void setUserAbortInformation(UserInformationExternalImpl val);
+    void setUserAbortInformation(UserInformationImpl val);
 
 }

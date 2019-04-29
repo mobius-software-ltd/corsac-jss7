@@ -25,9 +25,9 @@ package org.restcomm.protocols.ss7.tcapAnsi.dialog.timeout;
 import static org.testng.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -38,13 +38,16 @@ import org.restcomm.protocols.ss7.tcapAnsi.TestEvent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 
 /**
  * Test for call flow.
@@ -135,18 +138,17 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                    UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                    UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
                     uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-                    uie.setArbitrary(true);
-                    BitSetStrictLength bs = new BitSetStrictLength(4);
-                    bs.set(0);
-                    bs.set(3);
-                    uie.setEncodeBitStringType(bs);
-                    uie.setAsn(false);
-                    uie.setOid(true);
-                    uie.setOidValue(_ACN_);
+                    ASNBitString bs = new ASNBitString();
+                    bs.setBit(0);
+                    bs.setBit(3);
+                    uie.setChild(bs);
+                    uie.setIdentifier(_ACN_);
                     ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
-                    sendAbort(_acn, uie);
+                    UserInformationImpl ui=new UserInformationImpl();
+                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));
+                    sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
                     e.printStackTrace();
@@ -174,9 +176,7 @@ public class DialogIdleEndTest extends SccpHarness {
         serverExpectedEvents.add(te);
         te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + _WAIT + _DIALOG_TIMEOUT);
         serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 4, stamp + _WAIT + _DIALOG_TIMEOUT);
-        serverExpectedEvents.add(te);
-
+        
         client.startClientDialog();
         EventTestHarness.waitFor(_WAIT);
         client.sendBegin();
@@ -203,18 +203,16 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                    UserInformationElement _ui = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-                    _ui.setArbitrary(true);
-                    BitSetStrictLength bs = new BitSetStrictLength(4);
-                    bs.set(0);
-                    bs.set(3);
-                    _ui.setEncodeBitStringType(bs);
-                    _ui.setAsn(false);
-                    _ui.setOid(true);
-                    _ui.setOidValue(_ACN_);
-                    ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(
-                            _ACN_);
-                    sendAbort(_acn, _ui);
+                    UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                    ASNBitString bs = new ASNBitString();
+                    bs.setBit(0);
+                    bs.setBit(3);
+                    uie.setChild(bs);
+                    uie.setIdentifier(_ACN_);
+                    ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
+                    UserInformationImpl ui=new UserInformationImpl();
+                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));
+                    sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
                     e.printStackTrace();
@@ -261,18 +259,16 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                    UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-                    uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-                    uie.setArbitrary(true);
-                    BitSetStrictLength bs = new BitSetStrictLength(4);
-                    bs.set(0);
-                    bs.set(3);
-                    uie.setEncodeBitStringType(bs);
-                    uie.setAsn(false);
-                    uie.setOid(true);
-                    uie.setOidValue(_ACN_);
+                	UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                    ASNBitString bs = new ASNBitString();
+                    bs.setBit(0);
+                    bs.setBit(3);
+                    uie.setChild(bs);
+                    uie.setIdentifier(_ACN_);
                     ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
-                    sendAbort(_acn, uie);
+                    UserInformationImpl ui=new UserInformationImpl();
+                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));                    
+                    sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
                     e.printStackTrace();
@@ -304,9 +300,7 @@ public class DialogIdleEndTest extends SccpHarness {
         serverExpectedEvents.add(te);
         te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
         serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 5, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-        serverExpectedEvents.add(te);
-
+        
         client.startClientDialog();
         EventTestHarness.waitFor(_WAIT);
         client.sendBegin();
@@ -333,18 +327,16 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                    UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-                    uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-                    uie.setArbitrary(true);
-                    BitSetStrictLength bs = new BitSetStrictLength(4);
-                    bs.set(0);
-                    bs.set(3);
-                    uie.setEncodeBitStringType(bs);
-                    uie.setAsn(false);
-                    uie.setOid(true);
-                    uie.setOidValue(_ACN_);
+                	UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                    ASNBitString bs = new ASNBitString();
+                    bs.setBit(0);
+                    bs.setBit(3);
+                    uie.setChild(bs);
+                    uie.setIdentifier(_ACN_);
                     ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
-                    sendAbort(_acn, uie);
+                    UserInformationImpl ui=new UserInformationImpl();
+                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));                    
+                    sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
                     e.printStackTrace();
@@ -380,9 +372,7 @@ public class DialogIdleEndTest extends SccpHarness {
         serverExpectedEvents.add(te);
         te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 5, stamp + _WAIT * 3 + _DIALOG_TIMEOUT);
         serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 6, stamp + _WAIT * 3 + _DIALOG_TIMEOUT);
-        serverExpectedEvents.add(te);
-
+        
         client.startClientDialog();
         EventTestHarness.waitFor(_WAIT);
         client.sendBegin();
@@ -411,18 +401,16 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                    UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-                    uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-                    uie.setArbitrary(true);
-                    BitSetStrictLength bs = new BitSetStrictLength(4);
-                    bs.set(0);
-                    bs.set(3);
-                    uie.setEncodeBitStringType(bs);
-                    uie.setAsn(false);
-                    uie.setOid(true);
-                    uie.setOidValue(_ACN_);
+                	UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                    ASNBitString bs = new ASNBitString();
+                    bs.setBit(0);
+                    bs.setBit(3);
+                    uie.setChild(bs);
+                    uie.setIdentifier(_ACN_);
                     ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
-                    sendAbort(_acn, uie);
+                    UserInformationImpl ui=new UserInformationImpl();
+                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));                    
+                    sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
                     e.printStackTrace();

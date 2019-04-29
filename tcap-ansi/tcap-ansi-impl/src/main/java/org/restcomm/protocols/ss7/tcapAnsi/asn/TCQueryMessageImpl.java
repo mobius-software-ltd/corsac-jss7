@@ -36,7 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=2,constructed=true,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=3,constructed=true,lengthIndefinite=false)
 public class TCQueryMessageImpl extends TCUnifiedMessageImpl implements TCQueryMessage {
 	private ComponentPortionImpl component;
 

@@ -28,7 +28,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
@@ -133,22 +132,5 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
 
     public NationalErrorCodeImpl createNationalErrorCode() {
         return TcapFactory.createNationalErrorCode();
-    }
-    
-    public Parameter createParameter() {
-        return TcapFactory.createParameter();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory#createParameter(int, int, boolean)
-     */
-    public Parameter createParameter(int tag, int tagClass, boolean isPrimitive) {
-        Parameter p = TcapFactory.createParameter();
-        p.setTag(tag);
-        p.setTagClass(tagClass);
-        p.setPrimitive(isPrimitive);
-        return p;
     }
 }

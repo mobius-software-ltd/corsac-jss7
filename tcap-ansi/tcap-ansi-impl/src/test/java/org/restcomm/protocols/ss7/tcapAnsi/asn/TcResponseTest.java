@@ -24,24 +24,32 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import static org.testng.Assert.*;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import java.util.ArrayList;
+import java.util.List;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
 @Test(groups = { "asn" })
 public class TcResponseTest {
 
-    private byte[] data1 = new byte[] { (byte) 0xe4, 0x3c, (byte) 0xc7, 0x04, 0x14, 0x00, 0x00, 0x00, (byte) 0xe8, 0x34, (byte) 0xea, 0x32, (byte) 0xcf, 0x01,
-            0x01, (byte) 0xf2, 0x2d, (byte) 0x96, 0x01, 0x13, (byte) 0x8e, 0x02, 0x06, 0x00, (byte) 0x95, 0x03, 0x00, 0x0c, 0x10, (byte) 0x9f, 0x4e, 0x01,
+    private byte[] data1 = new byte[] { (byte) 0xe4, 0x3e, (byte) 0xc7, 0x04, 0x14, 0x00, 0x00, 0x00, (byte) 0xe8, 0x36, (byte) 0xea, 0x34, (byte) 0xcf, 0x01,
+            0x01, (byte) 0xf2, 0x2f, 0x04, 0x2d, (byte) 0x96, 0x01, 0x13, (byte) 0x8e, 0x02, 0x06, 0x00, (byte) 0x95, 0x03, 0x00, 0x0c, 0x10, (byte) 0x9f, 0x4e, 0x01,
             0x01, (byte) 0x99, 0x03, 0x7a, 0x0d, 0x11, (byte) 0x9f, 0x5d, 0x07, 0x00, 0x00, 0x21, 0x06, 0x36, 0x54, 0x10, (byte) 0x97, 0x01, 0x07, (byte) 0x9f,
             0x73, 0x01, 0x00, (byte) 0x9f, 0x75, 0x01, 0x00, (byte) 0x98, 0x01, 0x02 };
 
@@ -54,41 +62,33 @@ public class TcResponseTest {
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(TCResponseMessageImpl.class);
         // 1
-        AsnInputStream ais = new AsnInputStream(this.data1);
-        int tag = ais.readTag();
-        assertEquals(tag, TCResponseMessage._TAG_RESPONSE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        TCResponseMessage tcm = TcapFactory.createTCResponseMessage(ais);
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
+        assertTrue(result.getResult() instanceof TCResponseMessageImpl);
+        TCResponseMessage tcm = (TCResponseMessage)result.getResult();
 
         assertEquals(tcm.getDestinationTransactionId(), trId);
         assertNull(tcm.getDialogPortion());
-        assertEquals(tcm.getComponent().length, 1);
-        Component cmp = tcm.getComponent()[0];
+        assertEquals(tcm.getComponent().getComponents().size(), 1);
+        ComponentImpl cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.ReturnResultLast);
-        ReturnResultLast rrl = (ReturnResultLast) cmp;
+        ReturnResultLastImpl rrl = cmp.getReturnResultLast();
         assertEquals((long) rrl.getCorrelationId(), 1);
-        Parameter p = rrl.getParameter();
-        assertEquals(p.getTag(), 18);
-        assertEquals(p.getTagClass(), Tag.CLASS_PRIVATE);
-        assertFalse(p.isPrimitive());
-        assertEquals(p.getData(), parData);
+        assertTrue(rrl.getParameter() instanceof ASNOctetString);
+        UserInformationElementTest.byteBufEquals(((ASNOctetString)rrl.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
         // 2
-        ais = new AsnInputStream(this.data2);
-        tag = ais.readTag();
-        assertEquals(tag, TCResponseMessage._TAG_RESPONSE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        tcm = TcapFactory.createTCResponseMessage(ais);
+        result=parser.decode(Unpooled.wrappedBuffer(this.data2));
+        assertTrue(result.getResult() instanceof TCResponseMessageImpl);
+        tcm = (TCResponseMessage)result.getResult();
 
         assertEquals(tcm.getDestinationTransactionId(), trId);
-        DialogPortion dp = tcm.getDialogPortion();
+        DialogPortionImpl dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
         ApplicationContext ac = dp.getApplicationContext();
-        assertEquals(ac.getInteger(), 66);
+        assertEquals((long)((IntegerApplicationContextNameImpl)ac).getValue(), 66);
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
@@ -99,41 +99,41 @@ public class TcResponseTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(TCResponseMessageImpl.class);
         // 1
-        Component[] cc = new Component[1];
-        ReturnResultLast rrl = TcapFactory.createComponentReturnResultLast();
-        cc[0] = rrl;
+        List<ComponentImpl> cc = new ArrayList<ComponentImpl>(1);
+        ReturnResultLastImpl rrl = TcapFactory.createComponentReturnResultLast();
+        ComponentImpl component=new ComponentImpl();
+        component.setReturnResultLast(rrl);
+        cc.add(component);
         rrl.setCorrelationId(1L);
-        Parameter p = TcapFactory.createParameterSet();
-        p.setData(parData);
-        rrl.setParameter(p);
+        ASNOctetString p=new ASNOctetString();
+        p.setValue(Unpooled.wrappedBuffer(parData));
+        rrl.setSetParameter(p);
 
         TCResponseMessage tcm = TcapFactory.createTCResponseMessage();
         tcm.setDestinationTransactionId(trId);
-        tcm.setComponent(cc);
+        ComponentPortionImpl cp=new ComponentPortionImpl();
+        cp.setComponents(cc);
+        tcm.setComponent(cp);
 
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encodedData = aos.toByteArray();
-        byte[] expectedData = data1;
-        assertEquals(encodedData, expectedData);
+        ByteBuf encodedData=parser.encode(tcm);
+        ByteBuf expectedData = Unpooled.wrappedBuffer(data1);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
         // 2
         tcm = TcapFactory.createTCResponseMessage();
         tcm.setDestinationTransactionId(trId);
 
-        DialogPortion dp = TcapFactory.createDialogPortion();
+        DialogPortionImpl dp = TcapFactory.createDialogPortion();
         ApplicationContext ac = TcapFactory.createApplicationContext(66);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 
-        aos = new AsnOutputStream();
-        tcm.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data2;
-        assertEquals(encodedData, expectedData);
-
+        encodedData=parser.encode(tcm);
+        expectedData = Unpooled.wrappedBuffer(data2);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
     }
 
 }

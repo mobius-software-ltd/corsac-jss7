@@ -25,27 +25,10 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 *
 */
 
-import java.util.List;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,lengthIndefinite=false)
-public class ComponentPortionImpl {
-
-	@ASNWildcard
-	List<ComponentImpl> components;
-
-	public List<ComponentImpl> getComponents() {
-		return components;
-	}
-
-	public void setComponents(List<ComponentImpl> components) {
-		this.components = components;
-	}
-	
-	public String toString() {
-		return "ComponentPortion[" + components + "]";
-	}
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=18,constructed=true,lengthIndefinite=false)
+public class ASNReturnSetParameterImpl extends ASNGeneric {
 }

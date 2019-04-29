@@ -69,7 +69,7 @@ public class TransactionID {
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ByteBuf buffer) {		
 		if(firstElem!=null)
 			buffer.writeBytes(firstElem);
 		

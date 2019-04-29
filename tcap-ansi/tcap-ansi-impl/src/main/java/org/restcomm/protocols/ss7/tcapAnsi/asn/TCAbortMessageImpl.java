@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ASNPAbortCauseType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
@@ -45,7 +45,7 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
 	private ASNPAbortCauseType pAbortCause;
 	
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=24,constructed=true,index=-1)
-    private UserInformationExternalImpl userAbortInformation;
+    private UserInformationImpl userAbortInformation;
 
     @Override
     public PAbortCause getPAbortCause() throws ParseException {
@@ -62,12 +62,12 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
     }
 
     @Override
-    public UserInformationExternalImpl getUserAbortInformation() {
-        return userAbortInformation;
+    public UserInformationImpl getUserAbortInformation() {
+    	return userAbortInformation;
     }
 
     @Override
-    public void setUserAbortInformation(UserInformationExternalImpl uai) {
+    public void setUserAbortInformation(UserInformationImpl uai) {
         userAbortInformation = uai;
     }
 
@@ -120,6 +120,6 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
 	
     @Override
 	public boolean validate() {
-		return getOriginatingTransactionId()==null && getDestinationTransactionId()!=null;
+		return getOriginatingTransactionId()==null;
 	}
 }

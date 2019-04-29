@@ -26,7 +26,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
@@ -84,8 +83,4 @@ public interface ComponentPrimitiveFactory {
     NationalErrorCodeImpl createNationalErrorCode();
 
     PrivateErrorCodeImpl createPrivateErrorCode();
-
-    Parameter createParameter();
-
-    Parameter createParameter(int tag, int tagClass, boolean isPrimitive);
 }

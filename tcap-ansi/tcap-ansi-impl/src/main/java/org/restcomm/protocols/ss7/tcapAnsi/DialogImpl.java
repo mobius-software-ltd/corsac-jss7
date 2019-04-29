@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +45,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.BaseComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
@@ -81,6 +82,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCQueryIndicationImp
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCResponseIndicationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCUniIndicationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCUserAbortIndicationImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  * @author baranowb
@@ -150,6 +153,8 @@ public class DialogImpl implements Dialog {
     private int networkId;
     private boolean isSwapTcapIdBytes;
 
+    private ASNParser dialogParser;
+    
     private static int getIndexFromInvokeId(Long l) {
         int tmp = l.intValue();
         return tmp + _INVOKE_TABLE_SHIFT;
@@ -173,7 +178,7 @@ public class DialogImpl implements Dialog {
      * @param previewMode
      */
     protected DialogImpl(SccpAddress localAddress, SccpAddress remoteAddress, Long origTransactionId, boolean structured,
-            ScheduledExecutorService executor, TCAPProviderImpl provider, int seqControl) {
+            ScheduledExecutorService executor, TCAPProviderImpl provider, int seqControl,ASNParser dialogParser) {
         super();
         this.localAddress = localAddress;
         this.remoteAddress = remoteAddress;
@@ -191,6 +196,8 @@ public class DialogImpl implements Dialog {
         this.idleTaskTimeout = stack.getDialogIdleTimeout();
         this.isSwapTcapIdBytes = stack.getSwapTcapIdBytes();
 
+        this.dialogParser=dialogParser;
+        
         // start
         startIdleTimer();
     }
@@ -384,6 +391,9 @@ public class DialogImpl implements Dialog {
      * @return false: failure - this invokeId already present in the list
      */
     private boolean addIncomingInvokeId(Long invokeId) {
+    	if(invokeId==null)
+    		return false;
+    	
     	Long oldValue=this.incomingInvokeList.putIfAbsent(invokeId, invokeId);
         return (oldValue==null);
     }
@@ -411,10 +421,9 @@ public class DialogImpl implements Dialog {
         
         this.idleTimerActionTaken.set(true);
         restartIdleTimer();
-        TCQueryMessageImpl tcbm = (TCQueryMessageImpl) TcapFactory.createTCQueryMessage();
+        TCQueryMessageImpl tcbm = (TCQueryMessageImpl) TcapFactory.createTCQueryMessage(event.getDialogTermitationPermission());
 
         // build DP
-        tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
         tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
 
         if (event.getApplicationContextName() != null || event.getConfidentiality() != null
@@ -429,7 +438,10 @@ public class DialogImpl implements Dialog {
             dp.setProtocolVersion(TcapFactory.createProtocolVersionFull());
             dp.setApplicationContext(event.getApplicationContextName());
             dp.setUserInformation(event.getUserInformation());
-            dp.setSecurityContext(event.getSecurityContext());
+            
+            if(event.getSecurityContext()!=null)
+            	dp.setSecurityContext(event.getSecurityContext());
+            
             dp.setConfidentiality(event.getConfidentiality());
 
             tcbm.setDialogPortion(dp);
@@ -444,11 +456,10 @@ public class DialogImpl implements Dialog {
             tcbm.setComponent(cPortion);
         }
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            tcbm.encode(aos);
+        	ByteBuf buffer=dialogParser.encode(tcbm);
             this.setState(TRPseudoState.InitialSent);
-            this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+            this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.getNetworkId(), this.localSsn);
             this.scheduledComponentList.clear();
         } catch (Throwable e) {
@@ -474,9 +485,7 @@ public class DialogImpl implements Dialog {
         if (this.state.get() == TRPseudoState.InitialReceived) {
             this.idleTimerActionTaken.set(true);
             restartIdleTimer();
-            TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage();
-
-            tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
+            TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage(event.getDialogTermitationPermission());
             tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
             tcbm.setDestinationTransactionId(this.remoteTransactionId);
             // local address may change, lets check it;
@@ -505,10 +514,9 @@ public class DialogImpl implements Dialog {
 
             }
 
-            AsnOutputStream aos = new AsnOutputStream();
             try {
-                tcbm.encode(aos);
-                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
+            	ByteBuf buffer=dialogParser.encode(tcbm);
+                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
                 this.setState(TRPseudoState.Active);
                 this.scheduledComponentList.clear();
@@ -524,9 +532,7 @@ public class DialogImpl implements Dialog {
             this.idleTimerActionTaken.set(true);
             restartIdleTimer();
             // in this we ignore acn and passed args(except qos)
-            TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage();
-
-            tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
+            TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage(event.getDialogTermitationPermission());
             tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
             tcbm.setDestinationTransactionId(this.remoteTransactionId);
             if (this.scheduledComponentList.size() > 0) {
@@ -538,10 +544,9 @@ public class DialogImpl implements Dialog {
 
             }
 
-            AsnOutputStream aos = new AsnOutputStream();
             try {
-                tcbm.encode(aos);
-                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
+            	ByteBuf buffer=dialogParser.encode(tcbm);
+                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
@@ -620,10 +625,9 @@ public class DialogImpl implements Dialog {
                     TRPseudoState.InitialReceived, this.state));
         }
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            tcbm.encode(aos);
-            this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+        	ByteBuf buffer=dialogParser.encode(tcbm);
+            this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.getNetworkId(), this.localSsn);
 
             this.scheduledComponentList.clear();
@@ -674,10 +678,9 @@ public class DialogImpl implements Dialog {
 
         }
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            msg.encode(aos);
-            this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+        	ByteBuf buffer=dialogParser.encode(msg);
+        	this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.getNetworkId(), this.localSsn);
             this.scheduledComponentList.clear();
         } catch (Exception e) {
@@ -722,10 +725,9 @@ public class DialogImpl implements Dialog {
                 }
             }
 
-            AsnOutputStream aos = new AsnOutputStream();
             try {
-                msg.encode(aos);
-                this.provider.send(aos.toByteArray(), event.getReturnMessageOnError(), this.remoteAddress,
+            	ByteBuf buffer=dialogParser.encode(msg);
+                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.getNetworkId(), this.localSsn);
 
                 this.scheduledComponentList.clear();
@@ -771,7 +773,7 @@ public class DialogImpl implements Dialog {
             if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
                 invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
         } else {
-            if (componentRequest.getType() != ComponentType.ReturnResultNotLast) {
+            if (componentRequest.getType() != ComponentType.ReturnResultNotLast && componentRequest.getType() != ComponentType.ReturnResultLast) {
                 // we are sending a response and removing invokeId from
                 // incomingInvokeList
                 this.removeIncomingInvokeId(componentRequest.getExistingComponent().getCorrelationId());
@@ -802,6 +804,7 @@ public class DialogImpl implements Dialog {
             }
 
             res.add(cr);
+            index++;
         }
     }
 
@@ -812,8 +815,7 @@ public class DialogImpl implements Dialog {
 
     public int getDataLength(TCQueryRequest event) throws TCAPSendException {
 
-        TCQueryMessageImpl tcbm = (TCQueryMessageImpl) TcapFactory.createTCQueryMessage();
-        tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
+        TCQueryMessageImpl tcbm = (TCQueryMessageImpl) TcapFactory.createTCQueryMessage(event.getDialogTermitationPermission());
         tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
 
         if (event.getApplicationContextName() != null || event.getConfidentiality() != null
@@ -837,22 +839,19 @@ public class DialogImpl implements Dialog {
             tcbm.setComponent(cPortion);
         }
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            tcbm.encode(aos);
-        } catch (EncodeException e) {
+        	ByteBuf buffer=dialogParser.encode(tcbm);
+            return buffer.readableBytes();
+        } catch (Exception e) {
             if (logger.isEnabledFor(Level.ERROR)) {
                 logger.error("Failed to encode message while length testing: ", e);
             }
             throw new TCAPSendException("Error encoding TCBeginRequest", e);
         }
-        return aos.size();
     }
 
     public int getDataLength(TCConversationRequest event) throws TCAPSendException {
-
-        TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage();
-        tcbm.setDialogTermitationPermission(event.getDialogTermitationPermission());
+        TCConversationMessageImpl tcbm = (TCConversationMessageImpl) TcapFactory.createTCConversationMessage(event.getDialogTermitationPermission());
         tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
         tcbm.setDestinationTransactionId(this.remoteTransactionId);
 
@@ -877,17 +876,15 @@ public class DialogImpl implements Dialog {
             tcbm.setComponent(cPortion);
         }
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            tcbm.encode(aos);
+        	ByteBuf buffer=dialogParser.encode(tcbm);
+            return buffer.readableBytes();
         } catch (Exception e) {
             if (logger.isEnabledFor(Level.ERROR)) {
                 logger.error("Failed to encode message while length testing: ", e);
             }
             throw new TCAPSendException("Error encoding TCContinueRequest", e);
         }
-
-        return aos.size();
     }
 
     public int getDataLength(TCResponseRequest event) throws TCAPSendException {
@@ -920,17 +917,15 @@ public class DialogImpl implements Dialog {
             }
         }
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            tcbm.encode(aos);
+        	ByteBuf buffer=dialogParser.encode(tcbm);
+            return buffer.readableBytes();
         } catch (Exception e) {
             if (logger.isEnabledFor(Level.ERROR)) {
                 logger.error("Failed to encode message while length testing: ", e);
             }
             throw new TCAPSendException("Error encoding TCEndRequest", e);
         }
-
-        return aos.size();
     }
 
     public int getDataLength(TCUniRequest event) throws TCAPSendException {
@@ -959,17 +954,15 @@ public class DialogImpl implements Dialog {
 
         }
 
-        AsnOutputStream aos = new AsnOutputStream();
         try {
-            msg.encode(aos);
+        	ByteBuf buffer=dialogParser.encode(msg);
+            return buffer.readableBytes();
         } catch (Exception e) {
             if (logger.isEnabledFor(Level.ERROR)) {
                 logger.error("Failed to encode message while length testing: ", e);
             }
             throw new TCAPSendException("Error encoding TCUniRequest", e);
         }
-
-        return aos.size();
     }
 
     // /////////////////
@@ -1082,7 +1075,10 @@ public class DialogImpl implements Dialog {
         }
 
         ComponentPortionImpl cPortion=new ComponentPortionImpl();
-        cPortion.setComponents(processOperationsState(msg.getComponent().getComponents()));
+        
+        if(msg.getComponent()!=null)
+        	cPortion.setComponents(processOperationsState(msg.getComponent().getComponents()));
+        
         tcBeginIndication.setComponents(cPortion);
         // change state - before we deliver
         this.setState(TRPseudoState.InitialReceived);
@@ -1157,34 +1153,37 @@ public class DialogImpl implements Dialog {
     }
 
     protected void processResponse(TCResponseMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
-        TCResponseIndicationImpl tcEndIndication = null;
+        TCResponseIndicationImpl tcResponseIndication = null;
         try {
         	restartIdleTimer();
-            tcEndIndication = (TCResponseIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+        	tcResponseIndication = (TCResponseIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
                     .getDialogPrimitiveFactory()).createResponseIndication(this);
-
+           
             if (state.get() == TRPseudoState.InitialSent) {
                 // in end remote address MAY change be changed, so lets
                 // update!
                 this.setRemoteAddress(remoteAddress);
-                tcEndIndication.setOriginatingAddress(remoteAddress);
+                tcResponseIndication.setOriginatingAddress(remoteAddress);
             }
 
             DialogPortionImpl dialogPortion = msg.getDialogPortion();
             if (dialogPortion != null) {
                 this.lastACN = dialogPortion.getApplicationContext();
                 this.lastUI = dialogPortion.getUserInformation();
-                tcEndIndication.setApplicationContextName(this.lastACN);
-                tcEndIndication.setUserInformation(this.lastUI);
-                tcEndIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
-                tcEndIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
+                tcResponseIndication.setApplicationContextName(this.lastACN);
+                tcResponseIndication.setUserInformation(this.lastUI);
+                tcResponseIndication.setConfidentiality(msg.getDialogPortion().getConfidentiality());
+                tcResponseIndication.setSecurityContext(msg.getDialogPortion().getSecurityContext());
             }
             // now comps
             ComponentPortionImpl cPortion=new ComponentPortionImpl();
-            cPortion.setComponents(processOperationsState(msg.getComponent().getComponents()));
-            tcEndIndication.setComponents(cPortion);
+            
+            if(msg.getComponent()!=null)
+            	cPortion.setComponents(processOperationsState(msg.getComponent().getComponents()));
+            
+            tcResponseIndication.setComponents(cPortion);
 
-            this.provider.deliver(this, tcEndIndication);
+            this.provider.deliver(this, tcResponseIndication);
         } finally {
             release();
         }
@@ -1193,7 +1192,13 @@ public class DialogImpl implements Dialog {
     protected void processAbort(TCAbortMessage msg, SccpAddress localAddress2, SccpAddress remoteAddress2) {
     	try {
 
-            PAbortCause type = msg.getPAbortCause();
+            PAbortCause type = null;
+            try {
+            	type = msg.getPAbortCause();
+            } catch(ParseException ex) {
+            	
+            }
+            
             if (type != null) {
 
                 // its TC-P-Abort
@@ -1414,9 +1419,10 @@ public class DialogImpl implements Dialog {
 
     private void addReject(List<ComponentImpl> resultingIndications, Long invokeId, RejectProblem p) {
         try {
-            RejectImpl rej = TcapFactory.createComponentReject();
+        	RejectImpl rej = TcapFactory.createComponentReject();
             rej.setLocalOriginated(true);
-            rej.setCorrelationId(invokeId);
+            if(invokeId!=null)
+            	rej.setCorrelationId(invokeId);
             rej.setProblem(p);
 
             ComponentImpl component=new ComponentImpl();
@@ -1485,8 +1491,8 @@ public class DialogImpl implements Dialog {
             // send abort
             if (d.idleTimerActionTaken.get()) {
                 startIdleTimer();
-            } else {
-            	if (remoteTransactionId != null) {
+            } else {            	
+            	if (remoteTransactionId != null && !getState().equals(TRPseudoState.Expunged)) {
             		sendAbnormalDialog();
             	}
                 else

@@ -68,16 +68,28 @@ public abstract class ASNGeneric {
 	
 	@ASNLength
 	public Integer getLength() throws ASNException {
+		if(value==null)
+			return 0;
+		
 		return getParser(this.getClass()).getLength(value);
 	}
 	
 	@ASNEncode
 	public void encode(ByteBuf buffer) throws ASNException {
+		if(value==null)
+			return;
+		
 		getParser(this.getClass()).encode(buffer,value);
 	}
 	
 	@ASNDecode
 	public Boolean decode(ByteBuf buffer,Boolean skipErrors) throws ASNException {
+		if(buffer.readableBytes()==0)
+		{
+			this.value=null;
+			return false;
+		}
+		
 		ASNDecodeResult result=getParser(this.getClass()).decode(buffer,skipErrors);
 		this.value=result.getResult();
 		return result.getHadErrors();

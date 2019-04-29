@@ -26,7 +26,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortRequest;
@@ -45,7 +44,7 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
     private UserInformationImpl userInformation;
     private SecurityContext securityContext;
     private ConfidentialityImpl confidentiality;
-    private UserInformationExternalImpl userAbortInformation;
+    private UserInformationImpl userAbortInformation;
     private SccpAddress originatingAddress;
 
     TCUserAbortRequestImpl() {
@@ -106,12 +105,12 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
     }
 
     @Override
-    public UserInformationExternalImpl getUserAbortInformation() {
+    public UserInformationImpl getUserAbortInformation() {
         return userAbortInformation;
     }
 
     @Override
-    public void setUserAbortInformation(UserInformationExternalImpl val) {
+    public void setUserAbortInformation(UserInformationImpl val) {
         userAbortInformation = val;
     }
 

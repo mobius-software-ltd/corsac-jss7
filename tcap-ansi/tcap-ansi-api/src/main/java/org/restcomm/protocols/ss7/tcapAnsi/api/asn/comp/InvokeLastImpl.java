@@ -34,7 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=9,constructed=false,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=9,constructed=true,lengthIndefinite=false)
 public class InvokeLastImpl extends InvokeImpl {
 	public ComponentType getType() {
         return ComponentType.InvokeLast;

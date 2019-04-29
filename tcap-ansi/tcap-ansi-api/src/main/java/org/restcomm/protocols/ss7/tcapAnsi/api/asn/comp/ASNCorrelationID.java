@@ -55,7 +55,7 @@ public class ASNCorrelationID {
 	}
 
 	@ASNLength
-	public Integer getLength() {
+	public Integer getLength() {		
 		if(firstValue==null)
 			return 0;
 		
@@ -67,11 +67,15 @@ public class ASNCorrelationID {
 	
 	@ASNEncode
 	public void encode(ByteBuf buffer) {
-		if(firstValue!=null)
-			buffer.writeByte(firstValue);
+		if(firstValue==null)
+			return;
 		
-		if(secondValue!=null)
-			buffer.writeByte(secondValue);				
+		buffer.writeByte(firstValue);
+		
+		if(secondValue==null)
+			return;
+		
+		buffer.writeByte(secondValue);				
 	}
 	
 	@ASNDecode

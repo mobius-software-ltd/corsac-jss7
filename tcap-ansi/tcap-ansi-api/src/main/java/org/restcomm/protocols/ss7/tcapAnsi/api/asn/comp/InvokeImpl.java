@@ -22,18 +22,17 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
-import java.io.IOException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.OperationState;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNExclude;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -54,8 +53,13 @@ public abstract class InvokeImpl implements BaseComponent {
     private Dialog dialog;
 
     protected ASNCorrelationID correlationId=new ASNCorrelationID();
+    
+    @ASNExclude
     private InvokeImpl correlationInvoke;
-    private Parameter parameter;
+    
+    private ASNInvokeSetParameterImpl setParameter=new ASNInvokeSetParameterImpl();
+    private ASNInvokeParameterImpl seqParameter=null;
+    
     private NationalOperationCodeImpl nationalOperationCode;
     private PrivateOperationCodeImpl privateOperationCode;
     
@@ -139,36 +143,25 @@ public abstract class InvokeImpl implements BaseComponent {
     	}
     }
     
-    public Parameter getParameter() {
-        return this.parameter;
+    public Object getParameter() {
+        if(this.setParameter!=null)
+        	return this.setParameter.getValue();
+        else if(this.seqParameter!=null)
+        	return this.seqParameter.getValue();
+        
+        return null;
     }
 
-    public void setParameter(Parameter p) {
-        this.parameter = p;
+    public void setSetParameter(Object p) {
+    	this.setParameter = new ASNInvokeSetParameterImpl();
+        this.setParameter.setValue(p);
+        this.seqParameter=null;
     }
 
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Encodable#decode(org.mobicents.protocols .asn.AsnInputStream)
-     */
-    public void decode() {
-    	// Parameter
-        this.parameter = TcapFactory.readParameter(localAis);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Encodable#encode(org.mobicents.protocols .asn.AsnOutputStream)
-     */
-    public void encode() {
-    	// parameters
-        if (this.parameter != null)
-            this.parameter.encode(aos);
-        else
-            ParameterImpl.encodeEmptyParameter(aos);        
+    public void setSeqParameter(Object p) {
+    	this.seqParameter = new ASNInvokeParameterImpl();
+        this.seqParameter.setValue(p);
+        this.setParameter=null;        
     }
 
     /**

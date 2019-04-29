@@ -22,7 +22,10 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
-import org.mobicents.protocols.asn.Tag;
+import java.util.Arrays;
+
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
@@ -35,12 +38,15 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
+
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  * @author baranowb
@@ -63,22 +69,26 @@ public class Client extends EventTestHarness {
         ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
 
         // create some INVOKE
-        Invoke invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class1);
+        InvokeNotLastImpl invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class1);
         invoke.setInvokeId(this.dialog.getNewInvokeId());
-        OperationCode oc = cpFactory.createOperationCode();
-        oc.setPrivateOperationCode(12L);
+        PrivateOperationCodeImpl oc = cpFactory.createPrivateOperationCode();
+        oc.setOperationCode(12L);
         invoke.setOperationCode(oc);
         // no parameter
-        this.dialog.sendComponent(invoke);
+        ComponentImpl component=new ComponentImpl();
+        component.setInvoke(invoke);
+        this.dialog.sendComponent(component);
 
         // create a second INVOKE for which we will test linkedId
-        invoke = cpFactory.createTCInvokeRequestLast(InvokeClass.Class1);
-        invoke.setInvokeId(this.dialog.getNewInvokeId());
-        oc = cpFactory.createOperationCode();
-        oc.setPrivateOperationCode(13L);
-        invoke.setOperationCode(oc);
+        InvokeLastImpl invokeLast = cpFactory.createTCInvokeRequestLast(InvokeClass.Class1);
+        invokeLast.setInvokeId(this.dialog.getNewInvokeId());
+        oc = cpFactory.createPrivateOperationCode();
+        oc.setOperationCode(13L);
+        invokeLast.setOperationCode(oc);
         // no parameter
-        this.dialog.sendComponent(invoke);
+        component=new ComponentImpl();
+        component.setInvokeLast(invokeLast);
+        this.dialog.sendComponent(component);
 
         super.sendBegin();
     }
@@ -112,32 +122,26 @@ public class Client extends EventTestHarness {
         return (DialogImpl) this.dialog;
     }
 
-    public Invoke createNewInvoke() {
+    public InvokeNotLastImpl createNewInvoke() {
 
-        Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
+    	InvokeNotLastImpl invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
         invoke.setInvokeId(12l);
 
-        OperationCode oc = TcapFactory.createOperationCode();
+        PrivateOperationCodeImpl oc = TcapFactory.createPrivateOperationCode();
 
-        oc.setPrivateOperationCode(59L);
+        oc.setOperationCode(59L);
         invoke.setOperationCode(oc);
 
-        Parameter p1 = TcapFactory.createParameter();
-        p1.setTagClass(Tag.CLASS_UNIVERSAL);
-        p1.setTag(Tag.STRING_OCTET);
-        p1.setData(new byte[] { 0x0F });
+        ASNOctetString p1=new ASNOctetString();
+        p1.setValue(Unpooled.wrappedBuffer(new byte[] { 0x0F }));        
 
-        Parameter p2 = TcapFactory.createParameter();
-        p2.setTagClass(Tag.CLASS_UNIVERSAL);
-        p2.setTag(Tag.STRING_OCTET);
-        p2.setData(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
-                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 });
+        ASNOctetString p2=new ASNOctetString();
+        p2.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
 
-        Parameter pm = TcapFactory.createParameter();
-        pm.setTagClass(Tag.CLASS_UNIVERSAL);
-        pm.setTag(Tag.SEQUENCE);
-        pm.setParameters(new Parameter[] { p1, p2 });
-        invoke.setParameter(pm);
+        ClientTestASN pm = new ClientTestASN();
+        pm.setO1(Arrays.asList(new ASNOctetString[] { p1, p2 }));
+        invoke.setSeqParameter(pm);
 
         return invoke;
     }
@@ -145,12 +149,14 @@ public class Client extends EventTestHarness {
     public void sendInvokeSet(Long[] lstInvokeId) throws Exception {
 
         for (Long invokeId : lstInvokeId) {
-            Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
+            InvokeNotLastImpl invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
             invoke.setInvokeId(invokeId);
-            OperationCode opCode = this.tcapProvider.getComponentPrimitiveFactory().createOperationCode();
-            opCode.setPrivateOperationCode(0L);
+            PrivateOperationCodeImpl opCode = this.tcapProvider.getComponentPrimitiveFactory().createPrivateOperationCode();
+            opCode.setOperationCode(0L);
             invoke.setOperationCode(opCode);
-            this.dialog.sendComponent(invoke);
+            ComponentImpl component=new ComponentImpl();
+            component.setInvoke(invoke);
+            this.dialog.sendComponent(component);
         }
 
         this.sendBegin();

@@ -31,9 +31,6 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
  *
  */
 public interface TCUniMessage extends TCUnifiedMessage {
-
-    int _TAG_UNI = 1;
-
     ComponentPortionImpl getComponent();
 
     void setComponent(ComponentPortionImpl c);

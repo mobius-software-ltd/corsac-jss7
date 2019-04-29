@@ -49,11 +49,17 @@ public class ASNInteger {
 
 	@ASNLength
 	public Integer getLength() {
+		if(value==null)
+			return 0;
+		
 		return getLength(value);
 	}
 	
 	@ASNEncode
 	public void encode(ByteBuf buffer) {
+		if(value==null)
+			return;
+		
 		byte[] data=new byte[getLength(value)];
 		for(int i=0,size=0;i<data.length;i++,size+=8)
 			data[data.length-i-1]=(byte)((value>>size)&0xFF);
@@ -63,6 +69,9 @@ public class ASNInteger {
 	
 	@ASNDecode
 	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+		if(buffer.readableBytes()==0)
+			return false;
+		
 		byte current=buffer.readByte();
 		if((current & 0x0FF)==0x0FF)
 			value=0xFFFFFFFFFFFFFFFFL;

@@ -35,7 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifie
 * @author sergey vetyutnev
 *
 */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=false,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,lengthIndefinite=false)
 public class ConfidentialityImpl {
 	
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,index=-1)

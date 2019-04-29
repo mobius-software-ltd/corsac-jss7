@@ -30,8 +30,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=3,constructed=true,lengthIndefinite=false)
-public class TCQueryMessageImplWithPerm extends TCConversationMessageImpl {
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=2,constructed=true,lengthIndefinite=false)
+public class TCQueryMessageImplWithPerm extends TCQueryMessageImpl {
 	@Override
     public boolean getDialogTermitationPermission() {
         return true;

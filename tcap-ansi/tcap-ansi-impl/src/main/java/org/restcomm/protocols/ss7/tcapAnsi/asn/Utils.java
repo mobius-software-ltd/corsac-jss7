@@ -32,7 +32,7 @@ import java.nio.ByteBuffer;
  */
 public final class Utils {
     public static long decodeTransactionId(byte[] data, boolean swapBytes) {
-        byte[] longRep = new byte[8];
+    	byte[] longRep = new byte[8];
 
         if (swapBytes) {
             // copy data so longRep = {0,0,0,...,data};

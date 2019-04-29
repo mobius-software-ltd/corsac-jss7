@@ -32,7 +32,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=14,constructed=false,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.PRIVATE,tag=14,constructed=true,lengthIndefinite=false)
 public class ReturnResultNotLastImpl extends ReturnImpl {
 	public ComponentType getType() {
         return ComponentType.ReturnResultNotLast;

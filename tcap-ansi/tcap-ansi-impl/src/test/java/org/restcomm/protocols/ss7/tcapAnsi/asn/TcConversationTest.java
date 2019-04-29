@@ -24,76 +24,82 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import static org.testng.Assert.*;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import java.util.ArrayList;
+import java.util.List;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
 @Test(groups = { "asn" })
 public class TcConversationTest {
 
-    private byte[] data1 = new byte[] { -27, 30, -57, 8, 1, 1, 2, 2, 3, 3, 4, 4, -24, 18, -23, 16, -49, 1, 0, -47, 2, 9, 53, -14, 7, 1, 2, 3, 4, 5, 6, 7 };
+    private byte[] data1 = new byte[] { -27, 30, -57, 8, 1, 1, 2, 2, 3, 3, 4, 4, -24, 18, -23, 16, -49, 1, 0, -47, 2, 9, 53, -14, 7, 4, 5, 3, 4, 5, 6, 7 };
 
     private byte[] data2 = new byte[] { -26, 15, -57, 8, 1, 1, 2, 2, 3, 3, 4, 4, -7, 3, -37, 1, 66 };
 
-    private byte[] parData = new byte[] { 1, 2, 3, 4, 5, 6, 7 };
+    private byte[] parData = new byte[] { 3, 4, 5, 6, 7 };
 
     private byte[] trIdO = new byte[] { 1, 1, 2, 2 };
     private byte[] trIdD = new byte[] { 3, 3, 4, 4 };
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(TCConversationMessageImpl.class);
+    	parser.loadClass(TCConversationMessageImplWithPerm.class);
+    	
         // 1
-        AsnInputStream ais = new AsnInputStream(this.data1);
-        int tag = ais.readTag();
-        assertEquals(tag, TCConversationMessage._TAG_CONVERSATION_WITH_PERM);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        TCConversationMessage tcm = TcapFactory.createTCConversationMessage(ais);
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
+    	assertTrue(result.getResult() instanceof TCConversationMessageImplWithPerm);
+        
+        TCConversationMessage tcm = (TCConversationMessage)result.getResult();
 
         assertTrue(tcm.getDialogTermitationPermission());
         assertEquals(tcm.getOriginatingTransactionId(), trIdO);
         assertEquals(tcm.getDestinationTransactionId(), trIdD);
         assertNull(tcm.getDialogPortion());
-        assertEquals(tcm.getComponent().length, 1);
-        Component cmp = tcm.getComponent()[0];
+        assertEquals(tcm.getComponent().getComponents().size(), 1);
+        ComponentImpl cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.InvokeLast);
-        Invoke inv = (Invoke) cmp;
+        InvokeImpl inv = cmp.getInvokeLast();
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
-        assertEquals((long) inv.getOperationCode().getPrivateOperationCode(), 2357);
-        Parameter p = inv.getParameter();
-        assertEquals(p.getTag(), 18);
-        assertEquals(p.getTagClass(), Tag.CLASS_PRIVATE);
-        assertFalse(p.isPrimitive());
-        assertEquals(p.getData(), parData);
+        assertEquals((long) ((PrivateOperationCodeImpl)inv.getOperationCode()).getOperationCode(), 2357);
+        assertTrue(inv.getParameter() instanceof ASNOctetString); 
+        ByteBuf realData=((ASNOctetString)inv.getParameter()).getValue();
+        UserInformationElementTest.byteBufEquals(realData, Unpooled.wrappedBuffer(parData));
 
         // 2
-        ais = new AsnInputStream(this.data2);
-        tag = ais.readTag();
-        assertEquals(tag, TCConversationMessage._TAG_CONVERSATION_WITHOUT_PERM);
-        assertEquals(ais.getTagClass(), Tag.CLASS_PRIVATE);
-
-        tcm = TcapFactory.createTCConversationMessage(ais);
+        result=parser.decode(Unpooled.wrappedBuffer(this.data2));
+    	assertTrue(result.getResult() instanceof TCConversationMessageImpl);
+        
+        tcm = (TCConversationMessage)result.getResult();
 
         assertFalse(tcm.getDialogTermitationPermission());
         assertEquals(tcm.getOriginatingTransactionId(), trIdO);
         assertEquals(tcm.getDestinationTransactionId(), trIdD);
-        DialogPortion dp = tcm.getDialogPortion();
+        DialogPortionImpl dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
         ApplicationContext ac = dp.getApplicationContext();
-        assertEquals(ac.getInteger(), 66);
+        assertEquals(((IntegerApplicationContextNameImpl)ac).getValue(), new Long(66l));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
@@ -104,48 +110,50 @@ public class TcConversationTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
-        // 1
-        Component[] cc = new Component[1];
-        Invoke inv = TcapFactory.createComponentInvoke();
-        cc[0] = inv;
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(TCConversationMessageImpl.class);
+    	parser.loadClass(TCConversationMessageImplWithPerm.class);
+    	
+    	// 1
+        List<ComponentImpl> cc = new ArrayList<ComponentImpl>(1);
+        InvokeLastImpl inv = TcapFactory.createComponentInvokeLast();
+        
+        ComponentImpl component=new ComponentImpl();
+        component.setInvokeLast(inv);
+        cc.add(component);
         inv.setInvokeId(0L);
-        inv.setNotLast(false);
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setPrivateOperationCode(2357L);
+        PrivateOperationCodeImpl oc = TcapFactory.createPrivateOperationCode();
+        oc.setOperationCode(2357L);
         inv.setOperationCode(oc);
-        Parameter p = TcapFactory.createParameterSet();
-        p.setData(parData);
-        inv.setParameter(p);
+        ASNOctetString innerValue=new ASNOctetString();
+        innerValue.setValue(Unpooled.wrappedBuffer(parData));        
+        inv.setSetParameter(innerValue);
 
-        TCConversationMessage tcm = TcapFactory.createTCConversationMessage();
+        TCConversationMessage tcm = TcapFactory.createTCConversationMessage(true);
         tcm.setOriginatingTransactionId(trIdO);
         tcm.setDestinationTransactionId(trIdD);
-        tcm.setComponent(cc);
-        tcm.setDialogTermitationPermission(true);
+        
+        ComponentPortionImpl cp=new ComponentPortionImpl();
+        cp.setComponents(cc);
+        tcm.setComponent(cp);
 
-        AsnOutputStream aos = new AsnOutputStream();
-        tcm.encode(aos);
-        byte[] encodedData = aos.toByteArray();
-        byte[] expectedData = data1;
-        assertEquals(encodedData, expectedData);
+        ByteBuf encodedData=parser.encode(tcm);
+        ByteBuf expectedData = Unpooled.wrappedBuffer(data1);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
         // 2
-        tcm = TcapFactory.createTCConversationMessage();
+        tcm = TcapFactory.createTCConversationMessage(false);
         tcm.setOriginatingTransactionId(trIdO);
         tcm.setDestinationTransactionId(trIdD);
-        tcm.setDialogTermitationPermission(false);
 
-        DialogPortion dp = TcapFactory.createDialogPortion();
+        DialogPortionImpl dp = TcapFactory.createDialogPortion();
         ApplicationContext ac = TcapFactory.createApplicationContext(66);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 
-        aos = new AsnOutputStream();
-        tcm.encode(aos);
-        encodedData = aos.toByteArray();
-        expectedData = data2;
-        assertEquals(encodedData, expectedData);
+        encodedData=parser.encode(tcm);
+        expectedData = Unpooled.wrappedBuffer(data2);
+        UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
     }
 

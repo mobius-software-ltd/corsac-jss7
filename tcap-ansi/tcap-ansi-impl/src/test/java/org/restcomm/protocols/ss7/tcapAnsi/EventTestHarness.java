@@ -24,11 +24,12 @@ package org.restcomm.protocols.ss7.tcapAnsi;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
+import io.netty.buffer.Unpooled;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
@@ -38,14 +39,16 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
@@ -63,6 +66,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndic
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
 /**
  * Super class for event based tests. Has capabilities for testing if events are received and if so, if they were received in
  * proper order.
@@ -71,7 +76,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
  *
  */
 public abstract class EventTestHarness implements TCListener {
-    public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+    public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
     protected List<TestEvent> observerdEvents = new ArrayList<TestEvent>();
 
     protected Dialog dialog;
@@ -84,7 +89,7 @@ public abstract class EventTestHarness implements TCListener {
     protected int sequence = 0;
 
     protected ApplicationContext acn;
-    protected UserInformation ui;
+    protected UserInformationImpl ui;
 
     protected PAbortCause pAbortCauseType;
     protected RejectProblem rejectProblem;
@@ -150,19 +155,18 @@ public abstract class EventTestHarness implements TCListener {
 
         if (addingInv && acn == null && ui == null) {
             // no dialog patch - we are adding Invoke primitive
-            Invoke inv = TcapFactory.createComponentInvoke();
+            InvokeNotLastImpl inv = TcapFactory.createComponentInvokeNotLast();
             inv.setInvokeId(this.dialog.getNewInvokeId());
-            inv.setNotLast(true);
-            OperationCode oc = TcapFactory.createOperationCode();
-            oc.setNationalOperationCode(10L);
+            NationalOperationCodeImpl oc = TcapFactory.createNationalOperationCode();
+            oc.setOperationCode(10L);
             inv.setOperationCode(oc);
-            Parameter p = TcapFactory.createParameter();
-            p.setData(new byte[] { 1, 2, 3, 4, 5 });
-            p.setPrimitive(false);
-            p.setTagClass(Tag.CLASS_PRIVATE);
-            p.setTag(Parameter._TAG_SEQUENCE);
-            inv.setParameter(p);
-            dialog.sendComponent(inv);
+            ASNOctetString innerString=new ASNOctetString();
+            innerString.setValue(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }));
+            inv.setSeqParameter(innerString);
+            
+            ComponentImpl component=new ComponentImpl();
+            component.setInvoke(inv);
+            dialog.sendComponent(component);
         }
 
         dialog.send(con);
@@ -186,19 +190,17 @@ public abstract class EventTestHarness implements TCListener {
 
         if (addingInv && acn == null && ui == null) {
             // no dialog patch - we are adding Invoke primitive
-            Invoke inv = TcapFactory.createComponentInvoke();
+            InvokeNotLastImpl inv = TcapFactory.createComponentInvokeNotLast();
             inv.setInvokeId(this.dialog.getNewInvokeId());
-            inv.setNotLast(true);
-            OperationCode oc = TcapFactory.createOperationCode();
-            oc.setNationalOperationCode(10L);
+            NationalOperationCodeImpl oc = TcapFactory.createNationalOperationCode();
             inv.setOperationCode(oc);
-            Parameter p = TcapFactory.createParameter();
-            p.setData(new byte[] { 1, 2, 3, 4, 5 });
-            p.setPrimitive(false);
-            p.setTagClass(Tag.CLASS_PRIVATE);
-            p.setTag(Parameter._TAG_SEQUENCE);
-            inv.setParameter(p);
-            dialog.sendComponent(inv);
+            ASNOctetString innerString=new ASNOctetString();
+            innerString.setValue(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }));
+            inv.setSeqParameter(innerString);
+            
+            ComponentImpl component=new ComponentImpl();
+            component.setInvoke(inv);
+            dialog.sendComponent(component);
         }
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.End, end, sequence++));
@@ -206,7 +208,7 @@ public abstract class EventTestHarness implements TCListener {
 
     }
 
-    public void sendAbort(ApplicationContext acn, UserInformationElement ui) throws TCAPSendException {
+    public void sendAbort(ApplicationContext acn, UserInformationImpl ui) throws TCAPSendException {
 
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send ABORT");
         TCUserAbortRequest abort = this.tcapProvider.getDialogPrimitiveFactory().createUAbort(dialog);
@@ -226,13 +228,15 @@ public abstract class EventTestHarness implements TCListener {
         ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
 
         // create some INVOKE
-        Invoke invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class4);
+        InvokeNotLastImpl invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class4);
         invoke.setInvokeId(this.dialog.getNewInvokeId());
-        OperationCode oc = cpFactory.createOperationCode();
-        oc.setNationalOperationCode(12L);
+        NationalOperationCodeImpl oc = cpFactory.createNationalOperationCode();
+        oc.setOperationCode(12L);
         invoke.setOperationCode(oc);
         // no parameter
-        this.dialog.sendComponent(invoke);
+        ComponentImpl component=new ComponentImpl();
+        component.setInvoke(invoke);
+        this.dialog.sendComponent(component);
 
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send UNI");
         ApplicationContext acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
@@ -282,11 +286,16 @@ public abstract class EventTestHarness implements TCListener {
         TestEvent te = TestEvent.createReceivedEvent(EventType.End, ind, sequence++);
         this.observerdEvents.add(te);
 
-        Component[] compp = ind.getComponents();
-        if (compp != null && compp.length > 0) {
-            if (compp[0] instanceof Reject) {
-                Reject rej = (Reject) compp[0];
-                this.rejectProblem = rej.getProblem();
+        ComponentPortionImpl compp = ind.getComponents();
+        if (compp != null && compp.getComponents()!=null && compp.getComponents().size() > 0) {
+            if (compp.getComponents().get(0).getType() == ComponentType.Reject) {
+                RejectImpl rej = compp.getComponents().get(0).getReject();
+                this.rejectProblem = null;
+                try {
+                	this.rejectProblem=rej.getProblem();
+                } catch(ParseException ex) {
+                	
+                }
             }
         }
 
@@ -313,7 +322,7 @@ public abstract class EventTestHarness implements TCListener {
 
     }
 
-    public void onInvokeTimeout(Invoke tcInvokeRequest) {
+    public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]onInvokeTimeout");
         TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, tcInvokeRequest, sequence++);
         this.observerdEvents.add(te);

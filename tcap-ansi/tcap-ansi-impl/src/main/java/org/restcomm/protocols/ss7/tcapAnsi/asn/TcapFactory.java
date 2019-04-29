@@ -22,32 +22,22 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ObjectApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCode;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Parameter;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLastImpl;
@@ -106,8 +96,13 @@ public final class TcapFactory {
         return tc;
     }
 
-    public static TCConversationMessage createTCConversationMessage() {
-        TCConversationMessageImpl tc = new TCConversationMessageImpl();
+    public static TCConversationMessage createTCConversationMessage(Boolean dialogTermitationPermission) {
+        TCConversationMessageImpl tc;
+        if(dialogTermitationPermission==null || !dialogTermitationPermission)
+        	tc = new TCConversationMessageImpl();
+        else
+        	tc=new TCConversationMessageImplWithPerm();
+        
         return tc;
     }
 
@@ -121,8 +116,13 @@ public final class TcapFactory {
         return tc;
     }
 
-    public static TCQueryMessage createTCQueryMessage() {
-        TCQueryMessageImpl tc = new TCQueryMessageImpl();
+    public static TCQueryMessage createTCQueryMessage(Boolean dialogTermitationPermission) {
+        TCQueryMessageImpl tc;
+        if(dialogTermitationPermission==null || !dialogTermitationPermission)
+            tc = new TCQueryMessageImpl();
+        else
+        	tc = new TCQueryMessageImplWithPerm();
+        
         return tc;
     }
 
@@ -134,27 +134,6 @@ public final class TcapFactory {
     public static NationalOperationCodeImpl createNationalOperationCode() {
     	NationalOperationCodeImpl oc = new NationalOperationCodeImpl();
         return oc;
-    }
-
-    public static Parameter createParameter() {
-        ParameterImpl p = new ParameterImpl();
-        return p;
-    }
-
-    public static Parameter createParameterSet() {
-        ParameterImpl p = new ParameterImpl();
-        p.setTagClass(Tag.CLASS_PRIVATE);
-        p.setTag(Parameter._TAG_SET);
-        p.setPrimitive(false);
-        return p;
-    }
-
-    public static Parameter createParameterSequence() {
-        ParameterImpl p = new ParameterImpl();
-        p.setTagClass(Tag.CLASS_PRIVATE);
-        p.setTag(Parameter._TAG_SEQUENCE);
-        p.setPrimitive(false);
-        return p;
     }
 
     public static RejectImpl createComponentReject() {

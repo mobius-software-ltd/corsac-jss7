@@ -686,10 +686,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     }
 
     private void unrecognizedPackageType(SccpDataMessage message,ByteBuf transactionID, SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws ParseException {
-    	ByteBuf realTransactionID=transactionID;
-        
-        logger.error(String.format("Rx unidentified.SccpMessage=%s", message));
-        this.sendProviderAbort(PAbortCauseType.UnrecognizedMessageType, realTransactionID, remoteAddress, localAddress, message.getSls(), networkId, message.getIncomingOpc());        
+    	logger.error(String.format("Rx unidentified.SccpMessage=%s", message));
+        this.sendProviderAbort(PAbortCauseType.UnrecognizedMessageType, transactionID, remoteAddress, localAddress, message.getSls(), networkId, message.getIncomingOpc());        
     }
 
     public void onNotice(SccpNoticeMessage msg) {
