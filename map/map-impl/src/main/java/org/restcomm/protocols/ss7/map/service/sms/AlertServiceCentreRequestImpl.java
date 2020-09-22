@@ -22,40 +22,37 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.AlertServiceCentreRequest;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class AlertServiceCentreRequestImpl extends SmsMessageImpl implements AlertServiceCentreRequest {
 	private static final long serialVersionUID = 1L;
 
-	private ISDNAddressString msisdn;
-    private AddressString serviceCentreAddress;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
+	private ISDNAddressStringImpl msisdn;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
+	private AddressStringImpl serviceCentreAddress;
     private int operationCode;
 
     public AlertServiceCentreRequestImpl(int operationCode) {
         this.operationCode = operationCode;
     }
 
-    public AlertServiceCentreRequestImpl(ISDNAddressString msisdn, AddressString serviceCentreAddress) {
+    public AlertServiceCentreRequestImpl(ISDNAddressStringImpl msisdn, AddressStringImpl serviceCentreAddress) {
         this.msisdn = msisdn;
         this.serviceCentreAddress = serviceCentreAddress;
     }
@@ -71,122 +68,12 @@ public class AlertServiceCentreRequestImpl extends SmsMessageImpl implements Ale
         return this.operationCode;
     }
 
-    public ISDNAddressString getMsisdn() {
+    public ISDNAddressStringImpl getMsisdn() {
         return this.msisdn;
     }
 
-    public AddressString getServiceCentreAddress() {
+    public AddressStringImpl getServiceCentreAddress() {
         return this.serviceCentreAddress;
-    }
-
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding AlertServiceCentreRequest: " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding AlertServiceCentreRequest: " + e.getMessage(),
-                    e, MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding AlertServiceCentreRequest: " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding AlertServiceCentreRequest: " + e.getMessage(),
-                    e, MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-        this.msisdn = null;
-        this.serviceCentreAddress = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-            switch (num) {
-                case 0:
-                    if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.STRING_OCTET)
-                        throw new MAPParsingComponentException(
-                                "Error while decoding AlertServiceCentreRequest.msisdn: bad tag or tag class or is not primitive: TagClass="
-                                        + ais.getTagClass() + ", tag=" + tag,
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.msisdn = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.msisdn).decodeAll(ais);
-                    break;
-                case 1:
-                    if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.STRING_OCTET)
-                        throw new MAPParsingComponentException(
-                                "Error while decoding AlertServiceCentreRequest.serviceCentreAddress: bad tag or tag class or is not primitive: TagClass="
-                                        + ais.getTagClass() + ", tag=" + tag,
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.serviceCentreAddress = new ISDNAddressStringImpl();
-                    ((AddressStringImpl) this.serviceCentreAddress).decodeAll(ais);
-                    break;
-                default:
-                    ais.advanceElement();
-                    break;
-            }
-
-            num++;
-        }
-
-        if (this.msisdn == null || this.serviceCentreAddress == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding AlertServiceCentreRequest: 2 parameters are mandatory, found " + num,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-
-        this.encodeAll(asnOs, Tag.CLASS_UNIVERSAL, Tag.SEQUENCE);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, false, tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding AlertServiceCentreRequest: " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        if (this.msisdn == null || this.serviceCentreAddress == null)
-            throw new MAPException(
-                    "Error when encoding AlertServiceCentreRequest: msisdn or serviceCentreAddress must not be empty");
-
-        ((ISDNAddressStringImpl) this.msisdn).encodeAll(asnOs);
-        ((AddressStringImpl) this.serviceCentreAddress).encodeAll(asnOs);
     }
 
     @Override

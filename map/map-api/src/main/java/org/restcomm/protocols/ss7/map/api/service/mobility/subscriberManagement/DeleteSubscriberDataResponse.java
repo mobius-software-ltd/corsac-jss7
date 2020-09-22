@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -50,6 +50,6 @@ public interface DeleteSubscriberDataResponse extends MobilityMessage {
 
     RegionalSubscriptionResponse getRegionalSubscriptionResponse();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

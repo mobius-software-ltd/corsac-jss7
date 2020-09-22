@@ -35,14 +35,13 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.lsm.AdditionalNumberImpl;
-import org.restcomm.protocols.ss7.map.service.sms.LocationInfoWithLMSIImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -75,7 +74,7 @@ public class LocationInfoWithLMSITest {
         assertEquals(tag, 0);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
 
-        ISDNAddressString nnm = liw.getNetworkNodeNumber();
+        ISDNAddressStringImpl nnm = liw.getNetworkNodeNumber();
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
         assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(nnm.getAddress(), "79033700222");
@@ -109,7 +108,7 @@ public class LocationInfoWithLMSITest {
     @Test(groups = { "functional.encode", "service.sms" })
     public void testEncode() throws Exception {
 
-        ISDNAddressString nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79033700222");
+        ISDNAddressStringImpl nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79033700222");
         LMSIImpl lmsi = new LMSIImpl(new byte[] { 0, 3, 98, 49 });
         LocationInfoWithLMSIImpl liw = new LocationInfoWithLMSIImpl(nnm, lmsi, null, false, null);
 
@@ -138,7 +137,7 @@ public class LocationInfoWithLMSITest {
 
     @Test(groups = { "functional.serialize", "service.sms" })
     public void testSerialization() throws Exception {
-        ISDNAddressString nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79033700222");
+        ISDNAddressStringImpl nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79033700222");
         LMSIImpl lmsi = new LMSIImpl(new byte[] { 0, 3, 98, 49 });
         LocationInfoWithLMSIImpl original = new LocationInfoWithLMSIImpl(nnm, lmsi, null, true, null);
 

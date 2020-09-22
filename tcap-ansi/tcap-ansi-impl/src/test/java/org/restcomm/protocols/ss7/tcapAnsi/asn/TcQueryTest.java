@@ -34,19 +34,16 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ObjectApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
@@ -109,7 +106,7 @@ public class TcQueryTest {
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
-        assertEquals(((PrivateOperationCodeImpl)inv.getOperationCode()).getOperationCode(), new Long(2357L));
+        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Long(2357L));
         assertTrue(inv.getParameter() instanceof ASNOctetString);
         UserInformationElementTest.byteBufEquals(((ASNOctetString)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
@@ -124,8 +121,8 @@ public class TcQueryTest {
         ProtocolVersionImpl pv = dp.getProtocolVersion();
         assertTrue(pv.isT1_114_1996Supported());
         assertTrue(pv.isT1_114_2000Supported());
-        ApplicationContext ac = dp.getApplicationContext();
-        assertEquals(((ObjectApplicationContextNameImpl)ac).getValue(), acn);
+        ApplicationContextNameImpl ac = dp.getApplicationContext();
+        assertEquals(ac.getObj(), acn);
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
@@ -142,8 +139,8 @@ public class TcQueryTest {
         assertEquals(cmp.getType(), ComponentType.ReturnError);
         ReturnErrorImpl re = cmp.getReturnError();
         assertEquals((long) re.getCorrelationId(), 1);
-        ErrorCode ec = re.getErrorCode();
-        assertEquals((long) ((PrivateErrorCodeImpl)ec).getErrorCode(), 200);
+        ErrorCodeImpl ec = re.getErrorCode();
+        assertEquals(ec.getPrivateErrorCode(), new Long(200L));
         assertNull(re.getParameter());
         
         // 3
@@ -155,8 +152,8 @@ public class TcQueryTest {
         assertEquals(tcm.getOriginatingTransactionId(), trId2);
         dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
-        ac = dp.getApplicationContext();
-        assertEquals((long)((IntegerApplicationContextNameImpl)ac).getValue(), 66);
+        ac = dp.getApplicationContext();        
+        assertEquals(ac.getInt(), new Long(66L));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
@@ -177,8 +174,7 @@ public class TcQueryTest {
         component.setInvoke(inv);
         cc.add(component);
         inv.setInvokeId(0L);
-        PrivateOperationCodeImpl oc = TcapFactory.createPrivateOperationCode();
-        oc.setOperationCode(2357L);
+        OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(2357L);        
         inv.setOperationCode(oc);
         ASNOctetString p=new ASNOctetString();
         p.setValue(Unpooled.wrappedBuffer(parData));
@@ -209,8 +205,7 @@ public class TcQueryTest {
         component.setReturnError(re);
         cc.add(component);
         re.setCorrelationId(1L);
-        PrivateErrorCodeImpl ec = TcapFactory.createPrivateErrorCode();
-        ec.setErrorCode(200L);
+        ErrorCodeImpl ec = TcapFactory.createPrivateErrorCode(200L);
         re.setErrorCode(ec);
         re.setSetParameter(null);
 
@@ -223,7 +218,7 @@ public class TcQueryTest {
         DialogPortionImpl dp = TcapFactory.createDialogPortion();
         ProtocolVersionImpl pv = TcapFactory.createProtocolVersionFull();
         dp.setProtocolVersion(pv);
-        ApplicationContext ac = TcapFactory.createApplicationContext(acn);
+        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(acn);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 

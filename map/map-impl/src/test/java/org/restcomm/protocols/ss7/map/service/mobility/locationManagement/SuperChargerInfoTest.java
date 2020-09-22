@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SuperChargerInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SuperChargerInfoImpl;
 import org.testng.annotations.Test;
 
 public class SuperChargerInfoTest {

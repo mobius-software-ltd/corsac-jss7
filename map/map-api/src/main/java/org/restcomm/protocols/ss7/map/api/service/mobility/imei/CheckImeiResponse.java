@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.imei;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -40,8 +40,8 @@ public interface CheckImeiResponse extends MobilityMessage {
 
     EquipmentStatus getEquipmentStatus();
 
-    UESBIIu getBmuef();
+    UESBIIuImpl getBmuef();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

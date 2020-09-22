@@ -27,18 +27,17 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidanceImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSI;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.lsm.AdditionalNumberImpl;
-import org.restcomm.protocols.ss7.map.service.sms.IpSmGwGuidanceImpl;
-import org.restcomm.protocols.ss7.map.service.sms.LocationInfoWithLMSIImpl;
 import org.restcomm.protocols.ss7.map.service.sms.SendRoutingInfoForSMResponseImpl;
 import org.testng.annotations.Test;
 
@@ -95,7 +94,7 @@ public class SendRoutingInfoForSMResponseTest {
         // assertEquals( (long)imsi.getMNC(),99L);
         assertEquals(imsi.getData(), "200990200111227");
         LocationInfoWithLMSI li = ind.getLocationInfoWithLMSI();
-        ISDNAddressString nnn = li.getNetworkNodeNumber();
+        ISDNAddressStringImpl nnn = li.getNetworkNodeNumber();
         assertEquals(nnn.getAddressNature(), AddressNature.international_number);
         assertEquals(nnn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(nnn.getAddress(), "12032100295");
@@ -124,7 +123,7 @@ public class SendRoutingInfoForSMResponseTest {
         assertEquals(nnn.getAddress(), "00001111");
         lmsi = li.getLMSI();
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(li.getExtensionContainer()));
-        ISDNAddressString an = li.getAdditionalNumber().getSGSNNumber();
+        ISDNAddressStringImpl an = li.getAdditionalNumber().getSGSNNumber();
         assertEquals(an.getAddressNature(), AddressNature.national_significant_number);
         assertEquals(an.getNumberingPlan(), NumberingPlan.land_mobile);
         assertEquals(an.getAddress(), "99999999");
@@ -183,7 +182,7 @@ public class SendRoutingInfoForSMResponseTest {
     public void testEncode() throws Exception {
 
         IMSI imsi = new IMSIImpl("200990200111227");
-        ISDNAddressString nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12032100295");
+        ISDNAddressStringImpl nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12032100295");
         LMSI lmsi = new LMSIImpl(new byte[] { 0, 3, 98, 49 });
 
         LocationInfoWithLMSI li = new LocationInfoWithLMSIImpl(nnn, lmsi, null, false, null);
@@ -199,7 +198,7 @@ public class SendRoutingInfoForSMResponseTest {
         imsi = new IMSIImpl("11103222333111");
         nnn = new ISDNAddressStringImpl(AddressNature.subscriber_number, NumberingPlan.land_mobile, "00001111");
         lmsi = new LMSIImpl(new byte[] { 0, 2, 1, 0 });
-        ISDNAddressString sgsnAdditionalNumber = new ISDNAddressStringImpl(AddressNature.national_significant_number,
+        ISDNAddressStringImpl sgsnAdditionalNumber = new ISDNAddressStringImpl(AddressNature.national_significant_number,
                 NumberingPlan.land_mobile, "99999999");
         AdditionalNumber additionalNumber = new AdditionalNumberImpl(null, sgsnAdditionalNumber);
         li = new LocationInfoWithLMSIImpl(nnn, lmsi, MAPExtensionContainerTest.GetTestExtensionContainer(), false, additionalNumber);

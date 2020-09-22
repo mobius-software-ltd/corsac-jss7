@@ -29,13 +29,13 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISRInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISRInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PDNGWUpdate;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PDNGWUpdateImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.EPSInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.ISRInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PDNGWUpdateImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -89,7 +89,7 @@ public class EPSInfoTest {
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
         // option 1
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         PDNGWUpdate pndGwUpdate = new PDNGWUpdateImpl(null, null, new Integer(2), extensionContainer);
         EPSInfoImpl prim = new EPSInfoImpl(pndGwUpdate);
         AsnOutputStream asn = new AsnOutputStream();

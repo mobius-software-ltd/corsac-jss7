@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 
 /**
  *
@@ -46,9 +46,9 @@ MAP V2: SendRoutingInfoForSM ::= OPERATION --Timer m
   ERRORS { SystemFailure, DataMissing, UnexpectedDataValue, FacilityNotSupported, UnknownSubscriber, TeleserviceNotProvisioned, AbsentSubscriber, CallBarred }
 
 MAP V3: RoutingInfoForSM-Arg ::= SEQUENCE {
-  msisdn                  [0] ISDN-AddressString,
+  msisdn                  [0] ISDN-AddressStringImpl,
   sm-RP-PRI               [1] BOOLEAN,
-  serviceCentreAddress    [2] AddressString,
+  serviceCentreAddress    [2] AddressStringImpl,
   extensionContainer      [6] ExtensionContainer OPTIONAL,
   ... ,
   gprsSupportIndicator    [7] NULL OPTIONAL,
@@ -65,9 +65,9 @@ MAP V3: RoutingInfoForSM-Arg ::= SEQUENCE {
 }
 
 MAP V2: RoutingInfoForSM-Arg ::= SEQUENCE {
-  msisdn                  [0] ISDN-AddressString,
+  msisdn                  [0] ISDN-AddressStringImpl,
   sm-RP-PRI               [1] BOOLEAN,
-  erviceCentreAddress     [2] AddressString,
+  erviceCentreAddress     [2] AddressStringImpl,
   teleservice             [5] TeleserviceCode OPTIONAL,
   -- teleservice must be absent in version greater 1 ...
 }
@@ -80,33 +80,33 @@ MAP V2: RoutingInfoForSM-Arg ::= SEQUENCE {
  */
 public interface SendRoutingInfoForSMRequest extends SmsMessage {
 
-    ISDNAddressString getMsisdn();
+    ISDNAddressStringImpl getMsisdn();
 
     boolean getSm_RP_PRI();
 
-    AddressString getServiceCentreAddress();
+    AddressStringImpl getServiceCentreAddress();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     boolean getGprsSupportIndicator();
 
     SM_RP_MTI getSM_RP_MTI();
 
-    SM_RP_SMEA getSM_RP_SMEA();
+    SM_RP_SMEAImpl getSM_RP_SMEA();
 
     SMDeliveryNotIntended getSmDeliveryNotIntended();
 
     boolean getIpSmGwGuidanceIndicator();
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
     boolean getT4TriggerIndicator();
 
     boolean getSingleAttemptDelivery();
 
-    CorrelationID getCorrelationID();
+    CorrelationIDImpl getCorrelationID();
 
     // for MAP V1 only
-    TeleserviceCode getTeleservice();
+    TeleserviceCodeImpl getTeleservice();
 
 }

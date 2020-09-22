@@ -26,17 +26,16 @@ import org.restcomm.protocols.ss7.map.MessageImpl;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
 import org.restcomm.protocols.ss7.map.api.service.oam.OamMessage;
-import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public abstract class OamMessageImpl extends MessageImpl implements OamMessage, MAPAsnPrimitive {
+public abstract class OamMessageImpl extends MessageImpl implements OamMessage {
 	private static final long serialVersionUID = 1L;
 
-	public MAPDialogOam getMAPDialog() {
+	public MAPDialogOam getOamMAPDialog() {
         MAPDialog mapDialog = super.getMAPDialog();
         return (MAPDialogOam) mapDialog;
     }

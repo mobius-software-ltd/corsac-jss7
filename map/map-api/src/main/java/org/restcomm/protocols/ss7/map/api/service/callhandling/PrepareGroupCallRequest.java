@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASCICallReference;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 
 /**
  *
@@ -55,7 +55,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  */
 public interface PrepareGroupCallRequest extends CallHandlingMessage {
 
-     ExtTeleserviceCode getTeleservice();
+     ExtTeleserviceCodeImpl getTeleservice();
 
      ASCICallReference getAsciCallReference();
 
@@ -71,7 +71,7 @@ public interface PrepareGroupCallRequest extends CallHandlingMessage {
 
      boolean getUplinkFree();
 
-     MAPExtensionContainer getExtensionContainer();
+     MAPExtensionContainerImpl getExtensionContainer();
 
      byte[] getVstk();
 

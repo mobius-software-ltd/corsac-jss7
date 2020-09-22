@@ -31,13 +31,12 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeature;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.service.supplementary.CallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.CallBarringInfoImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSStatusImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -110,7 +109,7 @@ public class CallBarringInfoTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        SSCode ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
+        SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
         impl = new CallBarringInfoImpl(ssCode, forwardingFeatureList);
         asnOS = new AsnOutputStream();
 

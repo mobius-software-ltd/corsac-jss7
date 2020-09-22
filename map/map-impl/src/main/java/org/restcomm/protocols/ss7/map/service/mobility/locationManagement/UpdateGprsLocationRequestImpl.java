@@ -22,86 +22,100 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapability;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ASNUESRVCCCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ASNUsedRatTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapabilityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UESRVCCCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateGprsLocationRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UsedRATType;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implements UpdateGprsLocationRequest {
 	private static final long serialVersionUID = 1L;
 
-	private static final int TAG_sgsnCapability = 0;
-    private static final int TAG_informPreviousNetworkEntity = 1;
-    private static final int TAG_psLCSNotSupportedByUE = 2;
-    private static final int TAG_vGmlcAddress = 3;
-    private static final int TAG_addInfo = 4;
-    private static final int TAG_epsInfo = 5;
-    private static final int TAG_servingNodeTypeIndicator = 6;
-    private static final int TAG_skipSubscriberDataUpdate = 7;
-    private static final int TAG_usedRATType = 8;
-    private static final int TAG_gprsSubscriptionDataNotNeeded = 9;
-    private static final int TAG_nodeTypeIndicator = 10;
-    private static final int TAG_areaRestricted = 11;
-    private static final int TAG_ueReachableIndicator = 12;
-    private static final int TAG_epsSubscriptionDataNotNeeded = 13;
-    private static final int TAG_uesrvccCapability = 14;
-
-    public static final String _PrimitiveName = "UpdateGprsLocationRequest";
-
-    private IMSI imsi;
-    private ISDNAddressString sgsnNumber;
-    private GSNAddress sgsnAddress;
-    private MAPExtensionContainer extensionContainer;
-    private SGSNCapability sgsnCapability;
-    private boolean informPreviousNetworkEntity;
-    private boolean psLCSNotSupportedByUE;
-    private GSNAddress vGmlcAddress;
-    private ADDInfo addInfo;
-    private EPSInfo epsInfo;
-    private boolean servingNodeTypeIndicator;
-    private boolean skipSubscriberDataUpdate;
-    private UsedRATType usedRATType;
-    private boolean gprsSubscriptionDataNotNeeded;
-    private boolean nodeTypeIndicator;
-    private boolean areaRestricted;
-    private boolean ueReachableIndicator;
-    private boolean epsSubscriptionDataNotNeeded;
-    private UESRVCCCapability uesrvccCapability;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
+	private IMSIImpl imsi;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
+	private ISDNAddressStringImpl sgsnNumber;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
+	private GSNAddressImpl sgsnAddress;
+	
+    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
+    private SGSNCapabilityImpl sgsnCapability;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    private ASNNull informPreviousNetworkEntity;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
+    private ASNNull psLCSNotSupportedByUE;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
+    private GSNAddressImpl vGmlcAddress;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1)
+    private ADDInfoImpl addInfo;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=true,index=-1)
+    private EPSInfoWrapperImpl epsInfo;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
+    private ASNNull servingNodeTypeIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
+    private ASNNull skipSubscriberDataUpdate;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
+    private ASNUsedRatTypeImpl usedRATType;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
+    private ASNNull gprsSubscriptionDataNotNeeded;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
+    private ASNNull nodeTypeIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
+    private ASNNull areaRestricted;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
+    private ASNNull ueReachableIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=false,index=-1)
+    private ASNNull epsSubscriptionDataNotNeeded;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)
+    private ASNUESRVCCCapabilityImpl uesrvccCapability;
 
     public UpdateGprsLocationRequestImpl() {
         super();
     }
 
-    public UpdateGprsLocationRequestImpl(IMSI imsi, ISDNAddressString sgsnNumber, GSNAddress sgsnAddress,
-            MAPExtensionContainer extensionContainer, SGSNCapability sgsnCapability, boolean informPreviousNetworkEntity,
-            boolean psLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo, EPSInfo epsInfo,
+    public UpdateGprsLocationRequestImpl(IMSIImpl imsi, ISDNAddressStringImpl sgsnNumber, GSNAddressImpl sgsnAddress,
+            MAPExtensionContainerImpl extensionContainer, SGSNCapabilityImpl sgsnCapability, boolean informPreviousNetworkEntity,
+            boolean psLCSNotSupportedByUE, GSNAddressImpl vGmlcAddress, ADDInfoImpl addInfo, EPSInfoImpl epsInfo,
             boolean servingNodeTypeIndicator, boolean skipSubscriberDataUpdate, UsedRATType usedRATType,
             boolean gprsSubscriptionDataNotNeeded, boolean nodeTypeIndicator, boolean areaRestricted,
             boolean ueReachableIndicator, boolean epsSubscriptionDataNotNeeded, UESRVCCCapability uesrvccCapability,
@@ -112,20 +126,49 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
         this.sgsnAddress = sgsnAddress;
         this.extensionContainer = extensionContainer;
         this.sgsnCapability = sgsnCapability;
-        this.informPreviousNetworkEntity = informPreviousNetworkEntity;
-        this.psLCSNotSupportedByUE = psLCSNotSupportedByUE;
+        
+        if(informPreviousNetworkEntity)
+        	this.informPreviousNetworkEntity = new ASNNull();
+        
+        if(psLCSNotSupportedByUE)
+        	this.psLCSNotSupportedByUE = new ASNNull();
+        
         this.vGmlcAddress = vGmlcAddress;
         this.addInfo = addInfo;
-        this.epsInfo = epsInfo;
-        this.servingNodeTypeIndicator = servingNodeTypeIndicator;
-        this.skipSubscriberDataUpdate = skipSubscriberDataUpdate;
-        this.usedRATType = usedRATType;
-        this.gprsSubscriptionDataNotNeeded = gprsSubscriptionDataNotNeeded;
-        this.nodeTypeIndicator = nodeTypeIndicator;
-        this.areaRestricted = areaRestricted;
-        this.ueReachableIndicator = ueReachableIndicator;
-        this.epsSubscriptionDataNotNeeded = epsSubscriptionDataNotNeeded;
-        this.uesrvccCapability = uesrvccCapability;
+        
+        if(epsInfo!=null)
+        	this.epsInfo = new EPSInfoWrapperImpl(epsInfo);
+        
+        if(servingNodeTypeIndicator)
+        	this.servingNodeTypeIndicator = new ASNNull();
+        
+        if(skipSubscriberDataUpdate)
+        	this.skipSubscriberDataUpdate = new ASNNull();
+        
+        if(usedRATType!=null) {
+        	this.usedRATType = new ASNUsedRatTypeImpl();
+        	this.usedRATType.setType(usedRATType);
+        }
+        
+        if(gprsSubscriptionDataNotNeeded)
+        	this.gprsSubscriptionDataNotNeeded = new ASNNull();
+        
+        if(nodeTypeIndicator)
+        	this.nodeTypeIndicator = new ASNNull();
+        
+        if(areaRestricted)
+        	this.areaRestricted = new ASNNull();
+                
+        if(ueReachableIndicator)
+        	this.ueReachableIndicator = new ASNNull();
+        
+        if(epsSubscriptionDataNotNeeded)
+        	this.epsSubscriptionDataNotNeeded = new ASNNull();
+        
+        if(uesrvccCapability!=null) {
+        	this.uesrvccCapability = new ASNUESRVCCCapabilityImpl();
+        	this.uesrvccCapability.setType(uesrvccCapability);
+        }
     }
 
     @Override
@@ -139,474 +182,113 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return this.imsi;
     }
 
     @Override
-    public ISDNAddressString getSgsnNumber() {
+    public ISDNAddressStringImpl getSgsnNumber() {
         return this.sgsnNumber;
     }
 
     @Override
-    public GSNAddress getSgsnAddress() {
+    public GSNAddressImpl getSgsnAddress() {
         return this.sgsnAddress;
     }
 
     @Override
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public SGSNCapability getSGSNCapability() {
+    public SGSNCapabilityImpl getSGSNCapability() {
         return this.sgsnCapability;
     }
 
     @Override
     public boolean getInformPreviousNetworkEntity() {
-        return this.informPreviousNetworkEntity;
+        return this.informPreviousNetworkEntity!=null;
     }
 
     @Override
     public boolean getPsLCSNotSupportedByUE() {
-        return this.psLCSNotSupportedByUE;
+        return this.psLCSNotSupportedByUE!=null;
     }
 
     @Override
-    public GSNAddress getVGmlcAddress() {
+    public GSNAddressImpl getVGmlcAddress() {
         return this.vGmlcAddress;
     }
 
     @Override
-    public ADDInfo getADDInfo() {
+    public ADDInfoImpl getADDInfo() {
         return this.addInfo;
     }
 
     @Override
-    public EPSInfo getEPSInfo() {
-        return this.epsInfo;
+    public EPSInfoImpl getEPSInfo() {
+    	if(this.epsInfo==null)
+    		return null;
+    	
+        return this.epsInfo.getEPSInfo();
     }
 
     @Override
     public boolean getServingNodeTypeIndicator() {
-        return this.servingNodeTypeIndicator;
+        return this.servingNodeTypeIndicator!=null;
     }
 
     @Override
     public boolean getSkipSubscriberDataUpdate() {
-        return this.skipSubscriberDataUpdate;
+        return this.skipSubscriberDataUpdate!=null;
     }
 
     @Override
     public UsedRATType getUsedRATType() {
-        return this.usedRATType;
+    	if(this.usedRATType==null)
+    		return null;
+    	
+        return this.usedRATType.getType();
     }
 
     @Override
     public boolean getGprsSubscriptionDataNotNeeded() {
-        return this.gprsSubscriptionDataNotNeeded;
+        return this.gprsSubscriptionDataNotNeeded!=null;
     }
 
     @Override
     public boolean getNodeTypeIndicator() {
-        return this.nodeTypeIndicator;
+        return this.nodeTypeIndicator!=null;
     }
 
     @Override
     public boolean getAreaRestricted() {
-        return this.areaRestricted;
+        return this.areaRestricted!=null;
     }
 
     @Override
     public boolean getUeReachableIndicator() {
-        return this.ueReachableIndicator;
+        return this.ueReachableIndicator!=null;
     }
 
     @Override
     public boolean getEpsSubscriptionDataNotNeeded() {
-        return this.epsSubscriptionDataNotNeeded;
+        return this.epsSubscriptionDataNotNeeded!=null;
     }
 
     @Override
     public UESRVCCCapability getUESRVCCCapability() {
-        return this.uesrvccCapability;
-    }
-
-    @Override
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-        this.imsi = null;
-        this.sgsnNumber = null;
-        this.sgsnAddress = null;
-        this.extensionContainer = null;
-        this.sgsnCapability = null;
-        this.informPreviousNetworkEntity = false;
-        this.psLCSNotSupportedByUE = false;
-        this.vGmlcAddress = null;
-        this.addInfo = null;
-        this.epsInfo = null;
-        this.servingNodeTypeIndicator = false;
-        this.skipSubscriberDataUpdate = false;
-        this.usedRATType = null;
-        this.gprsSubscriptionDataNotNeeded = false;
-        this.nodeTypeIndicator = false;
-        this.areaRestricted = false;
-        this.ueReachableIndicator = false;
-        this.epsSubscriptionDataNotNeeded = false;
-        this.uesrvccCapability = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            switch (num) {
-                case 0:
-                    // imsi
-                    if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.STRING_OCTET)
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".imsi: Parameter 0 bad tag or tag class or not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.imsi = new IMSIImpl();
-                    ((IMSIImpl) this.imsi).decodeAll(ais);
-                    break;
-
-                case 1:
-                    // sgsnNumber
-                    if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.STRING_OCTET)
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".imsi: Parameter 0 bad tag or tag class or not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.sgsnNumber = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.sgsnNumber).decodeAll(ais);
-                    break;
-                case 2:
-                    // sgsnAddress
-                    if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.STRING_OCTET)
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".vlrNumber: Parameter 2 bad tag or tag class or not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.sgsnAddress = new GSNAddressImpl();
-                    ((GSNAddressImpl) this.sgsnAddress).decodeAll(ais);
-                    break;
-
-                default:
-                    if (ais.getTagClass() == Tag.CLASS_UNIVERSAL) {
-                        switch (tag) {
-                            case Tag.SEQUENCE:
-                                // extensionContainer
-                                if (ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".extensionContainer: Parameter extensionContainer is primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                this.extensionContainer = new MAPExtensionContainerImpl();
-                                ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                                break;
-                            default:
-                                ais.advanceElement();
-                                break;
-                        }
-                    } else if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-
-                        switch (tag) {
-                            case TAG_sgsnCapability: // sgsnCapability
-                                if (ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".sgsnCapability: Parameter is primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                this.sgsnCapability = new SGSNCapabilityImpl();
-                                ((SGSNCapabilityImpl) this.sgsnCapability).decodeAll(ais);
-                                break;
-                            case TAG_informPreviousNetworkEntity: // informPreviousNetworkEntity
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".informPreviousNetworkEntity: Parameter is  not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.informPreviousNetworkEntity = true;
-                                break;
-                            case TAG_psLCSNotSupportedByUE:
-                                // tpsLCSNotSupportedByUE
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".tpsLCSNotSupportedByUE: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.psLCSNotSupportedByUE = true;
-                                break;
-                            case TAG_vGmlcAddress:
-                                // vmlcAddress
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".vGmlcAddress: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                this.vGmlcAddress = new GSNAddressImpl();
-                                ((GSNAddressImpl) this.vGmlcAddress).decodeAll(ais);
-                                break;
-                            case TAG_addInfo: // addInfo
-                                if (ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".addInfo: Parameter is primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                this.addInfo = new ADDInfoImpl();
-                                ((ADDInfoImpl) this.addInfo).decodeAll(ais);
-                                break;
-                            case TAG_epsInfo: // epsInfo
-                                if (ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".epsInfo: Parameter is primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                AsnInputStream ais2 = ais.readSequenceStream();
-                                ais2.readTag();
-                                this.epsInfo = new EPSInfoImpl();
-                                ((EPSInfoImpl) this.epsInfo).decodeAll(ais2);
-                                break;
-                            case TAG_servingNodeTypeIndicator:
-                                // servingNodeTypeIndicator
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".servingNodeTypeIndicator: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.servingNodeTypeIndicator = true;
-                                break;
-                            case TAG_skipSubscriberDataUpdate:
-                                // skipSubscriberDataUpdate
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".skipSubscriberDataUpdate: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.skipSubscriberDataUpdate = true;
-                                break;
-                            case TAG_usedRATType: // sgsnCapability
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".usedRATType: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                int raType = (int) ais.readInteger();
-                                this.usedRATType = UsedRATType.getInstance(raType);
-                                break;
-                            case TAG_gprsSubscriptionDataNotNeeded:
-                                // gprsSubscriptionDataNotNeeded
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".gprsSubscriptionDataNotNeeded: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.gprsSubscriptionDataNotNeeded = true;
-                                break;
-                            case TAG_nodeTypeIndicator:
-                                // nodeTypeIndicator
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".nodeTypeIndicator: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.nodeTypeIndicator = true;
-                                break;
-                            case TAG_areaRestricted:
-                                // areaRestricted
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".areaRestricted: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.areaRestricted = true;
-                                break;
-                            case TAG_ueReachableIndicator:
-                                // ueReachableIndicator
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".ueReachableIndicator: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.ueReachableIndicator = true;
-                                break;
-                            case TAG_epsSubscriptionDataNotNeeded:
-                                // epsSubscriptionDataNotNeeded
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".epsSubscriptionDataNotNeeded: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.epsSubscriptionDataNotNeeded = true;
-                                break;
-                            case TAG_uesrvccCapability: // uesrvccCapability
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".uesrvccCapability: Parameter is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                int vccCapability = (int) ais.readInteger();
-                                this.uesrvccCapability = UESRVCCCapability.getInstance(vccCapability);
-                                break;
-                            default:
-                                ais.advanceElement();
-                                break;
-                        }
-                    } else {
-                        ais.advanceElement();
-                    }
-                    break;
-            }
-
-            num++;
-        }
-
-        if (this.imsi == null || this.sgsnNumber == null || this.sgsnAddress == null)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": imsi or sgsnNumber or sgsnAddress is null ", MAPParsingComponentExceptionReason.MistypedParameter);
-
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        try {
-            this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MAPException(e);
-        }
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-
-        } catch (AsnException e) {
-            e.printStackTrace();
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        try {
-            if (this.imsi == null || this.sgsnNumber == null || this.sgsnAddress == null)
-                throw new MAPException("imsi, sgsnNumber and sgsnAddress parameter must not be null");
-
-            ((IMSIImpl) this.imsi).encodeAll(asnOs);
-
-            ((ISDNAddressStringImpl) this.sgsnNumber).encodeAll(asnOs);
-
-            ((GSNAddressImpl) this.sgsnAddress).encodeAll(asnOs);
-
-            if (this.extensionContainer != null)
-                ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs);
-
-            if (this.sgsnCapability != null)
-                ((SGSNCapabilityImpl) this.sgsnCapability).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_sgsnCapability);
-
-            if (informPreviousNetworkEntity)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_informPreviousNetworkEntity);
-
-            if (psLCSNotSupportedByUE)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_psLCSNotSupportedByUE);
-
-            if (this.vGmlcAddress != null)
-                ((GSNAddressImpl) this.vGmlcAddress).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_vGmlcAddress);
-
-            if (this.addInfo != null)
-                ((ADDInfoImpl) this.addInfo).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_addInfo);
-
-            if (this.epsInfo != null) {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, TAG_epsInfo);
-                int pos = asnOs.StartContentDefiniteLength();
-                ((EPSInfoImpl) this.epsInfo).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos);
-            }
-
-            if (servingNodeTypeIndicator)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_servingNodeTypeIndicator);
-
-            if (skipSubscriberDataUpdate)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_skipSubscriberDataUpdate);
-
-            if (this.usedRATType != null)
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, TAG_usedRATType, this.usedRATType.getCode());
-
-            if (gprsSubscriptionDataNotNeeded)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_gprsSubscriptionDataNotNeeded);
-
-            if (nodeTypeIndicator)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_nodeTypeIndicator);
-
-            if (areaRestricted)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_areaRestricted);
-
-            if (ueReachableIndicator)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_ueReachableIndicator);
-
-            if (epsSubscriptionDataNotNeeded)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_epsSubscriptionDataNotNeeded);
-
-            if (this.uesrvccCapability != null)
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, TAG_uesrvccCapability, this.uesrvccCapability.getCode());
-
-        } catch (IOException e) {
-            throw new MAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+    	if(this.uesrvccCapability==null)
+    		return null;
+    	
+        return this.uesrvccCapability.getType();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("UpdateGprsLocationRequest [");
 
         if (this.imsi != null) {
             sb.append("imsi=");
@@ -638,11 +320,11 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
             sb.append(", ");
         }
 
-        if (this.informPreviousNetworkEntity) {
+        if (this.informPreviousNetworkEntity!=null) {
             sb.append("informPreviousNetworkEntity, ");
         }
 
-        if (this.psLCSNotSupportedByUE) {
+        if (this.psLCSNotSupportedByUE!=null) {
             sb.append("psLCSNotSupportedByUE, ");
         }
 
@@ -658,49 +340,49 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
             sb.append(", ");
         }
 
-        if (this.epsInfo != null) {
+        if (this.epsInfo != null && this.epsInfo.getEPSInfo()!=null) {
             sb.append("epsInfo=");
-            sb.append(this.epsInfo.toString());
+            sb.append(this.epsInfo.getEPSInfo());
             sb.append(", ");
         }
 
-        if (this.servingNodeTypeIndicator) {
+        if (this.servingNodeTypeIndicator!=null) {
             sb.append("servingNodeTypeIndicator, ");
         }
 
-        if (this.skipSubscriberDataUpdate) {
+        if (this.skipSubscriberDataUpdate!=null) {
             sb.append("skipSubscriberDataUpdate, ");
         }
 
         if (this.usedRATType != null) {
             sb.append("usedRATType=");
-            sb.append(this.usedRATType.toString());
+            sb.append(this.usedRATType.getType());
             sb.append(", ");
         }
 
-        if (this.gprsSubscriptionDataNotNeeded) {
+        if (this.gprsSubscriptionDataNotNeeded!=null) {
             sb.append("gprsSubscriptionDataNotNeeded, ");
         }
 
-        if (this.nodeTypeIndicator) {
+        if (this.nodeTypeIndicator!=null) {
             sb.append("nodeTypeIndicator, ");
         }
 
-        if (this.areaRestricted) {
+        if (this.areaRestricted!=null) {
             sb.append("areaRestricted, ");
         }
 
-        if (this.ueReachableIndicator) {
+        if (this.ueReachableIndicator!=null) {
             sb.append("ueReachableIndicator, ");
         }
 
-        if (this.epsSubscriptionDataNotNeeded) {
+        if (this.epsSubscriptionDataNotNeeded!=null) {
             sb.append("epsSubscriptionDataNotNeeded, ");
         }
 
         if (this.uesrvccCapability != null) {
             sb.append("uesrvccCapability=");
-            sb.append(this.uesrvccCapability.toString());
+            sb.append(this.uesrvccCapability.getType());
             sb.append(", ");
         }
 

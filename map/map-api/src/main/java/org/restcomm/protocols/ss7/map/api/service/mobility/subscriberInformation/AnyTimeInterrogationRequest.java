@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -43,7 +43,7 @@ anyTimeInterrogation OPERATION ::= {
 AnyTimeInterrogationArg ::= SEQUENCE {
   subscriberIdentity  [0] SubscriberIdentity,
   requestedInfo       [1] RequestedInfo,
-  gsmSCF-Address      [3] ISDN-AddressString,
+  gsmSCF-Address      [3] ISDN-AddressStringImpl,
   extensionContainer  [2] ExtensionContainer OPTIONAL,
   ...
 }
@@ -54,11 +54,11 @@ AnyTimeInterrogationArg ::= SEQUENCE {
  */
 public interface AnyTimeInterrogationRequest extends MobilityMessage {
 
-    SubscriberIdentity getSubscriberIdentity();
+    SubscriberIdentityImpl getSubscriberIdentity();
 
-    RequestedInfo getRequestedInfo();
+    RequestedInfoImpl getRequestedInfo();
 
-    ISDNAddressString getGsmSCFAddress();
+    ISDNAddressStringImpl getGsmSCFAddress();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 }

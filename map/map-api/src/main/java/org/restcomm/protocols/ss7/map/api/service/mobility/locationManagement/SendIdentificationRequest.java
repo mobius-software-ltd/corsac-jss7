@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -60,11 +60,11 @@ MAP V3: SendIdentificationArg ::= SEQUENCE {
   segmentationProhibited      NULL OPTIONAL,
   extensionContainer          ExtensionContainer OPTIONAL,
   ...,
-  msc-Number                  ISDN-AddressString OPTIONAL,
+  msc-Number                  ISDN-AddressStringImpl OPTIONAL,
   previous-LAI                [0] LAIFixedLength OPTIONAL,
   hopCounter                  [1] HopCounter OPTIONAL,
   mtRoamingForwardingSupported [2] NULL OPTIONAL,
-  newVLR-Number               [3] ISDN-AddressString OPTIONAL,
+  newVLR-Number               [3] ISDN-AddressStringImpl OPTIONAL,
   new-lmsi                    [4] LMSI OPTIONAL
 }
 
@@ -78,24 +78,24 @@ HopCounter ::= INTEGER (0..3)
  */
 public interface SendIdentificationRequest extends MobilityMessage {
 
-    TMSI getTmsi();
+    TMSIImpl getTmsi();
 
     Integer getNumberOfRequestedVectors();
 
     boolean getSegmentationProhibited();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    ISDNAddressString getMscNumber();
+    ISDNAddressStringImpl getMscNumber();
 
-    LAIFixedLength getPreviousLAI();
+    LAIFixedLengthImpl getPreviousLAI();
 
     Integer getHopCounter();
 
     boolean getMtRoamingForwardingSupported();
 
-    ISDNAddressString getNewVLRNumber();
+    ISDNAddressStringImpl getNewVLRNumber();
 
-    LMSI getNewLmsi();
+    LMSIImpl getNewLmsi();
 
 }

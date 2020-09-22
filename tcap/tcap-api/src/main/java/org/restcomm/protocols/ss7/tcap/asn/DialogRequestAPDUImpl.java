@@ -44,8 +44,9 @@ public class DialogRequestAPDUImpl implements DialogAPDU {
     public void setDoNotSendProtocolVersion(boolean val) {
     	if(val)
     		protocolVersion=null;
-    	else
+    	else {
     		protocolVersion=new ProtocolVersionImpl();
+    	}
     }
 
     /*

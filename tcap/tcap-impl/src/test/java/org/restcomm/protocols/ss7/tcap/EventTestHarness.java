@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
@@ -54,11 +53,10 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
+import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 
 /**
@@ -184,17 +182,10 @@ public abstract class EventTestHarness implements TCListener {
     }
 
     public void sendUni() throws TCAPException, TCAPSendException {
-        ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
-
         // create some INVOKE
-        ComponentImpl invokeComponent = cpFactory.createTCInvokeRequest(InvokeClass.Class4);
-        invokeComponent.getInvoke().setInvokeId(this.dialog.getNewInvokeId());
-        
-        OperationCode oc = cpFactory.createLocalOperationCode();
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(new Long(12));
-        invokeComponent.getInvoke().setOperationCode(oc);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(12L);
         // no parameter
-        this.dialog.sendComponent(invokeComponent);
+        this.dialog.sendData(null, null, InvokeClass.Class4, null, oc, null, true, false);
 
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send UNI");
         ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);

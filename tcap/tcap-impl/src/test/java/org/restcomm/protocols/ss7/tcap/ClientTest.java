@@ -9,7 +9,6 @@ import javax.naming.NamingException;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
@@ -26,10 +25,9 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 
 /**
  * Simple example demonstrates how to use TCAP Stack
@@ -61,16 +59,11 @@ public class ClientTest implements TCListener {
         SccpAddress remoteAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
         clientDialog = this.tcapProvider.getNewDialog(localAddress, remoteAddress);
-        ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
-
+        
         // create some INVOKE
-        ComponentImpl invoke = cpFactory.createTCInvokeRequest();
-        invoke.getInvoke().setInvokeId(this.clientDialog.getNewInvokeId());
-        OperationCode oc = cpFactory.createLocalOperationCode();
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(12L);
-        invoke.getInvoke().setOperationCode(oc);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(12L);
         // no parameter
-        this.clientDialog.sendComponent(invoke);
+        this.clientDialog.sendData(null, null, null, null, oc, null, true, false);
         ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         // UI is optional!
         TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.clientDialog);

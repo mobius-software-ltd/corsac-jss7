@@ -59,7 +59,7 @@ public class ReturnResultImpl implements RemoteOperation {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCode getOperationCode() {
+    public OperationCodeImpl getOperationCode() {
     	if(inner==null)
     		return null;
     	
@@ -98,7 +98,7 @@ public class ReturnResultImpl implements RemoteOperation {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(org
      * .mobicents.protocols.ss7.tcap.asn.comp.OperationCode)
      */
-    public void setOperationCode(OperationCode i) {
+    public void setOperationCode(OperationCodeImpl i) {
     	if(inner==null)
     		inner=new ReturnResultInnerImpl();
     	

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -41,6 +41,6 @@ ReadyForSM-Res ::= SEQUENCE {
  */
 public interface ReadyForSMResponse extends SmsMessage {
 
-    MAPExtensionContainer getExtensionContainer();
+	MAPExtensionContainerImpl getExtensionContainer();
 
 }

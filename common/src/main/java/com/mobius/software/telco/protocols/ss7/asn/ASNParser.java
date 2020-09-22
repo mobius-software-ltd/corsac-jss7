@@ -34,16 +34,22 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNExclude;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPreprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
@@ -57,16 +63,41 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNUTF8String;
 
 public class ASNParser 
 {
-	private ConcurrentHashMap<ASNHeader,Class<?>> classMapping=new ConcurrentHashMap<ASNHeader,Class<?>>();
+	private ConcurrentHashMap<ASNHeader,Class<?>> rootClassMapping=new ConcurrentHashMap<ASNHeader,Class<?>>();
 	private ConcurrentHashMap<String,ParserClassData> cachedElements=new ConcurrentHashMap<String,ParserClassData>();
+	private ConcurrentHashMap<String,ASNParser> innerParser=new ConcurrentHashMap<String,ASNParser>();
+	
+	private ConcurrentHashMap<LocalMappingKey, Class<?>> localClassesMapping=new ConcurrentHashMap<LocalMappingKey, Class<?>>();
+	private ConcurrentHashMap<String, Class<?>> defaultLocalClassesMapping=new ConcurrentHashMap<String, Class<?>>();
+	
 	private Boolean skipErrors=false;
+	private ASNParser parentParser;
+	private ASNDecodeHandler handler;
 	
 	public ASNParser(Boolean skipErrors) {
 		clear();
 		this.skipErrors=skipErrors;		
 	}
+	
 	public ASNParser() {
 		clear();
+	}
+	
+	protected ASNParser(ASNParser parentParser)
+	{
+		this.parentParser=parentParser;
+		if(this.parentParser.handler!=null)
+			this.handler=this.parentParser.handler;
+		
+		loadPrimitives();
+	}
+	
+	public void setDecodeHandler(ASNDecodeHandler handler) {
+		this.handler=handler;
+	}
+	
+	public void clearDecodeHandler() {
+		this.handler=null;
 	}
 	
 	private void loadPrimitives() {
@@ -82,15 +113,58 @@ public class ASNParser
 	}
 	
 	public void clear() {
-		classMapping.clear();
+		rootClassMapping.clear();
 		cachedElements.clear();
 		loadPrimitives();
 	}
 	
+	public ASNParser getParser(Class<?> rootClazz) {
+		if(parentParser!=null)
+			return parentParser.getParser(rootClazz);
+		
+		ASNParser parser=innerParser.get(rootClazz.getCanonicalName());
+		if(parser==null) {
+			parser=new ASNParser(this);
+			ASNParser oldParser=innerParser.putIfAbsent(rootClazz.getCanonicalName(), parser);
+			if(oldParser!=null)
+				parser=oldParser;				
+		}
+		
+		return parser;
+	}
+	
+	public void clearClassMapping(Class<?> rootClazz) {
+		getParser(rootClazz).clear();
+	}
+	
+	public void registerAlternativeClassMapping(Class<?> rootClazz, Class<?> clazz) {
+		getParser(rootClazz).loadClass(clazz);
+	}
+	
+	public void registerLocalMapping(Class<?> rootClazz, Object key, Class<?> clazz) {
+		LocalMappingKey localKey=new LocalMappingKey(key, rootClazz.getCanonicalName());
+		localClassesMapping.put(localKey, clazz);
+	}
+	
+	public Class<?> getLocalMapping(Class<?> rootClazz,Object key) {
+		LocalMappingKey localKey=new LocalMappingKey(key, rootClazz.getCanonicalName());
+		return localClassesMapping.get(localKey);
+	}
+	
+	public void registerDefaultLocalMapping(Class<?> rootClazz, Class<?> clazz) {
+		defaultLocalClassesMapping.put(rootClazz.getCanonicalName(), clazz);
+	}
+	
+	public Class<?> getDefaultLocalMapping(Class<?> rootClazz) {
+		return defaultLocalClassesMapping.get(rootClazz.getCanonicalName());
+	}
+	
 	public void loadClass(Class<?> newClass) {
 		ASNTag tag=newClass.getAnnotation(ASNTag.class);
-		if(tag==null)
-			throw new RuntimeException("only classes annotated with ASNTag annotation are supported");
+		if(tag==null) {
+			loadWrappedClass(newClass);
+			return;
+		}
 		
 		try
 		{
@@ -101,10 +175,43 @@ public class ASNParser
 		}
 		
 		ASNHeader newHeader=new ASNHeader(tag,tag.asnClass(),tag.tag(),tag.constructed(),null);
-		if(classMapping.containsKey(newHeader))
+		if(rootClassMapping.containsKey(newHeader))
 			throw new RuntimeException("class with this ASNTag already registered");
 		
-		classMapping.put(newHeader, newClass);
+		rootClassMapping.put(newHeader, newClass);
+	}
+	
+	private void loadWrappedClass(Class<?> newClass) {
+		ASNWrappedTag tag=newClass.getAnnotation(ASNWrappedTag.class);
+		if(tag==null) {
+			loadWrappedClass(newClass);
+			return;
+		}
+		
+		try
+		{
+			newClass.getConstructor();
+		}
+		catch(Exception ex) {
+			throw new RuntimeException("only classes with empty constructor are supported");			
+		}
+		
+		ParserClassData cachedData=cachedElements.get(newClass.getCanonicalName());
+		if(cachedData==null) {
+			cachedData=processField(newClass,cachedElements);			
+		}
+		
+		ConcurrentHashMap<ASNHeader, FieldData> fieldsMap=cachedData.getFieldsMap();
+		Iterator<Entry<ASNHeader, FieldData>> iterator=fieldsMap.entrySet().iterator();		
+		//in cassed we have wrapped at this level for this class we should clear all the items first
+		rootClassMapping.clear();
+		while(iterator.hasNext()) {
+			ASNHeader newHeader=iterator.next().getKey();
+			if(rootClassMapping.containsKey(newHeader))
+				throw new RuntimeException("class with this ASNTag already registered");
+			
+			rootClassMapping.put(newHeader, newClass);
+		}
 	}
 	
 	public ASNDecodeResult decode(ByteBuf buffer)  throws ASNException {
@@ -113,16 +220,15 @@ public class ASNParser
 	
 	public ASNDecodeResult decode(ByteBuf buffer, Boolean skipErrors) throws ASNException {
 		try {
-			return decode(buffer,skipErrors, null, classMapping,cachedElements,null);
+			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,new ConcurrentHashMap<Integer,Object>());
 		}
 		catch(Exception ex) {
-			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static DecodeResult decode(ByteBuf buffer,Boolean skipErrors,Field wildcardField, ConcurrentHashMap<ASNHeader,Class<?>> classMapping,ConcurrentHashMap<String,ParserClassData> cachedElements,Integer index) throws ASNException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+	private DecodeResult decode(Object parent,ByteBuf buffer,Boolean skipErrors,Field wildcardField, ConcurrentHashMap<ASNHeader, FieldData> fieldsMap,ConcurrentHashMap<ASNHeader,Class<?>> classMapping,ConcurrentHashMap<String,ParserClassData> cachedElements,Integer index,ConcurrentHashMap<Integer,Object> mappedData) throws ASNException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		int oldIndex=buffer.readerIndex();
 		buffer.markReaderIndex();
 		ASNHeaderWithLength header=readHeader(buffer);
@@ -153,6 +259,21 @@ public class ASNParser
 					else
 						throw new ASNException("no class found for matching tag:" + currHeader.getAsnClass() + "," + currHeader.getAsnTag() + "," + currHeader.getIsConstructed() + "," + currHeader.getIndefiniteLength());
 				}
+			}						
+		}
+		
+		if(fieldsMap!=null) {
+			FieldData fieldData=fieldsMap.get(currHeader);
+			if(fieldData!=null && fieldData.getFieldType()==FieldType.CHOISE) {
+				header.setLength(header.getLength() + buffer.readerIndex()-oldIndex);
+				buffer.resetReaderIndex();	
+				
+				if(fieldData.getField().getType().isAssignableFrom(List.class) && !fieldData.getField().getType().equals(Object.class)) {
+					Type[] innerTypes = ((ParameterizedType) fieldData.getField().getGenericType()).getActualTypeArguments();
+					effectiveClass=(Class<?>)innerTypes[0];
+				}
+				else
+					effectiveClass=fieldData.getField().getType();
 			}
 		}
 		
@@ -160,38 +281,59 @@ public class ASNParser
 		if(cachedData==null) {
 			cachedData=processField(effectiveClass,cachedElements);			
 		}
-		
+
+		Boolean hadErrors=false;
 		Constructor<?> ctor = effectiveClass.getConstructor();
 		Object currObject = ctor.newInstance(new Object[] {  });
-		Boolean hadErrors=false;
+		if(cachedData.getHasWrappedTag())
+			buffer.resetReaderIndex();
+		
+		if(handler!=null) {
+			ASNPreprocess preprocessAnnotation=effectiveClass.getAnnotation(ASNPreprocess.class);
+			if(preprocessAnnotation!=null) {
+				handler.preProcessElement(currObject, mappedData);
+			}
+		}
+		
 		if(!cachedData.getSubFieldsFound()) {
 			Method[] methods=effectiveClass.getMethods();
 			for(Method method:methods) {
 				ASNDecode asnDecode=method.getAnnotation(ASNDecode.class);
 				if(asnDecode!=null) {
-					hadErrors|=(Boolean)method.invoke(currObject,new Object[] { buffer.slice(buffer.readerIndex(), header.getLength()), new Boolean(skipErrors) });
+					hadErrors|=(Boolean)method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), new Boolean(skipErrors) });
 					buffer.skipBytes(header.getLength());
+					break;
 				}
 			}
 		}
 		else {
-			int remainingBytes=buffer.readableBytes();
-			remainingBytes-=header.getLength();
+			int remainingBytes=0;
+			//for parent level wrapped tag may have multiple entries , especially in Huawei
+			if(parent==null && cachedData.getHasWrappedTag())
+				remainingBytes=buffer.readableBytes();
+			else
+				remainingBytes=header.getLength();
+			
 			int innerIndex=0;
-			while(buffer.readableBytes()>remainingBytes) {
-				DecodeResult innerValue=decode(buffer,skipErrors, cachedData.getWildcardField(), cachedData.getInnerMap(),cachedElements,innerIndex);
+			int originalIndex=buffer.readerIndex();
+			while((buffer.readerIndex()-originalIndex)<remainingBytes) {
+				DecodeResult innerValue=decode(currObject, buffer,skipErrors, cachedData.getWildcardField(),cachedData.getFieldsMap(),cachedData.getInnerMap(),cachedElements,innerIndex,mappedData);
 				hadErrors|=innerValue.getHadErrors();
 				
 				if(innerValue!=null && innerValue.getResult()!=null) {
 					ASNTag innerTag=innerValue.getResult().getClass().getAnnotation(ASNTag.class);
 					ASNHeader innerHeader=new ASNHeader(innerTag, innerValue.realClass, innerValue.realTag,innerValue.realConstructed,innerIndex);
-					Field f=cachedData.getFieldsMapElement(innerHeader);
-					if(f==null) {
+					FieldData fd=cachedData.getFieldsMapElement(innerHeader);
+					Field f=null;
+					if(fd==null) {
 						innerHeader=new ASNHeader(innerTag, innerValue.realClass, innerValue.realTag,innerValue.realConstructed,null);
-						f=cachedData.getFieldsMapElement(innerHeader);
-						if(f==null)
+						fd=cachedData.getFieldsMapElement(innerHeader);
+						if(fd==null)
 							f=cachedData.getWildcardField();
 					}
+					
+					if(fd!=null)
+						f=fd.getField();
 					
 					if(f.getType().isAssignableFrom(List.class) && !f.getType().equals(Object.class)) {
 						f.setAccessible(true);
@@ -219,10 +361,17 @@ public class ASNParser
 			buffer.readByte();
 		}
 		
+		if(handler!=null) {
+			ASNPostprocess postprocessAnnotation=effectiveClass.getAnnotation(ASNPostprocess.class);
+			if(postprocessAnnotation!=null) {
+				handler.preProcessElement(currObject, mappedData);
+			}
+		}
+		
 		return new DecodeResult(currObject,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), hadErrors);
 	}
 	
-	private static ASNHeaderWithLength readHeader(ByteBuf buffer) throws ASNException {
+	private ASNHeaderWithLength readHeader(ByteBuf buffer) throws ASNException {
 		byte currData=buffer.readByte();
 		ASNClass asnClass=ASNClass.fromInt((currData>>6) & 0x03);
 		boolean constructed=(currData & 0x20)!=0;
@@ -291,8 +440,9 @@ public class ASNParser
 	
 	public ByteBuf encode(Object value) throws ASNException {
 		ASNTag tag=value.getClass().getAnnotation(ASNTag.class);
-		if(tag==null)
-			throw new RuntimeException("only entities annotated with ASNTag annotation are supported");
+		ASNWrappedTag wrappedTag=value.getClass().getAnnotation(ASNWrappedTag.class);
+		if(tag==null && wrappedTag==null)
+			throw new RuntimeException("only entities annotated with ASNTag or ASNWrappedTag annotation are supported");
 
 		try
 		{
@@ -302,20 +452,25 @@ public class ASNParser
 			}
 			
 			int completeLength=getLengthWithHeader(null, value, cachedElements);
-			int length=getLength(cachedData,value,cachedElements);		
+			int length=getLength(cachedData,value,cachedElements,false);		
 			ByteBuf buffer=Unpooled.buffer(completeLength);
-			encode(buffer,value,tag,tag.asnClass(), tag.tag(),tag.constructed(), length, cachedElements);
+			if(tag!=null)
+				encode(buffer,value,tag,wrappedTag, tag.asnClass(), tag.tag(),tag.constructed(), length, cachedElements);
+			else
+				encode(buffer,value,tag,wrappedTag, null, null, null, length, cachedElements);
 			return buffer;
 		}
-		catch(Exception ex) {	
+		catch(Exception ex) {
+			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}
 	
 	public void encode(ByteBuf buffer, Object value) throws ASNException {
 		ASNTag tag=value.getClass().getAnnotation(ASNTag.class);
-		if(tag==null)
-			throw new RuntimeException("only entities annotated with ASNTag annotation are supported");
+		ASNWrappedTag wrappedTag=value.getClass().getAnnotation(ASNWrappedTag.class);
+		if(tag==null && wrappedTag==null)
+			throw new RuntimeException("only entities annotated with ASNTag or ASNWrappedTag annotation are supported");
 
 		try
 		{
@@ -324,100 +479,141 @@ public class ASNParser
 				cachedData=processField(value.getClass(),cachedElements);			
 			}
 			
-			int length=getLength(cachedData,value,cachedElements);		
-			encode(buffer,value,tag,tag.asnClass(), tag.tag(),tag.constructed(), length, cachedElements);			
+			int length=getLength(cachedData,value,cachedElements,false);	
+			if(tag!=null)
+				encode(buffer,value,tag,wrappedTag, tag.asnClass(), tag.tag(),tag.constructed(), length, cachedElements);
+			else
+				encode(buffer,value,tag,wrappedTag, null, null, null, length, cachedElements);
 		}
 		catch(Exception ex) {			
 			throw new ASNException(ex.getMessage());
 		}
 	}
 	
-	private void encode(ByteBuf buffer,Object value,ASNTag asnTag, ASNClass realClass, Integer realTag,Boolean realConstructed,Integer length,ConcurrentHashMap<String,ParserClassData> cachedElements) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, ASNException {
-		encodeTagAndHeader(buffer,asnTag,realClass,realTag,realConstructed);
-		if(!asnTag.lengthIndefinite())
-			encodeLength(buffer,false,length);
-		else
-			encodeLength(buffer,true,0);
+	private void encode(ByteBuf buffer,Object value,ASNTag asnTag, ASNWrappedTag asnWrappedTag,ASNClass realClass, Integer realTag,Boolean realConstructed,Integer length,ConcurrentHashMap<String,ParserClassData> cachedElements) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, ASNException {
+		if(asnTag!=null && asnWrappedTag==null) {
+			encodeTagAndHeader(buffer,realClass,realTag,realConstructed);
+			if(!asnTag.lengthIndefinite())
+				encodeLength(buffer,false,length);
+			else
+				encodeLength(buffer,true,0);
+		}
 		
-		encodeWithoutHeader(buffer, value, cachedElements);
+		encodeWithoutHeader(buffer, value, cachedElements,false);
 		
-		if(asnTag.lengthIndefinite()) {
-			buffer.writeByte(0x00);
-			buffer.writeByte(0x00);
+		if(asnTag!=null && asnWrappedTag==null) {
+			if(asnTag.lengthIndefinite()) {
+				buffer.writeByte(0x00);
+				buffer.writeByte(0x00);
+			}
 		}
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private void encodeWithoutHeader(ByteBuf buffer,Object value,ConcurrentHashMap<String,ParserClassData> cachedElements) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, ASNException {
+	private void encodeWithoutHeader(ByteBuf buffer,Object value,ConcurrentHashMap<String,ParserClassData> cachedElements,Boolean isChoise) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, ASNException {
 		//encode content
 		ParserClassData cachedData=cachedElements.get(value.getClass().getCanonicalName());
 		if(cachedData==null) {
 			cachedData=processField(value.getClass(),cachedElements);			
 		}
 		
-		for(int i=0;i<cachedData.getFields().size();i++) {
-			cachedData.getFields().get(i).setAccessible(true);
-			if(cachedData.getFields().get(i).getType().isAssignableFrom(List.class) && !cachedData.getFields().get(i).getType().equals(Object.class)) {
-				List innerList=(List)cachedData.getFields().get(i).get(value);
-				for(Object innerObject:innerList) {
-					ASNTag innerTag=innerObject.getClass().getAnnotation(ASNTag.class);
-					if(innerObject!=null) {
-						int realInnerTag=innerTag.tag();
-						ASNClass realAsnClass=innerTag.asnClass();
-						Boolean realConstructed=innerTag.constructed();
-						ASNProperty property=cachedData.getFields().get(i).getAnnotation(ASNProperty.class);
-						if(property!=null) {
-							realInnerTag=property.tag();
-							realAsnClass=property.asnClass();
-							realConstructed=property.constructed();
+		Boolean hadData=false;
+		for(int i=0;i<cachedData.getFields().size() && !(hadData && isChoise);i++) {
+			switch(cachedData.getFields().get(i).getFieldType())
+			{
+				case STANDARD:
+					cachedData.getFields().get(i).getField().setAccessible(true);
+					if(cachedData.getFields().get(i).getField().getType().isAssignableFrom(List.class) && !cachedData.getFields().get(i).getField().getType().equals(Object.class)) {
+						List innerList=(List)cachedData.getFields().get(i).getField().get(value);
+						for(Object innerObject:innerList) {
+							ASNTag innerTag=innerObject.getClass().getAnnotation(ASNTag.class);
+							ASNWrappedTag innerWrappedTag=innerObject.getClass().getAnnotation(ASNWrappedTag.class);
+							if(innerObject!=null) {
+								if(innerTag!=null && innerWrappedTag==null) {
+									int realInnerTag=innerTag.tag();
+									ASNClass realAsnClass=innerTag.asnClass();
+									Boolean realConstructed=innerTag.constructed();
+									ASNProperty property=cachedData.getFields().get(i).getField().getAnnotation(ASNProperty.class);
+									if(property!=null) {
+										realInnerTag=property.tag();
+										realAsnClass=property.asnClass();
+										realConstructed=property.constructed();
+									}
+									
+									ParserClassData innerCachedData=cachedElements.get(innerObject.getClass().getCanonicalName());
+									if(innerCachedData==null) {
+										innerCachedData=processField(innerObject.getClass(),cachedElements);			
+									}
+									
+									encode(buffer, innerObject, innerTag, innerWrappedTag, realAsnClass, realInnerTag, realConstructed, getLength(innerCachedData, innerObject, cachedElements,false),cachedElements);
+									hadData=true;
+								} else if(innerWrappedTag!=null) {
+									ParserClassData innerCachedData=cachedElements.get(innerObject.getClass().getCanonicalName());
+									if(innerCachedData==null) {
+										innerCachedData=processField(innerObject.getClass(),cachedElements);			
+									}
+									
+									encode(buffer, innerObject, innerTag, innerWrappedTag, null, null, null, getLength(innerCachedData, innerObject, cachedElements,false),cachedElements);
+									hadData=true;
+								}
+							}
 						}
-						
-						ParserClassData innerCachedData=cachedElements.get(innerObject.getClass().getCanonicalName());
-						if(innerCachedData==null) {
-							innerCachedData=processField(innerObject.getClass(),cachedElements);			
+					}
+					else {
+						Object innerValue=cachedData.getFields().get(i).getField().get(value);
+						ASNTag innerTag=cachedData.getFields().get(i).getField().getType().getAnnotation(ASNTag.class);
+						ASNWrappedTag innerWrappedTag=cachedData.getFields().get(i).getField().getType().getAnnotation(ASNWrappedTag.class);
+						if(innerValue!=null) {
+							if(innerTag!=null && innerWrappedTag==null) {
+								int realInnerTag=innerTag.tag();
+								ASNClass realAsnClass=innerTag.asnClass();
+								Boolean realConstructed=innerTag.constructed();
+								ASNProperty property=cachedData.getFields().get(i).getField().getAnnotation(ASNProperty.class);
+								if(property!=null) {
+									realInnerTag=property.tag();
+									realAsnClass=property.asnClass();
+									realConstructed=property.constructed();
+								}
+								
+								ParserClassData innerCachedData=cachedElements.get(innerValue.getClass().getCanonicalName());
+								if(innerCachedData==null) {
+									innerCachedData=processField(innerValue.getClass(),cachedElements);			
+								}
+								
+								encode(buffer, innerValue, innerTag, innerWrappedTag, realAsnClass, realInnerTag, realConstructed, getLength(innerCachedData, innerValue, cachedElements,false),cachedElements);
+								hadData=true;
+							} else {
+								ParserClassData innerCachedData=cachedElements.get(innerValue.getClass().getCanonicalName());
+								if(innerCachedData==null) {
+									innerCachedData=processField(innerValue.getClass(),cachedElements);			
+								}
+								
+								encode(buffer, innerValue, innerTag, innerWrappedTag, null, null, null, getLength(innerCachedData, innerValue, cachedElements,false),cachedElements);
+								hadData=true;
+							}
 						}
-						
-						encode(buffer, innerObject, innerTag, realAsnClass, realInnerTag, realConstructed, getLength(innerCachedData, innerObject, cachedElements),cachedElements);
 					}
-				}
-			}
-			else {
-				Object innerValue=cachedData.getFields().get(i).get(value);
-				ASNTag innerTag=cachedData.getFields().get(i).getType().getAnnotation(ASNTag.class);
-				if(innerValue!=null) {
-					int realInnerTag=innerTag.tag();
-					ASNClass realAsnClass=innerTag.asnClass();
-					Boolean realConstructed=innerTag.constructed();
-					ASNProperty property=cachedData.getFields().get(i).getAnnotation(ASNProperty.class);
-					if(property!=null) {
-						realInnerTag=property.tag();
-						realAsnClass=property.asnClass();
-						realConstructed=property.constructed();
+					break;
+				case CHOISE:
+				case WILDCARD:
+				default:
+					cachedData.getFields().get(i).getField().setAccessible(true);
+					if(cachedData.getFields().get(i).getField().getType().isAssignableFrom(List.class) && !cachedData.getFields().get(i).getField().getType().equals(Object.class)) {
+						List innerList=(List)cachedData.getFields().get(i).getField().get(value);
+						for(Object innerObject:innerList) {
+							encodeWithoutHeader(buffer, innerObject, cachedElements,cachedData.getFields().get(i).getFieldType()==FieldType.CHOISE);
+							hadData=true;
+						}
 					}
-					
-					ParserClassData innerCachedData=cachedElements.get(innerValue.getClass().getCanonicalName());
-					if(innerCachedData==null) {
-						innerCachedData=processField(innerValue.getClass(),cachedElements);			
+					else {
+						Object innerValue=cachedData.getFields().get(i).getField().get(value);
+						if(innerValue!=null) {
+							encodeWithoutHeader(buffer, innerValue, cachedElements,cachedData.getFields().get(i).getFieldType()==FieldType.CHOISE);
+							hadData=true;
+						}
 					}
-					
-					encode(buffer, innerValue, innerTag, realAsnClass, realInnerTag, realConstructed, getLength(innerCachedData, innerValue, cachedElements),cachedElements);
-				}
-			}
-		}
-		
-		if(cachedData.getWildcardField()!=null) {
-			cachedData.getWildcardField().setAccessible(true);
-			if(cachedData.getWildcardField().getType().isAssignableFrom(List.class) && !cachedData.getWildcardField().getType().equals(Object.class)) {
-				List innerList=(List)cachedData.getWildcardField().get(value);
-				for(Object innerObject:innerList) {
-					encodeWithoutHeader(buffer, innerObject, cachedElements);
-				}
-			}
-			else {
-				Object innerValue=cachedData.getWildcardField().get(value);
-				if(innerValue!=null)
-					encodeWithoutHeader(buffer, innerValue, cachedElements);
-			}
+					break;	
+			}			
 		}
 		
 		if(!cachedData.getSubFieldsFound()) {
@@ -425,18 +621,20 @@ public class ASNParser
 			for(Method method:methods) {
 				ASNEncode asnEncode=method.getAnnotation(ASNEncode.class);
 				if(asnEncode!=null) {
-					method.invoke(value,new Object[] { buffer});
+					method.invoke(value,new Object[] { this, buffer});
+					break;
 				}
 			}
 		}		
 	}
 	
-	private static Integer getLengthWithHeader(Integer realTag,Object value,ConcurrentHashMap<String,ParserClassData> cachedElements) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ASNException {
+	private Integer getLengthWithHeader(Integer realTag,Object value,ConcurrentHashMap<String,ParserClassData> cachedElements) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ASNException {
 		Integer length=0;
 		if(value==null)
 			return length;
 		
 		ASNTag asnTag=value.getClass().getAnnotation(ASNTag.class);
+		ASNWrappedTag asnWrappedTag=value.getClass().getAnnotation(ASNWrappedTag.class);
 		//calculating itself header
 		if(asnTag!=null) {
 			ParserClassData cachedData=cachedElements.get(value.getClass().getCanonicalName());
@@ -445,7 +643,7 @@ public class ASNParser
 			}
 			
 			//get internal content/subtags length
-			length=getLength(cachedData, value, cachedElements);
+			length=getLength(cachedData, value, cachedElements,false);
 			
 			if(asnTag.lengthIndefinite())
 				//2 bytes end of tag and one length
@@ -457,6 +655,15 @@ public class ASNParser
 				length+=getTagLength(realTag)+1;
 			else
 				length+=getTagLength(asnTag.tag())+1;
+		} else if(asnWrappedTag!=null) {
+			ParserClassData cachedData=cachedElements.get(value.getClass().getCanonicalName());
+			if(cachedData==null) {
+				cachedData=processField(value.getClass(),cachedElements);			
+			}
+			
+			//get internal content/subtags length
+			length=getLength(cachedData, value, cachedElements,false);
+			//no outer header here
 		}
 		
 		return length;
@@ -477,52 +684,65 @@ public class ASNParser
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private static Integer getLength(ParserClassData parserData,Object value,ConcurrentHashMap<String,ParserClassData> cachedElements) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ASNException {
+	private Integer getLength(ParserClassData parserData,Object value,ConcurrentHashMap<String,ParserClassData> cachedElements,Boolean isChoise) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ASNException {
 		Integer length=0;
-		for(int i=0;i<parserData.getFields().size();i++) {
-			parserData.getFields().get(i).setAccessible(true);
-			
-			Integer realTag=null;
-			ASNProperty asnProperty=parserData.getFields().get(i).getAnnotation(ASNProperty.class);
-			if(asnProperty!=null)
-				realTag=asnProperty.tag();
-			
-			if(parserData.getFields().get(i).getType().isAssignableFrom(List.class) && !parserData.getFields().get(i).getType().equals(Object.class)) {
-				List innerList= (List)parserData.getFields().get(i).get(value);
-				for(Object innerValue:innerList) {
-					length+=getLengthWithHeader(realTag, innerValue,cachedElements);
-				}
-			}
-			else {
-				length+=getLengthWithHeader(realTag, parserData.getFields().get(i).get(value),cachedElements);
-			}
-		}
-		
-		if(parserData.getWildcardField()!=null) {
-			parserData.getWildcardField().setAccessible(true);
-			if(parserData.getWildcardField().getType().isAssignableFrom(List.class) && !parserData.getWildcardField().getType().equals(Object.class)) {
-				List innerList= (List)parserData.getWildcardField().get(value);
-				for(Object listItem:innerList) {
-					ParserClassData cachedData=cachedElements.get(listItem.getClass().getCanonicalName());
-					if(cachedData==null) {
-						cachedData=processField(listItem.getClass(),cachedElements);			
-					}
+		Boolean hadData=false;
+		for(int i=0;i<parserData.getFields().size() && !(hadData && isChoise);i++) {
+			switch(parserData.getFields().get(i).getFieldType()) {
+				case STANDARD:
+					parserData.getFields().get(i).getField().setAccessible(true);
 					
-					length+=getLength(cachedData, listItem,cachedElements);
-				}
-			}
-			else {
-				Object innerValue=parserData.getWildcardField().get(value);
-				if(innerValue!=null) {
-					ParserClassData cachedData=cachedElements.get(innerValue.getClass().getCanonicalName());
-					if(cachedData==null) {
-						cachedData=processField(innerValue.getClass(),cachedElements);			
-					}
+					Integer realTag=null;
+					ASNProperty asnProperty=parserData.getFields().get(i).getField().getAnnotation(ASNProperty.class);
+					if(asnProperty!=null)
+						realTag=asnProperty.tag();
 					
-					//get internal content/subtags length
-					length+=getLength(cachedData, innerValue, cachedElements);
-				}			
-			}		
+					if(parserData.getFields().get(i).getField().getType().isAssignableFrom(List.class) && !parserData.getFields().get(i).getField().getType().equals(Object.class)) {
+						List innerList= (List)parserData.getFields().get(i).getField().get(value);
+						for(Object innerValue:innerList) {
+							length+=getLengthWithHeader(realTag, innerValue,cachedElements);
+							if(innerValue!=null)
+								hadData=true;
+						}
+					}
+					else {
+						length+=getLengthWithHeader(realTag, parserData.getFields().get(i).getField().get(value),cachedElements);
+						if(parserData.getFields().get(i).getField().get(value)!=null)
+							hadData=true;
+					}
+					break;
+				case CHOISE:
+				case WILDCARD:
+				default:
+					parserData.getFields().get(i).getField().setAccessible(true);
+					if(parserData.getFields().get(i).getField().getType().isAssignableFrom(List.class) && !parserData.getFields().get(i).getField().getType().equals(Object.class)) {
+						List innerList= (List)parserData.getFields().get(i).getField().get(value);
+						for(Object listItem:innerList) {
+							ParserClassData cachedData=cachedElements.get(listItem.getClass().getCanonicalName());
+							if(cachedData==null) {
+								cachedData=processField(listItem.getClass(),cachedElements);			
+							}
+							
+							length+=getLength(cachedData, listItem,cachedElements,parserData.getFields().get(i).getFieldType()==FieldType.CHOISE);
+							if(listItem!=null)
+								hadData=true;
+						}
+					}
+					else {
+						Object innerValue=parserData.getFields().get(i).getField().get(value);
+						if(innerValue!=null) {
+							ParserClassData cachedData=cachedElements.get(innerValue.getClass().getCanonicalName());
+							if(cachedData==null) {
+								cachedData=processField(innerValue.getClass(),cachedElements);			
+							}
+							
+							//get internal content/subtags length
+							length+=getLength(cachedData, innerValue, cachedElements,parserData.getFields().get(i).getFieldType()==FieldType.CHOISE);
+							hadData=true;
+						}			
+					}
+					break;			
+			}						
 		}
 		
 		if(!parserData.getSubFieldsFound()) {
@@ -530,7 +750,7 @@ public class ASNParser
 			for(Method method:methods) {
 				ASNLength asnLength=method.getAnnotation(ASNLength.class);
 				if(asnLength!=null) {
-					return (Integer)method.invoke(value);
+					return (Integer)method.invoke(value,this);
 				}
 			}
 		}
@@ -540,7 +760,7 @@ public class ASNParser
 		throw new ASNException("Length can not be calculated for class:" + value.getClass().getCanonicalName());
 	}
 	
-	private static Integer getTagLength(Integer tag) {
+	private Integer getTagLength(Integer tag) {
 		if(tag<31)
 			return 0;
 			
@@ -576,7 +796,7 @@ public class ASNParser
 		return result;
 	}
 	
-	private static void encodeTagAndHeader(ByteBuf buffer, ASNTag asnTag, ASNClass realClass,Integer realTag,Boolean realConstructed) {
+	private void encodeTagAndHeader(ByteBuf buffer, ASNClass realClass,Integer realTag,Boolean realConstructed) {
 		byte header;
 		if(realTag<31)
 		{
@@ -625,7 +845,7 @@ public class ASNParser
 		}		
 	}
 	
-	private static ParserClassData processField(Class<?> effectiveClass,ConcurrentHashMap<String,ParserClassData> cachedElements) {
+	private ParserClassData processField(Class<?> effectiveClass,ConcurrentHashMap<String,ParserClassData> cachedElements) {
 		ParserClassData cachedData=cachedElements.get(effectiveClass.getCanonicalName());
 		if(cachedData==null) {
 			Class<?> currentPath=effectiveClass;
@@ -636,18 +856,26 @@ public class ASNParser
 			}
 			while(currentPath!=null);
 			
-			List<Field> annotatedFields=new ArrayList<Field>();
-			Field wildcardField=null;
+			List<FieldData> annotatedFields=new ArrayList<FieldData>();
+			Boolean hasWrappedTag=false;
 			for(Class<?> currentClass:classesPath)
 			{
+				ASNWrappedTag wrappedTag=currentClass.getAnnotation(ASNWrappedTag.class);
+				if(wrappedTag!=null)
+					hasWrappedTag=true;
+				
 				Field[] fields=currentClass.getDeclaredFields();
 				for(int i=0;i<fields.length;i++) {
 					ASNExclude excludeTag=fields[i].getAnnotation(ASNExclude.class);
 					if(excludeTag==null) {
 						ASNWildcard wildcardTag=fields[i].getAnnotation(ASNWildcard.class);
+						ASNChoise choiseTag=fields[i].getAnnotation(ASNChoise.class);
 						if(wildcardTag!=null) {
-							wildcardField=fields[i];
-						} else {
+							annotatedFields.add(new FieldData(FieldType.WILDCARD, fields[i]));
+						} else if(choiseTag!=null) {
+							annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i]));
+						}
+						else {
 							ASNTag innerTag = null;
 
 							if(fields[i].getType().isAssignableFrom(List.class) && !fields[i].getType().equals(Object.class)) {
@@ -664,61 +892,138 @@ public class ASNParser
 							}
 							
 							if(innerTag!=null) {
-								annotatedFields.add(fields[i]);
+								annotatedFields.add(new FieldData(FieldType.STANDARD,fields[i]));
 							}
 						}
 					}
 				}
 			}
 			
-			cachedData=new ParserClassData(annotatedFields,wildcardField);
-			storeFields(effectiveClass,cachedData);
+			cachedData=new ParserClassData(annotatedFields,hasWrappedTag);
+			storeFields(effectiveClass,cachedData,annotatedFields,null,null);
 			cachedElements.put(effectiveClass.getCanonicalName(), cachedData);			
 		}
 		
 		return cachedData;
 	}
 	
-	private static void storeFields(Class<?> effectiveClass,ParserClassData cachedData) {
-		for(int i=0;i<cachedData.getFields().size();i++) {
-			ASNTag innerTag=null;
-			Class<?> realType=cachedData.getFields().get(i).getType();
-			if(cachedData.getFields().get(i).getType().isAssignableFrom(List.class) && !cachedData.getFields().get(i).getType().equals(Object.class)) {
-				Type[] innerTypes = ((ParameterizedType) cachedData.getFields().get(i).getGenericType()).getActualTypeArguments();
-				if(innerTypes.length==1) {
-					realType=((Class<?>)innerTypes[0]);
-					innerTag=realType.getAnnotation(ASNTag.class);
+	private void processChoiseField(Class<?> effectiveClass,ParserClassData cachedData,Field parentField,Class<?> parentType) {
+		Class<?> currentPath=effectiveClass;
+		List<Class<?>> classesPath=new ArrayList<Class<?>>();
+		do {
+			classesPath.add(0,currentPath);
+			currentPath=currentPath.getSuperclass();				
+		}
+		while(currentPath!=null);
+		
+		List<FieldData> annotatedFields=new ArrayList<FieldData>();
+		for(Class<?> currentClass:classesPath)
+		{
+			Field[] fields=currentClass.getDeclaredFields();
+			for(int i=0;i<fields.length;i++) {
+				ASNExclude excludeTag=fields[i].getAnnotation(ASNExclude.class);
+				if(excludeTag==null) {
+					ASNWildcard wildcardTag=fields[i].getAnnotation(ASNWildcard.class);
+					ASNChoise choiseTag=fields[i].getAnnotation(ASNChoise.class);
+					if(wildcardTag!=null) {
+						annotatedFields.add(new FieldData(FieldType.WILDCARD, fields[i]));
+					} else if(choiseTag!=null) {
+						annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i]));
+					} 
+					else {
+						ASNTag innerTag = null;
+
+						if(fields[i].getType().isAssignableFrom(List.class) && !fields[i].getType().equals(Object.class)) {
+							Type[] innerTypes = ((ParameterizedType) fields[i].getGenericType()).getActualTypeArguments();
+							if(innerTypes.length==1) {
+								innerTag=((Class<?>)innerTypes[0]).getAnnotation(ASNTag.class);
+							}
+						}
+						else if(fields[i].getType().isAssignableFrom(ASNGeneric.class) && !fields[i].getType().equals(Object.class)) {
+							innerTag=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]).getAnnotation(ASNTag.class);
+						}	
+						else {
+							innerTag=fields[i].getType().getAnnotation(ASNTag.class);							
+						}
+						
+						if(innerTag!=null) {
+							annotatedFields.add(new FieldData(FieldType.STANDARD,fields[i]));
+						}
+					}
 				}
 			}
-			else if(cachedData.getFields().get(i).getType().isAssignableFrom(ASNGeneric.class) && !cachedData.getFields().get(i).getType().equals(Object.class)) {
-				realType=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]);
-				innerTag=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]).getAnnotation(ASNTag.class);
-			}	
-			else {
-				innerTag=realType.getAnnotation(ASNTag.class);					
-			}
-			
-			int realInnerTag=innerTag.tag();
-			ASNClass realClass=innerTag.asnClass();
-			Boolean realConstructed=innerTag.constructed();
-			Integer index=null;
-			ASNProperty property=cachedData.getFields().get(i).getAnnotation(ASNProperty.class);
-			if(property!=null)
-			{
-				realInnerTag=property.tag();
-				realClass=property.asnClass();
-				realConstructed=property.constructed();
-				if(property.index()>=0)
-					index=property.index();
-			}
-				
-			ASNHeader asnHeader=new ASNHeader(innerTag, realClass, realInnerTag,realConstructed,index);
-			cachedData.addInnerMapElement(asnHeader, realType);
-			cachedData.addFiledsMapElement(asnHeader, cachedData.getFields().get(i));
+		}
+		
+		storeFields(effectiveClass,cachedData,annotatedFields,parentField,parentType);		
+	}
+	
+	private void storeFields(Class<?> effectiveClass,ParserClassData cachedData,List<FieldData> fields,Field parentField,Class<?> parentType) {
+		for(int i=0;i<fields.size();i++) {
+			switch(fields.get(i).getFieldType()) {
+				case STANDARD:
+					ASNTag innerTag=null;
+					Class<?> realType=fields.get(i).getField().getType();
+					if(fields.get(i).getField().getType().isAssignableFrom(List.class) && !fields.get(i).getField().getType().equals(Object.class)) {
+						Type[] innerTypes = ((ParameterizedType) fields.get(i).getField().getGenericType()).getActualTypeArguments();
+						if(innerTypes.length==1) {
+							realType=((Class<?>)innerTypes[0]);
+							innerTag=realType.getAnnotation(ASNTag.class);
+						}
+					}
+					else if(fields.get(i).getField().getType().isAssignableFrom(ASNGeneric.class) && !fields.get(i).getField().getType().equals(Object.class)) {
+						realType=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]);
+						innerTag=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]).getAnnotation(ASNTag.class);
+					}	
+					else {
+						innerTag=realType.getAnnotation(ASNTag.class);					
+					}
+					
+					int realInnerTag=innerTag.tag();
+					ASNClass realClass=innerTag.asnClass();
+					Boolean realConstructed=innerTag.constructed();
+					Integer index=null;
+					ASNProperty property=fields.get(i).getField().getAnnotation(ASNProperty.class);
+					if(property!=null)
+					{
+						realInnerTag=property.tag();
+						realClass=property.asnClass();
+						realConstructed=property.constructed();
+						if(property.index()>=0)
+							index=property.index();
+					}
+						
+					ASNHeader asnHeader=new ASNHeader(innerTag, realClass, realInnerTag,realConstructed,index);
+					if(parentField==null || parentType==null) {
+						cachedData.addInnerMapElement(asnHeader, realType);
+						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.STANDARD,fields.get(i).getField()));
+					} else {
+						cachedData.addInnerMapElement(asnHeader, parentType);
+						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.CHOISE,parentField));						
+					}
+					break;
+				case CHOISE:
+					realType=fields.get(i).getField().getType();
+					if(fields.get(i).getField().getType().isAssignableFrom(List.class) && !fields.get(i).getField().getType().equals(Object.class)) {
+						Type[] innerTypes = ((ParameterizedType) fields.get(i).getField().getGenericType()).getActualTypeArguments();
+						if(innerTypes.length==1)
+							realType=((Class<?>)innerTypes[0]);							
+					}
+					else if(fields.get(i).getField().getType().isAssignableFrom(ASNGeneric.class) && !fields.get(i).getField().getType().equals(Object.class)) {
+						realType=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]);
+					}	
+					if(parentField!=null && parentType!=null)
+						processChoiseField(realType, cachedData, parentField, parentType);
+					else
+						processChoiseField(realType, cachedData, fields.get(i).getField(), realType);
+					break;
+				case WILDCARD:
+				default:
+					break;			
+			}						
 		}
 	}
 	
-	private static class DecodeResult extends ASNDecodeResult
+	private class DecodeResult extends ASNDecodeResult
 	{
 		private Integer realTag;
 		private ASNClass realClass;

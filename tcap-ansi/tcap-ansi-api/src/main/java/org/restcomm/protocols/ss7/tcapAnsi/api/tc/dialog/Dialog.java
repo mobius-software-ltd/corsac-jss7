@@ -27,7 +27,7 @@ import java.io.Serializable;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
@@ -105,7 +105,7 @@ public interface Dialog extends Serializable {
      *
      * @return the acn
      */
-    ApplicationContext getApplicationContextName();
+    ApplicationContextNameImpl getApplicationContextName();
 
     /**
      * Last sent/received UI
@@ -181,6 +181,13 @@ public interface Dialog extends Serializable {
      */
     void processInvokeWithoutAnswer(Long invokeId);
 
+    /**
+     * Helper function to get invoke by correlation id.
+     *
+     * @param invokeId.
+     */
+    InvokeImpl getInvoke(Long correlationId);
+    
     /**
      * Send initial primitive for Structured dialog.
      *

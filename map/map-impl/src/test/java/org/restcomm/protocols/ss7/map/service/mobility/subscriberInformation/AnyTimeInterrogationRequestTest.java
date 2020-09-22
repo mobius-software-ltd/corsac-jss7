@@ -32,15 +32,14 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -64,10 +63,10 @@ public class AnyTimeInterrogationRequestTest {
         anyTimeInt.decodeAll(ansIS);
 
         SubscriberIdentity subsId = anyTimeInt.getSubscriberIdentity();
-        ISDNAddressString isdnAddress = subsId.getMSISDN();
+        ISDNAddressStringImpl isdnAddress = subsId.getMSISDN();
         assertEquals(isdnAddress.getAddress(), "553499775190");
 
-        ISDNAddressString gscmSCFAddress = anyTimeInt.getGsmSCFAddress();
+        ISDNAddressStringImpl gscmSCFAddress = anyTimeInt.getGsmSCFAddress();
         assertEquals(gscmSCFAddress.getAddress(), "553496629943");
 
         RequestedInfo requestedInfo = anyTimeInt.getRequestedInfo();
@@ -81,11 +80,11 @@ public class AnyTimeInterrogationRequestTest {
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testEncode() throws Exception {
 
-        ISDNAddressString isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553499775190");
         SubscriberIdentity subsId = new SubscriberIdentityImpl(isdnAdd);
         RequestedInfo requestedInfo = new RequestedInfoImpl(true, true, null, false, null, false, false, false);
-        ISDNAddressString gscmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gscmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553496629943");
 
         AnyTimeInterrogationRequestImpl anyTimeInt = new AnyTimeInterrogationRequestImpl(subsId, requestedInfo, gscmSCFAddress,

@@ -33,15 +33,15 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAv;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAvImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetList;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationTripletImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.EpcAvImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.EpsAuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.TripletListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImplV3;
 import org.testng.annotations.Test;
 
 /**
@@ -74,10 +74,10 @@ public class SendAuthenticationInfoResponseTest {
         AsnInputStream asn = new AsnInputStream(rawData);
 
         int tag = asn.readTag();
-        SendAuthenticationInfoResponseImpl asc = new SendAuthenticationInfoResponseImpl(3);
+        SendAuthenticationInfoResponseImplV3 asc = new SendAuthenticationInfoResponseImplV3(3);
         asc.decodeAll(asn);
 
-        assertEquals(tag, SendAuthenticationInfoResponseImpl._TAG_General);
+        assertEquals(tag, SendAuthenticationInfoResponseImplV3._TAG_General);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
 
         AuthenticationSetList asl = asc.getAuthenticationSetList();
@@ -92,10 +92,10 @@ public class SendAuthenticationInfoResponseTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new SendAuthenticationInfoResponseImpl(3);
+        asc = new SendAuthenticationInfoResponseImplV3(3);
         asc.decodeAll(asn);
 
-        assertEquals(tag, SendAuthenticationInfoResponseImpl._TAG_General);
+        assertEquals(tag, SendAuthenticationInfoResponseImplV3._TAG_General);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
 
         asl = asc.getAuthenticationSetList();
@@ -114,7 +114,7 @@ public class SendAuthenticationInfoResponseTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new SendAuthenticationInfoResponseImpl(2);
+        asc = new SendAuthenticationInfoResponseImplV3(2);
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -141,8 +141,8 @@ public class SendAuthenticationInfoResponseTest {
         TripletListImpl tl = new TripletListImpl(ats);
         AuthenticationSetListImpl asl = new AuthenticationSetListImpl(tl);
         asl.setMapProtocolVersion(3);
-        SendAuthenticationInfoResponseImpl asc = new SendAuthenticationInfoResponseImpl(3, asl, null, null);
-        // long mapProtocolVersion, AuthenticationSetList authenticationSetList, MAPExtensionContainer extensionContainer,
+        SendAuthenticationInfoResponseImplV3 asc = new SendAuthenticationInfoResponseImplV3(3, asl, null, null);
+        // long mapProtocolVersion, AuthenticationSetList authenticationSetList, MAPExtensionContainerImpl extensionContainer,
         // EpsAuthenticationSetList epsAuthenticationSetList
 
         AsnOutputStream asnOS = new AsnOutputStream();
@@ -157,7 +157,7 @@ public class SendAuthenticationInfoResponseTest {
         ArrayList<EpcAv> epcAvs = new ArrayList<EpcAv>();
         epcAvs.add(d1);
         EpsAuthenticationSetListImpl easl = new EpsAuthenticationSetListImpl(epcAvs);
-        asc = new SendAuthenticationInfoResponseImpl(3, null, null, easl);
+        asc = new SendAuthenticationInfoResponseImplV3(3, null, null, easl);
 
         asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);
@@ -173,7 +173,7 @@ public class SendAuthenticationInfoResponseTest {
         tl = new TripletListImpl(ats);
         asl = new AuthenticationSetListImpl(tl);
         asl.setMapProtocolVersion(2);
-        asc = new SendAuthenticationInfoResponseImpl(2, asl, null, null);
+        asc = new SendAuthenticationInfoResponseImplV3(2, asl, null, null);
 
         asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);

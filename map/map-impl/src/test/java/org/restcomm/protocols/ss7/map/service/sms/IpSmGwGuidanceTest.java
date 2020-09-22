@@ -25,8 +25,8 @@ package org.restcomm.protocols.ss7.map.service.sms;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidanceImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.sms.IpSmGwGuidanceImpl;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;

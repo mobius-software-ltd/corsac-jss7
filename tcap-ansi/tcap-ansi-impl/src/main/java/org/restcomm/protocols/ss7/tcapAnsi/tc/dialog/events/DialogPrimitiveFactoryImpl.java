@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.api.DialogPrimitiveFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
@@ -199,7 +199,7 @@ public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.DialogPrimitiveFactory #createApplicationContextName()
      */
-    public ApplicationContext createApplicationContext(List<Long> oid) {
+    public ApplicationContextNameImpl createApplicationContext(List<Long> oid) {
         return TcapFactory.createApplicationContext(oid);
     }
 
@@ -208,7 +208,7 @@ public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.DialogPrimitiveFactory #createApplicationContextName()
      */
-    public ApplicationContext createApplicationContext(long val) {
+    public ApplicationContextNameImpl createApplicationContext(long val) {
         return TcapFactory.createApplicationContext(val);
     }
 

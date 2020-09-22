@@ -34,8 +34,8 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationResponseImpl;
 import org.testng.annotations.Test;
 
@@ -51,15 +51,15 @@ public class CancelLocationResponseTest {
                 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
-    public static MAPExtensionContainer GetTestExtensionContainer() {
+    public static MAPExtensionContainerImpl GetTestExtensionContainer() {
         MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
 
-        ArrayList<MAPPrivateExtension> al = new ArrayList<MAPPrivateExtension>();
+        ArrayList<MAPPrivateExtensionImpl> al = new ArrayList<MAPPrivateExtensionImpl>();
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 4 }, new byte[] { 11, 12, 13, 14, 15 }));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 6 }, null));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 5 }, new byte[] { 21, 22, 23, 24, 25, 26 }));
 
-        MAPExtensionContainer cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
+        MAPExtensionContainerImpl cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
 
         return cnt;
     }
@@ -82,7 +82,7 @@ public class CancelLocationResponseTest {
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
 
-        MAPExtensionContainer extensionContainer = GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = GetTestExtensionContainer();
         CancelLocationResponseImpl asc = new CancelLocationResponseImpl(extensionContainer);
 
         AsnOutputStream asnOS = new AsnOutputStream();

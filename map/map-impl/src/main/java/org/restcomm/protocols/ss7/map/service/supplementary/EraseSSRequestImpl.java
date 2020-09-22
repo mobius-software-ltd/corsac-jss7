@@ -22,35 +22,28 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.EraseSSRequest;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
 *
 * @author sergey vetyutnev
 *
 */
+@ASNWrappedTag
 public class EraseSSRequestImpl extends SupplementaryMessageImpl implements EraseSSRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "EraseSSRequest";
-
-    private SSForBSCode ssForBSCode;
-
+	private SSForBSCodeImpl ssForBSCode;
+    
     public EraseSSRequestImpl() {
     }
 
-    public EraseSSRequestImpl(SSForBSCode ssForBSCode) {
+    public EraseSSRequestImpl(SSForBSCodeImpl ssForBSCode) {
         this.ssForBSCode = ssForBSCode;
     }
 
@@ -65,97 +58,14 @@ public class EraseSSRequestImpl extends SupplementaryMessageImpl implements Eras
     }
 
     @Override
-    public SSForBSCode getSsForBSCode() {
+    public SSForBSCodeImpl getSsForBSCode() {
         return ssForBSCode;
-    }
-
-    @Override
-    public int getTag() throws MAPException {
-        if (ssForBSCode != null)
-            return ((SSForBSCodeImpl) ssForBSCode).getTag();
-
-        throw new MAPException("ssForBSCode is not defined");
-    }
-
-    @Override
-    public int getTagClass() {
-        if (ssForBSCode != null)
-            return ((SSForBSCodeImpl) ssForBSCode).getTagClass();
-
-        return 0;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        if (ssForBSCode != null)
-            return ((SSForBSCodeImpl) ssForBSCode).getIsPrimitive();
-
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ais, int length) throws MAPParsingComponentException, IOException, AsnException {
-        this.ssForBSCode = new SSForBSCodeImpl();
-        ((SSForBSCodeImpl) this.ssForBSCode).decodeData(ais, length);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        if (ssForBSCode == null)
-            throw new MAPException("Error while encoding " + _PrimitiveName + ": ssForBSCode parameter is not defined.");
-
-        if (this.ssForBSCode != null)
-            ((SSForBSCodeImpl) this.ssForBSCode).encodeData(asnOs);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("EraseSSRequest [");
 
         if (this.ssForBSCode != null) {
             sb.append("ssForBSCode=");
@@ -166,5 +76,4 @@ public class EraseSSRequestImpl extends SupplementaryMessageImpl implements Eras
 
         return sb.toString();
     }
-
 }

@@ -32,22 +32,21 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.OverrideCategory;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOption;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOptionImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSSubscriptionOptionImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -81,7 +80,7 @@ public class ExtSSDataTest {
             assertEquals(tag, Tag.SEQUENCE);
             assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-            MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
             assertEquals(prim.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
             assertNotNull(prim.getSsStatus());
             assertTrue(prim.getSsStatus().getBitA());
@@ -111,7 +110,7 @@ public class ExtSSDataTest {
             assertEquals(tag, Tag.SEQUENCE);
             assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-            MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
             assertEquals(prim.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
             assertNotNull(prim.getSsStatus());
             assertTrue(prim.getSsStatus().getBitA());
@@ -135,8 +134,8 @@ public class ExtSSDataTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        SSCode ssCode = new SSCodeImpl(SupplementaryCodeValue.allSS);
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allSS);
         ExtSSStatus ssStatus = new ExtSSStatusImpl(false, true, false, true);
 
         SSSubscriptionOption ssSubscriptionOption = new SSSubscriptionOptionImpl(CliRestrictionOption.permanent);

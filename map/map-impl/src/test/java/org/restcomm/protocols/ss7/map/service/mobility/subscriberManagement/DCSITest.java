@@ -33,15 +33,14 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriterium;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriteriumImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DCSIImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DPAnalysedInfoCriteriumImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -78,18 +77,18 @@ public class DCSITest {
             assertEquals(tag, Tag.SEQUENCE);
             assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-            MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
             ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = prim.getDPAnalysedInfoCriteriaList();
             assertNotNull(dpAnalysedInfoCriteriaList);
             assertEquals(dpAnalysedInfoCriteriaList.size(), 1);
             DPAnalysedInfoCriterium dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
             assertNotNull(dpAnalysedInfoCriterium);
-            ISDNAddressString dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
+            ISDNAddressStringImpl dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
             assertTrue(dialledNumber.getAddress().equals("22234"));
             assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
             assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
             assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
-            ISDNAddressString gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
+            ISDNAddressStringImpl gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
             assertTrue(gsmSCFAddress.getAddress().equals("22235"));
             assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
             assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -110,18 +109,18 @@ public class DCSITest {
             assertEquals(tag, Tag.SEQUENCE);
             assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-            MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
             ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = prim.getDPAnalysedInfoCriteriaList();
             assertNotNull(dpAnalysedInfoCriteriaList);
             assertEquals(dpAnalysedInfoCriteriaList.size(), 2);
             DPAnalysedInfoCriterium dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
             assertNotNull(dpAnalysedInfoCriterium);
-            ISDNAddressString dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
+            ISDNAddressStringImpl dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
             assertTrue(dialledNumber.getAddress().equals("22234"));
             assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
             assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
             assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
-            ISDNAddressString gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
+            ISDNAddressStringImpl gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
             assertTrue(gsmSCFAddress.getAddress().equals("22235"));
             assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
             assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -136,7 +135,7 @@ public class DCSITest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22234");

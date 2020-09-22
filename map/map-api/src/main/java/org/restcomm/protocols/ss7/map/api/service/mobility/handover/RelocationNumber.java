@@ -24,11 +24,11 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 
 /**
  *
- RelocationNumber ::= SEQUENCE { handoverNumber ISDN-AddressString, rab-Id RAB-Id, -- RAB Identity is needed to relate the
+ RelocationNumber ::= SEQUENCE { handoverNumber ISDN-AddressStringImpl, rab-Id RAB-Id, -- RAB Identity is needed to relate the
  * calls with the radio access bearers. ...}
  *
  * RAB-Id ::= INTEGER (1..255)
@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
  */
 public interface RelocationNumber extends Serializable {
 
-    ISDNAddressString getHandoverNumber();
+    ISDNAddressStringImpl getHandoverNumber();
 
     Integer getRABId();
 

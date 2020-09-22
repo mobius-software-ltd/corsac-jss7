@@ -22,115 +22,166 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdraw;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdraw;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdraw;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdraw;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdrawImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdrawWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdrawImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdrawWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdrawImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdrawWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdrawImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeListWrapperImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
 *
 * @author sergey vetyutnev
 *
 */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl implements DeleteSubscriberDataRequest {
 	private static final long serialVersionUID = 1L;
 
-	protected static final int _TAG_imsi = 0;
-    protected static final int _TAG_basicServiceList = 1;
-    protected static final int _TAG_ss_List = 2;
-    protected static final int _TAG_roamingRestrictionDueToUnsupportedFeature = 4;
-    protected static final int _TAG_regionalSubscriptionIdentifier = 5;
-    protected static final int _TAG_vbsGroupIndication = 7;
-    protected static final int _TAG_vgcsGroupIndication = 8;
-    protected static final int _TAG_camelSubscriptionInfoWithdraw = 9;
-    protected static final int _TAG_extensionContainer = 6;
-    protected static final int _TAG_gprsSubscriptionDataWithdraw = 10;
-    protected static final int _TAG_roamingRestrictedInSgsnDueToUnsuppportedFeature = 11;
-    protected static final int _TAG_lsaInformationWithdraw = 12;
-    protected static final int _TAG_gmlc_ListWithdraw = 13;
-    protected static final int _TAG_istInformationWithdraw = 14;
-    protected static final int _TAG_specificCSI_Withdraw = 15;
-    protected static final int _TAG_chargingCharacteristicsWithdraw = 16;
-    protected static final int _TAG_stn_srWithdraw = 17;
-    protected static final int _TAG_epsSubscriptionDataWithdraw = 18;
-    protected static final int _TAG_apn_oi_replacementWithdraw = 19;
-    protected static final int _TAG_csg_SubscriptionDeleted = 20;
-
-    public static final String _PrimitiveName = "DeleteSubscriberDataRequest";
-
-    private IMSI imsi;
-    private ArrayList<ExtBasicServiceCode> basicServiceList;
-    private ArrayList<SSCode> ssList;
-    private boolean roamingRestrictionDueToUnsupportedFeature;
-    private ZoneCode regionalSubscriptionIdentifier;
-    private boolean vbsGroupIndication;
-    private boolean vgcsGroupIndication;
-    private boolean camelSubscriptionInfoWithdraw;
-    private MAPExtensionContainer extensionContainer;
-    private GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw;
-    private boolean roamingRestrictedInSgsnDueToUnsuppportedFeature;
-    private LSAInformationWithdraw lsaInformationWithdraw;
-    private boolean gmlcListWithdraw;
-    private boolean istInformationWithdraw;
-    private SpecificCSIWithdraw specificCSIWithdraw;
-    private boolean chargingCharacteristicsWithdraw;
-    private boolean stnSrWithdraw;
-    private EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw;
-    private boolean apnOiReplacementWithdraw;
-    private boolean csgSubscriptionDeleted;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0)
+    private IMSIImpl imsi;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
+    private ExtBasicServiceCodeListWrapperImpl basicServiceList;    
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
+    private SSCodeListWrapperImpl ssList;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
+    private ASNNull roamingRestrictionDueToUnsupportedFeature;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
+    private ZoneCodeImpl regionalSubscriptionIdentifier;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
+    private ASNNull vbsGroupIndication;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
+    private ASNNull vgcsGroupIndication;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
+    private ASNNull camelSubscriptionInfoWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
+    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=true,index=-1)
+    private GPRSSubscriptionDataWithdrawWrapperImpl gprsSubscriptionDataWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
+    private ASNNull roamingRestrictedInSgsnDueToUnsuppportedFeature;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=true,index=-1)
+    private LSAInformationWithdrawWrapperImpl lsaInformationWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=false,index=-1)
+    private ASNNull gmlcListWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)
+    private ASNNull istInformationWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
+    private SpecificCSIWithdrawImpl specificCSIWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)
+    private ASNNull chargingCharacteristicsWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=false,index=-1)
+    private ASNNull stnSrWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=true,index=-1)
+    private EPSSubscriptionDataWithdrawWrapperImpl epsSubscriptionDataWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=false,index=-1)
+    private ASNNull apnOiReplacementWithdraw;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1)
+    private ASNNull csgSubscriptionDeleted;
 
     public DeleteSubscriberDataRequestImpl() {
     }
 
-    public DeleteSubscriberDataRequestImpl(IMSI imsi, ArrayList<ExtBasicServiceCode> basicServiceList, ArrayList<SSCode> ssList,
-            boolean roamingRestrictionDueToUnsupportedFeature, ZoneCode regionalSubscriptionIdentifier, boolean vbsGroupIndication,
-            boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainer extensionContainer,
-            GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
-            LSAInformationWithdraw lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdraw specificCSIWithdraw,
-            boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw,
+    public DeleteSubscriberDataRequestImpl(IMSIImpl imsi, ArrayList<ExtBasicServiceCodeImpl> basicServiceList, ArrayList<SSCodeImpl> ssList,
+            boolean roamingRestrictionDueToUnsupportedFeature, ZoneCodeImpl regionalSubscriptionIdentifier, boolean vbsGroupIndication,
+            boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainerImpl extensionContainer,
+            GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
+            LSAInformationWithdrawImpl lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdrawImpl specificCSIWithdraw,
+            boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdrawImpl epsSubscriptionDataWithdraw,
             boolean apnOiReplacementWithdraw, boolean csgSubscriptionDeleted) {
         this.imsi = imsi;
-        this.basicServiceList = basicServiceList;
-        this.ssList = ssList;
-        this.roamingRestrictionDueToUnsupportedFeature = roamingRestrictionDueToUnsupportedFeature;
+        
+        if(basicServiceList!=null)
+        	this.basicServiceList = new ExtBasicServiceCodeListWrapperImpl(basicServiceList);
+        
+        if(ssList!=null)
+        	this.ssList = new SSCodeListWrapperImpl(ssList);
+        
+        if(roamingRestrictedInSgsnDueToUnsuppportedFeature)
+        	this.roamingRestrictionDueToUnsupportedFeature = new ASNNull();
+        
         this.regionalSubscriptionIdentifier = regionalSubscriptionIdentifier;
-        this.vbsGroupIndication = vbsGroupIndication;
-        this.vgcsGroupIndication = vgcsGroupIndication;
-        this.camelSubscriptionInfoWithdraw = camelSubscriptionInfoWithdraw;
+        
+        if(vbsGroupIndication)
+        	this.vbsGroupIndication = new ASNNull();
+        
+        if(vgcsGroupIndication)
+        	this.vgcsGroupIndication = new ASNNull();
+        
+        if(camelSubscriptionInfoWithdraw)
+        	this.camelSubscriptionInfoWithdraw = new ASNNull();
+        
         this.extensionContainer = extensionContainer;
-        this.gprsSubscriptionDataWithdraw = gprsSubscriptionDataWithdraw;
-        this.roamingRestrictedInSgsnDueToUnsuppportedFeature = roamingRestrictedInSgsnDueToUnsuppportedFeature;
-        this.lsaInformationWithdraw = lsaInformationWithdraw;
-        this.gmlcListWithdraw = gmlcListWithdraw;
-        this.istInformationWithdraw = istInformationWithdraw;
+        
+        if(gprsSubscriptionDataWithdraw!=null)
+        	this.gprsSubscriptionDataWithdraw = new GPRSSubscriptionDataWithdrawWrapperImpl(gprsSubscriptionDataWithdraw);
+        
+        if(roamingRestrictedInSgsnDueToUnsuppportedFeature)
+        	this.roamingRestrictedInSgsnDueToUnsuppportedFeature = new ASNNull();
+        
+        if(lsaInformationWithdraw!=null)
+        	this.lsaInformationWithdraw = new LSAInformationWithdrawWrapperImpl(lsaInformationWithdraw);
+        
+        if(gmlcListWithdraw)
+        	this.gmlcListWithdraw = new ASNNull();
+        
+        if(istInformationWithdraw)
+        	this.istInformationWithdraw = new ASNNull();
+        
         this.specificCSIWithdraw = specificCSIWithdraw;
-        this.chargingCharacteristicsWithdraw = chargingCharacteristicsWithdraw;
-        this.stnSrWithdraw = stnSrWithdraw;
-        this.epsSubscriptionDataWithdraw = epsSubscriptionDataWithdraw;
-        this.apnOiReplacementWithdraw = apnOiReplacementWithdraw;
-        this.csgSubscriptionDeleted = csgSubscriptionDeleted;
+        
+        if(chargingCharacteristicsWithdraw)
+        	this.chargingCharacteristicsWithdraw = new ASNNull();
+        
+        if(stnSrWithdraw)
+        	this.stnSrWithdraw = new ASNNull();
+        
+        if(epsSubscriptionDataWithdraw!=null)
+        	this.epsSubscriptionDataWithdraw = new EPSSubscriptionDataWithdrawWrapperImpl(epsSubscriptionDataWithdraw);
+        
+        if(apnOiReplacementWithdraw)
+        	this.apnOiReplacementWithdraw = new ASNNull();
+        
+        if(csgSubscriptionDeleted)
+        	this.csgSubscriptionDeleted = new ASNNull();
     }
 
     public MAPMessageType getMessageType() {
@@ -142,503 +193,134 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return imsi;
     }
 
     @Override
-    public ArrayList<ExtBasicServiceCode> getBasicServiceList() {
-        return basicServiceList;
+    public ArrayList<ExtBasicServiceCodeImpl> getBasicServiceList() {
+    	if(basicServiceList==null)
+    		return null;
+    	
+        return basicServiceList.getExtBasicServiceCodeImpl();
     }
 
     @Override
-    public ArrayList<SSCode> getSsList() {
-        return ssList;
+    public ArrayList<SSCodeImpl> getSsList() {
+    	if(ssList==null)
+    		return null;
+    	
+        return ssList.getSSCode();
     }
 
     @Override
     public boolean getRoamingRestrictionDueToUnsupportedFeature() {
-        return roamingRestrictionDueToUnsupportedFeature;
+        return roamingRestrictionDueToUnsupportedFeature!=null;
     }
 
     @Override
-    public ZoneCode getRegionalSubscriptionIdentifier() {
+    public ZoneCodeImpl getRegionalSubscriptionIdentifier() {
         return regionalSubscriptionIdentifier;
     }
 
     @Override
     public boolean getVbsGroupIndication() {
-        return vbsGroupIndication;
+        return vbsGroupIndication!=null;
     }
 
     @Override
     public boolean getVgcsGroupIndication() {
-        return vgcsGroupIndication;
+        return vgcsGroupIndication!=null;
     }
 
     @Override
     public boolean getCamelSubscriptionInfoWithdraw() {
-        return camelSubscriptionInfoWithdraw;
+        return camelSubscriptionInfoWithdraw!=null;
     }
 
     @Override
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return extensionContainer;
     }
 
     @Override
-    public GPRSSubscriptionDataWithdraw getGPRSSubscriptionDataWithdraw() {
-        return gprsSubscriptionDataWithdraw;
+    public GPRSSubscriptionDataWithdrawImpl getGPRSSubscriptionDataWithdraw() {
+    	if(gprsSubscriptionDataWithdraw==null)
+    		return null;
+    	
+        return gprsSubscriptionDataWithdraw.getGPRSSubscriptionDataWithdraw();
     }
 
     @Override
     public boolean getRoamingRestrictedInSgsnDueToUnsuppportedFeature() {
-        return roamingRestrictedInSgsnDueToUnsuppportedFeature;
+        return roamingRestrictedInSgsnDueToUnsuppportedFeature!=null;
     }
 
     @Override
-    public LSAInformationWithdraw getLSAInformationWithdraw() {
-        return lsaInformationWithdraw;
+    public LSAInformationWithdrawImpl getLSAInformationWithdraw() {
+    	if(lsaInformationWithdraw==null)
+    		return null;
+    	
+        return lsaInformationWithdraw.getLSAInformationWithdraw();
     }
 
     @Override
     public boolean getGmlcListWithdraw() {
-        return gmlcListWithdraw;
+        return gmlcListWithdraw!=null;
     }
 
     @Override
     public boolean getIstInformationWithdraw() {
-        return istInformationWithdraw;
+        return istInformationWithdraw!=null;
     }
 
     @Override
-    public SpecificCSIWithdraw getSpecificCSIWithdraw() {
+    public SpecificCSIWithdrawImpl getSpecificCSIWithdraw() {
         return specificCSIWithdraw;
     }
 
     @Override
     public boolean getChargingCharacteristicsWithdraw() {
-        return chargingCharacteristicsWithdraw;
+        return chargingCharacteristicsWithdraw!=null;
     }
 
     @Override
     public boolean getStnSrWithdraw() {
-        return stnSrWithdraw;
+        return stnSrWithdraw!=null;
     }
 
     @Override
-    public EPSSubscriptionDataWithdraw getEPSSubscriptionDataWithdraw() {
-        return epsSubscriptionDataWithdraw;
+    public EPSSubscriptionDataWithdrawImpl getEPSSubscriptionDataWithdraw() {
+    	if(epsSubscriptionDataWithdraw==null)
+    		return null;
+    	
+        return epsSubscriptionDataWithdraw.getEPSSubscriptionDataWithdraw();
     }
 
     @Override
     public boolean getApnOiReplacementWithdraw() {
-        return apnOiReplacementWithdraw;
+        return apnOiReplacementWithdraw!=null;
     }
 
     @Override
     public boolean getCsgSubscriptionDeleted() {
-        return csgSubscriptionDeleted;
-    }
-
-    @Override
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.imsi = null;
-        this.basicServiceList = null;
-        this.ssList = null;
-        this.roamingRestrictionDueToUnsupportedFeature = false;
-        this.regionalSubscriptionIdentifier = null;
-        this.vbsGroupIndication = false;
-        this.vgcsGroupIndication = false;
-        this.camelSubscriptionInfoWithdraw = false;
-        this.extensionContainer = null;
-        this.gprsSubscriptionDataWithdraw = null;
-        this.roamingRestrictedInSgsnDueToUnsuppportedFeature = false;
-        this.lsaInformationWithdraw = null;
-        this.gmlcListWithdraw = false;
-        this.istInformationWithdraw = false;
-        this.specificCSIWithdraw = null;
-        this.chargingCharacteristicsWithdraw = false;
-        this.stnSrWithdraw = false;
-        this.epsSubscriptionDataWithdraw = null;
-        this.apnOiReplacementWithdraw = false;
-        this.csgSubscriptionDeleted = false;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            switch (num) {
-            case 0:
-                // imsi
-                if (ais.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || !ais.isTagPrimitive() || tag != _TAG_imsi)
-                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                            + ".imsi: Parameter 0 bad tag or tag class or not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                this.imsi = new IMSIImpl();
-                ((IMSIImpl) this.imsi).decodeAll(ais);
-                break;
-
-            default:
-                if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                    switch (tag) {
-                    case _TAG_basicServiceList:
-                        if (ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".basicServiceList: Parameter is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        this.basicServiceList = new ArrayList<ExtBasicServiceCode>();
-                        while (true) {
-                            if (ais2.available() == 0)
-                                break;
-
-                            ais2.readTag();
-
-                            ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl();
-                            ((ExtBasicServiceCodeImpl) extBasicServiceCode).decodeAll(ais2);
-                            this.basicServiceList.add(extBasicServiceCode);
-                        }
-                        if (this.basicServiceList.size() < 1 || this.basicServiceList.size() > 70) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter basicServiceList size must be from 1 to 70, found: " + this.ssList.size(),
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        break;
-
-                    case _TAG_ss_List:
-                        if (ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".ssList: Parameter is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-                        ais2 = ais.readSequenceStream();
-                        this.ssList = new ArrayList<SSCode>();
-                        while (true) {
-                            if (ais2.available() == 0)
-                                break;
-
-                            int tag2 = ais2.readTag();
-                            if (tag2 != Tag.STRING_OCTET || ais2.getTagClass() != Tag.CLASS_UNIVERSAL || !ais2.isTagPrimitive())
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ": bad ssList element tag or tagClass or is not primitive ", MAPParsingComponentExceptionReason.MistypedParameter);
-
-                            SSCode ssCode = new SSCodeImpl();
-                            ((SSCodeImpl) ssCode).decodeAll(ais2);
-                            this.ssList.add(ssCode);
-                        }
-                        if (this.ssList.size() < 1 || this.ssList.size() > 30) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter ssList size must be from 1 to 30, found: " + this.ssList.size(),
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        break;
-
-                    case _TAG_roamingRestrictionDueToUnsupportedFeature:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".roamingRestrictionDueToUnsupportedFeature: Parameter is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.roamingRestrictionDueToUnsupportedFeature = true;
-                        break;
-                    case _TAG_regionalSubscriptionIdentifier:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".regionalSubscriptionIdentifier: Parameter regionalSubscriptionIdentifier is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.regionalSubscriptionIdentifier = new ZoneCodeImpl();
-                        ((ZoneCodeImpl) this.regionalSubscriptionIdentifier).decodeAll(ais);
-                        break;
-                    case _TAG_vbsGroupIndication:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException(
-                                    "Error while decoding " + _PrimitiveName + ".vbsGroupIndication: Parameter is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.vbsGroupIndication = true;
-                        break;
-                    case _TAG_vgcsGroupIndication:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".vgcsGroupIndication: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.vgcsGroupIndication = true;
-                        break;
-                    case _TAG_camelSubscriptionInfoWithdraw:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".camelSubscriptionInfoWithdraw: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.camelSubscriptionInfoWithdraw = true;
-                        break;
-                    case _TAG_extensionContainer:
-                        if (ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".extensionContainer: Parameter extensionContainer is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.extensionContainer = new MAPExtensionContainerImpl();
-                        ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                        break;
-                    case _TAG_gprsSubscriptionDataWithdraw:
-                        ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        this.gprsSubscriptionDataWithdraw = new GPRSSubscriptionDataWithdrawImpl();
-                        ((GPRSSubscriptionDataWithdrawImpl) this.gprsSubscriptionDataWithdraw).decodeAll(ais2);
-                        break;
-                    case _TAG_roamingRestrictedInSgsnDueToUnsuppportedFeature:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".roamingRestrictedInSgsnDueToUnsuppportedFeature: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.roamingRestrictedInSgsnDueToUnsuppportedFeature = true;
-                        break;
-                    case _TAG_lsaInformationWithdraw:
-                        ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        this.lsaInformationWithdraw = new LSAInformationWithdrawImpl();
-                        ((LSAInformationWithdrawImpl) this.lsaInformationWithdraw).decodeAll(ais2);
-                        break;
-                    case _TAG_gmlc_ListWithdraw:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".gmlcListWithdraw: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.gmlcListWithdraw = true;
-                        break;
-                    case _TAG_istInformationWithdraw:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".istInformationWithdraw: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.istInformationWithdraw = true;
-                        break;
-                    case _TAG_specificCSI_Withdraw:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".specificCSIWithdraw: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.specificCSIWithdraw = new SpecificCSIWithdrawImpl();
-                        ((SpecificCSIWithdrawImpl) this.specificCSIWithdraw).decodeAll(ais);
-                        break;
-                    case _TAG_chargingCharacteristicsWithdraw:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".chargingCharacteristicsWithdraw: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.chargingCharacteristicsWithdraw = true;
-                        break;
-                    case _TAG_stn_srWithdraw:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".stnSrWithdraw: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.stnSrWithdraw = true;
-                        break;
-                    case _TAG_epsSubscriptionDataWithdraw:
-                        ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        this.epsSubscriptionDataWithdraw = new EPSSubscriptionDataWithdrawImpl();
-                        ((EPSSubscriptionDataWithdrawImpl) this.epsSubscriptionDataWithdraw).decodeAll(ais2);
-                        break;
-                    case _TAG_apn_oi_replacementWithdraw:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".apnOiReplacementWithdraw: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.apnOiReplacementWithdraw = true;
-                        break;
-                    case _TAG_csg_SubscriptionDeleted:
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".csgSubscriptionDeleted: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.csgSubscriptionDeleted = true;
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                    }
-                } else {
-
-                    ais.advanceElement();
-                }
-                break;
-            }
-
-            num++;
-        }
-
-        if (num < 1)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ": Needs at least 1 mandatory parameter, found " + num,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        try {
-            if (this.imsi == null)
-                throw new MAPException("IMSI parameter must not be null for MAP Version3");
-
-            ((IMSIImpl) this.imsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_imsi);
-
-            if (this.basicServiceList != null) {
-                try {
-                    asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_basicServiceList);
-                    int pos = asnOs.StartContentDefiniteLength();
-                    for (ExtBasicServiceCode item : this.basicServiceList) {
-                        ((ExtBasicServiceCodeImpl) item).encodeAll(asnOs);
-                    }
-                    asnOs.FinalizeContent(pos);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException when encoding " + _PrimitiveName + ".basicServiceList: " + e.getMessage(), e);
-                }
-            }
-
-            if (this.ssList != null) {
-                try {
-                    asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_ss_List);
-                    int pos = asnOs.StartContentDefiniteLength();
-                    for (SSCode item : this.ssList) {
-                        ((SSCodeImpl) item).encodeAll(asnOs);
-                    }
-                    asnOs.FinalizeContent(pos);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException when encoding " + _PrimitiveName + ".ssList: " + e.getMessage(), e);
-                }
-            }
-            if (roamingRestrictionDueToUnsupportedFeature)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_roamingRestrictionDueToUnsupportedFeature);
-            if (this.regionalSubscriptionIdentifier != null)
-                ((ZoneCodeImpl) this.regionalSubscriptionIdentifier).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_regionalSubscriptionIdentifier);
-            if (vbsGroupIndication)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_vbsGroupIndication);
-            if (vgcsGroupIndication)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_vgcsGroupIndication);
-            if (camelSubscriptionInfoWithdraw)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_camelSubscriptionInfoWithdraw);
-            if (this.extensionContainer != null)
-                ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_extensionContainer);
-
-            if (this.gprsSubscriptionDataWithdraw != null) {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_gprsSubscriptionDataWithdraw);
-                int pos = asnOs.StartContentDefiniteLength();
-                ((GPRSSubscriptionDataWithdrawImpl) this.gprsSubscriptionDataWithdraw).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos);
-            }
-            if (roamingRestrictedInSgsnDueToUnsuppportedFeature)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_roamingRestrictedInSgsnDueToUnsuppportedFeature);
-            if (this.lsaInformationWithdraw != null) {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_lsaInformationWithdraw);
-                int pos = asnOs.StartContentDefiniteLength();
-                ((LSAInformationWithdrawImpl) this.lsaInformationWithdraw).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos);
-            }
-            if (gmlcListWithdraw)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_gmlc_ListWithdraw);
-            if (istInformationWithdraw)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_istInformationWithdraw);
-            if (this.specificCSIWithdraw != null)
-                ((SpecificCSIWithdrawImpl) this.specificCSIWithdraw).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_specificCSI_Withdraw);
-            if (chargingCharacteristicsWithdraw)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_chargingCharacteristicsWithdraw);
-            if (stnSrWithdraw)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_stn_srWithdraw);
-            if (this.epsSubscriptionDataWithdraw != null) {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_epsSubscriptionDataWithdraw);
-                int pos = asnOs.StartContentDefiniteLength();
-                ((EPSSubscriptionDataWithdrawImpl) this.epsSubscriptionDataWithdraw).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos);
-            }
-            if (apnOiReplacementWithdraw)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_apn_oi_replacementWithdraw);
-            if (csgSubscriptionDeleted)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_csg_SubscriptionDeleted);
-
-        } catch (IOException e) {
-            throw new MAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+        return csgSubscriptionDeleted!=null;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("DeleteSubscriberDataRequest [");
 
         if (this.imsi != null) {
             sb.append("imsi=");
             sb.append(imsi.toString());
             sb.append(", ");
         }
-        if (this.basicServiceList != null) {
+        if (this.basicServiceList != null && this.basicServiceList.getExtBasicServiceCodeImpl()!=null) {
             sb.append("basicServiceList=[");
             boolean firstItem = true;
-            for (ExtBasicServiceCode be : this.basicServiceList) {
+            for (ExtBasicServiceCodeImpl be : this.basicServiceList.getExtBasicServiceCodeImpl()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -647,10 +329,10 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             }
             sb.append("], ");
         }
-        if (this.ssList != null) {
+        if (this.ssList != null && this.ssList.getSSCode()!=null) {
             sb.append("ssList=[");
             boolean firstItem = true;
-            for (SSCode be : this.ssList) {
+            for (SSCodeImpl be : this.ssList.getSSCode()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -659,7 +341,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             }
             sb.append("], ");
         }
-        if (this.roamingRestrictionDueToUnsupportedFeature) {
+        if (this.roamingRestrictionDueToUnsupportedFeature!=null) {
             sb.append("roamingRestrictionDueToUnsupportedFeature, ");
         }
         if (this.regionalSubscriptionIdentifier != null) {
@@ -667,13 +349,13 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             sb.append(regionalSubscriptionIdentifier);
             sb.append(", ");
         }
-        if (this.vbsGroupIndication) {
+        if (this.vbsGroupIndication!=null) {
             sb.append("vbsGroupIndication, ");
         }
-        if (this.vgcsGroupIndication) {
+        if (this.vgcsGroupIndication!=null) {
             sb.append("vgcsGroupIndication, ");
         }
-        if (this.camelSubscriptionInfoWithdraw) {
+        if (this.camelSubscriptionInfoWithdraw!=null) {
             sb.append("camelSubscriptionInfoWithdraw, ");
         }
         if (this.extensionContainer != null) {
@@ -681,23 +363,23 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             sb.append(extensionContainer);
             sb.append(", ");
         }
-        if (this.gprsSubscriptionDataWithdraw != null) {
+        if (this.gprsSubscriptionDataWithdraw != null && this.gprsSubscriptionDataWithdraw.getGPRSSubscriptionDataWithdraw()!=null) {
             sb.append("gprsSubscriptionDataWithdraw=");
-            sb.append(gprsSubscriptionDataWithdraw);
+            sb.append(gprsSubscriptionDataWithdraw.getGPRSSubscriptionDataWithdraw());
             sb.append(", ");
         }
-        if (this.roamingRestrictedInSgsnDueToUnsuppportedFeature) {
+        if (this.roamingRestrictedInSgsnDueToUnsuppportedFeature!=null) {
             sb.append("roamingRestrictedInSgsnDueToUnsuppportedFeature, ");
         }
-        if (this.lsaInformationWithdraw != null) {
+        if (this.lsaInformationWithdraw != null && this.lsaInformationWithdraw.getLSAInformationWithdraw()!=null) {
             sb.append("lsaInformationWithdraw=");
-            sb.append(lsaInformationWithdraw);
+            sb.append(lsaInformationWithdraw.getLSAInformationWithdraw());
             sb.append(", ");
         }
-        if (this.gmlcListWithdraw) {
+        if (this.gmlcListWithdraw!=null) {
             sb.append("gmlcListWithdraw, ");
         }
-        if (this.istInformationWithdraw) {
+        if (this.istInformationWithdraw!=null) {
             sb.append("istInformationWithdraw, ");
         }
         if (this.specificCSIWithdraw != null) {
@@ -705,21 +387,21 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             sb.append(specificCSIWithdraw);
             sb.append(", ");
         }
-        if (this.chargingCharacteristicsWithdraw) {
+        if (this.chargingCharacteristicsWithdraw!=null) {
             sb.append("chargingCharacteristicsWithdraw, ");
         }
-        if (this.stnSrWithdraw) {
+        if (this.stnSrWithdraw!=null) {
             sb.append("stnSrWithdraw, ");
         }
-        if (this.epsSubscriptionDataWithdraw != null) {
+        if (this.epsSubscriptionDataWithdraw != null && this.epsSubscriptionDataWithdraw.getEPSSubscriptionDataWithdraw()!=null) {
             sb.append("epsSubscriptionDataWithdraw=");
-            sb.append(epsSubscriptionDataWithdraw);
+            sb.append(epsSubscriptionDataWithdraw.getEPSSubscriptionDataWithdraw());
             sb.append(", ");
         }
-        if (this.apnOiReplacementWithdraw) {
+        if (this.apnOiReplacementWithdraw!=null) {
             sb.append("apnOiReplacementWithdraw, ");
         }
-        if (this.csgSubscriptionDeleted) {
+        if (this.csgSubscriptionDeleted!=null) {
             sb.append("csgSubscriptionDeleted, ");
         }
 
@@ -727,5 +409,4 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
 
         return sb.toString();
     }
-
 }

@@ -25,36 +25,36 @@ package org.restcomm.protocols.ss7.map.api;
 import java.nio.charset.Charset;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
-import org.restcomm.protocols.ss7.map.api.smstpdu.CommandData;
-import org.restcomm.protocols.ss7.map.api.smstpdu.CommandType;
+import org.restcomm.protocols.ss7.map.api.smstpdu.CommandDataImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.CommandTypeImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.CommandTypeValue;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifier;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaIndicationType;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaMessageClass;
-import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.smstpdu.FailureCause;
-import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageLockingShiftIdentifier;
-import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageSingleShiftIdentifier;
+import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.FailureCauseImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageLockingShiftIdentifierImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageSingleShiftIdentifierImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ParameterIndicator;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsCommandTpdu;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverTpdu;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsStatusReportTpdu;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitReportTpdu;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitTpdu;
-import org.restcomm.protocols.ss7.map.api.smstpdu.Status;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifierImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsCommandTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsStatusReportTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitReportTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.StatusImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.StatusReportQualifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityEnhancedFormatData;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriod;
+import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityEnhancedFormatDataImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodImpl;
 
 /**
  *
@@ -63,82 +63,82 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriod;
  */
 public interface MAPSmsTpduParameterFactory {
 
-    SmsCommandTpdu createSmsCommandTpdu(boolean statusReportRequest, int messageReference,
-            ProtocolIdentifier protocolIdentifier, CommandType commandType, int messageNumber, AddressField destinationAddress,
-            CommandData commandData);
+    SmsCommandTpduImpl createSmsCommandTpdu(boolean statusReportRequest, int messageReference,
+            ProtocolIdentifierImpl protocolIdentifier, CommandTypeImpl commandType, int messageNumber, AddressFieldImpl destinationAddress,
+            CommandDataImpl commandData);
 
-    SmsDeliverReportTpdu createSmsDeliverReportTpdu(FailureCause failureCause, ProtocolIdentifier protocolIdentifier,
-            UserData userData);
+    SmsDeliverReportTpduImpl createSmsDeliverReportTpdu(FailureCauseImpl failureCause, ProtocolIdentifierImpl protocolIdentifier,
+            UserDataImpl userData);
 
-    SmsDeliverTpdu createSmsDeliverTpdu(boolean moreMessagesToSend, boolean forwardedOrSpawned, boolean replyPathExists,
-            boolean statusReportIndication, AddressField originatingAddress, ProtocolIdentifier protocolIdentifier,
-            AbsoluteTimeStamp serviceCentreTimeStamp, UserData userData);
+    SmsDeliverTpduImpl createSmsDeliverTpdu(boolean moreMessagesToSend, boolean forwardedOrSpawned, boolean replyPathExists,
+            boolean statusReportIndication, AddressFieldImpl originatingAddress, ProtocolIdentifierImpl protocolIdentifier,
+            AbsoluteTimeStampImpl serviceCentreTimeStamp, UserDataImpl userData);
 
-    SmsStatusReportTpdu createSmsStatusReportTpdu(boolean moreMessagesToSend, boolean forwardedOrSpawned,
-            StatusReportQualifier statusReportQualifier, int messageReference, AddressField recipientAddress,
-            AbsoluteTimeStamp serviceCentreTimeStamp, AbsoluteTimeStamp dischargeTime, Status status,
-            ProtocolIdentifier protocolIdentifier, UserData userData);
+    SmsStatusReportTpduImpl createSmsStatusReportTpdu(boolean moreMessagesToSend, boolean forwardedOrSpawned,
+            StatusReportQualifier statusReportQualifier, int messageReference, AddressFieldImpl recipientAddress,
+            AbsoluteTimeStampImpl serviceCentreTimeStamp, AbsoluteTimeStampImpl dischargeTime, StatusImpl status,
+            ProtocolIdentifierImpl protocolIdentifier, UserDataImpl userData);
 
-    SmsSubmitReportTpdu createSmsSubmitReportTpdu(FailureCause failureCause, AbsoluteTimeStamp serviceCentreTimeStamp,
-            ProtocolIdentifier protocolIdentifier, UserData userData);
+    SmsSubmitReportTpduImpl createSmsSubmitReportTpdu(FailureCauseImpl failureCause, AbsoluteTimeStampImpl serviceCentreTimeStamp,
+            ProtocolIdentifierImpl protocolIdentifier, UserDataImpl userData);
 
-    SmsSubmitTpdu createSmsSubmitTpdu(boolean rejectDuplicates, boolean replyPathExists, boolean statusReportRequest,
-            int messageReference, AddressField destinationAddress, ProtocolIdentifier protocolIdentifier,
-            ValidityPeriod validityPeriod, UserData userData);
+    SmsSubmitTpduImpl createSmsSubmitTpdu(boolean rejectDuplicates, boolean replyPathExists, boolean statusReportRequest,
+            int messageReference, AddressFieldImpl destinationAddress, ProtocolIdentifierImpl protocolIdentifier,
+            ValidityPeriodImpl validityPeriod, UserDataImpl userData);
 
-    AbsoluteTimeStamp createAbsoluteTimeStamp(int year, int month, int day, int hour, int minute, int second,
+    AbsoluteTimeStampImpl createAbsoluteTimeStamp(int year, int month, int day, int hour, int minute, int second,
             int timeZone);
 
-    AddressField createAddressField(TypeOfNumber typeOfNumber, NumberingPlanIdentification numberingPlanIdentification,
+    AddressFieldImpl createAddressField(TypeOfNumber typeOfNumber, NumberingPlanIdentification numberingPlanIdentification,
             String addressValue);
 
-    CommandType createCommandType(int code);
+    CommandTypeImpl createCommandType(int code);
 
-    CommandType createCommandType(CommandTypeValue value);
+    CommandTypeImpl createCommandType(CommandTypeValue value);
 
-    DataCodingScheme createDataCodingScheme(int code);
+    DataCodingSchemeImpl createDataCodingScheme(int code);
 
-    DataCodingScheme createDataCodingScheme(DataCodingGroup dataCodingGroup, DataCodingSchemaMessageClass messageClass,
+    DataCodingSchemeImpl createDataCodingScheme(DataCodingGroup dataCodingGroup, DataCodingSchemaMessageClass messageClass,
             DataCodingSchemaIndicationType dataCodingSchemaIndicationType, Boolean setIndicationActive,
             CharacterSet characterSet, boolean isCompressed);
 
-    FailureCause createFailureCause(int code);
+    FailureCauseImpl createFailureCause(int code);
 
     ParameterIndicator createParameterIndicator(boolean TP_UDLPresence, boolean getTP_DCSPresence,
             boolean getTP_PIDPresence);
 
-    ProtocolIdentifier createProtocolIdentifier(int code);
+    ProtocolIdentifierImpl createProtocolIdentifier(int code);
 
-    Status createStatus(int code);
+    StatusImpl createStatus(int code);
 
-    ValidityEnhancedFormatData createValidityEnhancedFormatData(byte[] data);
+    ValidityEnhancedFormatDataImpl createValidityEnhancedFormatData(byte[] data);
 
-    ValidityPeriod createValidityPeriod(int relativeFormatValue);
+    ValidityPeriodImpl createValidityPeriod(int relativeFormatValue);
 
-    ValidityPeriod createValidityPeriod(AbsoluteTimeStamp absoluteFormatValue);
+    ValidityPeriodImpl createValidityPeriod(AbsoluteTimeStampImpl absoluteFormatValue);
 
-    ValidityPeriod createValidityPeriod(ValidityEnhancedFormatData enhancedFormatValue);
+    ValidityPeriodImpl createValidityPeriod(ValidityEnhancedFormatDataImpl enhancedFormatValue);
 
-    UserDataHeader createUserDataHeader();
+    UserDataHeaderImpl createUserDataHeader();
 
-    UserDataHeader createUserDataHeader(byte[] encodedData);
+    UserDataHeaderImpl createUserDataHeader(byte[] encodedData);
 
-    UserData createUserData(byte[] encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
+    UserDataImpl createUserData(byte[] encodedData, DataCodingSchemeImpl dataCodingScheme, int encodedUserDataLength,
             boolean encodedUserDataHeaderIndicator, Charset gsm8Charset);
 
-    UserData createUserData(String decodedMessage, DataCodingScheme dataCodingScheme,
-            UserDataHeader decodedUserDataHeader, Charset gsm8Charset);
+    UserDataImpl createUserData(String decodedMessage, DataCodingSchemeImpl dataCodingScheme,
+            UserDataHeaderImpl decodedUserDataHeader, Charset gsm8Charset);
 
-    CommandData createCommandData(byte[] data);
+    CommandDataImpl createCommandData(byte[] data);
 
-    CommandData createCommandData(String decodedMessage);
+    CommandDataImpl createCommandData(String decodedMessage);
 
-    ConcatenatedShortMessagesIdentifier createConcatenatedShortMessagesIdentifier(boolean referenceIs16bit,
+    ConcatenatedShortMessagesIdentifierImpl createConcatenatedShortMessagesIdentifier(boolean referenceIs16bit,
             int reference, int mesageSegmentCount, int mesageSegmentNumber);
 
-    NationalLanguageLockingShiftIdentifier createNationalLanguageLockingShiftIdentifier(
+    NationalLanguageLockingShiftIdentifierImpl createNationalLanguageLockingShiftIdentifier(
             NationalLanguageIdentifier nationalLanguageCode);
 
-    NationalLanguageSingleShiftIdentifier createNationalLanguageSingleShiftIdentifier(
+    NationalLanguageSingleShiftIdentifierImpl createNationalLanguageSingleShiftIdentifier(
             NationalLanguageIdentifier nationalLanguageCode);
 }

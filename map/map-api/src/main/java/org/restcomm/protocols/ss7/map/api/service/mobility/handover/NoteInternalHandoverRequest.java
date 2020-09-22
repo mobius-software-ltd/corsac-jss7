@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
 
 /**
  *
@@ -42,8 +42,8 @@ public interface NoteInternalHandoverRequest extends Serializable {
 
     HandoverType getHandoverType();
 
-    GlobalCellId getServingCellId();
+    GlobalCellIdImpl getServingCellId();
 
-    ExternalSignalInfo getChannelId();
+    ExternalSignalInfoImpl getChannelId();
 
 }

@@ -22,117 +22,143 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ASNAccuracyFulfilmentIndicator;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ASNLCSEvent;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
-import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrData;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation;
-import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningData;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientID;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSEvent;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfo;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformation;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddress;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SubscriberLocationReportRequest;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningData;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
-import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNList;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ASNSingleByte;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  * @author <a href="mailto:abhayani@gmail.com"> Amit Bhayani </a>
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implements SubscriberLocationReportRequest {
 	private static final long serialVersionUID = 1L;
 
-	private static final int _TAG_MSISDN = 0;
-    private static final int _TAG_IMSI = 1;
-    private static final int _TAG_IMEI = 2;
-    private static final int _TAG_NA_ESRD = 3;
-    private static final int _TAG_NA_ESRK = 4;
-    private static final int _TAG_LOCATION_ESTIMATE = 5;
-    private static final int _TAG_AGE_OF_LOCATION_ESTIMATE = 6;
-    private static final int _TAG_SLR_ARG_EXTENSION_CONTAINER = 7;
-    private static final int _TAG_ADD_LOCATION_ESTIMATE = 8;
-    private static final int _TAG_DEFERRED_MT_LR_DATA = 9;
-    private static final int _TAG_LCS_REFERENCE_NUMBER = 10;
-    private static final int _TAG_GERAN_POSITIONING_DATA = 11;
-    private static final int _TAG_UTRAN_POSITIONING_DATA = 12;
-    private static final int _TAG_CELL_ID_OR_SAI = 13;
-    private static final int _TAG_H_GMLC_ADDRESS = 14;
-    private static final int _TAG_LCS_SERVICE_TYPE_ID = 15;
-    private static final int _TAG_SAI_PRESENT = 17;
-    private static final int _TAG_PSEUDONYM_INDICATOR = 18;
-    private static final int _TAG_ACCURACY_FULFILMENT_INDICATOR = 19;
-    private static final int _TAG_velocityEstimate = 20;
-    private static final int _TAG_sequenceNumber = 21;
-    private static final int _TAG_periodicLDRInfo = 22;
-    private static final int _TAG_mo_lrShortCircuitIndicator = 23;
-    private static final int _TAG_geranGANSSpositioningData = 24;
-    private static final int _TAG_utranGANSSpositioningData = 25;
-    private static final int _TAG_targetServingNodeForHandover = 26;
-    private static final int _TAG_LMSI = 27;
-    private static final int _TAG_reportingPLMNList = 28;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=10,constructed=false,index=0)
+    private ASNLCSEvent lcsEvent;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=1)
+    private LCSClientIDImpl lcsClientID;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=2)
+    private LCSLocationInfoImpl lcsLocationInfo;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private ISDNAddressStringImpl msisdn;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    private IMSIImpl imsi;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
+    private IMEIImpl imei;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
+    private ISDNAddressStringImpl naEsrd;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
+    private ISDNAddressStringImpl naEsrk;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
+    private ExtGeographicalInformationImpl locationEstimate;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
+    private ASNInteger ageOfLocationEstimate;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1)
+    private SLRArgExtensionContainerImpl slrArgExtensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
+    private AddGeographicalInformationImpl addLocationEstimate;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=true,index=-1)
+    private DeferredmtlrDataImpl deferredmtlrData;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
+    private ASNSingleByte lcsReferenceNumber;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
+    private PositioningDataInformationImpl geranPositioningData;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
+    private UtranPositioningDataInfoImpl utranPositioningData;
 
-    public static final String _PrimitiveName = "SubscriberLocationReportRequest";
-
-    private LCSEvent lcsEvent;
-    private LCSClientID lcsClientID;
-    private LCSLocationInfo lcsLocationInfo;
-    private ISDNAddressString msisdn;
-    private IMSI imsi;
-    private IMEI imei;
-    private ISDNAddressString naEsrd;
-    private ISDNAddressString naEsrk;
-    private ExtGeographicalInformation locationEstimate;
-    private Integer ageOfLocationEstimate;
-    private SLRArgExtensionContainer slrArgExtensionContainer;
-    private AddGeographicalInformation addLocationEstimate;
-    private DeferredmtlrData deferredmtlrData;
-    private Integer lcsReferenceNumber;
-    private PositioningDataInformation geranPositioningData;
-    private UtranPositioningDataInfo utranPositioningData;
-    private CellGlobalIdOrServiceAreaIdOrLAI cellIdOrSai;
-    private GSNAddress hgmlcAddress;
-    private Integer lcsServiceTypeID;
-    private boolean saiPresent;
-    private boolean pseudonymIndicator;
-    private AccuracyFulfilmentIndicator accuracyFulfilmentIndicator;
-    private VelocityEstimate velocityEstimate;
-    private Integer sequenceNumber;
-    private PeriodicLDRInfo periodicLDRInfo;
-    private boolean moLrShortCircuitIndicator;
-    private GeranGANSSpositioningData geranGANSSpositioningData;
-    private UtranGANSSpositioningData utranGANSSpositioningData;
-    private ServingNodeAddress targetServingNodeForHandover;
-    private LMSI lmsi;
-    private ReportingPLMNList reportingPLMNList;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)
+    private CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl cellGlobalIdOrServiceAreaIdOrLAIWrapped;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)
+    private GSNAddressImpl hgmlcAddress;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
+    private ASNInteger lcsServiceTypeID;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=false,index=-1)
+    private ASNNull saiPresent;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=false,index=-1)
+    private ASNNull pseudonymIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=false,index=-1)
+    private ASNAccuracyFulfilmentIndicator accuracyFulfilmentIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1)
+    private VelocityEstimateImpl velocityEstimate;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=21,constructed=false,index=-1)
+    private ASNInteger sequenceNumber;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=true,index=-1)
+    private PeriodicLDRInfoImpl periodicLDRInfo;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=false,index=-1)
+    private ASNNull moLrShortCircuitIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=24,constructed=false,index=-1)
+    private GeranGANSSpositioningDataImpl geranGANSSpositioningData;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=false,index=-1)
+    private UtranGANSSpositioningDataImpl utranGANSSpositioningData;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=26,constructed=true,index=-1)
+    private ServingNodeAddressWrapperImpl targetServingNodeForHandover;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=27,constructed=false,index=-1)
+    private LMSIImpl lmsi;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=28,constructed=true,index=-1)
+    private ReportingPLMNListImpl reportingPLMNList;
 
     /**
      *
@@ -165,19 +191,24 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @param pseudonymIndicator
      * @param accuracyFulfilmentIndicator
      */
-    public SubscriberLocationReportRequestImpl(LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo,
-                                               ISDNAddressString msisdn, IMSI imsi, IMEI imei, ISDNAddressString naEsrd, ISDNAddressString naEsrk,
-                                               ExtGeographicalInformation locationEstimate, Integer ageOfLocationEstimate,
-                                               SLRArgExtensionContainer slrArgExtensionContainer, AddGeographicalInformation addLocationEstimate,
-                                               DeferredmtlrData deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformation geranPositioningData,
-                                               UtranPositioningDataInfo utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAI cellIdOrSai,
-                                               GSNAddress hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent, boolean pseudonymIndicator,
-                                               AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate, Integer sequenceNumber,
-                                               PeriodicLDRInfo periodicLDRInfo, boolean moLrShortCircuitIndicator,
-                                               GeranGANSSpositioningData geranGANSSpositioningData, UtranGANSSpositioningData utranGANSSpositioningData,
-                                               ServingNodeAddress targetServingNodeForHandover) {
+    public SubscriberLocationReportRequestImpl(LCSEvent lcsEvent, LCSClientIDImpl lcsClientID, LCSLocationInfoImpl lcsLocationInfo,
+                                               ISDNAddressStringImpl msisdn, IMSIImpl imsi, IMEIImpl imei, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk,
+                                               ExtGeographicalInformationImpl locationEstimate, Integer ageOfLocationEstimate,
+                                               SLRArgExtensionContainerImpl slrArgExtensionContainer, AddGeographicalInformationImpl addLocationEstimate,
+                                               DeferredmtlrDataImpl deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformationImpl geranPositioningData,
+                                               UtranPositioningDataInfoImpl utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAIImpl cellIdOrSai,
+                                               GSNAddressImpl hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent, boolean pseudonymIndicator,
+                                               AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate, Integer sequenceNumber,
+                                               PeriodicLDRInfoImpl periodicLDRInfo, boolean moLrShortCircuitIndicator,
+                                               GeranGANSSpositioningDataImpl geranGANSSpositioningData, UtranGANSSpositioningDataImpl utranGANSSpositioningData,
+                                               ServingNodeAddressImpl targetServingNodeForHandover) {
         super();
-        this.lcsEvent = lcsEvent;
+        
+        if(lcsEvent!=null) {
+        	this.lcsEvent = new ASNLCSEvent();
+        	this.lcsEvent.setType(lcsEvent);
+        }
+        
         this.lcsClientID = lcsClientID;
         this.lcsLocationInfo = lcsLocationInfo;
         this.msisdn = msisdn;
@@ -186,26 +217,62 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.naEsrd = naEsrd;
         this.naEsrk = naEsrk;
         this.locationEstimate = locationEstimate;
-        this.ageOfLocationEstimate = ageOfLocationEstimate;
+        
+        if(ageOfLocationEstimate!=null) {
+        	this.ageOfLocationEstimate = new ASNInteger();
+        	this.ageOfLocationEstimate.setValue(ageOfLocationEstimate.longValue());
+        }
+        
         this.slrArgExtensionContainer = slrArgExtensionContainer;
         this.addLocationEstimate = addLocationEstimate;
         this.deferredmtlrData = deferredmtlrData;
-        this.lcsReferenceNumber = lcsReferenceNumber;
+        
+        if(lcsReferenceNumber!=null) {
+        	this.lcsReferenceNumber = new ASNSingleByte();
+        	this.lcsReferenceNumber.setValue(lcsReferenceNumber);
+        }
+        
         this.geranPositioningData = geranPositioningData;
         this.utranPositioningData = utranPositioningData;
-        this.cellIdOrSai = cellIdOrSai;
+        
+        if(cellIdOrSai!=null)
+        	this.cellGlobalIdOrServiceAreaIdOrLAIWrapped = new CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl(cellIdOrSai);
+        
         this.hgmlcAddress = hgmlcAddress;
-        this.lcsServiceTypeID = lcsServiceTypeID;
-        this.saiPresent = saiPresent;
-        this.pseudonymIndicator = pseudonymIndicator;
-        this.accuracyFulfilmentIndicator = accuracyFulfilmentIndicator;
+        
+        if(lcsServiceTypeID!=null) {
+        	this.lcsServiceTypeID = new ASNInteger();
+        	this.lcsServiceTypeID.setValue(lcsServiceTypeID.longValue());
+        }
+        
+        if(saiPresent)
+        	this.saiPresent = new ASNNull();
+        
+        if(pseudonymIndicator)
+        	this.pseudonymIndicator = new ASNNull();
+        
+        if(accuracyFulfilmentIndicator!=null) {
+        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator();
+        	this.accuracyFulfilmentIndicator.setType(accuracyFulfilmentIndicator);
+        }
+        
         this.velocityEstimate = velocityEstimate;
-        this.sequenceNumber = sequenceNumber;
+        
+        if(sequenceNumber!=null) {
+        	this.sequenceNumber = new ASNInteger();
+        	this.sequenceNumber.setValue(sequenceNumber.longValue());
+        }
+        
         this.periodicLDRInfo = periodicLDRInfo;
-        this.moLrShortCircuitIndicator = moLrShortCircuitIndicator;
+        
+        if(moLrShortCircuitIndicator)
+        	this.moLrShortCircuitIndicator = new ASNNull();
+        
         this.geranGANSSpositioningData = geranGANSSpositioningData;
         this.utranGANSSpositioningData = utranGANSSpositioningData;
-        this.targetServingNodeForHandover = targetServingNodeForHandover;
+        
+        if(this.targetServingNodeForHandover==null)
+        	this.targetServingNodeForHandover = new ServingNodeAddressWrapperImpl(targetServingNodeForHandover);
     }
 
     /**
@@ -234,18 +301,23 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @param lmsi
      * @param reportingPLMNList
      */
-    public SubscriberLocationReportRequestImpl(LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo, ISDNAddressString msisdn, IMSI imsi,
-                                               IMEI imei, ISDNAddressString naEsrd, ISDNAddressString naEsrk, ExtGeographicalInformation locationEstimate,
-                                               Integer ageOfLocationEstimate, SLRArgExtensionContainer slrArgExtensionContainer,
-                                               AddGeographicalInformation addLocationEstimate, DeferredmtlrData deferredmtlrData, Integer lcsReferenceNumber,
-                                               PositioningDataInformation geranPositioningData, UtranPositioningDataInfo utranPositioningData,
-                                               CellGlobalIdOrServiceAreaIdOrLAI cellIdOrSai, GSNAddress hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent,
-                                               boolean pseudonymIndicator, AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate,
-                                               Integer sequenceNumber, PeriodicLDRInfo periodicLDRInfo, boolean moLrShortCircuitIndicator, GeranGANSSpositioningData geranGANSSpositioningData,
-                                               UtranGANSSpositioningData utranGANSSpositioningData, ServingNodeAddress targetServingNodeForHandover, LMSI lmsi,
-                                               ReportingPLMNList reportingPLMNList) {
+    public SubscriberLocationReportRequestImpl(LCSEvent lcsEvent, LCSClientIDImpl lcsClientID, LCSLocationInfoImpl lcsLocationInfo, ISDNAddressStringImpl msisdn, IMSIImpl imsi,
+                                               IMEIImpl imei, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk, ExtGeographicalInformationImpl locationEstimate,
+                                               Integer ageOfLocationEstimate, SLRArgExtensionContainerImpl slrArgExtensionContainer,
+                                               AddGeographicalInformationImpl addLocationEstimate, DeferredmtlrDataImpl deferredmtlrData, Integer lcsReferenceNumber,
+                                               PositioningDataInformationImpl geranPositioningData, UtranPositioningDataInfoImpl utranPositioningData,
+                                               CellGlobalIdOrServiceAreaIdOrLAIImpl cellIdOrSai, GSNAddressImpl hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent,
+                                               boolean pseudonymIndicator, AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate,
+                                               Integer sequenceNumber, PeriodicLDRInfoImpl periodicLDRInfo, boolean moLrShortCircuitIndicator, GeranGANSSpositioningDataImpl geranGANSSpositioningData,
+                                               UtranGANSSpositioningDataImpl utranGANSSpositioningData, ServingNodeAddressImpl targetServingNodeForHandover, LMSIImpl lmsi,
+                                               ReportingPLMNListImpl reportingPLMNList) {
         super();
-        this.lcsEvent = lcsEvent;
+        
+        if(lcsEvent!=null) {
+        	this.lcsEvent = new ASNLCSEvent();
+        	this.lcsEvent.setType(lcsEvent);
+        }
+        
         this.lcsClientID = lcsClientID;
         this.lcsLocationInfo = lcsLocationInfo;
         this.msisdn = msisdn;
@@ -254,26 +326,63 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.naEsrd = naEsrd;
         this.naEsrk = naEsrk;
         this.locationEstimate = locationEstimate;
-        this.ageOfLocationEstimate = ageOfLocationEstimate;
+        
+        if(ageOfLocationEstimate!=null) {
+        	this.ageOfLocationEstimate = new ASNInteger();
+        	this.ageOfLocationEstimate.setValue(ageOfLocationEstimate.longValue());
+        }
+        
         this.slrArgExtensionContainer = slrArgExtensionContainer;
         this.addLocationEstimate = addLocationEstimate;
         this.deferredmtlrData = deferredmtlrData;
-        this.lcsReferenceNumber = lcsReferenceNumber;
+        
+        if(lcsReferenceNumber!=null) {
+        	this.lcsReferenceNumber = new ASNSingleByte();
+        	this.lcsReferenceNumber.setValue(lcsReferenceNumber);
+        }
+        
         this.geranPositioningData = geranPositioningData;
         this.utranPositioningData = utranPositioningData;
-        this.cellIdOrSai = cellIdOrSai;
+        
+        if(cellIdOrSai!=null)
+        	this.cellGlobalIdOrServiceAreaIdOrLAIWrapped = new CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl(cellIdOrSai);
+        
         this.hgmlcAddress = hgmlcAddress;
-        this.lcsServiceTypeID = lcsServiceTypeID;
-        this.saiPresent = saiPresent;
-        this.pseudonymIndicator = pseudonymIndicator;
-        this.accuracyFulfilmentIndicator = accuracyFulfilmentIndicator;
+        
+        if(lcsServiceTypeID!=null) {
+        	this.lcsServiceTypeID = new ASNInteger();
+        	this.lcsServiceTypeID.setValue(lcsServiceTypeID.longValue());
+        }
+        
+        if(saiPresent)
+        	this.saiPresent = new ASNNull();
+        
+        if(pseudonymIndicator)
+        	this.pseudonymIndicator = new ASNNull();
+        
+        if(this.accuracyFulfilmentIndicator!=null) {
+        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator();
+        	this.accuracyFulfilmentIndicator.setType(accuracyFulfilmentIndicator);
+        }
+        
         this.velocityEstimate = velocityEstimate;
-        this.sequenceNumber = sequenceNumber;
+
+        if(sequenceNumber!=null) {
+        	this.sequenceNumber = new ASNInteger();
+        	this.sequenceNumber.setValue(sequenceNumber.longValue());
+        }
+        
         this.periodicLDRInfo = periodicLDRInfo;
-        this.moLrShortCircuitIndicator = moLrShortCircuitIndicator;
+        
+        if(moLrShortCircuitIndicator)
+        	this.moLrShortCircuitIndicator = new ASNNull();
+        
         this.geranGANSSpositioningData = geranGANSSpositioningData;
         this.utranGANSSpositioningData = utranGANSSpositioningData;
-        this.targetServingNodeForHandover = targetServingNodeForHandover;
+        
+        if(targetServingNodeForHandover==null)
+        	this.targetServingNodeForHandover = new ServingNodeAddressWrapperImpl(targetServingNodeForHandover);
+
         this.lmsi = lmsi;
         this.reportingPLMNList = reportingPLMNList;
     }
@@ -292,7 +401,10 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLCSEvent()
      */
     public LCSEvent getLCSEvent() {
-        return this.lcsEvent;
+    	if(this.lcsEvent==null)
+    		return null;
+    	
+        return this.lcsEvent.getType();
     }
 
     /*
@@ -300,7 +412,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLCSClientID()
      */
-    public LCSClientID getLCSClientID() {
+    public LCSClientIDImpl getLCSClientID() {
         return this.lcsClientID;
     }
 
@@ -309,7 +421,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLCSLocationInfo()
      */
-    public LCSLocationInfo getLCSLocationInfo() {
+    public LCSLocationInfoImpl getLCSLocationInfo() {
         return this.lcsLocationInfo;
     }
 
@@ -318,7 +430,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getMSISDN()
      */
-    public ISDNAddressString getMSISDN() {
+    public ISDNAddressStringImpl getMSISDN() {
         return this.msisdn;
     }
 
@@ -327,7 +439,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getIMSI()
      */
-    public IMSI getIMSI() {
+    public IMSIImpl getIMSI() {
         return this.imsi;
     }
 
@@ -336,7 +448,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getIMEI()
      */
-    public IMEI getIMEI() {
+    public IMEIImpl getIMEI() {
         return this.imei;
     }
 
@@ -345,7 +457,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getNaESRD()
      */
-    public ISDNAddressString getNaESRD() {
+    public ISDNAddressStringImpl getNaESRD() {
         return this.naEsrd;
     }
 
@@ -354,7 +466,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getNaESRK()
      */
-    public ISDNAddressString getNaESRK() {
+    public ISDNAddressStringImpl getNaESRK() {
         return this.naEsrk;
     }
 
@@ -363,7 +475,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLocationEstimate()
      */
-    public ExtGeographicalInformation getLocationEstimate() {
+    public ExtGeographicalInformationImpl getLocationEstimate() {
         return this.locationEstimate;
     }
 
@@ -374,7 +486,10 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * SubscriberLocationReportRequestIndication#getAgeOfLocationEstimate()
      */
     public Integer getAgeOfLocationEstimate() {
-        return this.ageOfLocationEstimate;
+    	if(this.ageOfLocationEstimate==null)
+    		return null;
+    	
+        return this.ageOfLocationEstimate.getValue().intValue();
     }
 
     /*
@@ -383,7 +498,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.mobicents.protocols.ss7.map.api.service.lsm.
      * SubscriberLocationReportRequestIndication#getSLRArgExtensionContainer()
      */
-    public SLRArgExtensionContainer getSLRArgExtensionContainer() {
+    public SLRArgExtensionContainerImpl getSLRArgExtensionContainer() {
         return this.slrArgExtensionContainer;
     }
 
@@ -393,7 +508,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.mobicents.protocols.ss7.map.api.service.lsm.
      * SubscriberLocationReportRequestIndication#getAdditionalLocationEstimate()
      */
-    public AddGeographicalInformation getAdditionalLocationEstimate() {
+    public AddGeographicalInformationImpl getAdditionalLocationEstimate() {
         return this.addLocationEstimate;
     }
 
@@ -402,7 +517,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getDeferredmtlrData()
      */
-    public DeferredmtlrData getDeferredmtlrData() {
+    public DeferredmtlrDataImpl getDeferredmtlrData() {
         return this.deferredmtlrData;
     }
 
@@ -412,7 +527,10 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLCSReferenceNumber()
      */
     public Integer getLCSReferenceNumber() {
-        return this.lcsReferenceNumber;
+    	if(this.lcsReferenceNumber==null)
+    		return null;
+    	
+        return this.lcsReferenceNumber.getValue().intValue();
     }
 
     /*
@@ -420,7 +538,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getGeranPositioningData()
      */
-    public PositioningDataInformation getGeranPositioningData() {
+    public PositioningDataInformationImpl getGeranPositioningData() {
         return this.geranPositioningData;
     }
 
@@ -429,7 +547,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getUtranPositioningData()
      */
-    public UtranPositioningDataInfo getUtranPositioningData() {
+    public UtranPositioningDataInfoImpl getUtranPositioningData() {
         return this.utranPositioningData;
     }
 
@@ -439,8 +557,11 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication
      * #getCellGlobalIdOrServiceAreaIdOrLAI()
      */
-    public CellGlobalIdOrServiceAreaIdOrLAI getCellGlobalIdOrServiceAreaIdOrLAI() {
-        return this.cellIdOrSai;
+    public CellGlobalIdOrServiceAreaIdOrLAIImpl getCellGlobalIdOrServiceAreaIdOrLAI() {
+    	if(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped!=null)
+    		return this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI();
+    	
+    	return null;
     }
 
     /*
@@ -449,7 +570,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getSaiPresent()
      */
     public boolean getSaiPresent() {
-        return this.saiPresent;
+        return this.saiPresent!=null;
     }
 
     /*
@@ -457,7 +578,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getHGMLCAddress()
      */
-    public GSNAddress getHGMLCAddress() {
+    public GSNAddressImpl getHGMLCAddress() {
         return this.hgmlcAddress;
     }
 
@@ -467,7 +588,10 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLCSServiceTypeID()
      */
     public Integer getLCSServiceTypeID() {
-        return this.lcsServiceTypeID;
+    	if(this.lcsServiceTypeID==null)
+    		return null;
+    	
+        return this.lcsServiceTypeID.getValue().intValue();
     }
 
     /*
@@ -476,7 +600,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.mobicents.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getPseudonymIndicator()
      */
     public boolean getPseudonymIndicator() {
-        return this.pseudonymIndicator;
+        return this.pseudonymIndicator!=null;
     }
 
     /*
@@ -486,774 +610,66 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * #getAccuracyFulfilmentIndicator()
      */
     public AccuracyFulfilmentIndicator getAccuracyFulfilmentIndicator() {
-        return this.accuracyFulfilmentIndicator;
+    	if(this.accuracyFulfilmentIndicator==null)
+    		return null;
+    	
+        return this.accuracyFulfilmentIndicator.getType();
     }
 
-    public VelocityEstimate getVelocityEstimate() {
+    public VelocityEstimateImpl getVelocityEstimate() {
         return velocityEstimate;
     }
 
     public Integer getSequenceNumber() {
-        return sequenceNumber;
+    	if(this.sequenceNumber==null)
+    		return null;
+    	
+        return sequenceNumber.getValue().intValue();
     }
 
-    public PeriodicLDRInfo getPeriodicLDRInfo() {
+    public PeriodicLDRInfoImpl getPeriodicLDRInfo() {
         return periodicLDRInfo;
     }
 
     public boolean getMoLrShortCircuitIndicator() {
-        return moLrShortCircuitIndicator;
+        return moLrShortCircuitIndicator!=null;
     }
 
-    public GeranGANSSpositioningData getGeranGANSSpositioningData() {
+    public GeranGANSSpositioningDataImpl getGeranGANSSpositioningData() {
         return geranGANSSpositioningData;
     }
 
-    public UtranGANSSpositioningData getUtranGANSSpositioningData() {
+    public UtranGANSSpositioningDataImpl getUtranGANSSpositioningData() {
         return utranGANSSpositioningData;
     }
 
-    public ServingNodeAddress getTargetServingNodeForHandover() {
-        return targetServingNodeForHandover;
+    public ServingNodeAddressImpl getTargetServingNodeForHandover() {
+    	if(targetServingNodeForHandover==null)
+    		return null;
+    	
+        return targetServingNodeForHandover.getServingNodeAddress();
     }
 
-    public LMSI getLMSI() {
+    public LMSIImpl getLMSI() {
         return lmsi;
     }
 
-    public void setLmsi(LMSI lmsi) {
+    public void setLmsi(LMSIImpl lmsi) {
         this.lmsi = lmsi;
     }
 
-    public ReportingPLMNList getReportingPLMNList() {
+    public ReportingPLMNListImpl getReportingPLMNList() {
         return reportingPLMNList;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mobicents.protocols.ss7.map.api.primitives.MAPAsnPrimitive#getTag()
-     */
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mobicents.protocols.ss7.map.api.primitives.MAPAsnPrimitive#getTagClass ()
-     */
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mobicents.protocols.ss7.map.api.primitives.MAPAsnPrimitive#getIsPrimitive ()
-     */
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mobicents.protocols.ss7.map.api.primitives.MAPAsnPrimitive#decodeAll
-     * (org.mobicents.protocols.asn.AsnInputStream)
-     */
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mobicents.protocols.ss7.map.api.primitives.MAPAsnPrimitive#decodeData
-     * (org.mobicents.protocols.asn.AsnInputStream, int)
-     */
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.lcsEvent = null;
-        this.lcsClientID = null;
-        this.lcsLocationInfo = null;
-        this.msisdn = null;
-        this.imsi = null;
-        this.imei = null;
-        this.naEsrd = null;
-        this.naEsrk = null;
-        this.locationEstimate = null;
-        this.ageOfLocationEstimate = null;
-        this.slrArgExtensionContainer = null;
-        this.addLocationEstimate = null;
-        this.deferredmtlrData = null;
-        this.lcsReferenceNumber = null;
-        this.geranPositioningData = null;
-        this.utranPositioningData = null;
-        this.cellIdOrSai = null;
-        this.hgmlcAddress = null;
-        this.lcsServiceTypeID = null;
-        this.saiPresent = false;
-        this.pseudonymIndicator = false;
-        this.accuracyFulfilmentIndicator = null;
-        this.velocityEstimate = null;
-        this.sequenceNumber = null;
-        this.periodicLDRInfo = null;
-        this.moLrShortCircuitIndicator = false;
-        this.geranGANSSpositioningData = null;
-        this.utranGANSSpositioningData = null;
-        this.targetServingNodeForHandover = null;
-        this.lmsi = null;
-        this.reportingPLMNList = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int tag = ais.readTag();
-        // Decode mandatory lcs-Event LCS-Event,
-        if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.ENUMERATED) {
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": Parameter [lcs-Event LCS-Event] bad tag, tag class or not primitive",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        int event = (int) ais.readInteger();
-        this.lcsEvent = LCSEvent.getLCSEvent(event);
-
-        tag = ais.readTag();
-        // Decode mandatory lcs-ClientID LCS-ClientID
-        if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || ais.isTagPrimitive() || ais.getTag() != Tag.SEQUENCE) {
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": Parameter [lcs-ClientID LCS-ClientID] bad tag, tag class or primitive",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        this.lcsClientID = new LCSClientIDImpl();
-        ((LCSClientIDImpl) this.lcsClientID).decodeAll(ais);
-
-        tag = ais.readTag();
-        // Decode mandatory lcsLocationInfo LCSLocationInfo
-        if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || ais.isTagPrimitive() || ais.getTag() != Tag.SEQUENCE) {
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": Parameter [lcsLocationInfo LCSLocationInfo] bad tag, tag class or primitive",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        this.lcsLocationInfo = new LCSLocationInfoImpl();
-        ((LCSLocationInfoImpl) this.lcsLocationInfo).decodeAll(ais);
-
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _TAG_MSISDN:
-                        // msisdn [0] ISDN-AddressString OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [msisdn [0] ISDN-AddressString] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.msisdn = new ISDNAddressStringImpl();
-                        ((ISDNAddressStringImpl) this.msisdn).decodeAll(ais);
-                        break;
-                    case _TAG_IMSI:
-                        // imsi [1] IMSI OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [imsi [2] IMSI ] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.imsi = new IMSIImpl();
-                        ((IMSIImpl) this.imsi).decodeAll(ais);
-                        break;
-                    case _TAG_IMEI:
-                        // imei [2] IMEI OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [imei [2] IMEI OPTIONAL, ] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.imei = new IMEIImpl();
-                        ((IMEIImpl) this.imei).decodeAll(ais);
-                        break;
-                    case _TAG_NA_ESRD:
-                        // na-ESRD [3] ISDN-AddressString OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [na-ESRD [3] ISDN-AddressString] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.naEsrd = new ISDNAddressStringImpl();
-                        ((ISDNAddressStringImpl) this.naEsrd).decodeAll(ais);
-                        break;
-                    case _TAG_NA_ESRK:
-                        // na-ESRK [4] ISDN-AddressString OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [na-ESRK [4] ISDN-AddressString] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.naEsrk = new ISDNAddressStringImpl();
-                        ((ISDNAddressStringImpl) this.naEsrk).decodeAll(ais);
-                        break;
-                    case _TAG_LOCATION_ESTIMATE:
-                        // locationEstimate [5] Ext-GeographicalInformation OPTIONAL
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException(
-                                    "Error while decoding "
-                                            + _PrimitiveName
-                                            + ": Parameter [locationEstimate [5] Ext-GeographicalInformation OPTIONAL] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.locationEstimate = new ExtGeographicalInformationImpl();
-                        ((ExtGeographicalInformationImpl) this.locationEstimate).decodeAll(ais);
-                        break;
-                    case _TAG_AGE_OF_LOCATION_ESTIMATE:
-                        // ageOfLocationEstimate [6] AgeOfLocationInformation
-                        // OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [ageOfLocationEstimate [6] AgeOfLocationInformation] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.ageOfLocationEstimate = (int) ais.readInteger();
-                        break;
-                    case _TAG_SLR_ARG_EXTENSION_CONTAINER:
-                        // slr-ArgExtensionContainer [7] SLR-ArgExtensionContainer
-                        // OPTIONAL,
-                        if (ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [slr-ArgExtensionContainer [7] SLR-ArgExtensionContainer] is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.slrArgExtensionContainer = new SLRArgExtensionContainerImpl();
-                        ((SLRArgExtensionContainerImpl) this.slrArgExtensionContainer).decodeAll(ais);
-                        break;
-                    case _TAG_ADD_LOCATION_ESTIMATE:
-                        // add-LocationEstimate [8] Add-GeographicalInformation
-                        // OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [add-LocationEstimate [8] Add-GeographicalInformation] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.addLocationEstimate = new AddGeographicalInformationImpl();
-                        ((AddGeographicalInformationImpl) this.addLocationEstimate).decodeAll(ais);
-                        break;
-                    case _TAG_DEFERRED_MT_LR_DATA:
-                        if (ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [deferredmt-lrData [9] Deferredmt-lrData ] is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.deferredmtlrData = new DeferredmtlrDataImpl();
-                        ((DeferredmtlrDataImpl) this.deferredmtlrData).decodeAll(ais);
-                        break;
-                    case _TAG_LCS_REFERENCE_NUMBER:
-                        // lcs-ReferenceNumber [10] LCS-ReferenceNumber OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [lcs-ReferenceNumber [10] LCS-ReferenceNumber] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.lcsReferenceNumber = (int) ais.readOctetString()[0];
-                        break;
-                    case _TAG_GERAN_POSITIONING_DATA:
-                        // geranPositioningData [11] PositioningDataInformation
-                        // OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException(
-                                    "Error while decoding "
-                                            + _PrimitiveName
-                                            + ": Parameter [geranPositioningData [11] PositioningDataInformation OPTIONAL,] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.geranPositioningData = new PositioningDataInformationImpl();
-                        ((PositioningDataInformationImpl) this.geranPositioningData).decodeAll(ais);
-                        break;
-                    case _TAG_UTRAN_POSITIONING_DATA:
-                        // utranPositioningData [12] UtranPositioningDataInfo
-                        // OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException(
-                                    "Error while decoding "
-                                            + _PrimitiveName
-                                            + ": Parameter [utranPositioningData [12] UtranPositioningDataInfo OPTIONAL,] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.utranPositioningData = new UtranPositioningDataInfoImpl();
-                        ((UtranPositioningDataInfoImpl) this.utranPositioningData).decodeAll(ais);
-                        break;
-                    case _TAG_CELL_ID_OR_SAI:
-                        // cellIdOrSai [13] CellGlobalIdOrServiceAreaIdOrLAI
-                        // OPTIONAL,
-                        if (ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [cellIdOrSai [13] CellGlobalIdOrServiceAreaIdOrLAI] is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.cellIdOrSai = LocationInformationGPRSImpl.decodeCellGlobalIdOrServiceAreaIdOrLAI(ais,
-                                _PrimitiveName);
-                        // this.cellIdOrSai = new CellGlobalIdOrServiceAreaIdOrLAIImpl();
-                        // AsnInputStream ais2 = ais.readSequenceStream();
-                        // ais2.readTag();
-                        // ((CellGlobalIdOrServiceAreaIdOrLAIImpl) this.cellIdOrSai).decodeAll(ais2);
-                        break;
-                    case _TAG_H_GMLC_ADDRESS:
-                        // h-gmlc-Address [14] GSN-Address
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [h-gmlc-Address [14] GSN-Address] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.hgmlcAddress = new GSNAddressImpl();
-                        ((GSNAddressImpl) this.hgmlcAddress).decodeAll(ais);
-                        break;
-                    case _TAG_LCS_SERVICE_TYPE_ID:
-                        // lcsServiceTypeID [15] LCSServiceTypeID OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [lcsServiceTypeID [15] LCSServiceTypeID] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.lcsServiceTypeID = (int) ais.readInteger();
-                        break;
-                    case _TAG_SAI_PRESENT:
-                        // sai-Present [17] NULL OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [sai-Present [17]] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        ais.readNull();
-                        this.saiPresent = true;
-                        break;
-                    case _TAG_PSEUDONYM_INDICATOR:
-                        // pseudonymIndicator [18] NULL OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [pseudonymIndicator [18] NULL] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        ais.readNull();
-                        this.pseudonymIndicator = true;
-                        break;
-                    case _TAG_ACCURACY_FULFILMENT_INDICATOR:
-                        // accuracyFulfilmentIndicator [19]
-                        // AccuracyFulfilmentIndicator
-                        // OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException(
-                                    "Error while decoding "
-                                            + _PrimitiveName
-                                            + ": Parameter [accuracyFulfilmentIndicator [19] AccuracyFulfilmentIndicator] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        int indicator = (int) ais.readInteger();
-                        this.accuracyFulfilmentIndicator = AccuracyFulfilmentIndicator
-                                .getAccuracyFulfilmentIndicator(indicator);
-                        break;
-                    case _TAG_velocityEstimate:
-                        // velocityEstimate
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter velocityEstimate is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.velocityEstimate = new VelocityEstimateImpl();
-                        ((VelocityEstimateImpl) this.velocityEstimate).decodeAll(ais);
-                        break;
-                    case _TAG_sequenceNumber:
-                        // sequenceNumber
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter sequenceNumber is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.sequenceNumber = (int) ais.readInteger();
-                        break;
-                    case _TAG_periodicLDRInfo:
-                        // periodicLDRInfo
-                        if (ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter periodicLDRInfo is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.periodicLDRInfo = new PeriodicLDRInfoImpl();
-                        ((PeriodicLDRInfoImpl) this.periodicLDRInfo).decodeAll(ais);
-                        break;
-                    case _TAG_mo_lrShortCircuitIndicator:
-                        // moLrShortCircuitIndicator
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter moLrShortCircuitIndicator is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        ais.readNull();
-                        this.moLrShortCircuitIndicator = true;
-                        break;
-                    case _TAG_geranGANSSpositioningData:
-                        // geranGANSSpositioningData
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter geranGANSSpositioningData is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.geranGANSSpositioningData = new GeranGANSSpositioningDataImpl();
-                        ((GeranGANSSpositioningDataImpl) this.geranGANSSpositioningData).decodeAll(ais);
-                        break;
-                    case _TAG_utranGANSSpositioningData:
-                        // utranGANSSpositioningData
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter utranGANSSpositioningData is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.utranGANSSpositioningData = new UtranGANSSpositioningDataImpl();
-                        ((UtranGANSSpositioningDataImpl) this.utranGANSSpositioningData).decodeAll(ais);
-                        break;
-                    case _TAG_targetServingNodeForHandover:
-                        // targetServingNodeForHandover
-                        if (ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter targetServingNodeForHandover is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.targetServingNodeForHandover = new ServingNodeAddressImpl();
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        ((ServingNodeAddressImpl) this.targetServingNodeForHandover).decodeAll(ais2);
-                        break;
-                    case _TAG_LMSI:
-                        // lmsi
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [lmsi [27] LMSI TC-U OPTIONAL, ] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.lmsi = new LMSIImpl();
-                        ((LMSIImpl) this.lmsi).decodeAll(ais);
-                        break;
-                    case _TAG_reportingPLMNList:
-                        // lmsi
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter reportingPLMNList is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.reportingPLMNList = new ReportingPLMNListImpl();
-                        ((ReportingPLMNImpl) this.reportingPLMNList).decodeAll(ais);
-                        break;
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mobicents.protocols.ss7.map.api.primitives.MAPAsnPrimitive#encodeAll
-     * (org.mobicents.protocols.asn.AsnOutputStream)
-     */
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mobicents.protocols.ss7.map.api.primitives.MAPAsnPrimitive#encodeAll
-     * (org.mobicents.protocols.asn.AsnOutputStream, int, int)
-     */
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.mobicents.protocols.ss7.map.api.primitives.MAPAsnPrimitive#encodeData
-     * (org.mobicents.protocols.asn.AsnOutputStream)
-     */
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        if (this.lcsEvent == null) {
-            throw new MAPException("Error while encoding " + _PrimitiveName
-                    + " the mandatory parameter lcsEvent is not defined");
-        }
-
-        if (this.lcsClientID == null) {
-            throw new MAPException("Error while encoding " + _PrimitiveName
-                    + " the mandatory parameter lcsClientID is not defined");
-        }
-
-        if (this.lcsLocationInfo == null) {
-            throw new MAPException("Error while encoding " + _PrimitiveName
-                    + " the mandatory parameter lcsLocationInfo is not defined");
-        }
-
-        try {
-            asnOs.writeInteger(Tag.CLASS_UNIVERSAL, Tag.ENUMERATED, this.lcsEvent.getEvent());
-        } catch (IOException e) {
-            throw new MAPException("IOException while encoding parameter " + _PrimitiveName + ".lcsEvent", e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException while encoding parameter " + _PrimitiveName + ".lcsEvent", e);
-        }
-
-        ((LCSClientIDImpl) this.lcsClientID).encodeAll(asnOs);
-
-        ((LCSLocationInfoImpl) this.lcsLocationInfo).encodeAll(asnOs);
-
-        if (this.msisdn != null) {
-            // msisdn [0] ISDN-AddressString OPTIONAL,
-            ((ISDNAddressStringImpl) this.msisdn).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_MSISDN);
-        }
-
-        if (this.imsi != null) {
-            // imsi [1] IMSI OPTIONAL,
-            ((IMSIImpl) this.imsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_IMSI);
-        }
-
-        if (this.imei != null) {
-            // imei [2] IMEI OPTIONAL,
-            ((IMEIImpl) this.imei).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_IMEI);
-        }
-
-        if (this.naEsrd != null) {
-            // na-ESRD [3] ISDN-AddressString OPTIONAL,
-            ((ISDNAddressStringImpl) this.naEsrd).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_NA_ESRD);
-        }
-
-        if (this.naEsrk != null) {
-            // na-ESRK [4] ISDN-AddressString OPTIONAL
-            ((ISDNAddressStringImpl) this.naEsrk).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_NA_ESRK);
-        }
-
-        if (this.locationEstimate != null) {
-            // locationEstimate [5] Ext-GeographicalInformation OPTIONAL,
-            ((ExtGeographicalInformationImpl) this.locationEstimate).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_LOCATION_ESTIMATE);
-        }
-
-        // ageOfLocationEstimate [6] AgeOfLocationInformation OPTIONAL,
-        if (this.ageOfLocationEstimate != null) {
-            try {
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_AGE_OF_LOCATION_ESTIMATE, this.ageOfLocationEstimate);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter ageOfLocationEstimate", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter ageOfLocationEstimate", e);
-            }
-        }
-
-        if (this.slrArgExtensionContainer != null) {
-            // slr-ArgExtensionContainer [7] SLR-ArgExtensionContainer
-            ((SLRArgExtensionContainerImpl) this.slrArgExtensionContainer).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_SLR_ARG_EXTENSION_CONTAINER);
-        }
-
-        if (this.addLocationEstimate != null) {
-            // add-LocationEstimate [8] Add-GeographicalInformation OPTIONAL,
-            ((AddGeographicalInformationImpl) this.addLocationEstimate).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_ADD_LOCATION_ESTIMATE);
-        }
-
-        if (this.deferredmtlrData != null) {
-            // deferredmt-lrData [9] Deferredmt-lrData
-            ((DeferredmtlrDataImpl) this.deferredmtlrData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_DEFERRED_MT_LR_DATA);
-        }
-
-        if (this.lcsReferenceNumber != null) {
-            // lcs-ReferenceNumber [10] LCS-ReferenceNumber
-            try {
-                asnOs.writeOctetString(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_LCS_REFERENCE_NUMBER,
-                        new byte[]{(byte) (int) this.lcsReferenceNumber});
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter lcs-ReferenceNumber", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter lcs-ReferenceNumber", e);
-            }
-        }
-
-        if (this.geranPositioningData != null) {
-            // geranPositioningData [11] PositioningDataInformation OPTIONAL,
-            ((PositioningDataInformationImpl) this.geranPositioningData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_GERAN_POSITIONING_DATA);
-        }
-
-        if (this.utranPositioningData != null) {
-            // utranPositioningData [12] UtranPositioningDataInfo OPTIONAL,
-            ((UtranPositioningDataInfoImpl) this.utranPositioningData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_UTRAN_POSITIONING_DATA);
-        }
-
-        if (this.cellIdOrSai != null) {
-            // cellIdOrSai [13] CellGlobalIdOrServiceAreaIdOrLAI OPTIONAL,
-            try {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_CELL_ID_OR_SAI);
-                int pos = asnOs.StartContentDefiniteLength();
-                ((CellGlobalIdOrServiceAreaIdOrLAIImpl) this.cellIdOrSai).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter cellIdOrSai", e);
-            }
-        }
-
-        if (this.hgmlcAddress != null) {
-            // h-gmlc-Address [14] GSN-Address OPTIONAL,
-            ((GSNAddressImpl) this.hgmlcAddress).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_H_GMLC_ADDRESS);
-        }
-
-        if (this.lcsServiceTypeID != null) {
-            // lcsServiceTypeID [15] LCSServiceTypeID OPTIONAL,
-            try {
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_LCS_SERVICE_TYPE_ID, this.lcsServiceTypeID);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter lcsServiceTypeID", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter lcsServiceTypeID", e);
-            }
-        }
-
-        if (this.saiPresent) {
-            // sai-Present [17] NULL OPTIONAL,
-            try {
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_SAI_PRESENT);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter sai-Present", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter sai-Present", e);
-            }
-        }
-
-        if (this.pseudonymIndicator) {
-            // pseudonymIndicator [18] NULL OPTIONAL,
-            try {
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_PSEUDONYM_INDICATOR);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter sai-Present", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter sai-Present", e);
-            }
-        }
-
-        if (this.accuracyFulfilmentIndicator != null) {
-            // accuracyFulfilmentIndicator [19] AccuracyFulfilmentIndicator
-            // OPTIONAL
-            try {
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_ACCURACY_FULFILMENT_INDICATOR,
-                        this.accuracyFulfilmentIndicator.getIndicator());
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter accuracyFulfilmentIndicator", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter accuracyFulfilmentIndicator", e);
-            }
-        }
-
-        if (this.velocityEstimate != null) {
-            // velocityEstimate
-            ((VelocityEstimateImpl) this.velocityEstimate).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_velocityEstimate);
-        }
-
-        if (this.sequenceNumber != null) {
-            // sequenceNumber
-            try {
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_sequenceNumber, this.sequenceNumber);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter sequenceNumber", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter sequenceNumber", e);
-            }
-        }
-
-        if (this.periodicLDRInfo != null) {
-            // periodicLDRInfo
-            ((PeriodicLDRInfoImpl) this.periodicLDRInfo).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_periodicLDRInfo);
-        }
-
-        if (this.moLrShortCircuitIndicator) {
-            // moLrShortCircuitIndicator
-            try {
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_mo_lrShortCircuitIndicator);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter moLrShortCircuitIndicator", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter moLrShortCircuitIndicator", e);
-            }
-        }
-
-        if (this.geranGANSSpositioningData != null) {
-            // geranGANSSpositioningData
-            ((GeranGANSSpositioningDataImpl) this.geranGANSSpositioningData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_geranGANSSpositioningData);
-        }
-
-        if (this.utranGANSSpositioningData != null) {
-            // utranGANSSpositioningData
-            ((UtranGANSSpositioningDataImpl) this.utranGANSSpositioningData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_utranGANSSpositioningData);
-        }
-
-        if (this.targetServingNodeForHandover != null) {
-            // targetServingNodeForHandover
-            try {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_targetServingNodeForHandover);
-                int pos = asnOs.StartContentDefiniteLength();
-                ((ServingNodeAddressImpl) this.targetServingNodeForHandover).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter targetServingNodeForHandover", e);
-            }
-        }
-
-        if (this.lmsi != null) {
-            // lmsi [27] LMSI OPTIONAL,
-            ((IMSIImpl) this.imsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_IMSI);
-        }
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("SubscriberLocationReportRequest [");
 
         if (this.lcsEvent != null) {
             sb.append("lcsEvent");
-            sb.append(this.lcsEvent);
+            sb.append(this.lcsEvent.getType());
         }
         if (this.lcsClientID != null) {
             sb.append(", lcsClientID=");
@@ -1289,7 +705,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         }
         if (this.ageOfLocationEstimate != null) {
             sb.append(", ageOfLocationEstimate=");
-            sb.append(this.ageOfLocationEstimate);
+            sb.append(this.ageOfLocationEstimate.getValue());
         }
         if (this.slrArgExtensionContainer != null) {
             sb.append(", slrArgExtensionContainer=");
@@ -1305,7 +721,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         }
         if (this.lcsReferenceNumber != null) {
             sb.append(", lcsReferenceNumber=");
-            sb.append(this.lcsReferenceNumber);
+            sb.append(this.lcsReferenceNumber.getValue());
         }
         if (this.geranPositioningData != null) {
             sb.append(", geranPositioningData=");
@@ -1315,9 +731,9 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
             sb.append(", utranPositioningData=");
             sb.append(this.utranPositioningData);
         }
-        if (this.cellIdOrSai != null) {
+        if (this.cellGlobalIdOrServiceAreaIdOrLAIWrapped != null && this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI()!=null) {
             sb.append(", cellIdOrSai=");
-            sb.append(this.cellIdOrSai);
+            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI());
         }
         if (this.hgmlcAddress != null) {
             sb.append(", hgmlcAddress=");
@@ -1325,17 +741,17 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         }
         if (this.lcsServiceTypeID != null) {
             sb.append(", lcsServiceTypeID=");
-            sb.append(this.lcsServiceTypeID);
+            sb.append(this.lcsServiceTypeID.getValue());
         }
-        if (this.saiPresent) {
+        if (this.saiPresent!=null) {
             sb.append(", saiPresent");
         }
-        if (this.pseudonymIndicator) {
+        if (this.pseudonymIndicator!=null) {
             sb.append(", pseudonymIndicator");
         }
         if (this.accuracyFulfilmentIndicator != null) {
             sb.append(", accuracyFulfilmentIndicator=");
-            sb.append(this.accuracyFulfilmentIndicator);
+            sb.append(this.accuracyFulfilmentIndicator.getType());
         }
         if (this.velocityEstimate != null) {
             sb.append(", velocityEstimate=");
@@ -1343,13 +759,13 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         }
         if (this.sequenceNumber != null) {
             sb.append(", sequenceNumber=");
-            sb.append(this.sequenceNumber);
+            sb.append(this.sequenceNumber.getValue());
         }
         if (this.periodicLDRInfo != null) {
             sb.append(", periodicLDRInfo=");
             sb.append(this.periodicLDRInfo);
         }
-        if (this.moLrShortCircuitIndicator) {
+        if (this.moLrShortCircuitIndicator!=null) {
             sb.append(", moLrShortCircuitIndicator");
         }
         if (this.geranGANSSpositioningData != null) {
@@ -1360,9 +776,9 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
             sb.append(", utranGANSSpositioningData=");
             sb.append(this.utranGANSSpositioningData);
         }
-        if (this.targetServingNodeForHandover != null) {
+        if (this.targetServingNodeForHandover != null && this.targetServingNodeForHandover.getServingNodeAddress()!=null) {
             sb.append(", targetServingNodeForHandover=");
-            sb.append(this.targetServingNodeForHandover);
+            sb.append(this.targetServingNodeForHandover.getServingNodeAddress());
         }
         if (this.lmsi != null) {
             sb.append(", lmsi=");

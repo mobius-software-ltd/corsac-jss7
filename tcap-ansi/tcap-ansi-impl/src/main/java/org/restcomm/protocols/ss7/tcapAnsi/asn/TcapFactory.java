@@ -24,19 +24,15 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ObjectApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
@@ -67,15 +63,15 @@ public final class TcapFactory {
         return pv;
     }
 
-    public static ApplicationContext createApplicationContext(List<Long> oid) {
-    	ObjectApplicationContextNameImpl acn = new ObjectApplicationContextNameImpl();
-        acn.setObjectId(oid);
+    public static ApplicationContextNameImpl createApplicationContext(List<Long> oid) {
+    	ApplicationContextNameImpl acn = new ApplicationContextNameImpl();
+        acn.setObj(oid);
         return acn;
     }
 
-    public static ApplicationContext createApplicationContext(long val) {
-        IntegerApplicationContextNameImpl acn = new IntegerApplicationContextNameImpl();
-        acn.setValue(val);
+    public static ApplicationContextNameImpl createApplicationContext(long val) {
+        ApplicationContextNameImpl acn = new ApplicationContextNameImpl();
+        acn.setInt(val);
         return acn;
     }
 
@@ -126,13 +122,15 @@ public final class TcapFactory {
         return tc;
     }
 
-    public static PrivateOperationCodeImpl createPrivateOperationCode() {
-    	PrivateOperationCodeImpl oc = new PrivateOperationCodeImpl();
+    public static OperationCodeImpl createPrivateOperationCode(Long value) {
+    	OperationCodeImpl oc = new OperationCodeImpl();
+    	oc.setPrivateOperationCode(value);
         return oc;
     }
 
-    public static NationalOperationCodeImpl createNationalOperationCode() {
-    	NationalOperationCodeImpl oc = new NationalOperationCodeImpl();
+    public static OperationCodeImpl createNationalOperationCode(Long value) {
+    	OperationCodeImpl oc = new OperationCodeImpl();
+    	oc.setNationalOperationCode(value);
         return oc;
     }
 
@@ -171,11 +169,15 @@ public final class TcapFactory {
         return new ReturnErrorImpl();
     }
 
-    public static PrivateErrorCodeImpl createPrivateErrorCode() {
-        return new PrivateErrorCodeImpl();
+    public static ErrorCodeImpl createPrivateErrorCode(Long value) {
+    	ErrorCodeImpl ec = new ErrorCodeImpl();
+    	ec.setPrivateErrorCode(value);
+    	return ec;
     }
 
-    public static NationalErrorCodeImpl createNationalErrorCode() {
-        return new NationalErrorCodeImpl();
+    public static ErrorCodeImpl createNationalErrorCode(Long value) {
+    	ErrorCodeImpl ec = new ErrorCodeImpl();
+    	ec.setNationalErrorCode(value);
+    	return ec;
     }
 }

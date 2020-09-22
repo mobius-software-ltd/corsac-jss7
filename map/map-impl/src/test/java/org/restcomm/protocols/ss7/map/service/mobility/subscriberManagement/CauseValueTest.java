@@ -30,7 +30,7 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValueCodeValue;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CauseValueImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValueImpl;
 import org.testng.annotations.Test;
 
 /**

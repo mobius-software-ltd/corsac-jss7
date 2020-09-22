@@ -29,13 +29,13 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PDNGWUpdateImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APN;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentity;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentityImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PDNGWUpdateImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDNGWIdentityImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -77,7 +77,7 @@ public class PDNGWUpdateTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         APN apn = new APNImpl(getAPNData());
         PDNGWIdentity pdnGwIdentity = new PDNGWIdentityImpl(null, null, null, extensionContainer);
         PDNGWUpdateImpl prim = new PDNGWUpdateImpl(apn, pdnGwIdentity, new Integer(2), extensionContainer);

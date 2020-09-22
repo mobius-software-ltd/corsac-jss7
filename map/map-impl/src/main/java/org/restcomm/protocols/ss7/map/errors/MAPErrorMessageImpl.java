@@ -41,7 +41,6 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSubscriberBusyFo
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnauthorizedLCSClient;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnknownSubscriber;
-import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 
 /**
  * Base class of MAP ReturnError messages
@@ -50,18 +49,16 @@ import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
  * @author amit bhayani
  *
  */
-public abstract class MAPErrorMessageImpl implements MAPErrorMessage, MAPAsnPrimitive {
-	private static final long serialVersionUID = 1L;
-
+public abstract class MAPErrorMessageImpl implements MAPErrorMessage {
 	protected Long errorCode;
 
     protected MAPErrorMessageImpl(Long errorCode) {
-        this.errorCode = errorCode;
+        this.errorCode=errorCode;
     }
 
     public MAPErrorMessageImpl() {
     }
-
+    
     public Long getErrorCode() {
         return errorCode;
     }

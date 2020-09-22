@@ -33,11 +33,11 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
+import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.RANTechnology;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMN;
-import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ReportingPLMNImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ReportingPLMNListImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
 import org.testng.annotations.Test;
 
 /**

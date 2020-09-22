@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.service.pdpContextActivation;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.MAPServiceBaseImpl;
@@ -32,25 +32,26 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessage;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.MAPDialogPdpContextActivation;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.MAPServicePdpContextActivation;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.MAPServicePdpContextActivationListener;
+import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.SendRoutingInfoForGprsRequest;
+import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.SendRoutingInfoForGprsResponse;
 import org.restcomm.protocols.ss7.map.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 
 /**
  *
@@ -68,13 +69,13 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
     /*
      * Creating a new outgoing MAP PdpContextActivation dialog and adding it to the MAPProvider.dialog collection
      */
-    public MAPDialogPdpContextActivation createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference) throws MAPException {
+    public MAPDialogPdpContextActivation createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference,
+            SccpAddress destAddress, AddressStringImpl destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
-    public MAPDialogPdpContextActivation createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference, Long localTrId) throws MAPException {
+    public MAPDialogPdpContextActivation createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference,
+            SccpAddress destAddress, AddressStringImpl destReference, Long localTrId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
@@ -111,9 +112,9 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
             if (vers >= 3 && vers <= 4) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 4) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 2;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+                List<Long> altOid = dialogApplicationContext.getOID();
+                altOid.set(7,2L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -126,105 +127,52 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
 
     }
 
-    public void processComponent(ComponentType compType, OperationCode oc, Parameter parameter, MAPDialog mapDialog,
-            Long invokeId, Long linkedId, Invoke linkedInvoke) throws MAPParsingComponentException {
+    public void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+            Long invokeId, Long linkedId) throws MAPParsingComponentException {
 
-        // if an application-context-name different from version 1 is
-        // received in a syntactically correct TC-
-        // BEGIN indication primitive but is not acceptable from a load
-        // control point of view, the MAP PM
-        // shall ignore this dialogue request. The MAP-user is not informed.
-//        if (compType == ComponentType.Invoke && this.mapProviderImpl.isCongested()) {
-//            // TODO: we need to care of conjection control
-//        }
-
-        MAPDialogPdpContextActivationImpl mapDialogPdpContextActivationImpl = (MAPDialogPdpContextActivationImpl) mapDialog;
-
-        Long ocValue = oc.getLocalOperationCode();
+    	Long ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new MAPParsingComponentException("", MAPParsingComponentExceptionReason.UnrecognizedOperation);
-        MAPApplicationContextName acn = mapDialog.getApplicationContext().getApplicationContextName();
-        mapDialog.getApplicationContext().getApplicationContextVersion().getVersion();
+        
         int ocValueInt = (int) (long) ocValue;
-
+        Boolean processed=false;
         switch (ocValueInt) {
             case MAPOperationCode.sendRoutingInfoForGprs:
-                if (acn == MAPApplicationContextName.gprsLocationInfoRetrievalContext
-                        || acn == MAPApplicationContextName.shortMsgMTRelayContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.sendRoutingInfoForGprsRequest(parameter, mapDialogPdpContextActivationImpl, invokeId);
-                    else
-                        this.sendRoutingInfoForGprsResponse(parameter, mapDialogPdpContextActivationImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+            	if(parameter instanceof SendRoutingInfoForGprsRequest)
+                {
+            		processed=true;
+            		SendRoutingInfoForGprsRequest ind=(SendRoutingInfoForGprsRequest)parameter;
+                	
+                    for (MAPServiceListener serLis : this.serviceListeners) {
+                        try {
+                        	serLis.onMAPMessage(ind);
+                            ((MAPServicePdpContextActivationListener) serLis).onSendRoutingInfoForGprsRequest(ind);
+                        } catch (Exception e) {
+                            loger.error("Error processing SendRoutingInfoForGprsRequestIndication: " + e.getMessage(), e);
+                        }
+                    }
+                }
+                else if(parameter instanceof SendRoutingInfoForGprsResponse)
+                {
+                	processed=true;
+                	SendRoutingInfoForGprsResponse ind=(SendRoutingInfoForGprsResponse)parameter;
+                	for (MAPServiceListener serLis : this.serviceListeners) {
+                        try {
+                        	serLis.onMAPMessage(ind);
+                            ((MAPServicePdpContextActivationListener) serLis).onSendRoutingInfoForGprsResponse(ind);
+                        } catch (Exception e) {
+                            loger.error("Error processing SendRoutingInformationResponseIndication: " + e.getMessage(), e);
+                        }
+                    }
                 }
                 break;
             default:
                 throw new MAPParsingComponentException("MAPServicePdpContextActivation: unknown incoming operation code: "
                         + ocValueInt, MAPParsingComponentExceptionReason.UnrecognizedOperation);
         }
-    }
-
-    private void sendRoutingInfoForGprsRequest(Parameter parameter, MAPDialogPdpContextActivationImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendRoutingInfoForGprsRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendRoutingInfoForGprsRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        SendRoutingInfoForGprsRequestImpl ind = new SendRoutingInfoForGprsRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServicePdpContextActivationListener) serLis).onSendRoutingInfoForGprsRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing onSendRoutingInfoForGprsRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void sendRoutingInfoForGprsResponse(Parameter parameter, MAPDialogPdpContextActivationImpl mapDialogImpl,
-            Long invokeId, boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        SendRoutingInfoForGprsResponseImpl ind = new SendRoutingInfoForGprsResponseImpl();
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendRoutingInfoForGprsResponse: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendRoutingInfoForGprsResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServicePdpContextActivationListener) serLis).onSendRoutingInfoForGprsResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing onSendRoutingInfoForGprsResponse: " + e.getMessage(), e);
-            }
-        }
+        
+        if(!processed)
+        	throw new MAPParsingComponentException("MAPServicePdpContextActivation: unknown incoming operation code: "
+                    + ocValueInt, MAPParsingComponentExceptionReason.UnrecognizedOperation);
     }
 }

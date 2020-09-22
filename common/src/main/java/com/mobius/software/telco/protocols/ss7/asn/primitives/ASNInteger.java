@@ -28,6 +28,7 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 import io.netty.buffer.ByteBuf;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
@@ -48,7 +49,7 @@ public class ASNInteger {
 	}
 
 	@ASNLength
-	public Integer getLength() {
+	public Integer getLength(ASNParser parser) {
 		if(value==null)
 			return 0;
 		
@@ -56,7 +57,7 @@ public class ASNInteger {
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser,ByteBuf buffer) {
 		if(value==null)
 			return;
 		
@@ -68,7 +69,7 @@ public class ASNInteger {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		if(buffer.readableBytes()==0)
 			return false;
 		
@@ -105,5 +106,34 @@ public class ASNInteger {
 			result=1;
 		
 		return result;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		
+		if (obj == null)
+			return false;
+		
+		if (getClass() != obj.getClass())
+			return false;
+		
+		ASNInteger other = (ASNInteger) obj;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		
+		return true;
 	}
 }

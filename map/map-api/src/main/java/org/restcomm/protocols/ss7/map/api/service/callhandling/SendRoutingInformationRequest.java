@@ -22,14 +22,14 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISTSupportIndicator;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
 
 /**
@@ -121,9 +121,9 @@ SupportedCCBS-Phase ::= INTEGER (1..127)
  */
 public interface SendRoutingInformationRequest extends CallHandlingMessage {
 
-    ISDNAddressString getMsisdn(); // OCTET STRING
+    ISDNAddressStringImpl getMsisdn(); // OCTET STRING
 
-    CUGCheckInfo getCUGCheckInfo(); // SEQUENCE
+    CUGCheckInfoImpl getCUGCheckInfo(); // SEQUENCE
 
     Integer getNumberOfForwarding(); // INTEGER
 
@@ -133,35 +133,35 @@ public interface SendRoutingInformationRequest extends CallHandlingMessage {
 
     Integer getORCapability(); // INTEGER
 
-    ISDNAddressString getGmscOrGsmSCFAddress(); // OCTET STRING
+    ISDNAddressStringImpl getGmscOrGsmSCFAddress(); // OCTET STRING
 
-    CallReferenceNumber getCallReferenceNumber(); // OCTET STRING
+    CallReferenceNumberImpl getCallReferenceNumber(); // OCTET STRING
 
     ForwardingReason getForwardingReason(); // ENUMERATED
 
-    ExtBasicServiceCode getBasicServiceGroup(); // CHOICE
+    ExtBasicServiceCodeImpl getBasicServiceGroup(); // CHOICE
 
-    ExternalSignalInfo getNetworkSignalInfo(); // SEQUENCE
+    ExternalSignalInfoImpl getNetworkSignalInfo(); // SEQUENCE
 
-    CamelInfo getCamelInfo(); // SEQUENCE
+    CamelInfoImpl getCamelInfo(); // SEQUENCE
 
     boolean getSuppressionOfAnnouncement(); // NULL
 
-    MAPExtensionContainer getExtensionContainer(); // SEQUENCE
+    MAPExtensionContainerImpl getExtensionContainer(); // SEQUENCE
 
-    AlertingPattern getAlertingPattern(); // OCTET STRING
+    AlertingPatternImpl getAlertingPattern(); // OCTET STRING
 
     boolean getCCBSCall(); // NULL
 
     Integer getSupportedCCBSPhase(); // INTEGER
 
-    ExtExternalSignalInfo getAdditionalSignalInfo(); // SEQUENCE
+    ExtExternalSignalInfoImpl getAdditionalSignalInfo(); // SEQUENCE
 
     ISTSupportIndicator getIstSupportIndicator(); // ENUMERATED
 
     boolean getPrePagingSupported(); // NULL
 
-    CallDiversionTreatmentIndicator getCallDiversionTreatmentIndicator(); // OCTET STRING
+    CallDiversionTreatmentIndicatorImpl getCallDiversionTreatmentIndicator(); // OCTET STRING
 
     boolean getLongFTNSupported(); // NULL
 
@@ -171,11 +171,11 @@ public interface SendRoutingInformationRequest extends CallHandlingMessage {
 
     boolean getGsmSCFInitiatedCall(); // NULL
 
-    ExtBasicServiceCode getBasicServiceGroup2(); // CHOICE
+    ExtBasicServiceCodeImpl getBasicServiceGroup2(); // CHOICE
 
-    ExternalSignalInfo getNetworkSignalInfo2(); // SEQUENCE
+    ExternalSignalInfoImpl getNetworkSignalInfo2(); // SEQUENCE
 
-    SuppressMTSS getSuppressMTSS(); // BIT STRING
+    SuppressMTSSImpl getSuppressMTSS(); // BIT STRING
 
     boolean getMTRoamingRetrySupported(); // NULL
 

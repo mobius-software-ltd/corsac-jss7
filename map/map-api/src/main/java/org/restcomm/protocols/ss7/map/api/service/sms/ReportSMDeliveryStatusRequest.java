@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -35,11 +35,11 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  * messageWaitingListFull} CODE local:47 }
  *
  * MAP V2: ReportSM-DeliveryStatus ::= OPERATION --Timer s ARGUMENT reportSM-DeliveryStatusArg ReportSM-DeliveryStatusArg RESULT
- * storedMSISDN ISDN-AddressString -- optional -- storedMSISDN must be absent in version 1 -- storedMSISDN must be present in
+ * storedMSISDN ISDN-AddressStringImpl -- optional -- storedMSISDN must be absent in version 1 -- storedMSISDN must be present in
  * version greater 1 ERRORS { DataMissing, -- DataMissing must not be used in version 1 UnexpectedDataValue, UnknownSubscriber,
  * MessageWaitingListFull}
  *
- * MAP V3: ReportSM-DeliveryStatusArg ::= SEQUENCE { msisdn ISDN-AddressString, serviceCentreAddress AddressString,
+ * MAP V3: ReportSM-DeliveryStatusArg ::= SEQUENCE { msisdn ISDN-AddressStringImpl, serviceCentreAddress AddressStringImpl,
  * sm-DeliveryOutcome SM-DeliveryOutcome, absentSubscriberDiagnosticSM [0] AbsentSubscriberDiagnosticSM OPTIONAL,
  * extensionContainer [1] ExtensionContainer OPTIONAL, ..., gprsSupportIndicator [2] NULL OPTIONAL, -- gprsSupportIndicator is
  * set only if the SMS-GMSC supports -- handling of two delivery outcomes deliveryOutcomeIndicator [3] NULL OPTIONAL, --
@@ -49,7 +49,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  * OPTIONAL -- If received additionalAbsentSubscriberDiagnosticSM is for GPRS -- If DeliveryOutcomeIndicator is set, then
  * AdditionalAbsentSubscriberDiagnosticSM -- shall be absent }
  *
- * MAP V2: ReportSM-DeliveryStatusArg ::= SEQUENCE { msisdn ISDN-AddressString, serviceCentreAddress AddressString,
+ * MAP V2: ReportSM-DeliveryStatusArg ::= SEQUENCE { msisdn ISDN-AddressStringImpl, serviceCentreAddress AddressStringImpl,
  * sm-DeliveryOutcome SM-DeliveryOutcome OPTIONAL, -- sm-DeliveryOutcome must be absent in version 1 -- sm-DeliveryOutcome must
  * be present in version greater 1 ...}
  *
@@ -60,15 +60,15 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  */
 public interface ReportSMDeliveryStatusRequest extends SmsMessage {
 
-    ISDNAddressString getMsisdn();
+    ISDNAddressStringImpl getMsisdn();
 
-    AddressString getServiceCentreAddress();
+    AddressStringImpl getServiceCentreAddress();
 
     SMDeliveryOutcome getSMDeliveryOutcome();
 
     Integer getAbsentSubscriberDiagnosticSM();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     boolean getGprsSupportIndicator();
 

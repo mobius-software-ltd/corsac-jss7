@@ -24,13 +24,13 @@ package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
 import java.util.ArrayList;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSI;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTdpCriteria;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTdpCriteriaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSIImpl;
 
 /**
  *
@@ -54,33 +54,33 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  */
 public interface ResumeCallHandlingRequest extends CallHandlingMessage {
 
-     CallReferenceNumber getCallReferenceNumber();
+     CallReferenceNumberImpl getCallReferenceNumber();
 
-     ExtBasicServiceCode getBasicServiceGroup();
+     ExtBasicServiceCodeImpl getBasicServiceGroup();
 
-     ForwardingData getForwardingData();
+     ForwardingDataImpl getForwardingData();
 
-     IMSI getImsi();
+     IMSIImpl getImsi();
 
-     CUGCheckInfo getCugCheckInfo();
+     CUGCheckInfoImpl getCugCheckInfo();
 
-     OCSI getOCsi();
+     OCSIImpl getOCsi();
 
-     MAPExtensionContainer getExtensionContainer();
+     MAPExtensionContainerImpl getExtensionContainer();
 
      boolean getCcbsPossible();
 
-     ISDNAddressString getMsisdn();
+     ISDNAddressStringImpl getMsisdn();
 
-     UUData getUuData();
+     UUDataImpl getUuData();
 
      boolean getAllInformationSent();
 
-     DCSI getDCsi();
+     DCSIImpl getDCsi();
 
-     ArrayList<OBcsmCamelTdpCriteria> getOBcsmCamelTDPCriteriaList();
+     ArrayList<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList();
 
-     ExtBasicServiceCode getBasicServiceGroup2();
+     ExtBasicServiceCodeImpl getBasicServiceGroup2();
 
      boolean getMtRoamingRetry();
 

@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -59,7 +59,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface SendAuthenticationInfoRequest extends MobilityMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
     int getNumberOfRequestedVectors();
 
@@ -67,13 +67,13 @@ public interface SendAuthenticationInfoRequest extends MobilityMessage {
 
     boolean getImmediateResponsePreferred();
 
-    ReSynchronisationInfo getReSynchronisationInfo();
+    ReSynchronisationInfoImpl getReSynchronisationInfo();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     RequestingNodeType getRequestingNodeType();
 
-    PlmnId getRequestingPlmnId();
+    PlmnIdImpl getRequestingPlmnId();
 
     Integer getNumberOfRequestedAdditionalVectors();
 

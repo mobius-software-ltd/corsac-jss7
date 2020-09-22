@@ -28,13 +28,13 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
 
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=0x0c,constructed=true,lengthIndefinite=false)
 public class ComponentPortionImpl {
 
-	@ASNWildcard
+	@ASNChoise
 	List<ComponentImpl> components;
 
 	public List<ComponentImpl> getComponents() {

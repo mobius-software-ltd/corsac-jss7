@@ -30,9 +30,8 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
@@ -87,8 +86,8 @@ public class TcResponseTest {
         assertEquals(tcm.getDestinationTransactionId(), trId);
         DialogPortionImpl dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
-        ApplicationContext ac = dp.getApplicationContext();
-        assertEquals((long)((IntegerApplicationContextNameImpl)ac).getValue(), 66);
+        ApplicationContextNameImpl ac = dp.getApplicationContext();
+        assertEquals(ac.getInt(), new Long(66L));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
@@ -127,7 +126,7 @@ public class TcResponseTest {
         tcm.setDestinationTransactionId(trId);
 
         DialogPortionImpl dp = TcapFactory.createDialogPortion();
-        ApplicationContext ac = TcapFactory.createApplicationContext(66);
+        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(66);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 

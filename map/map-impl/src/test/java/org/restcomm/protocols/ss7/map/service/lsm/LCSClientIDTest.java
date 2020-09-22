@@ -39,22 +39,21 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
+import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalID;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientName;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientNameImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientType;
-import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSClientExternalIDImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSClientIDImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSClientNameImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSRequestorIDImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSRequestorIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -176,7 +175,7 @@ public class LCSClientIDTest {
 
         data = getDataFull();
 
-        ISDNAddressString externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "44332211");
         LCSClientExternalID extId = new LCSClientExternalIDImpl(externalAddress, null);
         AddressStringImpl clientDialedByMS = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,

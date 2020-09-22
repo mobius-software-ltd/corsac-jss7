@@ -32,17 +32,17 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InterCUGRestrictions;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InterCUGRestrictionsImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InterCUGRestrictionsValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InterCUGRestrictionsImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -73,7 +73,7 @@ public class CUGFeatureTest {
 
             assertEquals(tag, Tag.SEQUENCE);
             assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-            MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
             // assertTrue(Arrays.equals(prim.getBasicService().getExtBearerService().getData(),
             // this.getData2()));
             assertEquals(prim.getBasicService().getExtBearerService().getBearerServiceCodeValue(),
@@ -98,7 +98,7 @@ public class CUGFeatureTest {
 
             assertEquals(tag, Tag.SEQUENCE);
             assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-            MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
             // assertTrue(Arrays.equals(prim.getBasicService().getExtTeleservice().getData(),
             // this.getData3()));
             assertEquals(prim.getBasicService().getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
@@ -124,8 +124,8 @@ public class CUGFeatureTest {
             // InterCUGRestrictions interCugRestrictions = new InterCUGRestrictionsImpl(0);
             InterCUGRestrictions interCugRestrictions = new InterCUGRestrictionsImpl(
                     InterCUGRestrictionsValue.CUGOnlyFacilities);
-            // MAPExtensionContainer extensionContainer = getMapExtensionContainer();
-            MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+            // MAPExtensionContainerImpl extensionContainer = getMapExtensionContainer();
+            MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
             CUGFeatureImpl prim = new CUGFeatureImpl(basicService, preferentialCugIndicator, interCugRestrictions,
                     extensionContainer);
 
@@ -141,8 +141,8 @@ public class CUGFeatureTest {
 
             Integer preferentialCugIndicator = new Integer(1);
             InterCUGRestrictions interCugRestrictions = new InterCUGRestrictionsImpl(0);
-            // MAPExtensionContainer extensionContainer = getMapExtensionContainer();
-            MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+            // MAPExtensionContainerImpl extensionContainer = getMapExtensionContainer();
+            MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
             CUGFeatureImpl prim = new CUGFeatureImpl(basicService, preferentialCugIndicator, interCugRestrictions,
                     extensionContainer);
 

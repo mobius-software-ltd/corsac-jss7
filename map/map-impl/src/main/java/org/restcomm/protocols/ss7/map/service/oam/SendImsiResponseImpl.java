@@ -22,20 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.SendImsiResponse;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 
 /**
@@ -43,17 +35,16 @@ import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 * @author sergey vetyutnev
 *
 */
+@ASNWrappedTag
 public class SendImsiResponseImpl extends OamMessageImpl implements SendImsiResponse {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "SendImsiResponse";
-
-    private IMSI imsi;
+	private IMSIImpl imsi;
 
     public SendImsiResponseImpl() {
     }
 
-    public SendImsiResponseImpl(IMSI imsi) {
+    public SendImsiResponseImpl(IMSIImpl imsi) {
         this.imsi = imsi;
     }
 
@@ -68,90 +59,14 @@ public class SendImsiResponseImpl extends OamMessageImpl implements SendImsiResp
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return this.imsi;
-    }
-
-    @Override
-    public int getTag() throws MAPException {
-        return Tag.STRING_OCTET;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return true;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.imsi = new IMSIImpl();
-        ((IMSIImpl) this.imsi).decodeData(ansIS, length);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        if (this.imsi == null)
-            throw new MAPException("imsi parameter must not be null");
-
-        ((IMSIImpl) this.imsi).encodeData(asnOs);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("SendImsiResponse [");
 
         if (this.imsi != null) {
             sb.append("imsi=");

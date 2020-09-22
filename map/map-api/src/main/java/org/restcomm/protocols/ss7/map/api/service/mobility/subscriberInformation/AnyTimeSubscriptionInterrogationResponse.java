@@ -24,11 +24,11 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.util.ArrayList;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 
 /**
  *
@@ -64,36 +64,36 @@ CSG-SubscriptionDataList ::= SEQUENCE SIZE (1..50) OF CSG-SubscriptionData
  */
 public interface AnyTimeSubscriptionInterrogationResponse extends MobilityMessage {
 
-    CallForwardingData getCallForwardingData();
+    CallForwardingDataImpl getCallForwardingData();
 
-    CallBarringData getCallBarringData();
+    CallBarringDataImpl getCallBarringData();
 
-    ODBInfo getOdbInfo();
+    ODBInfoImpl getOdbInfo();
 
-    CAMELSubscriptionInfo getCamelSubscriptionInfo();
+    CAMELSubscriptionInfoImpl getCamelSubscriptionInfo();
 
-    SupportedCamelPhases getsupportedVlrCamelPhases();
+    SupportedCamelPhasesImpl getsupportedVlrCamelPhases();
 
-    SupportedCamelPhases getsupportedSgsnCamelPhases();
+    SupportedCamelPhasesImpl getsupportedSgsnCamelPhases();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    OfferedCamel4CSIs getOfferedCamel4CSIsInVlr();
+    OfferedCamel4CSIsImpl getOfferedCamel4CSIsInVlr();
 
-    OfferedCamel4CSIs getOfferedCamel4CSIsInSgsn();
+    OfferedCamel4CSIsImpl getOfferedCamel4CSIsInSgsn();
 
-    ArrayList<MSISDNBS> getMsisdnBsList();
+    ArrayList<MSISDNBSImpl> getMsisdnBsList();
 
-    ArrayList<CSGSubscriptionData> getCsgSubscriptionDataList();
+    ArrayList<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
 
-    CallWaitingData getCwData();
+    CallWaitingDataImpl getCwData();
 
-    CallHoldData getChData();
+    CallHoldDataImpl getChData();
 
-    ClipData getClipData();
+    ClipDataImpl getClipData();
 
-    ClirData getClirData();
+    ClirDataImpl getClirData();
 
-    EctData getEctData();
+    EctDataImpl getEctData();
 
 }

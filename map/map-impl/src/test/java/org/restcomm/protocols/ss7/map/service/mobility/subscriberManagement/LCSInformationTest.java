@@ -33,30 +33,28 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalID;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExternalClient;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExternalClientImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GMLCRestriction;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSPrivacyClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSPrivacyClassImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MOLRClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MOLRClassImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.NotificationToMSUser;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ServiceType;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ServiceTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSClientExternalIDImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExternalClientImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LCSInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LCSPrivacyClassImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.MOLRClassImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ServiceTypeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -135,10 +133,10 @@ public class LCSInformationTest {
         assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
         // start gmlcList
-        ArrayList<ISDNAddressString> gmlcList = prim.getGmlcList();
+        ArrayList<ISDNAddressStringImpl> gmlcList = prim.getGmlcList();
         assertNotNull(gmlcList);
         assertEquals(gmlcList.size(), 1);
-        ISDNAddressString isdnAddressString = gmlcList.get(0);
+        ISDNAddressStringImpl isdnAddressString = gmlcList.get(0);
         assertTrue(isdnAddressString.getAddress().equals("22235"));
         assertEquals(isdnAddressString.getAddressNature(), AddressNature.international_number);
         assertEquals(isdnAddressString.getNumberingPlan(), NumberingPlan.ISDN);
@@ -162,9 +160,9 @@ public class LCSInformationTest {
         assertNotNull(externalClientList);
         assertEquals(externalClientList.size(), 1);
         ExternalClient externalClient = externalClientList.get(0);
-        MAPExtensionContainer extensionContainerExternalClient = externalClient.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainerExternalClient = externalClient.getExtensionContainer();
         LCSClientExternalID clientIdentity = externalClient.getClientIdentity();
-        ISDNAddressString externalAddress = clientIdentity.getExternalAddress();
+        ISDNAddressStringImpl externalAddress = clientIdentity.getExternalAddress();
         assertTrue(externalAddress.getAddress().equals("22228"));
         assertEquals(externalAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(externalAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -296,19 +294,19 @@ public class LCSInformationTest {
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
 
-        ArrayList<ISDNAddressString> gmlcList = new ArrayList<ISDNAddressString>();
-        ISDNAddressString isdnAddressString = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ArrayList<ISDNAddressStringImpl> gmlcList = new ArrayList<ISDNAddressStringImpl>();
+        ISDNAddressStringImpl isdnAddressString = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22235");
         gmlcList.add(isdnAddressString);
 
         ArrayList<LCSPrivacyClass> lcsPrivacyExceptionList = new ArrayList<LCSPrivacyClass>();
-        SSCode ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
+        SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
         ExtSSStatus ssStatus = new ExtSSStatusImpl(true, false, true, false);
         NotificationToMSUser notificationToMSUser = NotificationToMSUser.locationNotAllowed;
         ArrayList<ExternalClient> externalClientList = new ArrayList<ExternalClient>();
 
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        ISDNAddressString externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
         LCSClientExternalID clientIdentity = new LCSClientExternalIDImpl(externalAddress, extensionContainer);
         GMLCRestriction gmlcRestriction = GMLCRestriction.gmlcList;
@@ -331,9 +329,9 @@ public class LCSInformationTest {
                 extensionContainer);
         serviceTypeList.add(serviceType);
 
-        SSCode ssCodeTwo = new SSCodeImpl(SupplementaryCodeValue.allCommunityOfInterestSS);
-        SSCode ssCodeThree = new SSCodeImpl(SupplementaryCodeValue.allForwardingSS);
-        SSCode ssCodeFour = new SSCodeImpl(SupplementaryCodeValue.allLineIdentificationSS);
+        SSCodeImpl ssCodeTwo = new SSCodeImpl(SupplementaryCodeValue.allCommunityOfInterestSS);
+        SSCodeImpl ssCodeThree = new SSCodeImpl(SupplementaryCodeValue.allForwardingSS);
+        SSCodeImpl ssCodeFour = new SSCodeImpl(SupplementaryCodeValue.allLineIdentificationSS);
         LCSPrivacyClass lcsPrivacyClassOne = new LCSPrivacyClassImpl(ssCode, ssStatus, notificationToMSUser,
                 externalClientList, plmnClientList, extensionContainer, extExternalClientList, serviceTypeList);
         LCSPrivacyClass lcsPrivacyClassTwo = new LCSPrivacyClassImpl(ssCodeTwo, ssStatus, notificationToMSUser,

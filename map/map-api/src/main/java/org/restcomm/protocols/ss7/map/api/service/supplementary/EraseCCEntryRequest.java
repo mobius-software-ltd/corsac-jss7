@@ -39,7 +39,7 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
  */
 public interface EraseCCEntryRequest extends SupplementaryMessage {
 
-    SSCode getSsEvent();
+	SSCodeImpl getSsEvent();
 
     Integer getCCBSIndex();
 

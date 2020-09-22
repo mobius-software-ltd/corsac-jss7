@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.MAPServiceBaseImpl;
@@ -33,57 +33,80 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessage;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MAPServiceMobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MAPServiceMobilityListener;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery.ResetRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.CheckImeiRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.CheckImeiResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancelLocationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancelLocationResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PurgeMSRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PurgeMSResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateGprsLocationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateGprsLocationResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateLocationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateLocationResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
+import org.restcomm.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataResponse;
 import org.restcomm.protocols.ss7.map.dialog.ServingCheckDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationFailureReportRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationFailureReportResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.ForwardCheckSSIndicationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.ResetRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.RestoreDataRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.RestoreDataResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationRequestImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationRequestImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSRequestImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSRequestImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateGprsLocationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateGprsLocationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.oam.ActivateTraceModeRequestImpl_Mobility;
-import org.restcomm.protocols.ss7.map.service.mobility.oam.ActivateTraceModeResponseImpl_Mobility;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ProvideSubscriberInfoRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ProvideSubscriberInfoResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DeleteSubscriberDataRequestImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationResponseImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImplV2;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DeleteSubscriberDataResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImpl;
+import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeResponseImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 
 /**
  *
@@ -101,13 +124,13 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
     /*
      * Creating a new outgoing MAP Mobility dialog and adding it to the MAPProvider.dialog collection
      */
-    public MAPDialogMobility createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-            AddressString destReference) throws MAPException {
+    public MAPDialogMobility createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
+            AddressStringImpl destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
-    public MAPDialogMobility createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-            AddressString destReference, Long localTrId) throws MAPException {
+    public MAPDialogMobility createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
+            AddressStringImpl destReference, Long localTrId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
@@ -146,9 +169,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 1 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+                List<Long> altOid = dialogApplicationContext.getOID();
+                altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -157,9 +180,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 3 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -170,9 +193,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 1 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+                List<Long> altOid = dialogApplicationContext.getOID();
+                altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -181,9 +204,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 1 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -192,9 +215,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 2 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -203,9 +226,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers == 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -214,9 +237,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 2 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -227,9 +250,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 1 && vers <= 2) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 2) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -240,9 +263,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 1 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -255,9 +278,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 3 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -268,9 +291,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             if (vers >= 1 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+            	List<Long> altOid = dialogApplicationContext.getOID();
+            	altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -283,7 +306,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
     }
 
     @Override
-    public MAPApplicationContext getMAPv1ApplicationContext(int operationCode, Invoke invoke) {
+    public MAPApplicationContext getMAPv1ApplicationContext(int operationCode) {
 
         switch (operationCode) {
 
@@ -317,155 +340,525 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
     }
 
     @Override
-    public void processComponent(ComponentType compType, OperationCode oc, Parameter parameter, MAPDialog mapDialog,
-            Long invokeId, Long linkedId, Invoke linkedInvoke) throws MAPParsingComponentException {
+    public void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+            Long invokeId, Long linkedId) throws MAPParsingComponentException {
 
-        // if an application-context-name different from version 1 is
-        // received in a syntactically correct TC-
-        // BEGIN indication primitive but is not acceptable from a load
-        // control point of view, the MAP PM
-        // shall ignore this dialogue request. The MAP-user is not informed.
-//        if (compType == ComponentType.Invoke && this.mapProviderImpl.isCongested()) {
-//            // we agree mobility services when congestion
-//        }
-
-        MAPDialogMobilityImpl mapDialogMobilityImpl = (MAPDialogMobilityImpl) mapDialog;
-
-        Long ocValue = oc.getLocalOperationCode();
+    	Long ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new MAPParsingComponentException("", MAPParsingComponentExceptionReason.UnrecognizedOperation);
         MAPApplicationContextName acn = mapDialog.getApplicationContext().getApplicationContextName();
         int vers = mapDialog.getApplicationContext().getApplicationContextVersion().getVersion();
         int ocValueInt = (int) (long) ocValue;
-
+        Boolean processed=false;
         switch (ocValueInt) {
 
         // -- Location management services
             case MAPOperationCode.updateLocation:
                 if (acn == MAPApplicationContextName.networkLocUpContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.updateLocationRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.updateLocationResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof UpdateLocationRequest) {
+                		processed=true;
+                		UpdateLocationRequest ind=(UpdateLocationRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onUpdateLocationRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing UpdateLocationRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof UpdateLocationResponse) {
+                		processed=true;
+                		
+                		if (vers >= 2 && parameter instanceof UpdateLocationResponseImplV1)
+                    		throw new MAPParsingComponentException(
+                                    "Received V1 UpdateLocationResponse while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	else if(vers<2 && parameter instanceof UpdateLocationResponseImplV2)
+                    		throw new MAPParsingComponentException(
+                                    "Received V3 UpdateLocationResponse while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	
+                    	UpdateLocationResponse ind=(UpdateLocationResponse)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onUpdateLocationResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing RegisterSSRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.cancelLocation:
                 if (acn == MAPApplicationContextName.locationCancellationContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.cancelLocationRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.cancelLocationResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof CancelLocationRequest) {
+                		processed=true;
+                		if (vers >= 3 && parameter instanceof CancelLocationRequestImplV1)
+                    		throw new MAPParsingComponentException(
+                                    "Received V1 CancelLocationRequest while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	else if(vers<3 && parameter instanceof CancelLocationRequestImplV3)
+                    		throw new MAPParsingComponentException(
+                                    "Received V3 CancelLocationRequest while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	
+                    	CancelLocationRequest ind=(CancelLocationRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onCancelLocationRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing CancelLocationRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof CancelLocationResponse || (parameter == null && compType!= ComponentType.Invoke)) {
+                		processed=true;
+                		CancelLocationResponse ind=null;
+                		if(parameter!=null)
+                			ind=(CancelLocationResponse)parameter;
+                		else {
+                			ind=new CancelLocationResponseImpl();
+                			ind.setInvokeId(invokeId);
+                            ind.setMAPDialog(mapDialog);
+                            ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                		}
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onCancelLocationResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing CancelLocationResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.sendIdentification:
                 if (acn == MAPApplicationContextName.interVlrInfoRetrievalContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.SendIdentificationRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.SendIdentificationResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof SendIdentificationRequest) {
+                		processed=true;
+                		if (vers >= 3 && parameter instanceof SendIdentificationRequestImplV1)
+                    		throw new MAPParsingComponentException(
+                                    "Received V1 SendIdentificationRequest while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	else if(vers<3 && parameter instanceof SendIdentificationRequestImplV3)
+                    		throw new MAPParsingComponentException(
+                                    "Received V3 SendIdentificationRequest while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	
+                    	SendIdentificationRequest ind=(SendIdentificationRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onSendIdentificationRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing SendIdentificationRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof SendIdentificationResponse) {
+                		processed=true;
+                		if (vers >= 3 && parameter instanceof SendIdentificationResponseImplV1)
+                    		throw new MAPParsingComponentException(
+                                    "Received V1 SendIdentificationResponse while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	else if(vers<3 && parameter instanceof SendIdentificationResponseImplV3)
+                    		throw new MAPParsingComponentException(
+                                    "Received V3 SendIdentificationResponse while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	
+                    	SendIdentificationResponse ind=(SendIdentificationResponse)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onSendIdentificationResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing SendIdentificationResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.updateGprsLocation:
                 if (acn == MAPApplicationContextName.gprsLocationUpdateContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.updateGprsLocationRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.updateGprsLocationResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof UpdateGprsLocationRequest) {
+                		processed=true;
+                		UpdateGprsLocationRequest ind=(UpdateGprsLocationRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onUpdateGprsLocationRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing UpdateGprsLocationRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof UpdateGprsLocationResponse) {
+                		processed=true;
+                		UpdateGprsLocationResponse ind=(UpdateGprsLocationResponse)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onUpdateGprsLocationResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing UpdateGprsLocationResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.purgeMS:
                 if (acn == MAPApplicationContextName.msPurgingContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.purgeMSRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.purgeMSResponse(parameter, mapDialogMobilityImpl, invokeId, compType == ComponentType.ReturnResult);
+                	if(parameter instanceof PurgeMSRequest) {
+                		processed=true;
+                		if (vers >= 3 && parameter instanceof PurgeMSRequestImplV1)
+                    		throw new MAPParsingComponentException(
+                                    "Received V1 PurgeMSRequest while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	else if(vers<3 && parameter instanceof PurgeMSRequestImplV3)
+                    		throw new MAPParsingComponentException(
+                                    "Received V3 PurgeMSRequest while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	
+                    	PurgeMSRequest ind=(PurgeMSRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onPurgeMSRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing PurgeMSRequestRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof PurgeMSResponse || (parameter == null && compType!= ComponentType.Invoke)) {
+                		processed=true;
+                		PurgeMSResponse ind=null;
+                		if(parameter!=null)
+                			ind=(PurgeMSResponse)parameter;
+                		else {
+                			ind=new PurgeMSResponseImpl();
+                			ind.setInvokeId(invokeId);
+                            ind.setMAPDialog(mapDialog);
+                            ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                		}
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onPurgeMSResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing PurgeMSResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
 
             // -- Authentication management services
             case MAPOperationCode.sendAuthenticationInfo:
                 if (acn == MAPApplicationContextName.infoRetrievalContext && vers >= 2) {
-                    if (compType == ComponentType.Invoke)
-                        this.sendAuthenticationInfoRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.sendAuthenticationInfoResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof SendAuthenticationInfoRequest || (parameter==null && compType == ComponentType.Invoke)) {
+                		processed=true;
+                		SendAuthenticationInfoRequest ind=null;
+                		if(parameter!=null) {
+                			if (vers >= 3 && parameter instanceof SendAuthenticationInfoRequestImplV1)
+                        		throw new MAPParsingComponentException(
+                                        "Received V1 SendAuthenticationInfoRequest while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                        	else if(vers<3 && parameter instanceof SendAuthenticationInfoRequestImplV3)
+                        		throw new MAPParsingComponentException(
+                                        "Received V3 SendAuthenticationInfoRequest while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                        	
+                        	ind=(SendAuthenticationInfoRequest)parameter;
+                		}
+                		else {
+                			if(vers<3)
+                				 throw new MAPParsingComponentException(
+                						 "Error while decoding sendAuthenticationInfoRequest V2: Parameter is mandatory but not found",
+                						 MAPParsingComponentExceptionReason.MistypedParameter);
+                			else
+                				ind=new SendAuthenticationInfoRequestImplV3(vers);
+                			
+                			ind.setInvokeId(invokeId);
+                			ind.setMAPDialog(mapDialog);
+                		}
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onSendAuthenticationInfoRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing SendAuthenticationInfoRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof SendAuthenticationInfoResponse || (parameter == null && compType!= ComponentType.Invoke)) {
+                		processed=true;
+                		SendAuthenticationInfoResponse ind=null;
+                		if(parameter!=null) {
+                			if (vers >= 3 && parameter instanceof SendAuthenticationInfoResponseImplV1)
+                        		throw new MAPParsingComponentException(
+                                        "Received V1 SendAuthenticationInfoResponse while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                        	else if(vers<3 && parameter instanceof SendAuthenticationInfoResponseImplV3)
+                        		throw new MAPParsingComponentException(
+                                        "Received V3 SendAuthenticationInfoResponse while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                        	
+                        	ind=(SendAuthenticationInfoResponse)parameter;
+                		}
+                		else {
+                			if(vers<3)
+                				ind=new SendAuthenticationInfoResponseImplV1(vers);
+                			else
+                				ind=new SendAuthenticationInfoResponseImplV3(vers);
+                			
+                			ind.setInvokeId(invokeId);
+                            ind.setMAPDialog(mapDialog);
+                            ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                		}
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onSendAuthenticationInfoResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing SendAuthenticationInfoResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.authenticationFailureReport:
                 if (acn == MAPApplicationContextName.authenticationFailureReportContext && vers >= 3) {
-                    if (compType == ComponentType.Invoke)
-                        this.authenticationFailureReportRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.authenticationFailureReportResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof AuthenticationFailureReportRequest) {
+                		processed=true;
+                		AuthenticationFailureReportRequest ind=(AuthenticationFailureReportRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onAuthenticationFailureReportRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing AuthenticationFailureReportRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof AuthenticationFailureReportResponse || (parameter == null && compType!= ComponentType.Invoke)) {
+                		processed=true;
+                		AuthenticationFailureReportResponse ind=null;
+                		if(parameter!=null)
+                			ind=(AuthenticationFailureReportResponse)parameter;
+                		else {
+                			ind=new AuthenticationFailureReportResponseImpl();
+                			ind.setInvokeId(invokeId);
+                            ind.setMAPDialog(mapDialog);
+                            ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                		}
+                			
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onAuthenticationFailureReportResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing AuthenticationFailureReportResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
 
             // -- Fault Recovery services
             case MAPOperationCode.reset:
                 if (acn == MAPApplicationContextName.resetContext && vers <= 2) {
-                    if (compType == ComponentType.Invoke)
-                        this.resetRequest(parameter, mapDialogMobilityImpl, invokeId);
+                	if(parameter instanceof ResetRequest) {
+                		processed=true;
+                		ResetRequest ind=(ResetRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onResetRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing AuthenticationFailureReportRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.forwardCheckSsIndication:
                 if (acn == MAPApplicationContextName.networkLocUpContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.forwardCheckSsIndicationRequest(parameter, mapDialogMobilityImpl, invokeId);
+                    if (parameter == null && compType == ComponentType.Invoke) {
+                    	processed=true;
+                		ForwardCheckSSIndicationRequestImpl ind = new ForwardCheckSSIndicationRequestImpl();
+                		ind.setInvokeId(invokeId);
+                		ind.setMAPDialog(mapDialog);
+                		
+                        for (MAPServiceListener serLis : this.serviceListeners) {
+                            try {
+                                serLis.onMAPMessage(ind);
+                                ((MAPServiceMobilityListener) serLis).onForwardCheckSSIndicationRequest(ind);
+                            } catch (Exception e) {
+                                loger.error("Error processing forwardCheckSsIndicationRequest: " + e.getMessage(), e);
+                            }
+                        }    
+                    }                    
                 }
                 break;
             case MAPOperationCode.restoreData:
                 if (acn == MAPApplicationContextName.networkLocUpContext && vers >= 2) {
-                    if (compType == ComponentType.Invoke)
-                        this.restoreDataRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.restoreDataResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof RestoreDataRequest) {
+                		processed=true;
+                		RestoreDataRequest ind=(RestoreDataRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onRestoreDataRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing RestoreDataRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof RestoreDataResponse) {
+                		processed=true;
+                		RestoreDataResponse ind=(RestoreDataResponse)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onRestoreDataResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing RestoreDataResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
 
             // -- Subscriber Information services
             case MAPOperationCode.anyTimeInterrogation:
                 if (acn == MAPApplicationContextName.anyTimeEnquiryContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processAnyTimeInterrogationRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.processAnyTimeInterrogationResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof AnyTimeInterrogationRequest) {
+                		processed=true;
+                		AnyTimeInterrogationRequest ind=(AnyTimeInterrogationRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onAnyTimeInterrogationRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing AnyTimeInterrogationRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof AnyTimeInterrogationResponse) {
+                		processed=true;
+                		AnyTimeInterrogationResponse ind=(AnyTimeInterrogationResponse)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onAnyTimeInterrogationResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing AnyTimeInterrogationResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.anyTimeSubscriptionInterrogation:
                 if (acn == MAPApplicationContextName.anyTimeInfoHandlingContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processAnyTimeSubscriptionInterrogationRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.processAnyTimeSubscriptionInterrogationResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof AnyTimeSubscriptionInterrogationRequest) {
+                		processed=true;
+                		AnyTimeSubscriptionInterrogationRequest ind=(AnyTimeSubscriptionInterrogationRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onAnyTimeSubscriptionInterrogationRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing AnyTimeSubscriptionInterrogationRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof AnyTimeSubscriptionInterrogationResponse) {
+                		processed=true;
+                		AnyTimeSubscriptionInterrogationResponse ind=(AnyTimeSubscriptionInterrogationResponse)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onAnyTimeSubscriptionInterrogationResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing AnyTimeSubscriptionInterrogationResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.provideSubscriberInfo:
                 if (acn == MAPApplicationContextName.subscriberInfoEnquiryContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processProvideSubscriberInfoRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.processProvideSubscriberInfoResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof ProvideSubscriberInfoRequest) {
+                		processed=true;
+                		ProvideSubscriberInfoRequest ind=(ProvideSubscriberInfoRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onProvideSubscriberInfoRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing ProvideSubscriberInfoRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof ProvideSubscriberInfoResponse) {
+                		processed=true;
+                		ProvideSubscriberInfoResponse ind=(ProvideSubscriberInfoResponse)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onProvideSubscriberInfoResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing ProvideSubscriberInfoResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
 
             // -- IMEI services
             case MAPOperationCode.checkIMEI:
                 if (acn == MAPApplicationContextName.equipmentMngtContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processCheckImeiRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.processCheckImeiResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof CheckImeiRequest) {
+                		processed=true;
+                		if (vers >= 3 && parameter instanceof CheckImeiRequestImplV1)
+                    		throw new MAPParsingComponentException(
+                                    "Received V1 CheckImeiRequest while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	else if(vers<3 && parameter instanceof CheckImeiRequestImplV3)
+                    		throw new MAPParsingComponentException(
+                                    "Received V3 CheckImeiRequest while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	
+                    	CheckImeiRequest ind=(CheckImeiRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onCheckImeiRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing CheckImeiRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof CheckImeiResponse) {
+                		processed=true;
+                		if (vers >= 3 && parameter instanceof CheckImeiResponseImplV1)
+                    		throw new MAPParsingComponentException(
+                                    "Received V1 CheckImeiResponse while version is >=3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	else if(vers<3 && parameter instanceof CheckImeiResponseImplV3)
+                    		throw new MAPParsingComponentException(
+                                    "Received V3 CheckImeiResponse while version is <3", MAPParsingComponentExceptionReason.MistypedParameter);
+                    	
+                    	CheckImeiResponse ind=(CheckImeiResponse)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onCheckImeiResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing ProvideSubscriberInfoResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
 
@@ -474,20 +867,76 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 if (acn == MAPApplicationContextName.subscriberDataMngtContext
                         || acn == MAPApplicationContextName.networkLocUpContext
                         || acn == MAPApplicationContextName.gprsLocationUpdateContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processInsertSubscriberDataRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.processInsertSubscriberDataResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof InsertSubscriberDataRequest) {
+                		processed=true;
+                		InsertSubscriberDataRequest ind=(InsertSubscriberDataRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onInsertSubscriberDataRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing InsertSubscriberDataRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof InsertSubscriberDataResponse || (parameter == null && compType!= ComponentType.Invoke)) {
+                		processed=true;
+                		InsertSubscriberDataResponse ind=null;
+                		if(parameter!=null)
+                			ind=(InsertSubscriberDataResponse)parameter;
+                		else {
+                			ind=new InsertSubscriberDataResponseImpl(vers);
+                			ind.setInvokeId(invokeId);
+                            ind.setMAPDialog(mapDialog);
+                            ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                		}
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onInsertSubscriberDataResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing InsertSubscriberDataResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
             case MAPOperationCode.deleteSubscriberData:
                 if (acn == MAPApplicationContextName.subscriberDataMngtContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processDeleteSubscriberDataRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.processDeleteSubscriberDataResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof DeleteSubscriberDataRequest) {
+                		processed=true;
+                		DeleteSubscriberDataRequest ind=(DeleteSubscriberDataRequest)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onDeleteSubscriberDataRequest(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing DeleteSubscriberDataRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof DeleteSubscriberDataResponse || (parameter == null && compType!= ComponentType.Invoke)) {
+                		processed=true;
+                		DeleteSubscriberDataResponse ind=null;
+                		if(parameter!=null)
+                			ind=(DeleteSubscriberDataResponse)parameter;
+                		else {
+                			ind=new DeleteSubscriberDataResponseImpl();
+                			ind.setInvokeId(invokeId);
+                            ind.setMAPDialog(mapDialog);
+                            ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                		}
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onDeleteSubscriberDataResponse(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing DeleteSubscriberDataResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
 
@@ -497,11 +946,39 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             case MAPOperationCode.activateTraceMode:
                 if (acn == MAPApplicationContextName.networkLocUpContext
                         || acn == MAPApplicationContextName.gprsLocationUpdateContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processActivateTraceModeRequest(parameter, mapDialogMobilityImpl, invokeId);
-                    else
-                        this.processActivateTraceModeResponse(parameter, mapDialogMobilityImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+                	if(parameter instanceof ActivateTraceModeRequest_Mobility) {
+                		processed=true;
+                		ActivateTraceModeRequest_Mobility ind=(ActivateTraceModeRequest_Mobility)parameter;
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+            	                serLis.onMAPMessage(ind);
+            	                ((MAPServiceMobilityListener) serLis).onActivateTraceModeRequest_Mobility(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing ActivateTraceModeRequestIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	} else if(parameter instanceof ActivateTraceModeResponse_Mobility || (parameter == null && compType!= ComponentType.Invoke)) {
+                		processed=true;
+                		ActivateTraceModeResponse_Mobility ind=null;
+                		if(parameter!=null)
+                			ind=(ActivateTraceModeResponse_Mobility)parameter;
+                		else {
+                			ind=new ActivateTraceModeResponseImpl();
+                			ind.setInvokeId(invokeId);
+                            ind.setMAPDialog(mapDialog);
+                            ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                		}
+                		
+                		for (MAPServiceListener serLis : this.serviceListeners) {
+                			try {
+                				serLis.onMAPMessage(ind);
+                				((MAPServiceMobilityListener) serLis).onActivateTraceModeResponse_Mobility(ind);
+                			} catch (Exception e) {
+                                loger.error("Error processing ActivateTraceModeResponseIndication: " + e.getMessage(), e);
+                            }
+                        }
+                	}
                 }
                 break;
 
@@ -509,1089 +986,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 throw new MAPParsingComponentException("MAPServiceMobility: unknown incoming operation code: " + ocValueInt,
                         MAPParsingComponentExceptionReason.UnrecognizedOperation);
         }
+        
+        if(!processed)
+        	throw new MAPParsingComponentException("MAPServiceMobility: unknown incoming operation code: " + ocValueInt,
+                    MAPParsingComponentExceptionReason.UnrecognizedOperation);
     }
-
-    // -- Location management services
-    private void updateLocationRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding updateLocationRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding updateLocationRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        UpdateLocationRequestImpl ind = new UpdateLocationRequestImpl(version);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onUpdateLocationRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing updateLocationRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void updateLocationResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding updateLocationResponse: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (version >= 2) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding updateLocationResponse V2_3: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        } else {
-            if (parameter.getTag() != Tag.STRING_OCTET || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                    || !parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding updateLocationResponse V1: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        UpdateLocationResponseImpl ind = new UpdateLocationResponseImpl(version);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onUpdateLocationResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing updateLocationResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void cancelLocationRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding cancelLocationRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (version == 3) {
-            if (parameter.getTag() != CancelLocationRequestImpl.TAG_cancelLocationRequest
-                    || parameter.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding cancelLocationRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        } else {
-            if ((!(parameter.getTag() == Tag.SEQUENCE || parameter.getTag() == Tag.STRING_OCTET))
-                    || parameter.getTagClass() != Tag.CLASS_UNIVERSAL)
-                throw new MAPParsingComponentException(
-                        "Error while decoding cancelLocationRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf, parameter.getTagClass(), parameter.isPrimitive(), parameter.getTag());
-        CancelLocationRequestImpl ind = new CancelLocationRequestImpl(version);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onCancelLocationRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing cancelLocationRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void cancelLocationResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-        mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-
-        CancelLocationResponseImpl ind = new CancelLocationResponseImpl();
-
-        if (parameter != null) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding cancelLocationResponse V2_3: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-            byte[] buf = parameter.getData();
-            AsnInputStream ais = new AsnInputStream(buf);
-
-            ind.decodeData(ais, buf.length);
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onCancelLocationResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing cancelLocationResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void SendIdentificationRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendIdentificationRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (version == 3) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding sendIdentificationRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        } else {
-            if (parameter.getTag() != Tag.STRING_OCTET || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                    || !parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding sendIdentificationRequest: Bad tag or tagClass or parameter is not primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf, parameter.getTagClass(), parameter.isPrimitive(), parameter.getTag());
-        SendIdentificationRequestImpl ind = new SendIdentificationRequestImpl(version);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onSendIdentificationRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing sendIdentificationRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void SendIdentificationResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-
-        SendIdentificationResponseImpl ind = new SendIdentificationResponseImpl(version);
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding SendIdentificationResponse: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (version == 3) {
-            if (parameter.getTag() != SendIdentificationResponseImpl._TAG_SendIdentificationResponse
-                    || parameter.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding sendIdentificationResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        } else {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding sendIdentificationResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onSendIdentificationResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing sendIdentificationResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void updateGprsLocationRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding updateGprsLocationRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (version == 3) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding updateGprsLocationRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf, parameter.getTagClass(), parameter.isPrimitive(), parameter.getTag());
-        UpdateGprsLocationRequestImpl ind = new UpdateGprsLocationRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onUpdateGprsLocationRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing UpdateGprsLocationRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void updateGprsLocationResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-        mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-
-        UpdateGprsLocationResponseImpl ind = new UpdateGprsLocationResponseImpl();
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding updateGprsLocationResponse: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding updateGprsLocationResponse V3: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onUpdateGprsLocationResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing UpdateGprsLocationResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void purgeMSRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        if (parameter == null)
-            throw new MAPParsingComponentException("Error while decoding PurgeMSRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (version == 3) {
-            if (parameter.getTag() != PurgeMSRequestImpl._TAG_PurgeMSRequest
-                    || parameter.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding PurgeMSRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        if (version == 2) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding PurgeMSRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf, parameter.getTagClass(), parameter.isPrimitive(), parameter.getTag());
-        PurgeMSRequestImpl ind = new PurgeMSRequestImpl(version);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onPurgeMSRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing PurgeMSRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void purgeMSResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-        PurgeMSResponseImpl ind = new PurgeMSResponseImpl();
-
-        if (parameter != null) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException("Error while decoding PurgeMSResponse V3: Bad tag or tagClass or parameter is primitive, received tag="
-                        + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-            byte[] buf = parameter.getData();
-            AsnInputStream ais = new AsnInputStream(buf);
-
-            ind.decodeData(ais, buf.length);
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onPurgeMSResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing PurgeMSResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    // -- Authentication management services
-    private void sendAuthenticationInfoRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        SendAuthenticationInfoRequestImpl ind = new SendAuthenticationInfoRequestImpl(version);
-        if (version >= 3) {
-            if (parameter != null) {
-                if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                        || parameter.isPrimitive())
-                    throw new MAPParsingComponentException(
-                            "Error while decoding sendAuthenticationInfoRequest V3: Bad tag or tagClass or parameter is primitive, received tag="
-                                    + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-                byte[] buf = parameter.getData();
-                AsnInputStream ais = new AsnInputStream(buf);
-                ind.decodeData(ais, buf.length);
-            }
-        } else {
-            if (parameter == null)
-                throw new MAPParsingComponentException(
-                        "Error while decoding sendAuthenticationInfoRequest V2: Parameter is mandatory but not found",
-                        MAPParsingComponentExceptionReason.MistypedParameter);
-
-            if (parameter.getTag() != Tag.STRING_OCTET || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                    || !parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding sendAuthenticationInfoRequest V2: Bad tag or tagClass or parameter is not primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-            byte[] buf = parameter.getData();
-            AsnInputStream ais = new AsnInputStream(buf);
-            ind.decodeData(ais, buf.length);
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onSendAuthenticationInfoRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing sendAuthenticationInfoRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void sendAuthenticationInfoResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        SendAuthenticationInfoResponseImpl ind = new SendAuthenticationInfoResponseImpl(version);
-        if (version >= 3) {
-            if (parameter != null) {
-                if (parameter.getTag() != SendAuthenticationInfoResponseImpl._TAG_General
-                        || parameter.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || parameter.isPrimitive())
-                    throw new MAPParsingComponentException(
-                            "Error while decoding sendAuthenticationInfoResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                    + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-                byte[] buf = parameter.getData();
-                AsnInputStream ais = new AsnInputStream(buf);
-                ind.decodeData(ais, buf.length);
-            }
-        } else {
-            if (parameter != null) {
-                if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                        || parameter.isPrimitive())
-                    throw new MAPParsingComponentException(
-                            "Error while decoding sendAuthenticationInfoResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                    + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-                byte[] buf = parameter.getData();
-                AsnInputStream ais = new AsnInputStream(buf);
-                ind.decodeData(ais, buf.length);
-            }
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onSendAuthenticationInfoResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing sendAuthenticationInfoResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void authenticationFailureReportRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        AuthenticationFailureReportRequestImpl ind = new AuthenticationFailureReportRequestImpl();
-        if (parameter == null)
-            throw new MAPParsingComponentException("Error while decoding authenticationFailureReportRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding authenticationFailureReportRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onAuthenticationFailureReportRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing authenticationFailureReportRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void authenticationFailureReportResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        AuthenticationFailureReportResponseImpl ind = new AuthenticationFailureReportResponseImpl();
-        if (parameter != null) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding authenticationFailureReportResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-            byte[] buf = parameter.getData();
-            AsnInputStream ais = new AsnInputStream(buf);
-            ind.decodeData(ais, buf.length);
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onAuthenticationFailureReportResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing authenticationFailureReportResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    // -- Fault Recovery services
-    private void resetRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId) throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException("Error while decoding resetRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException("Error while decoding resetRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                    + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        ResetRequestImpl ind = new ResetRequestImpl(version);
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onResetRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing resetRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void forwardCheckSsIndicationRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId) throws MAPParsingComponentException {
-
-        ForwardCheckSSIndicationRequestImpl ind = new ForwardCheckSSIndicationRequestImpl();
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onForwardCheckSSIndicationRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing forwardCheckSsIndicationRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void restoreDataRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException("Error while decoding restoreDataRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException("Error while decoding restoreDataRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                    + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        RestoreDataRequestImpl ind = new RestoreDataRequestImpl();
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onRestoreDataRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing restoreDataRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void restoreDataResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException("Error while decoding restoreDataResponse: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException("Error while decoding restoreDataResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                    + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        RestoreDataResponseImpl ind = new RestoreDataResponseImpl();
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onRestoreDataResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing restoreDataResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    // -- Subscriber Information services
-    private void processAnyTimeInterrogationRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding AnyTimeInterrogationRequestIndication: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding AnyTimeInterrogationRequestIndication: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        AnyTimeInterrogationRequestImpl ind = new AnyTimeInterrogationRequestImpl();
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onAnyTimeInterrogationRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing AnyTimeInterrogationRequestIndication: " + e.getMessage(), e);
-            }
-        }
-
-    }
-
-    private void processAnyTimeInterrogationResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding AnyTimeInterrogationResponseIndication: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding AnyTimeInterrogationResponseIndication: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        AnyTimeInterrogationResponseImpl ind = new AnyTimeInterrogationResponseImpl();
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onAnyTimeInterrogationResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing AnyTimeInterrogationResponseIndication: " + e.getMessage(), e);
-            }
-        }
-
-    }
-
-    private void processAnyTimeSubscriptionInterrogationRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding AnyTimeSubscriptionInterrogationRequestIndication: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding AnyTimeSubscriptionInterrogationRequestIndication: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        AnyTimeSubscriptionInterrogationRequestImpl ind = new AnyTimeSubscriptionInterrogationRequestImpl();
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onAnyTimeSubscriptionInterrogationRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing AnyTimeSubscriptionInterrogationRequestIndication: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processAnyTimeSubscriptionInterrogationResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl,
-            Long invokeId, boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding AnyTimeSubscriptionInterrogationResponseIndication: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding AnyTimeSubscriptionInterrogationResponseIndication: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        AnyTimeSubscriptionInterrogationResponseImpl ind = new AnyTimeSubscriptionInterrogationResponseImpl();
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onAnyTimeSubscriptionInterrogationResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing AnyTimeSubscriptionInterrogationResponseIndication: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processProvideSubscriberInfoRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException("Error while decoding ProvideSubscriberInfoRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding ProvideSubscriberInfoRequest: Bad tag or tagClass or parameter is primitive, received tag=" + parameter.getTag(),
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        ProvideSubscriberInfoRequestImpl ind = new ProvideSubscriberInfoRequestImpl();
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onProvideSubscriberInfoRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing ProvideSubscriberInfoRequest: " + e.getMessage(), e);
-            }
-        }
-
-    }
-
-    private void processProvideSubscriberInfoResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException("Error while decoding ProvideSubscriberInfoResponseIndication: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding ProvideSubscriberInfoResponseIndication: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        ProvideSubscriberInfoResponseImpl ind = new ProvideSubscriberInfoResponseImpl();
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onProvideSubscriberInfoResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing ProvideSubscriberInfoResponseIndication: " + e.getMessage(), e);
-            }
-        }
-
-    }
-
-    // - IMEI services
-    private void processCheckImeiRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding CheckImeiRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-
-        if (version >= 3) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding CheckImeiRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        } else {
-            if (parameter.getTag() != Tag.STRING_OCTET || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                    || !parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding CheckImeiRequest V1 or V2: Bad tag or tagClass or parameter is not primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        CheckImeiRequestImpl ind = new CheckImeiRequestImpl(version);
-        ind.decodeData(ais, parameter.getEncodingLength());
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onCheckImeiRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processCheckImeiRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processCheckImeiResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding CheckImeiResponse: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-
-        if (version >= 3) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding CheckImeiResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        } else {
-            if (parameter.getTag() != Tag.ENUMERATED || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                    || !parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding CheckImeiResponse: Bad tag or tagClass or parameter is not primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        CheckImeiResponseImpl ind = new CheckImeiResponseImpl(version);
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onCheckImeiResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processCheckImeiResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    // - Subscriber management services
-    private void processInsertSubscriberDataRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding InsertSubscriberDataRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding InsertSubscriberDataRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        InsertSubscriberDataRequestImpl ind = new InsertSubscriberDataRequestImpl(version);
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onInsertSubscriberDataRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processInsertSubscriberDataRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processInsertSubscriberDataResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        long version = mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion();
-        InsertSubscriberDataResponseImpl ind = new InsertSubscriberDataResponseImpl(version);
-
-        if (parameter != null) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding InsertSubscriberDataResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-            byte[] buf = parameter.getData();
-            AsnInputStream ais = new AsnInputStream(buf);
-            ind.decodeData(ais, buf.length);
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onInsertSubscriberDataResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processInsertSubscriberDataResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processDeleteSubscriberDataRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding DeleteSubscriberDataRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding DeleteSubscriberDataRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-
-        DeleteSubscriberDataRequestImpl ind = new DeleteSubscriberDataRequestImpl();
-        ind.decodeData(ais, buf.length);
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onDeleteSubscriberDataRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processDeleteSubscriberDataRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processDeleteSubscriberDataResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        DeleteSubscriberDataResponseImpl ind = new DeleteSubscriberDataResponseImpl();
-
-        if (parameter != null) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding DeleteSubscriberDataResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-            byte[] buf = parameter.getData();
-            AsnInputStream ais = new AsnInputStream(buf);
-            ind.decodeData(ais, buf.length);
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onDeleteSubscriberDataResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processDeleteSubscriberDataResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processActivateTraceModeRequest(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding processActivateTraceModeRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding processActivateTraceModeRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ActivateTraceModeRequestImpl_Mobility ind = new ActivateTraceModeRequestImpl_Mobility();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onActivateTraceModeRequest_Mobility(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processActivateTraceModeRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processActivateTraceModeResponse(Parameter parameter, MAPDialogMobilityImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        ActivateTraceModeResponseImpl_Mobility ind = new ActivateTraceModeResponseImpl_Mobility();
-
-        if (parameter != null) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding processActivateTraceModeResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-            byte[] buf = parameter.getData();
-            AsnInputStream ais = new AsnInputStream(buf);
-            ind.decodeData(ais, buf.length);
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceMobilityListener) serLis).onActivateTraceModeResponse_Mobility(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processActivateTraceModeResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
 }

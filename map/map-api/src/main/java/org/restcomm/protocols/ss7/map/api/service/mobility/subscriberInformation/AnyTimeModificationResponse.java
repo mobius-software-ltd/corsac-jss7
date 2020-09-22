@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -40,7 +40,7 @@ AnyTimeModificationRes ::= SEQUENCE {
   clip-Data                [6] ClipData OPTIONAL,
   clir-Data                [7] ClirData OPTIONAL,
   ect-data                 [8] EctData OPTIONAL,
-  serviceCentreAddress     [9] AddressString OPTIONAL
+  serviceCentreAddress     [9] AddressStringImpl OPTIONAL
 }
 </code>
  *
@@ -52,22 +52,22 @@ public interface AnyTimeModificationResponse extends MobilityMessage {
 
     ExtSSInfoForCSE getSsInfoForCSE();
 
-    CAMELSubscriptionInfo getCamelSubscriptionInfo();
+    CAMELSubscriptionInfoImpl getCamelSubscriptionInfo();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    ODBInfo getOdbInfo();
+    ODBInfoImpl getOdbInfo();
 
-    CallWaitingData getCwData();
+    CallWaitingDataImpl getCwData();
 
-    CallHoldData getChData();
+    CallHoldDataImpl getChData();
 
-    ClipData getClipData();
+    ClipDataImpl getClipData();
 
-    ClirData getClirData();
+    ClirDataImpl getClirData();
 
-    EctData getEctData();
+    EctDataImpl getEctData();
 
-    AddressString getServiceCentreAddress();
+    AddressStringImpl getServiceCentreAddress();
 
 }

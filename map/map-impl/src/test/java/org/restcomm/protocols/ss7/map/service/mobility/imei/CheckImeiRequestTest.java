@@ -32,12 +32,12 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.RequestedEquipmentInfoImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiRequestImplV1;
 import org.testng.annotations.Test;
 
 /**
@@ -83,7 +83,7 @@ public class CheckImeiRequestTest {
         int tag = asnIS.readTag();
         assertEquals(tag, Tag.SEQUENCE);
 
-        CheckImeiRequestImpl checkImeiImpl = new CheckImeiRequestImpl(3);
+        CheckImeiRequestImplV1 checkImeiImpl = new CheckImeiRequestImplV1(3);
         checkImeiImpl.decodeAll(asnIS);
 
         assertTrue(checkImeiImpl.getIMEI().getIMEI().equals("358091016853550"));
@@ -98,7 +98,7 @@ public class CheckImeiRequestTest {
         tag = asnIS.readTag();
         assertEquals(tag, Tag.SEQUENCE);
 
-        checkImeiImpl = new CheckImeiRequestImpl(3);
+        checkImeiImpl = new CheckImeiRequestImplV1(3);
         checkImeiImpl.decodeAll(asnIS);
 
         assertTrue(checkImeiImpl.getIMEI().getIMEI().equals("358091016853550"));
@@ -113,7 +113,7 @@ public class CheckImeiRequestTest {
 
         tag = asnIS.readTag();
         assertEquals(tag, Tag.STRING_OCTET);
-        checkImeiImpl = new CheckImeiRequestImpl(2);
+        checkImeiImpl = new CheckImeiRequestImplV1(2);
         checkImeiImpl.decodeAll(asnIS);
 
         assertTrue(checkImeiImpl.getIMEI().getIMEI().equals("358091016853550"));
@@ -125,7 +125,7 @@ public class CheckImeiRequestTest {
 
         tag = asnIS.readTag();
         assertEquals(tag, Tag.STRING_OCTET);
-        checkImeiImpl = new CheckImeiRequestImpl(2);
+        checkImeiImpl = new CheckImeiRequestImplV1(2);
         checkImeiImpl.decodeAll(asnIS);
 
         assertTrue(checkImeiImpl.getIMEI().getIMEI().equals("356467044989910"));
@@ -137,7 +137,7 @@ public class CheckImeiRequestTest {
 
         tag = asnIS.readTag();
         assertEquals(tag, Tag.STRING_OCTET);
-        checkImeiImpl = new CheckImeiRequestImpl(2);
+        checkImeiImpl = new CheckImeiRequestImplV1(2);
         checkImeiImpl.decodeAll(asnIS);
 
         assertTrue(checkImeiImpl.getIMEI().getIMEI().equals("1"));
@@ -150,7 +150,7 @@ public class CheckImeiRequestTest {
         IMEIImpl imei = new IMEIImpl("358091016853550");
         RequestedEquipmentInfoImpl requestedEquipmentInfo = new RequestedEquipmentInfoImpl(true, false);
 
-        CheckImeiRequestImpl checkImei = new CheckImeiRequestImpl(3, imei, requestedEquipmentInfo, null);
+        CheckImeiRequestImplV1 checkImei = new CheckImeiRequestImplV1(3, imei, requestedEquipmentInfo, null);
         AsnOutputStream asnOS = new AsnOutputStream();
         checkImei.encodeAll(asnOS);
 
@@ -161,9 +161,9 @@ public class CheckImeiRequestTest {
         // Testing version 3 Full
         imei = new IMEIImpl("358091016853550");
         requestedEquipmentInfo = new RequestedEquipmentInfoImpl(true, false);
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        checkImei = new CheckImeiRequestImpl(3, imei, requestedEquipmentInfo, extensionContainer);
+        checkImei = new CheckImeiRequestImplV1(3, imei, requestedEquipmentInfo, extensionContainer);
         asnOS = new AsnOutputStream();
         checkImei.encodeAll(asnOS);
 
@@ -173,7 +173,7 @@ public class CheckImeiRequestTest {
 
         // Testing version 1 and 2
         imei = new IMEIImpl("358091016853550");
-        checkImei = new CheckImeiRequestImpl(2, imei, null, null);
+        checkImei = new CheckImeiRequestImplV1(2, imei, null, null);
 
         asnOS = new AsnOutputStream();
         checkImei.encodeAll(asnOS);
@@ -185,7 +185,7 @@ public class CheckImeiRequestTest {
         // Testing version 1 and 2 with Huawei trace
         imei = new IMEIImpl("356467044989910");
         IMSIImpl imsi = new IMSIImpl("724340300385763");
-        checkImei = new CheckImeiRequestImpl(2, imei, null, null);
+        checkImei = new CheckImeiRequestImplV1(2, imei, null, null);
         checkImei.setIMSI(imsi);
 
         asnOS = new AsnOutputStream();
@@ -197,7 +197,7 @@ public class CheckImeiRequestTest {
 
         // Testing IMEI length != 15
         imei = new IMEIImpl("1");
-        checkImei = new CheckImeiRequestImpl(2, imei, null, null);
+        checkImei = new CheckImeiRequestImplV1(2, imei, null, null);
 
         asnOS = new AsnOutputStream();
         checkImei.encodeAll(asnOS);

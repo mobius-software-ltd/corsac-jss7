@@ -31,10 +31,10 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationTripletImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.TripletListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
 import org.testng.annotations.Test;
 
 /**

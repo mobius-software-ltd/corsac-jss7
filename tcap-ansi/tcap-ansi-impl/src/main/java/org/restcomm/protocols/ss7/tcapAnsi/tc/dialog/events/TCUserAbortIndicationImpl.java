@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
@@ -34,8 +34,8 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
 	private static final long serialVersionUID = 1L;
 
 	private UserInformationImpl userInformation;
-    private ApplicationContext acn;
-    private SecurityContext securityContext;
+    private ApplicationContextNameImpl acn;
+    private SecurityContextNameImpl securityContext;
     private ConfidentialityImpl confidentiality;
     private UserInformationImpl userAbortInformation;
     private SccpAddress originatingAddress;
@@ -57,20 +57,20 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
         this.userInformation = userInformation;
     }
 
-    public ApplicationContext getApplicationContextName() {
+    public ApplicationContextNameImpl getApplicationContextName() {
         return this.acn;
     }
 
-    public void setApplicationContextName(ApplicationContext acn) {
+    public void setApplicationContextName(ApplicationContextNameImpl acn) {
         this.acn = acn;
     }
 
     @Override
-    public SecurityContext getSecurityContext() {
+    public SecurityContextNameImpl getSecurityContext() {
         return securityContext;
     }
 
-    public void setSecurityContext(SecurityContext val) {
+    public void setSecurityContext(SecurityContextNameImpl val) {
         securityContext = val;
     }
 

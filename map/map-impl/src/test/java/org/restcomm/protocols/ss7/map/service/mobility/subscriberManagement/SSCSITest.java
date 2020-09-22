@@ -32,17 +32,15 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCamelData;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCamelDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SSCSIImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SSCamelDataImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -72,14 +70,14 @@ public class SSCSITest {
 
         SSCamelData ssCamelData = prim.getSsCamelData();
 
-        ArrayList<SSCode> ssEventList = ssCamelData.getSsEventList();
+        ArrayList<SSCodeImpl> ssEventList = ssCamelData.getSsEventList();
         assertNotNull(ssEventList);
         assertEquals(ssEventList.size(), 1);
-        SSCode one = ssEventList.get(0);
+        SSCodeImpl one = ssEventList.get(0);
         assertNotNull(one);
         assertEquals(one.getSupplementaryCodeValue(), SupplementaryCodeValue.allCommunityOfInterestSS);
 
-        ISDNAddressString gsmSCFAddress = ssCamelData.getGsmSCFAddress();
+        ISDNAddressStringImpl gsmSCFAddress = ssCamelData.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -95,11 +93,11 @@ public class SSCSITest {
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
 
-        ArrayList<SSCode> ssEventList = new ArrayList<SSCode>();
+        ArrayList<SSCodeImpl> ssEventList = new ArrayList<SSCodeImpl>();
         ssEventList.add(new SSCodeImpl(SupplementaryCodeValue.allCommunityOfInterestSS.getCode()));
-        ISDNAddressString gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22235");
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         SSCamelData ssCamelData = new SSCamelDataImpl(ssEventList, gsmSCFAddress, extensionContainer);
         boolean notificationToCSE = false;
         boolean csiActive = true;

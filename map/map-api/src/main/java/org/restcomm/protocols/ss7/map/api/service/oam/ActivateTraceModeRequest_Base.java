@@ -23,10 +23,10 @@
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessage;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -55,7 +55,7 @@ ActivateTraceModeArg ::= SEQUENCE {
   imsi                 [0] IMSI OPTIONAL,
   traceReference       [1] TraceReference,
   traceType            [2] TraceType,
-  omc-Id               [3] AddressString OPTIONAL,
+  omc-Id               [3] AddressStringImpl OPTIONAL,
   extensionContainer   [4] ExtensionContainer OPTIONAL,
   ...,
   traceReference2      [5] TraceReference2 OPTIONAL,
@@ -72,7 +72,7 @@ ActivateTraceModeArg ::= SEQUENCE {
   imsi                 [0] IMSI OPTIONAL,
   traceReference       [1] TraceReference,
   traceType            [2] TraceType,
-  omc-Id               [3] AddressString OPTIONAL,
+  omc-Id               [3] AddressStringImpl OPTIONAL,
   ...
 }
 </code>
@@ -82,28 +82,28 @@ ActivateTraceModeArg ::= SEQUENCE {
  */
 public interface ActivateTraceModeRequest_Base extends MAPMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    TraceReference getTraceReference();
+    TraceReferenceImpl getTraceReference();
 
-    TraceType getTraceType();
+    TraceTypeImpl getTraceType();
 
-    AddressString getOmcId();
+    AddressStringImpl getOmcId();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    TraceReference2 getTraceReference2();
+    TraceReference2Impl getTraceReference2();
 
-    TraceDepthList getTraceDepthList();
+    TraceDepthListImpl getTraceDepthList();
 
-    TraceNETypeList getTraceNeTypeList();
+    TraceNETypeListImpl getTraceNeTypeList();
 
-    TraceInterfaceList getTraceInterfaceList();
+    TraceInterfaceListImpl getTraceInterfaceList();
 
-    TraceEventList getTraceEventList();
+    TraceEventListImpl getTraceEventList();
 
-    GSNAddress getTraceCollectionEntity();
+    GSNAddressImpl getTraceCollectionEntity();
 
-    MDTConfiguration getMdtConfiguration();
+    MDTConfigurationImpl getMdtConfiguration();
 
 }

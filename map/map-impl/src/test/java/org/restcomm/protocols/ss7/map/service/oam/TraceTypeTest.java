@@ -32,8 +32,8 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.oam.BssRecordType;
 import org.restcomm.protocols.ss7.map.api.service.oam.HlrRecordType;
 import org.restcomm.protocols.ss7.map.api.service.oam.MscRecordType;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeInvokingEvent;
-import org.restcomm.protocols.ss7.map.service.oam.TraceTypeImpl;
 import org.testng.annotations.Test;
 
 /**

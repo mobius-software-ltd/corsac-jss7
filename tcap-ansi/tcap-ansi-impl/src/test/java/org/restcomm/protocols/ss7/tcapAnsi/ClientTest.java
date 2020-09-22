@@ -35,11 +35,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCNoticeIndication;
@@ -50,6 +50,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndica
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 
 /**
  * Simple example demonstrates how to use TCAP Stack
@@ -86,8 +87,7 @@ public class ClientTest implements TCListener {
         // create some INVOKE
         InvokeNotLastImpl invoke = cpFactory.createTCInvokeRequestNotLast();
         invoke.setInvokeId(this.clientDialog.getNewInvokeId());
-        NationalOperationCodeImpl oc = cpFactory.createNationalOperationCode();
-        oc.setOperationCode(12L);
+        OperationCodeImpl oc = TcapFactory.createNationalOperationCode(12L);
         invoke.setOperationCode(oc);
         // no parameter
         
@@ -95,7 +95,7 @@ public class ClientTest implements TCListener {
         component.setInvoke(invoke);
         this.clientDialog.sendComponent(component);
         
-        ApplicationContext acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(Arrays.asList(_ACN_));
+        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(Arrays.asList(_ACN_));
         // UI is optional!
         TCQueryRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createQuery(this.clientDialog, true);
         tcbr.setApplicationContextName(acn);

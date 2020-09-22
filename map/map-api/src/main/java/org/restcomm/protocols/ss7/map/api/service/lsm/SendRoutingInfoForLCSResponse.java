@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 
 /**
  * RoutingInfoForLCS-Res ::= SEQUENCE { targetMS [0] SubscriberIdentity, lcsLocationInfo [1] LCSLocationInfo, extensionContainer
@@ -37,18 +37,18 @@ import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
  */
 public interface SendRoutingInfoForLCSResponse extends LsmMessage {
 
-    SubscriberIdentity getTargetMS();
+    SubscriberIdentityImpl getTargetMS();
 
-    LCSLocationInfo getLCSLocationInfo();
+    LCSLocationInfoImpl getLCSLocationInfo();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    GSNAddress getVgmlcAddress();
+    GSNAddressImpl getVgmlcAddress();
 
-    GSNAddress getHGmlcAddress();
+    GSNAddressImpl getHGmlcAddress();
 
-    GSNAddress getPprAddress();
+    GSNAddressImpl getPprAddress();
 
-    GSNAddress getAdditionalVGmlcAddress();
+    GSNAddressImpl getAdditionalVGmlcAddress();
 
 }

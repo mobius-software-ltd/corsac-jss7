@@ -22,22 +22,22 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4Functionalities;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 
 /**
  *
  MAP V3: noteMM-Event OPERATION ::= { --Timer m ARGUMENT NoteMM-EventArg RESULT NoteMM-EventRes ERRORS { dataMissing |
  * unexpectedDataValue | unknownSubscriber | mm-EventNotSupported} CODE local:89 }
  *
- * NoteMM-EventArg::= SEQUENCE { serviceKey ServiceKey, eventMet [0] MM-Code, imsi [1] IMSI, msisdn [2] ISDN-AddressString,
+ * NoteMM-EventArg::= SEQUENCE { serviceKey ServiceKey, eventMet [0] MM-Code, imsi [1] IMSI, msisdn [2] ISDN-AddressStringImpl,
  * locationInformation [3] LocationInformation OPTIONAL, supportedCAMELPhases [5] SupportedCamelPhases OPTIONAL,
  * extensionContainer [6] ExtensionContainer OPTIONAL, ..., locationInformationGPRS [7] LocationInformationGPRS OPTIONAL,
  * offeredCamel4Functionalities [8] OfferedCamel4Functionalities OPTIONAL }
@@ -52,20 +52,20 @@ public interface NoteMMEventRequest extends MobilityMessage {
 
     long getServiceKey();
 
-    MMCode getMMCode();
+    MMCodeImpl getMMCode();
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    ISDNAddressString getMsisdn();
+    ISDNAddressStringImpl getMsisdn();
 
-    LocationInformation getLocationInformation();
+    LocationInformationImpl getLocationInformation();
 
-    SupportedCamelPhases getSupportedCamelPhases();
+    SupportedCamelPhasesImpl getSupportedCamelPhases();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    LocationInformationGPRS getLocationInformationGPRS();
+    LocationInformationGPRSImpl getLocationInformationGPRS();
 
-    OfferedCamel4Functionalities getOfferedCamel4Functionalities();
+    OfferedCamel4FunctionalitiesImpl getOfferedCamel4Functionalities();
 
 }

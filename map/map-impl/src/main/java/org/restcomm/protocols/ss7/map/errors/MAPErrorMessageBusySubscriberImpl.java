@@ -22,43 +22,41 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageBusySubscriber;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
  * @author sergey vetyutnev
  * @author amit bhayani
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageBusySubscriberImpl extends MAPErrorMessageImpl implements MAPErrorMessageBusySubscriber {
-	private static final long serialVersionUID = 1L;
-
-	public static final int _tag_ccbs_Possible = 0;
-    public static final int _tag_ccbs_Busy = 1;
-
-    private MAPExtensionContainer extensionContainer;
-    private boolean ccbsPossible;
-    private boolean ccbsBusy;
+	private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private ASNNull ccbsPossible;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    private ASNNull ccbsBusy;
 
     protected String _PrimitiveName = "MAPErrorMessageBusySubscriber";
 
-    public MAPErrorMessageBusySubscriberImpl(MAPExtensionContainer extensionContainer, boolean ccbsPossible, boolean ccbsBusy) {
+    public MAPErrorMessageBusySubscriberImpl(MAPExtensionContainerImpl extensionContainer, boolean ccbsPossible, boolean ccbsBusy) {
         super((long) MAPErrorCode.busySubscriber);
 
         this.extensionContainer = extensionContainer;
-        this.ccbsPossible = ccbsPossible;
-        this.ccbsBusy = ccbsBusy;
+        if(ccbsPossible)
+        	this.ccbsPossible = new ASNNull();
+        
+        if(ccbsBusy)
+        	this.ccbsBusy = new ASNNull();
     }
 
     public MAPErrorMessageBusySubscriberImpl() {
@@ -74,170 +72,39 @@ public class MAPErrorMessageBusySubscriberImpl extends MAPErrorMessageImpl imple
     }
 
     @Override
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return extensionContainer;
     }
 
     @Override
     public boolean getCcbsPossible() {
-        return ccbsPossible;
+    	return ccbsPossible!=null;
     }
 
     @Override
     public boolean getCcbsBusy() {
-        return ccbsBusy;
+        return ccbsBusy!=null;
     }
 
     @Override
-    public void setExtensionContainer(MAPExtensionContainer val) {
+    public void setExtensionContainer(MAPExtensionContainerImpl val) {
         this.extensionContainer = val;
     }
 
     @Override
     public void setCcbsPossible(boolean val) {
-        this.ccbsPossible = val;
+    	if(val)
+    		this.ccbsPossible = new ASNNull();
+    	else
+    		this.ccbsPossible = null;
     }
 
     @Override
     public void setCcbsBusy(boolean val) {
-        this.ccbsBusy = val;
-    }
-
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream localAis, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.extensionContainer = null;
-        this.ccbsPossible = false;
-        this.ccbsBusy = false;
-
-        if (localAis.getTagClass() != Tag.CLASS_UNIVERSAL || localAis.getTag() != Tag.SEQUENCE || localAis.isTagPrimitive())
-            throw new MAPParsingComponentException("Error decoding " + _PrimitiveName
-                    + ": bad tag class or tag or parameter is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-
-        AsnInputStream ais = localAis.readSequenceStreamData(length);
-
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            switch (ais.getTagClass()) {
-                case Tag.CLASS_UNIVERSAL:
-                    switch (tag) {
-                        case Tag.SEQUENCE:
-                            this.extensionContainer = new MAPExtensionContainerImpl();
-                            ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                            break;
-
-                        default:
-                            ais.advanceElement();
-                            break;
-                    }
-                    break;
-
-                case Tag.CLASS_CONTEXT_SPECIFIC:
-                    switch (tag) {
-                        case _tag_ccbs_Possible:
-                            ais.readNull();
-                            this.ccbsPossible = true;
-                            break;
-                        case _tag_ccbs_Busy:
-                            ais.readNull();
-                            this.ccbsBusy = true;
-                            break;
-
-                        default:
-                            ais.advanceElement();
-                            break;
-                    }
-                    break;
-
-                default:
-                    ais.advanceElement();
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        if (this.ccbsPossible == false && this.ccbsBusy == false && this.extensionContainer == null)
-            return;
-
-        try {
-            if (this.extensionContainer != null)
-                ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs);
-            if (this.ccbsPossible)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _tag_ccbs_Possible);
-            if (this.ccbsBusy)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _tag_ccbs_Busy);
-
-        } catch (IOException e) {
-            throw new MAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+    	if(val)
+    		this.ccbsBusy = new ASNNull();
+    	else
+    		this.ccbsBusy = null;
     }
 
     @Override
@@ -249,9 +116,9 @@ public class MAPErrorMessageBusySubscriberImpl extends MAPErrorMessageImpl imple
 
         if (this.extensionContainer != null)
             sb.append("extensionContainer=" + this.extensionContainer.toString());
-        if (this.ccbsPossible)
+        if (this.ccbsPossible!=null)
             sb.append(", ccbsPossible");
-        if (this.ccbsBusy)
+        if (this.ccbsBusy!=null)
             sb.append(", ccbsBusy");
         sb.append("]");
 

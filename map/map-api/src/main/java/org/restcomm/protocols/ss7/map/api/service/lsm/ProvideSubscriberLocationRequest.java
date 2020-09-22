@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  * MAP V3:
@@ -37,8 +37,8 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  * unidentifiedSubscriber | illegalSubscriber | illegalEquipment | absentSubscriber | unauthorizedRequestingNetwork |
  * unauthorizedLCSClient | positionMethodFailure } CODE local:83 }
  *
- * ProvideSubscriberLocation-Arg ::= SEQUENCE { locationType LocationType, mlc-Number ISDN-AddressString, lcs-ClientID [0]
- * LCS-ClientID OPTIONAL, privacyOverride [1] NULL OPTIONAL, imsi [2] IMSI OPTIONAL, msisdn [3] ISDN-AddressString OPTIONAL,
+ * ProvideSubscriberLocation-Arg ::= SEQUENCE { locationType LocationType, mlc-Number ISDN-AddressStringImpl, lcs-ClientID [0]
+ * LCS-ClientID OPTIONAL, privacyOverride [1] NULL OPTIONAL, imsi [2] IMSI OPTIONAL, msisdn [3] ISDN-AddressStringImpl OPTIONAL,
  * lmsi [4] LMSI OPTIONAL, imei [5] IMEI OPTIONAL, lcs-Priority [6] LCS-Priority OPTIONAL, lcs-QoS [7] LCS-QoS OPTIONAL,
  * extensionContainer [8] ExtensionContainer OPTIONAL, ... , supportedGADShapes [9] SupportedGADShapes OPTIONAL,
  * lcs-ReferenceNumber [10] LCS-ReferenceNumber OPTIONAL, lcsServiceTypeID [11] LCSServiceTypeID OPTIONAL, lcsCodeword [12]
@@ -59,19 +59,19 @@ public interface ProvideSubscriberLocationRequest extends LsmMessage {
      *
      * @return
      */
-    LocationType getLocationType();
+    LocationTypeImpl getLocationType();
 
-    ISDNAddressString getMlcNumber();
+    ISDNAddressStringImpl getMlcNumber();
 
-    LCSClientID getLCSClientID();
+    LCSClientIDImpl getLCSClientID();
 
     boolean getPrivacyOverride();
 
-    IMSI getIMSI();
+    IMSIImpl getIMSI();
 
-    ISDNAddressString getMSISDN();
+    ISDNAddressStringImpl getMSISDN();
 
-    LMSI getLMSI();
+    LMSIImpl getLMSI();
 
     /**
      * LCS-Priority ::= OCTET STRING (SIZE (1)) -- 0 = highest priority -- 1 = normal priority -- all other values treated as 1
@@ -80,11 +80,11 @@ public interface ProvideSubscriberLocationRequest extends LsmMessage {
      */
     LCSPriority getLCSPriority();
 
-    LCSQoS getLCSQoS();
+    LCSQoSImpl getLCSQoS();
 
-    IMEI getIMEI();
+    IMEIImpl getIMEI();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     /**
      * SupportedGADShapes ::= BIT STRING { ellipsoidPoint (0), ellipsoidPointWithUncertaintyCircle (1),
@@ -95,7 +95,7 @@ public interface ProvideSubscriberLocationRequest extends LsmMessage {
      *
      * @return
      */
-    SupportedGADShapes getSupportedGADShapes();
+    SupportedGADShapesImpl getSupportedGADShapes();
 
     /**
      * LCS-ReferenceNumber::= OCTET STRING (SIZE(1))
@@ -104,7 +104,7 @@ public interface ProvideSubscriberLocationRequest extends LsmMessage {
      */
     Integer getLCSReferenceNumber();
 
-    LCSCodeword getLCSCodeword();
+    LCSCodewordImpl getLCSCodeword();
 
     /**
      * LCSServiceTypeID ::= INTEGER (0..127) -- the integer values 0-63 are reserved for Standard LCS service types -- the
@@ -114,21 +114,21 @@ public interface ProvideSubscriberLocationRequest extends LsmMessage {
      */
     Integer getLCSServiceTypeID();
 
-    LCSPrivacyCheck getLCSPrivacyCheck();
+    LCSPrivacyCheckImpl getLCSPrivacyCheck();
 
-    AreaEventInfo getAreaEventInfo();
+    AreaEventInfoImpl getAreaEventInfo();
 
     /**
      * GSN-Address ::= OCTET STRING (SIZE (5..17)) -- Octets are coded according to TS 3GPP TS 23.003 [17]
      *
      * @return
      */
-    GSNAddress getHGMLCAddress();
+    GSNAddressImpl getHGMLCAddress();
 
     boolean getMoLrShortCircuitIndicator();
 
-    PeriodicLDRInfo getPeriodicLDRInfo();
+    PeriodicLDRInfoImpl getPeriodicLDRInfo();
 
-    ReportingPLMNList getReportingPLMNList();
+    ReportingPLMNListImpl getReportingPLMNList();
 
 }

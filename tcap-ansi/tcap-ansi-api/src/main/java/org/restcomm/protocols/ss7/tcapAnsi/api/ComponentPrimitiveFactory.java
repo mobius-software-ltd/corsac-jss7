@@ -24,10 +24,6 @@ package org.restcomm.protocols.ss7.tcapAnsi.api;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
@@ -75,12 +71,4 @@ public interface ComponentPrimitiveFactory {
     ReturnResultNotLastImpl createTCResultNotLastRequest();
 
     ReturnErrorImpl createTCReturnErrorRequest();
-
-    NationalOperationCodeImpl createNationalOperationCode();
-
-    PrivateOperationCodeImpl createPrivateOperationCode();
-
-    NationalErrorCodeImpl createNationalErrorCode();
-
-    PrivateErrorCodeImpl createPrivateErrorCode();
 }

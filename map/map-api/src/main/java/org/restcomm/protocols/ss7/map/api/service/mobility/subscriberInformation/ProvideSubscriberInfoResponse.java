@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -53,8 +53,8 @@ ProvideSubscriberInfoRes ::= SEQUENCE {
  */
 public interface ProvideSubscriberInfoResponse extends MobilityMessage {
 
-    SubscriberInfo getSubscriberInfo();
+    SubscriberInfoImpl getSubscriberInfo();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

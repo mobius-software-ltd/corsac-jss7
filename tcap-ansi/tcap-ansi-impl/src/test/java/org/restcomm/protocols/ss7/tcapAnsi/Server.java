@@ -33,10 +33,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 
 /**
  * @author baranowb
@@ -94,8 +95,7 @@ public class Server extends EventTestHarness {
         InvokeNotLastImpl invoke2 = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast(InvokeClass.Class1);
         invoke2.setInvokeId(this.dialog.getNewInvokeId());
         invoke2.setCorrelationId(invokeLast.getInvokeId());
-        PrivateOperationCodeImpl oc = this.tcapProvider.getComponentPrimitiveFactory().createPrivateOperationCode();
-        oc.setOperationCode(14L);
+        OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(14L);
         invoke2.setOperationCode(oc);
         // no parameter
         component=new ComponentImpl();

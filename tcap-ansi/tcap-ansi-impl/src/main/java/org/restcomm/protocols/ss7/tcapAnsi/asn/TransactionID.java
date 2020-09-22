@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 import io.netty.buffer.ByteBuf;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
@@ -57,7 +58,7 @@ public class TransactionID {
     }
     
     @ASNLength
-	public Integer getLength() {
+	public Integer getLength(ASNParser parser) {
 		if(firstElem!=null) {
 			if(secondElem!=null)
 				return 8;
@@ -69,7 +70,7 @@ public class TransactionID {
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {		
+	public void encode(ASNParser parser,ByteBuf buffer) {		
 		if(firstElem!=null)
 			buffer.writeBytes(firstElem);
 		
@@ -78,7 +79,7 @@ public class TransactionID {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser, Object parent,ByteBuf buffer,Boolean skipErrors) {
 		if(buffer.readableBytes()>=4) {
 			firstElem=new byte[4];
 			buffer.readBytes(firstElem);

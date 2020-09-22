@@ -22,51 +22,43 @@
 
 package org.restcomm.protocols.ss7.map.service.pdpContextActivation;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.SendRoutingInfoForGprsRequest;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
 * @author sergey vetyutnev
 *
 */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SendRoutingInfoForGprsRequestImpl extends PdpContextActivationMessageImpl implements SendRoutingInfoForGprsRequest {
 	private static final long serialVersionUID = 1L;
 
-	protected static final int _TAG_imsi = 0;
-    protected static final int _TAG_ggsnAddress = 1;
-    protected static final int _TAG_ggsnNumber = 2;
-    protected static final int _TAG_extensionContainer = 3;
-
-    public static final String _PrimitiveName = "SendRoutingInfoForGprsRequest";
-
-    private IMSI imsi;
-    private GSNAddress ggsnAddress;
-    private ISDNAddressString ggsnNumber;
-    private MAPExtensionContainer extensionContainer;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private IMSIImpl imsi;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    private GSNAddressImpl ggsnAddress;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
+    private ISDNAddressStringImpl ggsnNumber;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
+    private MAPExtensionContainerImpl extensionContainer;
 
     public SendRoutingInfoForGprsRequestImpl() {
     }
 
-    public SendRoutingInfoForGprsRequestImpl(IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber, MAPExtensionContainer extensionContainer) {
+    public SendRoutingInfoForGprsRequestImpl(IMSIImpl imsi, GSNAddressImpl ggsnAddress, ISDNAddressStringImpl ggsnNumber, MAPExtensionContainerImpl extensionContainer) {
         this.imsi = imsi;
         this.ggsnAddress = ggsnAddress;
         this.ggsnNumber = ggsnNumber;
@@ -84,169 +76,29 @@ public class SendRoutingInfoForGprsRequestImpl extends PdpContextActivationMessa
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return imsi;
     }
 
     @Override
-    public GSNAddress getGgsnAddress() {
+    public GSNAddressImpl getGgsnAddress() {
         return ggsnAddress;
     }
 
     @Override
-    public ISDNAddressString getGgsnNumber() {
+    public ISDNAddressStringImpl getGgsnNumber() {
         return ggsnNumber;
     }
 
     @Override
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return extensionContainer;
-    }
-
-
-    @Override
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.imsi = null;
-        this.ggsnAddress = null;
-        this.ggsnNumber = null;
-        this.extensionContainer = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                case _TAG_imsi:
-                    if (!ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".imsi: Parameter is not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.imsi = new IMSIImpl();
-                    ((IMSIImpl) this.imsi).decodeAll(ais);
-                    break;
-                case _TAG_ggsnAddress:
-                    if (!ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".ggsnAddress: Parameter is not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.ggsnAddress = new GSNAddressImpl();
-                    ((GSNAddressImpl) this.ggsnAddress).decodeAll(ais);
-                    break;
-                case _TAG_ggsnNumber:
-                    if (!ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".ggsnNumber: Parameter is not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.ggsnNumber = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.ggsnNumber).decodeAll(ais);
-                    break;
-                case _TAG_extensionContainer:
-                    if (ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".extensionContainer: Parameter extensionContainer is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.extensionContainer = new MAPExtensionContainerImpl();
-                    ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                    break;
-
-                default:
-                    ais.advanceElement();
-                    break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.imsi == null)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ": Parameter imsi is mandator but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        if (this.ggsnNumber == null)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ": Parameter ggsnNumber is mandator but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        if (this.imsi == null)
-            throw new MAPException("IMSI parameter must not be null");
-        if (this.ggsnNumber == null)
-            throw new MAPException("ggsnNumber parameter must not be null");
-
-        ((IMSIImpl) this.imsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_imsi);
-        if (this.ggsnAddress != null)
-            ((GSNAddressImpl) this.ggsnAddress).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_ggsnAddress);
-        ((ISDNAddressStringImpl) this.ggsnNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_ggsnNumber);
-        if (this.extensionContainer != null)
-            ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_extensionContainer);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("SendRoutingInfoForGprsRequest [");
 
         if (this.imsi != null) {
             sb.append("imsi=");

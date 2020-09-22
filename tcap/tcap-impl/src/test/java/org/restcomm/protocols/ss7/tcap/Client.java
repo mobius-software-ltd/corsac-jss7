@@ -34,7 +34,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.DialogImpl;
-import org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
@@ -43,8 +42,7 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -68,27 +66,15 @@ public class Client extends EventTestHarness {
 
     @Override
     public void sendBegin() throws TCAPException, TCAPSendException {
-        ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
-
         // create some INVOKE
-        ComponentImpl invoke = cpFactory.createTCInvokeRequest(InvokeClass.Class1);
-        invoke.getInvoke().setInvokeId(this.dialog.getNewInvokeId());
-        
-    	OperationCode oc = cpFactory.createLocalOperationCode();
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(new Long(12));
-        invoke.getInvoke().setOperationCode(oc);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(12L);
         // no parameter
-        this.dialog.sendComponent(invoke);
+        this.dialog.sendData(null, null, InvokeClass.Class1, null, oc, null, true, false);
 
         // create a second INVOKE for which we will test linkedId
-        invoke = cpFactory.createTCInvokeRequest(InvokeClass.Class1);
-        invoke.getInvoke().setInvokeId(this.dialog.getNewInvokeId());
-        
-        oc = cpFactory.createLocalOperationCode();
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(new Long(13));
-        invoke.getInvoke().setOperationCode(oc);
+        oc = TcapFactory.createLocalOperationCode(13L);
         // no parameter
-        this.dialog.sendComponent(invoke);
+        this.dialog.sendData(null, null, InvokeClass.Class1, null, oc, null, true, false);
 
         super.sendBegin();
     }
@@ -127,9 +113,7 @@ public class Client extends EventTestHarness {
         ComponentImpl invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequest();
         invoke.getInvoke().setInvokeId(12l);
 
-        OperationCode oc = TcapFactory.createLocalOperationCode();
-
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(59L);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(59L);
         invoke.getInvoke().setOperationCode(oc);
 
         ASNOctetString p1=new ASNOctetString();
@@ -144,33 +128,6 @@ public class Client extends EventTestHarness {
         invoke.getInvoke().setParameter(c1);
 
         return invoke;
-    }
-
-    public void sendInvokeSet(Long[] lstInvokeId) throws Exception {
-        // System.err.println(this+" T["+System.currentTimeMillis()+"]send BEGIN");
-        // ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
-        // TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
-        // tcbr.setApplicationContextName(acn);
-        //
-        // GlobalTitle gt = GlobalTitle.getInstance(0, NumberingPlan.ISDN_TELEPHONY, NatureOfAddress.INTERNATIONAL,
-        // "93702994006");
-        // ((DialogImpl) this.dialog).setRemoteAddress(new SccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, 0, gt,
-        // 8));
-
-        for (Long invokeId : lstInvokeId) {
-            ComponentImpl invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequest();
-            invoke.getInvoke().setInvokeId(invokeId);
-            OperationCode opCode = this.tcapProvider.getComponentPrimitiveFactory().createLocalOperationCode();
-            ((LocalOperationCodeImpl)opCode).setLocalOperationCode(0L);
-            invoke.getInvoke().setOperationCode(opCode);
-            
-            this.dialog.sendComponent(invoke);
-        }
-
-        // this.observerdEvents.add(TestEvent.createSentEvent(EventType.Begin, tcbr, sequence++));
-        // this.dialog.send(tcbr);
-
-        this.sendBegin();
     }
     
     @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x10,constructed=true,lengthIndefinite=false)

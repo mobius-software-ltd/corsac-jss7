@@ -40,7 +40,6 @@ import org.testng.annotations.Test;
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -51,11 +50,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 @Test(groups = { "asn" })
 public class UserInformationTest {
 
+	ASNParser parser=new ASNParser();
+    
 	@BeforeClass
 	public void setUp()
 	{
-		ASNGeneric.clear(ASNUserInformationObjectImpl.class);
-		ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, UserInformationTestASN.class);		
+		parser.loadClass(UserInformationImpl.class);
+        
+		parser.clearClassMapping(ASNUserInformationObjectImpl.class);
+        parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, UserInformationTestASN.class);		
 	}
 	
     @Test(groups = { "functional.decode" })
@@ -67,9 +70,6 @@ public class UserInformationTest {
                 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98, (byte) 0x86,
                 0x03, (byte) 0xf0, 0x00, 0x00 };
 
-        ASNParser parser=new ASNParser();
-        parser.loadClass(UserInformationImpl.class);
-        
         ByteBuf buffer=Unpooled.wrappedBuffer(data);
         Object output=parser.decode(buffer).getResult();
         UserInformationImpl userInformation = (UserInformationImpl)output;
@@ -95,10 +95,7 @@ public class UserInformationTest {
     @Test(groups = { "functional.encode" })
     public void testUserInformationEncode() throws IOException, EncodeException {
 
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(UserInformationImpl.class);
-        
-        byte[] encodedData = new byte[] { (byte) 0xbe, 0x25, 0x28, 0x23, 0x06, 0x07, 0x04, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01,
+    	byte[] encodedData = new byte[] { (byte) 0xbe, 0x25, 0x28, 0x23, 0x06, 0x07, 0x04, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01,
                 (byte) 0xa0, 0x18, (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24, (byte) 0x80, 0x03,
                 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98, (byte) 0x86,
                 0x03, (byte) 0xf0, 0x00, 0x00 };
@@ -138,10 +135,7 @@ public class UserInformationTest {
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testFailuuure() throws Exception {
     	
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(UserInformationImpl.class);
-        
-        byte[] encoded = new byte[] { -66, 15, 40, 13, 6, 7, 4, 0, 0, 1, 0, 19, 2, -126, 2, 4, -112 };
+    	byte[] encoded = new byte[] { -66, 15, 40, 13, 6, 7, 4, 0, 0, 1, 0, 19, 2, -126, 2, 4, -112 };
 
         UserInformationImpl _ui = new UserInformationImpl();
         UserInformationExternalImpl external=new UserInformationExternalImpl();

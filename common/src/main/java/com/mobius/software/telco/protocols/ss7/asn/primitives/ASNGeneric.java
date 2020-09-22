@@ -24,7 +24,7 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 * @author yulian oifa
 *
 */
-import java.util.concurrent.ConcurrentHashMap;
+import java.lang.reflect.Method;
 
 import io.netty.buffer.ByteBuf;
 
@@ -34,63 +34,65 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=0,constructed=false,lengthIndefinite=false)
 public abstract class ASNGeneric {
-	private static ConcurrentHashMap<String,ASNParser> innerParser=new ConcurrentHashMap<String,ASNParser>();
-	
-	Object value;
-	
 	public ASNGeneric() {		
 	}
 	
-	private static ASNParser getParser(Class<?> rootClazz) {
-		ASNParser parser=innerParser.get(rootClazz.getCanonicalName());
-		if(parser==null) {
-			parser=new ASNParser();
-			ASNParser oldParser=innerParser.putIfAbsent(rootClazz.getCanonicalName(), parser);
-			if(oldParser!=null)
-				parser=oldParser;				
-		}
-		
-		return parser;
-	}
-	
-	public static void clear(Class<?> rootClazz) {
-		getParser(rootClazz).clear();
-	}
-	
-	public static void registerAlternative(Class<?> rootClazz, Class<?> clazz) {
-		getParser(rootClazz).loadClass(clazz);
-	}
+	Object value;
 	
 	@ASNLength
-	public Integer getLength() throws ASNException {
+	public Integer getLength(ASNParser parser) throws ASNException {
 		if(value==null)
 			return 0;
 		
-		return getParser(this.getClass()).getLength(value);
+		return parser.getParser(this.getClass()).getLength(value);
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) throws ASNException {
+	public void encode(ASNParser parser,ByteBuf buffer) throws ASNException {
 		if(value==null)
 			return;
 		
-		getParser(this.getClass()).encode(buffer,value);
+		parser.getParser(this.getClass()).encode(buffer,value);
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) throws ASNException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws ASNException {
 		if(buffer.readableBytes()==0)
 		{
 			this.value=null;
 			return false;
 		}
 		
-		ASNDecodeResult result=getParser(this.getClass()).decode(buffer,skipErrors);
+		Class<?> clazz=this.getClass();
+		if(parent!=null) {
+			Method[] methods=parent.getClass().getMethods();
+			for(Method method:methods) {
+				ASNGenericMapping mapping=method.getAnnotation(ASNGenericMapping.class);
+				if(mapping!=null) {
+					Class<?> innerClass=null;
+					try
+					{
+						innerClass=(Class<?>)method.invoke(parent, parser);
+					}
+					catch(Exception ex) 
+					{
+						
+					}
+					
+					if(innerClass!=null)
+						clazz=innerClass;
+					break;
+				}
+			}
+		}
+		
+		ASNDecodeResult result=parser.getParser(clazz).decode(buffer,skipErrors);
 		this.value=result.getResult();
 		return result.getHadErrors();
 	}

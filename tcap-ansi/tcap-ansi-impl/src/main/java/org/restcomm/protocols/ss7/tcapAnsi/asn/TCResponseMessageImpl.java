@@ -29,6 +29,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -37,6 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=4,constructed=true,lengthIndefinite=false)
+@ASNPostprocess
 public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCResponseMessage {
 	private ComponentPortionImpl component;
 

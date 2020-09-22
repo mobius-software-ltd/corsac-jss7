@@ -35,7 +35,7 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.dialog.MAPOpenInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
@@ -80,8 +80,8 @@ public class MAPOpenInfoTest {
         MAPOpenInfoImpl mapOpenInfoImpl = new MAPOpenInfoImpl();
         mapOpenInfoImpl.decodeAll(asnIs);
 
-        AddressString destRef = mapOpenInfoImpl.getDestReference();
-        AddressString origRef = mapOpenInfoImpl.getOrigReference();
+        AddressStringImpl destRef = mapOpenInfoImpl.getDestReference();
+        AddressStringImpl origRef = mapOpenInfoImpl.getOrigReference();
 
         assertNotNull(destRef);
 
@@ -148,7 +148,7 @@ public class MAPOpenInfoTest {
         assertTrue(mapOpenInfoImpl.getEriStyle());
         assertTrue(mapOpenInfoImpl.getEriMsisdn().getAddress().equals("111222111222"));
 
-        AddressString eriVlrNo = mapOpenInfoImpl.getEriVlrNo();
+        AddressStringImpl eriVlrNo = mapOpenInfoImpl.getEriVlrNo();
         assertEquals(eriVlrNo.getAddressNature(), AddressNature.international_number);
         assertEquals(eriVlrNo.getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(eriVlrNo.getAddress().equals("0873124"));
@@ -161,10 +161,10 @@ public class MAPOpenInfoTest {
         MAPParameterFactory servFact = new MAPParameterFactoryImpl();
 
         MAPOpenInfoImpl mapOpenInfoImpl = new MAPOpenInfoImpl();
-        AddressString destReference = servFact.createAddressString(AddressNature.international_number,
+        AddressStringImpl destReference = servFact.createAddressString(AddressNature.international_number,
                 NumberingPlan.land_mobile, "204208300008002");
         mapOpenInfoImpl.setDestReference(destReference);
-        AddressString origReference = servFact.createAddressString(AddressNature.international_number, NumberingPlan.ISDN,
+        AddressStringImpl origReference = servFact.createAddressString(AddressNature.international_number, NumberingPlan.ISDN,
                 "31628968300");
         mapOpenInfoImpl.setOrigReference(origReference);
         AsnOutputStream asnOS = new AsnOutputStream();

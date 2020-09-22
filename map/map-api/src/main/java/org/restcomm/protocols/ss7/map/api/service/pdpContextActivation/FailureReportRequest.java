@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.pdpContextActivation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  * failureReport OPERATION ::= { --Timer m ARGUMENT FailureReportArg RESULT FailureReportRes -- optional ERRORS { systemFailure
  * | dataMissing | unexpectedDataValue | unknownSubscriber} CODE local:25 }
  *
- * FailureReportArg ::= SEQUENCE { imsi [0] IMSI, ggsn-Number [1] ISDN-AddressString , ggsn-Address [2] GSN-Address OPTIONAL,
+ * FailureReportArg ::= SEQUENCE { imsi [0] IMSI, ggsn-Number [1] ISDN-AddressStringImpl , ggsn-Address [2] GSN-Address OPTIONAL,
  * extensionContainer [3] ExtensionContainer OPTIONAL, ...}
  *
  *
@@ -43,12 +43,12 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  */
 public interface FailureReportRequest extends PdpContextActivationMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    ISDNAddressString getGgsnNumber();
+    ISDNAddressStringImpl getGgsnNumber();
 
-    GSNAddress getGgsnAddress();
+    GSNAddressImpl getGgsnAddress();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

@@ -32,18 +32,16 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.service.sms.ForwardShortMessageRequestImpl;
-import org.restcomm.protocols.ss7.map.service.sms.SM_RP_DAImpl;
-import org.restcomm.protocols.ss7.map.service.sms.SM_RP_OAImpl;
-import org.restcomm.protocols.ss7.map.service.sms.SmsSignalInfoImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -116,9 +114,9 @@ public class ForwardShortMessageRequestTest {
     @Test(groups = { "functional.decode", "service.sms" })
     public void testEncode() throws Exception {
 
-        AddressString sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "223334990223");
+        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "223334990223");
         SM_RP_DA sm_RP_DA = new SM_RP_DAImpl(sca);
-        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "2311231234334");
         SM_RP_OAImpl sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setMsisdn(msisdn);

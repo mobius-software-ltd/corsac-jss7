@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -44,7 +44,7 @@ anyTimeModification OPERATION ::= {
 
 AnyTimeModificationArg ::= SEQUENCE {
   subscriberIdentity               [0] SubscriberIdentity,
-  gsmSCF-Address                   [1] ISDN-AddressString,
+  gsmSCF-Address                   [1] ISDN-AddressStringImpl,
   modificationRequestFor-CF-Info   [2] ModificationRequestFor-CF-Info OPTIONAL,
   modificationRequestFor-CB-Info   [3] ModificationRequestFor-CB-Info OPTIONAL,
   modificationRequestFor-CSI       [4] ModificationRequestFor-CSI OPTIONAL,
@@ -69,9 +69,9 @@ AnyTimeModificationArg ::= SEQUENCE {
  */
 public interface AnyTimeModificationRequest extends MobilityMessage {
 
-    SubscriberIdentity getSubscriberIdentity();
+	SubscriberIdentityImpl getSubscriberIdentity();
 
-    ISDNAddressString getGsmSCFAddress();
+    ISDNAddressStringImpl getGsmSCFAddress();
 
     ModificationRequestForCFInfo getModificationRequestForCfInfo();
 
@@ -79,7 +79,7 @@ public interface AnyTimeModificationRequest extends MobilityMessage {
 
     ModificationRequestForCSI getModificationRequestForCSI();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     boolean getLongFTNSupported();
 

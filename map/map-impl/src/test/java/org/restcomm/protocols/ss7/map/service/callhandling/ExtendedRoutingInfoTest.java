@@ -34,23 +34,22 @@ import org.apache.log4j.Logger;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelRoutingInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSI;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.callhandling.CamelRoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.ExtendedRoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.ForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.GmscCamelSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSIImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -102,7 +101,7 @@ public class ExtendedRoutingInfoTest {
         extRouteInfo.decodeAll(asn);
 
         RoutingInfo routeInfo = extRouteInfo.getRoutingInfo();
-        ISDNAddressString isdnAdd = routeInfo.getRoamingNumber();
+        ISDNAddressStringImpl isdnAdd = routeInfo.getRoamingNumber();
 
         assertNotNull(isdnAdd);
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
@@ -130,7 +129,7 @@ public class ExtendedRoutingInfoTest {
     public void testEncode() throws Exception {
         // 4 = 00|0|00100, 7 = length
         // Option 1
-        ISDNAddressString isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
         RoutingInfoImpl routeInfo = new RoutingInfoImpl(isdnAdd);
         ExtendedRoutingInfoImpl extRouteInfo = new ExtendedRoutingInfoImpl(routeInfo);
@@ -142,7 +141,7 @@ public class ExtendedRoutingInfoTest {
         assertTrue(Arrays.equals(this.getData1(), encodedData));
 
         // Option 2
-        ISDNAddressString forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "11111222");
         ForwardingData forwardingData = new ForwardingDataImpl(forwardedToNumber, null, null, null, null);
         ArrayList<TBcsmCamelTDPData> lst = new ArrayList<TBcsmCamelTDPData>();

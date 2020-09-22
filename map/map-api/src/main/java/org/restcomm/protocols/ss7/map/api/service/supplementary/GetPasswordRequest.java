@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-
 /**
  *
 <code>
@@ -46,13 +44,5 @@ ARGUMENT GuidanceInfo
 public interface GetPasswordRequest extends SupplementaryMessage {
 
     GuidanceInfo getGuidanceInfo();
-
-    Long getLinkedId();
-
-    void setLinkedId(Long val);
-
-    Invoke getLinkedInvoke();
-
-    void setLinkedInvoke(Invoke val);
 
 }

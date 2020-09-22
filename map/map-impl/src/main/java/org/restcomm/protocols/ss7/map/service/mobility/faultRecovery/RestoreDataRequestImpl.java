@@ -22,56 +22,52 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.VLRCapabilityImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
 *
 * @author sergey vetyutnev
 *
 */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class RestoreDataRequestImpl extends MobilityMessageImpl implements RestoreDataRequest {
 	private static final long serialVersionUID = 1L;
 
-	protected static final int _TAG_vlr_Capability = 6;
-    protected static final int _TAG_restorationIndicator = 7;
-
-    public static final String _PrimitiveName = "RestoreDataRequest";
-
-    private IMSI imsi;
-    private LMSI lmsi;
-    private VLRCapability vlrCapability;
-    private MAPExtensionContainer extensionContainer;
-    private boolean restorationIndicator;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
+    private IMSIImpl imsi;
+    
+    private LMSIImpl lmsi;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
+    private VLRCapabilityImpl vlrCapability;
+    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
+    private ASNNull restorationIndicator;
 
     public RestoreDataRequestImpl() {
     }
 
-    public RestoreDataRequestImpl(IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainer extensionContainer, boolean restorationIndicator) {
+    public RestoreDataRequestImpl(IMSIImpl imsi, LMSIImpl lmsi, VLRCapabilityImpl vlrCapability, MAPExtensionContainerImpl extensionContainer, boolean restorationIndicator) {
         this.imsi = imsi;
         this.lmsi = lmsi;
         this.vlrCapability = vlrCapability;
         this.extensionContainer = extensionContainer;
-        this.restorationIndicator = restorationIndicator;
+        
+        if(restorationIndicator)
+        	this.restorationIndicator = new ASNNull();
     }
 
     public MAPMessageType getMessageType() {
@@ -83,212 +79,34 @@ public class RestoreDataRequestImpl extends MobilityMessageImpl implements Resto
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return this.imsi;
     }
 
     @Override
-    public LMSI getLmsi() {
+    public LMSIImpl getLmsi() {
         return this.lmsi;
     }
 
     @Override
-    public VLRCapability getVLRCapability() {
+    public VLRCapabilityImpl getVLRCapability() {
         return this.vlrCapability;
     }
 
     @Override
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
     public boolean getRestorationIndicator() {
-        return this.restorationIndicator;
-    }
-
-
-    @Override
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        imsi = null;
-        lmsi = null;
-        vlrCapability = null;
-        extensionContainer = null;
-        restorationIndicator = false;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            switch (num) {
-            case 0:
-                // imsi
-                if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.STRING_OCTET)
-                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                            + ".imsi: Parameter 0 (IMSI) bad tag or tag class or not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                this.imsi = new IMSIImpl();
-                ((IMSIImpl) this.imsi).decodeAll(ais);
-                break;
-
-            default:
-                if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                    switch (tag) {
-                    case _TAG_vlr_Capability:
-                        if (ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".vlr_Capability: Parameter is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.vlrCapability = new VLRCapabilityImpl();
-                        ((VLRCapabilityImpl) this.vlrCapability).decodeAll(ais);
-                        break;
-                    case _TAG_restorationIndicator:
-                        // restorationIndicator
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".restorationIndicator: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        this.restorationIndicator = true;
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                    }
-                } else if (ais.getTagClass() == Tag.CLASS_UNIVERSAL) {
-
-                    switch (tag) {
-                    case Tag.STRING_OCTET:
-                        // lmsi
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".lmsi: Parameter is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.lmsi = new LMSIImpl();
-                        ((LMSIImpl) this.lmsi).decodeAll(ais);
-                        break;
-                    case Tag.SEQUENCE:
-                        // extensionContainer
-                        if (ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".extensionContainer: Parameter is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.extensionContainer = new MAPExtensionContainerImpl();
-                        ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                    }
-                } else {
-
-                    ais.advanceElement();
-                }
-                break;
-            }
-
-            num++;
-        }
-
-        if (num < 1)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ": Needs at least 1 mandatory parameters, found " + num,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        try {
-            if (this.imsi == null)
-                throw new MAPException("IMSI parameter must not be null");
-
-            ((IMSIImpl) this.imsi).encodeAll(asnOs);
-
-            if (this.lmsi != null)
-                ((LMSIImpl) this.lmsi).encodeAll(asnOs);
-            if (this.extensionContainer != null)
-                ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs);
-
-            if (vlrCapability != null)
-                ((VLRCapabilityImpl) this.vlrCapability).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_vlr_Capability);
-            if (restorationIndicator)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_restorationIndicator);
-
-        } catch (IOException e) {
-            throw new MAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+        return this.restorationIndicator!=null;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("RestoreDataRequest [");
 
         if (this.imsi != null) {
             sb.append("imsi=");
@@ -310,7 +128,7 @@ public class RestoreDataRequestImpl extends MobilityMessageImpl implements Resto
             sb.append(extensionContainer.toString());
             sb.append(", ");
         }
-        if (this.restorationIndicator) {
+        if (this.restorationIndicator!=null) {
             sb.append("restorationIndicator");
             sb.append(", ");
         }

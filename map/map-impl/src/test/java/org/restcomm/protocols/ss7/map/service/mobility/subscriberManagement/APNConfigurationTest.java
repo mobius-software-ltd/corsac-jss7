@@ -31,36 +31,36 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LIPAPermission;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SIPTOPermission;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AMBR;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AMBRImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APN;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNConfigurationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNOIReplacement;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNOIReplacementImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AllocationRetentionPriority;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AllocationRetentionPriorityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristics;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSQoSSubscribed;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSQoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDN;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDNImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWAllocationType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentity;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNType;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNTypeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNTypeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddress;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddressImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSClassIdentifier;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificAPNInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificAPNInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.AMBRImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNConfigurationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNOIReplacementImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.AllocationRetentionPriorityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.EPSQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.FQDNImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDNGWIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDNTypeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDPAddressImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SpecificAPNInfoImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -129,7 +129,7 @@ public class APNConfigurationTest {
 
         EPSQoSSubscribed ePSQoSSubscribed = prim.getEPSQoSSubscribed();
         AllocationRetentionPriority allocationRetentionPriority = ePSQoSSubscribed.getAllocationRetentionPriority();
-        MAPExtensionContainer extensionContainerePSQoSSubscribed = ePSQoSSubscribed.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainerePSQoSSubscribed = ePSQoSSubscribed.getExtensionContainer();
         assertEquals(allocationRetentionPriority.getPriorityLevel(), 1);
         assertTrue(allocationRetentionPriority.getPreEmptionCapability());
         assertTrue(allocationRetentionPriority.getPreEmptionVulnerability());
@@ -158,7 +158,7 @@ public class APNConfigurationTest {
         assertTrue(Arrays.equals(this.getChargingCharacteristicsData(), prim.getChargingCharacteristics().getData()));
 
         AMBR ambr = prim.getAmbr();
-        MAPExtensionContainer extensionContainerambr = ambr.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainerambr = ambr.getExtensionContainer();
         assertEquals(ambr.getMaxRequestedBandwidthDL(), 4);
         assertEquals(ambr.getMaxRequestedBandwidthUL(), 2);
         assertNotNull(extensionContainerambr);
@@ -181,7 +181,7 @@ public class APNConfigurationTest {
         assertTrue(Arrays.equals(this.getFQDNData(), pdnGwNameSpecificAPNInfo.getData()));
         assertNotNull(pdnGWIdentitySpecificAPNInfo.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(pdnGWIdentitySpecificAPNInfo.getExtensionContainer()));
-        MAPExtensionContainer extensionContainerspecificAPNInfo = specificAPNInfo.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainerspecificAPNInfo = specificAPNInfo.getExtensionContainer();
         assertNotNull(extensionContainerspecificAPNInfo);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainerspecificAPNInfo));
 
@@ -193,14 +193,14 @@ public class APNConfigurationTest {
         assertTrue(Arrays.equals(this.getAPNOIReplacementData(), prim.getApnOiReplacement().getData()));
         assertEquals(prim.getSiptoPermission(), SIPTOPermission.siptoAllowed);
         assertEquals(prim.getLipaPermission(), LIPAPermission.lipaConditional);
-        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         int contextId = 1;
         PDNType pDNType = new PDNTypeImpl(PDNTypeValue.IPv4);

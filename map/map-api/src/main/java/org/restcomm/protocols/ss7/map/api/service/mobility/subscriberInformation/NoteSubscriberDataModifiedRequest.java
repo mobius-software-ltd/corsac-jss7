@@ -24,11 +24,11 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.util.ArrayList;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
 
 /**
  *
@@ -46,7 +46,7 @@ noteSubscriberDataModified OPERATION ::= {
 
 NoteSubscriberDataModifiedArg ::= SEQUENCE {
   imsi                    IMSI,
-  msisdn                  ISDN-AddressString,
+  msisdn                  ISDN-AddressStringImpl,
   forwardingInfoFor-CSE     [0] Ext-ForwardingInfoFor-CSE OPTIONAL,
   callBarringInfoFor-CSE    [1] Ext-CallBarringInfoFor-CSE OPTIONAL,
   odb-Info                  [2] ODB-Info OPTIONAL,
@@ -72,34 +72,34 @@ CSG-SubscriptionDataList ::= SEQUENCE SIZE (1..50) OF CSG-SubscriptionData
  */
 public interface NoteSubscriberDataModifiedRequest extends MobilityMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    ISDNAddressString getMsisdn();
+    ISDNAddressStringImpl getMsisdn();
 
     ExtForwardingInfoForCSE getForwardingInfoForCSE();
 
     ExtCallBarringInfoForCSE getCallBarringInfoForCSE();
 
-    ODBInfo getOdbInfo();
+    ODBInfoImpl getOdbInfo();
 
-    CAMELSubscriptionInfo getCamelSubscriptionInfo();
+    CAMELSubscriptionInfoImpl getCamelSubscriptionInfo();
 
     boolean getAllInformationSent();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     ServingNode getUeReachable();
 
-    ArrayList<CSGSubscriptionData> getCsgSubscriptionDataList();
+    ArrayList<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
 
-    CallWaitingData getCwData();
+    CallWaitingDataImpl getCwData();
 
-    CallHoldData getChData();
+    CallHoldDataImpl getChData();
 
-    ClipData getClipData();
+    ClipDataImpl getClipData();
 
-    ClirData getClirData();
+    ClirDataImpl getClirData();
 
-    EctData getEctData();
+    EctDataImpl getEctData();
 
 }

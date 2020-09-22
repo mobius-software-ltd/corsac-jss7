@@ -30,13 +30,13 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAAttributes;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAAttributesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSADataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentity;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAAttributesImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSADataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -69,7 +69,7 @@ public class LSADataTest {
         assertTrue(Arrays.equals(prim.getLSAIdentity().getData(), this.getDataLSAIdentity()));
         assertEquals(prim.getLSAAttributes().getData(), 5);
         assertTrue(prim.getLsaActiveModeIndicator());
-        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
@@ -80,7 +80,7 @@ public class LSADataTest {
         LSAIdentity lsaIdentity = new LSAIdentityImpl(this.getDataLSAIdentity());
         LSAAttributes lsaAttributes = new LSAAttributesImpl(5);
         boolean lsaActiveModeIndicator = true;
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         LSADataImpl prim = new LSADataImpl(lsaIdentity, lsaAttributes, lsaActiveModeIndicator, extensionContainer);
         AsnOutputStream asn = new AsnOutputStream();
         prim.encodeAll(asn);

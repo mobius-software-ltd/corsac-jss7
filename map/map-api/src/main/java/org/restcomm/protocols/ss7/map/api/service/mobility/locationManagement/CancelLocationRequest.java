@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -59,8 +59,8 @@ MAP V3: CancelLocationArg ::= [3] SEQUENCE {
   typeOfUpdate                   [0] TypeOfUpdate OPTIONAL,
   mtrf-SupportedAndAuthorized    [1] NULL OPTIONAL,
   mtrf-SupportedAndNotAuthorized [2] NULL OPTIONAL,
-  newMSC-Number                  [3] ISDN-AddressString OPTIONAL,
-  newVLR-Number                  [4] ISDN-AddressString OPTIONAL,
+  newMSC-Number                  [3] ISDN-AddressStringImpl OPTIONAL,
+  newVLR-Number                  [4] ISDN-AddressStringImpl OPTIONAL,
   new-lmsi                       [5] LMSI OPTIONAL
 }
 -- mtrf-SupportedAndAuthorized and mtrf-SupportedAndNotAuthorized shall not
@@ -82,13 +82,13 @@ Identity ::= CHOICE {
  */
 public interface CancelLocationRequest extends MobilityMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    IMSIWithLMSI getImsiWithLmsi();
+    IMSIWithLMSIImpl getImsiWithLmsi();
 
     CancellationType getCancellationType();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     TypeOfUpdate getTypeOfUpdate();
 
@@ -96,11 +96,11 @@ public interface CancelLocationRequest extends MobilityMessage {
 
     boolean getMtrfSupportedAndNotAuthorized();
 
-    ISDNAddressString getNewMSCNumber();
+    ISDNAddressStringImpl getNewMSCNumber();
 
-    ISDNAddressString getNewVLRNumber();
+    ISDNAddressStringImpl getNewVLRNumber();
 
-    LMSI getNewLmsi();
+    LMSIImpl getNewLmsi();
 
     long getMapProtocolVersion();
 

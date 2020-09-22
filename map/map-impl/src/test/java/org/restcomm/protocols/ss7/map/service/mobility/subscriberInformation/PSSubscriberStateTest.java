@@ -35,9 +35,9 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NotReachableReason;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateChoice;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PSSubscriberStateImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberState;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -70,7 +70,7 @@ public class PSSubscriberStateTest {
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
         assertTrue(asn.isTagPrimitive());
         impl.decodeAll(asn);
-        assertEquals(impl.getChoice(), PSSubscriberStateChoice.psDetached);
+        assertEquals(impl.getChoice(), PSSubscriberState.psDetached);
         assertNull(impl.getPDPContextInfoList());
         assertNull(impl.getNetDetNotReachable());
 
@@ -82,7 +82,7 @@ public class PSSubscriberStateTest {
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
         assertFalse(asn.isTagPrimitive());
         impl.decodeAll(asn);
-        assertEquals(impl.getChoice(), PSSubscriberStateChoice.psPDPActiveReachableForPaging);
+        assertEquals(impl.getChoice(), PSSubscriberState.psPDPActiveReachableForPaging);
         assertEquals(impl.getPDPContextInfoList().size(), 2);
         assertEquals(impl.getPDPContextInfoList().get(0).getPdpContextIdentifier(), 5);
         assertEquals(impl.getPDPContextInfoList().get(1).getPdpContextIdentifier(), 6);
@@ -96,7 +96,7 @@ public class PSSubscriberStateTest {
         assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
         assertTrue(asn.isTagPrimitive());
         impl.decodeAll(asn);
-        assertEquals(impl.getChoice(), PSSubscriberStateChoice.netDetNotReachable);
+        assertEquals(impl.getChoice(), PSSubscriberState.netDetNotReachable);
         assertNull(impl.getPDPContextInfoList());
         assertEquals(impl.getNetDetNotReachable(), NotReachableReason.msPurged);
 
@@ -105,7 +105,7 @@ public class PSSubscriberStateTest {
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
 
-        PSSubscriberStateImpl impl = new PSSubscriberStateImpl(PSSubscriberStateChoice.psDetached, null, null);
+        PSSubscriberStateImpl impl = new PSSubscriberStateImpl(PSSubscriberState.psDetached, null, null);
         // PSSubscriberStateChoice choice, NotReachableReason netDetNotReachable, ArrayList<PDPContextInfo> pdpContextInfoList
         AsnOutputStream asnOS = new AsnOutputStream();
         impl.encodeAll(asnOS);
@@ -120,14 +120,14 @@ public class PSSubscriberStateTest {
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         pdpContextInfoList.add(ci1);
         pdpContextInfoList.add(ci2);
-        impl = new PSSubscriberStateImpl(PSSubscriberStateChoice.psPDPActiveReachableForPaging, null, pdpContextInfoList);
+        impl = new PSSubscriberStateImpl(PSSubscriberState.psPDPActiveReachableForPaging, null, pdpContextInfoList);
         asnOS = new AsnOutputStream();
         impl.encodeAll(asnOS);
         encodedData = asnOS.toByteArray();
         rawData = getEncodedDataActiveReachableForPaging();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        impl = new PSSubscriberStateImpl(PSSubscriberStateChoice.netDetNotReachable, NotReachableReason.msPurged, null);
+        impl = new PSSubscriberStateImpl(PSSubscriberState.netDetNotReachable, NotReachableReason.msPurged, null);
         asnOS = new AsnOutputStream();
         impl.encodeAll(asnOS);
         encodedData = asnOS.toByteArray();

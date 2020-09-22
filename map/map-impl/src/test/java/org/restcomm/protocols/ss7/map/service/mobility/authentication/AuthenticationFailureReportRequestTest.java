@@ -31,12 +31,11 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AccessType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.FailureCause;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationFailureReportRequestImpl;
 import org.testng.annotations.Test;
@@ -122,14 +121,14 @@ public class AuthenticationFailureReportRequestTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ISDNAddressString vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111133");
-        ISDNAddressString sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111144");
+        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111133");
+        ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111144");
         asc = new AuthenticationFailureReportRequestImpl(imsi, FailureCause.wrongNetworkSignature, MAPExtensionContainerTest.GetTestExtensionContainer(), true,
                 AccessType.locationUpdating, getRandBalue(), vlrNumber, sgsnNumber);
         // IMSI imsi, FailureCause failureCause, MAPExtensionContainer
         // extensionContainer, Boolean reAttempt,
-        // AccessType accessType, byte[] rand, ISDNAddressString vlrNumber,
-        // ISDNAddressString sgsnNumber
+        // AccessType accessType, byte[] rand, ISDNAddressStringImpl vlrNumber,
+        // ISDNAddressStringImpl sgsnNumber
 
         asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);

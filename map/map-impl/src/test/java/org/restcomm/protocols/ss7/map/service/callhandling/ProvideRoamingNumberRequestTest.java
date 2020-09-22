@@ -40,37 +40,36 @@ import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ExtProtocolId;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
 import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.SignalInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.primitives.ExtExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.SignalInfoImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.ProvideRoamingNumberRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LocationAreaImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PagingAreaImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -140,15 +139,15 @@ public class ProvideRoamingNumberRequestTest {
         return new byte[] { 0, 3, 98, 39 };
     }
 
-    public static MAPExtensionContainer GetTestExtensionContainer() {
+    public static MAPExtensionContainerImpl GetTestExtensionContainer() {
         MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
 
-        ArrayList<MAPPrivateExtension> al = new ArrayList<MAPPrivateExtension>();
+        ArrayList<MAPPrivateExtensionImpl> al = new ArrayList<MAPPrivateExtensionImpl>();
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 4 }, new byte[] { 11, 12, 13, 14, 15 }));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 6 }, null));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 5 }, new byte[] { 21, 22, 23, 24, 25, 26 }));
 
-        MAPExtensionContainer cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
+        MAPExtensionContainerImpl cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
 
         return cnt;
     }
@@ -171,16 +170,16 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(prn.getMapProtocolVersion(), 3);
 
         IMSI imsi = prn.getImsi();
-        ISDNAddressString mscNumber = prn.getMscNumber();
-        ISDNAddressString msisdn = prn.getMsisdn();
+        ISDNAddressStringImpl mscNumber = prn.getMscNumber();
+        ISDNAddressStringImpl msisdn = prn.getMsisdn();
         LMSI lmsi = prn.getLmsi();
         ExternalSignalInfo gsmBearerCapability = prn.getGsmBearerCapability();
         ExternalSignalInfo networkSignalInfo = prn.getNetworkSignalInfo();
         boolean suppressionOfAnnouncement = prn.getSuppressionOfAnnouncement();
-        ISDNAddressString gmscAddress = prn.getGmscAddress();
+        ISDNAddressStringImpl gmscAddress = prn.getGmscAddress();
         CallReferenceNumber callReferenceNumber = prn.getCallReferenceNumber();
         boolean orInterrogation = prn.getOrInterrogation();
-        MAPExtensionContainer extensionContainer = prn.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = prn.getExtensionContainer();
         AlertingPattern alertingPattern = prn.getAlertingPattern();
         boolean ccbsCall = prn.getCcbsCall();
         SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = prn.getSupportedCamelPhasesInInterrogatingNode();
@@ -194,7 +193,7 @@ public class ProvideRoamingNumberRequestTest {
         PagingArea pagingArea = prn.getPagingArea();
         EMLPPPriority callPriority = prn.getCallPriority();
         boolean mtrfIndicator = prn.getMtrfIndicator();
-        ISDNAddressString oldMSCNumber = prn.getOldMSCNumber();
+        ISDNAddressStringImpl oldMSCNumber = prn.getOldMSCNumber();
         long mapProtocolVersion = prn.getMapProtocolVersion();
 
         assertNotNull(imsi);
@@ -398,11 +397,11 @@ public class ProvideRoamingNumberRequestTest {
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
         IMSI imsi = new IMSIImpl("011220200198227");
-        ISDNAddressString mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22228");
-        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22227");
+        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22228");
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22227");
         LMSI lmsi = new LMSIImpl(getDataLmsi());
 
-        MAPExtensionContainer extensionContainerForExtSigInfo = GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainerForExtSigInfo = GetTestExtensionContainer();
         byte[] data_ = new byte[] { 10, 20, 30, 40 };
         SignalInfo signalInfo = new SignalInfoImpl(data_);
         ProtocolId protocolId = ProtocolId.gsm_0806;
@@ -412,15 +411,15 @@ public class ProvideRoamingNumberRequestTest {
                 extensionContainerForExtSigInfo);
 
         boolean suppressionOfAnnouncement = false;
-        ISDNAddressString gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22226");
         CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(getCallReferenceNumber());
         boolean orInterrogation = false;
-        MAPExtensionContainer extensionContainer = GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = GetTestExtensionContainer();
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
         boolean ccbsCall = false;
         SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = new SupportedCamelPhasesImpl(true, true, false, false);
-        MAPExtensionContainer extensionContainerforAddSigInfo = GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainerforAddSigInfo = GetTestExtensionContainer();
         ExtExternalSignalInfoImpl additionalSignalInfo = new ExtExternalSignalInfoImpl(signalInfo,
                 ExtProtocolId.getExtProtocolId(0), extensionContainerforAddSigInfo);
         boolean orNotSupportedInGMSC = false;
@@ -437,7 +436,7 @@ public class ProvideRoamingNumberRequestTest {
         PagingAreaImpl pagingArea = new PagingAreaImpl(locationAreas);
         EMLPPPriority callPriority = EMLPPPriority.getEMLPPPriority(0);
         boolean mtrfIndicator = false;
-        ISDNAddressString oldMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl oldMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22225");
         long mapProtocolVersion = 3;
 

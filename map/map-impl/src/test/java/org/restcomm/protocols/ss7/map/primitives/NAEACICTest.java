@@ -8,9 +8,9 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEACICImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationTypeValue;
-import org.restcomm.protocols.ss7.map.primitives.NAEACICImpl;
 import org.testng.annotations.Test;
 
 public class NAEACICTest {

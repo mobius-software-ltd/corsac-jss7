@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.callhandling.IstCommandResponseImpl;
 import org.testng.annotations.AfterClass;
@@ -114,7 +114,7 @@ public class IstCommandResponseTest {
         assertEquals(data, encodedData);
 
         // extensionContainer
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         IstCommandResponseImpl prim = new IstCommandResponseImpl(extensionContainer);
 

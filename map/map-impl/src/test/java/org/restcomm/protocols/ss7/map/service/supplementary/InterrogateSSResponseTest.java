@@ -31,16 +31,16 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.GenericServiceInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.InterrogateSSResponseImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSStatusImpl;
 import org.testng.annotations.Test;
 
 /**

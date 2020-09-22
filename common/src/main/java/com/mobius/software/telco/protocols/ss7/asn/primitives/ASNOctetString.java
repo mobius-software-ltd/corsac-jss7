@@ -29,6 +29,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
@@ -50,17 +51,17 @@ public class ASNOctetString {
 	}
 
 	@ASNLength
-	public Integer getLength() {
+	public Integer getLength(ASNParser parser) {
 		return getLength(getValue());
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser,ByteBuf buffer) {
 		buffer.writeBytes(getValue());
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		if(buffer.readableBytes()>0)
 			value=Unpooled.wrappedBuffer(buffer);
 		else
@@ -73,4 +74,20 @@ public class ASNOctetString {
 	{		
 		return value.readableBytes();
 	}
+	
+	public String printDataArr(byte[] arr) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        if (arr != null) {
+            for (byte b : arr) {
+                if (first)
+                    first = false;
+                else
+                    sb.append(", ");
+                sb.append(b & 0xFF);
+            }
+        }
+
+        return sb.toString();
+    }
 }

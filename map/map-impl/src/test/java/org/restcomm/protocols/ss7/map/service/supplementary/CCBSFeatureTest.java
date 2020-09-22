@@ -30,15 +30,14 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.CCBSFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CCBSFeatureImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -99,7 +98,7 @@ public class CCBSFeatureTest {
     public void testEncode() throws Exception {
 
         CCBSFeatureImpl impl = new CCBSFeatureImpl(1, null, null, null);
-        // Integer ccbsIndex, ISDNAddressString bSubscriberNumber, ISDNAddressString bSubscriberSubaddress, BasicServiceCode basicServiceCode
+        // Integer ccbsIndex, ISDNAddressStringImpl bSubscriberNumber, ISDNAddressStringImpl bSubscriberSubaddress, BasicServiceCode basicServiceCode
         AsnOutputStream asnOS = new AsnOutputStream();
 
         impl.encodeAll(asnOS);
@@ -109,8 +108,8 @@ public class CCBSFeatureTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ISDNAddressString bSubscriberNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "333301");
-        ISDNAddressString bSubscriberSubaddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "333302");
+        ISDNAddressStringImpl bSubscriberNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "333301");
+        ISDNAddressStringImpl bSubscriberSubaddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "333302");
         TeleserviceCode teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.allTeleservices);
         BasicServiceCode basicServiceCode = new BasicServiceCodeImpl(teleservice);
         impl = new CCBSFeatureImpl(1, bSubscriberNumber, bSubscriberSubaddress, basicServiceCode);

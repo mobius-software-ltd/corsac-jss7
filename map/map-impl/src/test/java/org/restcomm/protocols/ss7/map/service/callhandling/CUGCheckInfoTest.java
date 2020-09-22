@@ -30,10 +30,10 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -75,7 +75,7 @@ public class CUGCheckInfoTest {
 
         CUGInterlock cugInterlock = new CUGInterlockImpl(getGugData());
         CUGCheckInfoImpl ind = new CUGCheckInfoImpl(cugInterlock, true, MAPExtensionContainerTest.GetTestExtensionContainer());
-        // CUGInterlock cugInterlock, boolean cugOutgoingAccess, MAPExtensionContainer extensionContainer
+        // CUGInterlock cugInterlock, boolean cugOutgoingAccess, MAPExtensionContainerImpl extensionContainer
 
         AsnOutputStream asnOS = new AsnOutputStream();
         ind.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 1);

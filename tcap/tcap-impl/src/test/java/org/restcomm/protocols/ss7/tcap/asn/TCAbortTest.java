@@ -46,7 +46,6 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -72,20 +71,26 @@ public class TCAbortTest {
         return Unpooled.wrappedBuffer(new byte[] { 0x7B, (byte) 0xA5, 0x34, 0x13 });
     }
 
+    ASNParser parser=new ASNParser();
+    
     @BeforeClass
 	public void setUp()
 	{		
-    	ASNGeneric.clear(ASNUserInformationObjectImpl.class);
-    	ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, TCAbortTestASN.class);    	
+    	parser.loadClass(TCAbortMessageImpl.class);
+        
+    	parser.clearClassMapping(ASNUserInformationObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, TCAbortTestASN.class);
+    	
+    	parser.clearClassMapping(ASNDialogPortionObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
 	}
 	
     @Test(groups = { "functional.encode" })
     public void testBasicTCAbortTestEncode() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCAbortMessageImpl.class);
-        
-        // This Raw data is taken from ussd-abort- from msc2.txt
+    	// This Raw data is taken from ussd-abort- from msc2.txt
         byte[] expected = getDataDialogPort();
 
         TCAbortMessageImpl tcAbortMessage = new TCAbortMessageImpl();
@@ -139,10 +144,7 @@ public class TCAbortTest {
     @Test(groups = { "functional.decode" })
     public void testBasicTCAbortTestDecode() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCAbortMessageImpl.class);
-        
-        // This Raw data is taken from ussd-abort- from msc2.txt
+    	// This Raw data is taken from ussd-abort- from msc2.txt
         byte[] data = getDataDialogPort();
 
         Object output=parser.decode(Unpooled.wrappedBuffer(data)).getResult();

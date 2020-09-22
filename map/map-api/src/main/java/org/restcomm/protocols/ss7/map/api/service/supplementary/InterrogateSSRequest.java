@@ -45,6 +45,6 @@ ARGUMENT SS-ForBS-Code
  */
 public interface InterrogateSSRequest extends SupplementaryMessage {
 
-    SSForBSCode getSsForBSCode();
+    SSForBSCodeImpl getSsForBSCode();
 
 }

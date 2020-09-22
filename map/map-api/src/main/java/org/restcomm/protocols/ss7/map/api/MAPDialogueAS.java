@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.map.api;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -34,17 +35,17 @@ public enum MAPDialogueAS {
     /**
      * Look at http://www.oid-info.com/get/0.4.0.0.1.1.1.1
      */
-    MAP_DialogueAS(new long[] { 0, 4, 0, 0, 1, 1, 1, 1 }, 1);
+    MAP_DialogueAS(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), 1);
 
-    private long[] oid;
+    private List<Long> oid;
     private int dialogAS;
 
-    private MAPDialogueAS(long[] oid, int dialogAS) {
+    private MAPDialogueAS(List<Long> oid, int dialogAS) {
         this.oid = oid;
         this.dialogAS = dialogAS;
     }
 
-    public long[] getOID() {
+    public List<Long> getOID() {
         return this.oid;
     }
 
@@ -61,9 +62,9 @@ public enum MAPDialogueAS {
         }
     }
 
-    public static MAPDialogueAS getInstance(long[] oid) {
-        long[] temp = MAP_DialogueAS.getOID();
-        if (Arrays.equals(temp, oid)) {
+    public static MAPDialogueAS getInstance(List<Long> oid) {
+        List<Long> temp = MAP_DialogueAS.getOID();
+        if (temp.equals(oid)) {
             return MAP_DialogueAS;
         }
 

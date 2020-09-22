@@ -30,9 +30,9 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AMBRImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.AMBRImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -58,7 +58,7 @@ public class AMBRTest {
         assertEquals(tag, Tag.SEQUENCE);
         assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
         assertEquals(prim.getMaxRequestedBandwidthDL(), 4);
         assertEquals(prim.getMaxRequestedBandwidthUL(), 2);
         assertNotNull(extensionContainer);
@@ -67,7 +67,7 @@ public class AMBRTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         AMBRImpl prim = new AMBRImpl(2, 4, extensionContainer);
         AsnOutputStream asn = new AsnOutputStream();
         prim.encodeAll(asn);

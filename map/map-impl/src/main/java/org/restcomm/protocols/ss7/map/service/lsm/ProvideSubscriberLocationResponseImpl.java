@@ -22,32 +22,29 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ASNAccuracyFulfilmentIndicator;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation;
-import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningData;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ProvideSubscriberLocationResponse;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddress;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningData;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
-import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
@@ -55,77 +52,108 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Loc
  * @author amit bhayani
  *
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implements ProvideSubscriberLocationResponse {
-
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	private static final int _TAG_AGE_OF_LOCATION_ESTIMATE = 0;
-    private static final int _TAG_EXTENSIONCONTAINER = 1;
-    private static final int _TAG_ADD_LOCATION_ESTIMATE = 2;
-    private static final int _TAG_DEFERRED_MT_LR_RESPONSE_IND = 3;
-    private static final int _TAG_GERAN_POSITIONING_DATA = 4;
-    private static final int _TAG_UTRAN_POSITIONING_DATA = 5;
-    private static final int _TAG_CELL_ID_OR_SAI = 6;
-    private static final int _TAG_SAI_PRESENT = 7;
-    private static final int _TAG_ACCURACY_FULFILMENT_INDICATOR = 8;
-    private static final int _TAG_velocityEstimate = 9;
-    private static final int _TAG_mo_lrShortCircuitIndicator = 10;
-    private static final int _TAG_geranGANSSpositioningData = 11;
-    private static final int _TAG_utranGANSSpositioningData = 12;
-    private static final int _TAG_targetServingNodeForHandover = 13;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
+    private ExtGeographicalInformationImpl locationEstimate;    
+    
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private ASNInteger ageOfLocationEstimate;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
+    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
+    private AddGeographicalInformationImpl additionalLocationEstimate;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
+    private ASNNull deferredMTLRResponseIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
+    private PositioningDataInformationImpl geranPositioningData;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
+    private UtranPositioningDataInfoImpl utranPositioningData;
 
-    public static final String _PrimitiveName = "ProvideSubscriberLocationResponse";
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
+    private CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl cellGlobalIdOrServiceAreaIdOrLAIWrapped;
 
-    private ExtGeographicalInformation locationEstimate;
-    private PositioningDataInformation geranPositioningData;
-    private UtranPositioningDataInfo utranPositioningData;
-    private Integer ageOfLocationEstimate;
-    private AddGeographicalInformation additionalLocationEstimate;
-    private MAPExtensionContainer extensionContainer;
-    private boolean deferredMTLRResponseIndicator;
-    private CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI;
-    private boolean saiPresent;
-    private AccuracyFulfilmentIndicator accuracyFulfilmentIndicator;
-    private VelocityEstimate velocityEstimate;
-    private boolean moLrShortCircuitIndicator;
-    private GeranGANSSpositioningData geranGANSSpositioningData;
-    private UtranGANSSpositioningData utranGANSSpositioningData;
-    private ServingNodeAddress targetServingNodeForHandover;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
+    private ASNNull saiPresent;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
+    private ASNAccuracyFulfilmentIndicator accuracyFulfilmentIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
+    private VelocityEstimateImpl velocityEstimate;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
+    private ASNNull moLrShortCircuitIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
+    private GeranGANSSpositioningDataImpl geranGANSSpositioningData;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
+    private UtranGANSSpositioningDataImpl utranGANSSpositioningData;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)
+    private ServingNodeAddressWrapperImpl targetServingNodeForHandover;
 
-    /**
+
+     /**
      *
      */
     public ProvideSubscriberLocationResponseImpl() {
         super();
     }
 
-    public ProvideSubscriberLocationResponseImpl(ExtGeographicalInformation locationEstimate,
-            PositioningDataInformation geranPositioningData, UtranPositioningDataInfo utranPositioningData,
-            Integer ageOfLocationEstimate, AddGeographicalInformation additionalLocationEstimate,
-            MAPExtensionContainer extensionContainer, boolean deferredMTLRResponseIndicator,
-            CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI, boolean saiPresent,
-            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate,
-            boolean moLrShortCircuitIndicator, GeranGANSSpositioningData geranGANSSpositioningData,
-            UtranGANSSpositioningData utranGANSSpositioningData, ServingNodeAddress targetServingNodeForHandover) {
+    public ProvideSubscriberLocationResponseImpl(ExtGeographicalInformationImpl locationEstimate,
+            PositioningDataInformationImpl geranPositioningData, UtranPositioningDataInfoImpl utranPositioningData,
+            Integer ageOfLocationEstimate, AddGeographicalInformationImpl additionalLocationEstimate,
+            MAPExtensionContainerImpl extensionContainer, boolean deferredMTLRResponseIndicator,
+            CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI, boolean saiPresent,
+            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate,
+            boolean moLrShortCircuitIndicator, GeranGANSSpositioningDataImpl geranGANSSpositioningData,
+            UtranGANSSpositioningDataImpl utranGANSSpositioningData, ServingNodeAddressImpl targetServingNodeForHandover) {
         super();
 
         this.locationEstimate = locationEstimate;
         this.geranPositioningData = geranPositioningData;
         this.utranPositioningData = utranPositioningData;
-        this.ageOfLocationEstimate = ageOfLocationEstimate;
+        
+        if(ageOfLocationEstimate!=null) {
+        	this.ageOfLocationEstimate = new ASNInteger();
+        	this.ageOfLocationEstimate.setValue(ageOfLocationEstimate.longValue());
+        }
+        
         this.additionalLocationEstimate = additionalLocationEstimate;
         this.extensionContainer = extensionContainer;
-        this.deferredMTLRResponseIndicator = deferredMTLRResponseIndicator;
-        this.cellGlobalIdOrServiceAreaIdOrLAI = cellGlobalIdOrServiceAreaIdOrLAI;
-        this.saiPresent = saiPresent;
-        this.accuracyFulfilmentIndicator = accuracyFulfilmentIndicator;
+        
+        if(deferredMTLRResponseIndicator)
+        	this.deferredMTLRResponseIndicator = new ASNNull();
+        
+        if(cellGlobalIdOrServiceAreaIdOrLAI!=null)
+        	this.cellGlobalIdOrServiceAreaIdOrLAIWrapped = new CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl(cellGlobalIdOrServiceAreaIdOrLAI);
+        
+        if(saiPresent)
+        	this.saiPresent = new ASNNull();
+        
+        if(accuracyFulfilmentIndicator!=null) {
+        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator();
+        	this.accuracyFulfilmentIndicator.setType(accuracyFulfilmentIndicator);
+        }
+        
         this.velocityEstimate = velocityEstimate;
-        this.moLrShortCircuitIndicator = moLrShortCircuitIndicator;
+        
+        if(moLrShortCircuitIndicator)
+        	this.moLrShortCircuitIndicator = new ASNNull();
+        
         this.geranGANSSpositioningData = geranGANSSpositioningData;
         this.utranGANSSpositioningData = utranGANSSpositioningData;
-        this.targetServingNodeForHandover = targetServingNodeForHandover;
+        
+        if(targetServingNodeForHandover!=null)
+        	this.targetServingNodeForHandover = new ServingNodeAddressWrapperImpl(targetServingNodeForHandover);
     }
 
     public MAPMessageType getMessageType() {
@@ -141,7 +169,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication#getLocationEstimate()
      */
-    public ExtGeographicalInformation getLocationEstimate() {
+    public ExtGeographicalInformationImpl getLocationEstimate() {
         return this.locationEstimate;
     }
 
@@ -151,7 +179,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.
      * ProvideSubscriberLocationResponseIndication#getGeranPositioningData()
      */
-    public PositioningDataInformation getGeranPositioningData() {
+    public PositioningDataInformationImpl getGeranPositioningData() {
         return this.geranPositioningData;
     }
 
@@ -161,7 +189,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.
      * ProvideSubscriberLocationResponseIndication#getUtranPositioningData()
      */
-    public UtranPositioningDataInfo getUtranPositioningData() {
+    public UtranPositioningDataInfoImpl getUtranPositioningData() {
         return this.utranPositioningData;
     }
 
@@ -172,7 +200,10 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * ProvideSubscriberLocationResponseIndication#getAgeOfLocationEstimate()
      */
     public Integer getAgeOfLocationEstimate() {
-        return this.ageOfLocationEstimate;
+    	if(this.ageOfLocationEstimate==null)
+    		return null;
+    	
+        return this.ageOfLocationEstimate.getValue().intValue();
     }
 
     /*
@@ -181,7 +212,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication
      * #getAdditionalLocationEstimate()
      */
-    public AddGeographicalInformation getAdditionalLocationEstimate() {
+    public AddGeographicalInformationImpl getAdditionalLocationEstimate() {
         return this.additionalLocationEstimate;
     }
 
@@ -190,7 +221,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication#getExtensionContainer()
      */
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -201,7 +232,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * #getDeferredMTLRResponseIndicator()
      */
     public boolean getDeferredMTLRResponseIndicator() {
-        return this.deferredMTLRResponseIndicator;
+        return this.deferredMTLRResponseIndicator!=null;
     }
 
     /*
@@ -210,8 +241,11 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication
      * #getCellGlobalIdOrServiceAreaIdOrLAI()
      */
-    public CellGlobalIdOrServiceAreaIdOrLAI getCellIdOrSai() {
-        return this.cellGlobalIdOrServiceAreaIdOrLAI;
+    public CellGlobalIdOrServiceAreaIdOrLAIImpl getCellIdOrSai() {
+    	if(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped!=null)
+    		return this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI();
+    	
+    	return null;
     }
 
     /*
@@ -220,7 +254,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication#getSaiPresent()
      */
     public boolean getSaiPresent() {
-        return this.saiPresent;
+        return this.saiPresent!=null;
     }
 
     /*
@@ -230,452 +264,39 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * #getAccuracyFulfilmentIndicator()
      */
     public AccuracyFulfilmentIndicator getAccuracyFulfilmentIndicator() {
-        return this.accuracyFulfilmentIndicator;
+    	if(this.accuracyFulfilmentIndicator==null)
+    		return null;
+    	
+        return this.accuracyFulfilmentIndicator.getType();
     }
 
-    public VelocityEstimate getVelocityEstimate() {
+    public VelocityEstimateImpl getVelocityEstimate() {
         return velocityEstimate;
     }
 
     public boolean getMoLrShortCircuitIndicator() {
-        return moLrShortCircuitIndicator;
+        return moLrShortCircuitIndicator!=null;
     }
 
-    public GeranGANSSpositioningData getGeranGANSSpositioningData() {
+    public GeranGANSSpositioningDataImpl getGeranGANSSpositioningData() {
         return geranGANSSpositioningData;
     }
 
-    public UtranGANSSpositioningData getUtranGANSSpositioningData() {
+    public UtranGANSSpositioningDataImpl getUtranGANSSpositioningData() {
         return utranGANSSpositioningData;
     }
 
-    public ServingNodeAddress getTargetServingNodeForHandover() {
-        return targetServingNodeForHandover;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.map.api.primitives.MAPAsnPrimitive#getTag()
-     */
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.map.api.primitives.MAPAsnPrimitive#getTagClass ()
-     */
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.map.api.primitives.MAPAsnPrimitive#getIsPrimitive ()
-     */
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.map.api.primitives.MAPAsnPrimitive#decodeAll
-     * (org.mobicents.protocols.asn.AsnInputStream)
-     */
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.map.api.primitives.MAPAsnPrimitive#decodeData
-     * (org.mobicents.protocols.asn.AsnInputStream, int)
-     */
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.locationEstimate = null;
-        this.geranPositioningData = null;
-        this.utranPositioningData = null;
-        this.ageOfLocationEstimate = null;
-        this.additionalLocationEstimate = null;
-        this.extensionContainer = null;
-        this.deferredMTLRResponseIndicator = false;
-        this.cellGlobalIdOrServiceAreaIdOrLAI = null;
-        this.saiPresent = false;
-        this.accuracyFulfilmentIndicator = null;
-        this.velocityEstimate = null;
-        this.moLrShortCircuitIndicator = false;
-        this.geranGANSSpositioningData = null;
-        this.utranGANSSpositioningData = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-
-        int tag = ais.readTag();
-        if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.STRING_OCTET) {
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": Parameter [locationEstimate Ext-GeographicalInformation] bad tag, tag class or not primitive",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        this.locationEstimate = new ExtGeographicalInformationImpl();
-        ((ExtGeographicalInformationImpl) this.locationEstimate).decodeAll(ais);
-
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _TAG_AGE_OF_LOCATION_ESTIMATE:
-                        // // ageOfLocationEstimate [0] AgeOfLocationInformation
-                        // OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [ageOfLocationEstimate [0] AgeOfLocationInformation] is not Sequence",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.ageOfLocationEstimate = (int) ais.readInteger();
-                        break;
-                    case _TAG_EXTENSIONCONTAINER:
-                        // extensionContainer [1] ExtensionContainer OPTIONAL,
-                        if (ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [extensionContainer [1] ExtensionContainer] is not constructed",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.extensionContainer = new MAPExtensionContainerImpl();
-                        ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                        break;
-                    case _TAG_ADD_LOCATION_ESTIMATE:
-                        // add-LocationEstimate [2] Add-GeographicalInformation
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [add-LocationEstimate [2] Add-GeographicalInformation] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.additionalLocationEstimate = new AddGeographicalInformationImpl();
-                        ((AddGeographicalInformationImpl) this.additionalLocationEstimate).decodeAll(ais);
-                        break;
-                    case _TAG_DEFERRED_MT_LR_RESPONSE_IND:
-                        // deferredmt-lrResponseIndicator [3] NULL OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [deferredmt-lrResponseIndicator [3] NULL] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        ais.readNull();
-                        this.deferredMTLRResponseIndicator = true;
-                        break;
-                    case _TAG_GERAN_POSITIONING_DATA:
-                        // geranPositioningData [4] PositioningDataInformation
-                        // OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [geranPositioningData [4] PositioningDataInformation] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.geranPositioningData = new PositioningDataInformationImpl();
-                        ((PositioningDataInformationImpl) this.geranPositioningData).decodeAll(ais);
-                        break;
-                    case _TAG_UTRAN_POSITIONING_DATA:
-                        // utranPositioningData [5] UtranPositioningDataInfo
-                        // OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [utranPositioningData [5] UtranPositioningDataInfo] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.utranPositioningData = new UtranPositioningDataInfoImpl();
-                        ((UtranPositioningDataInfoImpl) this.utranPositioningData).decodeAll(ais);
-                        break;
-                    case _TAG_CELL_ID_OR_SAI:
-                        // cellIdOrSai [6] CellGlobalIdOrServiceAreaIdOrLAI
-                        if (ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [cellIdOrSai [6] CellGlobalIdOrServiceAreaIdOrLAI] is not constructed",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.cellGlobalIdOrServiceAreaIdOrLAI = LocationInformationGPRSImpl
-                                .decodeCellGlobalIdOrServiceAreaIdOrLAI(ais, _PrimitiveName);
-                        // this.cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl();
-                        // AsnInputStream ais2 = ais.readSequenceStream();
-                        // ais2.readTag();
-                        // ((CellGlobalIdOrServiceAreaIdOrLAIImpl) this.cellGlobalIdOrServiceAreaIdOrLAI).decodeAll(ais2);
-                        break;
-                    case _TAG_SAI_PRESENT:
-                        // sai-Present [7] NULL OPTIONAL,
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter [sai-Present [7] NULL] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        ais.readNull();
-                        this.saiPresent = true;
-                        break;
-                    case _TAG_ACCURACY_FULFILMENT_INDICATOR:
-                        // accuracyFulfilmentIndicator [8]
-                        // AccuracyFulfilmentIndicator
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException(
-                                    "Error while decoding "
-                                            + _PrimitiveName
-                                            + ": Parameter [accuracyFulfilmentIndicator [8] AccuracyFulfilmentIndicator] is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        int indicator = (int) ais.readInteger();
-                        this.accuracyFulfilmentIndicator = AccuracyFulfilmentIndicator
-                                .getAccuracyFulfilmentIndicator(indicator);
-                        break;
-
-                    case _TAG_velocityEstimate:
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter velocityEstimate is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.velocityEstimate = new VelocityEstimateImpl();
-                        ((VelocityEstimateImpl) this.velocityEstimate).decodeAll(ais);
-                        break;
-                    case _TAG_mo_lrShortCircuitIndicator:
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter moLrShortCircuitIndicator is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        ais.readNull();
-                        this.moLrShortCircuitIndicator = true;
-                        break;
-                    case _TAG_geranGANSSpositioningData:
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter geranGANSSpositioningData is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.geranGANSSpositioningData = new GeranGANSSpositioningDataImpl();
-                        ((GeranGANSSpositioningDataImpl) this.geranGANSSpositioningData).decodeAll(ais);
-                        break;
-                    case _TAG_utranGANSSpositioningData:
-                        if (!ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter utranGANSSpositioningData is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.utranGANSSpositioningData = new UtranGANSSpositioningDataImpl();
-                        ((UtranGANSSpositioningDataImpl) this.utranGANSSpositioningData).decodeAll(ais);
-                        break;
-                    case _TAG_targetServingNodeForHandover:
-                        // targetServingNodeForHandover
-                        if (ais.isTagPrimitive()) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": Parameter targetServingNodeForHandover is not constructed",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        this.targetServingNodeForHandover = new ServingNodeAddressImpl();
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        ((ServingNodeAddressImpl) this.targetServingNodeForHandover).decodeAll(ais2);
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.map.api.primitives.MAPAsnPrimitive#encodeAll
-     * (org.mobicents.protocols.asn.AsnOutputStream)
-     */
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.map.api.primitives.MAPAsnPrimitive#encodeAll
-     * (org.mobicents.protocols.asn.AsnOutputStream, int, int)
-     */
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.map.api.primitives.MAPAsnPrimitive#encodeData
-     * (org.mobicents.protocols.asn.AsnOutputStream)
-     */
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        if (this.locationEstimate == null) {
-            throw new MAPException("Error while encoding " + _PrimitiveName
-                    + " the mandatory parameter locationEstimate is not defined");
-        }
-
-        ((ExtGeographicalInformationImpl) this.locationEstimate).encodeAll(asnOs);
-
-        if (this.ageOfLocationEstimate != null) {
-            try {
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_AGE_OF_LOCATION_ESTIMATE, this.ageOfLocationEstimate);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter " + _PrimitiveName + " .ageOfLocationEstimate", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter " + _PrimitiveName + " .ageOfLocationEstimate", e);
-            }
-        }
-
-        if (this.extensionContainer != null) {
-            ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_EXTENSIONCONTAINER);
-        }
-
-        if (this.additionalLocationEstimate != null) {
-            ((AddGeographicalInformationImpl) this.additionalLocationEstimate).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_ADD_LOCATION_ESTIMATE);
-        }
-
-        if (this.deferredMTLRResponseIndicator) {
-            try {
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_DEFERRED_MT_LR_RESPONSE_IND);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter " + _PrimitiveName
-                        + " .deferredMTLRResponseIndicator", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter " + _PrimitiveName
-                        + " .deferredMTLRResponseIndicator", e);
-            }
-        }
-
-        if (this.geranPositioningData != null) {
-            ((PositioningDataInformationImpl) this.geranPositioningData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_GERAN_POSITIONING_DATA);
-        }
-
-        if (this.utranPositioningData != null) {
-            ((UtranPositioningDataInfoImpl) this.utranPositioningData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_UTRAN_POSITIONING_DATA);
-        }
-
-        if (this.cellGlobalIdOrServiceAreaIdOrLAI != null) {
-            try {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_CELL_ID_OR_SAI);
-                int pos = asnOs.StartContentDefiniteLength();
-                ((CellGlobalIdOrServiceAreaIdOrLAIImpl) this.cellGlobalIdOrServiceAreaIdOrLAI).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter " + _PrimitiveName
-                        + " .cellGlobalIdOrServiceAreaIdOrLAI", e);
-            }
-        }
-
-        if (this.saiPresent) {
-            try {
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_SAI_PRESENT);
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter " + _PrimitiveName + " .saiPresent", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter " + _PrimitiveName + " saiPresent", e);
-            }
-        }
-
-        if (this.accuracyFulfilmentIndicator != null) {
-            try {
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_ACCURACY_FULFILMENT_INDICATOR,
-                        this.accuracyFulfilmentIndicator.getIndicator());
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding parameter " + _PrimitiveName
-                        + " .accuracyFulfilmentIndicator", e);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter " + _PrimitiveName
-                        + " .accuracyFulfilmentIndicator", e);
-            }
-        }
-
-        if (this.velocityEstimate != null) {
-            ((VelocityEstimateImpl) this.velocityEstimate).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_velocityEstimate);
-        }
-
-        if (this.moLrShortCircuitIndicator) {
-            try {
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_mo_lrShortCircuitIndicator);
-            } catch (IOException e) {
-                throw new MAPException(
-                        "IOException while encoding parameter " + _PrimitiveName + " .moLrShortCircuitIndicator", e);
-            } catch (AsnException e) {
-                throw new MAPException(
-                        "AsnException while encoding parameter " + _PrimitiveName + " moLrShortCircuitIndicator", e);
-            }
-        }
-
-        if (this.geranGANSSpositioningData != null) {
-            ((GeranGANSSpositioningDataImpl) this.geranGANSSpositioningData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_geranGANSSpositioningData);
-        }
-
-        if (this.utranGANSSpositioningData != null) {
-            ((UtranGANSSpositioningDataImpl) this.utranGANSSpositioningData).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_utranGANSSpositioningData);
-        }
-
-        if (this.targetServingNodeForHandover != null) {
-            try {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _TAG_targetServingNodeForHandover);
-                int pos = asnOs.StartContentDefiniteLength();
-                ((ServingNodeAddressImpl) this.targetServingNodeForHandover).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException while encoding parameter " + _PrimitiveName
-                        + " .targetServingNodeForHandover", e);
-            }
-        }
+    public ServingNodeAddressImpl getTargetServingNodeForHandover() {
+    	if(this.targetServingNodeForHandover==null)
+    		return null;
+    	
+        return targetServingNodeForHandover.getServingNodeAddress();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("ProvideSubscriberLocationResponse [");
 
         if (this.locationEstimate != null) {
             sb.append("locationEstimate");
@@ -691,7 +312,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
         }
         if (this.ageOfLocationEstimate != null) {
             sb.append(", ageOfLocationEstimate=");
-            sb.append(this.ageOfLocationEstimate);
+            sb.append(this.ageOfLocationEstimate.getValue());
         }
         if (this.additionalLocationEstimate != null) {
             sb.append(", additionalLocationEstimate=");
@@ -701,25 +322,25 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
             sb.append(", extensionContainer=");
             sb.append(this.extensionContainer);
         }
-        if (this.deferredMTLRResponseIndicator) {
+        if (this.deferredMTLRResponseIndicator!=null) {
             sb.append(", deferredMTLRResponseIndicator");
         }
-        if (this.cellGlobalIdOrServiceAreaIdOrLAI != null) {
+        if (this.cellGlobalIdOrServiceAreaIdOrLAIWrapped != null && this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI()!=null) {
             sb.append(", cellGlobalIdOrServiceAreaIdOrLAI=");
-            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAI);
+            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI());
         }
-        if (this.saiPresent) {
+        if (this.saiPresent!=null) {
             sb.append(", saiPresent");
         }
         if (this.accuracyFulfilmentIndicator != null) {
             sb.append(", accuracyFulfilmentIndicator=");
-            sb.append(this.accuracyFulfilmentIndicator);
+            sb.append(this.accuracyFulfilmentIndicator.getType());
         }
         if (this.velocityEstimate != null) {
             sb.append(", velocityEstimate=");
             sb.append(this.velocityEstimate);
         }
-        if (this.moLrShortCircuitIndicator) {
+        if (this.moLrShortCircuitIndicator!=null) {
             sb.append(", moLrShortCircuitIndicator");
         }
         if (this.geranGANSSpositioningData != null) {
@@ -730,9 +351,9 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
             sb.append(", utranGANSSpositioningData=");
             sb.append(this.utranGANSSpositioningData);
         }
-        if (this.targetServingNodeForHandover != null) {
+        if (this.targetServingNodeForHandover != null && this.targetServingNodeForHandover.getServingNodeAddress()!=null) {
             sb.append(", targetServingNodeForHandover=");
-            sb.append(this.targetServingNodeForHandover);
+            sb.append(this.targetServingNodeForHandover.getServingNodeAddress());
         }
 
         sb.append("]");

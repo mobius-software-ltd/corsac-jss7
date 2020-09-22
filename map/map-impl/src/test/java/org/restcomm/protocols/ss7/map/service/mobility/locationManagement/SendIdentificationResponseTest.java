@@ -32,23 +32,23 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Cksn;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CksnImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContext;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Kc;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KcImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextData;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationTripletImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.CksnImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.CurrentSecurityContextImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.GSMSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.KcImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.TripletListImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationResponseImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationResponseImplV1;
 import org.testng.annotations.Test;
 
 /**
@@ -89,7 +89,7 @@ public class SendIdentificationResponseTest {
         AsnInputStream asn = new AsnInputStream(data);
         int tag = asn.readTag();
 
-        SendIdentificationResponseImpl prim = new SendIdentificationResponseImpl(2);
+        SendIdentificationResponseImplV1 prim = new SendIdentificationResponseImplV1(2);
         prim.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -108,10 +108,10 @@ public class SendIdentificationResponseTest {
         asn = new AsnInputStream(data);
         tag = asn.readTag();
 
-        prim = new SendIdentificationResponseImpl(3);
+        prim = new SendIdentificationResponseImplV1(3);
         prim.decodeAll(asn);
 
-        assertEquals(tag, SendIdentificationResponseImpl._TAG_SendIdentificationResponse);
+        assertEquals(tag, SendIdentificationResponseImplV1._TAG_SendIdentificationResponse);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
 
         assertEquals(prim.getImsi().getData(), "011220200198227");
@@ -144,8 +144,8 @@ public class SendIdentificationResponseTest {
         authenticationSetList.setMapProtocolVersion(2);
 
         CurrentSecurityContext currentSecurityContext = null;
-        MAPExtensionContainer extensionContainer = null;
-        SendIdentificationResponseImpl prim = new SendIdentificationResponseImpl(imsi, authenticationSetList,
+        MAPExtensionContainerImpl extensionContainer = null;
+        SendIdentificationResponseImplV1 prim = new SendIdentificationResponseImplV1(imsi, authenticationSetList,
                 currentSecurityContext, extensionContainer, 2);
 
         AsnOutputStream asn = new AsnOutputStream();
@@ -169,7 +169,7 @@ public class SendIdentificationResponseTest {
         currentSecurityContext = new CurrentSecurityContextImpl(gsm);
 
         extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        prim = new SendIdentificationResponseImpl(imsi, authenticationSetList, currentSecurityContext, extensionContainer, 3);
+        prim = new SendIdentificationResponseImplV1(imsi, authenticationSetList, currentSecurityContext, extensionContainer, 3);
 
         asn = new AsnOutputStream();
         prim.encodeAll(asn);

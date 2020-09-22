@@ -22,15 +22,13 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import java.io.Serializable;
-
 /**
  * Base class of MAP ReturnError messages
  *
  * @author sergey vetyutnev
  *
  */
-public interface MAPErrorMessage extends Serializable {
+public interface MAPErrorMessage {
 
     Long getErrorCode();
 

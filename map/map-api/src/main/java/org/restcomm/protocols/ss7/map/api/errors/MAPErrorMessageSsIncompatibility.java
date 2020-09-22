@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 
 /**
  *
@@ -40,16 +40,16 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
  */
 public interface MAPErrorMessageSsIncompatibility extends MAPErrorMessage {
 
-    SSCode getSSCode();
+    SSCodeImpl getSSCode();
 
-    BasicServiceCode getBasicService();
+    BasicServiceCodeImpl getBasicService();
 
-    SSStatus getSSStatus();
+    SSStatusImpl getSSStatus();
 
-    void setSSCode(SSCode val);
+    void setSSCode(SSCodeImpl val);
 
-    void setBasicService(BasicServiceCode val);
+    void setBasicService(BasicServiceCodeImpl val);
 
-    void setSSStatus(SSStatus val);
+    void setSSStatus(SSStatusImpl val);
 
 }

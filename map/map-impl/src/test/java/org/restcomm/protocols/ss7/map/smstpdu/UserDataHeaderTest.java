@@ -31,13 +31,13 @@ import java.util.Map;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifier;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageLockingShiftIdentifier;
+import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageLockingShiftIdentifierImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageSingleShiftIdentifier;
+import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageSingleShiftIdentifierImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
-import org.restcomm.protocols.ss7.map.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.NationalLanguageLockingShiftIdentifierImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.NationalLanguageSingleShiftIdentifierImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.UserDataHeaderImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
 import org.testng.annotations.Test;
 
 /**

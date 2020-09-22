@@ -77,11 +77,14 @@ import org.restcomm.protocols.ss7.tcap.asn.Utils;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
@@ -483,7 +486,7 @@ public class DialogImpl implements Dialog {
 
         try {
         	ByteBuf buffer=dialogParser.encode(tcbm);
-            this.setState(TRPseudoState.InitialSent);                
+            this.setState(TRPseudoState.InitialSent);
             this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
             this.scheduledComponentList.clear();
@@ -553,7 +556,7 @@ public class DialogImpl implements Dialog {
             }
             try {
             	ByteBuf buffer=dialogParser.encode(tcbm);                
-                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
+            	this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
                 this.setState(TRPseudoState.Active);
                 this.scheduledComponentList.clear();
@@ -583,8 +586,8 @@ public class DialogImpl implements Dialog {
             }
 
             try {
-            	ByteBuf buffer=dialogParser.encode(tcbm);                
-                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
+            	ByteBuf buffer=dialogParser.encode(tcbm);
+            	this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
@@ -865,22 +868,243 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#sendComponent(org
-     * .mobicents.protocols.ss7.tcap.api.tc.component.ComponentRequest)
-     */
-    public void sendComponent(ComponentImpl componentRequest) throws TCAPSendException {
-        if (componentRequest.getType() == ComponentType.Invoke) {
-            InvokeImpl invoke = componentRequest.getInvoke();
+    public int getDataLength(TCBeginRequest event) throws TCAPSendException {
 
-            // check if its taken!
+        TCBeginMessageImpl tcbm = (TCBeginMessageImpl) TcapFactory.createTCBeginMessage();
+
+        if (event.getApplicationContextName() != null) {
+            DialogPortionImpl dp = TcapFactory.createDialogPortion();
+            dp.setUnidirectional(false);
+            DialogRequestAPDUImpl apdu = TcapFactory.createDialogAPDURequest();
+            apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
+            dp.setDialogAPDU(apdu);
+            apdu.setApplicationContextName(event.getApplicationContextName());
+            if (event.getUserInformation() != null) {
+                apdu.setUserInformation(event.getUserInformation());
+            }
+            tcbm.setDialogPortion(dp);
+        }
+
+        // now comps
+        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
+        if (this.scheduledComponentList.size() > 0) {
+        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	
+        	for (int index = 0; index < this.scheduledComponentList.size(); index++) {
+                componentsToSend.add(this.scheduledComponentList.get(index));
+            }
+        	
+            ComponentPortionImpl cPortion=new ComponentPortionImpl();
+            cPortion.setComponents(componentsToSend);
+            tcbm.setComponent(cPortion);
+        }
+
+        try {
+	        ByteBuf buffer=dialogParser.encode(tcbm);
+	        return buffer.readableBytes();
+        }catch (Throwable e) {
+            // FIXME: remove freshly added invokes to free invoke ID??
+            // TODO: should we release this dialog because TC-BEGIN sending has been failed
+            if (logger.isEnabledFor(Level.ERROR)) {
+                logger.error("Failed to send message: ", e);
+            }
+            throw new TCAPSendException("Failed to send TC-Begin message: " + e.getMessage(), e);
+        }
+    }
+
+    public int getDataLength(TCContinueRequest event) throws TCAPSendException {
+
+        TCContinueMessageImpl tcbm = (TCContinueMessageImpl) TcapFactory.createTCContinueMessage();
+
+        if (event.getApplicationContextName() != null) {
+
+            // set dialog portion
+            DialogPortionImpl dp = TcapFactory.createDialogPortion();
+            dp.setUnidirectional(false);
+            DialogResponseAPDUImpl apdu = TcapFactory.createDialogAPDUResponse();
+            apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
+            dp.setDialogAPDU(apdu);
+            apdu.setApplicationContextName(event.getApplicationContextName());
+            if (event.getUserInformation() != null) {
+                apdu.setUserInformation(event.getUserInformation());
+            }
+            // WHERE THE HELL THIS COMES FROM!!!!
+            // WHEN REJECTED IS USED !!!!!
+            ResultImpl res = TcapFactory.createResult();
+            res.setResultType(ResultType.Accepted);
+            ResultSourceDiagnosticImpl rsd = TcapFactory.createResultSourceDiagnostic();
+            rsd.setDialogServiceUserType(DialogServiceUserType.Null);
+            apdu.setResultSourceDiagnostic(rsd);
+            apdu.setResult(res);
+            tcbm.setDialogPortion(dp);
+
+        }
+
+        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
+        tcbm.setDestinationTransactionId(this.remoteTransactionId);
+        if (this.scheduledComponentList.size() > 0) {
+        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	
+        	for (int index = 0; index < this.scheduledComponentList.size(); index++) {
+                componentsToSend.add(this.scheduledComponentList.get(index));
+            }
+        	
+            ComponentPortionImpl cPortion=new ComponentPortionImpl();
+            cPortion.setComponents(componentsToSend);
+            tcbm.setComponent(cPortion);
+        }
+
+        try {
+	        ByteBuf buffer=dialogParser.encode(tcbm);
+	        return buffer.readableBytes();
+        }catch (Throwable e) {
+            // FIXME: remove freshly added invokes to free invoke ID??
+            // TODO: should we release this dialog because TC-BEGIN sending has been failed
+            if (logger.isEnabledFor(Level.ERROR)) {
+                logger.error("Failed to send message: ", e);
+            }
+            throw new TCAPSendException("Failed to send TC-Begin message: " + e.getMessage(), e);
+        }
+    }
+
+    public int getDataLength(TCEndRequest event) throws TCAPSendException {
+
+        // TC-END request primitive issued in response to a TC-BEGIN
+        // indication primitive
+        TCEndMessageImpl tcbm = (TCEndMessageImpl) TcapFactory.createTCEndMessage();
+        tcbm.setDestinationTransactionId(this.remoteTransactionId);
+
+        if (this.scheduledComponentList.size() > 0) {
+        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	
+        	for (int index = 0; index < this.scheduledComponentList.size(); index++) {
+                componentsToSend.add(this.scheduledComponentList.get(index));
+            }
+        	
+            ComponentPortionImpl cPortion=new ComponentPortionImpl();
+            cPortion.setComponents(componentsToSend);
+            tcbm.setComponent(cPortion);
+        }
+
+        if (state.get() == TRPseudoState.InitialReceived) {
+            ApplicationContextNameImpl acn = event.getApplicationContextName();
+            if (acn != null) { // acn & DialogPortion is absent in TCAP V1
+
+                // set dialog portion
+                DialogPortionImpl dp = TcapFactory.createDialogPortion();
+                dp.setUnidirectional(false);
+                DialogResponseAPDUImpl apdu = TcapFactory.createDialogAPDUResponse();
+                apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
+                dp.setDialogAPDU(apdu);
+
+                apdu.setApplicationContextName(event.getApplicationContextName());
+                if (event.getUserInformation() != null) {
+                    apdu.setUserInformation(event.getUserInformation());
+                }
+
+                // WHERE THE HELL THIS COMES FROM!!!!
+                // WHEN REJECTED IS USED !!!!!
+                ResultImpl res = TcapFactory.createResult();
+                res.setResultType(ResultType.Accepted);
+                ResultSourceDiagnosticImpl rsd = TcapFactory.createResultSourceDiagnostic();
+                rsd.setDialogServiceUserType(DialogServiceUserType.Null);
+                apdu.setResultSourceDiagnostic(rsd);
+                apdu.setResult(res);
+                tcbm.setDialogPortion(dp);
+            }
+        }
+
+        try {
+	        ByteBuf buffer=dialogParser.encode(tcbm);
+	        return buffer.readableBytes();
+        }catch (Throwable e) {
+            // FIXME: remove freshly added invokes to free invoke ID??
+            // TODO: should we release this dialog because TC-BEGIN sending has been failed
+            if (logger.isEnabledFor(Level.ERROR)) {
+                logger.error("Failed to send message: ", e);
+            }
+            throw new TCAPSendException("Failed to send TC-Begin message: " + e.getMessage(), e);
+        }
+    }
+
+    public int getDataLength(TCUniRequest event) throws TCAPSendException {
+
+        TCUniMessageImpl msg = (TCUniMessageImpl) TcapFactory.createTCUniMessage();
+
+        if (event.getApplicationContextName() != null) {
+            DialogPortionImpl dp = TcapFactory.createDialogPortion();
+            DialogRequestAPDUImpl apdu = TcapFactory.createDialogAPDURequest();
+            apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
+            apdu.setApplicationContextName(event.getApplicationContextName());
+            if (event.getUserInformation() != null) {
+                apdu.setUserInformation(event.getUserInformation());
+            }
+            dp.setUnidirectional(true);
+            dp.setDialogAPDU(apdu);
+            msg.setDialogPortion(dp);
+
+        }
+
+        if (this.scheduledComponentList.size() > 0) {
+        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	
+        	for (int index = 0; index < this.scheduledComponentList.size(); index++) {
+                componentsToSend.add(this.scheduledComponentList.get(index));
+            }
+        	
+            ComponentPortionImpl cPortion=new ComponentPortionImpl();
+            cPortion.setComponents(componentsToSend);
+            msg.setComponent(cPortion);
+
+        }
+
+        try {
+	        ByteBuf buffer=dialogParser.encode(msg);
+	        return buffer.readableBytes();
+        }catch (Throwable e) {
+            // FIXME: remove freshly added invokes to free invoke ID??
+            // TODO: should we release this dialog because TC-BEGIN sending has been failed
+            if (logger.isEnabledFor(Level.ERROR)) {
+                logger.error("Failed to send message: ", e);
+            }
+            throw new TCAPSendException("Failed to send TC-Begin message: " + e.getMessage(), e);
+        }
+    }
+    
+    public Long sendData(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,OperationCodeImpl operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException, TCAPException {
+    	ComponentImpl componentRequest=new ComponentImpl();
+    	if(isRequest!=null && isRequest) {
+    		InvokeImpl invoke;
+    		if(invokeClass==null)
+    			invoke=new InvokeImpl();
+    		else
+    			invoke=new InvokeImpl(invokeClass);
+    		
+    		if(customTimeout!=null)
+    			invoke.setTimeout(customTimeout);
+    		
+    		invoke.setOperationCode(operationCode);
+    		
+    		if(param!=null)
+    			invoke.setParameter(param);
+    		
+    		if(invokeId==null)
+    			invokeId=getNewInvokeId();
+    		
+    		invoke.setInvokeId(invokeId);
+    		
+    		if(linkedId!=null)
+    			invoke.setLinkedId(linkedId);
+    		
+    		componentRequest.setInvoke(invoke);
+    		
+    		// check if its taken!
             int invokeIndex = DialogImpl.getIndexFromInvokeId(invoke.getInvokeId());
             if (this.operationsSent[invokeIndex] != null) {
                 throw new TCAPSendException("There is already operation with such invoke id!");
             }
 
+            invoke.setProvider(provider);
             invoke.setState(OperationState.Pending);
             invoke.setDialog(this);
 
@@ -889,14 +1113,56 @@ public class DialogImpl implements Dialog {
             // default value
             if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
                 invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
-        } else {
-            if (componentRequest.getType() != ComponentType.ReturnResult) {
-                // we are sending a response and removing invokeId from
-                // incomingInvokeList
-            	if(componentRequest.getExistingComponent()!=null && componentRequest.getExistingComponent().getInvokeId()!=null)
-            		this.removeIncomingInvokeId(componentRequest.getExistingComponent().getInvokeId());
-            }
-        }
+    	} else if(isLastResponse!=null && isLastResponse) {
+    		ReturnResultLastImpl returnResultLast=new ReturnResultLastImpl();
+    		returnResultLast.setInvokeId(invokeId);
+    		returnResultLast.setOperationCode(operationCode);
+    		if(param!=null)
+    			returnResultLast.setParameter(param);
+    		componentRequest.setReturnResultLast(returnResultLast);
+    		
+    		if(componentRequest.getExistingComponent()!=null && componentRequest.getExistingComponent().getInvokeId()!=null)
+        		this.removeIncomingInvokeId(componentRequest.getExistingComponent().getInvokeId());
+    	} else {
+    		ReturnResultImpl returnResult=new ReturnResultImpl();
+    		returnResult.setInvokeId(invokeId);
+    		returnResult.setOperationCode(operationCode);
+    		if(param!=null)
+    			returnResult.setParameter(param);    		
+    		componentRequest.setReturnResult(returnResult);
+    	}
+    	
+        this.scheduledComponentList.add(componentRequest);
+        return invokeId;
+    }
+    
+    public void sendReject(Long invokeId,ProblemImpl project) throws TCAPSendException {
+    	RejectImpl reject=new RejectImpl();
+    	reject.setInvokeId(invokeId);
+    	reject.setProblem(project);
+    	reject.setLocalOriginated(true);
+    	
+    	ComponentImpl componentRequest=new ComponentImpl();
+    	componentRequest.setReject(reject);
+    	
+    	if(componentRequest.getExistingComponent()!=null && componentRequest.getExistingComponent().getInvokeId()!=null)
+    		this.removeIncomingInvokeId(componentRequest.getExistingComponent().getInvokeId());            
+            
+        this.scheduledComponentList.add(componentRequest);
+    }
+    
+    public void sendError(Long invokeId,ErrorCodeImpl errorCode,Object param) throws TCAPSendException {
+    	ReturnErrorImpl error=new ReturnErrorImpl();
+    	error.setErrorCode(errorCode);
+    	error.setInvokeId(invokeId);
+    	error.setParameter(param);
+    	
+    	ComponentImpl componentRequest=new ComponentImpl();
+    	componentRequest.setReturnError(error);
+    	
+    	if(componentRequest.getExistingComponent()!=null && componentRequest.getExistingComponent().getInvokeId()!=null)
+    		this.removeIncomingInvokeId(componentRequest.getExistingComponent().getInvokeId());            
+            
         this.scheduledComponentList.add(componentRequest);
     }
 
@@ -1341,6 +1607,19 @@ public class DialogImpl implements Dialog {
         }
     }
 
+    public OperationCodeImpl getOperationCodeFromInvoke(Long invokeId) {
+    	InvokeImpl invoke = null;
+        if (invokeId != null) {
+        	int index = getIndexFromInvokeId(invokeId);
+            invoke = this.operationsSent[index];            
+        }
+        
+        if(invoke!=null)
+        	return invoke.getOperationCode();
+        
+        return null;
+    }
+    
     protected List<ComponentImpl> processOperationsState(ComponentPortionImpl componentsPortion) {
         if(componentsPortion==null) {
         	return null;
@@ -1481,7 +1760,7 @@ public class DialogImpl implements Dialog {
                         try {
                             // this is a local originated Reject - we are rejecting an incoming component
                             // we need to send a Reject also to a peer
-                            this.sendComponent(ci);
+                            this.sendReject(rej.getInvokeId(), rej.getProblem());
                         } catch (TCAPSendException e) {
                             logger.error("TCAPSendException when sending Reject component : Dialog: " + this, e);
                         }
@@ -1507,7 +1786,7 @@ public class DialogImpl implements Dialog {
             resultingIndications.add(component);
 
             if (this.isStructured())
-                this.sendComponent(component);
+                this.sendReject(invokeId, p);
         } catch (TCAPSendException e) {
             logger.error(String.format("Error sending Reject component", e));
         }

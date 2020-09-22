@@ -23,11 +23,11 @@
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASCICallReference;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptions;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptionsImpl;
 
 /**
  *
@@ -43,18 +43,18 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  */
 public interface SendGroupCallInfoResponse extends CallHandlingMessage {
 
-     ISDNAddressString getAnchorMscAddress();
+     ISDNAddressStringImpl getAnchorMscAddress();
 
      ASCICallReference getAsciCallReference();
 
-     IMSI getImsi();
+     IMSIImpl getImsi();
 
-     AdditionalInfo getAdditionalInfo();
+     AdditionalInfoImpl getAdditionalInfo();
 
-     AdditionalSubscriptions getAdditionalSubscriptions();
+     AdditionalSubscriptionsImpl getAdditionalSubscriptions();
 
      byte[] getKc();
 
-     MAPExtensionContainer getExtensionContainer();
+     MAPExtensionContainerImpl getExtensionContainer();
 
 }

@@ -36,11 +36,11 @@ import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.SendRoutingInfoForLCSRequestImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
@@ -94,7 +94,7 @@ public class SendRoutingInfoForLCSRequestTest {
         SendRoutingInfoForLCSRequestImpl rtgInfnoForLCSreqInd = new SendRoutingInfoForLCSRequestImpl();
         rtgInfnoForLCSreqInd.decodeAll(asn);
 
-        ISDNAddressString mlcNum = rtgInfnoForLCSreqInd.getMLCNumber();
+        ISDNAddressStringImpl mlcNum = rtgInfnoForLCSreqInd.getMLCNumber();
         assertNotNull(mlcNum);
         assertEquals(mlcNum.getAddressNature(), AddressNature.international_number);
         assertEquals(mlcNum.getNumberingPlan(), NumberingPlan.ISDN);
@@ -104,7 +104,7 @@ public class SendRoutingInfoForLCSRequestTest {
         assertNotNull(subsIdent);
 
         IMSI imsi = subsIdent.getIMSI();
-        ISDNAddressString msisdn = subsIdent.getMSISDN();
+        ISDNAddressStringImpl msisdn = subsIdent.getMSISDN();
 
         assertNotNull(imsi);
         assertNull(msisdn);
@@ -147,7 +147,7 @@ public class SendRoutingInfoForLCSRequestTest {
         IMSI imsi = this.MAPParameterFactory.createIMSI("724999900000007");
         SubscriberIdentity subsIdent = new SubscriberIdentityImpl(imsi);
 
-        ISDNAddressString mlcNumber = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressStringImpl mlcNumber = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "55619007");
 
         SendRoutingInfoForLCSRequestImpl rtgInfnoForLCSreqInd = new SendRoutingInfoForLCSRequestImpl(mlcNumber, subsIdent);

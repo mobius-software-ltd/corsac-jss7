@@ -24,17 +24,17 @@ package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
 import java.util.ArrayList;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NumberPortabilityStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 
 /*
 <code>
@@ -86,55 +86,55 @@ IST-AlertTimerValue ::= INTEGER (15..255)
  *
  */
 public interface SendRoutingInformationResponse extends CallHandlingMessage {
-    IMSI getIMSI(); // TBCD-STRING
+    IMSIImpl getIMSI(); // TBCD-STRING
 
     // This is used for MAP V3 only
-    ExtendedRoutingInfo getExtendedRoutingInfo(); // CHOICE
+    ExtendedRoutingInfoImpl getExtendedRoutingInfo(); // CHOICE
 
-    CUGCheckInfo getCUGCheckInfo(); // SEQUENCE
+    CUGCheckInfoImpl getCUGCheckInfo(); // SEQUENCE
 
     boolean getCUGSubscriptionFlag(); // NULL
 
-    SubscriberInfo getSubscriberInfo(); // SEQUENCE
+    SubscriberInfoImpl getSubscriberInfo(); // SEQUENCE
 
-    ArrayList<SSCode> getSSList(); // SEQUENCE
+    ArrayList<SSCodeImpl> getSSList(); // SEQUENCE
 
-    ExtBasicServiceCode getBasicService(); // CHOICE
+    ExtBasicServiceCodeImpl getBasicService(); // CHOICE
 
     boolean getForwardingInterrogationRequired(); // NULL
 
-    ISDNAddressString getVmscAddress(); // OCTET STRING
+    ISDNAddressStringImpl getVmscAddress(); // OCTET STRING
 
-    MAPExtensionContainer getExtensionContainer(); // SEQUENCE
+    MAPExtensionContainerImpl getExtensionContainer(); // SEQUENCE
 
-    NAEAPreferredCI getNaeaPreferredCI(); // SEQUENCE
+    NAEAPreferredCIImpl getNaeaPreferredCI(); // SEQUENCE
 
-    CCBSIndicators getCCBSIndicators(); // SEQUENCE
+    CCBSIndicatorsImpl getCCBSIndicators(); // SEQUENCE
 
-    ISDNAddressString getMsisdn(); // OCTET STRING
+    ISDNAddressStringImpl getMsisdn(); // OCTET STRING
 
     NumberPortabilityStatus getNumberPortabilityStatus(); // ENUMERATED
 
     Integer getISTAlertTimer(); // INTEGER
 
-    SupportedCamelPhases getSupportedCamelPhasesInVMSC(); // BIT STRING
+    SupportedCamelPhasesImpl getSupportedCamelPhasesInVMSC(); // BIT STRING
 
-    OfferedCamel4CSIs getOfferedCamel4CSIsInVMSC(); // BIT STRING
+    OfferedCamel4CSIsImpl getOfferedCamel4CSIsInVMSC(); // BIT STRING
 
     // This is used as RoutingInfo parameter for V2 and as RoutingInfo2 parameter for MAP V3
-    RoutingInfo getRoutingInfo2(); // CHOICE
+    RoutingInfoImpl getRoutingInfo2(); // CHOICE
 
-    ArrayList<SSCode> getSSList2(); // SEQUENCE
+    ArrayList<SSCodeImpl> getSSList2(); // SEQUENCE
 
-    ExtBasicServiceCode getBasicService2(); // CHOICE
+    ExtBasicServiceCodeImpl getBasicService2(); // CHOICE
 
-    AllowedServices getAllowedServices(); // BIT STRING
+    AllowedServicesImpl getAllowedServices(); // BIT STRING
 
     UnavailabilityCause getUnavailabilityCause(); // ENUMERATED
 
     boolean getReleaseResourcesSupported(); // NULL
 
-    ExternalSignalInfo getGsmBearerCapability(); // SEQUENCE
+    ExternalSignalInfoImpl getGsmBearerCapability(); // SEQUENCE
 
     long getMapProtocolVersion();
 }

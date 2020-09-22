@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessage;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPProvider;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
@@ -37,10 +38,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  * This class must be the super class of all MAP services
@@ -87,8 +87,8 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
         }
     }
 
-    public abstract void processComponent(ComponentType compType, OperationCode oc, Parameter parameter, MAPDialog mapDialog,
-            Long invokeId, Long linkedId, Invoke linkedInvoke) throws MAPParsingComponentException;
+    public abstract void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+            Long invokeId, Long linkedId) throws MAPParsingComponentException;
 
     /**
      * Adding MAP Dialog into MAPProviderImpl.dialogs Used when creating a new outgoing MAP Dialog
@@ -110,7 +110,7 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
     /**
      * {@inheritDoc}
      */
-    public MAPApplicationContext getMAPv1ApplicationContext(int operationCode, Invoke invoke) {
+    public MAPApplicationContext getMAPv1ApplicationContext(int operationCode) {
         return null;
     }
 
@@ -134,7 +134,7 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
      * @param invoke
      * @return
      */
-    public boolean checkInvokeTimeOut(MAPDialog dialog, Invoke invoke) {
+    public boolean checkInvokeTimeOut(MAPDialog dialog, InvokeImpl invoke) {
         return false;
     }
 
@@ -167,7 +167,7 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
         }
     }
 
-    protected void deliverRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    protected void deliverRejectComponent(MAPDialog mapDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
         }
@@ -179,10 +179,9 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
     // }
     // }
 
-    protected void deliverInvokeTimeout(MAPDialog mapDialog, Invoke invoke) {
+    protected void deliverInvokeTimeout(MAPDialog mapDialog, InvokeImpl invoke) {
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onInvokeTimeout(mapDialog, invoke.getInvokeId());
         }
     }
-
 }

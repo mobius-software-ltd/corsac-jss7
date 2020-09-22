@@ -30,15 +30,14 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingInfoImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -114,7 +113,7 @@ public class ForwardingInfoTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        SSCode ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
+        SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
         impl = new ForwardingInfoImpl(ssCode, forwardingFeatureList);
         asnOS = new AsnOutputStream();
 

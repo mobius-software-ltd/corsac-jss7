@@ -25,16 +25,13 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.accessTransport.AccessTransportImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.*;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
-import org.restcomm.protocols.ss7.isup.message.parameter.GlobalOperationCodeImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.LocalErrorCodeImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.LocalOperationCodeImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.PerformingRedirectIndicator;
-import org.restcomm.protocols.ss7.isup.message.parameter.ErrorCode;
-import org.restcomm.protocols.ss7.isup.message.parameter.OperationCode;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectForwardInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityInstructionIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingRedirectReason;
@@ -226,20 +223,28 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
         return new EchoControlInformationImpl();
     }
 
-    public OperationCode createLocalOperationCode() {
-        return new LocalOperationCodeImpl();
+    public OperationCodeImpl createLocalOperationCode(Long value) {
+        OperationCodeImpl oc=new OperationCodeImpl();
+        oc.setLocalOperationCode(value);
+        return oc;
     }
 
-    public OperationCode createGlobalOperationCode() {
-        return new GlobalOperationCodeImpl();
+    public OperationCodeImpl createGlobalOperationCode(List<Long> value) {
+    	OperationCodeImpl oc = new OperationCodeImpl();
+    	oc.setGlobalOperationCode(value);
+    	return oc;
     }
 
-    public ErrorCode createLocalErrorCode() {
-        return new LocalErrorCodeImpl();
+    public ErrorCodeImpl createLocalErrorCode(Long value) {
+        ErrorCodeImpl ec = new ErrorCodeImpl();
+        ec.setLocalErrorCode(value);
+        return ec;
     }
 
-    public ErrorCode createGlobalErrorCode() {
-        return new GlobalErrorCodeImpl();
+    public ErrorCodeImpl createGlobalErrorCode(List<Long> value) {
+        ErrorCodeImpl ec=new ErrorCodeImpl();
+        ec.setGlobalErrorCode(value);
+        return ec;
     }
 
     public EventInformation createEventInformation() {

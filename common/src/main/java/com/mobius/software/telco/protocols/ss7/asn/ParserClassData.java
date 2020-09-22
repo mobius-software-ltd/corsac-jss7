@@ -31,25 +31,35 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ParserClassData {
 	Boolean subFieldsFound=false;
-	private List<Field> fields;
-	private Field wildcardField;
+	private List<FieldData> fields;
 	
 	ConcurrentHashMap<ASNHeader,Class<?>> innerMap=new ConcurrentHashMap<ASNHeader,Class<?>>();
-	ConcurrentHashMap<ASNHeader,Field> fieldsMap=new ConcurrentHashMap<ASNHeader,Field>();
+	ConcurrentHashMap<ASNHeader,FieldData> fieldsMap=new ConcurrentHashMap<ASNHeader,FieldData>();
 	
-	public ParserClassData(List<Field> fields,Field wildcardField) {
+	Field wildcardField;
+	Boolean hasWrappedTag;
+	
+	public ParserClassData(List<FieldData> fields,Boolean hasWrappedTag) {
+		this.hasWrappedTag=hasWrappedTag;		
 		this.fields=fields;
-		if(this.fields!=null && this.fields.size()>0)
+		if(this.fields!=null && this.fields.size()>0) {
 			this.subFieldsFound=true;
+			for(FieldData curr:fields) {
+				if(curr.getFieldType()==FieldType.WILDCARD) {
+					wildcardField=curr.getField();
+					break;
+				}
+			}
+		}
 		else
-			this.subFieldsFound=false;
-		
-		this.wildcardField=wildcardField;
-		if(this.wildcardField!=null)
-			this.subFieldsFound=true;
+			this.subFieldsFound=false;				
 	}
 	
-	public List<Field> getFields() {
+	public Boolean getHasWrappedTag() {
+		return hasWrappedTag;
+	}
+	
+	public List<FieldData> getFields() {
 		return fields;
 	}	
 	
@@ -65,11 +75,15 @@ public class ParserClassData {
 		return innerMap;
 	}
 	
-	public void addFiledsMapElement(ASNHeader header,Field field) {
+	public void addFieldsMapElement(ASNHeader header,FieldData field) {
 		fieldsMap.put(header, field);
 	}
 	
-	public Field getFieldsMapElement(ASNHeader header) {
+	public ConcurrentHashMap<ASNHeader,FieldData> getFieldsMap() {
+		return fieldsMap;
+	}
+	
+	public FieldData getFieldsMapElement(ASNHeader header) {
 		return fieldsMap.get(header);
 	}
 	

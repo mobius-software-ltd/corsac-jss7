@@ -22,42 +22,36 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSsIncompatibility;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author sergey vetyutnev
  * @author amit bhayani
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl implements MAPErrorMessageSsIncompatibility {
-	private static final long serialVersionUID = 1L;
-
-	public static final int _tag_ss_Code = 1;
-    public static final int _tag_ss_Status = 4;
-
-    private SSCode ssCode;
-    private BasicServiceCode basicService;
-    private SSStatus ssStatus;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    private SSCodeImpl ssCode;
+    
+	@ASNChoise
+	private BasicServiceCodeImpl basicService;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
+    private SSStatusImpl ssStatus;
 
     protected String _PrimitiveName = "MAPErrorMessageSsIncompatibility";
 
-    public MAPErrorMessageSsIncompatibilityImpl(SSCode ssCode, BasicServiceCode basicService, SSStatus ssStatus) {
+    public MAPErrorMessageSsIncompatibilityImpl(SSCodeImpl ssCode, BasicServiceCodeImpl basicService, SSStatusImpl ssStatus) {
         super((long) MAPErrorCode.ssIncompatibility);
 
         this.ssCode = ssCode;
@@ -78,168 +72,40 @@ public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl im
     }
 
     @Override
-    public SSCode getSSCode() {
+    public SSCodeImpl getSSCode() {
         return ssCode;
     }
 
     @Override
-    public BasicServiceCode getBasicService() {
+    public BasicServiceCodeImpl getBasicService() {
         return basicService;
     }
 
     @Override
-    public SSStatus getSSStatus() {
+    public SSStatusImpl getSSStatus() {
         return ssStatus;
     }
 
     @Override
-    public void setSSCode(SSCode val) {
+    public void setSSCode(SSCodeImpl val) {
         ssCode = val;
     }
 
     @Override
-    public void setBasicService(BasicServiceCode val) {
+    public void setBasicService(BasicServiceCodeImpl val) {
         basicService = val;
     }
 
     @Override
-    public void setSSStatus(SSStatus val) {
+    public void setSSStatus(SSStatusImpl val) {
         ssStatus = val;
-    }
-
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream localAis, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.ssCode = null;
-        this.basicService = null;
-        this.ssStatus = null;
-
-        if (localAis.getTagClass() != Tag.CLASS_UNIVERSAL || localAis.getTag() != Tag.SEQUENCE || localAis.isTagPrimitive())
-            throw new MAPParsingComponentException("Error decoding " + _PrimitiveName
-                    + ": bad tag class or tag or parameter is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-
-        AsnInputStream ais = localAis.readSequenceStreamData(length);
-
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            switch (ais.getTagClass()) {
-                case Tag.CLASS_CONTEXT_SPECIFIC:
-                    switch (tag) {
-                        case _tag_ss_Code:
-                            this.ssCode = new SSCodeImpl();
-                            ((SSCodeImpl) this.ssCode).decodeAll(ais);
-                            break;
-                        case BasicServiceCodeImpl._TAG_bearerService:
-                        case BasicServiceCodeImpl._TAG_teleservice:
-                            // AsnInputStream ais2 = ais.readSequenceStream();
-                            // ais2.readTag();
-                            this.basicService = new BasicServiceCodeImpl();
-                            ((BasicServiceCodeImpl) this.basicService).decodeAll(ais);
-                            break;
-                        case _tag_ss_Status:
-                            this.ssStatus = new SSStatusImpl();
-                            ((SSStatusImpl) this.ssStatus).decodeAll(ais);
-                            break;
-
-                        default:
-                            ais.advanceElement();
-                            break;
-                    }
-                    break;
-
-                default:
-                    ais.advanceElement();
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        if (this.ssCode == null && this.basicService == null && this.ssStatus == null)
-            return;
-
-        if (this.ssCode != null)
-            ((SSCodeImpl) this.ssCode).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _tag_ss_Code);
-        if (this.basicService != null) {
-            ((BasicServiceCodeImpl) this.basicService).encodeAll(asnOs,
-                    ((BasicServiceCodeImpl) this.basicService).getTagClass(),
-                    ((BasicServiceCodeImpl) this.basicService).getTag());
-        }
-        if (this.ssStatus != null)
-            ((SSStatusImpl) this.ssStatus).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _tag_ss_Status);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("MAPErrorMessageSsIncompatibility [");
 
         if (this.ssCode != null)
             sb.append("ssCode=" + this.ssCode.toString());

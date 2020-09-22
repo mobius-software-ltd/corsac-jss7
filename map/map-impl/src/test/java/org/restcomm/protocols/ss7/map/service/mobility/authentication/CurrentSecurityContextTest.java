@@ -31,20 +31,20 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CK;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CKImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Cksn;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CksnImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IK;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IKImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Kc;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KcImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextData;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.CKImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.CksnImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.CurrentSecurityContextImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.GSMSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.IKImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.KSIImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.KcImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.UMTSSecurityContextDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextDataImpl;
 import org.testng.annotations.Test;
 
 /**

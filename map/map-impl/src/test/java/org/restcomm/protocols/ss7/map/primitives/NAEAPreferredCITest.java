@@ -30,10 +30,10 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEACIC;
-import org.restcomm.protocols.ss7.map.primitives.NAEACICImpl;
-import org.restcomm.protocols.ss7.map.primitives.NAEAPreferredCIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEACICImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -63,7 +63,7 @@ public class NAEAPreferredCITest {
         assertEquals(tag, Tag.SEQUENCE);
         assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
         assertEquals(prim.getNaeaPreferredCIC().getData(), this.getNAEACICIData());
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
@@ -71,7 +71,7 @@ public class NAEAPreferredCITest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         NAEACIC naeaPreferredCIC = new NAEACICImpl(this.getNAEACICIData());
         NAEAPreferredCIImpl prim = new NAEAPreferredCIImpl(naeaPreferredCIC, extensionContainer);
         AsnOutputStream asn = new AsnOutputStream();

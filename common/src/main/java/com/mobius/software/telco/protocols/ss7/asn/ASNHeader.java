@@ -116,5 +116,12 @@ public class ASNHeader {
 			return false; 
 		
 		return true;
-	}			
+	}
+
+	@Override
+	public String toString() {
+		return "ASNHeader [asnClass=" + asnClass + ", isConstructed="
+				+ isConstructed + ", asnTag=" + asnTag + ", indefiniteLength="
+				+ indefiniteLength + ", index=" + index + "]";
+	}		
 }

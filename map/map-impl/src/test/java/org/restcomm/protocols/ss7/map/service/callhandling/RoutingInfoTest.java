@@ -32,15 +32,14 @@ import org.apache.log4j.Logger;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptionsImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.ForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingOptionsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -83,7 +82,7 @@ public class RoutingInfoTest {
         RoutingInfoImpl routeInfo = new RoutingInfoImpl();
         routeInfo.decodeAll(asn);
 
-        ISDNAddressString isdnAdd = routeInfo.getRoamingNumber();
+        ISDNAddressStringImpl isdnAdd = routeInfo.getRoamingNumber();
 
         assertNotNull(isdnAdd);
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
@@ -99,7 +98,7 @@ public class RoutingInfoTest {
 
         ForwardingData _forwardingData = _routeInfo.getForwardingData();
         ForwardingOptions _forwardingOptions = _forwardingData.getForwardingOptions();
-        ISDNAddressString _isdnAdd = _forwardingData.getForwardedToNumber();
+        ISDNAddressStringImpl _isdnAdd = _forwardingData.getForwardedToNumber();
 
         assertNotNull(_isdnAdd);
         assertEquals(_isdnAdd.getAddressNature(), AddressNature.international_number);
@@ -118,7 +117,7 @@ public class RoutingInfoTest {
         byte[] _data = new byte[] { 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };
         // 4 = 00|0|00100, 7 = length
 
-        ISDNAddressString isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
         RoutingInfoImpl routeInfo = new RoutingInfoImpl(isdnAdd);
 
@@ -129,7 +128,7 @@ public class RoutingInfoTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // :::::::::::::::::::::::
-        ISDNAddressString _isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl _isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
         ForwardingData _forwardingData = null;
         ForwardingOptions _forwardingOptions = null;

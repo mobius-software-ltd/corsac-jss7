@@ -23,62 +23,24 @@
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import org.restcomm.protocols.ss7.map.MessageImpl;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPDialogSupplementary;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryMessage;
-import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 
 /**
  * @author amit bhayani
  *
  */
-public abstract class SupplementaryMessageImpl extends MessageImpl implements SupplementaryMessage, MAPAsnPrimitive {
+public abstract class SupplementaryMessageImpl extends MessageImpl implements SupplementaryMessage {
 	private static final long serialVersionUID = 1L;
 
-	protected CBSDataCodingScheme ussdDataCodingSch;
-    protected USSDString ussdString;
-
-    /**
+	/**
      *
      */
     public SupplementaryMessageImpl() {
         super();
     }
 
-    public SupplementaryMessageImpl(CBSDataCodingScheme ussdDataCodingSch, USSDString ussdString) {
-        this.ussdDataCodingSch = ussdDataCodingSch;
-        this.ussdString = ussdString;
-    }
-
     public MAPDialogSupplementary getMAPDialog() {
         return (MAPDialogSupplementary) super.getMAPDialog();
-    }
-
-    public CBSDataCodingScheme getDataCodingScheme() {
-        return ussdDataCodingSch;
-    }
-
-    public USSDString getUSSDString() {
-        return this.ussdString;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(", ussdDataCodingSch=");
-        sb.append(ussdDataCodingSch);
-        if (ussdString != null) {
-            sb.append(", ussdString=");
-            try {
-                sb.append(ussdString.getString(null));
-            } catch (Exception e) {
-            }
-        }
-
-        sb.append("]");
-
-        return sb.toString();
     }
 }

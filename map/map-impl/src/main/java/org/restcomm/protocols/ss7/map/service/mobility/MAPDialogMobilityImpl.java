@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.map.service.mobility;
 
 import java.util.ArrayList;
 
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
@@ -32,119 +31,125 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MAPServiceMobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AccessType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContext;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetListImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.FailureCause;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.RequestingNodeType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIu;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.AgeIndicator;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancellationType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSI;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapability;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeaturesImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.TypeOfUpdate;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UESRVCCCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UsedRATType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallHoldData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallWaitingData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClirData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EctData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AccessRestrictionData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSAllocationRetentionPriority;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Category;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristics;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdraw;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdraw;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdraw;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSSInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallHoldDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallWaitingDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClirDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EctDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AccessRestrictionDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AgeIndicatorImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSAllocationRetentionPriorityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CategoryImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdrawImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdrawImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdrawImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSSInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.NetworkAccessMode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.RegionalSubscriptionResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdraw;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdrawImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SubscriberStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VlrCamelSubscriptionInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceBroadcastData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
-import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfiguration;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthList;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventList;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceList;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeList;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VlrCamelSubscriptionInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceBroadcastDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2Impl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReferenceImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationFailureReportRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationFailureReportResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.ForwardCheckSSIndicationRequestImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.ResetRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.RestoreDataRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.RestoreDataResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationRequestImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationRequestImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSRequestImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSRequestImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationResponseImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationResponseImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateGprsLocationRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateGprsLocationResponseImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.oam.ActivateTraceModeRequestImpl_Mobility;
-import org.restcomm.protocols.ss7.map.service.mobility.oam.ActivateTraceModeResponseImpl_Mobility;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImplV2;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationResponseImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationRequestImpl;
@@ -155,15 +160,10 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Dele
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DeleteSubscriberDataResponseImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImpl;
-import org.restcomm.protocols.ss7.tcap.api.TCAPException;
+import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeRequestImpl;
+import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeResponseImpl;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
 /**
  *
@@ -174,237 +174,169 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
 	private static final long serialVersionUID = 1L;
 
 	protected MAPDialogMobilityImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
-            MAPServiceMobility mapService, AddressString origReference, AddressString destReference) {
+            MAPServiceMobility mapService, AddressStringImpl origReference, AddressStringImpl destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
-    public Long addSendAuthenticationInfoRequest(IMSI imsi, int numberOfRequestedVectors, boolean segmentationProhibited,
-            boolean immediateResponsePreferred, ReSynchronisationInfo reSynchronisationInfo,
-            MAPExtensionContainer extensionContainer, RequestingNodeType requestingNodeType, PlmnId requestingPlmnId,
+	public Long addSendAuthenticationInfoRequest(IMSIImpl imsi) throws MAPException {
+        return this.addSendAuthenticationInfoRequest(_Timer_Default, imsi);
+    }
+
+    public Long addSendAuthenticationInfoRequest(int customInvokeTimeout, IMSIImpl imsi) throws MAPException {
+
+        if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.infoRetrievalContext)
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
+            throw new MAPException(
+                    "Bad application context name for sendAuthenticationInfoRequest: must be infoRetrievalContext_V2");
+
+        Integer customTimeout;
+        if (customInvokeTimeout == _Timer_Default)
+            customTimeout=getMediumTimer();
+        else
+            customTimeout=customInvokeTimeout;
+
+        SendAuthenticationInfoRequestImplV1 req=null;
+        if (imsi != null)
+            req = new SendAuthenticationInfoRequestImplV1(this.appCntx.getApplicationContextVersion().getVersion(), imsi);
+            
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.sendAuthenticationInfo, req, true, false);
+    }
+    
+    public Long addSendAuthenticationInfoRequest(IMSIImpl imsi, int numberOfRequestedVectors, boolean segmentationProhibited,
+            boolean immediateResponsePreferred, ReSynchronisationInfoImpl reSynchronisationInfo,
+            MAPExtensionContainerImpl extensionContainer, RequestingNodeType requestingNodeType, PlmnIdImpl requestingPlmnId,
             Integer numberOfRequestedAdditionalVectors, boolean additionalVectorsAreForEPS) throws MAPException {
         return this.addSendAuthenticationInfoRequest(_Timer_Default, imsi, numberOfRequestedVectors, segmentationProhibited,
                 immediateResponsePreferred, reSynchronisationInfo, extensionContainer, requestingNodeType, requestingPlmnId,
                 numberOfRequestedAdditionalVectors, additionalVectorsAreForEPS);
     }
 
-    public Long addSendAuthenticationInfoRequest(int customInvokeTimeout, IMSI imsi, int numberOfRequestedVectors,
-            boolean segmentationProhibited, boolean immediateResponsePreferred, ReSynchronisationInfo reSynchronisationInfo,
-            MAPExtensionContainer extensionContainer, RequestingNodeType requestingNodeType, PlmnId requestingPlmnId,
+    public Long addSendAuthenticationInfoRequest(int customInvokeTimeout, IMSIImpl imsi, int numberOfRequestedVectors,
+            boolean segmentationProhibited, boolean immediateResponsePreferred, ReSynchronisationInfoImpl reSynchronisationInfo,
+            MAPExtensionContainerImpl extensionContainer, RequestingNodeType requestingNodeType, PlmnIdImpl requestingPlmnId,
             Integer numberOfRequestedAdditionalVectors, boolean additionalVectorsAreForEPS) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.infoRetrievalContext)
-                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
-                        .getApplicationContextVersion() != MAPApplicationContextVersion.version3))
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3)
             throw new MAPException(
-                    "Bad application context name for sendAuthenticationInfoRequest: must be infoRetrievalContext_V2 or V3");
+                    "Bad application context name for sendAuthenticationInfoRequest: must be infoRetrievalContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
 
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.sendAuthenticationInfo);
-        invoke.setOperationCode(oc);
-
-        if (imsi != null) {
-            // parameter is optional: is no imsi is included we will not add a parameter
-            SendAuthenticationInfoRequestImpl req = new SendAuthenticationInfoRequestImpl(this.appCntx
+        SendAuthenticationInfoRequestImplV3 req=null;
+        if (imsi != null)
+            req = new SendAuthenticationInfoRequestImplV3(this.appCntx
                     .getApplicationContextVersion().getVersion(), imsi, numberOfRequestedVectors, segmentationProhibited,
                     immediateResponsePreferred, reSynchronisationInfo, extensionContainer, requestingNodeType,
                     requestingPlmnId, numberOfRequestedAdditionalVectors, additionalVectorsAreForEPS);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            invoke.setParameter(p);
-        }
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+            
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.sendAuthenticationInfo, req, true, false);
     }
 
-    public void addSendAuthenticationInfoResponse(long invokeId, AuthenticationSetList authenticationSetList,
-            MAPExtensionContainer extensionContainer, EpsAuthenticationSetList epsAuthenticationSetList) throws MAPException {
-        doAddSendAuthenticationInfoResponse(false, invokeId, authenticationSetList, extensionContainer,
-                epsAuthenticationSetList);
+    public void addSendAuthenticationInfoResponse(long invokeId, AuthenticationSetListImpl authenticationSetList) throws MAPException {
+        doAddSendAuthenticationInfoResponse(false, invokeId, authenticationSetList);
     }
 
-    public void addSendAuthenticationInfoResponse_NonLast(long invokeId, AuthenticationSetList authenticationSetList,
-            MAPExtensionContainer extensionContainer, EpsAuthenticationSetList epsAuthenticationSetList) throws MAPException {
-        doAddSendAuthenticationInfoResponse(true, invokeId, authenticationSetList, extensionContainer, epsAuthenticationSetList);
+    public void addSendAuthenticationInfoResponse_NonLast(long invokeId, AuthenticationSetListImpl authenticationSetList) throws MAPException {
+        doAddSendAuthenticationInfoResponse(true, invokeId, authenticationSetList);
     }
 
     protected void doAddSendAuthenticationInfoResponse(boolean nonLast, long invokeId,
-            AuthenticationSetList authenticationSetList, MAPExtensionContainer extensionContainer,
-            EpsAuthenticationSetList epsAuthenticationSetList) throws MAPException {
+            AuthenticationSetListImpl authenticationSetList) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.infoRetrievalContext)
-                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
-                        .getApplicationContextVersion() != MAPApplicationContextVersion.version3))
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException(
-                    "Bad application context name for addSendAuthenticationInfoResponse: must be infoRetrievalContext_V2 or V3");
-        if (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && nonLast)
+                    "Bad application context name for addSendAuthenticationInfoResponse: must be infoRetrievalContext_V2");
+        
+        SendAuthenticationInfoResponseImplV1 req = null;
+        if (authenticationSetList != null)
+            req = new SendAuthenticationInfoResponseImplV1(this.appCntx.getApplicationContextVersion().getVersion(), 
+            		authenticationSetList);
+        
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.sendAuthenticationInfo, req, false, !nonLast);
+    }
+    
+    public void addSendAuthenticationInfoResponse(long invokeId, AuthenticationSetListImpl authenticationSetList,
+            MAPExtensionContainerImpl extensionContainer, EpsAuthenticationSetListImpl epsAuthenticationSetList) throws MAPException {
+        doAddSendAuthenticationInfoResponse(invokeId, authenticationSetList, extensionContainer,
+                epsAuthenticationSetList);
+    }
+
+    protected void doAddSendAuthenticationInfoResponse(long invokeId,
+            AuthenticationSetListImpl authenticationSetList, MAPExtensionContainerImpl extensionContainer,
+            EpsAuthenticationSetListImpl epsAuthenticationSetList) throws MAPException {
+
+        if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.infoRetrievalContext)
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3)
             throw new MAPException(
-                    "Bad application context name for addSendAuthenticationInfoResponse: must be infoRetrievalContext_V2 for NonLast message");
+                    "Bad application context name for addSendAuthenticationInfoResponse: must be infoRetrievalContext_V3");
 
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.sendAuthenticationInfo);
-
-        Parameter p = null;
-        if (authenticationSetList != null || extensionContainer != null || epsAuthenticationSetList != null) {
-
-            SendAuthenticationInfoResponseImpl req = new SendAuthenticationInfoResponseImpl(this.appCntx
-                    .getApplicationContextVersion().getVersion(), authenticationSetList, extensionContainer,
-                    epsAuthenticationSetList);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-        }
-
-        if (nonLast) {
-            ReturnResult resultLastNonLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultRequest();
-
-            resultLastNonLast.setInvokeId(invokeId);
-
-            if (p != null) {
-                resultLastNonLast.setOperationCode(oc);
-                resultLastNonLast.setParameter(p);
-            }
-
-            this.sendReturnResultComponent(resultLastNonLast);
-        } else {
-            ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultLastRequest();
-
-            resultLast.setInvokeId(invokeId);
-
-            if (p != null) {
-                resultLast.setOperationCode(oc);
-                resultLast.setParameter(p);
-            }
-
-            this.sendReturnResultLastComponent(resultLast);
-        }
+        SendAuthenticationInfoResponseImplV3 req = null;
+        if (authenticationSetList != null || extensionContainer != null || epsAuthenticationSetList != null)
+            req = new SendAuthenticationInfoResponseImplV3(this.appCntx.getApplicationContextVersion().getVersion(), 
+            		authenticationSetList, extensionContainer,epsAuthenticationSetList);
+        
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.sendAuthenticationInfo, req, false, true);
     }
 
     @Override
-    public Long addAuthenticationFailureReportRequest(IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer, Boolean reAttempt,
-            AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) throws MAPException {
+    public Long addAuthenticationFailureReportRequest(IMSIImpl imsi, FailureCause failureCause, MAPExtensionContainerImpl extensionContainer, Boolean reAttempt,
+            AccessType accessType, byte[] rand, ISDNAddressStringImpl vlrNumber, ISDNAddressStringImpl sgsnNumber) throws MAPException {
         return this.addAuthenticationFailureReportRequest(_Timer_Default, imsi, failureCause, extensionContainer, reAttempt, accessType, rand, vlrNumber,
                 sgsnNumber);
     }
 
     @Override
-    public Long addAuthenticationFailureReportRequest(int customInvokeTimeout, IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer,
-            Boolean reAttempt, AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) throws MAPException {
+    public Long addAuthenticationFailureReportRequest(int customInvokeTimeout, IMSIImpl imsi, FailureCause failureCause, MAPExtensionContainerImpl extensionContainer,
+            Boolean reAttempt, AccessType accessType, byte[] rand, ISDNAddressStringImpl vlrNumber, ISDNAddressStringImpl sgsnNumber) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.authenticationFailureReportContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3))
             throw new MAPException("Bad application context name for authenticationFailureReportRequest: must be authenticationFailureReportContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.authenticationFailureReport);
-        invoke.setOperationCode(oc);
+            customTimeout=customInvokeTimeout;
 
         AuthenticationFailureReportRequestImpl req = new AuthenticationFailureReportRequestImpl(imsi, failureCause, extensionContainer, reAttempt, accessType,
                 rand, vlrNumber, sgsnNumber);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.authenticationFailureReport, req, true, false);
     }
 
     @Override
-    public void addAuthenticationFailureReportResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addAuthenticationFailureReportResponse(long invokeId, MAPExtensionContainerImpl extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.authenticationFailureReportContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3))
             throw new MAPException("Bad application context name for authenticationFailureReportResponse: must be authenticationFailureReportContext_V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        if (extensionContainer != null) {
-            // Operation Code
-            OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-            oc.setLocalOperationCode((long) MAPOperationCode.authenticationFailureReport);
-            resultLast.setOperationCode(oc);
-
-            AuthenticationFailureReportResponseImpl req = new AuthenticationFailureReportResponseImpl(extensionContainer);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        AuthenticationFailureReportResponseImpl req=null;
+        if (extensionContainer != null)
+            req = new AuthenticationFailureReportResponseImpl(extensionContainer);
+            
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.authenticationFailureReport, req, false, true);
     }
 
-    public Long addUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString roamingNumber,
-            ISDNAddressString vlrNumber, LMSI lmsi, MAPExtensionContainer extensionContainer, VLRCapability vlrCapability,
-            boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo,
-            PagingArea pagingArea, boolean skipSubscriberDataUpdate, boolean restorationIndicator) throws MAPException {
+    public Long addUpdateLocationRequest(IMSIImpl imsi, ISDNAddressStringImpl mscNumber, ISDNAddressStringImpl roamingNumber,
+            ISDNAddressStringImpl vlrNumber, LMSIImpl lmsi, MAPExtensionContainerImpl extensionContainer, VLRCapabilityImpl vlrCapability,
+            boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE, GSNAddressImpl vGmlcAddress, ADDInfoImpl addInfo,
+            PagingAreaImpl pagingArea, boolean skipSubscriberDataUpdate, boolean restorationIndicator) throws MAPException {
         return addUpdateLocationRequest(_Timer_Default, imsi, mscNumber, roamingNumber, vlrNumber, lmsi, extensionContainer,
                 vlrCapability, informPreviousNetworkEntity, csLCSNotSupportedByUE, vGmlcAddress, addInfo, pagingArea,
                 skipSubscriberDataUpdate, restorationIndicator);
     }
 
-    public Long addUpdateLocationRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString mscNumber,
-            ISDNAddressString roamingNumber, ISDNAddressString vlrNumber, LMSI lmsi, MAPExtensionContainer extensionContainer,
-            VLRCapability vlrCapability, boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE,
-            GSNAddress vGmlcAddress, ADDInfo addInfo, PagingArea pagingArea, boolean skipSubscriberDataUpdate,
+    public Long addUpdateLocationRequest(int customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl mscNumber,
+            ISDNAddressStringImpl roamingNumber, ISDNAddressStringImpl vlrNumber, LMSIImpl lmsi, MAPExtensionContainerImpl extensionContainer,
+            VLRCapabilityImpl vlrCapability, boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE,
+            GSNAddressImpl vGmlcAddress, ADDInfoImpl addInfo, PagingAreaImpl pagingArea, boolean skipSubscriberDataUpdate,
             boolean restorationIndicator) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkLocUpContext)
@@ -414,76 +346,42 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
             throw new MAPException(
                     "Bad application context name for UpdateLocationRequest: must be networkLocUpContext_V1, V2 or V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.updateLocation);
-        invoke.setOperationCode(oc);
+            customTimeout=customInvokeTimeout;
 
         UpdateLocationRequestImpl req = new UpdateLocationRequestImpl(this.appCntx.getApplicationContextVersion().getVersion(),
                 imsi, mscNumber, roamingNumber, vlrNumber, lmsi, extensionContainer, vlrCapability,
                 informPreviousNetworkEntity, csLCSNotSupportedByUE, vGmlcAddress, addInfo, pagingArea,
                 skipSubscriberDataUpdate, restorationIndicator);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.updateLocation, req, true, false);
     }
 
-    public void addUpdateLocationResponse(long invokeId, ISDNAddressString hlrNumber, MAPExtensionContainer extensionContainer,
+    public void addUpdateLocationResponse(long invokeId, ISDNAddressStringImpl hlrNumber) throws MAPException {
+
+        if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkLocUpContext)
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1)
+            throw new MAPException(
+                    "Bad application context name for UpdateLocationResponse: must be networkLocUpContext_V1");
+
+        UpdateLocationResponseImplV1 req = new UpdateLocationResponseImplV1(this.appCntx.getApplicationContextVersion().getVersion(), hlrNumber);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.updateLocation, req, false, true);
+    }
+    
+    public void addUpdateLocationResponse(long invokeId, ISDNAddressStringImpl hlrNumber, MAPExtensionContainerImpl extensionContainer,
             boolean addCapability, boolean pagingAreaCapability) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkLocUpContext)
-                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1
-                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
+                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
                         .getApplicationContextVersion() != MAPApplicationContextVersion.version3))
             throw new MAPException(
-                    "Bad application context name for UpdateLocationResponse: must be networkLocUpContext_V1, V2 or V3");
+                    "Bad application context name for UpdateLocationResponse: must be networkLocUpContext_V2 or V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.updateLocation);
-        resultLast.setOperationCode(oc);
-
-        UpdateLocationResponseImpl req = new UpdateLocationResponseImpl(this.appCntx.getApplicationContextVersion()
+        UpdateLocationResponseImplV2 req = new UpdateLocationResponseImplV2(this.appCntx.getApplicationContextVersion()
                 .getVersion(), hlrNumber, extensionContainer, addCapability, pagingAreaCapability);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.updateLocation, req, false, true);
     }
 
     /*
@@ -493,10 +391,10 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
      * #addAnyTimeInterrogationRequest(org.mobicents .protocols.ss7.map.api.primitives.SubscriberIdentity,
      * org.mobicents.protocols .ss7.map.api.service.subscriberInformation.RequestedInfo,
      * org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString,
-     * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
+     * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl)
      */
-    public long addAnyTimeInterrogationRequest(SubscriberIdentity subscriberIdentity, RequestedInfo requestedInfo,
-            ISDNAddressString gsmSCFAddress, MAPExtensionContainer extensionContainer) throws MAPException {
+    public long addAnyTimeInterrogationRequest(SubscriberIdentityImpl subscriberIdentity, RequestedInfoImpl requestedInfo,
+            ISDNAddressStringImpl gsmSCFAddress, MAPExtensionContainerImpl extensionContainer) throws MAPException {
 
         return this.addAnyTimeInterrogationRequest(_Timer_Default, subscriberIdentity, requestedInfo, gsmSCFAddress,
                 extensionContainer);
@@ -510,10 +408,10 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
      * org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity, org.mobicents
      * .protocols.ss7.map.api.service.subscriberInformation.RequestedInfo,
      * org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString,
-     * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
+     * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl)
      */
-    public long addAnyTimeInterrogationRequest(long customInvokeTimeout, SubscriberIdentity subscriberIdentity,
-            RequestedInfo requestedInfo, ISDNAddressString gsmSCFAddress, MAPExtensionContainer extensionContainer)
+    public long addAnyTimeInterrogationRequest(long customInvokeTimeout, SubscriberIdentityImpl subscriberIdentity,
+            RequestedInfoImpl requestedInfo, ISDNAddressStringImpl gsmSCFAddress, MAPExtensionContainerImpl extensionContainer)
             throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.anyTimeEnquiryContext)
@@ -521,41 +419,15 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
             throw new MAPException(
                     "Bad application context name for AnyTimeInterrogationRequest: must be networkLocUpContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Long customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=(long)getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.anyTimeInterrogation);
-        invoke.setOperationCode(oc);
+            customTimeout=customInvokeTimeout;
 
         AnyTimeInterrogationRequestImpl req = new AnyTimeInterrogationRequestImpl(subscriberIdentity, requestedInfo,
                 gsmSCFAddress, extensionContainer);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout, (long) MAPOperationCode.anyTimeInterrogation, req, true, false);
     }
 
     /*
@@ -564,18 +436,18 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.
      * MAPDialogSubscriberInformation#addAnyTimeInterrogationResponse(long)
      */
-    public void addAnyTimeInterrogationResponse(long invokeId, SubscriberInfo subscriberInfo,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addAnyTimeInterrogationResponse(long invokeId, SubscriberInfoImpl subscriberInfo,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
         doAddAnyTimeInterrogationResponse(false, invokeId, subscriberInfo, extensionContainer);
     }
 
-    public void addAnyTimeInterrogationResponse_NonLast(long invokeId, SubscriberInfo subscriberInfo,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addAnyTimeInterrogationResponse_NonLast(long invokeId, SubscriberInfoImpl subscriberInfo,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
         doAddAnyTimeInterrogationResponse(true, invokeId, subscriberInfo, extensionContainer);
     }
 
-    protected void doAddAnyTimeInterrogationResponse(boolean nonLast, long invokeId, SubscriberInfo subscriberInfo,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    protected void doAddAnyTimeInterrogationResponse(boolean nonLast, long invokeId, SubscriberInfoImpl subscriberInfo,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.anyTimeEnquiryContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3))
@@ -583,116 +455,54 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
                     "Bad application context name for AnyTimeInterrogationRequest: must be networkLocUpContext_V3");
 
         AnyTimeInterrogationResponseImpl req = new AnyTimeInterrogationResponseImpl(subscriberInfo, extensionContainer);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.anyTimeInterrogation);
-
-        if (nonLast) {
-            ReturnResult resultLastNonLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultRequest();
-
-            resultLastNonLast.setInvokeId(invokeId);
-            resultLastNonLast.setOperationCode(oc);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLastNonLast.setParameter(p);
-
-            this.sendReturnResultComponent(resultLastNonLast);
-        } else {
-            ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultLastRequest();
-
-            resultLast.setInvokeId(invokeId);
-            resultLast.setOperationCode(oc);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-
-            this.sendReturnResultLastComponent(resultLast);
-        }
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.anyTimeInterrogation, req, false, !nonLast);
     }
 
-    public long addAnyTimeSubscriptionInterrogationRequest(SubscriberIdentity subscriberIdentity,
-            RequestedSubscriptionInfo requestedSubscriptionInfo, ISDNAddressString gsmSCFAddress,
-            MAPExtensionContainer extensionContainer, boolean isLongFTNSupported) throws MAPException {
+    public long addAnyTimeSubscriptionInterrogationRequest(SubscriberIdentityImpl subscriberIdentity,
+            RequestedSubscriptionInfoImpl requestedSubscriptionInfo, ISDNAddressStringImpl gsmSCFAddress,
+            MAPExtensionContainerImpl extensionContainer, boolean isLongFTNSupported) throws MAPException {
         return this.addAnyTimeSubscriptionInterrogationRequest(_Timer_Default, subscriberIdentity, requestedSubscriptionInfo,
                 gsmSCFAddress, extensionContainer, isLongFTNSupported);
     }
 
-    public long addAnyTimeSubscriptionInterrogationRequest(int customTimeout, SubscriberIdentity subscriberIdentity,
-            RequestedSubscriptionInfo requestedSubscriptionInfo, ISDNAddressString gsmSCFAddress, MAPExtensionContainer extensionContainer,
+    public long addAnyTimeSubscriptionInterrogationRequest(int customInvokeTimeout, SubscriberIdentityImpl subscriberIdentity,
+            RequestedSubscriptionInfoImpl requestedSubscriptionInfo, ISDNAddressStringImpl gsmSCFAddress, MAPExtensionContainerImpl extensionContainer,
             boolean isLongFTNSupported) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.anyTimeInfoHandlingContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3))
             throw new MAPException(
                     "Bad application context name for AnyTimeSubscriptionInterrogationRequest: must be anyTimeInfoHandlingContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
-        if (customTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        Integer customTimeout;
+        if (customInvokeTimeout == _Timer_Default)
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customTimeout);
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.anyTimeSubscriptionInterrogation);
-        invoke.setOperationCode(oc);
+            customTimeout=customInvokeTimeout;
 
         AnyTimeSubscriptionInterrogationRequestImpl req = new AnyTimeSubscriptionInterrogationRequestImpl(subscriberIdentity, requestedSubscriptionInfo, gsmSCFAddress, extensionContainer, isLongFTNSupported);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.anyTimeSubscriptionInterrogation, req, true, false);
     }
 
-    public void addAnyTimeSubscriptionInterrogationResponse(long invokeId, CallForwardingData callForwardingData,
-            CallBarringData callBarringData, ODBInfo odbInfo, CAMELSubscriptionInfo camelSubscriptionInfo,
-            SupportedCamelPhases supportedVlrCamelPhases, SupportedCamelPhases supportedSgsnCamelPhases,
-            MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIsInVlr,
-            OfferedCamel4CSIs offeredCamel4CSIsInSgsn, ArrayList<MSISDNBS> msisdnBsList,
-            ArrayList<CSGSubscriptionData> csgSubscriptionDataList, CallWaitingData callWaitingData, CallHoldData callHoldData,
-            ClipData clipData, ClirData clirData, EctData ectData) throws MAPException {
+    public void addAnyTimeSubscriptionInterrogationResponse(long invokeId, CallForwardingDataImpl callForwardingData,
+            CallBarringDataImpl callBarringData, ODBInfoImpl odbInfo, CAMELSubscriptionInfoImpl camelSubscriptionInfo,
+            SupportedCamelPhasesImpl supportedVlrCamelPhases, SupportedCamelPhasesImpl supportedSgsnCamelPhases,
+            MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIsInVlr,
+            OfferedCamel4CSIsImpl offeredCamel4CSIsInSgsn, ArrayList<MSISDNBSImpl> msisdnBsList,
+            ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl callWaitingData, CallHoldDataImpl callHoldData,
+            ClipDataImpl clipData, ClirDataImpl clirData, EctDataImpl ectData) throws MAPException {
         doAddAnyTimeSubscriptionInterrogationResponse(false, invokeId, callForwardingData, callBarringData, odbInfo,
                 camelSubscriptionInfo, supportedVlrCamelPhases, supportedSgsnCamelPhases, extensionContainer,
                 offeredCamel4CSIsInVlr, offeredCamel4CSIsInSgsn, msisdnBsList, csgSubscriptionDataList, callWaitingData,
                 callHoldData, clipData, clirData, ectData);
     }
 
-    public void addAnyTimeSubscriptionInterrogationResponse_NonLast(long invokeId, CallForwardingData callForwardingData,
-            CallBarringData callBarringData, ODBInfo odbInfo, CAMELSubscriptionInfo camelSubscriptionInfo,
-            SupportedCamelPhases supportedVlrCamelPhases, SupportedCamelPhases supportedSgsnCamelPhases,
-            MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIsInVlr,
-            OfferedCamel4CSIs offeredCamel4CSIsInSgsn, ArrayList<MSISDNBS> msisdnBsList,
-            ArrayList<CSGSubscriptionData> csgSubscriptionDataList, CallWaitingData callWaitingData, CallHoldData callHoldData,
-            ClipData clipData, ClirData clirData, EctData ectData) throws MAPException {
+    public void addAnyTimeSubscriptionInterrogationResponse_NonLast(long invokeId, CallForwardingDataImpl callForwardingData,
+            CallBarringDataImpl callBarringData, ODBInfoImpl odbInfo, CAMELSubscriptionInfoImpl camelSubscriptionInfo,
+            SupportedCamelPhasesImpl supportedVlrCamelPhases, SupportedCamelPhasesImpl supportedSgsnCamelPhases,
+            MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIsInVlr,
+            OfferedCamel4CSIsImpl offeredCamel4CSIsInSgsn, ArrayList<MSISDNBSImpl> msisdnBsList,
+            ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl callWaitingData, CallHoldDataImpl callHoldData,
+            ClipDataImpl clipData, ClirDataImpl clirData, EctDataImpl ectData) throws MAPException {
         doAddAnyTimeSubscriptionInterrogationResponse(true, invokeId, callForwardingData, callBarringData, odbInfo,
                 camelSubscriptionInfo, supportedVlrCamelPhases, supportedSgsnCamelPhases, extensionContainer,
                 offeredCamel4CSIsInVlr, offeredCamel4CSIsInSgsn, msisdnBsList, csgSubscriptionDataList, callWaitingData,
@@ -700,12 +510,12 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
     }
 
     protected void doAddAnyTimeSubscriptionInterrogationResponse(boolean nonLast, long invokeId,
-            CallForwardingData callForwardingData, CallBarringData callBarringData, ODBInfo odbInfo,
-            CAMELSubscriptionInfo camelSubscriptionInfo, SupportedCamelPhases supportedVlrCamelPhases,
-            SupportedCamelPhases supportedSgsnCamelPhases, MAPExtensionContainer extensionContainer,
-            OfferedCamel4CSIs offeredCamel4CSIsInVlr, OfferedCamel4CSIs offeredCamel4CSIsInSgsn,
-            ArrayList<MSISDNBS> msisdnBsList, ArrayList<CSGSubscriptionData> csgSubscriptionDataList,
-            CallWaitingData callWaitingData, CallHoldData callHoldData, ClipData clipData, ClirData clirData, EctData ectData)
+            CallForwardingDataImpl callForwardingData, CallBarringDataImpl callBarringData, ODBInfoImpl odbInfo,
+            CAMELSubscriptionInfoImpl camelSubscriptionInfo, SupportedCamelPhasesImpl supportedVlrCamelPhases,
+            SupportedCamelPhasesImpl supportedSgsnCamelPhases, MAPExtensionContainerImpl extensionContainer,
+            OfferedCamel4CSIsImpl offeredCamel4CSIsInVlr, OfferedCamel4CSIsImpl offeredCamel4CSIsInSgsn,
+            ArrayList<MSISDNBSImpl> msisdnBsList, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList,
+            CallWaitingDataImpl callWaitingData, CallHoldDataImpl callHoldData, ClipDataImpl clipData, ClirDataImpl clirData, EctDataImpl ectData)
             throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.anyTimeInfoHandlingContext)
@@ -716,107 +526,48 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         AnyTimeSubscriptionInterrogationResponseImpl req = new AnyTimeSubscriptionInterrogationResponseImpl(callForwardingData, callBarringData, odbInfo,
                 camelSubscriptionInfo, supportedVlrCamelPhases, supportedSgsnCamelPhases, extensionContainer, offeredCamel4CSIsInVlr, offeredCamel4CSIsInSgsn,
                 msisdnBsList, csgSubscriptionDataList, callWaitingData, callHoldData, clipData, clirData, ectData);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.anyTimeSubscriptionInterrogation);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-
-        if (nonLast) {
-            ReturnResult resultNonLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultRequest();
-
-            resultNonLast.setInvokeId(invokeId);
-
-            resultNonLast.setOperationCode(oc);
-            resultNonLast.setParameter(p);
-
-            this.sendReturnResultComponent(resultNonLast);
-        } else {
-            ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultLastRequest();
-
-            resultLast.setInvokeId(invokeId);
-
-            resultLast.setOperationCode(oc);
-            resultLast.setParameter(p);
-
-            this.sendReturnResultLastComponent(resultLast);
-        }
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.anyTimeSubscriptionInterrogation, req, false, !nonLast);
     }
 
     @Override
-    public long addProvideSubscriberInfoRequest(IMSI imsi, LMSI lmsi, RequestedInfo requestedInfo, MAPExtensionContainer extensionContainer,
+    public long addProvideSubscriberInfoRequest(IMSIImpl imsi, LMSIImpl lmsi, RequestedInfoImpl requestedInfo, MAPExtensionContainerImpl extensionContainer,
             EMLPPPriority callPriority) throws MAPException {
         return this.addProvideSubscriberInfoRequest(_Timer_Default, imsi, lmsi, requestedInfo, extensionContainer, callPriority);
     }
 
     @Override
-    public long addProvideSubscriberInfoRequest(long customInvokeTimeout, IMSI imsi, LMSI lmsi, RequestedInfo requestedInfo,
-            MAPExtensionContainer extensionContainer, EMLPPPriority callPriority) throws MAPException {
+    public long addProvideSubscriberInfoRequest(long customInvokeTimeout, IMSIImpl imsi, LMSIImpl lmsi, RequestedInfoImpl requestedInfo,
+            MAPExtensionContainerImpl extensionContainer, EMLPPPriority callPriority) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.subscriberInfoEnquiryContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3))
             throw new MAPException("Bad application context name for ProvideSubscriberInfoRequest: must be subscriberInfoEnquiryContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Long customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=(long)getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.provideSubscriberInfo);
-        invoke.setOperationCode(oc);
+            customTimeout=customInvokeTimeout;
 
         ProvideSubscriberInfoRequestImpl req = new ProvideSubscriberInfoRequestImpl(imsi, lmsi, requestedInfo, extensionContainer, callPriority);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.provideSubscriberInfo, req, true, false);
     }
 
     @Override
-    public void addProvideSubscriberInfoResponse(long invokeId, SubscriberInfo subscriberInfo,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addProvideSubscriberInfoResponse(long invokeId, SubscriberInfoImpl subscriberInfo,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
         doAddProvideSubscriberInfoResponse(false, invokeId, subscriberInfo, extensionContainer);
     }
 
     @Override
-    public void addProvideSubscriberInfoResponse_NonLast(long invokeId, SubscriberInfo subscriberInfo,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addProvideSubscriberInfoResponse_NonLast(long invokeId, SubscriberInfoImpl subscriberInfo,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
         doAddProvideSubscriberInfoResponse(true, invokeId, subscriberInfo, extensionContainer);
     }
 
 
-    protected void doAddProvideSubscriberInfoResponse(boolean nonLast, long invokeId, SubscriberInfo subscriberInfo,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    protected void doAddProvideSubscriberInfoResponse(boolean nonLast, long invokeId, SubscriberInfoImpl subscriberInfo,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.subscriberInfoEnquiryContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3))
@@ -824,206 +575,126 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
                     "Bad application context name for ProvideSubscriberInfoResponse: must be subscriberInfoEnquiryContext_V3");
 
         ProvideSubscriberInfoResponseImpl req = new ProvideSubscriberInfoResponseImpl(subscriberInfo, extensionContainer);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.provideSubscriberInfo);
-
-        if (nonLast) {
-            ReturnResult resultLastNonLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultRequest();
-
-            resultLastNonLast.setInvokeId(invokeId);
-
-            resultLastNonLast.setOperationCode(oc);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLastNonLast.setParameter(p);
-
-            this.sendReturnResultComponent(resultLastNonLast);
-        } else {
-            ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultLastRequest();
-
-            resultLast.setInvokeId(invokeId);
-
-            resultLast.setOperationCode(oc);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-
-            this.sendReturnResultLastComponent(resultLast);
-        }
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.provideSubscriberInfo, req, false, !nonLast);
     }
 
     @Override
-    public Long addCheckImeiRequest(IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    public Long addCheckImeiRequest(IMEIImpl imei) throws MAPException {
+
+        return this.addCheckImeiRequest(_Timer_Default, imei);
+    }
+
+    @Override
+    public Long addCheckImeiRequest(long customInvokeTimeout, IMEIImpl imei) throws MAPException {
+
+        if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.equipmentMngtContext)
+                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1
+                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)) {
+            throw new MAPException(
+                    "Bad application context name for CheckImeiRequest: must be equipmentMngtContext_V1, V2");
+        }
+
+        Long customTimeout;
+        if (customInvokeTimeout == _Timer_Default) {
+            customTimeout=(long)getMediumTimer();
+        } else {
+            customTimeout=customInvokeTimeout;
+        }
+
+        CheckImeiRequestImplV1 req = new CheckImeiRequestImplV1(this.appCntx.getApplicationContextVersion().getVersion(), imei, null);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.checkIMEI, req, true, false);
+    }
+    
+    @Override
+    public Long addCheckImeiRequest(IMEIImpl imei, RequestedEquipmentInfoImpl requestedEquipmentInfo,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
 
         return this.addCheckImeiRequest(_Timer_Default, imei, requestedEquipmentInfo, extensionContainer);
     }
 
     @Override
-    public Long addCheckImeiRequest(long customInvokeTimeout, IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    public Long addCheckImeiRequest(long customInvokeTimeout, IMEIImpl imei, RequestedEquipmentInfoImpl requestedEquipmentInfo,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.equipmentMngtContext)
-                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1
-                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
-                        .getApplicationContextVersion() != MAPApplicationContextVersion.version3)) {
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3) {
             throw new MAPException(
-                    "Bad application context name for CheckImeiRequest: must be equipmentMngtContext_V1, V2 or V3");
+                    "Bad application context name for CheckImeiRequest: must be equipmentMngtContext_V3");
         }
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Long customTimeout;
         if (customInvokeTimeout == _Timer_Default) {
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=(long)getMediumTimer();
         } else {
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
         }
 
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.checkIMEI);
-        invoke.setOperationCode(oc);
-
-        CheckImeiRequestImpl req = new CheckImeiRequestImpl(this.appCntx.getApplicationContextVersion().getVersion(), imei,
+        CheckImeiRequestImplV3 req = new CheckImeiRequestImplV3(this.appCntx.getApplicationContextVersion().getVersion(), imei,
                 requestedEquipmentInfo, extensionContainer);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.checkIMEI, req, true, false);
     }
 
     @Override
-    public void addCheckImeiResponse(long invokeId, EquipmentStatus equipmentStatus, UESBIIu bmuef,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addCheckImeiResponse(long invokeId, EquipmentStatus equipmentStatus) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.equipmentMngtContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1
-                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
-                        .getApplicationContextVersion() != MAPApplicationContextVersion.version3)) {
+                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)) {
             throw new MAPException(
-                    "Bad application context name for CheckImeiResponse: must be equipmentMngtContext_V1, V2 or V3");
+                    "Bad application context name for CheckImeiResponse: must be equipmentMngtContext_V1, V2");
         }
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-        resultLast.setInvokeId(invokeId);
+        CheckImeiResponseImplV1 resp = new CheckImeiResponseImplV1(this.appCntx.getApplicationContextVersion().getVersion(),equipmentStatus);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.checkIMEI, resp, false, true);
+    }
+    
+    @Override
+    public void addCheckImeiResponse(long invokeId, EquipmentStatus equipmentStatus, UESBIIuImpl bmuef,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
+        if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.equipmentMngtContext)
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3) {
+            throw new MAPException(
+                    "Bad application context name for CheckImeiResponse: must be equipmentMngtContext_V3");
+        }
 
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.checkIMEI);
-        resultLast.setOperationCode(oc);
-
-        CheckImeiResponseImpl resp = new CheckImeiResponseImpl(this.appCntx.getApplicationContextVersion().getVersion(),
+        CheckImeiResponseImplV3 resp = new CheckImeiResponseImplV3(this.appCntx.getApplicationContextVersion().getVersion(),
                 equipmentStatus, bmuef, extensionContainer);
-        AsnOutputStream aos = new AsnOutputStream();
-        resp.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(resp.getTagClass());
-        p.setPrimitive(resp.getIsPrimitive());
-        p.setTag(resp.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.checkIMEI, resp, false, true);
     }
 
     @Override
-    public Long addCheckImeiRequest_Huawei(IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo,
-            MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException {
+    public Long addCheckImeiRequest_Huawei(IMEIImpl imei, IMSIImpl imsi) throws MAPException {
 
-        return this.addCheckImeiRequest_Huawei(_Timer_Default, imei, requestedEquipmentInfo, extensionContainer, imsi);
+        return this.addCheckImeiRequest_Huawei(_Timer_Default, imei, imsi);
     }
 
     @Override
-    public Long addCheckImeiRequest_Huawei(long customInvokeTimeout, IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo,
-            MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException {
+    public Long addCheckImeiRequest_Huawei(long customInvokeTimeout, IMEIImpl imei, IMSIImpl imsi) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.equipmentMngtContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1
-                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
-                        .getApplicationContextVersion() != MAPApplicationContextVersion.version3)) {
+                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)) {
             throw new MAPException(
-                    "Bad application context name for CheckImeiRequest: must be equipmentMngtContext_V1, V2 or V3");
+                    "Bad application context name for CheckImeiRequest: must be equipmentMngtContext_V1, V2");
         }
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Long customTimeout;
         if (customInvokeTimeout == _Timer_Default) {
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=(long)getMediumTimer();
         } else {
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
         }
 
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.checkIMEI);
-        invoke.setOperationCode(oc);
-
-        CheckImeiRequestImpl req = new CheckImeiRequestImpl(this.appCntx.getApplicationContextVersion().getVersion(), imei,
-                requestedEquipmentInfo, extensionContainer);
-        req.setIMSI(imsi);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        p.setEncodingLength(req.getEncodedLength());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        CheckImeiRequestImplV1 req = new CheckImeiRequestImplV1(this.appCntx.getApplicationContextVersion().getVersion(), imei, imsi);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.checkIMEI, req, true, false);
     }
 
     @Override
-    public Long addInsertSubscriberDataRequest(IMSI imsi, ISDNAddressString msisdn, Category category,
-            SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCode> bearerServiceList,
-            ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtSSInfo> provisionedSS, ODBData odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCode> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastData> vbsSubscriptionData, ArrayList<VoiceGroupCallData> vgcsSubscriptionData,
-            VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo) throws MAPException {
+    public Long addInsertSubscriberDataRequest(IMSIImpl imsi, ISDNAddressStringImpl msisdn, CategoryImpl category,
+            SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
+            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
+            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo) throws MAPException {
 
         return this.addInsertSubscriberDataRequest(_Timer_Default, imsi, msisdn, category, subscriberStatus, bearerServiceList,
                 teleserviceList, provisionedSS, odbData, roamingRestrictionDueToUnsupportedFeature, regionalSubscriptionData,
@@ -1031,12 +702,12 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
     }
 
     @Override
-    public Long addInsertSubscriberDataRequest(long customInvokeTimeout, IMSI imsi, ISDNAddressString msisdn,
-            Category category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCode> bearerServiceList,
-            ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtSSInfo> provisionedSS, ODBData odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCode> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastData> vbsSubscriptionData, ArrayList<VoiceGroupCallData> vgcsSubscriptionData,
-            VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo) throws MAPException {
+    public Long addInsertSubscriberDataRequest(long customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl msisdn,
+            CategoryImpl category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
+            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
+            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo) throws MAPException {
 
         return this.addInsertSubscriberDataRequest(customInvokeTimeout, imsi, msisdn, category, subscriberStatus,
                 bearerServiceList, teleserviceList, provisionedSS, odbData, roamingRestrictionDueToUnsupportedFeature,
@@ -1046,20 +717,20 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
     }
 
     @Override
-    public Long addInsertSubscriberDataRequest(IMSI imsi, ISDNAddressString msisdn, Category category,
-            SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCode> bearerServiceList,
-            ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtSSInfo> provisionedSS, ODBData odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCode> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastData> vbsSubscriptionData, ArrayList<VoiceGroupCallData> vgcsSubscriptionData,
-            VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo, MAPExtensionContainer extensionContainer,
-            NAEAPreferredCI naeaPreferredCI, GPRSSubscriptionData gprsSubscriptionData,
+    public Long addInsertSubscriberDataRequest(IMSIImpl imsi, ISDNAddressStringImpl msisdn, CategoryImpl category,
+            SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
+            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
+            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo, MAPExtensionContainerImpl extensionContainer,
+            NAEAPreferredCIImpl naeaPreferredCI, GPRSSubscriptionDataImpl gprsSubscriptionData,
             boolean roamingRestrictedInSgsnDueToUnsupportedFeature, NetworkAccessMode networkAccessMode,
-            LSAInformation lsaInformation, boolean lmuIndicator, LCSInformation lcsInformation, Integer istAlertTimer,
-            AgeIndicator superChargerSupportedInHLR, MCSSInfo mcSsInfo,
-            CSAllocationRetentionPriority csAllocationRetentionPriority, SGSNCAMELSubscriptionInfo sgsnCamelSubscriptionInfo,
-            ChargingCharacteristics chargingCharacteristics, AccessRestrictionData accessRestrictionData, Boolean icsIndicator,
-            EPSSubscriptionData epsSubscriptionData, ArrayList<CSGSubscriptionData> csgSubscriptionDataList,
-            boolean ueReachabilityRequestIndicator, ISDNAddressString sgsnNumber, DiameterIdentity mmeName,
+            LSAInformationImpl lsaInformation, boolean lmuIndicator, LCSInformationImpl lcsInformation, Integer istAlertTimer,
+            AgeIndicatorImpl superChargerSupportedInHLR, MCSSInfoImpl mcSsInfo,
+            CSAllocationRetentionPriorityImpl csAllocationRetentionPriority, SGSNCAMELSubscriptionInfoImpl sgsnCamelSubscriptionInfo,
+            ChargingCharacteristicsImpl chargingCharacteristics, AccessRestrictionDataImpl accessRestrictionData, Boolean icsIndicator,
+            EPSSubscriptionDataImpl epsSubscriptionData, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList,
+            boolean ueReachabilityRequestIndicator, ISDNAddressStringImpl sgsnNumber, DiameterIdentityImpl mmeName,
             Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent,
             Long subscribedPeriodicLAUtimer) throws MAPException {
 
@@ -1074,20 +745,20 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
     }
 
     @Override
-    public Long addInsertSubscriberDataRequest(long customInvokeTimeout, IMSI imsi, ISDNAddressString msisdn,
-            Category category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCode> bearerServiceList,
-            ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtSSInfo> provisionedSS, ODBData odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCode> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastData> vbsSubscriptionData, ArrayList<VoiceGroupCallData> vgcsSubscriptionData,
-            VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo, MAPExtensionContainer extensionContainer,
-            NAEAPreferredCI naeaPreferredCI, GPRSSubscriptionData gprsSubscriptionData,
+    public Long addInsertSubscriberDataRequest(long customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl msisdn,
+            CategoryImpl category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
+            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
+            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo, MAPExtensionContainerImpl extensionContainer,
+            NAEAPreferredCIImpl naeaPreferredCI, GPRSSubscriptionDataImpl gprsSubscriptionData,
             boolean roamingRestrictedInSgsnDueToUnsupportedFeature, NetworkAccessMode networkAccessMode,
-            LSAInformation lsaInformation, boolean lmuIndicator, LCSInformation lcsInformation, Integer istAlertTimer,
-            AgeIndicator superChargerSupportedInHLR, MCSSInfo mcSsInfo,
-            CSAllocationRetentionPriority csAllocationRetentionPriority, SGSNCAMELSubscriptionInfo sgsnCamelSubscriptionInfo,
-            ChargingCharacteristics chargingCharacteristics, AccessRestrictionData accessRestrictionData, Boolean icsIndicator,
-            EPSSubscriptionData epsSubscriptionData, ArrayList<CSGSubscriptionData> csgSubscriptionDataList,
-            boolean ueReachabilityRequestIndicator, ISDNAddressString sgsnNumber, DiameterIdentity mmeName,
+            LSAInformationImpl lsaInformation, boolean lmuIndicator, LCSInformationImpl lcsInformation, Integer istAlertTimer,
+            AgeIndicatorImpl superChargerSupportedInHLR, MCSSInfoImpl mcSsInfo,
+            CSAllocationRetentionPriorityImpl csAllocationRetentionPriority, SGSNCAMELSubscriptionInfoImpl sgsnCamelSubscriptionInfo,
+            ChargingCharacteristicsImpl chargingCharacteristics, AccessRestrictionDataImpl accessRestrictionData, Boolean icsIndicator,
+            EPSSubscriptionDataImpl epsSubscriptionData, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList,
+            boolean ueReachabilityRequestIndicator, ISDNAddressStringImpl sgsnNumber, DiameterIdentityImpl mmeName,
             Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent,
             Long subscribedPeriodicLAUtimer) throws MAPException {
 
@@ -1112,17 +783,12 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
                     "Bad application context name for InsertSubscriberDataRequest: must be networkLocUpContext_V1, V2 or V3 or "
                             + "subscriberDataMngtContext_V1, V2 or V3 or gprsLocationUpdateContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Long customTimeout;
         if (customInvokeTimeout == _Timer_Default) {
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=(long)getMediumTimer();
         } else {
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
         }
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.insertSubscriberData);
-        invoke.setOperationCode(oc);
 
         InsertSubscriberDataRequestImpl req = new InsertSubscriberDataRequestImpl(this.appCntx.getApplicationContextVersion()
                 .getVersion(), imsi, msisdn, category, subscriberStatus, bearerServiceList, teleserviceList, provisionedSS,
@@ -1133,33 +799,12 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
                 sgsnCamelSubscriptionInfo, chargingCharacteristics, accessRestrictionData, icsIndicator, epsSubscriptionData,
                 csgSubscriptionDataList, ueReachabilityRequestIndicator, sgsnNumber, mmeName, subscribedPeriodicRAUTAUtimer,
                 vplmnLIPAAllowed, mdtUserConsent, subscribedPeriodicLAUtimer);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.insertSubscriberData, req, true, false);
     }
 
     @Override
-    public void addInsertSubscriberDataResponse(long invokeId, ArrayList<ExtTeleserviceCode> teleserviceList,
-            ArrayList<ExtBearerServiceCode> bearerServiceList, ArrayList<SSCode> ssList, ODBGeneralData odbGeneralData,
+    public void addInsertSubscriberDataResponse(long invokeId, ArrayList<ExtTeleserviceCodeImpl> teleserviceList,
+            ArrayList<ExtBearerServiceCodeImpl> bearerServiceList, ArrayList<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
             RegionalSubscriptionResponse regionalSubscriptionResponse) throws MAPException {
 
         this.addInsertSubscriberDataResponse(invokeId, teleserviceList, bearerServiceList, ssList, odbGeneralData,
@@ -1167,10 +812,10 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
     }
 
     @Override
-    public void addInsertSubscriberDataResponse(long invokeId, ArrayList<ExtTeleserviceCode> teleserviceList,
-            ArrayList<ExtBearerServiceCode> bearerServiceList, ArrayList<SSCode> ssList, ODBGeneralData odbGeneralData,
-            RegionalSubscriptionResponse regionalSubscriptionResponse, SupportedCamelPhases supportedCamelPhases,
-            MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIs, SupportedFeatures supportedFeatures)
+    public void addInsertSubscriberDataResponse(long invokeId, ArrayList<ExtTeleserviceCodeImpl> teleserviceList,
+            ArrayList<ExtBearerServiceCodeImpl> bearerServiceList, ArrayList<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
+            RegionalSubscriptionResponse regionalSubscriptionResponse, SupportedCamelPhasesImpl supportedCamelPhases,
+            MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIs, SupportedFeaturesImpl supportedFeatures)
             throws MAPException {
 
         boolean isSubscriberDataMngtContext = false;
@@ -1194,42 +839,24 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
                     "Bad application context name for InsertSubscriberDataResponse: must be networkLocUpContext_V1, V2 or V3 or "
                             + "subscriberDataMngtContext_V1, V2 or V3 or gprsLocationUpdateContext_V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.insertSubscriberData);
-        resultLast.setOperationCode(oc);
-
+        InsertSubscriberDataResponseImpl resp = null;
         if ((teleserviceList != null || bearerServiceList != null || ssList != null || odbGeneralData != null || regionalSubscriptionResponse != null
                 || supportedCamelPhases != null || extensionContainer != null || offeredCamel4CSIs != null || supportedFeatures != null)
-                && this.appCntx.getApplicationContextVersion().getVersion() != 1) {
-            InsertSubscriberDataResponseImpl resp = new InsertSubscriberDataResponseImpl(this.appCntx.getApplicationContextVersion().getVersion(),
+                && this.appCntx.getApplicationContextVersion().getVersion() != 1)
+            resp = new InsertSubscriberDataResponseImpl(this.appCntx.getApplicationContextVersion().getVersion(),
                     teleserviceList, bearerServiceList, ssList, odbGeneralData, regionalSubscriptionResponse, supportedCamelPhases, extensionContainer,
                     offeredCamel4CSIs, supportedFeatures);
-            AsnOutputStream aos = new AsnOutputStream();
-            resp.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(resp.getTagClass());
-            p.setPrimitive(resp.getIsPrimitive());
-            p.setTag(resp.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.insertSubscriberData, resp, false, true);
     }
 
     @Override
-    public Long addDeleteSubscriberDataRequest(IMSI imsi, ArrayList<ExtBasicServiceCode> basicServiceList, ArrayList<SSCode> ssList,
-            boolean roamingRestrictionDueToUnsupportedFeature, ZoneCode regionalSubscriptionIdentifier, boolean vbsGroupIndication,
-            boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainer extensionContainer,
-            GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
-            LSAInformationWithdraw lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdraw specificCSIWithdraw,
-            boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw,
+    public Long addDeleteSubscriberDataRequest(IMSIImpl imsi, ArrayList<ExtBasicServiceCodeImpl> basicServiceList, ArrayList<SSCodeImpl> ssList,
+            boolean roamingRestrictionDueToUnsupportedFeature, ZoneCodeImpl regionalSubscriptionIdentifier, boolean vbsGroupIndication,
+            boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainerImpl extensionContainer,
+            GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
+            LSAInformationWithdrawImpl lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdrawImpl specificCSIWithdraw,
+            boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdrawImpl epsSubscriptionDataWithdraw,
             boolean apnOiReplacementWithdraw, boolean csgSubscriptionDeleted) throws MAPException {
 
         return this.addDeleteSubscriberDataRequest(_Timer_Default, imsi, basicServiceList, ssList, roamingRestrictionDueToUnsupportedFeature,
@@ -1240,12 +867,12 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
     }
 
     @Override
-    public Long addDeleteSubscriberDataRequest(long customInvokeTimeout, IMSI imsi, ArrayList<ExtBasicServiceCode> basicServiceList, ArrayList<SSCode> ssList,
-            boolean roamingRestrictionDueToUnsupportedFeature, ZoneCode regionalSubscriptionIdentifier, boolean vbsGroupIndication,
-            boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainer extensionContainer,
-            GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
-            LSAInformationWithdraw lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdraw specificCSIWithdraw,
-            boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw,
+    public Long addDeleteSubscriberDataRequest(long customInvokeTimeout, IMSIImpl imsi, ArrayList<ExtBasicServiceCodeImpl> basicServiceList, ArrayList<SSCodeImpl> ssList,
+            boolean roamingRestrictionDueToUnsupportedFeature, ZoneCodeImpl regionalSubscriptionIdentifier, boolean vbsGroupIndication,
+            boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainerImpl extensionContainer,
+            GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
+            LSAInformationWithdrawImpl lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdrawImpl specificCSIWithdraw,
+            boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdrawImpl epsSubscriptionDataWithdraw,
             boolean apnOiReplacementWithdraw, boolean csgSubscriptionDeleted) throws MAPException {
 
         boolean isSubscriberDataMngtContext = false;
@@ -1256,50 +883,24 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         if (isSubscriberDataMngtContext == false)
             throw new MAPException("Bad application context name for DeleteSubscriberDataRequest: must be subscriberDataMngtContext_V1, V2 or V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Long customTimeout;
         if (customInvokeTimeout == _Timer_Default) {
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=(long)getMediumTimer();
         } else {
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
         }
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.deleteSubscriberData);
-        invoke.setOperationCode(oc);
 
         DeleteSubscriberDataRequestImpl req = new DeleteSubscriberDataRequestImpl(imsi, basicServiceList, ssList, roamingRestrictionDueToUnsupportedFeature,
                 regionalSubscriptionIdentifier, vbsGroupIndication, vgcsGroupIndication, camelSubscriptionInfoWithdraw, extensionContainer,
                 gprsSubscriptionDataWithdraw, roamingRestrictedInSgsnDueToUnsuppportedFeature, lsaInformationWithdraw, gmlcListWithdraw,
                 istInformationWithdraw, specificCSIWithdraw, chargingCharacteristicsWithdraw, stnSrWithdraw, epsSubscriptionDataWithdraw,
                 apnOiReplacementWithdraw, csgSubscriptionDeleted);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.deleteSubscriberData, req, true, false);
     }
 
     @Override
     public void addDeleteSubscriberDataResponse(long invokeId, RegionalSubscriptionResponse regionalSubscriptionResponse,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
 
         boolean isSubscriberDataMngtContext = false;
         if ((this.appCntx.getApplicationContextName() == MAPApplicationContextName.subscriberDataMngtContext)
@@ -1309,35 +910,43 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         if (isSubscriberDataMngtContext == false)
             throw new MAPException("Bad application context name for DeleteSubscriberDataResponse: must be subscriberDataMngtContext_V1, V2 or V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-        resultLast.setInvokeId(invokeId);
+        DeleteSubscriberDataResponseImpl resp = null;
+        if ((regionalSubscriptionResponse != null || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() != 1)
+            resp = new DeleteSubscriberDataResponseImpl(regionalSubscriptionResponse, extensionContainer);
 
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.deleteSubscriberData);
-        resultLast.setOperationCode(oc);
-
-        if ((regionalSubscriptionResponse != null || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() != 1) {
-            DeleteSubscriberDataResponseImpl resp = new DeleteSubscriberDataResponseImpl(regionalSubscriptionResponse, extensionContainer);
-            AsnOutputStream aos = new AsnOutputStream();
-            resp.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(resp.getTagClass());
-            p.setPrimitive(resp.getIsPrimitive());
-            p.setTag(resp.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.deleteSubscriberData, resp, false, true);
     }
 
     @Override
-    public Long addCancelLocationRequest(IMSI imsi, IMSIWithLMSI imsiWithLmsi, CancellationType cancellationType,
-            MAPExtensionContainer extensionContainer, TypeOfUpdate typeOfUpdate, boolean mtrfSupportedAndAuthorized,
-            boolean mtrfSupportedAndNotAuthorized, ISDNAddressString newMSCNumber, ISDNAddressString newVLRNumber, LMSI newLmsi)
+    public Long addCancelLocationRequest(IMSIImpl imsi, IMSIWithLMSIImpl imsiWithLmsi)
+            throws MAPException {
+
+        return this.addCancelLocationRequest(_Timer_Default, imsi, imsiWithLmsi);
+    }
+
+    @Override
+    public Long addCancelLocationRequest(int customInvokeTimeout, IMSIImpl imsi, IMSIWithLMSIImpl imsiWithLmsi) throws MAPException {
+
+        if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationCancellationContext)
+                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1
+                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
+            throw new MAPException(
+                    "Bad application context name for CancelLocationRequest: must be locationCancellationContext_V1, or V2");
+
+        Integer customTimeout;
+        if (customInvokeTimeout == _Timer_Default)
+            customTimeout=getMediumTimer();
+        else
+            customTimeout=customInvokeTimeout;
+
+        CancelLocationRequestImplV1 req = new CancelLocationRequestImplV1(imsi, imsiWithLmsi,this.appCntx.getApplicationContextVersion().getVersion());
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.cancelLocation, req, true, false);
+    }
+    
+    @Override
+    public Long addCancelLocationRequest(IMSIImpl imsi, IMSIWithLMSIImpl imsiWithLmsi, CancellationType cancellationType,
+            MAPExtensionContainerImpl extensionContainer, TypeOfUpdate typeOfUpdate, boolean mtrfSupportedAndAuthorized,
+            boolean mtrfSupportedAndNotAuthorized, ISDNAddressStringImpl newMSCNumber, ISDNAddressStringImpl newVLRNumber, LMSIImpl newLmsi)
             throws MAPException {
 
         return this.addCancelLocationRequest(_Timer_Default, imsi, imsiWithLmsi, cancellationType, extensionContainer,
@@ -1345,58 +954,30 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
     }
 
     @Override
-    public Long addCancelLocationRequest(int customInvokeTimeout, IMSI imsi, IMSIWithLMSI imsiWithLmsi,
-            CancellationType cancellationType, MAPExtensionContainer extensionContainer, TypeOfUpdate typeOfUpdate,
-            boolean mtrfSupportedAndAuthorized, boolean mtrfSupportedAndNotAuthorized, ISDNAddressString newMSCNumber,
-            ISDNAddressString newVLRNumber, LMSI newLmsi) throws MAPException {
+    public Long addCancelLocationRequest(int customInvokeTimeout, IMSIImpl imsi, IMSIWithLMSIImpl imsiWithLmsi,
+            CancellationType cancellationType, MAPExtensionContainerImpl extensionContainer, TypeOfUpdate typeOfUpdate,
+            boolean mtrfSupportedAndAuthorized, boolean mtrfSupportedAndNotAuthorized, ISDNAddressStringImpl newMSCNumber,
+            ISDNAddressStringImpl newVLRNumber, LMSIImpl newLmsi) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationCancellationContext)
-                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1
-                        && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
-                        .getApplicationContextVersion() != MAPApplicationContextVersion.version3))
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3)
             throw new MAPException(
-                    "Bad application context name for CancelLocationRequest: must be locationCancellationContext_V1, V2 or V3");
+                    "Bad application context name for CancelLocationRequest: must be locationCancellationContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
 
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.cancelLocation);
-        invoke.setOperationCode(oc);
-
-        CancelLocationRequestImpl req = new CancelLocationRequestImpl(imsi, imsiWithLmsi, cancellationType, extensionContainer,
+        CancelLocationRequestImplV3 req = new CancelLocationRequestImplV3(imsi, imsiWithLmsi, cancellationType, extensionContainer,
                 typeOfUpdate, mtrfSupportedAndAuthorized, mtrfSupportedAndNotAuthorized, newMSCNumber, newVLRNumber, newLmsi,
                 this.appCntx.getApplicationContextVersion().getVersion());
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
-
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.cancelLocation, req, true, false);
     }
 
     @Override
-    public void addCancelLocationResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addCancelLocationResponse(long invokeId, MAPExtensionContainerImpl extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationCancellationContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1
@@ -1405,159 +986,112 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
             throw new MAPException(
                     "Bad application context name for CancelLocationResponse: must be locationCancellationContext_V1, V2 or V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.cancelLocation);
-        resultLast.setOperationCode(oc);
-
-        if (extensionContainer != null) {
-            CancelLocationResponseImpl req = new CancelLocationResponseImpl(extensionContainer);
-
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        CancelLocationResponseImpl req = null;
+        if (extensionContainer != null)
+            req = new CancelLocationResponseImpl(extensionContainer);
+            
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.cancelLocation, req, false, true);
 
     }
 
     @Override
-    public Long addSendIdentificationRequest(TMSI tmsi, Integer numberOfRequestedVectors, boolean segmentationProhibited,
-            MAPExtensionContainer extensionContainer, ISDNAddressString mscNumber, LAIFixedLength previousLAI,
-            Integer hopCounter, boolean mtRoamingForwardingSupported, ISDNAddressString newVLRNumber, LMSI lmsi)
+    public Long addSendIdentificationRequest(TMSIImpl tmsi, Integer numberOfRequestedVectors, boolean segmentationProhibited,
+            MAPExtensionContainerImpl extensionContainer, ISDNAddressStringImpl mscNumber, LAIFixedLengthImpl previousLAI,
+            Integer hopCounter, boolean mtRoamingForwardingSupported, ISDNAddressStringImpl newVLRNumber, LMSIImpl lmsi)
             throws MAPException {
         return this.addSendIdentificationRequest(_Timer_Default, tmsi, numberOfRequestedVectors, segmentationProhibited,
                 extensionContainer, mscNumber, previousLAI, hopCounter, mtRoamingForwardingSupported, newVLRNumber, lmsi);
     }
 
     @Override
-    public Long addSendIdentificationRequest(int customInvokeTimeout, TMSI tmsi, Integer numberOfRequestedVectors,
-            boolean segmentationProhibited, MAPExtensionContainer extensionContainer, ISDNAddressString mscNumber,
-            LAIFixedLength previousLAI, Integer hopCounter, boolean mtRoamingForwardingSupported,
-            ISDNAddressString newVLRNumber, LMSI lmsi) throws MAPException {
+    public Long addSendIdentificationRequest(int customInvokeTimeout, TMSIImpl tmsi) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.interVlrInfoRetrievalContext)
-                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
-                        .getApplicationContextVersion() != MAPApplicationContextVersion.version3))
+                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
             throw new MAPException(
-                    "Bad application context name for SendIdentificationRequest: must be interVlrInfoRetrievalContext_V2 or V3");
+                    "Bad application context name for SendIdentificationRequest: must be interVlrInfoRetrievalContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getShortTimer());
+            customTimeout=getShortTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
 
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.sendIdentification);
-        invoke.setOperationCode(oc);
+        SendIdentificationRequestImplV1 req = new SendIdentificationRequestImplV1(tmsi, this.appCntx.getApplicationContextVersion().getVersion());
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.sendIdentification, req, true, false);
+    }
+    
+    @Override
+    public Long addSendIdentificationRequest(TMSIImpl tmsi) throws MAPException {
+        return this.addSendIdentificationRequest(_Timer_Default, tmsi);
+    }
 
-        SendIdentificationRequestImpl req = new SendIdentificationRequestImpl(tmsi, numberOfRequestedVectors,
+    @Override
+    public Long addSendIdentificationRequest(int customInvokeTimeout, TMSIImpl tmsi, Integer numberOfRequestedVectors,
+            boolean segmentationProhibited, MAPExtensionContainerImpl extensionContainer, ISDNAddressStringImpl mscNumber,
+            LAIFixedLengthImpl previousLAI, Integer hopCounter, boolean mtRoamingForwardingSupported,
+            ISDNAddressStringImpl newVLRNumber, LMSIImpl lmsi) throws MAPException {
+
+        if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.interVlrInfoRetrievalContext)
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3)
+            throw new MAPException(
+                    "Bad application context name for SendIdentificationRequest: must be interVlrInfoRetrievalContext_V3");
+
+        Integer customTimeout;
+        if (customInvokeTimeout == _Timer_Default)
+            customTimeout=getShortTimer();
+        else
+            customTimeout=customInvokeTimeout;
+
+        SendIdentificationRequestImplV3 req = new SendIdentificationRequestImplV3(tmsi, numberOfRequestedVectors,
                 segmentationProhibited, extensionContainer, mscNumber, previousLAI, hopCounter, mtRoamingForwardingSupported,
                 newVLRNumber, lmsi, this.appCntx.getApplicationContextVersion().getVersion());
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.sendIdentification, req, true, false);
     }
 
     @Override
-    public void addSendIdentificationResponse(long invokeId, IMSI imsi, AuthenticationSetList authenticationSetList,
-            CurrentSecurityContext currentSecurityContext, MAPExtensionContainer extensionContainer) throws MAPException {
-        doAddSendIdentificationResponse(false, invokeId, imsi, authenticationSetList, currentSecurityContext,
-                extensionContainer);
+    public void addSendIdentificationResponse(long invokeId, IMSIImpl imsi, AuthenticationSetListImpl authenticationSetList) throws MAPException {
+        doAddSendIdentificationResponse(false, invokeId, imsi, authenticationSetList);
     }
 
     @Override
-    public void addSendIdentificationResponse_NonLast(long invokeId, IMSI imsi, AuthenticationSetList authenticationSetList,
-            CurrentSecurityContext currentSecurityContext, MAPExtensionContainer extensionContainer) throws MAPException {
-        doAddSendIdentificationResponse(true, invokeId, imsi, authenticationSetList, currentSecurityContext,
-                extensionContainer);
+    public void addSendIdentificationResponse_NonLast(long invokeId, IMSIImpl imsi, AuthenticationSetListImpl authenticationSetList) throws MAPException {
+        doAddSendIdentificationResponse(true, invokeId, imsi, authenticationSetList);
     }
 
-    protected void doAddSendIdentificationResponse(boolean nonLast, long invokeId, IMSI imsi,
-            AuthenticationSetList authenticationSetList, CurrentSecurityContext currentSecurityContext,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    protected void doAddSendIdentificationResponse(boolean nonLast, long invokeId, IMSIImpl imsi,AuthenticationSetListImpl authenticationSetList) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.interVlrInfoRetrievalContext)
-                || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx
-                        .getApplicationContextVersion() != MAPApplicationContextVersion.version3))
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
+            throw new MAPException(
+                    "Bad application context name for AddSendIdentificationResponse: must be interVlrInfoRetrievalContext_V2");
+        SendIdentificationResponseImplV1 req = new SendIdentificationResponseImplV1(imsi, authenticationSetList, this.appCntx.getApplicationContextVersion().getVersion());
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.sendIdentification, req, false, !nonLast);
+    }
+    
+    @Override
+    public void addSendIdentificationResponse(long invokeId, IMSIImpl imsi, AuthenticationSetListImpl authenticationSetList,
+            CurrentSecurityContextImpl currentSecurityContext, MAPExtensionContainerImpl extensionContainer) throws MAPException {
+        doAddSendIdentificationResponse(invokeId, imsi, authenticationSetList, currentSecurityContext,
+                extensionContainer);
+    }
+
+    protected void doAddSendIdentificationResponse(long invokeId, IMSIImpl imsi,
+            AuthenticationSetListImpl authenticationSetList, CurrentSecurityContextImpl currentSecurityContext,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
+        if (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3)
             throw new MAPException(
                     "Bad application context name for AddSendIdentificationResponse: must be interVlrInfoRetrievalContext_V2 or V3");
-        if (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && nonLast)
-            throw new MAPException(
-                    "Bad application context name for AddSendIdentificationResponse: must be interVlrInfoRetrievalContext_V2 for nonLast operation");
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.sendIdentification);
-
-        SendIdentificationResponseImpl req = new SendIdentificationResponseImpl(imsi, authenticationSetList,
+        
+        SendIdentificationResponseImplV3 req = new SendIdentificationResponseImplV3(imsi, authenticationSetList,
                 currentSecurityContext, extensionContainer, this.appCntx.getApplicationContextVersion().getVersion());
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-
-        if (nonLast) {
-            ReturnResult resultLastNonLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultRequest();
-
-            resultLastNonLast.setInvokeId(invokeId);
-            resultLastNonLast.setOperationCode(oc);
-            resultLastNonLast.setParameter(p);
-
-            this.sendReturnResultComponent(resultLastNonLast);
-        } else {
-            ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultLastRequest();
-
-            resultLast.setInvokeId(invokeId);
-            resultLast.setOperationCode(oc);
-            resultLast.setParameter(p);
-
-            this.sendReturnResultLastComponent(resultLast);
-        }
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.sendIdentification, req, false, true);
     }
 
     @Override
-    public Long addUpdateGprsLocationRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString sgsnNumber,
-            GSNAddress sgsnAddress, MAPExtensionContainer extensionContainer, SGSNCapability sgsnCapability,
-            boolean informPreviousNetworkEntity, boolean psLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo,
-            EPSInfo epsInfo, boolean servingNodeTypeIndicator, boolean skipSubscriberDataUpdate, UsedRATType usedRATType,
+    public Long addUpdateGprsLocationRequest(int customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl sgsnNumber,
+            GSNAddressImpl sgsnAddress, MAPExtensionContainerImpl extensionContainer, SGSNCapabilityImpl sgsnCapability,
+            boolean informPreviousNetworkEntity, boolean psLCSNotSupportedByUE, GSNAddressImpl vGmlcAddress, ADDInfoImpl addInfo,
+            EPSInfoImpl epsInfo, boolean servingNodeTypeIndicator, boolean skipSubscriberDataUpdate, UsedRATType usedRATType,
             boolean gprsSubscriptionDataNotNeeded, boolean nodeTypeIndicator, boolean areaRestricted,
             boolean ueReachableIndicator, boolean epsSubscriptionDataNotNeeded, UESRVCCCapability uesrvccCapability)
             throws MAPException {
@@ -1567,50 +1101,24 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
             throw new MAPException(
                     "Bad application context name for UpdateGprsLocationRequest: must be gprsLocationUpdateContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.updateGprsLocation);
-        invoke.setOperationCode(oc);
+            customTimeout=customInvokeTimeout;
 
         UpdateGprsLocationRequestImpl req = new UpdateGprsLocationRequestImpl(imsi, sgsnNumber, sgsnAddress,
                 extensionContainer, sgsnCapability, informPreviousNetworkEntity, psLCSNotSupportedByUE, vGmlcAddress, addInfo,
                 epsInfo, servingNodeTypeIndicator, skipSubscriberDataUpdate, usedRATType, gprsSubscriptionDataNotNeeded,
                 nodeTypeIndicator, areaRestricted, ueReachableIndicator, epsSubscriptionDataNotNeeded, uesrvccCapability,
                 this.appCntx.getApplicationContextVersion().getVersion());
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
-
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.updateGprsLocation, req, true, false);
     }
 
     @Override
-    public Long addUpdateGprsLocationRequest(IMSI imsi, ISDNAddressString sgsnNumber, GSNAddress sgsnAddress,
-            MAPExtensionContainer extensionContainer, SGSNCapability sgsnCapability, boolean informPreviousNetworkEntity,
-            boolean psLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo, EPSInfo epsInfo,
+    public Long addUpdateGprsLocationRequest(IMSIImpl imsi, ISDNAddressStringImpl sgsnNumber, GSNAddressImpl sgsnAddress,
+            MAPExtensionContainerImpl extensionContainer, SGSNCapabilityImpl sgsnCapability, boolean informPreviousNetworkEntity,
+            boolean psLCSNotSupportedByUE, GSNAddressImpl vGmlcAddress, ADDInfoImpl addInfo, EPSInfoImpl epsInfo,
             boolean servingNodeTypeIndicator, boolean skipSubscriberDataUpdate, UsedRATType usedRATType,
             boolean gprsSubscriptionDataNotNeeded, boolean nodeTypeIndicator, boolean areaRestricted,
             boolean ueReachableIndicator, boolean epsSubscriptionDataNotNeeded, UESRVCCCapability uesrvccCapability)
@@ -1622,8 +1130,8 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
     }
 
     @Override
-    public void addUpdateGprsLocationResponse(long invokeId, ISDNAddressString hlrNumber,
-            MAPExtensionContainer extensionContainer, boolean addCapability, boolean sgsnMmeSeparationSupported)
+    public void addUpdateGprsLocationResponse(long invokeId, ISDNAddressStringImpl hlrNumber,
+            MAPExtensionContainerImpl extensionContainer, boolean addCapability, boolean sgsnMmeSeparationSupported)
             throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.gprsLocationUpdateContext)
@@ -1631,165 +1139,93 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
             throw new MAPException(
                     "Bad application context name for UpdateGprsLocationResponse: must be gprsLocationUpdateContext_V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.updateGprsLocation);
-        resultLast.setOperationCode(oc);
-
         UpdateGprsLocationResponseImpl req = new UpdateGprsLocationResponseImpl(hlrNumber, extensionContainer, addCapability,
                 sgsnMmeSeparationSupported);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.updateGprsLocation, req, false, true);
 
     }
 
     @Override
-    public Long addPurgeMSRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString vlrNumber,
-            ISDNAddressString sgsnNumber, MAPExtensionContainer extensionContainer) throws MAPException {
+    public Long addPurgeMSRequest(int customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl vlrNumber) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.msPurgingContext)
-                || ((this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3)
-                && (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)))
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException(
-                    "Bad application context name for PurgeMSRequest: must be msPurgingContext_V2 or msPurgingContext_V3");
-
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+                    "Bad application context name for PurgeMSRequest: must be msPurgingContext_V2");
+        
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
 
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.purgeMS);
-        invoke.setOperationCode(oc);
-
-        PurgeMSRequestImpl req = new PurgeMSRequestImpl(imsi, vlrNumber, sgsnNumber, extensionContainer, this.appCntx
-                .getApplicationContextVersion().getVersion());
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
-
+        PurgeMSRequestImplV1 req = new PurgeMSRequestImplV1(imsi, vlrNumber, this.appCntx.getApplicationContextVersion().getVersion());
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.purgeMS, req, true, false);
     }
 
     @Override
-    public Long addPurgeMSRequest(IMSI imsi, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber,
-            MAPExtensionContainer extensionContainer) throws MAPException {
+    public Long addPurgeMSRequest(IMSIImpl imsi, ISDNAddressStringImpl vlrNumber) throws MAPException {
+        return addPurgeMSRequest(_Timer_Default, imsi, vlrNumber);
+    }
+    
+    @Override
+    public Long addPurgeMSRequest(int customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl vlrNumber,
+            ISDNAddressStringImpl sgsnNumber, MAPExtensionContainerImpl extensionContainer) throws MAPException {
+        if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.msPurgingContext)
+                || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3)
+            throw new MAPException(
+                    "Bad application context name for PurgeMSRequest: must be msPurgingContext_V3");
+        
+        Integer customTimeout;
+        if (customInvokeTimeout == _Timer_Default)
+            customTimeout=getMediumTimer();
+        else
+            customTimeout=customInvokeTimeout;
+
+        PurgeMSRequestImplV3 req = new PurgeMSRequestImplV3(imsi, vlrNumber, sgsnNumber, extensionContainer, this.appCntx
+                .getApplicationContextVersion().getVersion());
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.purgeMS, req, true, false);
+    }
+
+    @Override
+    public Long addPurgeMSRequest(IMSIImpl imsi, ISDNAddressStringImpl vlrNumber, ISDNAddressStringImpl sgsnNumber,
+            MAPExtensionContainerImpl extensionContainer) throws MAPException {
         return addPurgeMSRequest(_Timer_Default, imsi, vlrNumber, sgsnNumber, extensionContainer);
     }
 
     @Override
     public void addPurgeMSResponse(long invokeId, boolean freezeTMSI, boolean freezePTMSI,
-            MAPExtensionContainer extensionContainer, boolean freezeMTMSI) throws MAPException {
+            MAPExtensionContainerImpl extensionContainer, boolean freezeMTMSI) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.msPurgingContext)
                 || ((this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3) && (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)))
             throw new MAPException("Bad application context name for PurgeMSResponse: must be msPurgingContext_V3 OR  msPurgingContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
+        PurgeMSResponseImpl resp = null;        
+        if (this.appCntx.getApplicationContextVersion().getVersion() >= 3 && (freezeTMSI || freezePTMSI || extensionContainer != null || freezeMTMSI))
+            resp =new PurgeMSResponseImpl(freezeTMSI, freezePTMSI, extensionContainer, freezeMTMSI);
 
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.purgeMS);
-        resultLast.setOperationCode(oc);
-
-        PurgeMSResponseImpl resp = new PurgeMSResponseImpl(freezeTMSI, freezePTMSI, extensionContainer, freezeMTMSI);
-
-        if (this.appCntx.getApplicationContextVersion().getVersion() >= 3 && (freezeTMSI || freezePTMSI || extensionContainer != null || freezeMTMSI)) {
-            AsnOutputStream aos = new AsnOutputStream();
-            resp.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(resp.getTagClass());
-            p.setPrimitive(resp.getIsPrimitive());
-            p.setTag(resp.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.purgeMS, resp, false, true);
     }
 
     @Override
-    public Long addResetRequest(NetworkResource networkResource, ISDNAddressString hlrNumber, ArrayList<IMSI> hlrList) throws MAPException {
+    public Long addResetRequest(NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, ArrayList<IMSIImpl> hlrList) throws MAPException {
         return addResetRequest(_Timer_Default, networkResource, hlrNumber, hlrList);
     }
 
     @Override
-    public Long addResetRequest(int customInvokeTimeout, NetworkResource networkResource, ISDNAddressString hlrNumber, ArrayList<IMSI> hlrList)
+    public Long addResetRequest(int customInvokeTimeout, NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, ArrayList<IMSIImpl> hlrList)
             throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.resetContext)
                 || ((this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2) && (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1)))
             throw new MAPException("Bad application context name for ResetRequest: must be resetContext_V1 or V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout = getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+        	customTimeout = customInvokeTimeout;
 
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.reset);
-        invoke.setOperationCode(oc);
-
-        int version = this.appCntx.getApplicationContextVersion().getVersion();
-        ResetRequestImpl req = new ResetRequestImpl(networkResource, hlrNumber, hlrList, version);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        ResetRequestImpl req = new ResetRequestImpl(networkResource, hlrNumber, hlrList, this.appCntx.getApplicationContextVersion().getVersion());
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) MAPOperationCode.reset, req, true, false);
     }
 
     @Override
@@ -1805,124 +1241,62 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
                         .getApplicationContextVersion() != MAPApplicationContextVersion.version1)))
             throw new MAPException("Bad application context name for ForwardCheckSSIndicationRequest: must be networkLocUpContext_V1, V2 or V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getShortTimer());
+            customTimeout=getShortTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
 
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.forwardCheckSsIndication);
-        invoke.setOperationCode(oc);
-
-        new ForwardCheckSSIndicationRequestImpl();
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) MAPOperationCode.forwardCheckSsIndication, null, true, false);
     }
 
     @Override
-    public Long addRestoreDataRequest(IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainer extensionContainer, boolean restorationIndicator)
+    public Long addRestoreDataRequest(IMSIImpl imsi, LMSIImpl lmsi, VLRCapabilityImpl vlrCapability, MAPExtensionContainerImpl extensionContainer, boolean restorationIndicator)
             throws MAPException {
         return addRestoreDataRequest(_Timer_Default, imsi, lmsi, vlrCapability, extensionContainer, restorationIndicator);
     }
 
     @Override
-    public Long addRestoreDataRequest(int customInvokeTimeout, IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainer extensionContainer,
+    public Long addRestoreDataRequest(int customInvokeTimeout, IMSIImpl imsi, LMSIImpl lmsi, VLRCapabilityImpl vlrCapability, MAPExtensionContainerImpl extensionContainer,
             boolean restorationIndicator) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkLocUpContext)
                 || ((this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3) && (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)))
             throw new MAPException("Bad application context name for RestoreDataRequest: must be networkLocUpContext_V2 or networkLocUpContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.restoreData);
-        invoke.setOperationCode(oc);
+            customTimeout=customInvokeTimeout;
 
         RestoreDataRequestImpl req = new RestoreDataRequestImpl(imsi, lmsi, vlrCapability, extensionContainer, restorationIndicator);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.restoreData, req, true, false);
     }
 
     @Override
-    public void addRestoreDataResponse(long invokeId, ISDNAddressString hlrNumber, boolean msNotReachable, MAPExtensionContainer extensionContainer)
+    public void addRestoreDataResponse(long invokeId, ISDNAddressStringImpl hlrNumber, boolean msNotReachable, MAPExtensionContainerImpl extensionContainer)
             throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkLocUpContext)
                 || ((this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3) && (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)))
             throw new MAPException("Bad application context name for RestoreDataResponse: must be networkLocUpContext_V2 or networkLocUpContext_V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.restoreData);
-        resultLast.setOperationCode(oc);
-
         RestoreDataResponseImpl resp = new RestoreDataResponseImpl(hlrNumber, msNotReachable, extensionContainer);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        resp.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(resp.getTagClass());
-        p.setPrimitive(resp.getIsPrimitive());
-        p.setTag(resp.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.restoreData, resp, false, true);
     }
 
     @Override
-    public Long addActivateTraceModeRequest(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
-            MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
-            TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
+    public Long addActivateTraceModeRequest(IMSIImpl imsi, TraceReferenceImpl traceReference, TraceTypeImpl traceType, AddressStringImpl omcId,
+            MAPExtensionContainerImpl extensionContainer, TraceReference2Impl traceReference2, TraceDepthListImpl traceDepthList, TraceNETypeListImpl traceNeTypeList,
+            TraceInterfaceListImpl traceInterfaceList, TraceEventListImpl traceEventList, GSNAddressImpl traceCollectionEntity, MDTConfigurationImpl mdtConfiguration)
             throws MAPException {
         return this.addActivateTraceModeRequest(_Timer_Default, imsi, traceReference, traceType, omcId, extensionContainer, traceReference2, traceDepthList,
                 traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);
     }
 
     @Override
-    public Long addActivateTraceModeRequest(int customInvokeTimeout, IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
-            MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
-            TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
+    public Long addActivateTraceModeRequest(int customInvokeTimeout, IMSIImpl imsi, TraceReferenceImpl traceReference, TraceTypeImpl traceType, AddressStringImpl omcId,
+            MAPExtensionContainerImpl extensionContainer, TraceReference2Impl traceReference2, TraceDepthListImpl traceDepthList, TraceNETypeListImpl traceNeTypeList,
+            TraceInterfaceListImpl traceInterfaceList, TraceEventListImpl traceEventList, GSNAddressImpl traceCollectionEntity, MDTConfigurationImpl mdtConfiguration)
             throws MAPException {
 
         boolean isTracingContext = false;
@@ -1944,43 +1318,19 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
             throw new MAPException(
                     "Bad application context name for activateTraceModeRequest: must be tracingContext_V1, V2 or V3, networkLocUpContext_V1, V2 or V3 or gprsLocationUpdateContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+            customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+            customTimeout=customInvokeTimeout;
 
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.activateTraceMode);
-        invoke.setOperationCode(oc);
-
-        ActivateTraceModeRequestImpl_Mobility req = new ActivateTraceModeRequestImpl_Mobility(imsi, traceReference, traceType, omcId, extensionContainer, traceReference2,
+        ActivateTraceModeRequestImpl req = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, omcId, extensionContainer, traceReference2,
                 traceDepthList, traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.activateTraceMode, req, true, false);
     }
 
     @Override
-    public void addActivateTraceModeResponse(long invokeId, MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) throws MAPException {
+    public void addActivateTraceModeResponse(long invokeId, MAPExtensionContainerImpl extensionContainer, boolean traceSupportIndicator) throws MAPException {
         boolean isTracingContext = false;
         boolean isNetworkLocUpContext = false;
         boolean isGprsLocationUpdateContext = false;
@@ -2000,30 +1350,10 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
             throw new MAPException(
                     "Bad application context name for activateTraceModeResponse: must be tracingContext_V1, V2 or V3, networkLocUpContext_V1, V2 or V3 or gprsLocationUpdateContext_V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        if ((traceSupportIndicator || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() >= 3) {
-            // Operation Code
-            OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-            oc.setLocalOperationCode((long) MAPOperationCode.activateTraceMode);
-            resultLast.setOperationCode(oc);
-
-            ActivateTraceModeResponseImpl_Mobility req = new ActivateTraceModeResponseImpl_Mobility(extensionContainer, traceSupportIndicator);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        ActivateTraceModeResponseImpl req = null;
+        if ((traceSupportIndicator || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() >= 3)
+            req = new ActivateTraceModeResponseImpl(extensionContainer, traceSupportIndicator);
+            
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.activateTraceMode, req, false, true);
     }
-
 }

@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.service.oam.RNCInterfaceListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.RNCInterfaceListImpl;
 import org.testng.annotations.Test;
 
 /**

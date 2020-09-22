@@ -4,17 +4,15 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
-import org.restcomm.protocols.ss7.map.primitives.FTNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.CallForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtForwFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -51,9 +49,9 @@ public class CallForwardingDataTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(callForwardingData.getExtensionContainer()));
 
         ExtForwFeature extForwFeature = callForwardingData.getForwardingFeatureList().get(0);
-        ISDNAddressString forwardedToNumber = extForwFeature.getForwardedToNumber();
+        ISDNAddressStringImpl forwardedToNumber = extForwFeature.getForwardedToNumber();
         ExtSSStatus extSSStatus = extForwFeature.getSsStatus();
-        FTNAddressString longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
+        FTNAddressStringImpl longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
         assertNull(extForwFeature.getBasicService());
         assertNull(extForwFeature.getForwardedToSubaddress());
         assertNull(extForwFeature.getForwardingOptions());

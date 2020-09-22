@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 
 /**
@@ -35,11 +35,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
  */
 public interface TCUserAbortIndication extends DialogIndication {
 
-    ApplicationContext getApplicationContextName();
+    ApplicationContextNameImpl getApplicationContextName();
 
     UserInformationImpl getUserInformation();
 
-    SecurityContext getSecurityContext();
+    SecurityContextNameImpl getSecurityContext();
 
     ConfidentialityImpl getConfidentiality();
 

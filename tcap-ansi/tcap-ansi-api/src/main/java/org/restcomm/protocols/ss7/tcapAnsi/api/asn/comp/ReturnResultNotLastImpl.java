@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPreprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 
@@ -33,6 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=14,constructed=true,lengthIndefinite=false)
+@ASNPreprocess
 public class ReturnResultNotLastImpl extends ReturnImpl {
 	public ComponentType getType() {
         return ComponentType.ReturnResultNotLast;

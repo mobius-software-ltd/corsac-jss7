@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.smstpdu.ParameterIndicatorImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ParameterIndicatorImpl;
 import org.testng.annotations.Test;
 
 /**

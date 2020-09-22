@@ -30,7 +30,7 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSResponseImpl;
 import org.testng.annotations.Test;
@@ -70,7 +70,7 @@ public class PurgeMSResponseTest {
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
        
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         PurgeMSResponseImpl prim = new PurgeMSResponseImpl(true, true, extensionContainer, true);
 
         AsnOutputStream asn = new AsnOutputStream();

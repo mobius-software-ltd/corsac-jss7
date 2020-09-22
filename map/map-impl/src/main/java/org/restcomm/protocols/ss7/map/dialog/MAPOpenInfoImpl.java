@@ -22,20 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.dialog;
 
-import java.io.IOException;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 <code>
@@ -60,236 +52,64 @@ MAP OpenInfo ::= SEQUENCE ( imsi (0) IMSI OPTIONAL, originationReference (1) Add
  * @author sergey vetyutnev
  *
  */
-public class MAPOpenInfoImpl implements MAPAsnPrimitive {
-	private static final long serialVersionUID = 1L;
-
-	public static final int MAP_OPEN_INFO_TAG = 0x00;
-
-    protected static final int DESTINATION_REF_TAG = 0x00;
-    protected static final int ORIGINATION_REF_TAG = 0x01;
-    protected static final int ERI_MSISDN_TAG = 0x02;
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=true,lengthIndefinite=false)
+public class MAPOpenInfoImpl {
+	protected static final int ERI_MSISDN_TAG = 0x02;
     protected static final int ERI_NLR_NO_TAG = 0x03;
 
-    protected static final int OPEN_INFO_TAG_CLASS = Tag.CLASS_CONTEXT_SPECIFIC;
-    protected static final boolean OPEN_INFO_TAG_PC_PRIMITIVE = true;
-    protected static final boolean OPEN_INFO_TAG_PC_CONSTRUCTED = false;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,index=-1)
+    private AddressStringImpl destReference;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,index=-1)
+    private AddressStringImpl origReference;
+    private MAPExtensionContainerImpl extensionContainer;
 
-    private AddressString destReference;
-    private AddressString origReference;
-    private MAPExtensionContainer extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=false,index=-1)
+    private AddressStringImpl eriMsisdn;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x03,constructed=false,index=-1)
+    private AddressStringImpl eriVlrNo;
 
-    private boolean eriStyle;
-    private AddressString eriMsisdn;
-    private AddressString eriVlrNo;
-
-    public AddressString getDestReference() {
+    public AddressStringImpl getDestReference() {
         return this.destReference;
     }
 
-    public AddressString getOrigReference() {
+    public AddressStringImpl getOrigReference() {
         return this.origReference;
     }
 
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return extensionContainer;
     }
 
     public boolean getEriStyle() {
-        return this.eriStyle;
+        return this.eriMsisdn!=null;
     }
 
-    public AddressString getEriMsisdn() {
+    public AddressStringImpl getEriMsisdn() {
         return eriMsisdn;
     }
 
-    public AddressString getEriVlrNo() {
+    public AddressStringImpl getEriVlrNo() {
         return eriVlrNo;
     }
 
-    public void setDestReference(AddressString destReference) {
+    public void setDestReference(AddressStringImpl destReference) {
         this.destReference = destReference;
     }
 
-    public void setOrigReference(AddressString origReference) {
+    public void setOrigReference(AddressStringImpl origReference) {
         this.origReference = origReference;
     }
 
-    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 
-    public void setEriStyle(boolean eriStyle) {
-        this.eriStyle = eriStyle;
-    }
-
-    public void setEriMsisdn(AddressString eriMsisdn) {
+    public void setEriMsisdn(AddressStringImpl eriMsisdn) {
         this.eriMsisdn = eriMsisdn;
     }
 
-    public void setEriVlrNo(AddressString eriVlrNo) {
+    public void setEriVlrNo(AddressStringImpl eriVlrNo) {
         this.eriVlrNo = eriVlrNo;
-    }
-
-    public int getTag() throws MAPException {
-        return MAP_OPEN_INFO_TAG;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_CONTEXT_SPECIFIC;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding MAPOpenInfo: " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding MAPOpenInfo: " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding MAPOpenInfo: " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding MAPOpenInfo: " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ais, int length) throws MAPParsingComponentException, IOException, AsnException {
-        this.destReference = null;
-        this.origReference = null;
-        this.extensionContainer = null;
-        this.eriStyle = false;
-        this.eriMsisdn = null;
-        this.eriVlrNo = null;
-
-        AsnInputStream localAis = ais.readSequenceStreamData(length);
-
-        // checking for Ericsson-style
-        int startPos = localAis.position();
-        while (localAis.available() > 0) {
-            int tag = localAis.readTag();
-            if (localAis.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC && tag == ERI_MSISDN_TAG) {
-                this.eriStyle = true;
-                break;
-            }
-            localAis.advanceElement();
-        }
-
-        // parsing
-        localAis.position(startPos);
-        while (localAis.available() > 0) {
-            int tag = localAis.readTag();
-
-            switch (localAis.getTagClass()) {
-                case Tag.CLASS_CONTEXT_SPECIFIC:
-                    switch (tag) {
-                        case DESTINATION_REF_TAG:
-                            // if (this.eriStyle) {
-                            // this.eriImsi = new AddressStringImpl();
-                            // ((AddressStringImpl) this.eriImsi).decodeAll(localAis);
-                            // } else {
-
-                            this.destReference = new AddressStringImpl();
-                            ((AddressStringImpl) this.destReference).decodeAll(localAis);
-
-                            // }
-                            break;
-
-                        case ORIGINATION_REF_TAG:
-                            this.origReference = new AddressStringImpl();
-                            ((AddressStringImpl) this.origReference).decodeAll(localAis);
-                            break;
-
-                        case ERI_MSISDN_TAG:
-                            this.eriMsisdn = new AddressStringImpl();
-                            ((AddressStringImpl) this.eriMsisdn).decodeAll(localAis);
-                            break;
-
-                        case ERI_NLR_NO_TAG:
-                            this.eriVlrNo = new AddressStringImpl();
-                            ((AddressStringImpl) this.eriVlrNo).decodeAll(localAis);
-                            break;
-
-                        default:
-                            localAis.advanceElement();
-                            break;
-                    }
-                    break;
-
-                case Tag.CLASS_UNIVERSAL:
-                    switch (tag) {
-                        case Tag.SEQUENCE:
-                            this.extensionContainer = new MAPExtensionContainerImpl();
-                            ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(localAis);
-                            break;
-
-                        default:
-                            localAis.advanceElement();
-                            break;
-                    }
-                    break;
-
-                default:
-                    localAis.advanceElement();
-                    break;
-            }
-        }
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-
-        this.encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, MAP_OPEN_INFO_TAG);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, false, tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding MAPOpenInfo: " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream asnOS) throws MAPException {
-
-        if (this.eriStyle) {
-            if (this.destReference != null)
-                ((AddressStringImpl) this.destReference).encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, DESTINATION_REF_TAG);
-            if (this.origReference != null)
-                ((AddressStringImpl) this.origReference).encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, ORIGINATION_REF_TAG);
-            if (this.eriMsisdn != null)
-                ((AddressStringImpl) this.eriMsisdn).encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, ERI_MSISDN_TAG);
-            if (this.eriVlrNo != null)
-                ((AddressStringImpl) this.eriVlrNo).encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, ERI_NLR_NO_TAG);
-        } else {
-
-            if (this.destReference != null)
-                ((AddressStringImpl) this.destReference).encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, DESTINATION_REF_TAG);
-
-            if (this.origReference != null)
-                ((AddressStringImpl) this.origReference).encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, ORIGINATION_REF_TAG);
-
-            if (this.extensionContainer != null)
-                ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOS);
-        }
     }
 
     @Override
@@ -309,7 +129,7 @@ public class MAPOpenInfoImpl implements MAPAsnPrimitive {
             sb.append("extensionContainer=");
             sb.append(extensionContainer);
         }
-        if (eriStyle) {
+        if (getEriStyle()) {
             sb.append(", eriStyle");
         }
         if (eriMsisdn != null) {

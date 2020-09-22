@@ -34,7 +34,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -49,18 +48,19 @@ public class DialogUniAPDUTest {
                 4, 1, 1, 2, 3, (byte) 160, 5, (byte) 160, 3, 11, 22, 33 };
     }
 
+    static ASNParser parser=new ASNParser();
+	
     @BeforeClass
     public static void setUpClass() throws Exception {
-    	ASNGeneric.clear(ASNUserInformationObjectImpl.class);
-    	ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, TCBeginTestASN3.class);    	
+    	parser.loadClass(DialogRequestAPDUImpl.class);
+    	
+    	parser.clearClassMapping(ASNUserInformationObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, TCBeginTestASN3.class);    	
     }
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(DialogRequestAPDUImpl.class);
-    	
     	Object output=parser.decode(Unpooled.wrappedBuffer(getData())).getResult();
         assertTrue(output instanceof DialogRequestAPDUImpl);
         DialogRequestAPDUImpl d = (DialogRequestAPDUImpl)output;

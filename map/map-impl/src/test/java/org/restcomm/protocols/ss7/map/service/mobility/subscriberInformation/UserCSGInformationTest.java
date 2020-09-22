@@ -32,8 +32,8 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.UserCSGInformationImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.UserCSGInformationImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGIdImpl;
 import org.testng.annotations.Test;
 
@@ -82,7 +82,7 @@ public class UserCSGInformationTest {
         CSGIdImpl csgId = new CSGIdImpl(bs);
         UserCSGInformationImpl impl = new UserCSGInformationImpl(csgId, MAPExtensionContainerTest.GetTestExtensionContainer(),
                 2, 3);
-        // CSGId csgId, MAPExtensionContainer extensionContainer, Integer accessMode, Integer cmi
+        // CSGId csgId, MAPExtensionContainerImpl extensionContainer, Integer accessMode, Integer cmi
         AsnOutputStream asnOS = new AsnOutputStream();
         impl.encodeAll(asnOS);
         byte[] encodedData = asnOS.toByteArray();

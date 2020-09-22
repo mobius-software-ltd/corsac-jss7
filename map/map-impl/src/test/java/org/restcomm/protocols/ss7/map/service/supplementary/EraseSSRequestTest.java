@@ -29,12 +29,11 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.service.supplementary.EraseSSRequestImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSForBSCodeImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -71,7 +70,7 @@ public class EraseSSRequestTest {
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
 
-        SSCode ssCode = new SSCodeImpl(SupplementaryCodeValue.clir);
+    	SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.clir);
         SSForBSCode ssForBSCode = new SSForBSCodeImpl(ssCode, null, false);
         EraseSSRequestImpl impl = new EraseSSRequestImpl(ssForBSCode);
 

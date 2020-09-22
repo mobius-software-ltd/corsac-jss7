@@ -49,8 +49,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
@@ -60,7 +59,6 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
@@ -71,16 +69,25 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 @Test(groups = { "asn" })
 public class TcBeginTest {
 
+	ASNParser parser=new ASNParser();
+    
 	@BeforeClass
 	public void setUp()
 	{		
-		ASNGeneric.clear(ASNInvokeParameterImpl.class);
-		ASNGeneric.clear(ASNUserInformationObjectImpl.class);
-		ASNGeneric.clear(ASNReturnResultParameterImpl.class);
-		ASNGeneric.registerAlternative(ASNInvokeParameterImpl.class, TCBeginTestASN1.class);
-		ASNGeneric.registerAlternative(ASNInvokeParameterImpl.class, TCEndTestASN.class);
-		ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, UserInformationTestASN2.class);			
-		ASNGeneric.registerAlternative(ASNReturnResultParameterImpl.class, TCBeginTestASN3.class);		
+		parser.loadClass(TCBeginMessageImpl.class);
+                
+		parser.clearClassMapping(ASNInvokeParameterImpl.class);
+		parser.clearClassMapping(ASNUserInformationObjectImpl.class);
+		parser.clearClassMapping(ASNReturnResultParameterImpl.class);
+		parser.registerAlternativeClassMapping(ASNInvokeParameterImpl.class, TCBeginTestASN1.class);
+		parser.registerAlternativeClassMapping(ASNInvokeParameterImpl.class, TCEndTestASN.class);
+		parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, UserInformationTestASN2.class);			
+		parser.registerAlternativeClassMapping(ASNReturnResultParameterImpl.class, TCBeginTestASN3.class);
+		
+		parser.clearClassMapping(ASNDialogPortionObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
 	}
 	
     /**
@@ -128,8 +135,7 @@ public class TcBeginTest {
         invComp.getInvoke().setInvokeId(-128l);
 
         // Operation Code
-        OperationCode oc = TcapFactory.createLocalOperationCode();
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(591L);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(591L);
         invComp.getInvoke().setOperationCode(oc);
 
         // Sequence of Parameter
@@ -153,8 +159,6 @@ public class TcBeginTest {
         componentPortion.setComponents(Arrays.asList(new ComponentImpl[] { invComp }));
         tcm.setComponent(componentPortion);
 
-        ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
         try {
         	parser.encode(tcm);
         }
@@ -196,8 +200,6 @@ public class TcBeginTest {
 
         };
 
-        ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
         Object value=null;
         try {
         	value=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
@@ -237,10 +239,7 @@ public class TcBeginTest {
     @Test
     public void testBasicTCBegin1() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
-        
-        // no idea how to check rest...?
+    	// no idea how to check rest...?
 
         // trace
         byte[] b = new byte[] { 0x62, 0x74, 0x48, 0x04, 0x1a, 0x00, 0x02, (byte) 0xe1, 0x6b, 0x54, 0x28, 0x52, 0x06, 0x07,
@@ -287,10 +286,7 @@ public class TcBeginTest {
     @Test
     public void testTCBeginMessage_No_Dialog() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
-                
-        // no idea how to check rest...?
+    	// no idea how to check rest...?
 
         // created by hand
         byte[] b = new byte[] {
@@ -355,10 +351,10 @@ public class TcBeginTest {
         assertEquals(new Long(2), rr.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rr.getOperationCode(), "Operation code should not be null");
 
-        OperationCode ocs = rr.getOperationCode();
+        OperationCodeImpl ocs = rr.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(1), ((LocalOperationCodeImpl)ocs).getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Long(1), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rr.getParameter(), "Parameter should not be null");
 
@@ -370,10 +366,7 @@ public class TcBeginTest {
     @Test
     public void testTCBeginMessage_No_Component() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
-        
-        // created by hand
+    	// created by hand
         byte[] b = new byte[] {
                 // TCBegin
                 0x62, 50,
@@ -446,10 +439,7 @@ public class TcBeginTest {
     @Test
     public void testTCBeginMessage_No_Nothing() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
-        
-        // no idea how to check rest...?
+    	// no idea how to check rest...?
 
         // created by hand
         byte[] b = new byte[] {
@@ -480,10 +470,7 @@ public class TcBeginTest {
     @Test
     public void testTCBeginMessage_All() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
-        
-        // no idea how to check rest...?
+    	// no idea how to check rest...?
 
         // created by hand
         byte[] b = new byte[] {
@@ -591,10 +578,10 @@ public class TcBeginTest {
         assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
-        OperationCode ocs = rrl.getOperationCode();
+        OperationCodeImpl ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(0x00FF), ((LocalOperationCodeImpl)ocs).getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Long(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 
@@ -605,10 +592,7 @@ public class TcBeginTest {
 
     @Test
     public void testRealTrace() throws Exception {
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
-        
-        byte[] TCAP = new byte[] {
+    	byte[] TCAP = new byte[] {
                 // TCBeginTag
                 98,
                 // len
@@ -688,10 +672,7 @@ public class TcBeginTest {
 
     @Test(groups = { "functional.encode" })
     public void testA() throws ParseException, ASNException {
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(TCBeginMessageImpl.class);
-        
-        TCBeginMessage tcm = TcapFactory.createTCBeginMessage();
+    	TCBeginMessage tcm = TcapFactory.createTCBeginMessage();
         // tcm.setOriginatingTransactionId(1358955064L);
         tcm.setOriginatingTransactionId(Unpooled.wrappedBuffer(new byte[] { 0x51, 0x00, 0x02, 0x38 }));
 
@@ -734,8 +715,7 @@ public class TcBeginTest {
         invComp.getInvoke().setInvokeId(-128l);
 
         // Operation Code
-        OperationCode oc = TcapFactory.createLocalOperationCode();
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(591L);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(591L);
         invComp.getInvoke().setOperationCode(oc);
 
         TCBeginTestASN2 parameter=new TCBeginTestASN2();

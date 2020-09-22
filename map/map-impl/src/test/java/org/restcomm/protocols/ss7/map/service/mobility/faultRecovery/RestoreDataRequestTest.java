@@ -30,15 +30,15 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.RestoreDataRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.VLRCapabilityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -115,7 +115,7 @@ public class RestoreDataRequestTest {
 
         IMSIImpl imsi = new IMSIImpl("11122233344455");
         RestoreDataRequestImpl prim = new RestoreDataRequestImpl(imsi, null, null, null, false);
-        // IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainer extensionContainer, boolean restorationIndicator
+        // IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainerImpl extensionContainer, boolean restorationIndicator
 
         AsnOutputStream asnOS = new AsnOutputStream();
         prim.encodeAll(asnOS);
@@ -128,7 +128,7 @@ public class RestoreDataRequestTest {
         LMSI lmsi = new LMSIImpl(getLmsiData());
         SupportedCamelPhases supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, false, false);
         VLRCapability vlrCapability = new VLRCapabilityImpl(supportedCamelPhases, null, false, null, null, false, null, null, null, false, false);
-//      SupportedCamelPhases supportedCamelPhases, MAPExtensionContainer extensionContainer,
+//      SupportedCamelPhases supportedCamelPhases, MAPExtensionContainerImpl extensionContainer,
 //      boolean solsaSupportIndicator, ISTSupportIndicator istSupportIndicator,
 //      SuperChargerInfo superChargerSupportedInServingNetworkEntity, boolean longFtnSupported,
 //      SupportedLCSCapabilitySets supportedLCSCapabilitySets, OfferedCamel4CSIs offeredCamel4CSIs,

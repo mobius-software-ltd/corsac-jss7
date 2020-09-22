@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
 
 /**
  * MAP V2:
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
  * dataMissing | unexpectedDataValue | unknownAlphabet | callBarred} CODE local:59 }
  *
  * USSD-Arg ::= SEQUENCE { ussd-DataCodingScheme USSD-DataCodingScheme, ussd-String USSD-String, ... , alertingPattern
- * AlertingPattern OPTIONAL, msisdn [0] ISDN-AddressString OPTIONAL }
+ * AlertingPattern OPTIONAL, msisdn [0] ISDN-AddressStringImpl OPTIONAL }
  *
  * This service is used between the MSC and the VLR and between the VLR and the HLR to relay information in order to allow
  * unstructured supplementary service operation.
@@ -76,10 +76,10 @@ public interface ProcessUnstructuredSSRequest extends SupplementaryMessage {
      *
      * @return
      */
-    USSDString getUSSDString();
+    USSDStringImpl getUSSDString();
 
-    ISDNAddressString getMSISDNAddressString();
+    ISDNAddressStringImpl getMSISDNAddressStringImpl();
 
-    AlertingPattern getAlertingPattern();
+    AlertingPatternImpl getAlertingPattern();
 
 }

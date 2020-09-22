@@ -31,16 +31,16 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfo;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
-import org.restcomm.protocols.ss7.map.service.supplementary.CallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.CallBarringInfoImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingInfoImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSDataImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSInfoImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.testng.annotations.Test;
 
 /**

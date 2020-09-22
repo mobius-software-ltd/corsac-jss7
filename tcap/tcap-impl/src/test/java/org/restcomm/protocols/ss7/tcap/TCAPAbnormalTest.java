@@ -40,7 +40,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -444,9 +443,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.startClientDialog();
 
         DialogImpl tcapDialog = client.getCurDialog();
-        ComponentImpl invoke = client.createNewInvoke();
-        invoke.getInvoke().setTimeout(INVOKE_WAIT_TIME);
-        tcapDialog.sendComponent(invoke);
+        tcapDialog.sendData(null, null, null, INVOKE_WAIT_TIME, null, null, true, false);
 
         client.sendBeginUnreachableAddress(false);
         Thread.sleep(WAIT_TIME);
@@ -477,9 +474,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.startClientDialog();
 
         DialogImpl tcapDialog = client.getCurDialog();
-        ComponentImpl invoke = client.createNewInvoke();
-        invoke.getInvoke().setTimeout(_DIALOG_TIMEOUT * 2);        
-        tcapDialog.sendComponent(invoke);
+        tcapDialog.sendData(null, null, null, _DIALOG_TIMEOUT * 2L, null, null, true, false);
 
         client.sendBeginUnreachableAddress(false);
         Thread.sleep(WAIT_TIME);

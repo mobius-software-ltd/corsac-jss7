@@ -26,14 +26,14 @@
 package org.restcomm.protocols.ss7.isup;
 
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.isup.message.parameter.*;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingRedirectReasonType;
 import org.restcomm.protocols.ss7.isup.message.parameter.PerformingRedirectIndicator;
-import org.restcomm.protocols.ss7.isup.message.parameter.ErrorCode;
 import org.restcomm.protocols.ss7.isup.message.parameter.RejectImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnResultImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.OperationCode;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokeImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectForwardInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityInstructionIndicator;
@@ -123,9 +123,9 @@ public interface ISUPParameterFactory {
 
     EchoControlInformation createEchoControlInformation();
 
-    ErrorCode createLocalErrorCode();
+    ErrorCodeImpl createLocalErrorCode(Long value);
 
-    ErrorCode createGlobalErrorCode();
+    ErrorCodeImpl createGlobalErrorCode(List<Long> value);
 
     EventInformation createEventInformation();
 
@@ -181,9 +181,9 @@ public interface ISUPParameterFactory {
 
     NetworkSpecificFacility createNetworkSpecificFacility();
 
-    OperationCode createLocalOperationCode();
+    OperationCodeImpl createLocalOperationCode(Long value);
 
-    OperationCode createGlobalOperationCode();
+    OperationCodeImpl createGlobalOperationCode(List<Long> value);
 
     OptionalBackwardCallIndicators createOptionalBackwardCallIndicators();
 

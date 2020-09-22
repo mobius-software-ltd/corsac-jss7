@@ -38,19 +38,18 @@ import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancellationType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.TypeOfUpdate;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.IMSIWithLMSIImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationRequestImplV1;
 import org.testng.annotations.Test;
 
 /**
@@ -91,22 +90,22 @@ public class CancelLocationRequestTest {
         AsnInputStream asn = new AsnInputStream(rawData);
 
         int tag = asn.readTag();
-        CancelLocationRequestImpl asc = new CancelLocationRequestImpl(3);
+        CancelLocationRequestImplV1 asc = new CancelLocationRequestImplV1(3);
         asc.decodeAll(asn);
 
-        assertEquals(tag, CancelLocationRequestImpl.TAG_cancelLocationRequest);
+        assertEquals(tag, CancelLocationRequestImplV1.TAG_cancelLocationRequest);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
         assertEquals(asc.getMapProtocolVersion(), 3);
 
         IMSI imsi = asc.getImsi();
         IMSIWithLMSI imsiWithLmsi = asc.getImsiWithLmsi();
         CancellationType cancellationType = asc.getCancellationType();
-        MAPExtensionContainer extensionContainer = asc.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = asc.getExtensionContainer();
         TypeOfUpdate typeOfUpdate = asc.getTypeOfUpdate();
         boolean mtrfSupportedAndAuthorized = asc.getMtrfSupportedAndAuthorized();
         boolean mtrfSupportedAndNotAuthorized = asc.getMtrfSupportedAndNotAuthorized();
-        ISDNAddressString newMSCNumber = asc.getNewMSCNumber();
-        ISDNAddressString newVLRNumber = asc.getNewVLRNumber();
+        ISDNAddressStringImpl newMSCNumber = asc.getNewMSCNumber();
+        ISDNAddressStringImpl newVLRNumber = asc.getNewVLRNumber();
         LMSI newLmsi = asc.getNewLmsi();
         long mapProtocolVersion = asc.getMapProtocolVersion();
 
@@ -131,10 +130,10 @@ public class CancelLocationRequestTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new CancelLocationRequestImpl(3);
+        asc = new CancelLocationRequestImplV1(3);
         asc.decodeAll(asn);
 
-        assertEquals(tag, CancelLocationRequestImpl.TAG_cancelLocationRequest);
+        assertEquals(tag, CancelLocationRequestImplV1.TAG_cancelLocationRequest);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
         assertEquals(asc.getMapProtocolVersion(), 3);
 
@@ -175,7 +174,7 @@ public class CancelLocationRequestTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new CancelLocationRequestImpl(2);
+        asc = new CancelLocationRequestImplV1(2);
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.STRING_OCTET);
@@ -211,7 +210,7 @@ public class CancelLocationRequestTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new CancelLocationRequestImpl(2);
+        asc = new CancelLocationRequestImplV1(2);
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -246,15 +245,15 @@ public class CancelLocationRequestTest {
         assertEquals(mapProtocolVersion, 2);
     }
 
-    public static MAPExtensionContainer GetTestExtensionContainer() {
+    public static MAPExtensionContainerImpl GetTestExtensionContainer() {
         MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
 
-        ArrayList<MAPPrivateExtension> al = new ArrayList<MAPPrivateExtension>();
+        ArrayList<MAPPrivateExtensionImpl> al = new ArrayList<MAPPrivateExtensionImpl>();
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 4 }, new byte[] { 11, 12, 13, 14, 15 }));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 6 }, null));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 5 }, new byte[] { 21, 22, 23, 24, 25, 26 }));
 
-        MAPExtensionContainer cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
+        MAPExtensionContainerImpl cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
 
         return cnt;
     }
@@ -266,18 +265,18 @@ public class CancelLocationRequestTest {
         LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
         IMSIWithLMSI imsiWithLmsi = new IMSIWithLMSIImpl(imsi, lmsi);
         CancellationType cancellationType = CancellationType.getInstance(1);
-        MAPExtensionContainer extensionContainer = GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = GetTestExtensionContainer();
         TypeOfUpdate typeOfUpdate = TypeOfUpdate.getInstance(0);
         boolean mtrfSupportedAndAuthorized = false;
         boolean mtrfSupportedAndNotAuthorized = false;
-        ISDNAddressString newMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl newMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
-        ISDNAddressString newVLRNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl newVLRNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22229");
         LMSI newLmsi = new LMSIImpl(getDataLmsi());
         long mapProtocolVersion = 3;
 
-        CancelLocationRequestImpl asc = new CancelLocationRequestImpl(imsi, null, cancellationType, extensionContainer,
+        CancelLocationRequestImplV1 asc = new CancelLocationRequestImplV1(imsi, null, cancellationType, extensionContainer,
                 typeOfUpdate, mtrfSupportedAndAuthorized, mtrfSupportedAndNotAuthorized, newMSCNumber, newVLRNumber, newLmsi,
                 mapProtocolVersion);
 
@@ -290,7 +289,7 @@ public class CancelLocationRequestTest {
 
         mtrfSupportedAndAuthorized = true;
         mtrfSupportedAndNotAuthorized = true;
-        asc = new CancelLocationRequestImpl(null, imsiWithLmsi, cancellationType, extensionContainer, typeOfUpdate,
+        asc = new CancelLocationRequestImplV1(null, imsiWithLmsi, cancellationType, extensionContainer, typeOfUpdate,
                 mtrfSupportedAndAuthorized, mtrfSupportedAndNotAuthorized, newMSCNumber, newVLRNumber, newLmsi,
                 mapProtocolVersion);
 
@@ -302,7 +301,7 @@ public class CancelLocationRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         mapProtocolVersion = 2;
-        asc = new CancelLocationRequestImpl(imsi, null, null, null, null, false, false, null, null, null, mapProtocolVersion);
+        asc = new CancelLocationRequestImplV1(imsi, null, null, null, null, false, false, null, null, null, mapProtocolVersion);
 
         asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);
@@ -311,7 +310,7 @@ public class CancelLocationRequestTest {
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        asc = new CancelLocationRequestImpl(null, imsiWithLmsi, null, null, null, false, false, null, null, null,
+        asc = new CancelLocationRequestImplV1(null, imsiWithLmsi, null, null, null, false, false, null, null, null,
                 mapProtocolVersion);
 
         asnOS = new AsnOutputStream();

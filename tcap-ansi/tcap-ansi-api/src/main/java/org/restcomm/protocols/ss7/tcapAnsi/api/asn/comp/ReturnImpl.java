@@ -22,6 +22,12 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
+
 /**
  * @author baranowb
  * @author amit bhayani
@@ -30,29 +36,46 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
  */
 public abstract class ReturnImpl implements BaseComponent {
 	protected ASNCorrelationID correlationId=new ASNCorrelationID();
-    private NationalOperationCodeImpl nationalOperationCode;
-    private PrivateOperationCodeImpl privateOperationCode;
+	
+	private Dialog dialog;
+	
+	@ASNChoise
+    private OperationCodeImpl operationCodeImpl;
     
     private ASNReturnSetParameterImpl setParameter=new ASNReturnSetParameterImpl();
     private ASNReturnParameterImpl seqParameter=null;
     
-    public OperationCode getOperationCode() {
-    	if(nationalOperationCode!=null)
-    		return nationalOperationCode;
+    public void setDialog(Dialog dialog) {
+    	this.dialog=dialog;
+    }
+    
+    @ASNGenericMapping
+    public Class<?> getMapping(Object parent,ASNParser parser) {
+    	OperationCodeImpl oc=operationCodeImpl;
+    	if(oc==null && correlationId!=null && dialog!=null) {
+    		InvokeImpl invoke=dialog.getInvoke(getCorrelationId());
+    		if(invoke!=null)
+    			oc=invoke.getOperationCode();
+    	}
     	
-        return this.privateOperationCode;
+    	if(oc!=null)
+    	{
+    		Class<?> result=parser.getLocalMapping(this.getClass(), oc);
+    		if(result==null)
+    			result=parser.getDefaultLocalMapping(this.getClass());
+    		
+    		return result;
+    	}
+    	
+    	return null;
+    }
+    
+    public OperationCodeImpl getOperationCode() {
+    	return operationCodeImpl;
     }
 
-    public void setOperationCode(OperationCode i) {
-    	if(i instanceof NationalOperationCodeImpl) {
-    		this.nationalOperationCode=(NationalOperationCodeImpl)i;
-    		this.privateOperationCode=null;
-    	} else if(i instanceof PrivateOperationCodeImpl) {
-    		this.nationalOperationCode=null;
-    		this.privateOperationCode=(PrivateOperationCodeImpl)i;
-    	} else {
-    		throw new IllegalArgumentException("Unsupported Operation Code");
-    	}
+    public void setOperationCode(OperationCodeImpl i) {
+    	this.operationCodeImpl=i;
     }
 
     public Object getParameter() {

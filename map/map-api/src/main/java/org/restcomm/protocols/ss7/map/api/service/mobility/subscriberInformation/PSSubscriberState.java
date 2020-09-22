@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 /**
 <code>
 PS-SubscriberState ::= CHOICE {
@@ -36,21 +33,13 @@ PS-SubscriberState ::= CHOICE {
   ps-PDP-ActiveReachableForPaging     [5] PDP-ContextInfoList,
   netDetNotReachable                  NotReachableReason
 }
-
-PDP-ContextInfoList ::= SEQUENCE SIZE (1..50) OF PDP-ContextInfo
-</code>
+<code>
  *
  *
- * @author amit bhayani
  * @author sergey vetyutnev
  *
  */
-public interface PSSubscriberState extends Serializable {
-
-    PSSubscriberStateChoice getChoice();
-
-    ArrayList<PDPContextInfo> getPDPContextInfoList();
-
-    NotReachableReason getNetDetNotReachable();
+public enum PSSubscriberState {
+    notProvidedFromSGSNorMME, psDetached, psAttachedNotReachableForPaging, psAttachedReachableForPaging, psPDPActiveNotReachableForPaging, psPDPActiveReachableForPaging, netDetNotReachable;
 
 }

@@ -22,18 +22,18 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
- * MAP V3: UpdateLocationRes ::= SEQUENCE { hlr-Number ISDN-AddressString, extensionContainer ExtensionContainer OPTIONAL, ...,
+ * MAP V3: UpdateLocationRes ::= SEQUENCE { hlr-Number ISDN-AddressStringImpl, extensionContainer ExtensionContainer OPTIONAL, ...,
  * add-Capability NULL OPTIONAL, pagingArea-Capability [0]NULL OPTIONAL }
  *
- * MAP V2: UpdateLocationRes ::= CHOICE { hlr-Number ISDN-AddressString, -- hlr-Number must not be used in version greater 1
+ * MAP V2: UpdateLocationRes ::= CHOICE { hlr-Number ISDN-AddressStringImpl, -- hlr-Number must not be used in version greater 1
  * extensibleUpdateLocationRes ExtensibleUpdateLocationRes} -- extensibleUpdateLocationRes must not be used in version 1
  *
- * ExtensibleUpdateLocationRes ::= SEQUENCE { hlr-Number ISDN-AddressString, ...}
+ * ExtensibleUpdateLocationRes ::= SEQUENCE { hlr-Number ISDN-AddressStringImpl, ...}
  *
  *
  * @author sergey vetyutnev
@@ -41,9 +41,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface UpdateLocationResponse extends MobilityMessage {
 
-    ISDNAddressString getHlrNumber();
+    ISDNAddressStringImpl getHlrNumber();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     boolean getAddCapability();
 

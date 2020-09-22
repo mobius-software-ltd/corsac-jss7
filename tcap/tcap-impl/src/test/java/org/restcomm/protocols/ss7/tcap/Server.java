@@ -35,8 +35,7 @@ import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 
 /**
  * @author baranowb
@@ -75,9 +74,7 @@ public class Server extends EventTestHarness {
         }
         // lets kill this Invoke - sending ReturnResultLast
         InvokeImpl invoke = c.getInvoke();
-        ComponentImpl rrlast = TcapFactory.createComponentReturnResultLast();
-        rrlast.getReturnResultLast().setInvokeId(invoke.getInvokeId());
-        super.dialog.sendComponent(rrlast);
+        super.dialog.sendData(invoke.getInvokeId(), null, null, null, null, null, false, true);
 
         c = comps.get(1);
         if (c.getType() != ComponentType.Invoke) {
@@ -86,14 +83,9 @@ public class Server extends EventTestHarness {
 
         // lets kill this Invoke - sending Invoke with linkedId
         invoke = c.getInvoke();
-        ComponentImpl invoke2 = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequest(InvokeClass.Class1);
-        invoke2.getInvoke().setInvokeId(this.dialog.getNewInvokeId());
-        invoke2.getInvoke().setLinkedId(invoke.getInvokeId());
-        OperationCode oc = this.tcapProvider.getComponentPrimitiveFactory().createLocalOperationCode();
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(new Long(14));
-        invoke2.getInvoke().setOperationCode(oc);
-        // no parameter
-        this.dialog.sendComponent(invoke2);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(14L);
+        // no parameter        
+        this.dialog.sendData(null, invoke.getInvokeId(), InvokeClass.Class1, null, oc, null, true, false);
 
         super.sendContinue();
     }

@@ -26,31 +26,31 @@
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPreprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
+@ASNPreprocess
 public class ReturnResultInnerImpl {
 	// mandatory
-	private GlobalOperationCodeImpl globalOperationCode;
-	private LocalOperationCodeImpl localOperationCode;
+	@ASNChoise
+	private OperationCodeImpl operationCode;
 	    
 	// optional
 	@ASNWildcard
-	private ASNReturnResultParameterImpl parameter;
+	private ASNReturnResultParameterImpl parameter;	
 
 	/*
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCode getOperationCode() {
-    	if(localOperationCode!=null)
-    		return localOperationCode;
-    	else if(globalOperationCode!=null)
-    		return globalOperationCode;
-    	
-        return null;
+    public OperationCodeImpl getOperationCode() {
+    	return operationCode;
     }
 
     /*
@@ -71,16 +71,8 @@ public class ReturnResultInnerImpl {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(org
      * .mobicents.protocols.ss7.tcap.asn.comp.OperationCode)
      */
-    public void setOperationCode(OperationCode i) {
-    	if(i instanceof LocalOperationCodeImpl) {
-    		this.localOperationCode=(LocalOperationCodeImpl)i;
-    		this.globalOperationCode=null;
-    	} else if(i instanceof GlobalOperationCodeImpl) {
-    		this.globalOperationCode=(GlobalOperationCodeImpl)i;
-    		this.localOperationCode=null;
-    	}
-    	else
-    		throw new IllegalArgumentException("Unsupported Operation Code");
+    public void setOperationCode(OperationCodeImpl i) {
+    	operationCode=i;
     }
 
     /*
@@ -93,6 +85,20 @@ public class ReturnResultInnerImpl {
     	this.parameter.setValue(p);
     }
 
+    @ASNGenericMapping
+    public Class<?> getMapping(Object parent,ASNParser parser) {
+    	if(operationCode!=null)
+    	{
+    		Class<?> result=parser.getLocalMapping(this.getClass(), operationCode);
+    		if(result==null)
+    			result=parser.getDefaultLocalMapping(this.getClass());
+    		
+    		return result;
+    	}
+    	
+    	return null;
+    }
+    
     public ComponentType getType() {
 
         return ComponentType.ReturnResult;
@@ -100,11 +106,19 @@ public class ReturnResultInnerImpl {
 
     @Override
     public String toString() {
-    	OperationCode oc=this.localOperationCode;
-    	if(this.globalOperationCode!=null)
-    		oc=this.globalOperationCode;
-    	else if(this.localOperationCode!=null)
-    		oc=this.localOperationCode;
+    	Object oc=null;
+    	if(this.operationCode!=null) {
+    		switch(this.operationCode.getOperationType()) {
+				case Global:
+					oc=this.operationCode.getGlobalOperationCode();
+					break;
+				case Local:
+					oc=this.operationCode.getLocalOperationCode();
+					break;
+				default:
+					break;    		
+    		}
+    	}
     	
     	Object p=null;
     	if(this.parameter!=null)

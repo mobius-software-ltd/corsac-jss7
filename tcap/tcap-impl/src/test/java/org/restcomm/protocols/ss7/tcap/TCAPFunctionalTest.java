@@ -44,7 +44,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -230,16 +229,16 @@ public class TCAPFunctionalTest extends SccpHarness {
             // operationCode is not sent via ReturnResultLast because it does not contain a Parameter
             // so operationCode is taken from a sent Invoke
             assertEquals((long) rrl.getInvokeId(), 0);
-            assertEquals((long) ((LocalOperationCodeImpl)rrl.getOperationCode()).getLocalOperationCode(), 12);
+            assertEquals((long) rrl.getOperationCode().getLocalOperationCode(), 12);
 
             // second Invoke has its own operationCode and it has linkedId to the second sent Invoke
             assertEquals((long) inv.getInvokeId(), 0);
-            assertEquals((long) ((LocalOperationCodeImpl)inv.getOperationCode()).getLocalOperationCode(), 14);
+            assertEquals((long) inv.getOperationCode().getLocalOperationCode(), 14);
             assertEquals((long) inv.getLinkedId(), 1);
 
             // we should see operationCode of the second sent Invoke
             InvokeImpl linkedInv = inv.getLinkedInvoke();
-            assertEquals((long) ((LocalOperationCodeImpl)linkedInv.getOperationCode()).getLocalOperationCode(), 13);
+            assertEquals((long) linkedInv.getOperationCode().getLocalOperationCode(), 13);
         }
 
         @Override

@@ -27,6 +27,7 @@ import java.io.Serializable;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
@@ -34,8 +35,10 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  * Interface for class representing Dialog/Transaction.
@@ -187,7 +190,23 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendComponent(ComponentImpl componentRequest) throws TCAPSendException;
+    Long sendData(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,OperationCodeImpl operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException,TCAPException;
+
+    /**
+     * Schedules component for sending. All components on list are queued. Components are sent once message primitive is issued.
+     *
+     * @param componentRequest
+     * @throws TCAPSendException
+     */
+    void sendReject(Long invokeId,ProblemImpl project) throws TCAPSendException;
+
+    /**
+     * Schedules component for sending. All components on list are queued. Components are sent once message primitive is issued.
+     *
+     * @param componentRequest
+     * @throws TCAPSendException
+     */
+    void sendError(Long invokeId,ErrorCodeImpl errorCode,Object param) throws TCAPSendException;
 
     /**
      * If a TCAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this
@@ -197,6 +216,13 @@ public interface Dialog extends Serializable {
      */
     void processInvokeWithoutAnswer(Long invokeId);
 
+    /**
+     * Helper function to retrieve operation code from Invoke
+     *
+     * @param invokeId
+     */
+    OperationCodeImpl getOperationCodeFromInvoke(Long invokeId);
+        
     /**
      * Send initial primitive for Structured dialog.
      *
@@ -238,6 +264,42 @@ public interface Dialog extends Serializable {
      */
     void send(TCUniRequest event) throws TCAPSendException;
 
+    /**
+     * Return the TCAP message length (in bytes) that will be after encoding This value must not exceed getMaxUserDataLength()
+     * value
+     *
+     * @param event
+     * @return
+     */
+    int getDataLength(TCBeginRequest event) throws TCAPSendException;
+
+    /**
+     * Return the TCAP message length (in bytes) that will be after encoding This value must not exceed getMaxUserDataLength()
+     * value
+     *
+     * @param event
+     * @return
+     */
+    int getDataLength(TCContinueRequest event) throws TCAPSendException;
+
+    /**
+     * Return the TCAP message length (in bytes) that will be after encoding This value must not exceed getMaxUserDataLength()
+     * value
+     *
+     * @param event
+     * @return
+     */
+    int getDataLength(TCEndRequest event) throws TCAPSendException;
+
+    /**
+     * Return the TCAP message length (in bytes) that will be after encoding This value must not exceed getMaxUserDataLength()
+     * value
+     *
+     * @param event
+     * @return
+     */
+    int getDataLength(TCUniRequest event) throws TCAPSendException;
+    
     /**
      * Programmer hook to release.
      */

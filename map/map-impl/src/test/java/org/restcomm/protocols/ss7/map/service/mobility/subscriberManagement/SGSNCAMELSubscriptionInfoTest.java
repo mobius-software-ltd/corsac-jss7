@@ -33,32 +33,31 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultGPRSHandling;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultSMSHandling;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSTriggerDetectionPoint;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MGCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MGCSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTSMSTPDUType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteria;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteriaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.GPRSCSIImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.GPRSCamelTDPDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.MGCSIImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.MMCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteriaImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SMSCAMELTDPDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SMSCSIImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -104,8 +103,8 @@ public class SGSNCAMELSubscriptionInfoTest {
         assertEquals(gprsCsi.getGPRSCamelTDPDataList().size(), 1);
         GPRSCamelTDPData gprsCamelTDPData = gprsCsi.getGPRSCamelTDPDataList().get(0);
 
-        MAPExtensionContainer extensionContainergprsCamelTDPData = gprsCamelTDPData.getExtensionContainer();
-        ISDNAddressString gsmSCFAddress = gprsCamelTDPData.getGsmSCFAddress();
+        MAPExtensionContainerImpl extensionContainergprsCamelTDPData = gprsCamelTDPData.getExtensionContainer();
+        ISDNAddressStringImpl gsmSCFAddress = gprsCamelTDPData.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22228"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -133,7 +132,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         assertNotNull(one);
         assertEquals(one.getServiceKey(), 2);
         assertEquals(one.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressString gsmSCFAddressMoSmsCsi = one.getGsmSCFAddress();
+        ISDNAddressStringImpl gsmSCFAddressMoSmsCsi = one.getGsmSCFAddress();
         assertTrue(gsmSCFAddressMoSmsCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressMoSmsCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressMoSmsCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -156,7 +155,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         assertNotNull(oneSmsCamelTdpDataListMtSmsCsi);
         assertEquals(oneSmsCamelTdpDataListMtSmsCsi.getServiceKey(), 2);
         assertEquals(oneSmsCamelTdpDataListMtSmsCsi.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressString gsmSCFAddressmtSmsCsi = one.getGsmSCFAddress();
+        ISDNAddressStringImpl gsmSCFAddressmtSmsCsi = one.getGsmSCFAddress();
         assertTrue(gsmSCFAddressmtSmsCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressmtSmsCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressmtSmsCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -203,7 +202,7 @@ public class SGSNCAMELSubscriptionInfoTest {
 
         assertEquals(mgCsi.getServiceKey(), 3);
 
-        ISDNAddressString gsmSCFAddressMgCsi = mgCsi.getGsmSCFAddress();
+        ISDNAddressStringImpl gsmSCFAddressMgCsi = mgCsi.getGsmSCFAddress();
         assertTrue(gsmSCFAddressMgCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressMgCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressMgCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -214,19 +213,19 @@ public class SGSNCAMELSubscriptionInfoTest {
         assertTrue(mgCsi.getNotificationToCSE());
         // end mgCsi
 
-        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         // start gprsCsi
         GPRSTriggerDetectionPoint gprsTriggerDetectionPoint = GPRSTriggerDetectionPoint.attachChangeOfPosition;
         long serviceKey = 2;
-        ISDNAddressString gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
         DefaultGPRSHandling defaultSessionHandling = DefaultGPRSHandling.releaseTransaction;
 

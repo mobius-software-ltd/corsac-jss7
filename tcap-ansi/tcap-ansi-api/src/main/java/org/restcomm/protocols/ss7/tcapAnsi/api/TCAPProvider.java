@@ -31,6 +31,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
 /**
  *
  * @author baranowb
@@ -100,4 +102,10 @@ public interface TCAPProvider extends Serializable {
     DraftParsedMessage parseMessageDraft(ByteBuf data);
 
     Future<?> createOperationTimer(Runnable operationTimerTask, long invokeTimeout);
+    
+    /**
+     * @return ASN Parser
+     */
+
+    ASNParser getParser();
 }

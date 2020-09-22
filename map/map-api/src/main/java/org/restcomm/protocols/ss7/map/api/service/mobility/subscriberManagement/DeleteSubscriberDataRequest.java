@@ -24,10 +24,10 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 
 import java.util.ArrayList;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 
 /**
  *
@@ -102,15 +102,15 @@ SS-List ::= SEQUENCE SIZE (1..30) OF SS-Code
  */
 public interface DeleteSubscriberDataRequest extends MobilityMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    ArrayList<ExtBasicServiceCode> getBasicServiceList();
+    ArrayList<ExtBasicServiceCodeImpl> getBasicServiceList();
 
-    ArrayList<SSCode> getSsList();
+    ArrayList<SSCodeImpl> getSsList();
 
     boolean getRoamingRestrictionDueToUnsupportedFeature();
 
-    ZoneCode getRegionalSubscriptionIdentifier();
+    ZoneCodeImpl getRegionalSubscriptionIdentifier();
 
     boolean getVbsGroupIndication();
 
@@ -118,25 +118,25 @@ public interface DeleteSubscriberDataRequest extends MobilityMessage {
 
     boolean getCamelSubscriptionInfoWithdraw();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    GPRSSubscriptionDataWithdraw getGPRSSubscriptionDataWithdraw();
+    GPRSSubscriptionDataWithdrawImpl getGPRSSubscriptionDataWithdraw();
 
     boolean getRoamingRestrictedInSgsnDueToUnsuppportedFeature();
 
-    LSAInformationWithdraw getLSAInformationWithdraw();
+    LSAInformationWithdrawImpl getLSAInformationWithdraw();
 
     boolean getGmlcListWithdraw();
 
     boolean getIstInformationWithdraw();
 
-    SpecificCSIWithdraw getSpecificCSIWithdraw();
+    SpecificCSIWithdrawImpl getSpecificCSIWithdraw();
 
     boolean getChargingCharacteristicsWithdraw();
 
     boolean getStnSrWithdraw();
 
-    EPSSubscriptionDataWithdraw getEPSSubscriptionDataWithdraw();
+    EPSSubscriptionDataWithdrawImpl getEPSSubscriptionDataWithdraw();
 
     boolean getApnOiReplacementWithdraw();
 

@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.netty.buffer.ByteBuf;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
@@ -47,7 +48,7 @@ public class ASNBitString
 	}
 	
 	@ASNLength
-	public Integer getLength() {		
+	public Integer getLength(ASNParser parser) {		
 		return maxByteUsed+2;
 	}
 	
@@ -79,7 +80,7 @@ public class ASNBitString
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser,ByteBuf buffer) {
 		Integer lastByte=value.get(maxByteUsed).get();
 		Integer remainingBits=0;
 		for(int i=masks.length-1;i>=0;i--) {
@@ -104,7 +105,7 @@ public class ASNBitString
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		//ignoring first byte
 		buffer.readByte();
 		int count=0;

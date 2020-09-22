@@ -18,7 +18,7 @@
 		<junit.version>4.11</junit.version>
 		<testng.version>6.2</testng.version>
 		<compiler.plugin.version>2.0.2</compiler.plugin.version>
-		<compile.source>1.7</compile.source>
+		<compile.source>1.8</compile.source>
 		<asn.version>2.2.0-143</asn.version>
 		<stream.version>1.0.0.CR1</stream.version>
 		<commons.version>1.0.0.CR1</commons.version>
@@ -27,6 +27,7 @@
 
 	<modules>
 		<module>common</module>
+		<module>validator</module>
 		<module>mtp</module>
 		<module>m3ua</module>
 		<module>isup</module>
@@ -45,6 +46,11 @@
 			<dependency>
 				<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
 				<artifactId>common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
+				<artifactId>validator</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
@@ -313,6 +319,7 @@
 					<source>${compile.source}</source>
 					<target>${compile.source}</target>
 					<debug>${compile.debug}</debug>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 

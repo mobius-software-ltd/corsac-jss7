@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 
 /**
  *
@@ -38,8 +38,8 @@ import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
  * unauthorizedRequestingNetwork | unknownOrUnreachableLCSClient} CODE local:86 }
  *
  * SubscriberLocationReport-Arg ::= SEQUENCE { lcs-Event LCS-Event, lcs-ClientID LCS-ClientID, lcsLocationInfo LCSLocationInfo,
- * msisdn [0] ISDN-AddressString OPTIONAL, imsi [1] IMSI OPTIONAL, imei [2] IMEI OPTIONAL, na-ESRD [3] ISDN-AddressString
- * OPTIONAL, na-ESRK [4] ISDN-AddressString OPTIONAL, locationEstimate [5] Ext-GeographicalInformation OPTIONAL,
+ * msisdn [0] ISDN-AddressStringImpl OPTIONAL, imsi [1] IMSI OPTIONAL, imei [2] IMEI OPTIONAL, na-ESRD [3] ISDN-AddressStringImpl
+ * OPTIONAL, na-ESRK [4] ISDN-AddressStringImpl OPTIONAL, locationEstimate [5] Ext-GeographicalInformation OPTIONAL,
  * ageOfLocationEstimate [6] AgeOfLocationInformation OPTIONAL, slr-ArgExtensionContainer [7] SLR-ArgExtensionContainer
  * OPTIONAL, ... , add-LocationEstimate [8] Add-GeographicalInformation OPTIONAL, deferredmt-lrData [9] Deferredmt-lrData
  * OPTIONAL, lcs-ReferenceNumber [10] LCS-ReferenceNumber OPTIONAL, geranPositioningData [11] PositioningDataInformation
@@ -71,21 +71,21 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
 
     LCSEvent getLCSEvent();
 
-    LCSClientID getLCSClientID();
+    LCSClientIDImpl getLCSClientID();
 
-    LCSLocationInfo getLCSLocationInfo();
+    LCSLocationInfoImpl getLCSLocationInfo();
 
-    ISDNAddressString getMSISDN();
+    ISDNAddressStringImpl getMSISDN();
 
-    IMSI getIMSI();
+    IMSIImpl getIMSI();
 
-    IMEI getIMEI();
+    IMEIImpl getIMEI();
 
-    ISDNAddressString getNaESRD();
+    ISDNAddressStringImpl getNaESRD();
 
-    ISDNAddressString getNaESRK();
+    ISDNAddressStringImpl getNaESRK();
 
-    ExtGeographicalInformation getLocationEstimate();
+    ExtGeographicalInformationImpl getLocationEstimate();
 
     /**
      * AgeOfLocationInformation ::= INTEGER (0..32767) -- the value represents the elapsed time in minutes since the last --
@@ -97,7 +97,7 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
      */
     Integer getAgeOfLocationEstimate();
 
-    SLRArgExtensionContainer getSLRArgExtensionContainer();
+    SLRArgExtensionContainerImpl getSLRArgExtensionContainer();
 
     /**
      * Add-GeographicalInformation ::= OCTET STRING (SIZE (1..maxAdd-GeographicalInformation)) -- Refers to geographical
@@ -116,9 +116,9 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
      *
      * @return
      */
-    AddGeographicalInformation getAdditionalLocationEstimate();
+    AddGeographicalInformationImpl getAdditionalLocationEstimate();
 
-    DeferredmtlrData getDeferredmtlrData();
+    DeferredmtlrDataImpl getDeferredmtlrData();
 
     /**
      * LCS-ReferenceNumber::= OCTET STRING (SIZE(1))
@@ -136,7 +136,7 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
      *
      * @return
      */
-    PositioningDataInformation getGeranPositioningData();
+    PositioningDataInformationImpl getGeranPositioningData();
 
     /**
      * UtranPositioningDataInfo ::= OCTET STRING (SIZE (3..maxUtranPositioningDataInfo)) -- Refers to the Position Data defined
@@ -147,16 +147,16 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
      *
      * @return
      */
-    UtranPositioningDataInfo getUtranPositioningData();
+    UtranPositioningDataInfoImpl getUtranPositioningData();
 
-    CellGlobalIdOrServiceAreaIdOrLAI getCellGlobalIdOrServiceAreaIdOrLAI();
+    CellGlobalIdOrServiceAreaIdOrLAIImpl getCellGlobalIdOrServiceAreaIdOrLAI();
 
     /**
      * GSN-Address ::= OCTET STRING (SIZE (5..17)) -- Octets are coded according to TS 3GPP TS 23.003 [17]
      *
      * @return
      */
-    GSNAddress getHGMLCAddress();
+    GSNAddressImpl getHGMLCAddress();
 
     /**
      * LCSServiceTypeID ::= INTEGER (0..127) -- the integer values 0-63 are reserved for Standard LCS service types -- the
@@ -172,22 +172,22 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
 
     AccuracyFulfilmentIndicator getAccuracyFulfilmentIndicator();
 
-    VelocityEstimate getVelocityEstimate();
+    VelocityEstimateImpl getVelocityEstimate();
 
     Integer getSequenceNumber();
 
-    PeriodicLDRInfo getPeriodicLDRInfo();
+    PeriodicLDRInfoImpl getPeriodicLDRInfo();
 
     boolean getMoLrShortCircuitIndicator();
 
-    GeranGANSSpositioningData getGeranGANSSpositioningData();
+    GeranGANSSpositioningDataImpl getGeranGANSSpositioningData();
 
-    UtranGANSSpositioningData getUtranGANSSpositioningData();
+    UtranGANSSpositioningDataImpl getUtranGANSSpositioningData();
 
-    ServingNodeAddress getTargetServingNodeForHandover();
+    ServingNodeAddressImpl getTargetServingNodeForHandover();
 
-    LMSI getLMSI();
+    LMSIImpl getLMSI();
 
-    ReportingPLMNList getReportingPLMNList();
+    ReportingPLMNListImpl getReportingPLMNList();
 
 }

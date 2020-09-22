@@ -23,15 +23,15 @@
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
 import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 
 /**
  *
  MAP V1: TraceSubscriberActivity ::= OPERATION--Timer s ARGUMENT traceSubscriberActivityArg TraceSubscriberActivityArg
  *
  * TraceSubscriberActivityArg ::= SEQUENCE { imsi [0] IMSI OPTIONAL, traceReference [1] TraceReference, traceType [2] TraceType,
- * omc-Id [3] AddressString OPTIONAL, callReference [4] CallReference OPTIONAL}
+ * omc-Id [3] AddressStringImpl OPTIONAL, callReference [4] CallReference OPTIONAL}
  *
  *
  * @author sergey vetyutnev
@@ -39,13 +39,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
  */
 public interface TraceSubscriberActivityRequest extends OamMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    TraceReference getTraceReference();
+    TraceReferenceImpl getTraceReference();
 
-    TraceType getTraceType();
+    TraceTypeImpl getTraceType();
 
-    AddressString getOmcId();
+    AddressStringImpl getOmcId();
 
     CallReference getCallReference();
 

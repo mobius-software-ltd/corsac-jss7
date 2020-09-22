@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.MAPServiceBaseImpl;
@@ -33,25 +33,28 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessage;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.ActivateTraceModeRequest_Oam;
+import org.restcomm.protocols.ss7.map.api.service.oam.ActivateTraceModeResponse_Oam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPServiceOam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPServiceOamListener;
+import org.restcomm.protocols.ss7.map.api.service.oam.SendImsiRequest;
+import org.restcomm.protocols.ss7.map.api.service.oam.SendImsiResponse;
 import org.restcomm.protocols.ss7.map.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 
 /**
  *
@@ -69,13 +72,13 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
     /*
      * Creating a new outgoing MAP OAM dialog and adding it to the MAPProvider.dialog collection
      */
-    public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-            AddressString destReference) throws MAPException {
+    public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
+            AddressStringImpl destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
-    public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-            AddressString destReference, Long localTrId) throws MAPException {
+    public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
+            AddressStringImpl destReference, Long localTrId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
@@ -112,9 +115,9 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
             if (vers >= 2 && vers <= 2) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 2) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+                List<Long> altOid = dialogApplicationContext.getOID();
+                altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -124,9 +127,9 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
             if (vers >= 1 && vers <= 3) {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
             } else if (vers > 3) {
-                long[] altOid = dialogApplicationContext.getOID();
-                altOid[7] = 3;
-                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+                List<Long> altOid = dialogApplicationContext.getOID();
+                altOid.set(7,3L);
+                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -139,7 +142,7 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
     }
 
     @Override
-    public MAPApplicationContext getMAPv1ApplicationContext(int operationCode, Invoke invoke) {
+    public MAPApplicationContext getMAPv1ApplicationContext(int operationCode) {
 
         switch (operationCode) {
 
@@ -151,174 +154,90 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
         return null;
     }
 
-    public void processComponent(ComponentType compType, OperationCode oc, Parameter parameter, MAPDialog mapDialog,
-            Long invokeId, Long linkedId, Invoke linkedInvoke) throws MAPParsingComponentException {
-
-        // if an application-context-name different from version 1 is
-        // received in a syntactically correct TC-
-        // BEGIN indication primitive but is not acceptable from a load
-        // control point of view, the MAP PM
-        // shall ignore this dialogue request. The MAP-user is not informed.
-//        if (compType == ComponentType.Invoke && this.mapProviderImpl.isCongested()) {
-//            // TODO: we need to care of it
-//        }
-
-        MAPDialogOamImpl mapDialogOamImpl = (MAPDialogOamImpl) mapDialog;
-
+    public void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+            Long invokeId, Long linkedId) throws MAPParsingComponentException {
         Long ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new MAPParsingComponentException("", MAPParsingComponentExceptionReason.UnrecognizedOperation);
-        MAPApplicationContextName acn = mapDialog.getApplicationContext().getApplicationContextName();
-        mapDialog.getApplicationContext().getApplicationContextVersion().getVersion();
+        
         int ocValueInt = (int) (long) ocValue;
-
+        Boolean processed=false;
         switch (ocValueInt) {
             case MAPOperationCode.activateTraceMode:
-                if (acn == MAPApplicationContextName.tracingContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processActivateTraceModeRequest(parameter, mapDialogOamImpl, invokeId);
-                    else
-                        this.processActivateTraceModeResponse(parameter, mapDialogOamImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+            	if(parameter instanceof ActivateTraceModeRequest_Oam)
+                {
+            		processed=true;
+            		ActivateTraceModeRequest_Oam ind=(ActivateTraceModeRequest_Oam)parameter;
+                	
+                    for (MAPServiceListener serLis : this.serviceListeners) {
+                        try {
+                        	 serLis.onMAPMessage(ind);
+                             ((MAPServiceOamListener) serLis).onActivateTraceModeRequest_Oam(ind);
+                        } catch (Exception e) {
+                            loger.error("Error processing SendRoutingInformationRequestIndication: " + e.getMessage(), e);
+                        }
+                    }
+                }
+                else if(parameter instanceof ActivateTraceModeResponse_Oam || (parameter == null && compType!= ComponentType.Invoke))
+                {
+                	processed=true;
+                	ActivateTraceModeResponse_Oam ind=null;
+                	if(parameter!=null)
+                		ind=(ActivateTraceModeResponse_Oam)parameter;
+                	else {
+                		ind=new ActivateTraceModeResponseImpl();
+                		ind.setInvokeId(invokeId);
+                        ind.setMAPDialog(mapDialog);
+                        ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                	}
+                	
+                	for (MAPServiceListener serLis : this.serviceListeners) {
+                        try {
+                            serLis.onMAPMessage(ind);
+                            ((MAPServiceOamListener) serLis).onActivateTraceModeResponse_Oam(ind);
+                        } catch (Exception e) {
+                            loger.error("Error processing SendRoutingInformationResponseIndication: " + e.getMessage(), e);
+                        }
+                    }
                 }
                 break;
 
             case MAPOperationCode.sendIMSI:
-                if (acn == MAPApplicationContextName.imsiRetrievalContext) {
-                    if (compType == ComponentType.Invoke)
-                        this.processSendImsiRequest(parameter, mapDialogOamImpl, invokeId);
-                    else
-                        this.processSendImsiResponse(parameter, mapDialogOamImpl, invokeId,
-                                compType == ComponentType.ReturnResult);
+            	if(parameter instanceof SendImsiRequest)
+                {
+            		processed=true;
+                	SendImsiRequest ind=(SendImsiRequest)parameter;
+                	
+                    for (MAPServiceListener serLis : this.serviceListeners) {
+                        try {
+                        	serLis.onMAPMessage(ind);
+                            ((MAPServiceOamListener) serLis).onSendImsiRequest(ind);
+                        } catch (Exception e) {
+                            loger.error("Error processing ProvideRoamingNumberRequestIndication: " + e.getMessage(), e);
+                        }
+                    }
+                }
+                else if(parameter instanceof SendImsiResponse)
+                {
+                	processed=true;
+                	SendImsiResponse ind=(SendImsiResponse)parameter;
+                	for (MAPServiceListener serLis : this.serviceListeners) {
+                        try {
+                            serLis.onMAPMessage(ind);
+                            ((MAPServiceOamListener) serLis).onSendImsiResponse(ind);
+                        } catch (Exception e) {
+                            loger.error("Error processing ProvideRoamingNumberResponseIndication: " + e.getMessage(), e);
+                        }
+                    }
                 }
                 break;
-
             default:
                 throw new MAPParsingComponentException("MAPServiceOam: unknown incoming operation code: " + ocValueInt,
                         MAPParsingComponentExceptionReason.UnrecognizedOperation);
         }
+        
+        if(!processed)
+        	throw new MAPParsingComponentException("MAPServiceOam: unknown incoming operation code: " + ocValueInt,
+                    MAPParsingComponentExceptionReason.UnrecognizedOperation);
     }
-
-    private void processActivateTraceModeRequest(Parameter parameter, MAPDialogOamImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding processActivateTraceModeRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding processActivateTraceModeRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ActivateTraceModeRequestImpl_Oam ind = new ActivateTraceModeRequestImpl_Oam();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceOamListener) serLis).onActivateTraceModeRequest_Oam(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processActivateTraceModeRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processActivateTraceModeResponse(Parameter parameter, MAPDialogOamImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        ActivateTraceModeResponseImpl_Oam ind = new ActivateTraceModeResponseImpl_Oam();
-
-        if (parameter != null) {
-            if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-                throw new MAPParsingComponentException(
-                        "Error while decoding processActivateTraceModeResponse: Bad tag or tagClass or parameter is primitive, received tag="
-                                + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-            byte[] buf = parameter.getData();
-            AsnInputStream ais = new AsnInputStream(buf);
-            ind.decodeData(ais, buf.length);
-        }
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                ((MAPServiceOamListener) serLis).onActivateTraceModeResponse_Oam(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processActivateTraceModeResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processSendImsiRequest(Parameter parameter, MAPDialogOamImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException(
-                    "Error while decoding processSendImsiRequest: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.STRING_OCTET || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || !parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding processSendImsiRequest: Bad tag or tagClass or parameter is not primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        SendImsiRequestImpl ind = new SendImsiRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceOamListener) serLis).onSendImsiRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processSendImsiRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void processSendImsiResponse(Parameter parameter, MAPDialogOamImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-
-        if (parameter == null)
-            throw new MAPParsingComponentException("Error while decoding processSendImsiResponse: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.STRING_OCTET || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || !parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding processSendImsiResponse: Bad tag or tagClass or parameter is not primitive, received tag=" + parameter.getTag(),
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        SendImsiResponseImpl ind = new SendImsiResponseImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-        ind.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onMAPMessage(ind);
-                ((MAPServiceOamListener) serLis).onSendImsiResponse(ind);
-            } catch (Exception e) {
-                loger.error("Error processing processSendImsiResponse: " + e.getMessage(), e);
-            }
-        }
-    }
-
 }

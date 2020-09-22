@@ -34,12 +34,12 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.RequestingNodeType;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.ReSynchronisationInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImplV3;
 import org.testng.annotations.Test;
 
 /**
@@ -73,7 +73,7 @@ public class SendAuthenticationInfoRequestTest {
         AsnInputStream asn = new AsnInputStream(rawData);
 
         int tag = asn.readTag();
-        SendAuthenticationInfoRequestImpl asc = new SendAuthenticationInfoRequestImpl(3);
+        SendAuthenticationInfoRequestImplV3 asc = new SendAuthenticationInfoRequestImplV3(3);
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -100,7 +100,7 @@ public class SendAuthenticationInfoRequestTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new SendAuthenticationInfoRequestImpl(3);
+        asc = new SendAuthenticationInfoRequestImplV3(3);
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -129,7 +129,7 @@ public class SendAuthenticationInfoRequestTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new SendAuthenticationInfoRequestImpl(2);
+        asc = new SendAuthenticationInfoRequestImplV3(2);
         asc.decodeAll(asn);
         assertEquals(asc.getMapProtocolVersion(), 2);
 
@@ -158,7 +158,7 @@ public class SendAuthenticationInfoRequestTest {
 
         IMSIImpl imsi = new IMSIImpl("111222333444");
         PlmnIdImpl plmnId = new PlmnIdImpl(getRequestingPlmnId());
-        SendAuthenticationInfoRequestImpl asc = new SendAuthenticationInfoRequestImpl(3, imsi, 4, false, false, null, null,
+        SendAuthenticationInfoRequestImplV3 asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 4, false, false, null, null,
                 RequestingNodeType.vlr, plmnId, null, true);
         // long mapProtocolVersion, IMSI imsi, int numberOfRequestedVectors, boolean segmentationProhibited,
         // boolean immediateResponsePreferred, ReSynchronisationInfo reSynchronisationInfo, MAPExtensionContainer
@@ -176,7 +176,7 @@ public class SendAuthenticationInfoRequestTest {
         imsi = new IMSIImpl("33333444444");
         ReSynchronisationInfoImpl rsi = new ReSynchronisationInfoImpl(ReSynchronisationInfoTest.getRandData(),
                 ReSynchronisationInfoTest.getAutsData());
-        asc = new SendAuthenticationInfoRequestImpl(3, imsi, 5, true, true, rsi, null, RequestingNodeType.sgsn, null, 6, false);
+        asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 5, true, true, rsi, null, RequestingNodeType.sgsn, null, 6, false);
 
         asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);
@@ -186,7 +186,7 @@ public class SendAuthenticationInfoRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         imsi = new IMSIImpl("250070222032767");
-        asc = new SendAuthenticationInfoRequestImpl(2, imsi, 0, false, false, null, null, null, null, null, false);
+        asc = new SendAuthenticationInfoRequestImplV3(2, imsi, 0, false, false, null, null, null, null, null, false);
 
         asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);

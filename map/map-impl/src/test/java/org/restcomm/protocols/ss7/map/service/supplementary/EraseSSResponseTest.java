@@ -29,12 +29,11 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.service.supplementary.EraseSSResponseImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSDataImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSInfoImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -71,7 +70,7 @@ public class EraseSSResponseTest {
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
 
-        SSCode ssCode = new SSCodeImpl(SupplementaryCodeValue.clir);
+    	SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.clir);
         SSDataImpl ssData = new SSDataImpl(ssCode, null, null, null, null, null);
         SSInfoImpl ssInfo = new SSInfoImpl(ssData);
 

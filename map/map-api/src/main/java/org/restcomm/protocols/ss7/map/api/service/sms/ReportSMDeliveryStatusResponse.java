@@ -22,15 +22,15 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
- MAP V3: ReportSM-DeliveryStatusRes ::= SEQUENCE { storedMSISDN ISDN-AddressString OPTIONAL, extensionContainer
+ MAP V3: ReportSM-DeliveryStatusRes ::= SEQUENCE { storedMSISDN ISDN-AddressStringImpl OPTIONAL, extensionContainer
  * ExtensionContainer OPTIONAL, ...}
  *
- * MAP V2: RESULT storedMSISDN ISDN-AddressString -- optional -- storedMSISDN must be absent in version 1 -- storedMSISDN must
+ * MAP V2: RESULT storedMSISDN ISDN-AddressStringImpl -- optional -- storedMSISDN must be absent in version 1 -- storedMSISDN must
  * be present in version greater 1
  *
  *
@@ -40,8 +40,8 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  */
 public interface ReportSMDeliveryStatusResponse extends SmsMessage {
 
-    ISDNAddressString getStoredMSISDN();
+    ISDNAddressStringImpl getStoredMSISDN();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

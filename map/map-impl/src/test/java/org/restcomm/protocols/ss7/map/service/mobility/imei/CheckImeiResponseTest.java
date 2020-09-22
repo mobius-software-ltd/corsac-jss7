@@ -32,13 +32,13 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImplV1;
 import org.restcomm.protocols.ss7.map.service.mobility.imei.UESBIIuAImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.imei.UESBIIuBImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.UESBIIuImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -73,7 +73,7 @@ public class CheckImeiResponseTest {
         int tag = asnIS.readTag();
         assertEquals(tag, Tag.SEQUENCE);
 
-        CheckImeiResponseImpl checkImeiImpl = new CheckImeiResponseImpl(3);
+        CheckImeiResponseImplV1 checkImeiImpl = new CheckImeiResponseImplV1(3);
         checkImeiImpl.decodeAll(asnIS);
 
         assertEquals(checkImeiImpl.getEquipmentStatus(), EquipmentStatus.whiteListed);
@@ -87,7 +87,7 @@ public class CheckImeiResponseTest {
         tag = asnIS.readTag();
         assertEquals(tag, Tag.SEQUENCE);
 
-        checkImeiImpl = new CheckImeiResponseImpl(3);
+        checkImeiImpl = new CheckImeiResponseImplV1(3);
         checkImeiImpl.decodeAll(asnIS);
 
         assertEquals(checkImeiImpl.getEquipmentStatus(), EquipmentStatus.whiteListed);
@@ -101,7 +101,7 @@ public class CheckImeiResponseTest {
 
         tag = asnIS.readTag();
         assertEquals(tag, Tag.ENUMERATED);
-        checkImeiImpl = new CheckImeiResponseImpl(2);
+        checkImeiImpl = new CheckImeiResponseImplV1(2);
         checkImeiImpl.decodeAll(asnIS);
 
         assertEquals(checkImeiImpl.getEquipmentStatus(), EquipmentStatus.whiteListed);
@@ -118,7 +118,7 @@ public class CheckImeiResponseTest {
         UESBIIuBImpl impUESBIIuB = new UESBIIuBImpl(bsUESBIIuB);
 
         UESBIIuImpl bmuef = new UESBIIuImpl(impUESBIIuA, impUESBIIuB);
-        CheckImeiResponseImpl checkImei = new CheckImeiResponseImpl(3, EquipmentStatus.whiteListed, bmuef, null);
+        CheckImeiResponseImplV1 checkImei = new CheckImeiResponseImplV1(3, EquipmentStatus.whiteListed, bmuef, null);
 
         AsnOutputStream asnOS = new AsnOutputStream();
         checkImei.encodeAll(asnOS);
@@ -137,9 +137,9 @@ public class CheckImeiResponseTest {
 
         bmuef = new UESBIIuImpl(impUESBIIuA, impUESBIIuB);
 
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        checkImei = new CheckImeiResponseImpl(3, EquipmentStatus.whiteListed, bmuef, extensionContainer);
+        checkImei = new CheckImeiResponseImplV1(3, EquipmentStatus.whiteListed, bmuef, extensionContainer);
 
         asnOS = new AsnOutputStream();
         checkImei.encodeAll(asnOS);
@@ -149,7 +149,7 @@ public class CheckImeiResponseTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         // Testing version 1 and 2
-        checkImei = new CheckImeiResponseImpl(2, EquipmentStatus.whiteListed, null, null);
+        checkImei = new CheckImeiResponseImplV1(2, EquipmentStatus.whiteListed, null, null);
 
         asnOS = new AsnOutputStream();
         checkImei.encodeAll(asnOS);

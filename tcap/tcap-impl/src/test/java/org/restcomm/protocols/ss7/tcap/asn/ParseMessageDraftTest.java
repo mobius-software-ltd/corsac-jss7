@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 @Test(groups = { "asn" })
 public class ParseMessageDraftTest {
@@ -47,8 +47,7 @@ public class ParseMessageDraftTest {
 	@BeforeClass
 	public void setUp()
 	{
-		ASNGeneric.clear(ASNReturnResultParameterImpl.class);
-		ASNGeneric.registerAlternative(ASNReturnResultParameterImpl.class, TCEndTestASN.class);		
+				
 	}
 	
     private byte[] dataTcBegin = new byte[] {
@@ -143,6 +142,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
+        
+        ASNParser parser=provider.getParser();
+        parser.clearClassMapping(ASNReturnResultParameterImpl.class);
+        parser.registerAlternativeClassMapping(ASNReturnResultParameterImpl.class, TCEndTestASN.class);
+		
         DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcBegin));
 
         assertTrue(msg.getMessage() instanceof TCBeginMessageImpl);
@@ -157,6 +161,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
+        
+        ASNParser parser=provider.getParser();
+        parser.clearClassMapping(ASNReturnResultParameterImpl.class);
+        parser.registerAlternativeClassMapping(ASNReturnResultParameterImpl.class, TCEndTestASN.class);
+		
         DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcContinue));
 
         assertTrue(msg.getMessage() instanceof TCContinueMessageImpl);
@@ -171,6 +180,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
+        
+        ASNParser parser=provider.getParser();
+        parser.clearClassMapping(ASNReturnResultParameterImpl.class);
+        parser.registerAlternativeClassMapping(ASNReturnResultParameterImpl.class, TCEndTestASN.class);
+		
         DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcEnd));
 
         assertTrue(msg.getMessage() instanceof TCEndMessageImpl);
@@ -185,6 +199,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
+        
+        ASNParser parser=provider.getParser();
+        parser.clearClassMapping(ASNReturnResultParameterImpl.class);
+        parser.registerAlternativeClassMapping(ASNReturnResultParameterImpl.class, TCEndTestASN.class);
+		
         DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcAbort));
 
         assertTrue(msg.getMessage() instanceof TCAbortMessageImpl);
@@ -199,6 +218,11 @@ public class ParseMessageDraftTest {
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
         TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
         TCAPProvider provider = stack.getProvider();
+        
+        ASNParser parser=provider.getParser();
+        parser.clearClassMapping(ASNReturnResultParameterImpl.class);
+        parser.registerAlternativeClassMapping(ASNReturnResultParameterImpl.class, TCEndTestASN.class);
+		
         DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcUnidirectional));
 
         assertTrue(msg.getMessage() instanceof TCUniMessageImpl);

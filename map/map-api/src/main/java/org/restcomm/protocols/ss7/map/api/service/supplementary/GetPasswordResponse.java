@@ -34,6 +34,6 @@ RESULT Password
  */
 public interface GetPasswordResponse extends SupplementaryMessage {
 
-    Password getPassword();
+    PasswordImpl getPassword();
 
 }

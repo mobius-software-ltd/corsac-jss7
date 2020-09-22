@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.pdpContextActivation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -43,7 +43,7 @@ sendRoutingInfoForGprs OPERATION ::= {
 SendRoutingInfoForGprsArg ::= SEQUENCE {
   imsi                [0] IMSI,
   ggsn-Address        [1] GSN-Address OPTIONAL,
-  ggsn-Number         [2] ISDN-AddressString,
+  ggsn-Number         [2] ISDN-AddressStringImpl,
   extensionContainer  [3] ExtensionContainer OPTIONAL,
   ...
 }
@@ -55,12 +55,12 @@ SendRoutingInfoForGprsArg ::= SEQUENCE {
  */
 public interface SendRoutingInfoForGprsRequest extends PdpContextActivationMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    GSNAddress getGgsnAddress();
+    GSNAddressImpl getGgsnAddress();
 
-    ISDNAddressString getGgsnNumber();
+    ISDNAddressStringImpl getGgsnNumber();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

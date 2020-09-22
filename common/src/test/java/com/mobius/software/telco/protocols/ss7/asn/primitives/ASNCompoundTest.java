@@ -45,10 +45,10 @@ public class ASNCompoundTest
 	
 	@Test
 	public void testCompoundPrimitive1() {		
-		parser.loadClass(ASNCompundPrimitive1.class);
+		parser.loadClass(ASNCompoundPrimitive1.class);
 		
 		byte[] encodedValue1=new byte[] {(byte)0xAE, 0x09, (byte)0xD7, 0x01, 0x19, 0x02, 0x01, 0x1C, 0x01, 0x01, 0x00};				
-		ASNCompundPrimitive1 primitive1=new ASNCompundPrimitive1(25L, 28L, false);
+		ASNCompoundPrimitive1 primitive1=new ASNCompoundPrimitive1(25L, 28L, false);
 		
 		try
 		{
@@ -59,10 +59,10 @@ public class ASNCompoundTest
 			
 			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(encodedValue1);
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
-			assertTrue(decodedValue instanceof ASNCompundPrimitive1);
-			assertEquals(((ASNCompundPrimitive1)decodedValue).getField1(),new Long(25));
-			assertEquals(((ASNCompundPrimitive1)decodedValue).getField2(),new Long(28));
-			assertFalse(((ASNCompundPrimitive1)decodedValue).getField3());			
+			assertTrue(decodedValue instanceof ASNCompoundPrimitive1);
+			assertEquals(((ASNCompoundPrimitive1)decodedValue).getField1(),new Long(25));
+			assertEquals(((ASNCompoundPrimitive1)decodedValue).getField2(),new Long(28));
+			assertFalse(((ASNCompoundPrimitive1)decodedValue).getField3());			
 		}
 		catch(Exception ex)
 		{
@@ -253,5 +253,5 @@ public class ASNCompoundTest
 			ex.printStackTrace();
 			assertEquals(1, 2);
 		}
-	}
+	}	
 }

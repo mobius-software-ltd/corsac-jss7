@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
@@ -40,10 +40,10 @@ public class TCConversationIndicationImpl extends DialogIndicationImpl implement
 	private SccpAddress originatingAddress;
 
     // fields
-    private ApplicationContext applicationContextName;
+    private ApplicationContextNameImpl applicationContextName;
     private UserInformationImpl userInformation;
     private boolean dialogTermitationPermission;
-    private SecurityContext securityContext;
+    private SecurityContextNameImpl securityContext;
     private ConfidentialityImpl confidentiality;
 
     TCConversationIndicationImpl(boolean dialogTermitationPermission) {
@@ -57,7 +57,7 @@ public class TCConversationIndicationImpl extends DialogIndicationImpl implement
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getApplicationContextName()
      */
-    public ApplicationContext getApplicationContextName() {
+    public ApplicationContextNameImpl getApplicationContextName() {
         return applicationContextName;
     }
 
@@ -87,7 +87,7 @@ public class TCConversationIndicationImpl extends DialogIndicationImpl implement
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# setApplicationContextName
      * (org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName)
      */
-    public void setApplicationContextName(ApplicationContext acn) {
+    public void setApplicationContextName(ApplicationContextNameImpl acn) {
         this.applicationContextName = acn;
 
     }
@@ -120,11 +120,11 @@ public class TCConversationIndicationImpl extends DialogIndicationImpl implement
     }
 
     @Override
-    public SecurityContext getSecurityContext() {
+    public SecurityContextNameImpl getSecurityContext() {
         return securityContext;
     }
 
-    public void setSecurityContext(SecurityContext val) {
+    public void setSecurityContext(SecurityContextNameImpl val) {
         securityContext = val;
     }
 

@@ -44,6 +44,6 @@ ARGUMENT SS-ForBS-Code
  */
 public interface DeactivateSSRequest extends SupplementaryMessage {
 
-    SSForBSCode getSsForBSCode();
+    SSForBSCodeImpl getSsForBSCode();
 
 }

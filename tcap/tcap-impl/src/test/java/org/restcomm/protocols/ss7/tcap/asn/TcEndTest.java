@@ -40,8 +40,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.testng.annotations.BeforeClass;
@@ -49,23 +48,28 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 @Test(groups = { "asn" })
 public class TcEndTest {
 
+	ASNParser parser=new ASNParser();
+	
 	@BeforeClass
 	public void setUp()
 	{
-		ASNGeneric.clear(ASNReturnResultParameterImpl.class);
-		ASNGeneric.registerAlternative(ASNReturnResultParameterImpl.class, TCEndTestASN.class);		
+		parser.loadClass(TCEndMessageImpl.class);
+        
+		parser.clearClassMapping(ASNReturnResultParameterImpl.class);
+		parser.registerAlternativeClassMapping(ASNReturnResultParameterImpl.class, TCEndTestASN.class);
+		
+		parser.clearClassMapping(ASNDialogPortionObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
 	}
 	
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testTCEndMessage_No_Dialog() throws ASNException {
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCEndMessageImpl.class);
-        
     	// no idea how to check rest...?
 
         // created by hand
@@ -138,10 +142,10 @@ public class TcEndTest {
         assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
-        OperationCode ocs = rrl.getOperationCode();
+        OperationCodeImpl ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(0x00FF), ((LocalOperationCodeImpl)ocs).getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Long(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 
@@ -154,10 +158,7 @@ public class TcEndTest {
 
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testTCEndMessage_No_Component() throws ASNException, ParseException {
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCEndMessageImpl.class);
-        
-        // created by hand
+    	// created by hand
         byte[] b = new byte[] {
                 // TCEnd
                 0x64, 50,
@@ -228,9 +229,6 @@ public class TcEndTest {
 
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testTCEndMessage_No_Nothing() throws ASNException {
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCEndMessageImpl.class);
-        
     	// no idea how to check rest...?
 
         // created by hand
@@ -262,9 +260,6 @@ public class TcEndTest {
 
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testTCEndMessage_All() throws ASNException, ParseException {
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCEndMessageImpl.class);
-        
     	// no idea how to check rest...?
 
         // created by hand
@@ -382,10 +377,10 @@ public class TcEndTest {
         assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
-        OperationCode ocs = rrl.getOperationCode();
+        OperationCodeImpl ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(511), ((LocalOperationCodeImpl)ocs).getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Long(511), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 

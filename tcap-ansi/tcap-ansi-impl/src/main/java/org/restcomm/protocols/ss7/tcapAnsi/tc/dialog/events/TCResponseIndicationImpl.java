@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndication;
@@ -38,9 +38,9 @@ public class TCResponseIndicationImpl extends DialogIndicationImpl implements TC
 	private static final long serialVersionUID = 1L;
 
 	// fields
-    private ApplicationContext applicationContextName;
+    private ApplicationContextNameImpl applicationContextName;
     private UserInformationImpl userInformation;
-    private SecurityContext securityContext;
+    private SecurityContextNameImpl securityContext;
     private ConfidentialityImpl confidentiality;
     private SccpAddress originatingAddress;
 
@@ -54,7 +54,7 @@ public class TCResponseIndicationImpl extends DialogIndicationImpl implements TC
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getApplicationContextName()
      */
-    public ApplicationContext getApplicationContextName() {
+    public ApplicationContextNameImpl getApplicationContextName() {
         return applicationContextName;
     }
 
@@ -74,7 +74,7 @@ public class TCResponseIndicationImpl extends DialogIndicationImpl implements TC
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# setApplicationContextName
      * (org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName)
      */
-    public void setApplicationContextName(ApplicationContext acn) {
+    public void setApplicationContextName(ApplicationContextNameImpl acn) {
         this.applicationContextName = acn;
 
     }
@@ -91,11 +91,11 @@ public class TCResponseIndicationImpl extends DialogIndicationImpl implements TC
     }
 
     @Override
-    public SecurityContext getSecurityContext() {
+    public SecurityContextNameImpl getSecurityContext() {
         return securityContext;
     }
 
-    public void setSecurityContext(SecurityContext val) {
+    public void setSecurityContext(SecurityContextNameImpl val) {
         securityContext = val;
     }
 

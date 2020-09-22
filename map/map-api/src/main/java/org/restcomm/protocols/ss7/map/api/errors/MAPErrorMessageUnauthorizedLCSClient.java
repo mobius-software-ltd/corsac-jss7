@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -39,10 +39,10 @@ public interface MAPErrorMessageUnauthorizedLCSClient extends MAPErrorMessage {
 
     UnauthorizedLCSClientDiagnostic getUnauthorizedLCSClientDiagnostic();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     void setUnauthorizedLCSClientDiagnostic(UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic);
 
-    void setExtensionContainer(MAPExtensionContainer extensionContainer);
+    void setExtensionContainer(MAPExtensionContainerImpl extensionContainer);
 
 }

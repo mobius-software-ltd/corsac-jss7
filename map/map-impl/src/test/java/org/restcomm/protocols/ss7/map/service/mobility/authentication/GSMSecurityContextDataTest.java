@@ -30,10 +30,10 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Cksn;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CksnImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Kc;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.CksnImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.GSMSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.KcImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KcImpl;
 import org.testng.annotations.Test;
 
 /**

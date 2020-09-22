@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
 
 /**
  *
@@ -45,8 +45,8 @@ registerSS OPERATION ::= {
 RegisterSS-Arg ::= SEQUENCE {
   ss-Code                SS-Code,
   basicService           BasicServiceCode OPTIONAL,
-  forwardedToNumber      [4] AddressString OPTIONAL,
-  forwardedToSubaddress  [6] ISDN-SubaddressString OPTIONAL,
+  forwardedToNumber      [4] AddressStringImpl OPTIONAL,
+  forwardedToSubaddress  [6] ISDN-SubAddressStringImpl OPTIONAL,
   noReplyConditionTime   [5] NoReplyConditionTime OPTIONAL,
   ...,
   defaultPriority        [7] EMLPP-Priority OPTIONAL,
@@ -65,13 +65,13 @@ MC-Bearers ::= INTEGER (1..7)
  */
 public interface RegisterSSRequest extends SupplementaryMessage {
 
-    SSCode getSsCode();
+	SSCodeImpl getSsCode();
 
-    BasicServiceCode getBasicService();
+    BasicServiceCodeImpl getBasicService();
 
-    AddressString getForwardedToNumber();
+    AddressStringImpl getForwardedToNumber();
 
-    ISDNAddressString getForwardedToSubaddress();
+    ISDNAddressStringImpl getForwardedToSubaddress();
 
     Integer getNoReplyConditionTime();
 
@@ -79,6 +79,6 @@ public interface RegisterSSRequest extends SupplementaryMessage {
 
     Integer getNbrUser();
 
-    ISDNAddressString getLongFTNSupported();
+    ISDNAddressStringImpl getLongFTNSupported();
 
 }

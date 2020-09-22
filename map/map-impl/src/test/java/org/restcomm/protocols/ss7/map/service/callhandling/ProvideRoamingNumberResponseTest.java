@@ -37,12 +37,11 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.ProvideRoamingNumberResponseImpl;
+import org.restcomm.protocols.ss7.map.service.callhandling.ProvideRoamingNumberResponseImplV1;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -89,15 +88,15 @@ public class ProvideRoamingNumberResponseTest {
                 7, -111, -110, 17, 19, 50, 19, -15 };
     }
 
-    public static MAPExtensionContainer GetTestExtensionContainer() {
+    public static MAPExtensionContainerImpl GetTestExtensionContainer() {
         MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
 
-        ArrayList<MAPPrivateExtension> al = new ArrayList<MAPPrivateExtension>();
+        ArrayList<MAPPrivateExtensionImpl> al = new ArrayList<MAPPrivateExtensionImpl>();
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 4 }, new byte[] { 11, 12, 13, 14, 15 }));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 6 }, null));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 5 }, new byte[] { 21, 22, 23, 24, 25, 26 }));
 
-        MAPExtensionContainer cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
+        MAPExtensionContainerImpl cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
 
         return cnt;
     }
@@ -108,13 +107,13 @@ public class ProvideRoamingNumberResponseTest {
         AsnInputStream asn = new AsnInputStream(getEncodedData());
         asn.readTag();
 
-        ProvideRoamingNumberResponseImpl prn = new ProvideRoamingNumberResponseImpl(3);
+        ProvideRoamingNumberResponseImplV1 prn = new ProvideRoamingNumberResponseImplV1(3);
         prn.decodeAll(asn);
 
-        ISDNAddressString roamingNumber = prn.getRoamingNumber();
-        MAPExtensionContainer extensionContainer = prn.getExtensionContainer();
+        ISDNAddressStringImpl roamingNumber = prn.getRoamingNumber();
+        MAPExtensionContainerImpl extensionContainer = prn.getExtensionContainer();
         boolean releaseResourcesSupported = prn.getReleaseResourcesSupported();
-        ISDNAddressString vmscAddress = prn.getVmscAddress();
+        ISDNAddressStringImpl vmscAddress = prn.getVmscAddress();
         long mapProtocolVersion = prn.getMapProtocolVersion();
 
         assertNotNull(roamingNumber);
@@ -133,7 +132,7 @@ public class ProvideRoamingNumberResponseTest {
         asn = new AsnInputStream(getEncodedDataFull());
         asn.readTag();
 
-        prn = new ProvideRoamingNumberResponseImpl(3);
+        prn = new ProvideRoamingNumberResponseImplV1(3);
         prn.decodeAll(asn);
 
         roamingNumber = prn.getRoamingNumber();
@@ -158,7 +157,7 @@ public class ProvideRoamingNumberResponseTest {
         asn = new AsnInputStream(getEncodedData1());
         asn.readTag();
 
-        prn = new ProvideRoamingNumberResponseImpl(2);
+        prn = new ProvideRoamingNumberResponseImplV1(2);
         prn.decodeAll(asn);
 
         roamingNumber = prn.getRoamingNumber();
@@ -182,15 +181,15 @@ public class ProvideRoamingNumberResponseTest {
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
 
-        ISDNAddressString roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "49883700292");
-        MAPExtensionContainer extensionContainer = GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = GetTestExtensionContainer();
         boolean releaseResourcesSupported = false;
-        ISDNAddressString vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "29113123311");
         long mapProtocolVersion = 3;
 
-        ProvideRoamingNumberResponseImpl prn = new ProvideRoamingNumberResponseImpl(roamingNumber, extensionContainer,
+        ProvideRoamingNumberResponseImplV1 prn = new ProvideRoamingNumberResponseImplV1(roamingNumber, extensionContainer,
                 releaseResourcesSupported, vmscAddress, mapProtocolVersion);
 
         AsnOutputStream asnOS = new AsnOutputStream();
@@ -200,7 +199,7 @@ public class ProvideRoamingNumberResponseTest {
         assertTrue(Arrays.equals(getEncodedData(), encodedData));
 
         releaseResourcesSupported = true;
-        prn = new ProvideRoamingNumberResponseImpl(roamingNumber, extensionContainer, releaseResourcesSupported, vmscAddress,
+        prn = new ProvideRoamingNumberResponseImplV1(roamingNumber, extensionContainer, releaseResourcesSupported, vmscAddress,
                 mapProtocolVersion);
 
         asnOS = new AsnOutputStream();
@@ -212,7 +211,7 @@ public class ProvideRoamingNumberResponseTest {
 
         // 2
         mapProtocolVersion = 2;
-        prn = new ProvideRoamingNumberResponseImpl(roamingNumber, null, false, null, mapProtocolVersion);
+        prn = new ProvideRoamingNumberResponseImplV1(roamingNumber, null, false, null, mapProtocolVersion);
 
         asnOS = new AsnOutputStream();
         prn.encodeAll(asnOS);

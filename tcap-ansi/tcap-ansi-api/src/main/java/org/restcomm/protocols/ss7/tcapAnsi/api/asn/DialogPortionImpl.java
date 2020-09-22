@@ -22,12 +22,11 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -40,11 +39,15 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=25,constructed=true,lengthIndefinite=false)
 public class DialogPortionImpl {
 	private ProtocolVersionImpl protocolVersion;
-    private IntegerApplicationContextNameImpl intApplicationContext;
-    private ObjectApplicationContextNameImpl objApplicationContext;
-    private UserInformationImpl userInformation;
-    private IntegerSecurityContextImpl intSecurityContext;
-    private ObjectSecurityContextImpl objSecurityContext;
+	
+	@ASNChoise
+    private ApplicationContextNameImpl applicationContext;
+    
+	private UserInformationImpl userInformation;
+    
+    @ASNChoise
+    private SecurityContextNameImpl securityContext;
+    
     private ConfidentialityImpl confidentiality;
 
     public DialogPortionImpl() {
@@ -59,22 +62,12 @@ public class DialogPortionImpl {
         protocolVersion = val;
     }
 
-    public ApplicationContext getApplicationContext() {
-    	if(intApplicationContext!=null)
-    		return intApplicationContext;
-    	
-        return objApplicationContext;
+    public ApplicationContextNameImpl getApplicationContext() {
+    	return applicationContext;
     }
 
-    public void setApplicationContext(ApplicationContext val) {
-    	if(val instanceof IntegerApplicationContextNameImpl) {
-    		this.intApplicationContext=(IntegerApplicationContextNameImpl)val;
-    		this.objApplicationContext=null;
-    	} else if(val instanceof ObjectApplicationContextNameImpl) {
-    		this.intApplicationContext=null;
-    		this.objApplicationContext=(ObjectApplicationContextNameImpl)val;
-    	} else
-    		throw new IllegalArgumentException("Unsupported Application Context");
+    public void setApplicationContext(ApplicationContextNameImpl val) {
+    	this.applicationContext=val;
     }
 
     public UserInformationImpl getUserInformation() {
@@ -85,25 +78,12 @@ public class DialogPortionImpl {
         userInformation = val;
     }
 
-    public SecurityContext getSecurityContext() {
-    	if(intSecurityContext!=null)
-    		return intSecurityContext;
-    	
-        return objSecurityContext;
+    public SecurityContextNameImpl getSecurityContext() {
+    	return securityContext;
     }
 
-    public void setSecurityContext(SecurityContext val) {
-    	if(val==null)
-    		return;
-    	
-        if(val instanceof IntegerSecurityContextImpl) {
-    		this.intSecurityContext=(IntegerSecurityContextImpl)val;
-    		this.objSecurityContext=null;
-    	} else if(val instanceof ObjectSecurityContextImpl) {
-    		this.intSecurityContext=null;
-    		this.objSecurityContext=(ObjectSecurityContextImpl)val;
-    	} else
-    		throw new IllegalArgumentException("Unsupported Security Context");
+    public void setSecurityContext(SecurityContextNameImpl val) {
+    	this.securityContext=val;
     }
 
     public ConfidentialityImpl getConfidentiality() {

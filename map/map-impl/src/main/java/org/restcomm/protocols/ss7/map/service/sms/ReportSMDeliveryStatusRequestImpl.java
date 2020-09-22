@@ -22,72 +22,94 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.ASNSMDeliveryOutcome;
 import org.restcomm.protocols.ss7.map.api.service.sms.ReportSMDeliveryStatusRequest;
 import org.restcomm.protocols.ss7.map.api.service.sms.SMDeliveryOutcome;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements ReportSMDeliveryStatusRequest {
 	private static final long serialVersionUID = 1L;
 
-	protected static final int _TAG_AbsentSubscriberDiagnosticSM = 0;
-    protected static final int _TAG_ExtensionContainer = 1;
-    protected static final int _TAG_GprsSupportIndicator = 2;
-    protected static final int _TAG_DeliveryOutcomeIndicator = 3;
-    protected static final int _TAG_AdditionalSMDeliveryOutcome = 4;
-    protected static final int _TAG_AdditionalAbsentSubscriberDiagnosticSM = 5;
-
-    protected String _PrimitiveName = "ReportSMDeliveryStatusRequest";
-
-    private ISDNAddressString msisdn;
-    private AddressString serviceCentreAddress;
-    private SMDeliveryOutcome sMDeliveryOutcome;
-    private Integer absentSubscriberDiagnosticSM;
-    private MAPExtensionContainer extensionContainer;
-    private boolean gprsSupportIndicator;
-    private boolean deliveryOutcomeIndicator;
-    private SMDeliveryOutcome additionalSMDeliveryOutcome;
-    private Integer additionalAbsentSubscriberDiagnosticSM;
-    private long mapProtocolVersion;
-
-    public ReportSMDeliveryStatusRequestImpl(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
+    private ISDNAddressStringImpl msisdn;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
+    private AddressStringImpl serviceCentreAddress;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=10,constructed=false,index=2)
+    private ASNSMDeliveryOutcome sMDeliveryOutcome;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private ASNInteger absentSubscriberDiagnosticSM;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
+    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
+    private ASNNull gprsSupportIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
+    private ASNNull deliveryOutcomeIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
+    private ASNSMDeliveryOutcome additionalSMDeliveryOutcome;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
+    private ASNInteger additionalAbsentSubscriberDiagnosticSM;
+    
+    public ReportSMDeliveryStatusRequestImpl() {        
     }
 
-    public ReportSMDeliveryStatusRequestImpl(long mapProtocolVersion, ISDNAddressString msisdn,
-            AddressString serviceCentreAddress, SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM,
-            MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator,
+    public ReportSMDeliveryStatusRequestImpl(ISDNAddressStringImpl msisdn,
+            AddressStringImpl serviceCentreAddress, SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM,
+            MAPExtensionContainerImpl extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator,
             SMDeliveryOutcome additionalSMDeliveryOutcome, Integer additionalAbsentSubscriberDiagnosticSM) {
-        this.mapProtocolVersion = mapProtocolVersion;
         this.msisdn = msisdn;
         this.serviceCentreAddress = serviceCentreAddress;
-        this.sMDeliveryOutcome = sMDeliveryOutcome;
-        this.absentSubscriberDiagnosticSM = absentSubscriberDiagnosticSM;
+        
+        if(sMDeliveryOutcome!=null) {
+        	this.sMDeliveryOutcome = new ASNSMDeliveryOutcome();
+        	this.sMDeliveryOutcome.setType(sMDeliveryOutcome);
+        }
+        
+        if(absentSubscriberDiagnosticSM!=null) {
+        	this.absentSubscriberDiagnosticSM = new ASNInteger();
+        	this.absentSubscriberDiagnosticSM.setValue(absentSubscriberDiagnosticSM.longValue());
+        }
+        
         this.extensionContainer = extensionContainer;
-        this.gprsSupportIndicator = gprsSupportIndicator;
-        this.deliveryOutcomeIndicator = deliveryOutcomeIndicator;
-        this.additionalSMDeliveryOutcome = additionalSMDeliveryOutcome;
-        this.additionalAbsentSubscriberDiagnosticSM = additionalAbsentSubscriberDiagnosticSM;
+        
+        if(gprsSupportIndicator)
+        	this.gprsSupportIndicator = new ASNNull();
+        
+        if(deliveryOutcomeIndicator)
+        	this.deliveryOutcomeIndicator = new ASNNull();
+        
+        if(additionalSMDeliveryOutcome!=null) { 
+        	this.additionalSMDeliveryOutcome = new ASNSMDeliveryOutcome();
+        	this.additionalSMDeliveryOutcome.setType(additionalSMDeliveryOutcome);
+        }
+        
+        if(additionalAbsentSubscriberDiagnosticSM!=null) {
+        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger();
+        	this.additionalAbsentSubscriberDiagnosticSM.setValue(additionalAbsentSubscriberDiagnosticSM.longValue());
+        }
     }
 
     public MAPMessageType getMessageType() {
@@ -98,276 +120,58 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
         return MAPOperationCode.reportSM_DeliveryStatus;
     }
 
-    public ISDNAddressString getMsisdn() {
+    public ISDNAddressStringImpl getMsisdn() {
         return this.msisdn;
     }
 
-    public AddressString getServiceCentreAddress() {
+    public AddressStringImpl getServiceCentreAddress() {
         return this.serviceCentreAddress;
     }
 
     public SMDeliveryOutcome getSMDeliveryOutcome() {
-        return this.sMDeliveryOutcome;
+    	if(this.sMDeliveryOutcome==null)
+    		return null;
+    	
+        return this.sMDeliveryOutcome.getType();
     }
 
     public Integer getAbsentSubscriberDiagnosticSM() {
-        return this.absentSubscriberDiagnosticSM;
+    	if(this.absentSubscriberDiagnosticSM==null)
+    		return null;
+    	
+        return this.absentSubscriberDiagnosticSM.getValue().intValue();
     }
 
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return this.extensionContainer;
     }
 
     public boolean getGprsSupportIndicator() {
-        return this.gprsSupportIndicator;
+        return this.gprsSupportIndicator!=null;
     }
 
     public boolean getDeliveryOutcomeIndicator() {
-        return this.deliveryOutcomeIndicator;
+        return this.deliveryOutcomeIndicator!=null;
     }
 
     public SMDeliveryOutcome getAdditionalSMDeliveryOutcome() {
-        return this.additionalSMDeliveryOutcome;
+    	if(this.additionalSMDeliveryOutcome==null)
+    		return null;
+    	
+        return this.additionalSMDeliveryOutcome.getType();
     }
 
     public Integer getAdditionalAbsentSubscriberDiagnosticSM() {
-        return this.additionalAbsentSubscriberDiagnosticSM;
-    }
-
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.msisdn = null;
-        this.serviceCentreAddress = null;
-        this.sMDeliveryOutcome = null;
-        this.absentSubscriberDiagnosticSM = null;
-        this.extensionContainer = null;
-        this.gprsSupportIndicator = false;
-        this.deliveryOutcomeIndicator = false;
-        this.additionalSMDeliveryOutcome = null;
-        this.additionalAbsentSubscriberDiagnosticSM = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            switch (num) {
-                case 0:
-                    // msisdn
-                    if (tag != Tag.STRING_OCTET || ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".msisdn: Parameter bad tag or tag class or not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.msisdn = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.msisdn).decodeAll(ais);
-                    break;
-
-                case 1:
-                    // serviceCentreAddress
-                    if (tag != Tag.STRING_OCTET || ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".serviceCentreAddress: Parameter bad tag or tag class or not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.serviceCentreAddress = new AddressStringImpl();
-                    ((AddressStringImpl) this.serviceCentreAddress).decodeAll(ais);
-                    break;
-
-                case 2:
-                    // sMDeliveryOutcome
-                    if (tag != Tag.ENUMERATED || ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".sMDeliveryOutcome: Parameter bad tag or tag class or not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    int i1 = (int) ais.readInteger();
-                    this.sMDeliveryOutcome = SMDeliveryOutcome.getInstance(i1);
-                    break;
-
-                default:
-                    if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-
-                        switch (tag) {
-                            case _TAG_AbsentSubscriberDiagnosticSM:
-                                // absentSubscriberDiagnosticSM
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ": Parameter absentSubscriberDiagnosticSM is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                this.absentSubscriberDiagnosticSM = (int) ais.readInteger();
-                                break;
-
-                            case _TAG_ExtensionContainer:
-                                // extensionContainer
-                                if (ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ": Parameter extensionContainer is primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                this.extensionContainer = new MAPExtensionContainerImpl();
-                                ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                                break;
-
-                            case _TAG_GprsSupportIndicator:
-                                // gprsSupportIndicator
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ": Parameter gprsSupportIndicator is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.gprsSupportIndicator = true;
-                                break;
-
-                            case _TAG_DeliveryOutcomeIndicator:
-                                // deliveryOutcomeIndicator
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ": Parameter deliveryOutcomeIndicator is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                ais.readNull();
-                                this.deliveryOutcomeIndicator = true;
-                                break;
-
-                            case _TAG_AdditionalSMDeliveryOutcome:
-                                // additionalSMDeliveryOutcome
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ": Parameter additionalSMDeliveryOutcome is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                i1 = (int) ais.readInteger();
-                                this.additionalSMDeliveryOutcome = SMDeliveryOutcome.getInstance(i1);
-                                break;
-
-                            case _TAG_AdditionalAbsentSubscriberDiagnosticSM:
-                                // additionalAbsentSubscriberDiagnosticSM
-                                if (!ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ": Parameter additionalAbsentSubscriberDiagnosticSM is not primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                this.additionalAbsentSubscriberDiagnosticSM = (int) ais.readInteger();
-                                break;
-
-                            default:
-                                ais.advanceElement();
-                                break;
-                        }
-
-                    } else {
-
-                        ais.advanceElement();
-                    }
-                    break;
-            }
-
-            num++;
-        }
-
-        if (num < 3 && this.mapProtocolVersion >= 2 || num < 2 && this.mapProtocolVersion == 1)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": Needs at least 3 mandatory parameters, found " + num,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-
-        this.encodeAll(asnOs, Tag.CLASS_UNIVERSAL, Tag.SEQUENCE);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, false, tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        if (this.mapProtocolVersion == 1) {
-            if (this.msisdn == null || this.serviceCentreAddress == null)
-                throw new MAPException("msisdn and serviceCentreAddress must not be null");
-        } else {
-            if (this.msisdn == null || this.serviceCentreAddress == null || this.sMDeliveryOutcome == null)
-                throw new MAPException("msisdn, serviceCentreAddress and sMDeliveryOutcome must not be null");
-        }
-
-        try {
-            ((ISDNAddressStringImpl) this.msisdn).encodeAll(asnOs);
-            ((AddressStringImpl) this.serviceCentreAddress).encodeAll(asnOs);
-            if (this.mapProtocolVersion > 1)
-                asnOs.writeInteger(Tag.CLASS_UNIVERSAL, Tag.ENUMERATED, this.sMDeliveryOutcome.getCode());
-
-            if (this.absentSubscriberDiagnosticSM != null)
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_AbsentSubscriberDiagnosticSM,
-                        this.absentSubscriberDiagnosticSM);
-            if (this.extensionContainer != null)
-                ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _TAG_ExtensionContainer);
-            if (this.gprsSupportIndicator == true)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_GprsSupportIndicator);
-            if (this.deliveryOutcomeIndicator == true)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_DeliveryOutcomeIndicator);
-            if (this.additionalSMDeliveryOutcome != null)
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_AdditionalSMDeliveryOutcome,
-                        this.additionalSMDeliveryOutcome.getCode());
-            if (this.additionalAbsentSubscriberDiagnosticSM != null)
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _TAG_AdditionalAbsentSubscriberDiagnosticSM,
-                        this.additionalAbsentSubscriberDiagnosticSM);
-        } catch (IOException e) {
-            throw new MAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+    	if(this.additionalAbsentSubscriberDiagnosticSM==null)
+    		return null;
+    	
+        return this.additionalAbsentSubscriberDiagnosticSM.getValue().intValue();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("ReportSMDeliveryStatusRequest [");
 
         if (this.getMAPDialog() != null) {
             sb.append("DialogId=").append(this.getMAPDialog().getLocalDialogId());
@@ -383,29 +187,29 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
         }
         if (this.sMDeliveryOutcome != null) {
             sb.append(", sMDeliveryOutcome=");
-            sb.append(this.sMDeliveryOutcome.toString());
+            sb.append(this.sMDeliveryOutcome.getType());
         }
         if (this.absentSubscriberDiagnosticSM != null) {
             sb.append(", absentSubscriberDiagnosticSM=");
-            sb.append(this.absentSubscriberDiagnosticSM.toString());
+            sb.append(this.absentSubscriberDiagnosticSM.getValue());
         }
         if (this.extensionContainer != null) {
             sb.append(", extensionContainer=");
             sb.append(this.extensionContainer.toString());
         }
-        if (this.gprsSupportIndicator) {
+        if (this.gprsSupportIndicator!=null) {
             sb.append(", gprsSupportIndicator");
         }
-        if (this.deliveryOutcomeIndicator) {
+        if (this.deliveryOutcomeIndicator!=null) {
             sb.append(", deliveryOutcomeIndicator");
         }
         if (this.additionalSMDeliveryOutcome != null) {
             sb.append(", additionalSMDeliveryOutcome=");
-            sb.append(this.additionalSMDeliveryOutcome.toString());
+            sb.append(this.additionalSMDeliveryOutcome.getType());
         }
         if (this.additionalAbsentSubscriberDiagnosticSM != null) {
             sb.append(", additionalAbsentSubscriberDiagnosticSM=");
-            sb.append(this.additionalAbsentSubscriberDiagnosticSM.toString());
+            sb.append(this.additionalAbsentSubscriberDiagnosticSM.getValue());
         }
 
         sb.append("]");

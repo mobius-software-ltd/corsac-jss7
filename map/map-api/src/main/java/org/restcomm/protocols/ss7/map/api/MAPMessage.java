@@ -47,4 +47,5 @@ public interface MAPMessage extends Serializable {
 
     boolean isReturnResultNotLast();
 
+    void setReturnResultNotLast(boolean returnResultNotLast);
 }

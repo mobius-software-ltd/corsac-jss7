@@ -24,8 +24,6 @@ package org.restcomm.protocols.ss7.tcap.api;
 
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
@@ -39,13 +37,5 @@ public interface ComponentPrimitiveFactory {
 	
 	ComponentImpl createTCInvokeRequest(InvokeClass invokeClass);
 	
-    OperationCode createLocalOperationCode();
-
-    OperationCode createGlobalOperationCode();
-
-    ErrorCode createLocalErrorCode();
-
-    ErrorCode createGlobalErrorCode();
-
     ProblemImpl createProblem();
 }

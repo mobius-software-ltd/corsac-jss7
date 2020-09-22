@@ -49,6 +49,6 @@ public interface AccessNetworkSignalInfo extends Serializable {
 
     byte[] getSignalInfo();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

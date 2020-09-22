@@ -68,6 +68,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
@@ -92,6 +93,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCResponseIndication
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCUniIndicationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.TCUserAbortIndicationImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeHandler;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -102,9 +104,11 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
  * @author sergey vetyutnev
  *
  */
-public class TCAPProviderImpl implements TCAPProvider, SccpListener {
+public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHandler {
 	private static final long serialVersionUID = 1L;
 
+	public static final int TCAP_DIALOG = 1;
+	
 	private static final Logger logger = Logger.getLogger(TCAPProviderImpl.class); // listenres
 
     private transient List<TCListener> tcListeners = new CopyOnWriteArrayList<TCListener>();
@@ -148,7 +152,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         messageParser.loadClass(TCQueryMessageImplWithPerm.class);
         messageParser.loadClass(TCResponseMessageImpl.class);
         messageParser.loadClass(TCAbortMessageImpl.class);
-        messageParser.loadClass(TCUniMessageImpl.class);
+        messageParser.loadClass(TCUniMessageImpl.class);                
     }
 
     /*
@@ -577,6 +581,31 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
         }
     }
 
+    public void postProcessElement(Object element,ConcurrentHashMap<Integer,Object> data) {
+    	if(element instanceof TCConversationMessageImpl) {
+			TCConversationMessageImpl tcm=(TCConversationMessageImpl)element;
+    		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
+   			DialogImpl di = this.dialogs.get(dialogId);
+   			if(di!=null)
+   				data.put(TCAP_DIALOG, di);
+		} else if(element instanceof TCResponseMessageImpl) {
+			TCResponseMessageImpl tcm=(TCResponseMessageImpl)element;
+    		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
+   			DialogImpl di = this.dialogs.get(dialogId);
+   			if(di!=null)
+   				data.put(TCAP_DIALOG, di);
+		}
+    }
+    
+    public void preProcessElement(Object element,ConcurrentHashMap<Integer,Object> data) {
+    	if(element instanceof ReturnImpl) {
+    		if(data.containsKey(TCAP_DIALOG)) {
+	    		ReturnImpl ri=(ReturnImpl)element;
+	    		ri.setDialog((Dialog)data.remove(TCAP_DIALOG));
+    		}
+    	}
+    }
+    
     public void onMessage(SccpDataMessage message) {
 
         try {
@@ -839,4 +868,9 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener {
     public void onDisconnectConfirm(SccpConnection conn) {
         // TODO Auto-generated method stub
     }
+
+	@Override
+	public ASNParser getParser() {
+		return messageParser;
+	}
 }

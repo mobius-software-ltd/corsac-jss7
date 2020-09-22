@@ -21,46 +21,51 @@
  */
 package org.restcomm.protocols.ss7.map.errors;
 
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
+import org.restcomm.protocols.ss7.map.api.errors.ASNSMEnumeratedDeliveryFailureCauseImpl;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSMDeliveryFailure;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpdu;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduType;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  *
  * @author sergey vetyutnev
  * @author amit bhayani
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl implements MAPErrorMessageSMDeliveryFailure {
-	private static final long serialVersionUID = 1L;
-
 	private long mapProtocolVersion;
-    private SMEnumeratedDeliveryFailureCause sMEnumeratedDeliveryFailureCause;
-    private byte[] signalInfo;
-    private MAPExtensionContainer extensionContainer;
+    private ASNSMEnumeratedDeliveryFailureCauseImpl sMEnumeratedDeliveryFailureCause;
+    private ASNOctetString signalInfo;
+    private MAPExtensionContainerImpl extensionContainer;
 
     public MAPErrorMessageSMDeliveryFailureImpl(long mapProtocolVersion,
             SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, byte[] signalInfo,
-            MAPExtensionContainer extensionContainer) {
+            MAPExtensionContainerImpl extensionContainer) {
         super((long) MAPErrorCode.smDeliveryFailure);
 
         this.mapProtocolVersion = mapProtocolVersion;
-        this.sMEnumeratedDeliveryFailureCause = smEnumeratedDeliveryFailureCause;
-        this.signalInfo = signalInfo;
+        if(smEnumeratedDeliveryFailureCause!=null) {
+        	this.sMEnumeratedDeliveryFailureCause = new ASNSMEnumeratedDeliveryFailureCauseImpl();
+        	this.sMEnumeratedDeliveryFailureCause.setType(smEnumeratedDeliveryFailureCause);
+        }
+        
+        if(signalInfo!=null) {	
+        	this.signalInfo = new ASNOctetString();
+            this.signalInfo.setValue(Unpooled.wrappedBuffer(signalInfo));
+        }
+        
         this.extensionContainer = extensionContainer;
     }
 
@@ -69,30 +74,49 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
     }
 
     public SMEnumeratedDeliveryFailureCause getSMEnumeratedDeliveryFailureCause() {
-        return this.sMEnumeratedDeliveryFailureCause;
+    	if(this.sMEnumeratedDeliveryFailureCause==null)
+    		return null;
+    	
+        return this.sMEnumeratedDeliveryFailureCause.getType();
     }
 
     public byte[] getSignalInfo() {
-        return this.signalInfo;
+    	if(this.signalInfo==null)
+    		return null;
+    	
+        ByteBuf buf=this.signalInfo.getValue();
+        byte[] output=new byte[buf.readableBytes()];
+        buf.readBytes(output);
+        return output;
     }
 
     public long getMapProtocolVersion() {
         return this.mapProtocolVersion;
     }
 
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return this.extensionContainer;
     }
 
     public void setSMEnumeratedDeliveryFailureCause(SMEnumeratedDeliveryFailureCause sMEnumeratedDeliveryFailureCause) {
-        this.sMEnumeratedDeliveryFailureCause = sMEnumeratedDeliveryFailureCause;
+    	if(sMEnumeratedDeliveryFailureCause==null)
+    		this.sMEnumeratedDeliveryFailureCause=null;
+    	else {
+    		this.sMEnumeratedDeliveryFailureCause=new ASNSMEnumeratedDeliveryFailureCauseImpl();
+    		this.sMEnumeratedDeliveryFailureCause.setType(sMEnumeratedDeliveryFailureCause);
+    	}
     }
 
     public void setSignalInfo(byte[] signalInfo) {
-        this.signalInfo = signalInfo;
+    	if(signalInfo==null)
+    		this.signalInfo=null;
+    	else {
+    		this.signalInfo = new ASNOctetString();
+    		this.signalInfo.setValue(Unpooled.wrappedBuffer(signalInfo));
+    	}
     }
 
-    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 
@@ -108,184 +132,23 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         return this;
     }
 
-    public int getTag() throws MAPException {
-        if (this.mapProtocolVersion == 1)
-            return Tag.ENUMERATED;
-        else
-            return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        if (this.mapProtocolVersion == 1)
-            return true;
-        else
-            return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding MAPErrorMessageSMDeliveryFailure: "
-                    + e.getMessage(), e, MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding MAPErrorMessageSMDeliveryFailure: "
-                    + e.getMessage(), e, MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding MAPErrorMessageSMDeliveryFailure: "
-                    + e.getMessage(), e, MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding MAPErrorMessageSMDeliveryFailure: "
-                    + e.getMessage(), e, MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream localAis, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.sMEnumeratedDeliveryFailureCause = null;
-        this.signalInfo = null;
-        this.extensionContainer = null;
-
-        if (localAis.getTagClass() != Tag.CLASS_UNIVERSAL)
-            throw new MAPParsingComponentException("Error decoding MAPErrorMessageSMDeliveryFailure: bad tag class",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        switch (localAis.getTag()) {
-            case Tag.ENUMERATED:
-                if (!localAis.isTagPrimitive())
-                    throw new MAPParsingComponentException(
-                            "Error decoding MAPErrorMessageSMDeliveryFailure: ENUMERATED tag but data is not primitive",
-                            MAPParsingComponentExceptionReason.MistypedParameter);
-                int code = (int) localAis.readIntegerData(length);
-                this.sMEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.getInstance(code);
-                if (this.sMEnumeratedDeliveryFailureCause == null)
-                    throw new MAPParsingComponentException(
-                            "Error decoding MAPErrorMessageSMDeliveryFailure.sMEnumeratedDeliveryFailureCause: bad code value",
-                            MAPParsingComponentExceptionReason.MistypedParameter);
-                this.mapProtocolVersion = 1;
-                break;
-
-            case Tag.SEQUENCE:
-                if (localAis.isTagPrimitive())
-                    throw new MAPParsingComponentException(
-                            "Error decoding MAPErrorMessageCallBarred: SEQUENCE tag but data is primitive",
-                            MAPParsingComponentExceptionReason.MistypedParameter);
-                AsnInputStream ais = localAis.readSequenceStreamData(length);
-
-                int tag = ais.readTag();
-                if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || tag != Tag.ENUMERATED)
-                    throw new MAPParsingComponentException(
-                            "Error decoding MAPErrorMessageSMDeliveryFailure.sMEnumeratedDeliveryFailureCause: bad tag class or tag",
-                            MAPParsingComponentExceptionReason.MistypedParameter);
-                code = (int) ais.readInteger();
-                this.sMEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.getInstance(code);
-                if (this.sMEnumeratedDeliveryFailureCause == null)
-                    throw new MAPParsingComponentException(
-                            "Error decoding MAPErrorMessageSMDeliveryFailure.sMEnumeratedDeliveryFailureCause: bad value",
-                            MAPParsingComponentExceptionReason.MistypedParameter);
-
-                while (true) {
-                    if (ais.available() == 0)
-                        break;
-
-                    tag = ais.readTag();
-
-                    switch (ais.getTagClass()) {
-                        case Tag.CLASS_UNIVERSAL:
-                            switch (tag) {
-                                case Tag.STRING_OCTET:
-                                    this.signalInfo = ais.readOctetString();
-                                    break;
-
-                                case Tag.SEQUENCE:
-                                    this.extensionContainer = new MAPExtensionContainerImpl();
-                                    ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                                    break;
-
-                                default:
-                                    ais.advanceElement();
-                                    break;
-                            }
-                            break;
-
-                        default:
-                            ais.advanceElement();
-                            break;
-                    }
-                }
-
-                this.mapProtocolVersion = 3;
-                break;
-        }
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-
-        this.encodeAll(asnOs, Tag.CLASS_UNIVERSAL, Tag.SEQUENCE);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding MAPErrorMessageSMDeliveryFailure: " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream aos) throws MAPException {
-
-        if (this.sMEnumeratedDeliveryFailureCause == null)
-            throw new MAPException(
-                    "Error encoding MAPErrorMessageSMDeliveryFailure: parameter sMEnumeratedDeliveryFailureCause must not be null");
-
-        try {
-            if (this.mapProtocolVersion < 3) {
-                aos.writeIntegerData(this.sMEnumeratedDeliveryFailureCause.getCode());
-            } else {
-                aos.writeInteger(Tag.CLASS_UNIVERSAL, Tag.ENUMERATED, this.sMEnumeratedDeliveryFailureCause.getCode());
-
-                if (this.signalInfo != null)
-                    aos.writeOctetString(Tag.CLASS_UNIVERSAL, Tag.STRING_OCTET, this.signalInfo);
-                if (this.extensionContainer != null)
-                    ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(aos);
-            }
-        } catch (IOException e) {
-            throw new MAPException("IOException when encoding MAPErrorMessageSMDeliveryFailure: " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding MAPErrorMessageSMDeliveryFailure: " + e.getMessage(), e);
-        }
-    }
-
-    public SmsDeliverReportTpdu getSmsDeliverReportTpdu() throws MAPException {
+    public SmsDeliverReportTpduImpl getSmsDeliverReportTpdu() throws MAPException {
         if (this.signalInfo != null) {
-            SmsTpdu smsTpdu = SmsTpduImpl.createInstance(this.signalInfo, true, null);
+            SmsTpduImpl smsTpdu = SmsTpduImpl.createInstance(this.signalInfo.getValue(), true, null);
             if (smsTpdu.getSmsTpduType() == SmsTpduType.SMS_DELIVER_REPORT) {
-                SmsDeliverReportTpdu drTpdu = (SmsDeliverReportTpdu) smsTpdu;
+                SmsDeliverReportTpduImpl drTpdu = (SmsDeliverReportTpduImpl) smsTpdu;
                 return drTpdu;
             }
         }
         return null;
     }
 
-    public void setSmsDeliverReportTpdu(SmsDeliverReportTpdu tpdu) throws MAPException {
-        this.signalInfo = tpdu.encodeData();
+    public void setSmsDeliverReportTpdu(SmsDeliverReportTpduImpl tpdu) throws MAPException {
+    	ByteBuf buf=Unpooled.buffer();
+    	tpdu.encodeData(buf);
+    	byte[] data=new byte[buf.readableBytes()];
+    	buf.readBytes(data);
+        setSignalInfo(data);
     }
 
 
@@ -297,7 +160,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         if (this.sMEnumeratedDeliveryFailureCause != null)
             sb.append("sMEnumeratedDeliveryFailureCause=" + this.sMEnumeratedDeliveryFailureCause.toString());
         if (this.signalInfo != null)
-            sb.append(", signalInfo=" + this.printDataArr(this.signalInfo));
+            sb.append(", signalInfo=" + this.printDataArr(getSignalInfo()));
         if (this.extensionContainer != null)
             sb.append(", extensionContainer=" + this.extensionContainer.toString());
         sb.append("]");

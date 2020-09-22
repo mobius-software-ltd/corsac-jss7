@@ -44,11 +44,9 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
@@ -495,17 +493,8 @@ public class TCAPComponentsTest extends SccpHarness {
         }
 
         public void addNewInvoke(Long invokeId, Long timout) throws Exception {
-
-            ComponentImpl invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequest();
-            invoke.getInvoke().setInvokeId(invokeId);
-
-            OperationCode oc = TcapFactory.createLocalOperationCode();
-
-            ((LocalOperationCodeImpl)oc).setLocalOperationCode(10L);
-            invoke.getInvoke().setOperationCode(oc);
-
-            invoke.getInvoke().setTimeout(timout);
-
+            OperationCodeImpl oc = TcapFactory.createLocalOperationCode(10L);
+            
             // Parameter p1 = TcapFactory.createParameter();
             // p1.setTagClass(Tag.CLASS_UNIVERSAL);
             // p1.setTag(Tag.STRING_OCTET);
@@ -527,7 +516,7 @@ public class TCAPComponentsTest extends SccpHarness {
             TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, sequence++);
             this.observerdEvents.add(te);
 
-            this.dialog.sendComponent(invoke);
+            this.dialog.sendData(invokeId, null, null, timout, oc, null, true, false);
         }
     }
 
@@ -547,49 +536,32 @@ public class TCAPComponentsTest extends SccpHarness {
 
         public void addNewReturnResult(Long invokeId) throws Exception {
 
-            ComponentImpl rr = TcapFactory.createComponentReturnResult();
-            rr.getReturnResult().setInvokeId(invokeId);
-
-            OperationCode oc = TcapFactory.createLocalOperationCode();
-
-            ((LocalOperationCodeImpl)oc).setLocalOperationCode(10L);
-            rr.getReturnResult().setOperationCode(oc);
-
+            OperationCodeImpl oc = TcapFactory.createLocalOperationCode(10L);
+            
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnResult, null, sequence++);
             this.observerdEvents.add(te);
 
-            this.dialog.sendComponent(rr);
+            this.dialog.sendData(invokeId, null, null, null, oc, null, false, false);
         }
 
         public void addNewReturnResultLast(Long invokeId) throws Exception {
 
-            ComponentImpl rr = TcapFactory.createComponentReturnResultLast();
-            rr.getReturnResultLast().setInvokeId(invokeId);
-
-            OperationCode oc = TcapFactory.createLocalOperationCode();
-
-            ((LocalOperationCodeImpl)oc).setLocalOperationCode(10L);
-            rr.getReturnResultLast().setOperationCode(oc);
-
+            OperationCodeImpl oc = TcapFactory.createLocalOperationCode(10L);
+            
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, sequence++);
             this.observerdEvents.add(te);
 
-            this.dialog.sendComponent(rr);
+            this.dialog.sendData(invokeId, null, null, null, oc, null, false, true);
         }
 
         public void addNewReturnError(Long invokeId) throws Exception {
 
-            ComponentImpl err = TcapFactory.createComponentReturnError();
-            err.getReturnError().setInvokeId(invokeId);
-
-            ErrorCode ec = this.tcapProvider.getComponentPrimitiveFactory().createLocalErrorCode();            
-            ((LocalErrorCodeImpl)ec).setLocalErrorCode(10L);
-            err.getReturnError().setErrorCode(ec);
-
+            ErrorCodeImpl ec = TcapFactory.createLocalErrorCode(10L);
+            
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnError, null, sequence++);
             this.observerdEvents.add(te);
 
-            this.dialog.sendComponent(err);
+            this.dialog.sendError(invokeId, ec, null);
         }
 
         @Override

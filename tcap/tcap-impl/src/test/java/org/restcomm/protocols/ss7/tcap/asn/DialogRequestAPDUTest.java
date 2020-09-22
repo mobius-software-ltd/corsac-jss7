@@ -35,7 +35,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -54,17 +53,18 @@ public class DialogRequestAPDUTest {
                 40, 13, 6, 7, 4, 0, 0, 1, 1, 1, 1, (byte) 160, 2, (byte) 160, 0 };
     }
 
+    static ASNParser parser=new ASNParser();
+	
     @BeforeClass
     public static void setUpClass() throws Exception {
-    	ASNGeneric.clear(ASNUserInformationObjectImpl.class);
-    	ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, TCBeginTestASN3.class);    	
+    	parser.loadClass(DialogRequestAPDUImpl.class);
+    	
+    	parser.clearClassMapping(ASNUserInformationObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, TCBeginTestASN3.class);    	
     }
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(DialogRequestAPDUImpl.class);
-    	
     	Object output=parser.decode(Unpooled.wrappedBuffer(getData())).getResult();
         assertTrue(output instanceof DialogRequestAPDUImpl);
         DialogRequestAPDUImpl d = (DialogRequestAPDUImpl)output;
@@ -86,7 +86,7 @@ public class DialogRequestAPDUTest {
         assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), ui.getExternal().getObjectIdentifier());
         assertTrue(ui.getExternal().isValueObject());
         assertTrue(ui.getExternal().getChild().getValue() instanceof TCBeginTestASN3);
-        assertTrue(((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getLength()==0);
+        assertTrue(((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getLength(parser)==0);
         
         buffer=parser.encode(d);
         assertTrue(Arrays.equals(getData2(), buffer.array()));

@@ -30,9 +30,9 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CCBSIndicatorsImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.callhandling.CCBSIndicatorsImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -58,7 +58,7 @@ public class CCBSIndicatorsTest {
         assertEquals(tag, Tag.SEQUENCE);
         assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-        MAPExtensionContainer extensionContainer = prim.getMAPExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = prim.getMAPExtensionContainer();
         assertTrue(prim.getCCBSPossible());
         assertTrue(prim.getKeepCCBSCallIndicator());
         assertNotNull(extensionContainer);
@@ -68,7 +68,7 @@ public class CCBSIndicatorsTest {
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
 
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         CCBSIndicatorsImpl prim = new CCBSIndicatorsImpl(true, true, extensionContainer);
         AsnOutputStream asn = new AsnOutputStream();
         prim.encodeAll(asn);

@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 
 /**
  * The factory of MAP ReturnError messages
@@ -40,57 +40,58 @@ public interface MAPErrorMessageFactory {
      * Generate the empty message depends of the error code (for incoming messages)
      *
      * @param errorCode
+     * @param mapVersion
      * @return
      */
-    MAPErrorMessage createMessageFromErrorCode(Long errorCode);
+    MAPErrorMessage createMessageFromErrorCode(Long errorCode,Long mapVersion);
 
     MAPErrorMessageParameterless createMAPErrorMessageParameterless(Long errorCode);
 
     MAPErrorMessageExtensionContainer createMAPErrorMessageExtensionContainer(Long errorCode,
-            MAPExtensionContainer extensionContainer);
+    		MAPExtensionContainerImpl extensionContainer);
 
     MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(long mapProtocolVersion,
             SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, byte[] signalInfo,
-            MAPExtensionContainer extensionContainer);
+            MAPExtensionContainerImpl extensionContainer);
 
-    MAPErrorMessageFacilityNotSup createMAPErrorMessageFacilityNotSup(MAPExtensionContainer extensionContainer,
+    MAPErrorMessageFacilityNotSup createMAPErrorMessageFacilityNotSup(MAPExtensionContainerImpl extensionContainer,
             Boolean shapeOfLocationEstimateNotSupported, Boolean neededLcsCapabilityNotSupportedInServingNode);
 
     MAPErrorMessageSystemFailure createMAPErrorMessageSystemFailure(long mapVersion, NetworkResource networkResource,
-            AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainer extensionContainer);
+            AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainerImpl extensionContainer);
 
-    MAPErrorMessageUnknownSubscriber createMAPErrorMessageUnknownSubscriber(MAPExtensionContainer extensionContainer,
+    MAPErrorMessageUnknownSubscriber createMAPErrorMessageUnknownSubscriber(MAPExtensionContainerImpl extensionContainer,
             UnknownSubscriberDiagnostic unknownSubscriberDiagnostic);
 
     MAPErrorMessageAbsentSubscriberSM createMAPErrorMessageAbsentSubscriberSM(
-            AbsentSubscriberDiagnosticSM absentSubscriberDiagnosticSM, MAPExtensionContainer extensionContainer,
+            AbsentSubscriberDiagnosticSM absentSubscriberDiagnosticSM, MAPExtensionContainerImpl extensionContainer,
             AbsentSubscriberDiagnosticSM additionalAbsentSubscriberDiagnosticSM);
 
     MAPErrorMessageAbsentSubscriber createMAPErrorMessageAbsentSubscriber(Boolean mwdSet);
 
     MAPErrorMessageSubscriberBusyForMtSms createMAPErrorMessageSubscriberBusyForMtSms(
-            MAPExtensionContainer extensionContainer, Boolean gprsConnectionSuspended);
+    		MAPExtensionContainerImpl extensionContainer, Boolean gprsConnectionSuspended);
 
     MAPErrorMessageCallBarred createMAPErrorMessageCallBarred(Long mapVersion, CallBarringCause callBarringCause,
-            MAPExtensionContainer extensionContainer, Boolean unauthorisedMessageOriginator);
+    		MAPExtensionContainerImpl extensionContainer, Boolean unauthorisedMessageOriginator);
 
-    MAPErrorMessageAbsentSubscriber createMAPErrorMessageAbsentSubscriber(MAPExtensionContainer extensionContainer,
+    MAPErrorMessageAbsentSubscriber createMAPErrorMessageAbsentSubscriber(MAPExtensionContainerImpl extensionContainer,
             AbsentSubscriberReason absentSubscriberReason);
 
     MAPErrorMessageUnauthorizedLCSClient createMAPErrorMessageUnauthorizedLCSClient(
-            UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic, MAPExtensionContainer extensionContainer);
+            UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic, MAPExtensionContainerImpl extensionContainer);
 
     MAPErrorMessagePositionMethodFailure createMAPErrorMessagePositionMethodFailure(
-            PositionMethodFailureDiagnostic positionMethodFailureDiagnostic, MAPExtensionContainer extensionContainer);
+            PositionMethodFailureDiagnostic positionMethodFailureDiagnostic, MAPExtensionContainerImpl extensionContainer);
 
-    MAPErrorMessageBusySubscriber createMAPErrorMessageBusySubscriber(MAPExtensionContainer extensionContainer,
+    MAPErrorMessageBusySubscriber createMAPErrorMessageBusySubscriber(MAPExtensionContainerImpl extensionContainer,
             boolean ccbsPossible, boolean ccbsBusy);
 
     MAPErrorMessageCUGReject createMAPErrorMessageCUGReject(CUGRejectCause cugRejectCause,
-            MAPExtensionContainer extensionContainer);
+    		MAPExtensionContainerImpl extensionContainer);
 
     MAPErrorMessageRoamingNotAllowed createMAPErrorMessageRoamingNotAllowed(
-            RoamingNotAllowedCause roamingNotAllowedCause, MAPExtensionContainer extensionContainer,
+            RoamingNotAllowedCause roamingNotAllowedCause, MAPExtensionContainerImpl extensionContainer,
             AdditionalRoamingNotAllowedCause additionalRoamingNotAllowedCause);
 
     MAPErrorMessageSsErrorStatus createMAPErrorMessageSsErrorStatus(int data);
@@ -98,8 +99,8 @@ public interface MAPErrorMessageFactory {
     MAPErrorMessageSsErrorStatus createMAPErrorMessageSsErrorStatus(boolean qBit, boolean pBit, boolean rBit,
             boolean aBit);
 
-    MAPErrorMessageSsIncompatibility createMAPErrorMessageSsIncompatibility(SSCode ssCode,
-            BasicServiceCode basicService, SSStatus ssStatus);
+    MAPErrorMessageSsIncompatibility createMAPErrorMessageSsIncompatibility(SSCodeImpl ssCode,
+            BasicServiceCodeImpl basicService, SSStatusImpl ssStatus);
 
     MAPErrorMessagePwRegistrationFailure createMAPErrorMessagePwRegistrationFailure(
             PWRegistrationFailureCause pwRegistrationFailureCause);

@@ -40,10 +40,9 @@ import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -86,7 +85,7 @@ public class SubscriberIdentityTest {
         SubscriberIdentityImpl subsIdent = new SubscriberIdentityImpl();
         subsIdent.decodeAll(asn);
         IMSI imsi = subsIdent.getIMSI();
-        ISDNAddressString msisdn = subsIdent.getMSISDN();
+        ISDNAddressStringImpl msisdn = subsIdent.getMSISDN();
         assertNotNull(imsi);
         assertNull(msisdn);
         assertTrue(imsi.getData().equals("724999900000007"));
@@ -115,7 +114,7 @@ public class SubscriberIdentityTest {
         byte[] encodedData = asnOS.toByteArray();
         assertTrue(Arrays.equals(data, encodedData));
 
-        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22222233333");
         subsIdent = new SubscriberIdentityImpl(msisdn);
         asnOS = new AsnOutputStream();

@@ -34,26 +34,25 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySets;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.ADDInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LocationAreaImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PagingAreaImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.VLRCapabilityImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -110,12 +109,12 @@ public class UpdateLocationRequestTest {
         assertTrue(imsi.getData().equals("1111122222"));
 
         assertNull(asc.getRoamingNumber());
-        ISDNAddressString mscNumber = asc.getMscNumber();
+        ISDNAddressStringImpl mscNumber = asc.getMscNumber();
         assertTrue(mscNumber.getAddress().equals("22228"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
 
-        ISDNAddressString vlrNumber = asc.getVlrNumber();
+        ISDNAddressStringImpl vlrNumber = asc.getVlrNumber();
         assertTrue(vlrNumber.getAddress().equals("22229"));
         assertEquals(vlrNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -227,7 +226,7 @@ public class UpdateLocationRequestTest {
         assertTrue(imsi.getData().equals("1111122233"));
 
         assertNull(asc.getMscNumber());
-        ISDNAddressString roamingNumber = asc.getRoamingNumber();
+        ISDNAddressStringImpl roamingNumber = asc.getRoamingNumber();
         assertTrue(roamingNumber.getAddress().equals("22220"));
         assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -260,8 +259,8 @@ public class UpdateLocationRequestTest {
                 null, false, false);
         UpdateLocationRequestImpl asc = new UpdateLocationRequestImpl(3, imsi, mscNumber, null, vlrNumber, null, null, vlrCap,
                 false, false, null, null, null, false, false);
-        // long mapProtocolVersion, IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString roamingNumber,
-        // ISDNAddressString vlrNumber, LMSI lmsi, MAPExtensionContainer extensionContainer, VlrCapability vlrCapability,
+        // long mapProtocolVersion, IMSI imsi, ISDNAddressStringImpl mscNumber, ISDNAddressStringImpl roamingNumber,
+        // ISDNAddressStringImpl vlrNumber, LMSI lmsi, MAPExtensionContainerImpl extensionContainer, VlrCapability vlrCapability,
         // boolean informPreviousNetworkEntity,
         // boolean csLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo, PagingArea pagingArea, boolean
         // skipSubscriberDataUpdate,
@@ -281,7 +280,7 @@ public class UpdateLocationRequestTest {
         vlrCap = new VLRCapabilityImpl(null, null, false, null, null, false, supportedLCSCapabilitySets, null, null, false,
                 false);
         LMSIImpl lmsi = new LMSIImpl(getLmsiData());
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         asc = new UpdateLocationRequestImpl(3, imsi, mscNumber, null, vlrNumber, lmsi, extensionContainer, vlrCap, true, true,
                 null, null, null, true, true);
 

@@ -26,7 +26,7 @@ import static org.testng.Assert.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
@@ -58,7 +58,7 @@ public class ReturnErrorTest {
     	ReturnErrorImpl re = (ReturnErrorImpl)result.getResult();
         
         assertEquals((long) re.getCorrelationId(), 5);
-        assertEquals((long) ((PrivateErrorCodeImpl)re.getErrorCode()).getErrorCode(), 14);
+        assertEquals(re.getErrorCode().getPrivateErrorCode(), new Long(14L));
         assertTrue(re.getParameter() instanceof ASNOctetString);
         assertEquals(((ASNOctetString)re.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
     }
@@ -71,8 +71,7 @@ public class ReturnErrorTest {
         // 1
         ReturnErrorImpl re = TcapFactory.createComponentReturnError();
         re.setCorrelationId(5L);
-        PrivateErrorCodeImpl ec = TcapFactory.createPrivateErrorCode();
-        ec.setErrorCode(14L);
+        ErrorCodeImpl ec = TcapFactory.createPrivateErrorCode(14L);
         re.setErrorCode(ec);
         ASNOctetString p=new ASNOctetString();
         p.setValue(Unpooled.wrappedBuffer(parData));

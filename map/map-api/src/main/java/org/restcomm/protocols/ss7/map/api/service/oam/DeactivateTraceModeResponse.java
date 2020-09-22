@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -34,6 +34,6 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  */
 public interface DeactivateTraceModeResponse extends OamMessage {
 
-    MAPExtensionContainer getExtensionContainer();
+	MAPExtensionContainerImpl getExtensionContainer();
 
 }

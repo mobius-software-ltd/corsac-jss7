@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaIndicationType;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaMessageClass;
-import org.restcomm.protocols.ss7.map.smstpdu.DataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemeImpl;
 import org.testng.annotations.Test;
 
 /**

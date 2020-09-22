@@ -26,6 +26,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -34,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=0x05,constructed=true,lengthIndefinite=false)
+@ASNPostprocess
 public class TCContinueMessageImpl extends TCUnifiedMessageImpl implements TCContinueMessage {
 	// opt
     private ComponentPortionImpl component;

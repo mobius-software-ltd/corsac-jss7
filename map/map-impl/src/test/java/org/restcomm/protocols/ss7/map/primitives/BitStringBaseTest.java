@@ -35,8 +35,8 @@ import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
+import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredLocationEventTypeImpl;
 import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
-import org.restcomm.protocols.ss7.map.service.lsm.DeferredLocationEventTypeImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGIdImpl;
 import org.testng.annotations.Test;
 

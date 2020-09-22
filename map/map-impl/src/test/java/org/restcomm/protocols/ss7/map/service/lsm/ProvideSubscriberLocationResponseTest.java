@@ -35,20 +35,20 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.AddGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ExtGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.GeranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.PositioningDataInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.ProvideSubscriberLocationResponseImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ServingNodeAddressImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.UtranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.UtranPositioningDataInfoImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.VelocityEstimateImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -220,7 +220,7 @@ public class ProvideSubscriberLocationResponseTest {
         // ExtGeographicalInformation locationEstimate, PositioningDataInformation geranPositioningData,
         // UtranPositioningDataInfo utranPositioningData, Integer ageOfLocationEstimate, AddGeographicalInformation
         // additionalLocationEstimate,
-        // MAPExtensionContainer extensionContainer, Boolean deferredMTLRResponseIndicator, CellGlobalIdOrServiceAreaIdOrLAI
+        // MAPExtensionContainerImpl extensionContainer, Boolean deferredMTLRResponseIndicator, CellGlobalIdOrServiceAreaIdOrLAI
         // cellGlobalIdOrServiceAreaIdOrLAI,
         // Boolean saiPresent, AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate,
         // boolean moLrShortCircuitIndicator,

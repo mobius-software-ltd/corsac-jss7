@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.datacoding;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharset;
+import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharset;
 import org.testng.annotations.Test;
 
 /**
@@ -38,26 +38,26 @@ public class CheckAllCharsCanBeEncodedTest {
     @Test(groups = { "functional.encode", "datacoding" })
     public void testCheckAllCharsCanBeEncoded() throws Exception {
 
-        boolean res = GSMCharset.checkAllCharsCanBeEncoded("", GSMCharset.BYTE_TO_CHAR_DefaultAlphabet,
-                GSMCharset.BYTE_TO_CHAR_DefaultAlphabetExtentionTable);
+        boolean res = GSMCharset.checkAllCharsCanBeEncoded("", GSMCharset.basicMap,
+                GSMCharset.basicExtentionMap);
         assertTrue(res);
 
-        res = GSMCharset.checkAllCharsCanBeEncoded("aA12", GSMCharset.BYTE_TO_CHAR_DefaultAlphabet,
-                GSMCharset.BYTE_TO_CHAR_DefaultAlphabetExtentionTable);
+        res = GSMCharset.checkAllCharsCanBeEncoded("aA12", GSMCharset.basicMap,
+                GSMCharset.basicExtentionMap);
         assertTrue(res);
 
-        res = GSMCharset.checkAllCharsCanBeEncoded("A[", GSMCharset.BYTE_TO_CHAR_DefaultAlphabet,
-                GSMCharset.BYTE_TO_CHAR_DefaultAlphabetExtentionTable);
+        res = GSMCharset.checkAllCharsCanBeEncoded("A[", GSMCharset.basicMap,
+                GSMCharset.basicExtentionMap);
         assertTrue(res);
 
-        res = GSMCharset.checkAllCharsCanBeEncoded("A[", GSMCharset.BYTE_TO_CHAR_DefaultAlphabet, null);
+        res = GSMCharset.checkAllCharsCanBeEncoded("A[", GSMCharset.basicMap, null);
         assertFalse(res);
 
         res = GSMCharset.checkAllCharsCanBeEncoded("A[", null, null);
         assertFalse(res);
 
-        res = GSMCharset.checkAllCharsCanBeEncoded("A\u0424", GSMCharset.BYTE_TO_CHAR_DefaultAlphabet,
-                GSMCharset.BYTE_TO_CHAR_DefaultAlphabetExtentionTable);
+        res = GSMCharset.checkAllCharsCanBeEncoded("A\u0424", GSMCharset.basicMap,
+                GSMCharset.basicExtentionMap);
         assertFalse(res);
 
     }

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 
 /**
  *
@@ -30,13 +30,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 MAP V2:
 sendIMSI OPERATION ::= {
   --Timer m
-  ARGUMENT ISDN-AddressString
+  ARGUMENT ISDN-AddressStringImpl
   RESULT IMSI
   ERRORS { dataMissing | unexpectedDataValue | unknownSubscriber}
   CODE local:58
 }
 
-ARGUMENT ISDN-AddressString
+ARGUMENT ISDN-AddressStringImpl
 <code>
  *
  *
@@ -45,6 +45,6 @@ ARGUMENT ISDN-AddressString
  */
 public interface SendImsiRequest extends OamMessage {
 
-    ISDNAddressString getMsisdn();
+    ISDNAddressStringImpl getMsisdn();
 
 }

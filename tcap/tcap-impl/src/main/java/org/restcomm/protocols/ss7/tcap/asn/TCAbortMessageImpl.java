@@ -65,6 +65,6 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
 
 	@Override
 	public boolean validate() {
-		return getOriginatingTransactionId()==null && getDestinationTransactionId()!=null;
+		return getOriginatingTransactionId()==null;
 	}
 }

@@ -22,39 +22,46 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.Tag;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.MAPServiceBaseImpl;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessage;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPDialogLsm;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPServiceLsm;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPServiceLsmListener;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ProvideSubscriberLocationRequest;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ProvideSubscriberLocationResponse;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SendRoutingInfoForLCSRequest;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SendRoutingInfoForLCSResponse;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SubscriberLocationReportRequest;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SubscriberLocationReportResponse;
 import org.restcomm.protocols.ss7.map.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 
 /**
  * @author amit bhayani
  *
  */
 public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceLsm {
+	private static final Logger loger = Logger.getLogger(MAPServiceLsmImpl.class);
 
     /**
      * @param mapProviderImpl
@@ -71,13 +78,13 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      * org.restcomm.protocols.ss7.map.api.dialog.AddressString, org.restcomm.protocols.ss7.sccp.parameter.SccpAddress,
      * org.restcomm.protocols.ss7.map.api.dialog.AddressString)
      */
-    public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference) throws MAPException {
+    public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference,
+            SccpAddress destAddress, AddressStringImpl destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
-    public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference, Long localTrId) throws MAPException {
+    public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference,
+            SccpAddress destAddress, AddressStringImpl destReference, Long localTrId) throws MAPException {
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
             throw new MAPException("Cannot create MAPDialogLsm because MAPServiceLsm is not activated");
@@ -139,9 +146,9 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
                 if (vers == 3) {
                     return new ServingCheckDataImpl(ServingCheckResult.AC_Serving);
                 } else if (vers > 3) {
-                    long[] altOid = dialogApplicationContext.getOID();
-                    altOid[7] = 3;
-                    ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
+                    List<Long> altOid = dialogApplicationContext.getOID();
+                    altOid.set(7,3L);
+                    ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
                     return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
                 } else {
                     return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -162,216 +169,105 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      * java.lang.Long)
      */
     @Override
-    public void processComponent(ComponentType compType, OperationCode oc, Parameter parameter, MAPDialog mapDialog,
-            Long invokeId, Long linkedId, Invoke linkedInvoke) throws MAPParsingComponentException {
+    public void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+            Long invokeId, Long linkedId) throws MAPParsingComponentException {
 
-        // if an application-context-name different from version 1 is
-        // received in a syntactically correct TC-
-        // BEGIN indication primitive but is not acceptable from a load
-        // control point of view, the MAP PM
-        // shall ignore this dialogue request. The MAP-user is not informed.
-//        if (compType == ComponentType.Invoke && this.mapProviderImpl.isCongested()) {
-//            // we reject all lms services when congestion
-//            return;
-//        }
-
-        MAPDialogLsmImpl mAPDialogLsmImpl = (MAPDialogLsmImpl) mapDialog;
-
-        Long ocValue = oc.getLocalOperationCode();
+    	Long ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new MAPParsingComponentException("", MAPParsingComponentExceptionReason.UnrecognizedOperation);
 
         long ocValueInt = ocValue;
         int ocValueInt2 = (int) ocValueInt;
+        Boolean processed=false;
         switch (ocValueInt2) {
             case MAPOperationCode.provideSubscriberLocation:
-                if (compType == ComponentType.Invoke) {
-                    this.provideSubscriberLocationReq(parameter, mAPDialogLsmImpl, invokeId);
-                } else {
-                    this.provideSubscriberLocationRes(parameter, mAPDialogLsmImpl, invokeId,
-                            compType == ComponentType.ReturnResult);
-                }
+            	if(parameter instanceof ProvideSubscriberLocationRequest) {
+            		processed=true;
+            		ProvideSubscriberLocationRequest ind=(ProvideSubscriberLocationRequest)parameter;
+            		
+            		for (MAPServiceListener serLis : this.serviceListeners) {
+            			try {
+        	                serLis.onMAPMessage(ind);
+        	                ((MAPServiceLsmListener) serLis).onProvideSubscriberLocationRequest(ind);
+            			} catch (Exception e) {
+                            loger.error("Error processing ProvideSubscriberLocationRequestIndication: " + e.getMessage(), e);
+                        }
+                    }
+            	} else if(parameter instanceof ProvideSubscriberLocationResponse) {
+            		processed=true;
+            		ProvideSubscriberLocationResponse provideSubsLoctResInd=(ProvideSubscriberLocationResponse)parameter;
+            		
+            		for (MAPServiceListener serLis : this.serviceListeners) {
+            			try {
+        	                serLis.onMAPMessage(provideSubsLoctResInd);
+        	                ((MAPServiceLsmListener) serLis).onProvideSubscriberLocationResponse(provideSubsLoctResInd);
+            			} catch (Exception e) {
+                            loger.error("Error processing ProvideSubscriberLocationResponseIndication: " + e.getMessage(), e);
+                        }
+                    }
+            	}
                 break;
             case MAPOperationCode.subscriberLocationReport:
-                if (compType == ComponentType.Invoke) {
-                    this.subscriberLocationReportReq(parameter, mAPDialogLsmImpl, invokeId);
-                } else {
-                    this.subscriberLocationReportRes(parameter, mAPDialogLsmImpl, invokeId,
-                            compType == ComponentType.ReturnResult);
-                }
+            	if(parameter instanceof SubscriberLocationReportRequest) {
+            		processed=true;
+            		SubscriberLocationReportRequest ind=(SubscriberLocationReportRequest)parameter;
+            		
+            		for (MAPServiceListener serLis : this.serviceListeners) {
+            			try {
+        	                serLis.onMAPMessage(ind);
+        	                ((MAPServiceLsmListener) serLis).onSubscriberLocationReportRequest(ind);
+            			} catch (Exception e) {
+                            loger.error("Error processing SubscriberLocationReportRequestIndication: " + e.getMessage(), e);
+                        }
+                    }    		
+            	} else if(parameter instanceof SubscriberLocationReportResponse) {
+            		processed=true;
+            		SubscriberLocationReportResponse resInd=(SubscriberLocationReportResponse)parameter;
+            		
+            		for (MAPServiceListener serLis : this.serviceListeners) {
+            			try {
+        	                serLis.onMAPMessage(resInd);
+        	                ((MAPServiceLsmListener) serLis).onSubscriberLocationReportResponse(resInd);
+            			} catch (Exception e) {
+                            loger.error("Error processing SubscriberLocationReportResponseIndication: " + e.getMessage(), e);
+                        }
+                    }
+            	}
                 break;
             case MAPOperationCode.sendRoutingInfoForLCS:
-                if (compType == ComponentType.Invoke) {
-                    this.sendRoutingInfoForLCSReq(parameter, mAPDialogLsmImpl, invokeId);
-                } else {
-                    this.sendRoutingInfoForLCSRes(parameter, mAPDialogLsmImpl, invokeId, compType == ComponentType.ReturnResult);
-                }
+            	if(parameter instanceof SendRoutingInfoForLCSRequest) {
+            		processed=true;
+            		SendRoutingInfoForLCSRequest ind=(SendRoutingInfoForLCSRequest)parameter;
+            		
+            		for (MAPServiceListener serLis : this.serviceListeners) {
+            			try {
+        	                serLis.onMAPMessage(ind);
+        	                ((MAPServiceLsmListener) serLis).onSendRoutingInfoForLCSRequest(ind);
+            			} catch (Exception e) {
+                            loger.error("Error processing SendRoutingInfoForLCSRequestIndication: " + e.getMessage(), e);
+                        }
+                    }    		
+            	} else if(parameter instanceof SendRoutingInfoForLCSResponse) {
+            		processed=true;
+            		SendRoutingInfoForLCSResponse resInd=(SendRoutingInfoForLCSResponse)parameter;
+            		
+            		for (MAPServiceListener serLis : this.serviceListeners) {
+            			try {
+        	                serLis.onMAPMessage(resInd);
+        	                ((MAPServiceLsmListener) serLis).onSendRoutingInfoForLCSResponse(resInd);
+            			} catch (Exception e) {
+                            loger.error("Error processing SendRoutingInfoForLCSResponseIndication: " + e.getMessage(), e);
+                        }
+                    }
+            	}
                 break;
             default:
                 throw new MAPParsingComponentException("MAPServiceLsm: unknown incoming operation code: " + ocValueInt,
                         MAPParsingComponentExceptionReason.UnrecognizedOperation);
-        }
+        }  	        
+        
+        if(!processed)
+        	throw new MAPParsingComponentException("MAPServiceLsm: unknown incoming operation code: " + ocValueInt,
+                    MAPParsingComponentExceptionReason.UnrecognizedOperation);
     }
-
-    private void provideSubscriberLocationReq(Parameter param, MAPDialogLsmImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-        if (param == null) {
-            throw new MAPParsingComponentException(
-                    "Error while decoding provideSubscriberLocationRes: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        if (param.getTag() != Tag.SEQUENCE || param.getTagClass() != Tag.CLASS_UNIVERSAL || param.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding provideSubscriberLocationReq: Bad tag or tagClass or parameter is primitive, received tag="
-                            + param.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = param.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ProvideSubscriberLocationRequestImpl ind = new ProvideSubscriberLocationRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            serLis.onMAPMessage(ind);
-            ((MAPServiceLsmListener) serLis).onProvideSubscriberLocationRequest(ind);
-        }
-
-    }
-
-    private void provideSubscriberLocationRes(Parameter param, MAPDialogLsmImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-        if (param == null) {
-            throw new MAPParsingComponentException(
-                    "Error while decoding provideSubscriberLocationRes: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        if (param.getTag() != Tag.SEQUENCE || param.getTagClass() != Tag.CLASS_UNIVERSAL || param.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding provideSubscriberLocationRes: Bad tag or tagClass or parameter is primitive, received tag="
-                            + param.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = param.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ProvideSubscriberLocationResponseImpl provideSubsLoctResInd = new ProvideSubscriberLocationResponseImpl();
-        provideSubsLoctResInd.decodeData(ais, buf.length);
-
-        provideSubsLoctResInd.setInvokeId(invokeId);
-        provideSubsLoctResInd.setMAPDialog(mapDialogImpl);
-        provideSubsLoctResInd.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            serLis.onMAPMessage(provideSubsLoctResInd);
-            ((MAPServiceLsmListener) serLis).onProvideSubscriberLocationResponse(provideSubsLoctResInd);
-        }
-
-    }
-
-    private void subscriberLocationReportReq(Parameter parameter, MAPDialogLsmImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-        if (parameter == null) {
-            throw new MAPParsingComponentException(
-                    "Error while decoding subscriberLocationReport: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding subscriberLocationReportReq: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        SubscriberLocationReportRequestImpl ind = new SubscriberLocationReportRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            serLis.onMAPMessage(ind);
-            ((MAPServiceLsmListener) serLis).onSubscriberLocationReportRequest(ind);
-        }
-    }
-
-    private void subscriberLocationReportRes(Parameter parameter, MAPDialogLsmImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-        if (parameter == null) {
-            throw new MAPParsingComponentException(
-                    "Error while decoding subscriberLocationReport: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding subscriberLocationReportRes: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        SubscriberLocationReportResponseImpl resInd = new SubscriberLocationReportResponseImpl();
-        resInd.decodeData(ais, buf.length);
-
-        resInd.setInvokeId(invokeId);
-        resInd.setMAPDialog(mapDialogImpl);
-        resInd.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            serLis.onMAPMessage(resInd);
-            ((MAPServiceLsmListener) serLis).onSubscriberLocationReportResponse(resInd);
-        }
-    }
-
-    private void sendRoutingInfoForLCSReq(Parameter parameter, MAPDialogLsmImpl mapDialogImpl, Long invokeId)
-            throws MAPParsingComponentException {
-        if (parameter == null) {
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendRoutingInfoForLCS: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendRoutingInfoForLCSReq: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        SendRoutingInfoForLCSRequestImpl ind = new SendRoutingInfoForLCSRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setMAPDialog(mapDialogImpl);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            serLis.onMAPMessage(ind);
-            ((MAPServiceLsmListener) serLis).onSendRoutingInfoForLCSRequest(ind);
-        }
-    }
-
-    private void sendRoutingInfoForLCSRes(Parameter parameter, MAPDialogLsmImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
-        if (parameter == null) {
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendRoutingInfoForLCS: Parameter is mandatory but not found",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL || parameter.isPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding sendRoutingInfoForLCSRes: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), MAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        SendRoutingInfoForLCSResponseImpl resInd = new SendRoutingInfoForLCSResponseImpl();
-        resInd.decodeData(ais, buf.length);
-
-        resInd.setInvokeId(invokeId);
-        resInd.setMAPDialog(mapDialogImpl);
-        resInd.setReturnResultNotLast(returnResultNotLast);
-
-        for (MAPServiceListener serLis : this.serviceListeners) {
-            serLis.onMAPMessage(resInd);
-            ((MAPServiceLsmListener) serLis).onSendRoutingInfoForLCSResponse(resInd);
-        }
-    }
-
 }

@@ -29,12 +29,12 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.UUDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UUI;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIndicator;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIndicatorImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.callhandling.UUDataImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.UUIImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.UUIndicatorImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -93,7 +93,7 @@ public class UUDataTest {
 
         UUIndicator uuIndicator = new UUIndicatorImpl(140);
         UUDataImpl elem = new UUDataImpl(uuIndicator, null, false, null);
-        // UUIndicator uuIndicator, UUI uuI, boolean uusCFInteraction, MAPExtensionContainer extensionContainer
+        // UUIndicator uuIndicator, UUI uuI, boolean uusCFInteraction, MAPExtensionContainerImpl extensionContainer
 
         AsnOutputStream aos = new AsnOutputStream();
         elem.encodeAll(aos);

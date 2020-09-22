@@ -31,14 +31,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerSecurityContextImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ObjectSecurityContextImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
@@ -78,8 +75,8 @@ public class DialogPortionTest {
         assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), ui.getExternal().get(0).getObjectIdentifier());
         UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)ui.getExternal().get(0).getChild().getValue()).getValue());
 
-        SecurityContext sc = dp.getSecurityContext();
-        assertEquals((long) ((IntegerSecurityContextImpl)sc).getInteger(), 10);
+        SecurityContextNameImpl sc = dp.getSecurityContext();
+        assertEquals(sc.getInt(), new Long(10L));
         ConfidentialityImpl con = dp.getConfidentiality();
         assertEquals((long) con.getIntegerConfidentialityId(), 20);
 
@@ -89,11 +86,11 @@ public class DialogPortionTest {
     	dp=(DialogPortionImpl)result.getResult();
         
     	assertNull(dp.getProtocolVersion());
-    	assertEquals(((IntegerApplicationContextNameImpl)dp.getApplicationContext()).getValue(), new Long(30L));
+    	assertEquals(dp.getApplicationContext().getInt(), new Long(30L));
         assertNull(dp.getUserInformation());
 
         sc = dp.getSecurityContext();
-        assertEquals(((ObjectSecurityContextImpl)sc).getObjectId(), Arrays.asList(new Long[] { 1L, 2L }));
+        assertEquals(sc.getObj(), Arrays.asList(new Long[] { 1L, 2L }));
         con = dp.getConfidentiality();
         assertEquals(con.getObjectConfidentialityId(), Arrays.asList(new Long[] { 1L, 4L }));
     }
@@ -119,8 +116,8 @@ public class DialogPortionTest {
         uie.add(currElement);
         ui.setExternal(uie);
         dp.setUserInformation(ui);
-        IntegerSecurityContextImpl sc = new IntegerSecurityContextImpl();
-        sc.setInteger(10L);
+        SecurityContextNameImpl sc = new SecurityContextNameImpl();
+        sc.setInt(10L);
         dp.setSecurityContext(sc);
         ConfidentialityImpl con = new ConfidentialityImpl();
         con.setIntegerConfidentialityId(20L);
@@ -131,10 +128,10 @@ public class DialogPortionTest {
 
         // 2
         dp = TcapFactory.createDialogPortion();
-        ApplicationContext ac = TcapFactory.createApplicationContext(30);
+        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(30);
         dp.setApplicationContext(ac);
-        ObjectSecurityContextImpl osc = new ObjectSecurityContextImpl();
-        osc.setObjectId(Arrays.asList(new Long[] { 1L, 2L }));
+        SecurityContextNameImpl osc = new SecurityContextNameImpl();
+        osc.setObj(Arrays.asList(new Long[] { 1L, 2L }));
         dp.setSecurityContext(osc);
         con = new ConfidentialityImpl();
         con.setObjectConfidentialityId(Arrays.asList(new Long[] { 1L, 4L }));

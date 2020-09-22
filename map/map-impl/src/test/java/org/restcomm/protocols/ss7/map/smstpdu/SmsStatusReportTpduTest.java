@@ -29,16 +29,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifierImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsStatusReportTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.StatusImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.StatusReportQualifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.restcomm.protocols.ss7.map.smstpdu.AbsoluteTimeStampImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.DataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.ProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.SmsStatusReportTpduImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.StatusImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.UserDataImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
 import org.testng.annotations.Test;
 
 /**

@@ -31,6 +31,6 @@ import org.restcomm.protocols.ss7.map.api.MAPMessage;
  */
 public interface OamMessage extends MAPMessage {
 
-    MAPDialogOam getMAPDialog();
+    MAPDialogOam getOamMAPDialog();
 
 }

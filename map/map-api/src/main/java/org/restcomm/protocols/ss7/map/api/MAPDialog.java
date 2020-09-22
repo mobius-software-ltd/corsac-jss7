@@ -25,17 +25,15 @@ package org.restcomm.protocols.ss7.map.api;
 import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.map.api.dialog.MAPDialogState;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
 import org.restcomm.protocols.ss7.map.api.dialog.Reason;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  *
@@ -110,21 +108,21 @@ public interface MAPDialog extends Serializable {
      *
      * @return
      */
-    AddressString getReceivedOrigReference();
+    AddressStringImpl getReceivedOrigReference();
 
     /**
      * Return received DestReference from MAPOpenInfo or null if no OrigReference has been received
      *
      * @return
      */
-    AddressString getReceivedDestReference();
+    AddressStringImpl getReceivedDestReference();
 
     /**
      * Return received ExtensionContainer from MAPOpenInfo or null if no OrigReference has been received
      *
      * @return
      */
-    MAPExtensionContainer getReceivedExtensionContainer();
+    MAPExtensionContainerImpl getReceivedExtensionContainer();
 
     /**
      * @return NetworkId to which virtual network Dialog belongs to
@@ -196,7 +194,7 @@ public interface MAPDialog extends Serializable {
      * Set ExtentionContainer that will be send in 1) T-BEGIN 2) T-CONTINUE or T-END if it is response to the T-BEGIN 3) T-ABORT
      * If no Dialogue control APDU is sending - ExtentionContainer will also not be sent
      */
-    void setExtentionContainer(MAPExtensionContainer extContainer);
+    void setExtentionContainer(MAPExtensionContainerImpl extContainer);
 
     /**
      * This is equivalent of MAP User issuing the MAP_DELIMITER Service Request. send() is called to explicitly request the
@@ -249,7 +247,7 @@ public interface MAPDialog extends Serializable {
      *
      * @param userReason
      */
-    void abort(MAPUserAbortChoice mapUserAbortChoice) throws MAPException;
+    void abort(MAPUserAbortChoiseImpl mapUserAbortChoice) throws MAPException;
 
     /**
      * Send T_U_ABORT with MAP-RefuseInfo
@@ -267,28 +265,12 @@ public interface MAPDialog extends Serializable {
     void processInvokeWithoutAnswer(Long invokeId);
 
     /**
-     * Sends the TC-INVOKE component
+     * Sends the TC-INVOKE,TC-RESULT or TC-RESULT-L component
      *
      * @param invoke
      * @throws MAPException
      */
-    void sendInvokeComponent(Invoke invoke) throws MAPException;
-
-    /**
-     * Sends the TC-RESULT-NL component
-     *
-     * @param returnResult
-     * @throws MAPException
-     */
-    void sendReturnResultComponent(ReturnResult returnResult) throws MAPException;
-
-    /**
-     * Sends the TC-RESULT-L component
-     *
-     * @param returnResultLast
-     * @throws MAPException
-     */
-    void sendReturnResultLastComponent(ReturnResultLast returnResultLast) throws MAPException;
+    public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,MAPMessage param,Boolean isRequest,Boolean isLastResponse) throws MAPException;
 
     /**
      * Sends the TC-U-ERROR component
@@ -297,7 +279,7 @@ public interface MAPDialog extends Serializable {
      * @param mapErrorMessage
      * @throws MAPException
      */
-    void sendErrorComponent(Long invokeId, MAPErrorMessage mapErrorMessage) throws MAPException;
+    public void sendErrorComponent(Long invokeId, MAPErrorMessage mem) throws MAPException;
 
     /**
      * Sends the TC-U-REJECT component
@@ -306,7 +288,7 @@ public interface MAPDialog extends Serializable {
      * @param problem
      * @throws MAPException
      */
-    void sendRejectComponent(Long invokeId, Problem problem) throws MAPException;
+    public void sendRejectComponent(Long invokeId, ProblemImpl problem) throws MAPException;
 
     /**
      * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)
@@ -371,7 +353,7 @@ public interface MAPDialog extends Serializable {
      * @param eriMsisdn
      * @param eriVlrNo
      */
-    void addEricssonData(AddressString eriMsisdn, AddressString eriVlrNo);
+    void addEricssonData(AddressStringImpl eriMsisdn, AddressStringImpl eriVlrNo);
 
     /**
     * Return the value of the IdleTaskTimeout of the TCAP Dialog in milliseconds.

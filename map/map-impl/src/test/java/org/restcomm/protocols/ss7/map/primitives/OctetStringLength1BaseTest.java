@@ -33,8 +33,9 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext4QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ASNSingleByte;
 import org.restcomm.protocols.ss7.map.primitives.OctetStringLength1Base;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext4QoSSubscribedImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -108,19 +109,16 @@ public class OctetStringLength1BaseTest {
         assertFalse(imp2.equals(imp3));
     }
 
-    private class TestOctetStringLength1Impl extends OctetStringLength1Base {
-		private static final long serialVersionUID = 1L;
-
+    private class TestOctetStringLength1Impl extends ASNSingleByte {
 		public TestOctetStringLength1Impl(int data) {
-            super("Test OctetStringLength1 primitive", data);
+            setValue(data);
         }
 
-        public TestOctetStringLength1Impl() {
-            super("Test OctetStringLength1 primitive");
+        public TestOctetStringLength1Impl() {            
         }
 
         public int getData() {
-            return this.data;
+            return this.getValue();
         }
     }
 

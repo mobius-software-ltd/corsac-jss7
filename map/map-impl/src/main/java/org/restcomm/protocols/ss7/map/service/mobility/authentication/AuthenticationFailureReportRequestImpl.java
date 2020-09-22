@@ -22,61 +22,82 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ASNAccessType;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ASNFailureCause;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AccessType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.FailureCause;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
 *
 * @author sergey vetyutnev
 *
 */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl implements AuthenticationFailureReportRequest {
 	private static final long serialVersionUID = 1L;
 
-	protected static final int _TAG_vlrNumber = 0;
-    protected static final int _TAG_sgsnNumber = 1;
-
-    public static final String _PrimitiveName = "AuthenticationFailureReportRequest";
-
-    private IMSI imsi;
-    private FailureCause failureCause;
-    private MAPExtensionContainer extensionContainer;
-    private Boolean reAttempt;
-    private AccessType accessType;
-    private byte[] rand;
-    private ISDNAddressString vlrNumber;
-    private ISDNAddressString sgsnNumber;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
+    private IMSIImpl imsi;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=10,constructed=false,index=1)
+    private ASNFailureCause failureCause;
+    
+    private MAPExtensionContainerImpl extensionContainer;
+    private ASNBoolean reAttempt;
+    private ASNAccessType accessType;
+    private ASNOctetString rand;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private ISDNAddressStringImpl vlrNumber;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    private ISDNAddressStringImpl sgsnNumber;
 
     public AuthenticationFailureReportRequestImpl() {
     }
 
-    public AuthenticationFailureReportRequestImpl(IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer, Boolean reAttempt,
-            AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) {
+    public AuthenticationFailureReportRequestImpl(IMSIImpl imsi, FailureCause failureCause, MAPExtensionContainerImpl extensionContainer, Boolean reAttempt,
+            AccessType accessType, byte[] rand, ISDNAddressStringImpl vlrNumber, ISDNAddressStringImpl sgsnNumber) {
         this.imsi = imsi;
-        this.failureCause = failureCause;
+        
+        if(failureCause!=null) {
+        	this.failureCause = new ASNFailureCause();
+        	this.failureCause.setType(failureCause);
+        }
+        
         this.extensionContainer = extensionContainer;
-        this.reAttempt = reAttempt;
-        this.accessType = accessType;
-        this.rand = rand;
+        
+        if(reAttempt!=null) {
+        	this.reAttempt = new ASNBoolean();
+        	this.reAttempt.setValue(reAttempt);
+        }
+        
+        if(accessType!=null) {
+        	this.accessType = new ASNAccessType();
+        	this.accessType.setType(accessType);
+        }
+        
+        if(rand!=null) {
+        	this.rand = new ASNOctetString();
+        	this.rand.setValue(Unpooled.wrappedBuffer(rand));
+        }
+        
         this.vlrNumber = vlrNumber;
         this.sgsnNumber = sgsnNumber;
     }
@@ -92,267 +113,67 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return imsi;
     }
 
     @Override
     public FailureCause getFailureCause() {
-        return failureCause;
+    	if(failureCause==null)
+    		return null;
+    	
+        return failureCause.getType();
     }
 
     @Override
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return extensionContainer;
     }
 
     @Override
     public Boolean getReAttempt() {
-        return reAttempt;
+    	if(reAttempt==null)
+    		return null;
+    	
+        return reAttempt.getValue();        
     }
 
     @Override
     public AccessType getAccessType() {
-        return accessType;
+    	if(accessType==null)
+    		return null;
+    	
+        return accessType.getType();
     }
 
     @Override
     public byte[] getRand() {
-        return rand;
+    	if(rand==null)
+    		return null;
+    		
+    	ByteBuf value=rand.getValue();
+    	if(value==null)
+    		return null;
+    	
+    	byte[] data=new byte[value.readableBytes()];
+    	value.readBytes(data);
+        return data;
     }
 
     @Override
-    public ISDNAddressString getVlrNumber() {
+    public ISDNAddressStringImpl getVlrNumber() {
         return vlrNumber;
     }
 
     @Override
-    public ISDNAddressString getSgsnNumber() {
+    public ISDNAddressStringImpl getSgsnNumber() {
         return sgsnNumber;
-    }
-
-    @Override
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        imsi = null;
-        failureCause = null;
-        extensionContainer = null;
-        reAttempt = null;
-        accessType = null;
-        rand = null;
-        vlrNumber = null;
-        sgsnNumber = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            switch (num) {
-            case 0:
-                // imsi
-                if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.STRING_OCTET)
-                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                            + ".imsi: Parameter 0 bad tag or tag class or not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                this.imsi = new IMSIImpl();
-                ((IMSIImpl) this.imsi).decodeAll(ais);
-                break;
-
-            case 1:
-                // failureCause
-                if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive() || tag != Tag.ENUMERATED)
-                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                            + ".failureCause: Parameter 1 bad tag class or tag or not primitive",
-                            MAPParsingComponentExceptionReason.MistypedParameter);
-                int vali = (int) ais.readInteger();
-                this.failureCause = FailureCause.getInstance(vali);
-                break;
-
-            default:
-                if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                    switch (tag) {
-                    case _TAG_vlrNumber:
-                        // vlrNumber
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".vlrNumber: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.vlrNumber = new ISDNAddressStringImpl();
-                        ((ISDNAddressStringImpl) this.vlrNumber).decodeAll(ais);
-                        break;
-                    case _TAG_sgsnNumber:
-                        // sgsnNumber
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".sgsnNumber: Parameter is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.sgsnNumber = new ISDNAddressStringImpl();
-                        ((ISDNAddressStringImpl) this.sgsnNumber).decodeAll(ais);
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                    }
-                } else if (ais.getTagClass() == Tag.CLASS_UNIVERSAL) {
-
-                    switch (tag) {
-                    case Tag.SEQUENCE:
-                        // extensionContainer
-                        if (ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".extensionContainer: Parameter is primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.extensionContainer = new MAPExtensionContainerImpl();
-                        ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                        break;
-                    case Tag.BOOLEAN:
-                        // reAttempt
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".reAttempt: Parameter is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.reAttempt = ais.readBoolean();
-                        break;
-                    case Tag.ENUMERATED:
-                        // accessType
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".accessType: Parameter is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        vali = (int) ais.readInteger();
-                        this.accessType = AccessType.getInstance(vali);
-                        break;
-                    case Tag.STRING_OCTET:
-                        // rand
-                        if (!ais.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".rand: Parameter is not primitive",
-                                    MAPParsingComponentExceptionReason.MistypedParameter);
-                        this.rand = ais.readOctetString();
-                        if (this.rand == null || this.rand.length != 16) {
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".rand: Expected size is 16, received size: "
-                                    + (this.rand == null ? 0 : this.rand.length), MAPParsingComponentExceptionReason.MistypedParameter);
-                        }
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                    }
-                } else {
-
-                    ais.advanceElement();
-                }
-                break;
-            }
-
-            num++;
-        }
-
-        if (num < 2)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ": Needs at least 2 mandatory parameters, found " + num,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        try {
-            if (this.imsi == null || failureCause == null)
-                throw new MAPException("IMSI and failureCause parameters must not be null");
-
-            ((IMSIImpl) this.imsi).encodeAll(asnOs);
-            asnOs.writeInteger(Tag.CLASS_UNIVERSAL, Tag.ENUMERATED, failureCause.getCode());
-
-            if (this.extensionContainer != null)
-                ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs);
-
-            if (reAttempt != null)
-                asnOs.writeBoolean(reAttempt);
-            if (accessType != null)
-                asnOs.writeInteger(Tag.CLASS_UNIVERSAL, Tag.ENUMERATED, accessType.getCode());
-            if (this.rand != null) {
-                if (this.rand.length != 16)
-                    throw new MAPException("rand parameter must have length 16, found: " + this.rand.length);
-                asnOs.writeOctetString(Tag.CLASS_UNIVERSAL, Tag.STRING_OCTET, this.rand);
-            }
-
-            if (this.vlrNumber != null)
-                ((ISDNAddressStringImpl) this.vlrNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_vlrNumber);
-            if (this.sgsnNumber != null)
-                ((ISDNAddressStringImpl) this.sgsnNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _TAG_sgsnNumber);
-        } catch (IOException e) {
-            throw new MAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("AuthenticationFailureReportRequest [");
 
         if (this.imsi != null) {
             sb.append("imsi=");
@@ -381,7 +202,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
         }
         if (this.rand != null) {
             sb.append("rand=[");
-            ArrayToString(rand);
+            sb.append(this.rand.printDataArr(getRand()));
             sb.append("], ");
         }
         if (this.vlrNumber != null) {
@@ -399,18 +220,4 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
 
         return sb.toString();
     }
-
-    private String ArrayToString(byte[] array) {
-        StringBuilder sb = new StringBuilder();
-        int i1 = 0;
-        for (byte b : array) {
-            if (i1 == 0)
-                i1 = 1;
-            else
-                sb.append(", ");
-            sb.append(b);
-        }
-        return sb.toString();
-    }
-
 }

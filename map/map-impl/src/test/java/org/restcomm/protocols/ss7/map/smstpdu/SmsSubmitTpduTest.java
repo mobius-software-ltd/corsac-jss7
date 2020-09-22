@@ -30,18 +30,18 @@ import static org.testng.Assert.assertTrue;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifierImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitTpduImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
+import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityEnhancedFormatDataImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodFormat;
-import org.restcomm.protocols.ss7.map.smstpdu.AbsoluteTimeStampImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.DataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.ProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.SmsSubmitTpduImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.UserDataHeaderImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.UserDataImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.ValidityEnhancedFormatDataImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.ValidityPeriodImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodImpl;
 import org.testng.annotations.Test;
 
 /**

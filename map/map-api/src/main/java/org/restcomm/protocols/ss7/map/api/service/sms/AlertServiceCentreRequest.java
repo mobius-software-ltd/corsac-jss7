@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 
 /**
  *
@@ -35,7 +35,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
  * MAP V1: alertServiceCentreWithoutResult ::= OPERATION --Timer s ARGUMENT alertServiceCentreArg AlertServiceCentreArg
  *
  *
- * MAP V1-2: AlertServiceCentreArg ::= SEQUENCE { msisdn ISDN-AddressString, serviceCentreAddress AddressString, ...}
+ * MAP V1-2: AlertServiceCentreArg ::= SEQUENCE { msisdn ISDN-AddressStringImpl, serviceCentreAddress AddressStringImpl, ...}
  *
  *
  *
@@ -44,8 +44,8 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
  */
 public interface AlertServiceCentreRequest extends SmsMessage {
 
-    ISDNAddressString getMsisdn();
+    ISDNAddressStringImpl getMsisdn();
 
-    AddressString getServiceCentreAddress();
+    AddressStringImpl getServiceCentreAddress();
 
 }

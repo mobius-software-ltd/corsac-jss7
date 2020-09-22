@@ -22,61 +22,61 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.InterrogateSSResponse;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
 *
 * @author sergey vetyutnev
 *
 */
+@ASNWrappedTag
 public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implements InterrogateSSResponse {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _TAG_ssStatus = 0;
-    public static final int _TAG_basicServiceGroupList = 2;
-    public static final int _TAG_forwardingFeatureList = 3;
-    public static final int _TAG_genericServiceInfo = 4;
-
-    public static final String _PrimitiveName = "InterrogateSSResponse";
-
-    private SSStatus ssStatus;
-    private ArrayList<BasicServiceCode> basicServiceGroupList;
-    private ArrayList<ForwardingFeature> forwardingFeatureList;
-    private GenericServiceInfo genericServiceInfo;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private SSStatusImpl ssStatus;    
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
+    private BasicServiceCodeListWrapperImpl basicServiceGroupList;    
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
+    private ForwardingFeatureListWrapperImpl forwardingFeatureList;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1)
+    private GenericServiceInfoImpl genericServiceInfo;
 
     public InterrogateSSResponseImpl() {
     }
 
-    public InterrogateSSResponseImpl(SSStatus ssStatus) {
+    public InterrogateSSResponseImpl(SSStatusImpl ssStatus) {
         this.ssStatus = ssStatus;
     }
 
-    public InterrogateSSResponseImpl(ArrayList<BasicServiceCode> basicServiceGroupList, boolean doommyPar) {
-        this.basicServiceGroupList = basicServiceGroupList;
+    public InterrogateSSResponseImpl(ArrayList<BasicServiceCodeImpl> basicServiceGroupList, boolean doommyPar) {
+    	if(this.basicServiceGroupList!=null)
+    		this.basicServiceGroupList = new BasicServiceCodeListWrapperImpl(basicServiceGroupList);
     }
 
-    public InterrogateSSResponseImpl(ArrayList<ForwardingFeature> forwardingFeatureList) {
-        this.forwardingFeatureList = forwardingFeatureList;
+    public InterrogateSSResponseImpl(ArrayList<ForwardingFeatureImpl> forwardingFeatureList) {
+    	if(forwardingFeatureList!=null)
+    		this.forwardingFeatureList = new ForwardingFeatureListWrapperImpl(forwardingFeatureList);
     }
 
-    public InterrogateSSResponseImpl(GenericServiceInfo genericServiceInfo) {
+    public InterrogateSSResponseImpl(GenericServiceInfoImpl genericServiceInfo) {
         this.genericServiceInfo = genericServiceInfo;
     }
 
@@ -91,221 +91,45 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
     }
 
     @Override
-    public SSStatus getSsStatus() {
+    public SSStatusImpl getSsStatus() {
         return ssStatus;
     }
 
     @Override
-    public ArrayList<BasicServiceCode> getBasicServiceGroupList() {
-        return basicServiceGroupList;
+    public ArrayList<BasicServiceCodeImpl> getBasicServiceGroupList() {
+    	if(basicServiceGroupList==null)
+    		return null;
+    	
+        return basicServiceGroupList.getBasicServiceCodes();
     }
 
     @Override
-    public ArrayList<ForwardingFeature> getForwardingFeatureList() {
-        return forwardingFeatureList;
+    public ArrayList<ForwardingFeatureImpl> getForwardingFeatureList() {
+    	if(forwardingFeatureList==null)
+    		return null;
+    	
+        return forwardingFeatureList.getForwardingFeatures();
     }
 
     @Override
-    public GenericServiceInfo getGenericServiceInfo() {
+    public GenericServiceInfoImpl getGenericServiceInfo() {
         return genericServiceInfo;
-    }
-
-
-    @Override
-    public int getTag() throws MAPException {
-        if (ssStatus != null) {
-            return _TAG_ssStatus;
-        } else if (basicServiceGroupList != null) {
-            return _TAG_basicServiceGroupList;
-        } else if (forwardingFeatureList != null) {
-            return _TAG_forwardingFeatureList;
-        } else if (genericServiceInfo != null) {
-            return _TAG_genericServiceInfo;
-        } else {
-            throw new MAPException("No of choices are supplied");
-        }
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_CONTEXT_SPECIFIC;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        if (ssStatus != null)
-            return true;
-        else
-            return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ais, int length) throws MAPParsingComponentException, IOException, AsnException {
-        this.ssStatus = null;
-        this.basicServiceGroupList = null;
-        this.forwardingFeatureList = null;
-        this.genericServiceInfo = null;
-
-        if (ais.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ": bad tag class: TagClass=" + ais.getTagClass(),
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        switch (ais.getTag()) {
-        case _TAG_ssStatus:
-            this.ssStatus = new SSStatusImpl();
-            ((SSStatusImpl) this.ssStatus).decodeData(ais, length);
-            break;
-        case _TAG_basicServiceGroupList:
-            if (ais.isTagPrimitive())
-                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".basicServiceGroupList: Parameter is primitive",
-                        MAPParsingComponentExceptionReason.MistypedParameter);
-
-            AsnInputStream ais2 = ais.readSequenceStreamData(length);
-            this.basicServiceGroupList = new ArrayList<BasicServiceCode>();
-            while (true) {
-                if (ais2.available() == 0)
-                    break;
-
-                ais2.readTag();
-
-                BasicServiceCode basicServiceCode = new BasicServiceCodeImpl();
-                ((BasicServiceCodeImpl) basicServiceCode).decodeAll(ais2);
-                this.basicServiceGroupList.add(basicServiceCode);
-            }
-            if (this.basicServiceGroupList.size() < 1 || this.basicServiceGroupList.size() > 13) {
-                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                        + ": Parameter basicServiceGroupList size must be from 1 to 13, found: " + this.basicServiceGroupList.size(),
-                        MAPParsingComponentExceptionReason.MistypedParameter);
-            }
-            break;
-        case _TAG_forwardingFeatureList:
-            if (ais.isTagPrimitive())
-                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".forwardingFeatureList: Parameter is primitive",
-                        MAPParsingComponentExceptionReason.MistypedParameter);
-
-            ais2 = ais.readSequenceStreamData(length);
-            this.forwardingFeatureList = new ArrayList<ForwardingFeature>();
-            while (true) {
-                if (ais2.available() == 0)
-                    break;
-
-                ais2.readTag();
-
-                ForwardingFeature forwardingFeature = new ForwardingFeatureImpl();
-                ((ForwardingFeatureImpl) forwardingFeature).decodeAll(ais2);
-                this.forwardingFeatureList.add(forwardingFeature);
-            }
-            if (this.forwardingFeatureList.size() < 1 || this.forwardingFeatureList.size() > 13) {
-                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                        + ": Parameter forwardingFeatureList size must be from 1 to 13, found: " + this.forwardingFeatureList.size(),
-                        MAPParsingComponentExceptionReason.MistypedParameter);
-            }
-            break;
-        case _TAG_genericServiceInfo:
-            this.genericServiceInfo = new GenericServiceInfoImpl();
-            ((GenericServiceInfoImpl) this.genericServiceInfo).decodeData(ais, length);
-            break;
-
-        default:
-            throw new MAPParsingComponentException("Error while " + _PrimitiveName + ": bad tag: " + ais.getTag(),
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        int cnt = 0;
-        if (ssStatus != null)
-            cnt++;
-        if (basicServiceGroupList != null)
-            cnt++;
-        if (forwardingFeatureList != null)
-            cnt++;
-        if (genericServiceInfo != null)
-            cnt++;
-
-        if (cnt == 0)
-            throw new MAPException("Error while encoding " + _PrimitiveName + ": no option is set.");
-        if (cnt > 1)
-            throw new MAPException("Error while encoding " + _PrimitiveName + ": more than 1 option is set.");
-
-        if (this.ssStatus != null)
-            ((SSStatusImpl) this.ssStatus).encodeData(asnOs);
-
-        if (this.basicServiceGroupList != null) {
-            for (BasicServiceCode item : this.basicServiceGroupList) {
-                ((BasicServiceCodeImpl) item).encodeAll(asnOs);
-            }
-        }
-
-        if (this.forwardingFeatureList != null) {
-            for (ForwardingFeature item : this.forwardingFeatureList) {
-                ((ForwardingFeatureImpl) item).encodeAll(asnOs);
-            }
-        }
-
-        if (this.genericServiceInfo != null)
-            ((GenericServiceInfoImpl) this.genericServiceInfo).encodeData(asnOs);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("InterrogateSSResponse [");
 
         if (this.ssStatus != null) {
             sb.append("ssStatus=");
             sb.append(ssStatus);
             sb.append(", ");
         }
-        if (this.basicServiceGroupList != null) {
+        if (this.basicServiceGroupList != null && this.basicServiceGroupList.getBasicServiceCodes()!=null) {
             sb.append("basicServiceGroupList=[");
             boolean firstItem = true;
-            for (BasicServiceCode be : this.basicServiceGroupList) {
+            for (BasicServiceCodeImpl be : this.basicServiceGroupList.getBasicServiceCodes()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -314,10 +138,10 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
             }
             sb.append("], ");
         }
-        if (this.forwardingFeatureList != null) {
+        if (this.forwardingFeatureList != null && this.forwardingFeatureList.getForwardingFeatures()!=null) {
             sb.append("forwardingFeatureList=[");
             boolean firstItem = true;
-            for (ForwardingFeature be : this.forwardingFeatureList) {
+            for (ForwardingFeatureImpl be : this.forwardingFeatureList.getForwardingFeatures()) {
                 if (firstItem)
                     firstItem = false;
                 else

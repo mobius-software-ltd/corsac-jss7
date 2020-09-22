@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -45,15 +45,15 @@ RESULT
 
 MAP V3: PurgeMS-Arg ::= [3] SEQUENCE {
   imsi         IMSI,
-  vlr-Number   [0] ISDN-AddressString OPTIONAL,
-  sgsn-Number  [1] ISDN-AddressString OPTIONAL,
+  vlr-Number   [0] ISDN-AddressStringImpl OPTIONAL,
+  sgsn-Number  [1] ISDN-AddressStringImpl OPTIONAL,
   extensionContainer ExtensionContainer OPTIONAL,
   ...
 }
 
 MAP V2: PurgeMS-Arg ::= SEQUENCE {
   imsi         IMSI,
-  vlr-Number   ISDN-AddressString,
+  vlr-Number   ISDN-AddressStringImpl,
   ...
 }
 
@@ -63,12 +63,12 @@ MAP V2: PurgeMS-Arg ::= SEQUENCE {
  */
 public interface PurgeMSRequest extends MobilityMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    ISDNAddressString getVlrNumber();
+    ISDNAddressStringImpl getVlrNumber();
 
-    ISDNAddressString getSgsnNumber();
+    ISDNAddressStringImpl getSgsnNumber();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

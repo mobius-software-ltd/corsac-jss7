@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  * The MAP ReturnError message: MessageFacilityNotSup with parameters
@@ -41,13 +41,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  */
 public interface MAPErrorMessageFacilityNotSup extends MAPErrorMessage {
 
-    MAPExtensionContainer getExtensionContainer();
+	MAPExtensionContainerImpl getExtensionContainer();
 
     Boolean getShapeOfLocationEstimateNotSupported();
 
     Boolean getNeededLcsCapabilityNotSupportedInServingNode();
 
-    void setExtensionContainer(MAPExtensionContainer extensionContainer);
+    void setExtensionContainer(MAPExtensionContainerImpl extensionContainer);
 
     void setShapeOfLocationEstimateNotSupported(Boolean shapeOfLocationEstimateNotSupported);
 

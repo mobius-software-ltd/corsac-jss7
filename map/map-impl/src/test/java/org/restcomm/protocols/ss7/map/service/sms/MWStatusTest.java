@@ -35,7 +35,7 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.service.sms.MWStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.MWStatusImpl;
 import org.testng.annotations.Test;
 
 /**

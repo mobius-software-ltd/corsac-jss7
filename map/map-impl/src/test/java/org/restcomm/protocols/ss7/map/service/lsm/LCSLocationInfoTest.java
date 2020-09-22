@@ -35,15 +35,15 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySets;
-import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.lsm.AdditionalNumberImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSLocationInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -105,7 +105,7 @@ public class LCSLocationInfoTest {
 
         LCSLocationInfoImpl imp = new LCSLocationInfoImpl();
         imp.decodeAll(asn);
-        ISDNAddressString networkNodeNumber = imp.getNetworkNodeNumber();
+        ISDNAddressStringImpl networkNodeNumber = imp.getNetworkNodeNumber();
         assertEquals(networkNodeNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(networkNodeNumber.getAddress().equals("55619007"));
@@ -137,10 +137,10 @@ public class LCSLocationInfoTest {
     public void testEncode() throws Exception {
         byte[] data = getEncodedData();
 
-        ISDNAddressString networkNodeNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressStringImpl networkNodeNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "55619007");
         LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
-        ISDNAddressString mscNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressStringImpl mscNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "2222112222");
         AdditionalNumberImpl additionalNumber = new AdditionalNumberImpl(mscNumber, null);
         SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets = new SupportedLCSCapabilitySetsImpl(true, true, false,
@@ -153,7 +153,7 @@ public class LCSLocationInfoTest {
         LCSLocationInfoImpl imp = new LCSLocationInfoImpl(networkNodeNumber, lmsi,
                 MAPExtensionContainerTest.GetTestExtensionContainer(), true, additionalNumber, supportedLCSCapabilitySets,
                 additionalLCSCapabilitySets, mmeName, aaaServerName);
-        // ISDNAddressString networkNodeNumber, LMSI lmsi, MAPExtensionContainer extensionContainer, boolean gprsNodeIndicator,
+        // ISDNAddressStringImpl networkNodeNumber, LMSI lmsi, MAPExtensionContainerImpl extensionContainer, boolean gprsNodeIndicator,
         // AdditionalNumber additionalNumber, SupportedLCSCapabilitySets supportedLCSCapabilitySets, SupportedLCSCapabilitySets
         // additionalLCSCapabilitySets,
         // DiameterIdentity mmeName, DiameterIdentity aaaServerName

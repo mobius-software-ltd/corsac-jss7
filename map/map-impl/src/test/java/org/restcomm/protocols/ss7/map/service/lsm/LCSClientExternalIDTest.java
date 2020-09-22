@@ -40,10 +40,10 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalIDImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSClientExternalIDImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -118,7 +118,7 @@ public class LCSClientExternalIDTest {
 
         byte[] data = getData();
 
-        ISDNAddressString externalAddress = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressStringImpl externalAddress = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "55619007");
         LCSClientExternalIDImpl lcsClientExterId = new LCSClientExternalIDImpl(externalAddress, null);
         AsnOutputStream asnOS = new AsnOutputStream();
@@ -141,7 +141,7 @@ public class LCSClientExternalIDTest {
 
     @Test(groups = { "functional.serialize", "service.lsm" })
     public void testSerialization() throws Exception {
-        ISDNAddressString externalAddress = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressStringImpl externalAddress = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "55619007");
         LCSClientExternalIDImpl original = new LCSClientExternalIDImpl(externalAddress, null);
 

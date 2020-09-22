@@ -38,9 +38,8 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -54,25 +53,25 @@ import org.testng.annotations.Test;
 public class MAPExtensionContainerTest {
     MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
 
-    public static MAPExtensionContainer GetTestExtensionContainer() {
+    public static MAPExtensionContainerImpl GetTestExtensionContainer() {
         MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
 
-        ArrayList<MAPPrivateExtension> al = new ArrayList<MAPPrivateExtension>();
+        ArrayList<MAPPrivateExtensionImpl> al = new ArrayList<MAPPrivateExtensionImpl>();
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 4 }, new byte[] { 11, 12, 13, 14, 15 }));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 6 }, null));
         al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 5 }, new byte[] { 21, 22, 23, 24, 25, 26 }));
 
-        MAPExtensionContainer cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
+        MAPExtensionContainerImpl cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
 
         return cnt;
     }
 
-    public static Boolean CheckTestExtensionContainer(MAPExtensionContainer extContainer) {
+    public static Boolean CheckTestExtensionContainer(MAPExtensionContainerImpl extContainer) {
         if (extContainer == null || extContainer.getPrivateExtensionList().size() != 3)
             return false;
 
         for (int i = 0; i < 3; i++) {
-            MAPPrivateExtension pe = extContainer.getPrivateExtensionList().get(i);
+            MAPPrivateExtensionImpl pe = extContainer.getPrivateExtensionList().get(i);
             long[] lx = null;
             byte[] bx = null;
 
@@ -177,8 +176,8 @@ public class MAPExtensionContainerTest {
         assertTrue(Arrays.equals(copy.getPcsExtensions(), original.getPcsExtensions()));
         assertEquals(copy.getPrivateExtensionList().size(), original.getPrivateExtensionList().size());
 
-        ArrayList<MAPPrivateExtension> copyPriExt = copy.getPrivateExtensionList();
-        ArrayList<MAPPrivateExtension> originalPriExt = original.getPrivateExtensionList();
+        ArrayList<MAPPrivateExtensionImpl> copyPriExt = copy.getPrivateExtensionList();
+        ArrayList<MAPPrivateExtensionImpl> originalPriExt = original.getPrivateExtensionList();
 
         for (int i = 0; i < copyPriExt.size(); i++) {
             assertEquals(copyPriExt.get(i), originalPriExt.get(i));

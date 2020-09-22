@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  * SubscriberLocationReport-Res ::= SEQUENCE { extensionContainer ExtensionContainer OPTIONAL, ..., na-ESRK [0]
- * ISDN-AddressString OPTIONAL, na-ESRD [1] ISDN-AddressString OPTIONAL } -- na-ESRK and na-ESRD are mutually exclusive -- --
+ * ISDN-AddressStringImpl OPTIONAL, na-ESRD [1] ISDN-AddressStringImpl OPTIONAL } -- na-ESRK and na-ESRD are mutually exclusive -- --
  * exception handling -- receipt of both na-ESRK and na-ESRD shall be treated the same as a return error
  *
  *
@@ -36,9 +36,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
  */
 public interface SubscriberLocationReportResponse extends LsmMessage {
 
-    MAPExtensionContainer getExtensionContainer();
+	MAPExtensionContainerImpl getExtensionContainer();
 
-    ISDNAddressString getNaESRK();
+    ISDNAddressStringImpl getNaESRK();
 
-    ISDNAddressString getNaESRD();
+    ISDNAddressStringImpl getNaESRD();
 }

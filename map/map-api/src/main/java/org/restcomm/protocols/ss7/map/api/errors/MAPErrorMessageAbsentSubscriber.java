@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -42,11 +42,11 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 public interface MAPErrorMessageAbsentSubscriber extends MAPErrorMessage {
 
     // following is for MAP V3 only
-    MAPExtensionContainer getExtensionContainer();
+	MAPExtensionContainerImpl getExtensionContainer();
 
     AbsentSubscriberReason getAbsentSubscriberReason();
 
-    void setExtensionContainer(MAPExtensionContainer extensionContainer);
+    void setExtensionContainer(MAPExtensionContainerImpl extensionContainer);
 
     void setAbsentSubscriberReason(AbsentSubscriberReason absentSubscriberReason);
 

@@ -28,6 +28,7 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 import io.netty.buffer.ByteBuf;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
@@ -55,7 +56,7 @@ public class ASNCorrelationID {
 	}
 
 	@ASNLength
-	public Integer getLength() {		
+	public Integer getLength(ASNParser parser) {		
 		if(firstValue==null)
 			return 0;
 		
@@ -66,7 +67,7 @@ public class ASNCorrelationID {
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser, ByteBuf buffer) {
 		if(firstValue==null)
 			return;
 		
@@ -79,7 +80,7 @@ public class ASNCorrelationID {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser, Object length, ByteBuf buffer,Boolean skipErrors) {
 		if(buffer.readableBytes()>0)
 			firstValue=buffer.readByte();
 		

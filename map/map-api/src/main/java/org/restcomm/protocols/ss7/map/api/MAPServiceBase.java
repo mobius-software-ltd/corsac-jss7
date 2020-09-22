@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.map.api;
 
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 /**
@@ -59,8 +59,8 @@ public interface MAPServiceBase {
      *        descriptions, e.g. operator determined barring.
      * @return
      */
-    MAPDialog createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference) throws MAPException;
+    MAPDialog createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference,
+            SccpAddress destAddress, AddressStringImpl destReference) throws MAPException;
 
     /**
      * Create new structured dialog with predefined local TransactionId.
@@ -68,8 +68,8 @@ public interface MAPServiceBase {
      * (for example if we need of recreating a Dialog for which a peer already has in memory)
      * If a Dialog with local TransactionId is already present there will be MAPException
      */
-    MAPDialog createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference, Long localTrId) throws MAPException;
+    MAPDialog createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference,
+            SccpAddress destAddress, AddressStringImpl destReference, Long localTrId) throws MAPException;
 
     /**
      * Returns true if the service can perform dialogs with given ApplicationContext

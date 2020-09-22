@@ -33,12 +33,12 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LAC;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LocationAreaImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PagingAreaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
 import org.testng.annotations.Test;
 
 /**

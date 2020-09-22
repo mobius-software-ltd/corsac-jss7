@@ -26,13 +26,9 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.GlobalErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.GlobalOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
@@ -124,13 +120,15 @@ public final class TcapFactory {
         return tc;
     }
 
-    public static OperationCode createLocalOperationCode() {
-        OperationCode oc = new LocalOperationCodeImpl();
+    public static OperationCodeImpl createLocalOperationCode(Long value) {
+        OperationCodeImpl oc = new OperationCodeImpl();
+        oc.setLocalOperationCode(value);
         return oc;
     }
 
-    public static OperationCode createGlobalOperationCode() {
-        OperationCode oc = new GlobalOperationCodeImpl();
+    public static OperationCodeImpl createGlobalOperationCode(List<Long> value) {
+    	OperationCodeImpl oc = new OperationCodeImpl();
+    	oc.setGlobalOperationCode(value);
         return oc;
     }
 
@@ -175,13 +173,15 @@ public final class TcapFactory {
         return p;
     }
 
-    public static ErrorCode createLocalErrorCode() {
-        ErrorCode p = new LocalErrorCodeImpl();
-        return p;
+    public static ErrorCodeImpl createLocalErrorCode(Long value) {
+        ErrorCodeImpl ec = new ErrorCodeImpl();
+        ec.setLocalErrorCode(value);
+        return ec;
     }
-    
-    public static ErrorCode createGlobalErrorCode() {
-        ErrorCode p = new GlobalErrorCodeImpl();
-        return p;
+
+    public static ErrorCodeImpl createGlobalErrorCode(List<Long> value) {
+    	ErrorCodeImpl ec = new ErrorCodeImpl();
+        ec.setGlobalErrorCode(value);
+        return ec;
     }
 }

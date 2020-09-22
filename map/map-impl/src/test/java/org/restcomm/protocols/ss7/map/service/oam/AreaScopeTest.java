@@ -31,17 +31,17 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgi;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgiImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAId;
-import org.restcomm.protocols.ss7.map.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAIdImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.AreaScopeImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.EUtranCgiImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TAIdImpl;
-import org.restcomm.protocols.ss7.map.service.oam.AreaScopeImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -140,7 +140,7 @@ public class AreaScopeTest {
         cgiList.add(gci);
         AreaScopeImpl asc = new AreaScopeImpl(cgiList, null, null, null, null, null);
 //        ArrayList<GlobalCellId> cgiList, ArrayList<EUtranCgi> eUtranCgiList, ArrayList<RAIdentity> routingAreaIdList,
-//        ArrayList<LAIFixedLength> locationAreaIdList, ArrayList<TAId> trackingAreaIdList, MAPExtensionContainer extensionContainer
+//        ArrayList<LAIFixedLength> locationAreaIdList, ArrayList<TAId> trackingAreaIdList, MAPExtensionContainerImpl extensionContainer
 
         AsnOutputStream asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);

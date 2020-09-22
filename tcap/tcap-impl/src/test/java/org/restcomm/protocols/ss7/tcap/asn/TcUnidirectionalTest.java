@@ -37,15 +37,13 @@ import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
@@ -60,11 +58,19 @@ public class TcUnidirectionalTest {
         return new byte[] { 97, 45, 107, 27, 40, 25, 6, 7, 0, 17, -122, 5, 1, 2, 1, -96, 14, 96, 12, -128, 2, 7, -128, -95, 6,
                 6, 4, 40, 2, 3, 4, 108, 14, -95, 12, 2, 1, -128, 2, 2, 2, 79, 4, 3, 1, 2, 3 };
     }
-
+	
+	ASNParser parser=new ASNParser();
+    
 	@BeforeClass
 	public void setUp() {
-		ASNGeneric.clear(ASNInvokeParameterImpl.class);
-	
+		parser.loadClass(TCUniMessageImpl.class);
+    
+		parser.clearClassMapping(ASNInvokeParameterImpl.class);	
+		
+		parser.clearClassMapping(ASNDialogPortionObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
 	}
 	
     @Test(groups = { "functional.encode" })
@@ -85,8 +91,7 @@ public class TcUnidirectionalTest {
 
         ComponentImpl invComp = TcapFactory.createComponentInvoke();
         invComp.getInvoke().setInvokeId(-128l);
-        OperationCode oc = TcapFactory.createLocalOperationCode();
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(591L);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(591L);
         invComp.getInvoke().setOperationCode(oc);
         ASNOctetString p=new ASNOctetString();
         p.setValue(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }));
@@ -96,8 +101,6 @@ public class TcUnidirectionalTest {
         componentPortion.setComponents(Arrays.asList(new ComponentImpl[] { invComp }));
         tcUniMessage.setComponent(componentPortion);
 
-        ASNParser parser=new ASNParser();
-        parser.loadClass(TCUniMessageImpl.class);
         ByteBuf buffer=parser.encode(tcUniMessage);
         byte[] data = buffer.array();
         TCAPTestUtils.compareArrays(expected, data);
@@ -107,8 +110,6 @@ public class TcUnidirectionalTest {
     public void testDecode() throws ASNException {
 
     	ByteBuf buffer=Unpooled.wrappedBuffer(this.getData());
-        ASNParser parser=new ASNParser();
-        parser.loadClass(TCUniMessageImpl.class);
         TCUniMessage tcm = (TCUniMessage)parser.decode(buffer).getResult();
 
         DialogPortionImpl dp = tcm.getDialogPortion();

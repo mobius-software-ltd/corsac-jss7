@@ -26,10 +26,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.TCAPProviderImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
@@ -116,21 +112,5 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
     public ReturnResultNotLastImpl createTCResultNotLastRequest() {
 
         return TcapFactory.createComponentReturnResultNotLast();
-    }
-
-    public NationalOperationCodeImpl createNationalOperationCode() {
-        return TcapFactory.createNationalOperationCode();
-    }
-
-    public PrivateOperationCodeImpl createPrivateOperationCode() {
-        return TcapFactory.createPrivateOperationCode();
-    }
-
-    public PrivateErrorCodeImpl createPrivateErrorCode() {
-        return TcapFactory.createPrivateErrorCode();
-    }
-
-    public NationalErrorCodeImpl createNationalErrorCode() {
-        return TcapFactory.createNationalErrorCode();
     }
 }

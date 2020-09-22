@@ -22,13 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery.ForwardCheckSSIndicationRequest;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
@@ -40,9 +35,7 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 public class ForwardCheckSSIndicationRequestImpl extends MobilityMessageImpl implements ForwardCheckSSIndicationRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "ForwardCheckSSIndicationRequest";
-
-    public ForwardCheckSSIndicationRequestImpl() {
+	public ForwardCheckSSIndicationRequestImpl() {
     }
 
     @Override
@@ -56,50 +49,9 @@ public class ForwardCheckSSIndicationRequestImpl extends MobilityMessageImpl imp
     }
 
     @Override
-    public int getTag() throws MAPException {
-        throw new MAPException("Encoding / decoding is not supported");
-    }
-
-    @Override
-    public int getTagClass() {
-        return 0;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-        throw new MAPParsingComponentException("Encoding / decoding is not supported", MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-        throw new MAPParsingComponentException("Encoding / decoding is not supported", MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        throw new MAPException("Encoding / decoding is not supported");
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        throw new MAPException("Encoding / decoding is not supported");
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        throw new MAPException("Encoding / decoding is not supported");
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("ForwardCheckSSIndicationRequest [");
 
         sb.append("]");
 

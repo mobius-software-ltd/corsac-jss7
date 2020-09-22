@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -43,47 +43,47 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  * dataMissing | -- DataMissing must not be used in version 1 unexpectedDataValue | unknownSubscriber | roamingNotAllowed} CODE
  * local:2 }
  *
- * MAP V3: UpdateLocationArg ::= SEQUENCE { imsi IMSI, msc-Number [1] ISDN-AddressString, vlr-Number ISDN-AddressString, lmsi
+ * MAP V3: UpdateLocationArg ::= SEQUENCE { imsi IMSI, msc-Number [1] ISDN-AddressStringImpl, vlr-Number ISDN-AddressStringImpl, lmsi
  * [10] LMSI OPTIONAL, extensionContainer ExtensionContainer OPTIONAL, ... , vlr-Capability [6] VLR-Capability OPTIONAL,
  * informPreviousNetworkEntity [11] NULL OPTIONAL, cs-LCS-NotSupportedByUE [12] NULL OPTIONAL, v-gmlc-Address [2] GSN-Address
  * OPTIONAL, add-info [13] ADD-Info OPTIONAL, pagingArea [14] PagingArea OPTIONAL, skipSubscriberDataUpdate [15] NULL OPTIONAL,
  * -- The skipSubscriberDataUpdate parameter in the UpdateLocationArg and the ADD-Info -- structures carry the same semantic.
  * restorationIndicator [16] NULL OPTIONAL }
  *
- * MAP V2: UpdateLocationArg ::= SEQUENCE { imsi IMSI, locationInfo LocationInfo, vlr-Number ISDN-AddressString, lmsi [10] LMSI
+ * MAP V2: UpdateLocationArg ::= SEQUENCE { imsi IMSI, locationInfo LocationInfo, vlr-Number ISDN-AddressStringImpl, lmsi [10] LMSI
  * OPTIONAL, ...}
  *
- * LocationInfo ::= CHOICE { roamingNumber [0] ISDN-AddressString, -- roamingNumber must not be used in version greater 1
- * msc-Number [1] ISDN-AddressString}
+ * LocationInfo ::= CHOICE { roamingNumber [0] ISDN-AddressStringImpl, -- roamingNumber must not be used in version greater 1
+ * msc-Number [1] ISDN-AddressStringImpl}
  *
  * @author sergey vetyutnev
  *
  */
 public interface UpdateLocationRequest extends MobilityMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    ISDNAddressString getMscNumber();
+    ISDNAddressStringImpl getMscNumber();
 
-    ISDNAddressString getRoamingNumber();
+    ISDNAddressStringImpl getRoamingNumber();
 
-    ISDNAddressString getVlrNumber();
+    ISDNAddressStringImpl getVlrNumber();
 
-    LMSI getLmsi();
+    LMSIImpl getLmsi();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    VLRCapability getVlrCapability();
+    VLRCapabilityImpl getVlrCapability();
 
     boolean getInformPreviousNetworkEntity();
 
     boolean getCsLCSNotSupportedByUE();
 
-    GSNAddress getVGmlcAddress();
+    GSNAddressImpl getVGmlcAddress();
 
-    ADDInfo getADDInfo();
+    ADDInfoImpl getADDInfo();
 
-    PagingArea getPagingArea();
+    PagingAreaImpl getPagingArea();
 
     boolean getSkipSubscriberDataUpdate();
 

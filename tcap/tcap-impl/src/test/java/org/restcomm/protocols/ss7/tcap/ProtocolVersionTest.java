@@ -44,7 +44,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ASNDialogPortionObjectImpl;
+import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersionImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TCBeginMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
@@ -153,7 +156,7 @@ public class ProtocolVersionTest extends SccpHarness {
         
         client.sendBegin();
         EventTestHarness.waitFor(WAIT_TIME);
-        assertNotNull(pv);
+        assertNotNull(pv);        
     }
     
     @Test(groups = { "functional.flow" })
@@ -183,6 +186,10 @@ public class ProtocolVersionTest extends SccpHarness {
         
         private TestSccpListener() {
         	parser.loadClass(TCBeginMessageImpl.class);
+            
+        	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
+        	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
+        	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
         }
         
         @Override
@@ -192,8 +199,7 @@ public class ProtocolVersionTest extends SccpHarness {
         	try {
         		output=parser.decode(buffer).getResult();
         	}
-        	catch(ASNException ex) {
-        		
+        	catch(ASNException ex) {        		
         	}
         	
             if(output!=null && output instanceof TCBeginMessage) {
@@ -202,6 +208,7 @@ public class ProtocolVersionTest extends SccpHarness {
                             pv=((DialogRequestAPDUImpl)tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
             	} 
                         
+            	System.out.println("DIALOG REQUEST:" + tcb.getDialogPortion().toString());
             	System.out.println("PROTOCOL VERSION IS : " + pv);
             }            
         }

@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.map.api;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -43,17 +44,17 @@ public class MAPApplicationContext implements Serializable {
     private MAPApplicationContextVersion contextVersion;
 
     // Same as oidTemplate
-    private long[] res = new long[] { 0, 4, 0, 0, 1, 0, 0, 0 };
+    private List<Long> res = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 0L, 0L });
 
     private MAPApplicationContext(MAPApplicationContextName contextName, MAPApplicationContextVersion contextVersion) {
         this.contextName = contextName;
         this.contextVersion = contextVersion;
 
-        this.res[6] = this.contextName.getApplicationContextCode();
-        this.res[7] = this.contextVersion.getVersion();
+        this.res.set(6,(long)this.contextName.getApplicationContextCode());
+        this.res.set(7,(long)this.contextVersion.getVersion());
     }
 
-    public long[] getOID() {
+    public List<Long> getOID() {
         return res;
     }
 
@@ -92,21 +93,21 @@ public class MAPApplicationContext implements Serializable {
             return null;
     }
 
-    public static MAPApplicationContext getInstance(long[] oid) {
+    public static MAPApplicationContext getInstance(List<Long> oid) {
 
-        if (oid == null || oid.length != oidTemplate.length)
+        if (oid == null || oid.size() != oidTemplate.length)
             return null;
         for (int i1 = 0; i1 < oidTemplate.length - 2; i1++) {
-            if (oid[i1] != oidTemplate[i1])
+            if (oid.get(i1) != oidTemplate[i1])
                 return null;
         }
 
-        MAPApplicationContextName contextName = MAPApplicationContextName.getInstance(oid[6]);
-        MAPApplicationContextVersion contextVersion = MAPApplicationContextVersion.getInstance(oid[7]);
+        MAPApplicationContextName contextName = MAPApplicationContextName.getInstance(oid.get(6));
+        MAPApplicationContextVersion contextVersion = MAPApplicationContextVersion.getInstance(oid.get(7));
 
         if (contextName == null || contextVersion == null)
             return null;
-        if (!MAPApplicationContext.availableApplicationContextVersion(contextName, (int) oid[7]))
+        if (!MAPApplicationContext.availableApplicationContextVersion(contextName, oid.get(7).intValue()))
             return null;
 
         return getMAPApplicationContext(contextName, contextVersion);
@@ -297,11 +298,11 @@ public class MAPApplicationContext implements Serializable {
      * @param oid
      * @return
      */
-    public static int getProtocolVersion(long[] oid) {
-        if (oid == null || oid.length != 8)
+    public static int getProtocolVersion(List<Long> oid) {
+        if (oid == null || oid.size() != 8)
             return 0;
         else
-            return (int) oid[7];
+            return oid.get(7).intValue();
     }
 
     @Override
@@ -310,7 +311,9 @@ public class MAPApplicationContext implements Serializable {
         int result = 1;
         result = prime * result + ((contextName == null) ? 0 : contextName.hashCode());
         result = prime * result + ((contextVersion == null) ? 0 : contextVersion.hashCode());
-        result = prime * result + Arrays.hashCode(res);
+        for(Long curr:res)
+        	result = prime * result + curr.intValue();
+        
         return result;
     }
 
@@ -327,7 +330,7 @@ public class MAPApplicationContext implements Serializable {
             return false;
         if (contextVersion != other.contextVersion)
             return false;
-        if (!Arrays.equals(res, other.res))
+        if (res.equals(other.res))
             return false;
         return true;
     }

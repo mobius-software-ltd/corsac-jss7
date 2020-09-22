@@ -35,7 +35,7 @@ import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.DialogImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
@@ -426,7 +426,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         uie.setIdentifier(Arrays.asList(new Long[] { 1L, 2L, 3L }));
         uie.setChild(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
         ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));
-        ApplicationContext ac = TcapFactory.createApplicationContext(Arrays.asList(new Long[] { 1L, 2L, 3L }));
+        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(Arrays.asList(new Long[] { 1L, 2L, 3L }));
         server.sendAbort(ac, ui);
         Thread.sleep(WAIT_TIME);
 

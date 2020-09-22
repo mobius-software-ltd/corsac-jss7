@@ -35,6 +35,6 @@ RESULT SS-Info
  */
 public interface EraseSSResponse extends SupplementaryMessage {
 
-    SSInfo getSsInfo();
+	SSInfoImpl getSsInfo();
 
 }

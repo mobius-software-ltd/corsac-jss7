@@ -30,8 +30,6 @@ import org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
@@ -99,22 +97,6 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
     public ComponentImpl createTCResultRequest() {
 
         return TcapFactory.createComponentReturnResult();
-    }
-
-    public OperationCode createLocalOperationCode() {
-        return TcapFactory.createLocalOperationCode();
-    }
-
-    public OperationCode createGlobalOperationCode() {
-        return TcapFactory.createGlobalOperationCode();
-    }
-
-    public ErrorCode createLocalErrorCode() {
-        return TcapFactory.createLocalErrorCode();
-    }
-
-    public ErrorCode createGlobalErrorCode() {
-        return TcapFactory.createGlobalErrorCode();
     }
 
     public ProblemImpl createProblem() {

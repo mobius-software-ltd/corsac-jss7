@@ -31,20 +31,20 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.AreaScope;
+import org.restcomm.protocols.ss7.map.api.service.oam.AreaScopeImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.JobType;
 import org.restcomm.protocols.ss7.map.api.service.oam.ListOfMeasurements;
+import org.restcomm.protocols.ss7.map.api.service.oam.ListOfMeasurementsImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.LoggingDuration;
 import org.restcomm.protocols.ss7.map.api.service.oam.LoggingInterval;
+import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportAmount;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportInterval;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTrigger;
-import org.restcomm.protocols.ss7.map.primitives.GlobalCellIdImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTriggerImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.oam.AreaScopeImpl;
-import org.restcomm.protocols.ss7.map.service.oam.ListOfMeasurementsImpl;
-import org.restcomm.protocols.ss7.map.service.oam.MDTConfigurationImpl;
-import org.restcomm.protocols.ss7.map.service.oam.ReportingTriggerImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -131,7 +131,7 @@ public class MDTConfigurationTest {
         MDTConfigurationImpl asc = new MDTConfigurationImpl(JobType.traceOnly, null, null, null, null, null, null, null, null, null, null);
 //        JobType jobType, AreaScope areaScope, ListOfMeasurements listOfMeasurements, ReportingTrigger reportingTrigger,
 //        ReportInterval reportInterval, ReportAmount reportAmount, Integer eventThresholdRSRP, Integer eventThresholdRSRQ, LoggingInterval loggingInterval,
-//        LoggingDuration loggingDuration, MAPExtensionContainer extensionContainer
+//        LoggingDuration loggingDuration, MAPExtensionContainerImpl extensionContainer
 
         AsnOutputStream asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);

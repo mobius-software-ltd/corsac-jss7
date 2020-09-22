@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  * systemFailure | unexpectedDataValue | unknownSubscriber | roamingNotAllowed} CODE local:23 }
  *
  *
- * UpdateGprsLocationArg ::= SEQUENCE { imsi IMSI, sgsn-Number ISDN-AddressString, sgsn-Address GSN-Address, extensionContainer
+ * UpdateGprsLocationArg ::= SEQUENCE { imsi IMSI, sgsn-Number ISDN-AddressStringImpl, sgsn-Address GSN-Address, extensionContainer
  * ExtensionContainer OPTIONAL, ... , sgsn-Capability [0] SGSN-Capability OPTIONAL, informPreviousNetworkEntity [1] NULL
  * OPTIONAL, ps-LCS-NotSupportedByUE [2] NULL OPTIONAL, v-gmlc-Address [3] GSN-Address OPTIONAL, add-info [4] ADD-Info OPTIONAL,
  * eps-info [5] EPS-Info OPTIONAL, servingNodeTypeIndicator [6] NULL OPTIONAL, skipSubscriberDataUpdate [7] NULL OPTIONAL,
@@ -48,25 +48,25 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface UpdateGprsLocationRequest extends MobilityMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
-    ISDNAddressString getSgsnNumber();
+    ISDNAddressStringImpl getSgsnNumber();
 
-    GSNAddress getSgsnAddress();
+    GSNAddressImpl getSgsnAddress();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
-    SGSNCapability getSGSNCapability();
+    SGSNCapabilityImpl getSGSNCapability();
 
     boolean getInformPreviousNetworkEntity();
 
     boolean getPsLCSNotSupportedByUE();
 
-    GSNAddress getVGmlcAddress();
+    GSNAddressImpl getVGmlcAddress();
 
-    ADDInfo getADDInfo();
+    ADDInfoImpl getADDInfo();
 
-    EPSInfo getEPSInfo();
+    EPSInfoImpl getEPSInfo();
 
     boolean getServingNodeTypeIndicator();
 

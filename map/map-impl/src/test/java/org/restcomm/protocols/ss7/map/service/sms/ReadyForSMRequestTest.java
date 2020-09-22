@@ -30,8 +30,8 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.AlertReason;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.sms.ReadyForSMRequestImpl;
 import org.testng.annotations.Test;
@@ -98,7 +98,7 @@ public class ReadyForSMRequestTest {
 
         IMSI imsi = new IMSIImpl("1111122222333");
         ReadyForSMRequestImpl impl = new ReadyForSMRequestImpl(imsi, AlertReason.memoryAvailable, false, null, false);
-//        IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainer extensionContainer,
+//        IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainerImpl extensionContainer,
 //        boolean additionalAlertReasonIndicator
 
         AsnOutputStream asnOS = new AsnOutputStream();

@@ -28,6 +28,7 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 import io.netty.buffer.ByteBuf;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
@@ -50,12 +51,12 @@ public class ASNBoolean
 	}
 
 	@ASNLength
-	public Integer getLength() {
+	public Integer getLength(ASNParser parser) {
 		return 1;
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser,ByteBuf buffer) {
 		if(value)
 			buffer.writeByte(0xFF);
 		else
@@ -63,7 +64,7 @@ public class ASNBoolean
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		if(buffer.readByte()==0x00)
 			value=false;
 		else

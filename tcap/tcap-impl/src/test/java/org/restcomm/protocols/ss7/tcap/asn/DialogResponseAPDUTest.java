@@ -38,7 +38,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 /**
  *
@@ -64,18 +63,19 @@ public class DialogResponseAPDUTest {
                 1, 1, (byte) 163, 5, (byte) 162, 3, 2, 1, 2 };
     }
 
+    static ASNParser parser=new ASNParser();
+	
     @BeforeClass
     public static void setUpClass() throws Exception {
-    	ASNGeneric.clear(ASNUserInformationObjectImpl.class);
-    	ASNGeneric.registerAlternative(ASNUserInformationObjectImpl.class, DialogResponseAPDUASN.class);    	
+    	parser.loadClass(DialogResponseAPDUImpl.class);
+    	
+    	parser.clearClassMapping(ASNUserInformationObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, DialogResponseAPDUASN.class);    	
     }
 
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testResponseAPDU() throws Exception {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(DialogResponseAPDUImpl.class);
-    	
     	Object output=parser.decode(Unpooled.wrappedBuffer(getData())).getResult();
         assertTrue(output instanceof DialogResponseAPDUImpl);
         DialogResponseAPDUImpl d = (DialogResponseAPDUImpl)output;
@@ -90,7 +90,7 @@ public class DialogResponseAPDUTest {
         assertNotNull(ui);
         assertTrue(ui.getExternal().isValueObject());
         assertTrue(ui.getExternal().getChild().getValue() instanceof DialogResponseAPDUASN);
-        assertTrue(((DialogResponseAPDUASN)ui.getExternal().getChild().getValue()).getLength()==0);
+        assertTrue(((DialogResponseAPDUASN)ui.getExternal().getChild().getValue()).getLength(parser)==0);
         
         ByteBuf buffer=parser.encode(d);
         assertTrue(Arrays.equals(getData(), buffer.array()));

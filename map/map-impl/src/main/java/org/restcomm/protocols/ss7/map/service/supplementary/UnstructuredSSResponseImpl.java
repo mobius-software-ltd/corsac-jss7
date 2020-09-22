@@ -22,37 +22,41 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
+import org.restcomm.protocols.ss7.map.api.datacoding.ASNCBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
-import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author amit bhayani
  *
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class UnstructuredSSResponseImpl extends SupplementaryMessageImpl implements UnstructuredSSResponse {
 	private static final long serialVersionUID = 1L;
 
-    public UnstructuredSSResponseImpl() {
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
+	private ASNCBSDataCodingSchemeImpl ussdDataCodingSch;
+	
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
+	private USSDStringImpl ussdString;
+	
+	public UnstructuredSSResponseImpl() {
         super();
     }
 
-    public UnstructuredSSResponseImpl(CBSDataCodingScheme ussdDataCodingSch, USSDString ussdString) {
-        super(ussdDataCodingSch, ussdString);
+    public UnstructuredSSResponseImpl(CBSDataCodingScheme ussdDataCodingSch, USSDStringImpl ussdString) {
+    	if(ussdDataCodingSch!=null)
+    		this.ussdDataCodingSch=new ASNCBSDataCodingSchemeImpl(ussdDataCodingSch);
+    	
+        this.ussdString=ussdString;        
     }
 
     public MAPMessageType getMessageType() {
@@ -62,107 +66,19 @@ public class UnstructuredSSResponseImpl extends SupplementaryMessageImpl impleme
     public int getOperationCode() {
         return MAPOperationCode.unstructuredSS_Request;
     }
+    
+	@Override
+	public CBSDataCodingScheme getDataCodingScheme() {
+		if(this.ussdDataCodingSch==null)
+			return null;
+		
+		return ussdDataCodingSch.getDataCoding();
+	}
 
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding UnstructuredSSResponseIndication: "
-                    + e.getMessage(), e, MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding UnstructuredSSResponseIndication: "
-                    + e.getMessage(), e, MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding UnstructuredSSResponseIndication: "
-                    + e.getMessage(), e, MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding UnstructuredSSResponseIndication: "
-                    + e.getMessage(), e, MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-
-        ais.readTag();
-
-        // ussd-DataCodingScheme USSD-DataCodingScheme
-        if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding UnstructuredSSResponseIndication: Parameter ussd-DataCodingScheme bad tag class or not primitive",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        int length1 = ais.readLength();
-        this.ussdDataCodingSch = new CBSDataCodingSchemeImpl(ais.readOctetStringData(length1)[0]);
-
-        ais.readTag();
-
-        // ussd-String USSD-String
-        if (ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive())
-            throw new MAPParsingComponentException(
-                    "Error while decoding UnstructuredSSResponseIndication: Parameter ussd-String bad tag class or not primitive",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-
-        this.ussdString = new USSDStringImpl(this.ussdDataCodingSch);
-        ((USSDStringImpl) this.ussdString).decodeAll(ais);
-
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-
-        this.encodeAll(asnOs, Tag.CLASS_UNIVERSAL, Tag.SEQUENCE);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-
-        try {
-            asnOs.writeTag(tagClass, false, tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding UnstructuredSSResponseIndication", e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        if (this.ussdString == null)
-            throw new MAPException("ussdString must not be null");
-
-        try {
-            asnOs.writeOctetString(new byte[] { (byte) this.ussdDataCodingSch.getCode() });
-
-            ((USSDStringImpl) this.ussdString).encodeAll(asnOs);
-
-        } catch (IOException e) {
-            throw new MAPException("IOException when encoding UnstructuredSSResponseIndication", e);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding UnstructuredSSResponseIndication", e);
-        }
-    }
+	@Override
+	public USSDStringImpl getUSSDString() {
+		return ussdString;
+	}
 
     @Override
     public String toString() {
@@ -171,7 +87,17 @@ public class UnstructuredSSResponseImpl extends SupplementaryMessageImpl impleme
         if (this.getMAPDialog() != null) {
             sb.append("DialogId=").append(this.getMAPDialog().getLocalDialogId());
         }
-        sb.append(super.toString());
+        
+        if(this.ussdDataCodingSch!=null) {
+        	sb.append(", alertingPattern=");
+            sb.append(this.ussdDataCodingSch.toString());
+        }
+        
+        if(this.ussdString!=null) {
+        	sb.append(", ussdString=");
+            sb.append(this.ussdString.toString());
+        }
+        
         sb.append("]");
 
         return sb.toString();

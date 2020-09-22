@@ -22,13 +22,13 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
  *
- MAP V1: PerformHO-Res ::= SEQUENCE { handoverNumber ISDN-AddressString, accessSignalInfo ExternalSignalInfo}
+ MAP V1: PerformHO-Res ::= SEQUENCE { handoverNumber ISDN-AddressStringImpl, accessSignalInfo ExternalSignalInfo}
  *
  *
  * @author sergey vetyutnev
@@ -36,8 +36,8 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface PerformHandoverResponse extends MobilityMessage {
 
-    ISDNAddressString getHandoverNumber();
+    ISDNAddressStringImpl getHandoverNumber();
 
-    ExternalSignalInfo getAccessSignalInfo();
+    ExternalSignalInfoImpl getAccessSignalInfo();
 
 }

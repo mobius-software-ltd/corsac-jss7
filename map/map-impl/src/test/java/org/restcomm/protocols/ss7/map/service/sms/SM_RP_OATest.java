@@ -36,12 +36,10 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.sms.SM_RP_OAImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -76,7 +74,7 @@ public class SM_RP_OATest {
         assertEquals(tag, 4);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
 
-        AddressString nnm = oa.getServiceCentreAddressOA();
+        AddressStringImpl nnm = oa.getServiceCentreAddressOA();
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
         assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(nnm.getAddress(), "18017011111");
@@ -91,7 +89,7 @@ public class SM_RP_OATest {
         assertEquals(tag, 2);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
 
-        ISDNAddressString msisdn = oa.getMsisdn();
+        ISDNAddressStringImpl msisdn = oa.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(msisdn.getAddress(), "393385625695");

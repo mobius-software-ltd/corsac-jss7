@@ -31,7 +31,7 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.pdpContextActivation.SendRoutingInfoForGprsResponseImpl;
 import org.testng.annotations.Test;
@@ -107,7 +107,7 @@ public class SendRoutingInfoForGprsResponseTest {
 
         GSNAddress sgsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData());
         SendRoutingInfoForGprsResponseImpl impl = new SendRoutingInfoForGprsResponseImpl(sgsnAddress, null, null, null);
-        // GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason, MAPExtensionContainer extensionContainer
+        // GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason, MAPExtensionContainerImpl extensionContainer
 
         AsnOutputStream asnOS = new AsnOutputStream();
 

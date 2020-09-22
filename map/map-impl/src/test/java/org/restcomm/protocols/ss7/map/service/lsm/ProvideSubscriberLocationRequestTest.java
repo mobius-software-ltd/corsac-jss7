@@ -36,54 +36,53 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
+import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
+import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinitionImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientID;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientName;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientNameImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientType;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodewordImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPriority;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheckImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoS;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoSImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LocationEstimateType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LocationType;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LocationTypeImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.PrivacyCheckRelatedAction;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMN;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNList;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTime;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeCategory;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapes;
-import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.AreaDefinitionImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.AreaEventInfoImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.AreaIdentificationImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.AreaImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSClientIDImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSClientNameImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSCodewordImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSPrivacyCheckImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSQoSImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LocationTypeImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.PeriodicLDRInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapesImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.ProvideSubscriberLocationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ReportingPLMNImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ReportingPLMNListImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ResponseTimeImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.SupportedGADShapesImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -163,7 +162,7 @@ public class ProvideSubscriberLocationRequestTest {
         assertNotNull(locationType);
         assertEquals(locationType.getLocationEstimateType(), LocationEstimateType.currentLocation);
 
-        ISDNAddressString mlcNumber = reqInd.getMlcNumber();
+        ISDNAddressStringImpl mlcNumber = reqInd.getMlcNumber();
         assertNotNull(mlcNumber);
         assertEquals(mlcNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(mlcNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -294,7 +293,7 @@ public class ProvideSubscriberLocationRequestTest {
         byte[] rawData = getEncodedData();
 
         LocationType locationType = new LocationTypeImpl(LocationEstimateType.currentLocation, null);
-        ISDNAddressString mlcNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl mlcNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "55619007");
 
         USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
@@ -346,9 +345,9 @@ public class ProvideSubscriberLocationRequestTest {
         reqInd = new ProvideSubscriberLocationRequestImpl(locationType, mlcNumber, lcsClientID, true, imsi, msisdn, lmsi, imei,
                 LCSPriority.normalPriority, lcsQoS, null, supportedGADShapes, 5, 6, lcsCodeword, lcsPrivacyCheck,
                 areaEventInfo, hgmlcAddress, true, periodicLDRInfo, reportingPLMNList);
-        // LocationType locationType, ISDNAddressString mlcNumber, LCSClientID lcsClientID, boolean privacyOverride,
-        // IMSI imsi, ISDNAddressString msisdn, LMSI lmsi, IMEI imei, LCSPriority lcsPriority, LCSQoS lcsQoS,
-        // MAPExtensionContainer extensionContainer,
+        // LocationType locationType, ISDNAddressStringImpl mlcNumber, LCSClientID lcsClientID, boolean privacyOverride,
+        // IMSI imsi, ISDNAddressStringImpl msisdn, LMSI lmsi, IMEI imei, LCSPriority lcsPriority, LCSQoS lcsQoS,
+        // MAPExtensionContainerImpl extensionContainer,
         // SupportedGADShapes supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID, LCSCodeword lcsCodeword,
         // LCSPrivacyCheck lcsPrivacyCheck, AreaEventInfo areaEventInfo, GSNAddress hgmlcAddress, boolean
         // moLrShortCircuitIndicator,

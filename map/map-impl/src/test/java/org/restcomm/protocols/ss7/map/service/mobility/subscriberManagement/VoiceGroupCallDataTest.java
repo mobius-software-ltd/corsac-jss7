@@ -33,17 +33,17 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptions;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptionsImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GroupId;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GroupIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupId;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupIdImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallDataImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.AdditionalInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.AdditionalSubscriptionsImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.GroupIdImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LongGroupIdImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.VoiceGroupCallDataImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -138,12 +138,12 @@ public class VoiceGroupCallDataTest {
     public void testEncode() throws Exception {
         // Option 1
         GroupId groupId = new GroupIdImpl("4");
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         LongGroupId longGroupId = new LongGroupIdImpl("5");
         AdditionalSubscriptions additionalSubscriptions = new AdditionalSubscriptionsImpl(true, false, true);
         BitSetStrictLength b = new BitSetStrictLength(1);
         b.set(0);
-        AdditionalInfo additionalInfo = new AdditionalInfoImpl(b);
+        AdditionalInfoImpl additionalInfo = new AdditionalInfoImpl(b);
 
         VoiceGroupCallDataImpl prim = new VoiceGroupCallDataImpl(groupId, extensionContainer, additionalSubscriptions,
                 additionalInfo, longGroupId);

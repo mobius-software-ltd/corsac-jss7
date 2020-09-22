@@ -55,11 +55,11 @@ import org.restcomm.protocols.ss7.map.api.errors.RoamingNotAllowedCause;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.restcomm.protocols.ss7.map.api.errors.UnauthorizedLCSClientDiagnostic;
 import org.restcomm.protocols.ss7.map.api.errors.UnknownSubscriberDiagnostic;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 
 /**
  * The factory of MAP ReturnError messages
@@ -75,7 +75,7 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
      * @param errorCode
      * @return
      */
-    public MAPErrorMessage createMessageFromErrorCode(Long errorCode) {
+    public MAPErrorMessage createMessageFromErrorCode(Long errorCode,Long mapVersion) {
         long ec = (long) errorCode;
         switch ((int) ec) {
             case MAPErrorCode.unexpectedDataValue:
@@ -117,10 +117,16 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
                 return new MAPErrorMessageAbsentSubscriberSMImpl();
 
             case MAPErrorCode.systemFailure:
-                return new MAPErrorMessageSystemFailureImpl();
-
+            	if(mapVersion<3)
+            		return new MAPErrorMessageSytemFailure1Impl();
+            	else
+            		return new MAPErrorMessageSystemFailureImpl();
+            	
             case MAPErrorCode.callBarred:
-                return new MAPErrorMessageCallBarredImpl();
+            	if(mapVersion<3)
+            		return new MAPErrorMessageCallBarred1Impl();
+            	else
+            		return new MAPErrorMessageCallBarredImpl();
 
             case MAPErrorCode.facilityNotSupported:
                 return new MAPErrorMessageFacilityNotSupImpl();
@@ -132,7 +138,10 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
                 return new MAPErrorMessageSubscriberBusyForMtSmsImpl();
 
             case MAPErrorCode.absentSubscriber:
-                return new MAPErrorMessageAbsentSubscriberImpl();
+            	if(mapVersion<3)
+            		return new MAPErrorMessageAbsentSubscriber1Impl();
+            	else
+            		return new MAPErrorMessageAbsentSubscriberImpl();
 
             case MAPErrorCode.unauthorizedLCSClient:
                 return new MAPErrorMessageUnauthorizedLCSClientImpl();
@@ -169,82 +178,88 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
     }
 
     public MAPErrorMessageExtensionContainer createMAPErrorMessageExtensionContainer(Long errorCode,
-            MAPExtensionContainer extensionContainer) {
+    		MAPExtensionContainerImpl extensionContainer) {
         return new MAPErrorMessageExtensionContainerImpl(errorCode, extensionContainer);
     }
 
     public MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(long mapProtocolVersion,
             SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, byte[] signalInfo,
-            MAPExtensionContainer extensionContainer) {
+            MAPExtensionContainerImpl extensionContainer) {
         return new MAPErrorMessageSMDeliveryFailureImpl(mapProtocolVersion, smEnumeratedDeliveryFailureCause, signalInfo,
                 extensionContainer);
     }
 
-    public MAPErrorMessageFacilityNotSup createMAPErrorMessageFacilityNotSup(MAPExtensionContainer extensionContainer,
+    public MAPErrorMessageFacilityNotSup createMAPErrorMessageFacilityNotSup(MAPExtensionContainerImpl extensionContainer,
             Boolean shapeOfLocationEstimateNotSupported, Boolean neededLcsCapabilityNotSupportedInServingNode) {
         return new MAPErrorMessageFacilityNotSupImpl(extensionContainer, shapeOfLocationEstimateNotSupported,
                 neededLcsCapabilityNotSupportedInServingNode);
     }
 
     public MAPErrorMessageSystemFailure createMAPErrorMessageSystemFailure(long mapVersion, NetworkResource networkResource,
-            AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainer extensionContainer) {
-        return new MAPErrorMessageSystemFailureImpl(mapVersion, networkResource, additionalNetworkResource, extensionContainer);
+            AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainerImpl extensionContainer) {
+    	if(mapVersion<3)
+    		return new MAPErrorMessageSytemFailure1Impl(networkResource);
+    	else
+    		return new MAPErrorMessageSystemFailureImpl(mapVersion, networkResource, additionalNetworkResource, extensionContainer);
     }
 
-    public MAPErrorMessageUnknownSubscriber createMAPErrorMessageUnknownSubscriber(MAPExtensionContainer extensionContainer,
+    public MAPErrorMessageUnknownSubscriber createMAPErrorMessageUnknownSubscriber(MAPExtensionContainerImpl extensionContainer,
             UnknownSubscriberDiagnostic unknownSubscriberDiagnostic) {
         return new MAPErrorMessageUnknownSubscriberImpl(extensionContainer, unknownSubscriberDiagnostic);
     }
 
     public MAPErrorMessageAbsentSubscriberSM createMAPErrorMessageAbsentSubscriberSM(
-            AbsentSubscriberDiagnosticSM absentSubscriberDiagnosticSM, MAPExtensionContainer extensionContainer,
+            AbsentSubscriberDiagnosticSM absentSubscriberDiagnosticSM, MAPExtensionContainerImpl extensionContainer,
             AbsentSubscriberDiagnosticSM additionalAbsentSubscriberDiagnosticSM) {
         return new MAPErrorMessageAbsentSubscriberSMImpl(absentSubscriberDiagnosticSM, extensionContainer,
                 additionalAbsentSubscriberDiagnosticSM);
     }
 
     public MAPErrorMessageSubscriberBusyForMtSms createMAPErrorMessageSubscriberBusyForMtSms(
-            MAPExtensionContainer extensionContainer, Boolean gprsConnectionSuspended) {
+    		MAPExtensionContainerImpl extensionContainer, Boolean gprsConnectionSuspended) {
         return new MAPErrorMessageSubscriberBusyForMtSmsImpl(extensionContainer, gprsConnectionSuspended);
     }
 
     public MAPErrorMessageCallBarred createMAPErrorMessageCallBarred(Long mapVersion, CallBarringCause callBarringCause,
-            MAPExtensionContainer extensionContainer, Boolean unauthorisedMessageOriginator) {
-        return new MAPErrorMessageCallBarredImpl(mapVersion, callBarringCause, extensionContainer,
+    		MAPExtensionContainerImpl extensionContainer, Boolean unauthorisedMessageOriginator) {
+    	if(mapVersion<3)
+    		return new MAPErrorMessageCallBarred1Impl(callBarringCause);
+    	else
+    		return new MAPErrorMessageCallBarredImpl(mapVersion, callBarringCause, extensionContainer,
                 unauthorisedMessageOriginator);
     }
 
-    public MAPErrorMessageAbsentSubscriber createMAPErrorMessageAbsentSubscriber(MAPExtensionContainer extensionContainer,
+    public MAPErrorMessageAbsentSubscriber createMAPErrorMessageAbsentSubscriber(MAPExtensionContainerImpl extensionContainer,
             AbsentSubscriberReason absentSubscriberReason) {
         return new MAPErrorMessageAbsentSubscriberImpl(extensionContainer, absentSubscriberReason);
     }
 
     public MAPErrorMessageAbsentSubscriber createMAPErrorMessageAbsentSubscriber(Boolean mwdSet) {
-        return new MAPErrorMessageAbsentSubscriberImpl(mwdSet);
+        return new MAPErrorMessageAbsentSubscriber1Impl(mwdSet);
     }
 
     public MAPErrorMessageUnauthorizedLCSClient createMAPErrorMessageUnauthorizedLCSClient(
-            UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic, MAPExtensionContainer extensionContainer) {
+            UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic, MAPExtensionContainerImpl extensionContainer) {
         return new MAPErrorMessageUnauthorizedLCSClientImpl(unauthorizedLCSClientDiagnostic, extensionContainer);
     }
 
     public MAPErrorMessagePositionMethodFailure createMAPErrorMessagePositionMethodFailure(
-            PositionMethodFailureDiagnostic positionMethodFailureDiagnostic, MAPExtensionContainer extensionContainer) {
+            PositionMethodFailureDiagnostic positionMethodFailureDiagnostic, MAPExtensionContainerImpl extensionContainer) {
         return new MAPErrorMessagePositionMethodFailureImpl(positionMethodFailureDiagnostic, extensionContainer);
     }
 
-    public MAPErrorMessageBusySubscriber createMAPErrorMessageBusySubscriber(MAPExtensionContainer extensionContainer,
+    public MAPErrorMessageBusySubscriber createMAPErrorMessageBusySubscriber(MAPExtensionContainerImpl extensionContainer,
             boolean ccbsPossible, boolean ccbsBusy) {
         return new MAPErrorMessageBusySubscriberImpl(extensionContainer, ccbsPossible, ccbsBusy);
     }
 
     public MAPErrorMessageCUGReject createMAPErrorMessageCUGReject(CUGRejectCause cugRejectCause,
-            MAPExtensionContainer extensionContainer) {
+            MAPExtensionContainerImpl extensionContainer) {
         return new MAPErrorMessageCUGRejectImpl(cugRejectCause, extensionContainer);
     }
 
     public MAPErrorMessageRoamingNotAllowed createMAPErrorMessageRoamingNotAllowed(
-            RoamingNotAllowedCause roamingNotAllowedCause, MAPExtensionContainer extensionContainer,
+            RoamingNotAllowedCause roamingNotAllowedCause, MAPExtensionContainerImpl extensionContainer,
             AdditionalRoamingNotAllowedCause additionalRoamingNotAllowedCause) {
         return new MAPErrorMessageRoamingNotAllowedImpl(roamingNotAllowedCause, extensionContainer,
                 additionalRoamingNotAllowedCause);
@@ -259,8 +274,8 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
         return new MAPErrorMessageSsErrorStatusImpl(qBit, pBit, rBit, aBit);
     }
 
-    public MAPErrorMessageSsIncompatibility createMAPErrorMessageSsIncompatibility(SSCode ssCode,
-            BasicServiceCode basicService, SSStatus ssStatus) {
+    public MAPErrorMessageSsIncompatibility createMAPErrorMessageSsIncompatibility(SSCodeImpl ssCode,
+            BasicServiceCodeImpl basicService, SSStatusImpl ssStatus) {
         return new MAPErrorMessageSsIncompatibilityImpl(ssCode, basicService, ssStatus);
     }
 

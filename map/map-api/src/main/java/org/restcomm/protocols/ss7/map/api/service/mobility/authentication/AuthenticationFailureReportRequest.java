@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -48,8 +48,8 @@ AuthenticationFailureReportArg ::= SEQUENCE {
   re-attempt          BOOLEAN OPTIONAL,
   accessType          AccessType OPTIONAL,
   rand                RAND OPTIONAL,
-  vlr-Number          [0] ISDN-AddressString OPTIONAL,
-  sgsn-Number         [1] ISDN-AddressString OPTIONAL
+  vlr-Number          [0] ISDN-AddressStringImpl OPTIONAL,
+  sgsn-Number         [1] ISDN-AddressStringImpl OPTIONAL
 }
 
 RAND ::= OCTET STRING (SIZE (16))
@@ -61,11 +61,11 @@ RAND ::= OCTET STRING (SIZE (16))
  */
 public interface AuthenticationFailureReportRequest extends MobilityMessage {
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
     FailureCause getFailureCause();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     Boolean getReAttempt();
 
@@ -73,8 +73,8 @@ public interface AuthenticationFailureReportRequest extends MobilityMessage {
 
     byte[] getRand();
 
-    ISDNAddressString getVlrNumber();
+    ISDNAddressStringImpl getVlrNumber();
 
-    ISDNAddressString getSgsnNumber();
+    ISDNAddressStringImpl getSgsnNumber();
 
 }

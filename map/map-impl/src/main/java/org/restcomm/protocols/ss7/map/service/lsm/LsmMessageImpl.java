@@ -25,13 +25,12 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 import org.restcomm.protocols.ss7.map.MessageImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LsmMessage;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPDialogLsm;
-import org.restcomm.protocols.ss7.map.primitives.MAPAsnPrimitive;
 
 /**
  * @author amit bhayani
  *
  */
-public abstract class LsmMessageImpl extends MessageImpl implements LsmMessage, MAPAsnPrimitive {
+public abstract class LsmMessageImpl extends MessageImpl implements LsmMessage {
 	private static final long serialVersionUID = 1L;
 
 	/*

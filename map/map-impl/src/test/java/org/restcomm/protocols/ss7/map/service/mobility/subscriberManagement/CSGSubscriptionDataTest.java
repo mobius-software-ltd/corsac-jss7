@@ -33,15 +33,15 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.BitSetStrictLength;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.Time;
+import org.restcomm.protocols.ss7.map.api.primitives.TimeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APN;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGId;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGIdImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.primitives.TimeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGIdImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -89,19 +89,19 @@ public class CSGSubscriptionDataTest {
         assertEquals(lipaAllowedAPNList.size(), 1);
         assertTrue(Arrays.equals(lipaAllowedAPNList.get(0).getData(), this.getAPNData()));
 
-        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         BitSetStrictLength bs = new BitSetStrictLength(27);
         bs.set(0);
         bs.set(26);
-        CSGId csgId = new CSGIdImpl(bs);
+        CSGIdImpl csgId = new CSGIdImpl(bs);
         Time expirationDate = new TimeImpl(this.getTimeData());
         ArrayList<APN> lipaAllowedAPNList = new ArrayList<APN>();
         APN apn = new APNImpl(this.getAPNData());

@@ -40,7 +40,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
@@ -107,7 +107,7 @@ public class DialogImpl implements Dialog {
     private long idleTaskTimeout;
 
     // sent/received acn, holds last acn/ui.
-    private ApplicationContext lastACN;
+    private ApplicationContextNameImpl lastACN;
     private UserInformationImpl lastUI; // optional
 
     private Long localTransactionIdObject;
@@ -373,7 +373,7 @@ public class DialogImpl implements Dialog {
     /**
      * @return the acn
      */
-    public ApplicationContext getApplicationContextName() {
+    public ApplicationContextNameImpl getApplicationContextName() {
         return lastACN;
     }
 
@@ -1265,6 +1265,17 @@ public class DialogImpl implements Dialog {
         }
     }
 
+    public InvokeImpl getInvoke(Long correlationId) {
+    	InvokeImpl invoke = null;
+        int index = 0;
+        if (correlationId != null) {
+            index = getIndexFromInvokeId(correlationId);
+            invoke = this.operationsSent[index];
+        }
+        
+        return invoke;
+    }
+    
     protected List<ComponentImpl> processOperationsState(List<ComponentImpl> components) {
         if (components == null) {
             return null;

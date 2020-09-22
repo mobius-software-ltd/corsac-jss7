@@ -35,14 +35,13 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.sms.MWStatus;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.MWStatusImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.sms.InformServiceCentreRequestImpl;
-import org.restcomm.protocols.ss7.map.service.sms.MWStatusImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -92,8 +91,8 @@ public class InformServiceCentreRequestTest {
         assertEquals(tag, Tag.SEQUENCE);
         assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-        MAPExtensionContainer extensionContainer = isc.getExtensionContainer();
-        ISDNAddressString storedMSISDN = isc.getStoredMSISDN();
+        MAPExtensionContainerImpl extensionContainer = isc.getExtensionContainer();
+        ISDNAddressStringImpl storedMSISDN = isc.getStoredMSISDN();
         mwStatus = isc.getMwStatus();
         int absentSubscriberDiagnosticSM = isc.getAbsentSubscriberDiagnosticSM();
         int additionalAbsentSubscriberDiagnosticSM = isc.getAdditionalAbsentSubscriberDiagnosticSM();
@@ -127,7 +126,7 @@ public class InformServiceCentreRequestTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ISDNAddressString storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "111222333");
         mwStatus = new MWStatusImpl(false, true, false, true);
         Integer absentSubscriberDiagnosticSM = 555;

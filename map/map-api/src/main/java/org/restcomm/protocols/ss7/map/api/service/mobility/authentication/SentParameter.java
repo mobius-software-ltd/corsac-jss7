@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 
 /**
  *
@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
  */
 public interface SentParameter extends Serializable {
 
-    IMSI getImsu();
+    IMSIImpl getImsu();
 
     AuthenticationSet getAuthenticationSet();
 

@@ -22,111 +22,122 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.map.api.primitives.ASNEMLPPPriorityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ProvideRoamingNumberRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.primitives.ExtExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PagingAreaImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl implements ProvideRoamingNumberRequest {
 	private static final long serialVersionUID = 1L;
 
-	private static final int TAG_imsi = 0;
-    private static final int TAG_mscNumber = 1;
-    private static final int TAG_msisdn = 2;
-    private static final int TAG_lmsi = 4;
-    private static final int TAG_gsmBearerCapability = 5;
-    private static final int TAG_networkSignalInfo = 6;
-    private static final int TAG_suppressionOfAnnouncement = 7;
-    private static final int TAG_gmscAddress = 8;
-    private static final int TAG_callReferenceNumber = 9;
-    private static final int TAG_orInterrogation = 10;
-    private static final int TAG_extensionContainer = 11;
-    private static final int TAG_alertingPattern = 12;
-    private static final int TAG_ccbsCall = 13;
-    private static final int TAG_supportedCamelPhasesInInterrogatingNode = 15;
-    private static final int TAG_additionalSignalInfo = 14;
-    private static final int TAG_orNotSupportedInGMSC = 16;
-    private static final int TAG_prePagingSupported = 17;
-    private static final int TAG_longFTNSupported = 18;
-    private static final int TAG_suppressVtCsi = 19;
-    private static final int TAG_offeredCamel4CSIsInInterrogatingNode = 20;
-    private static final int TAG_mtRoamingRetrySupported = 21;
-    private static final int TAG_pagingArea = 22;
-    private static final int TAG_callPriority = 23;
-    private static final int TAG_mtrfIndicator = 24;
-    private static final int TAG_oldMSCNumber = 25;
-    public static final String _PrimitiveName = "ProvideRoamingNumberRequest";
-
-    private IMSI imsi;
-    private ISDNAddressString mscNumber;
-    private ISDNAddressString msisdn;
-    private LMSI lmsi;
-    private ExternalSignalInfo gsmBearerCapability;
-    private ExternalSignalInfo networkSignalInfo;
-    private boolean suppressionOfAnnouncement;
-    private ISDNAddressString gmscAddress;
-    private CallReferenceNumber callReferenceNumber;
-    private boolean orInterrogation;
-    private MAPExtensionContainer extensionContainer;
-    private AlertingPattern alertingPattern;
-    private boolean ccbsCall;
-    private SupportedCamelPhases supportedCamelPhasesInInterrogatingNode;
-    private ExtExternalSignalInfo additionalSignalInfo;
-    private boolean orNotSupportedInGMSC;
-    private boolean prePagingSupported;
-    private boolean longFTNSupported;
-    private boolean suppressVtCsi;
-    private OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode;
-    private boolean mtRoamingRetrySupported;
-    private PagingArea pagingArea;
-    private EMLPPPriority callPriority;
-    private boolean mtrfIndicator;
-    private ISDNAddressString oldMSCNumber;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private IMSIImpl imsi;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    private ISDNAddressStringImpl mscNumber;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
+    private ISDNAddressStringImpl msisdn;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
+    private LMSIImpl lmsi;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=true,index=-1)
+    private ExternalSignalInfoImpl gsmBearerCapability;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
+    private ExternalSignalInfoImpl networkSignalInfo;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
+    private ASNNull suppressionOfAnnouncement;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
+    private ISDNAddressStringImpl gmscAddress;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
+    private CallReferenceNumberImpl callReferenceNumber;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
+    private ASNNull orInterrogation;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1)
+    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
+    private AlertingPatternImpl alertingPattern;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=false,index=-1)
+    private ASNNull ccbsCall;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
+    private SupportedCamelPhasesImpl supportedCamelPhasesInInterrogatingNode;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1)
+    private ExtExternalSignalInfoImpl additionalSignalInfo;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)
+    private ASNNull orNotSupportedInGMSC;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=false,index=-1)
+    private ASNNull prePagingSupported;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=false,index=-1)
+    private ASNNull longFTNSupported;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=false,index=-1)
+    private ASNNull suppressVtCsi;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1)
+    private OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=21,constructed=false,index=-1)
+    private ASNNull mtRoamingRetrySupported;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=true,index=-1)
+    private PagingAreaImpl pagingArea;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=false,index=-1)
+    private ASNEMLPPPriorityImpl callPriority;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=24,constructed=false,index=-1)
+    private ASNNull mtrfIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=false,index=-1)
+    private ISDNAddressStringImpl oldMSCNumber;
+    
     private long mapProtocolVersion;
 
-    public ProvideRoamingNumberRequestImpl(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString msisdn, LMSI lmsi,
-            ExternalSignalInfo gsmBearerCapability, ExternalSignalInfo networkSignalInfo, boolean suppressionOfAnnouncement,
-            ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, boolean orInterrogation,
-            MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern, boolean ccbsCall,
-            SupportedCamelPhases supportedCamelPhasesInInterrogatingNode, ExtExternalSignalInfo additionalSignalInfo,
+    public ProvideRoamingNumberRequestImpl(IMSIImpl imsi, ISDNAddressStringImpl mscNumber, ISDNAddressStringImpl msisdn, LMSIImpl lmsi,
+            ExternalSignalInfoImpl gsmBearerCapability, ExternalSignalInfoImpl networkSignalInfo, boolean suppressionOfAnnouncement,
+            ISDNAddressStringImpl gmscAddress, CallReferenceNumberImpl callReferenceNumber, boolean orInterrogation,
+            MAPExtensionContainerImpl extensionContainer, AlertingPatternImpl alertingPattern, boolean ccbsCall,
+            SupportedCamelPhasesImpl supportedCamelPhasesInInterrogatingNode, ExtExternalSignalInfoImpl additionalSignalInfo,
             boolean orNotSupportedInGMSC, boolean prePagingSupported, boolean longFTNSupported, boolean suppressVtCsi,
-            OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode, boolean mtRoamingRetrySupported, PagingArea pagingArea,
-            EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressString oldMSCNumber, long mapProtocolVersion) {
+            OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode, boolean mtRoamingRetrySupported, PagingAreaImpl pagingArea,
+            EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressStringImpl oldMSCNumber, long mapProtocolVersion) {
         super();
         this.imsi = imsi;
         this.mscNumber = mscNumber;
@@ -134,24 +145,52 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
         this.lmsi = lmsi;
         this.gsmBearerCapability = gsmBearerCapability;
         this.networkSignalInfo = networkSignalInfo;
-        this.suppressionOfAnnouncement = suppressionOfAnnouncement;
+        
+        if(suppressionOfAnnouncement)
+        	this.suppressionOfAnnouncement = new ASNNull();
+        
         this.gmscAddress = gmscAddress;
         this.callReferenceNumber = callReferenceNumber;
-        this.orInterrogation = orInterrogation;
+        
+        if(orInterrogation)
+        	this.orInterrogation = new ASNNull();
+        
         this.extensionContainer = extensionContainer;
         this.alertingPattern = alertingPattern;
-        this.ccbsCall = ccbsCall;
+        
+        if(ccbsCall)
+        	this.ccbsCall = new ASNNull();
+        
         this.supportedCamelPhasesInInterrogatingNode = supportedCamelPhasesInInterrogatingNode;
         this.additionalSignalInfo = additionalSignalInfo;
-        this.orNotSupportedInGMSC = orNotSupportedInGMSC;
-        this.prePagingSupported = prePagingSupported;
-        this.longFTNSupported = longFTNSupported;
-        this.suppressVtCsi = suppressVtCsi;
+        
+        if(orNotSupportedInGMSC)
+        	this.orNotSupportedInGMSC = new ASNNull();
+        
+        if(prePagingSupported)
+        	this.prePagingSupported = new ASNNull();
+        
+        if(longFTNSupported)
+        	this.longFTNSupported = new ASNNull();
+        
+        if(suppressVtCsi)
+        	this.suppressVtCsi = new ASNNull();
+        
         this.offeredCamel4CSIsInInterrogatingNode = offeredCamel4CSIsInInterrogatingNode;
-        this.mtRoamingRetrySupported = mtRoamingRetrySupported;
+        
+        if(mtRoamingRetrySupported)
+        	this.mtRoamingRetrySupported = new ASNNull();
+        
         this.pagingArea = pagingArea;
-        this.callPriority = callPriority;
-        this.mtrfIndicator = mtrfIndicator;
+        
+        if(callPriority!=null) {
+        	this.callPriority = new ASNEMLPPPriorityImpl();
+        	this.callPriority.setType(callPriority);
+        }
+        
+        if(mtrfIndicator)
+        	this.mtrfIndicator = new ASNNull();
+        
         this.oldMSCNumber = oldMSCNumber;
         this.mapProtocolVersion = mapProtocolVersion;
     }
@@ -171,723 +210,130 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": ", e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-        this.imsi = null;
-        this.mscNumber = null;
-        this.msisdn = null;
-        this.lmsi = null;
-        this.gsmBearerCapability = null;
-        this.networkSignalInfo = null;
-        this.suppressionOfAnnouncement = false;
-        this.gmscAddress = null;
-        this.callReferenceNumber = null;
-        this.orInterrogation = false;
-        this.extensionContainer = null;
-        this.alertingPattern = null;
-        this.ccbsCall = false;
-        this.supportedCamelPhasesInInterrogatingNode = null;
-        this.additionalSignalInfo = null;
-        this.orNotSupportedInGMSC = false;
-        this.prePagingSupported = false;
-        this.longFTNSupported = false;
-        this.suppressVtCsi = false;
-        this.offeredCamel4CSIsInInterrogatingNode = null;
-        this.mtRoamingRetrySupported = false;
-        this.pagingArea = null;
-        this.callPriority = null;
-        this.mtrfIndicator = false;
-        this.oldMSCNumber = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-
-        if (this.mapProtocolVersion <= 2) {
-
-            if (ais.available() > 0) {
-                while (true) {
-                    if (ais.available() == 0)
-                        break;
-
-                    int tag = ais.readTag();
-
-                    if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                        switch (tag) {
-                            case TAG_imsi:
-                                if (!ais.isTagPrimitive()) {
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".imsi: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                                }
-                                this.imsi = new IMSIImpl();
-                                ((IMSIImpl) this.imsi).decodeAll(ais);
-                                break;
-                            case TAG_mscNumber:
-                                if (!ais.isTagPrimitive()) {
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".mscNumber: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                                }
-                                this.mscNumber = new ISDNAddressStringImpl();
-                                ((ISDNAddressStringImpl) this.mscNumber).decodeAll(ais);
-                                break;
-                            case TAG_msisdn:
-                                if (!ais.isTagPrimitive()) {
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".msisdn: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                                }
-                                this.msisdn = new ISDNAddressStringImpl();
-                                ((ISDNAddressStringImpl) this.msisdn).decodeAll(ais);
-                                break;
-                            case TAG_lmsi:
-                                if (!ais.isTagPrimitive()) {
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".lmsi: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                                }
-                                this.lmsi = new LMSIImpl();
-                                ((LMSIImpl) this.lmsi).decodeAll(ais);
-                                break;
-                            case TAG_gsmBearerCapability:
-                                if (ais.isTagPrimitive()) {
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".gsmBearerCapability: is primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                }
-                                this.gsmBearerCapability = new ExternalSignalInfoImpl();
-                                ((ExternalSignalInfoImpl) this.gsmBearerCapability).decodeAll(ais);
-                                break;
-                            case TAG_networkSignalInfo:
-                                if (ais.isTagPrimitive()) {
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".networkSignalInfo: is primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                }
-                                this.networkSignalInfo = new ExternalSignalInfoImpl();
-                                ((ExternalSignalInfoImpl) this.networkSignalInfo).decodeAll(ais);
-                                break;
-                            default:
-                                ais.advanceElement();
-                                break;
-                        }
-                    } else {
-                        ais.advanceElement();
-                        // break;
-                    }
-                }
-            }
-
-            if (this.mapProtocolVersion == 2) {
-                if (this.imsi == null || this.mscNumber == null)
-                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + " V2"
-                            + ": imsi  or mscNumber must not be null", MAPParsingComponentExceptionReason.MistypedParameter);
-            } else if (this.mapProtocolVersion == 1) {
-                if (this.imsi == null)
-                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + " V1"
-                            + ": imsi  or mscNumber must not be null", MAPParsingComponentExceptionReason.MistypedParameter);
-            }
-
-        } else {
-            while (true) {
-                if (ais.available() == 0)
-                    break;
-
-                int tag = ais.readTag();
-                if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-
-                    switch (tag) {
-                        case TAG_imsi:// 1
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".imsi: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.imsi = new IMSIImpl();
-                            ((IMSIImpl) this.imsi).decodeAll(ais);
-                            break;
-                        case TAG_mscNumber:// 2
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".mscNumber: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.mscNumber = new ISDNAddressStringImpl();
-                            ((ISDNAddressStringImpl) this.mscNumber).decodeAll(ais);
-                            break;
-                        case TAG_msisdn:// 3
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".msisdn: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.msisdn = new ISDNAddressStringImpl();
-                            ((ISDNAddressStringImpl) this.msisdn).decodeAll(ais);
-                            break;
-                        case TAG_lmsi:// 4
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".lmsi: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.lmsi = new LMSIImpl();
-                            ((LMSIImpl) this.lmsi).decodeAll(ais);
-                            break;
-                        case TAG_gsmBearerCapability:// 5
-                            if (ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".gsmBearerCapability: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.gsmBearerCapability = new ExternalSignalInfoImpl();
-                            ((ExternalSignalInfoImpl) this.gsmBearerCapability).decodeAll(ais);
-                            break;
-                        case TAG_networkSignalInfo:// 6
-                            if (ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".networkSignalInfo: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.networkSignalInfo = new ExternalSignalInfoImpl();
-                            ((ExternalSignalInfoImpl) this.networkSignalInfo).decodeAll(ais);
-                            break;
-                        case TAG_suppressionOfAnnouncement:// 7
-                            ais.readNull();
-                            this.suppressionOfAnnouncement = true;
-                            break;
-                        case TAG_gmscAddress:// 8
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".gmscAddress: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.gmscAddress = new ISDNAddressStringImpl();
-                            ((ISDNAddressStringImpl) this.gmscAddress).decodeAll(ais);
-                            break;
-                        case TAG_callReferenceNumber:// 9
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".callReferenceNumber: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.callReferenceNumber = new CallReferenceNumberImpl();
-                            ((CallReferenceNumberImpl) this.callReferenceNumber).decodeAll(ais);
-                            break;
-                        case TAG_orInterrogation:// 10
-                            ais.readNull();
-                            this.orInterrogation = true;
-                            break;
-                        case TAG_extensionContainer:// 11
-                            if (ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".extensionContainer: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.extensionContainer = new MAPExtensionContainerImpl();
-                            ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                            break;
-                        case TAG_alertingPattern:// 12
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".alertingPattern: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.alertingPattern = new AlertingPatternImpl();
-                            ((AlertingPatternImpl) this.alertingPattern).decodeAll(ais);
-                            break;
-                        case TAG_ccbsCall:// 13
-                            ais.readNull();
-                            this.ccbsCall = true;
-                            break;
-                        case TAG_supportedCamelPhasesInInterrogatingNode:// 14
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".supportedCamelPhasesInInterrogatingNode: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.supportedCamelPhasesInInterrogatingNode = new SupportedCamelPhasesImpl();
-                            ((SupportedCamelPhasesImpl) this.supportedCamelPhasesInInterrogatingNode).decodeAll(ais);
-                            break;
-                        case TAG_additionalSignalInfo:// 15
-                            if (ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".additionalSignalInfo: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.additionalSignalInfo = new ExtExternalSignalInfoImpl();
-                            ((ExtExternalSignalInfoImpl) this.additionalSignalInfo).decodeAll(ais);
-                            break;
-                        case TAG_orNotSupportedInGMSC:// 16
-                            ais.readNull();
-                            this.orNotSupportedInGMSC = true;
-                            break;
-                        case TAG_prePagingSupported:// 17
-                            ais.readNull();
-                            this.prePagingSupported = true;
-                            break;
-                        case TAG_longFTNSupported:// 18
-                            ais.readNull();
-                            this.longFTNSupported = true;
-                            break;
-                        case TAG_suppressVtCsi:// 19
-                            ais.readNull();
-                            this.suppressVtCsi = true;
-                            break;
-                        case TAG_offeredCamel4CSIsInInterrogatingNode:// 20
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".offeredCamel4CSIsInInterrogatingNode: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.offeredCamel4CSIsInInterrogatingNode = new OfferedCamel4CSIsImpl();
-                            ((OfferedCamel4CSIsImpl) this.offeredCamel4CSIsInInterrogatingNode).decodeAll(ais);
-                            break;
-                        case TAG_mtRoamingRetrySupported:// 21
-                            ais.readNull();
-                            this.mtRoamingRetrySupported = true;
-                            break;
-                        case TAG_pagingArea:// 22
-                            if (ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".pagingArea: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.pagingArea = new PagingAreaImpl();
-                            ((PagingAreaImpl) this.pagingArea).decodeAll(ais);
-                            break;
-                        case TAG_callPriority:// 23
-                            this.callPriority = EMLPPPriority.getEMLPPPriority((int) ais.readInteger());
-                            break;
-                        case TAG_mtrfIndicator:// 24
-                            ais.readNull();
-                            this.mtrfIndicator = true;
-                            break;
-                        case TAG_oldMSCNumber:// 25
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".oldMSCNumber: is primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.oldMSCNumber = new ISDNAddressStringImpl();
-                            ((ISDNAddressStringImpl) this.oldMSCNumber).decodeAll(ais);
-                            break;
-                        default:
-                            ais.advanceElement();
-                            break;
-                    }
-                } else {
-                    ais.advanceElement();
-                    // break;
-                }
-            }
-
-            if (this.imsi == null || this.mscNumber == null)
-                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + "  V3"
-                        + ": imsi,  and mscNumber must not be null", MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        try {
-            this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MAPException(e);
-        }
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-
-        } catch (AsnException e) {
-            e.printStackTrace();
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        if (this.imsi == null) {
-            throw new MAPException("Error while encoding " + _PrimitiveName + " the mandatory parameter imsi is not defined");
-        }
-
-        if (this.mscNumber == null && this.mapProtocolVersion >= 2) {
-            throw new MAPException("Error while encoding " + _PrimitiveName
-                    + " the mandatory parameter mscNumber is not defined");
-        }
-
-        // 1
-        ((IMSIImpl) this.imsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_imsi);
-
-        // 2
-        if (this.mscNumber != null) {
-            ((ISDNAddressStringImpl) this.mscNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_mscNumber);
-        }
-
-        // 3
-        if (this.msisdn != null) {
-            ((ISDNAddressStringImpl) this.msisdn).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_msisdn);
-        }
-
-        // 4
-        if (this.lmsi != null) {
-            ((LMSIImpl) this.lmsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_lmsi);
-        }
-
-        // 5
-        if (this.gsmBearerCapability != null) {
-            ((ExternalSignalInfoImpl) this.gsmBearerCapability).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    TAG_gsmBearerCapability);
-        }
-
-        // 6
-        if (this.networkSignalInfo != null) {
-            ((ExternalSignalInfoImpl) this.networkSignalInfo).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    TAG_networkSignalInfo);
-        }
-
-        if (mapProtocolVersion >= 3) {
-            // 7
-            if (this.suppressionOfAnnouncement) {
-                // suppressionOfAnnouncement
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_suppressionOfAnnouncement);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName
-                            + " parameter suppressionOfAnnouncement", e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName
-                            + " parameter suppressionOfAnnouncement", e);
-                }
-            }
-
-            // 8
-            if (this.gmscAddress != null) {
-                ((ISDNAddressStringImpl) this.gmscAddress).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_gmscAddress);
-            }
-
-            // 9
-            if (this.callReferenceNumber != null) {
-                ((CallReferenceNumberImpl) this.callReferenceNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        TAG_callReferenceNumber);
-            }
-            // 10
-            if (this.orInterrogation) {
-                // orInterrogation
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_orInterrogation);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter orInterrogation", e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName + " parameter orInterrogation", e);
-                }
-            }
-
-            // 11
-            if (this.extensionContainer != null) {
-                ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        TAG_extensionContainer);
-            }
-
-            // 12
-            if (this.alertingPattern != null) {
-                ((AlertingPatternImpl) this.alertingPattern).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_alertingPattern);
-            }
-
-            // 13
-            if (this.ccbsCall) {
-                // ccbsCall
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_ccbsCall);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter ccbsCall", e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName + " parameter ccbsCall", e);
-                }
-            }
-
-            // 14
-            if (this.supportedCamelPhasesInInterrogatingNode != null) {
-                ((SupportedCamelPhasesImpl) this.supportedCamelPhasesInInterrogatingNode).encodeAll(asnOs,
-                        Tag.CLASS_CONTEXT_SPECIFIC, TAG_supportedCamelPhasesInInterrogatingNode);
-            }
-
-            // 15
-            if (this.additionalSignalInfo != null) {
-                ((ExtExternalSignalInfoImpl) this.additionalSignalInfo).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        TAG_additionalSignalInfo);
-            }
-
-            // 16
-            if (this.orNotSupportedInGMSC) {
-                // orNotSupportedInGMSC
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_orNotSupportedInGMSC);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter orNotSupportedInGMSC",
-                            e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName + " parameter orNotSupportedInGMSC",
-                            e);
-                }
-            }
-
-            // 17
-            if (this.prePagingSupported) {
-                // prePagingSupported
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_prePagingSupported);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter prePagingSupported", e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName + " parameter prePagingSupported", e);
-                }
-            }
-
-            // 18
-            if (this.longFTNSupported) {
-                // prePagingSupported
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_longFTNSupported);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter longFTNSupported", e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName + " parameter longFTNSupported", e);
-                }
-            }
-
-            // 19
-            if (this.suppressVtCsi) {
-                // suppressVtCsi
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_suppressVtCsi);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter suppressVtCsi", e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName + " parameter suppressVtCsi", e);
-                }
-            }
-
-            // 20
-            if (this.offeredCamel4CSIsInInterrogatingNode != null) {
-                ((OfferedCamel4CSIsImpl) this.offeredCamel4CSIsInInterrogatingNode).encodeAll(asnOs,
-                        Tag.CLASS_CONTEXT_SPECIFIC, TAG_offeredCamel4CSIsInInterrogatingNode);
-            }
-
-            // 21
-            if (this.mtRoamingRetrySupported) {
-                // mtRoamingRetrySupported
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_mtRoamingRetrySupported);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName
-                            + " parameter mtRoamingRetrySupported", e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName
-                            + " parameter mtRoamingRetrySupported", e);
-                }
-            }
-
-            // 22
-            if (this.pagingArea != null) {
-                ((PagingAreaImpl) this.pagingArea).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_pagingArea);
-            }
-
-            // 23
-            if (this.callPriority != null) {
-                try {
-                    asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, TAG_callPriority, this.callPriority.getCode());
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter callPriority", e);
-                } catch (AsnException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter callPriority", e);
-                }
-            }
-
-            // 24
-            if (this.mtrfIndicator) {
-                // mtrfIndicator
-                try {
-                    asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, TAG_mtrfIndicator);
-                } catch (IOException e) {
-                    throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter mtrfIndicator", e);
-                } catch (AsnException e) {
-                    throw new MAPException("AsnException while encoding " + _PrimitiveName + " parameter mtrfIndicator", e);
-                }
-            }
-
-            // 25
-            if (this.oldMSCNumber != null) {
-                ((ISDNAddressStringImpl) this.oldMSCNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_oldMSCNumber);
-            }
-        }
-
-    }
-
-    @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return this.imsi;
     }
 
     @Override
-    public ISDNAddressString getMscNumber() {
+    public ISDNAddressStringImpl getMscNumber() {
         return this.mscNumber;
     }
 
     @Override
-    public ISDNAddressString getMsisdn() {
+    public ISDNAddressStringImpl getMsisdn() {
         return this.msisdn;
     }
 
     @Override
-    public LMSI getLmsi() {
+    public LMSIImpl getLmsi() {
         return this.lmsi;
     }
 
     @Override
-    public ExternalSignalInfo getGsmBearerCapability() {
+    public ExternalSignalInfoImpl getGsmBearerCapability() {
         return this.gsmBearerCapability;
     }
 
     @Override
-    public ExternalSignalInfo getNetworkSignalInfo() {
+    public ExternalSignalInfoImpl getNetworkSignalInfo() {
         return this.networkSignalInfo;
     }
 
     @Override
     public boolean getSuppressionOfAnnouncement() {
-        return this.suppressionOfAnnouncement;
+        return this.suppressionOfAnnouncement!=null;
     }
 
     @Override
-    public ISDNAddressString getGmscAddress() {
+    public ISDNAddressStringImpl getGmscAddress() {
         return this.gmscAddress;
     }
 
     @Override
-    public CallReferenceNumber getCallReferenceNumber() {
+    public CallReferenceNumberImpl getCallReferenceNumber() {
         return this.callReferenceNumber;
     }
 
     @Override
     public boolean getOrInterrogation() {
-        return this.orInterrogation;
+        return this.orInterrogation!=null;
     }
 
     @Override
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public AlertingPattern getAlertingPattern() {
+    public AlertingPatternImpl getAlertingPattern() {
         return this.alertingPattern;
     }
 
     @Override
     public boolean getCcbsCall() {
-        return this.ccbsCall;
+        return this.ccbsCall!=null;
     }
 
     @Override
-    public SupportedCamelPhases getSupportedCamelPhasesInInterrogatingNode() {
+    public SupportedCamelPhasesImpl getSupportedCamelPhasesInInterrogatingNode() {
         return this.supportedCamelPhasesInInterrogatingNode;
     }
 
     @Override
-    public ExtExternalSignalInfo getAdditionalSignalInfo() {
+    public ExtExternalSignalInfoImpl getAdditionalSignalInfo() {
         return this.additionalSignalInfo;
     }
 
     @Override
     public boolean getOrNotSupportedInGMSC() {
-        return this.orNotSupportedInGMSC;
+        return this.orNotSupportedInGMSC!=null;
     }
 
     @Override
     public boolean getPrePagingSupported() {
-        return this.prePagingSupported;
+        return this.prePagingSupported!=null;
     }
 
     @Override
     public boolean getLongFTNSupported() {
-        return this.longFTNSupported;
+        return this.longFTNSupported!=null;
     }
 
     @Override
     public boolean getSuppressVtCsi() {
-        return this.suppressVtCsi;
+        return this.suppressVtCsi!=null;
     }
 
     @Override
-    public OfferedCamel4CSIs getOfferedCamel4CSIsInInterrogatingNode() {
+    public OfferedCamel4CSIsImpl getOfferedCamel4CSIsInInterrogatingNode() {
         return this.offeredCamel4CSIsInInterrogatingNode;
     }
 
     @Override
     public boolean getMtRoamingRetrySupported() {
-        return this.mtRoamingRetrySupported;
+        return this.mtRoamingRetrySupported!=null;
     }
 
     @Override
-    public PagingArea getPagingArea() {
+    public PagingAreaImpl getPagingArea() {
         return this.pagingArea;
     }
 
     @Override
     public EMLPPPriority getCallPriority() {
-        return this.callPriority;
+    	if(this.callPriority==null)
+    		return null;
+    	
+        return this.callPriority.getType();
     }
 
     @Override
     public boolean getMtrfIndicator() {
-        return this.mtrfIndicator;
+        return this.mtrfIndicator!=null;
     }
 
     @Override
-    public ISDNAddressString getOldMSCNumber() {
+    public ISDNAddressStringImpl getOldMSCNumber() {
         return this.oldMSCNumber;
     }
 
@@ -899,8 +345,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("ProvideRoamingNumberRequest [");
 
         if (this.imsi != null) {
             sb.append("imsi=");
@@ -932,7 +377,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
             sb.append(networkSignalInfo.toString());
             sb.append(", ");
         }
-        if (this.suppressionOfAnnouncement) {
+        if (this.suppressionOfAnnouncement!=null) {
             sb.append("suppressionOfAnnouncement, ");
         }
         if (this.gmscAddress != null) {
@@ -945,7 +390,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
             sb.append(callReferenceNumber.toString());
             sb.append(", ");
         }
-        if (this.orInterrogation) {
+        if (this.orInterrogation!=null) {
             sb.append("orInterrogation, ");
         }
         if (this.extensionContainer != null) {
@@ -958,7 +403,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
             sb.append(alertingPattern.toString());
             sb.append(", ");
         }
-        if (this.ccbsCall) {
+        if (this.ccbsCall!=null) {
             sb.append("ccbsCall, ");
         }
         if (this.supportedCamelPhasesInInterrogatingNode != null) {
@@ -971,16 +416,16 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
             sb.append(additionalSignalInfo.toString());
             sb.append(", ");
         }
-        if (this.orNotSupportedInGMSC) {
+        if (this.orNotSupportedInGMSC!=null) {
             sb.append("orNotSupportedInGMSC, ");
         }
-        if (this.prePagingSupported) {
+        if (this.prePagingSupported!=null) {
             sb.append("prePagingSupported, ");
         }
-        if (this.longFTNSupported) {
+        if (this.longFTNSupported!=null) {
             sb.append("longFTNSupported, ");
         }
-        if (this.suppressVtCsi) {
+        if (this.suppressVtCsi!=null) {
             sb.append("suppressVtCsi, ");
         }
         if (this.offeredCamel4CSIsInInterrogatingNode != null) {
@@ -988,7 +433,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
             sb.append(offeredCamel4CSIsInInterrogatingNode.toString());
             sb.append(", ");
         }
-        if (this.mtRoamingRetrySupported) {
+        if (this.mtRoamingRetrySupported!=null) {
             sb.append("mtRoamingRetrySupported, ");
         }
         if (this.pagingArea != null) {
@@ -996,12 +441,12 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
             sb.append(pagingArea.toString());
             sb.append(", ");
         }
-        if (this.callPriority != null) {
+        if (this.callPriority != null && this.callPriority.getType()!=null) {
             sb.append("callPriority=");
-            sb.append(callPriority.toString());
+            sb.append(callPriority.getType().toString());
             sb.append(", ");
         }
-        if (this.mtrfIndicator) {
+        if (this.mtrfIndicator!=null) {
             sb.append("mtrfIndicator, ");
         }
         if (this.oldMSCNumber != null) {

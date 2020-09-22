@@ -41,11 +41,11 @@ package org.restcomm.protocols.ss7.map.api.service.sms;
  */
 public interface ForwardShortMessageRequest extends SmsMessage {
 
-    SM_RP_DA getSM_RP_DA();
+    SM_RP_DAImpl getSM_RP_DA();
 
-    SM_RP_OA getSM_RP_OA();
+    SM_RP_OAImpl getSM_RP_OA();
 
-    SmsSignalInfo getSM_RP_UI();
+    SmsSignalInfoImpl getSM_RP_UI();
 
     boolean getMoreMessagesToSend();
 

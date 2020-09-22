@@ -30,15 +30,14 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
@@ -79,7 +78,7 @@ public class TcUniTest {
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
-        assertEquals((long) ((PrivateOperationCodeImpl)inv.getOperationCode()).getValue(), 2357);
+        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Long(2357L));
         assertTrue(inv.getParameter() instanceof ASNOctetString);
         UserInformationElementTest.byteBufEquals(((ASNOctetString)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
@@ -95,14 +94,14 @@ public class TcUniTest {
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
-        assertEquals((long) ((PrivateOperationCodeImpl)inv.getOperationCode()).getOperationCode(), 2357);
+        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Long(2357L));
         assertTrue(inv.getParameter() instanceof ASNOctetString);
         UserInformationElementTest.byteBufEquals(((ASNOctetString)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
         DialogPortionImpl dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
-        ApplicationContext ac = dp.getApplicationContext();
-        assertEquals((long)((IntegerApplicationContextNameImpl)ac).getValue(), 66);
+        ApplicationContextNameImpl ac = dp.getApplicationContext();
+        assertEquals(ac.getInt(), new Long(66L));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
@@ -120,8 +119,7 @@ public class TcUniTest {
         component.setInvoke(inv);
         cc.add(component);
         inv.setInvokeId(0L);
-        PrivateOperationCodeImpl oc = TcapFactory.createPrivateOperationCode();
-        oc.setOperationCode(2357L);
+        OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(2357L);        
         inv.setOperationCode(oc);
         ASNOctetString p = new ASNOctetString();
         p.setValue(Unpooled.wrappedBuffer(parData));
@@ -141,7 +139,7 @@ public class TcUniTest {
         tcm.setComponent(cp);
 
         DialogPortionImpl dp = TcapFactory.createDialogPortion();
-        ApplicationContext ac = TcapFactory.createApplicationContext(66);
+        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(66);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 

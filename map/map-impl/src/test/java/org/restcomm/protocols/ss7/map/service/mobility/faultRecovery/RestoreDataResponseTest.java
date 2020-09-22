@@ -30,9 +30,8 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.RestoreDataResponseImpl;
 import org.testng.annotations.Test;
@@ -66,7 +65,7 @@ public class RestoreDataResponseTest {
         assertEquals(tag, Tag.SEQUENCE);
         assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
 
-        ISDNAddressString hlrNumber = prim.getHlrNumber();
+        ISDNAddressStringImpl hlrNumber = prim.getHlrNumber();
         assertTrue(hlrNumber.getAddress().equals("1112222"));
 
         assertNull(prim.getExtensionContainer());
@@ -94,9 +93,9 @@ public class RestoreDataResponseTest {
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
 
-        ISDNAddressString hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1112222");
+        ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1112222");
         RestoreDataResponseImpl prim = new RestoreDataResponseImpl(hlrNumber, false, null);
-        // ISDNAddressString hlrNumber, boolean msNotReachable, MAPExtensionContainer extensionContainer
+        // ISDNAddressStringImpl hlrNumber, boolean msNotReachable, MAPExtensionContainerImpl extensionContainer
 
         AsnOutputStream asnOS = new AsnOutputStream();
         prim.encodeAll(asnOS);
@@ -104,9 +103,9 @@ public class RestoreDataResponseTest {
         byte[] encodedData = asnOS.toByteArray();
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
-//      ISDNAddressString getHlrNumber();
+//      ISDNAddressStringImpl getHlrNumber();
 //      boolean getMsNotReachable();
-//      MAPExtensionContainer getExtensionContainer();
+//      MAPExtensionContainerImpl getExtensionContainer();
 
 
         prim = new RestoreDataResponseImpl(hlrNumber, true, MAPExtensionContainerTest.GetTestExtensionContainer());

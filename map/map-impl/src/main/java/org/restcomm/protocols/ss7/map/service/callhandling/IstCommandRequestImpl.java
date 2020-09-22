@@ -22,42 +22,32 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.IstCommandRequest;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
-import java.io.IOException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author eva ogallar
  *
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class IstCommandRequestImpl extends CallHandlingMessageImpl implements IstCommandRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "IstCommandRequest";
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private IMSIImpl imsi;
 
-    private static final int TAG_imsi = 0;
-    private static final int TAG_extensionContainer = 1;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
+    private MAPExtensionContainerImpl extensionContainer;
 
-
-    private IMSI imsi;
-
-    private MAPExtensionContainer extensionContainer;
-
-    public IstCommandRequestImpl(IMSI imsi, MAPExtensionContainer extensionContainer) {
+    public IstCommandRequestImpl(IMSIImpl imsi, MAPExtensionContainerImpl extensionContainer) {
         this.imsi = imsi;
         this.extensionContainer = extensionContainer;
     }
@@ -66,12 +56,12 @@ public class IstCommandRequestImpl extends CallHandlingMessageImpl implements Is
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return imsi;
     }
 
     @Override
-    public MAPExtensionContainer getExtensionContainer() {
+    public MAPExtensionContainerImpl getExtensionContainer() {
         return extensionContainer;
     }
 
@@ -85,134 +75,10 @@ public class IstCommandRequestImpl extends CallHandlingMessageImpl implements Is
         return MAPOperationCode.istCommand;
     }
 
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.extensionContainer = null;
-        this.imsi = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0) {
-                break;
-            }
-
-            int tag = ais.readTag();
-
-            switch (ais.getTagClass()) {
-                case Tag.CLASS_CONTEXT_SPECIFIC:
-                    switch (tag) {
-                        case TAG_imsi:
-                            if (!ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".imsi: is not primitive", MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.imsi = new IMSIImpl();
-                            ((IMSIImpl) this.imsi).decodeAll(ais);
-                            break;
-                        case TAG_extensionContainer:
-                            if (ais.isTagPrimitive()) {
-                                throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ".extensionContainer: is primitive",
-                                        MAPParsingComponentExceptionReason.MistypedParameter);
-                            }
-                            this.extensionContainer = new MAPExtensionContainerImpl();
-                            ((MAPExtensionContainerImpl) this.extensionContainer).decodeAll(ais);
-                            break;
-                        default:
-                            ais.advanceElement();
-                            break;
-                    }
-                    break;
-
-                default:
-                    ais.advanceElement();
-                    break;
-            }
-
-        }
-
-        if (this.imsi == null) {
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": Parament imsi is mandatory but does not found", MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-        if (this.imsi == null)
-            throw new MAPException("Error while encoding " + _PrimitiveName + " the mandatory parameter IMSI is not defined");
-
-        ((IMSIImpl) this.imsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, TAG_imsi);
-
-        if (this.extensionContainer != null)
-            ((MAPExtensionContainerImpl) this.extensionContainer).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    TAG_extensionContainer);
-
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("IstCommandRequest [");
 
         if (this.imsi != null) {
             sb.append("imsi=");

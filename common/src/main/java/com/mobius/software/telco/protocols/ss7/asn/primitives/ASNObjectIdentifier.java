@@ -31,6 +31,7 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
@@ -41,7 +42,7 @@ public class ASNObjectIdentifier {
 	private List<Long> value=new ArrayList<Long>();
 	
 	@ASNLength
-	public Integer getLength() {
+	public Integer getLength(ASNParser parser) {
 		return getLength(value);
 	}
 	
@@ -58,7 +59,7 @@ public class ASNObjectIdentifier {
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser,ByteBuf buffer) {
 		buffer.writeByte((int)(0x00FF & value.get(0) * 40 + value.get(1)));
 
 		for (int i = 2; i < value.size(); ++i) {
@@ -75,7 +76,7 @@ public class ASNObjectIdentifier {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		int b = 0x00FF & buffer.readByte();
 
 		long currValue = b / 40;
@@ -136,5 +137,34 @@ public class ASNObjectIdentifier {
 
 			return 9;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		
+		if (obj == null)
+			return false;
+		
+		if (getClass() != obj.getClass())
+			return false;
+		
+		ASNObjectIdentifier other = (ASNObjectIdentifier) obj;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		
+		return true;
 	}
 }

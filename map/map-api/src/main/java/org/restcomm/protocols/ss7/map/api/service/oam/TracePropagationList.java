@@ -38,28 +38,28 @@ import java.io.Serializable;
  */
 public interface TracePropagationList extends Serializable {
 
-    TraceReference getTraceReference();
+    TraceReferenceImpl getTraceReference();
 
-    TraceType getTraceType();
+    TraceTypeImpl getTraceType();
 
-    TraceReference2 getTraceReference2();
+    TraceReference2Impl getTraceReference2();
 
     TraceRecordingSessionReference getTraceRecordingSessionReference();
 
     TraceDepth getTraceDepth();
 
-    RNCInterfaceList getRNCInterfaceList();
+    RNCInterfaceListImpl getRNCInterfaceList();
 
     TraceDepth getMscSTraceDepth();
 
-    MSCSInterfaceList getMscSInterfaceList();
+    MSCSInterfaceListImpl getMscSInterfaceList();
 
-    MSCSEventList getMSCSEventList();
+    MSCSEventListImpl getMSCSEventList();
 
     TraceDepth getMgwTraceDepth();
 
-    MGWInterfaceList getMGWInterfaceList();
+    MGWInterfaceListImpl getMGWInterfaceList();
 
-    MGWEventList getMGWEventList();
+    MGWEventListImpl getMGWEventList();
 
 }

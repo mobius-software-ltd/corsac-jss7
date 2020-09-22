@@ -23,6 +23,9 @@
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -33,11 +36,26 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=11,constructed=true,lengthIndefinite=false)
 public class ReturnErrorImpl implements BaseComponent {
 	protected ASNCorrelationID correlationId=new ASNCorrelationID();
-    private PrivateErrorCodeImpl privateErrorCode;
-    private NationalErrorCodeImpl nationalErrorCode;
+	
+	@ASNChoise
+    private ErrorCodeImpl errorCode;
     
     private ASNReturnErrorSetParameterImpl setParameter=new ASNReturnErrorSetParameterImpl();    
     private ASNReturnErrorParameterImpl seqParameter=null;
+    
+    @ASNGenericMapping
+    public Class<?> getMapping(Object parent,ASNParser parser) {
+    	if(errorCode!=null)
+    	{
+    		Class<?> result=parser.getLocalMapping(this.getClass(), errorCode);
+    		if(result==null)
+    			result=parser.getDefaultLocalMapping(this.getClass());
+    		
+    		return result;
+    	}
+    	
+    	return null;
+    }
     
     public Object getParameter() {
         if(this.setParameter!=null)
@@ -75,23 +93,12 @@ public class ReturnErrorImpl implements BaseComponent {
         this.correlationId.setFirstValue(i.byteValue());
     }
 
-    public ErrorCode getErrorCode() {
-    	if(nationalErrorCode!=null)
-    		return nationalErrorCode;
-    	
-        return this.privateErrorCode;
+    public ErrorCodeImpl getErrorCode() {
+    	return errorCode;    	
     }
 
-    public void setErrorCode(ErrorCode i) {
-    	if(i instanceof NationalErrorCodeImpl) {
-    		this.nationalErrorCode=(NationalErrorCodeImpl)i;
-    		this.privateErrorCode=null;
-    	} else if(i instanceof PrivateErrorCodeImpl) {
-    		this.nationalErrorCode=null;
-    		this.privateErrorCode=(PrivateErrorCodeImpl)i;
-    	} else {
-    		throw new IllegalArgumentException("Unsupported Error Code");
-    	}
+    public void setErrorCode(ErrorCodeImpl i) {
+    	this.errorCode=i;
     }
 
     public ComponentType getType() {
@@ -108,7 +115,16 @@ public class ReturnErrorImpl implements BaseComponent {
         }
         if (this.getErrorCode() != null) {
             sb.append("ErrorCode=");
-            sb.append(this.getErrorCode());
+            if(this.getErrorCode()==null)
+            	sb.append(this.getErrorCode());
+            else if(this.getErrorCode().getErrorType()==ErrorCodeType.National) {
+            	sb.append(" National ");
+            	sb.append(this.getErrorCode().getNationalErrorCode());
+            } else if(this.getErrorCode().getErrorType()==ErrorCodeType.Private) {
+            	sb.append(" National ");
+            	sb.append(this.getErrorCode().getPrivateErrorCode());
+            }
+            
             sb.append(", ");
         }
         if (this.getParameter() != null) {

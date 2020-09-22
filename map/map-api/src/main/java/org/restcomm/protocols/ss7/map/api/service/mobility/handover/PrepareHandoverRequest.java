@@ -26,13 +26,13 @@ import java.util.ArrayList;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASCICallReference;
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIu;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TracePropagationList;
 
 /**
@@ -77,7 +77,7 @@ import org.restcomm.protocols.ss7.map.api.service.oam.TracePropagationList;
  */
 public interface PrepareHandoverRequest extends MobilityMessage {
 
-    GlobalCellId getTargetCellId();
+    GlobalCellIdImpl getTargetCellId();
 
     boolean getHoNumberNotRequired();
 
@@ -87,7 +87,7 @@ public interface PrepareHandoverRequest extends MobilityMessage {
 
     boolean getMultipleBearerRequested();
 
-    IMSI getImsi();
+    IMSIImpl getImsi();
 
     IntegrityProtectionInformation getIntegrityProtectionInfo();
 
@@ -101,7 +101,7 @@ public interface PrepareHandoverRequest extends MobilityMessage {
 
     ArrayList<RadioResource> getRadioResourceList();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     Integer getRABId();
 
@@ -121,7 +121,7 @@ public interface PrepareHandoverRequest extends MobilityMessage {
 
     boolean getRabConfigurationIndicator();
 
-    UESBIIu getUESBIIu();
+    UESBIIuImpl getUESBIIu();
 
     RadioResourceInformation getAlternativeChannelType();
 
@@ -129,13 +129,13 @@ public interface PrepareHandoverRequest extends MobilityMessage {
 
     AoIPCodecsList getAoipSupportedCodecsListAnchor();
 
-    ArrayList<ZoneCode> getRegionalSubscriptionData();
+    ArrayList<ZoneCodeImpl> getRegionalSubscriptionData();
 
     LCLSGlobalCallReference getGlobalCallReference();
 
     LCLSNegotiation getLCLSNegotiation();
 
     // this parameter is for MAP V2 only
-    ExternalSignalInfo getBssAPDU();
+    ExternalSignalInfoImpl getBssAPDU();
 
 }

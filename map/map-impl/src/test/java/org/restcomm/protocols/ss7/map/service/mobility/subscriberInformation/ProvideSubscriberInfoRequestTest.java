@@ -31,11 +31,11 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ProvideSubscriberInfoRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -112,7 +112,7 @@ public class ProvideSubscriberInfoRequestTest {
         IMSIImpl imsi = new IMSIImpl("111222333444");
         RequestedInfoImpl requestedInfo = new RequestedInfoImpl(true, false, null, false, null, false, false, false);
         ProvideSubscriberInfoRequestImpl asc = new ProvideSubscriberInfoRequestImpl(imsi, null, requestedInfo, null, null);
-//        IMSI imsi, LMSI lmsi, RequestedInfo requestedInfo, MAPExtensionContainer extensionContainer,
+//        IMSI imsi, LMSI lmsi, RequestedInfo requestedInfo, MAPExtensionContainerImpl extensionContainer,
 //        EMLPPPriority callPriority
 
         AsnOutputStream asnOS = new AsnOutputStream();

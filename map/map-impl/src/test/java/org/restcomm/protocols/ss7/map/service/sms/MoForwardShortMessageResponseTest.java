@@ -30,11 +30,11 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.sms.MoForwardShortMessageResponseImpl;
-import org.restcomm.protocols.ss7.map.service.sms.SmsSignalInfoImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -70,7 +70,7 @@ public class MoForwardShortMessageResponseTest {
     public void testEncode() throws Exception {
 
         SmsSignalInfo ui = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55 }, null);
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         MoForwardShortMessageResponseImpl ind = new MoForwardShortMessageResponseImpl(ui, extensionContainer);
 
         AsnOutputStream asnOS = new AsnOutputStream();

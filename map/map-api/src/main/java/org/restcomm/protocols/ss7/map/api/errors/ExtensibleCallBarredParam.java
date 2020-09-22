@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.api.errors;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -40,7 +40,7 @@ public interface ExtensibleCallBarredParam extends Serializable {
 
     CallBarringCause getCallBarringCause();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     Boolean getUnauthorisedMessageOriginator();
 

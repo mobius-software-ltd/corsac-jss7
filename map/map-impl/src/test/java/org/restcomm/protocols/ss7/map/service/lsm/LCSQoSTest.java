@@ -38,11 +38,11 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoSImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTime;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeCategory;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSQoSImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ResponseTimeImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -138,7 +138,7 @@ public class LCSQoSTest {
         lcsQos = new LCSQoSImpl(10, 20, true, new ResponseTimeImpl(ResponseTimeCategory.lowdelay),
                 MAPExtensionContainerTest.GetTestExtensionContainer());
         // Integer horizontalAccuracy, Integer verticalAccuracy, boolean verticalCoordinateRequest, ResponseTime responseTime,
-        // MAPExtensionContainer extensionContainer
+        // MAPExtensionContainerImpl extensionContainer
         asnOS = new AsnOutputStream();
         lcsQos.encodeAll(asnOS);
 

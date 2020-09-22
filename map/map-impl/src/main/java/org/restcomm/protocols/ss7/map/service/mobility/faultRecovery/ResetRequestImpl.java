@@ -22,39 +22,33 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ASNNetworkResourceImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
 import org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery.ResetRequest;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ResetRequestImpl extends MobilityMessageImpl implements ResetRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "ResetRequest";
-
-    private NetworkResource networkResource;
-    private ISDNAddressString hlrNumber;
-    private ArrayList<IMSI> hlrList;
+	private ASNNetworkResourceImpl networkResource;
+    private ISDNAddressStringImpl hlrNumber;
+    private IMSIListWrapperImpl hlrList;
 
     private long mapProtocolVersion;
 
@@ -62,10 +56,16 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public ResetRequestImpl(NetworkResource networkResource, ISDNAddressString hlrNumber, ArrayList<IMSI> hlrList, long mapProtocolVersion) {
-        this.networkResource = networkResource;
+    public ResetRequestImpl(NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, ArrayList<IMSIImpl> hlrList, long mapProtocolVersion) {
+        if(networkResource!=null) {
+        	this.networkResource = new ASNNetworkResourceImpl();
+        	this.networkResource.setType(networkResource);
+        }
+        
         this.hlrNumber = hlrNumber;
-        this.hlrList = hlrList;
+        
+        if(hlrList!=null)
+        	this.hlrList = new IMSIListWrapperImpl(hlrList);
 
         this.mapProtocolVersion = mapProtocolVersion;
     }
@@ -86,201 +86,33 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
 
     @Override
     public NetworkResource getNetworkResource() {
-        return networkResource;
+    	if(networkResource==null)
+    		return null;
+    	
+        return networkResource.getType();
     }
 
     @Override
-    public ISDNAddressString getHlrNumber() {
+    public ISDNAddressStringImpl getHlrNumber() {
         return hlrNumber;
     }
 
     @Override
-    public ArrayList<IMSI> getHlrList() {
-        return hlrList;
-    }
-
-
-    @Override
-    public int getTag() throws MAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws MAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws MAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new MAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new MAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws MAPParsingComponentException, IOException, AsnException {
-
-        this.networkResource = null;
-        this.hlrNumber = null;
-        this.hlrList = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0) {
-                break;
-            }
-
-            int tag = ais.readTag();
-
-            switch (ais.getTagClass()) {
-            case Tag.CLASS_UNIVERSAL:
-                switch (tag) {
-                case Tag.ENUMERATED:
-                    if (!ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".networkResource: is not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    int i1 = (int) ais.readInteger();
-                    this.networkResource = NetworkResource.getInstance(i1);
-                    break;
-                case Tag.STRING_OCTET:
-                    if (!ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".hlrNumber: is not primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    this.hlrNumber = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.hlrNumber).decodeAll(ais);
-                    break;
-                case Tag.SEQUENCE:
-                    if (ais.isTagPrimitive())
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ".hlrList: Parameter is primitive",
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-
-                    AsnInputStream ais2 = ais.readSequenceStream();
-                    this.hlrList = new ArrayList<IMSI>();
-                    while (true) {
-                        if (ais2.available() == 0)
-                            break;
-
-                        int tag2 = ais2.readTag();
-                        if (tag2 != Tag.STRING_OCTET || ais2.getTagClass() != Tag.CLASS_UNIVERSAL || !ais2.isTagPrimitive())
-                            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": bad hlrList element tag or tagClass or is not primitive ", MAPParsingComponentExceptionReason.MistypedParameter);
-
-                        IMSI imsi = new IMSIImpl();
-                        ((IMSIImpl) imsi).decodeAll(ais2);
-                        this.hlrList.add(imsi);
-                    }
-                    if (this.hlrList.size() < 1 || this.hlrList.size() > 50) {
-                        throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ": Parameter hlrList size must be from 1 to 50, found: " + this.hlrList.size(),
-                                MAPParsingComponentExceptionReason.MistypedParameter);
-                    }
-                    break;
-
-                default:
-                    ais.advanceElement();
-                    break;
-                }
-                break;
-
-            default:
-                ais.advanceElement();
-                break;
-            }
-        }
-
-        if (this.hlrNumber == null)
-            throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName + ": hlrNumber is mandatory but absent absent",
-                    MAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws MAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws MAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int posk = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(posk);
-        } catch (AsnException e) {
-            throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws MAPException {
-
-        if (this.mapProtocolVersion == 1 && this.networkResource == null)
-            throw new MAPException("For MAP version 1 networkResource must be present but it is empty");
-
-        if (this.hlrNumber == null)
-            throw new MAPException("hlrNumber must not be null");
-
-
-        if (this.hlrList != null && (this.hlrList.size() < 1 || this.hlrList.size() > 50))
-            throw new MAPException("hlrList size must be from 1 to 50, found: " + this.hlrList.size());
-
-        if (this.mapProtocolVersion == 1) {
-            try {
-                asnOs.writeInteger(Tag.CLASS_UNIVERSAL, Tag.ENUMERATED, this.networkResource.getCode());
-            } catch (IOException e) {
-                throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter hlrList", e);
-            } catch (AsnException e) {
-                throw new MAPException("IOException while encoding " + _PrimitiveName + " parameter hlrList", e);
-            }
-        }
-
-        ((ISDNAddressStringImpl) this.hlrNumber).encodeAll(asnOs);
-
-        if (this.hlrList != null) {
-            try {
-                asnOs.writeTag(Tag.CLASS_UNIVERSAL, false, Tag.SEQUENCE);
-                int pos = asnOs.StartContentDefiniteLength();
-                for (IMSI imsi : this.hlrList) {
-                    ((IMSIImpl) imsi).encodeAll(asnOs);
-                }
-                asnOs.FinalizeContent(pos);
-            } catch (AsnException e) {
-                throw new MAPException("AsnException when encoding " + _PrimitiveName + " parameter hlrList: " + e.getMessage(), e);
-            }
-        }
+    public ArrayList<IMSIImpl> getHlrList() {
+    	if(hlrList==null)
+    		return null;
+    	
+        return hlrList.getIMSIs();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("ResetRequest [");
 
         if (this.networkResource != null) {
             sb.append("networkResource=");
-            sb.append(this.networkResource);
+            sb.append(this.networkResource.getType());
             sb.append(", ");
         }
 
@@ -290,10 +122,10 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
             sb.append(", ");
         }
 
-        if (this.hlrList != null) {
+        if (this.hlrList != null && this.hlrList.getIMSIs()!=null) {
             sb.append("hlrList=[");
             boolean firstItem = true;
-            for (IMSI imsi : this.hlrList) {
+            for (IMSIImpl imsi : this.hlrList.getIMSIs()) {
                 if (firstItem)
                     firstItem = false;
                 else

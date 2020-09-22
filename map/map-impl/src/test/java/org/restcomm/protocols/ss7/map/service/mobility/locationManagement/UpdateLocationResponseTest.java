@@ -33,11 +33,10 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImplV2;
 import org.testng.annotations.Test;
 
 public class UpdateLocationResponseTest {
@@ -62,14 +61,14 @@ public class UpdateLocationResponseTest {
         AsnInputStream asn = new AsnInputStream(rawData);
 
         int tag = asn.readTag();
-        UpdateLocationResponseImpl asc = new UpdateLocationResponseImpl(3);
+        UpdateLocationResponseImplV2 asc = new UpdateLocationResponseImplV2(3);
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
         assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
         assertEquals(asc.getMapProtocolVersion(), 3);
 
-        ISDNAddressString mscNumber = asc.getHlrNumber();
+        ISDNAddressStringImpl mscNumber = asc.getHlrNumber();
         assertTrue(mscNumber.getAddress().equals("09876"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -82,7 +81,7 @@ public class UpdateLocationResponseTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new UpdateLocationResponseImpl(3);
+        asc = new UpdateLocationResponseImplV2(3);
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -102,7 +101,7 @@ public class UpdateLocationResponseTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new UpdateLocationResponseImpl(1);
+        asc = new UpdateLocationResponseImplV2(1);
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.STRING_OCTET);
@@ -124,8 +123,8 @@ public class UpdateLocationResponseTest {
 
         ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "09876");
-        UpdateLocationResponseImpl asc = new UpdateLocationResponseImpl(3, hlrNumber, null, false, false);
-        // long mapProtocolVersion, ISDNAddressString hlrNumber, MAPExtensionContainer extensionContainer, boolean
+        UpdateLocationResponseImplV2 asc = new UpdateLocationResponseImplV2(3, hlrNumber, null, false, false);
+        // long mapProtocolVersion, ISDNAddressStringImpl hlrNumber, MAPExtensionContainerImpl extensionContainer, boolean
         // addCapability,
         // boolean pagingAreaCapability
 
@@ -136,7 +135,7 @@ public class UpdateLocationResponseTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        asc = new UpdateLocationResponseImpl(3, hlrNumber, MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
+        asc = new UpdateLocationResponseImplV2(3, hlrNumber, MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
 
         asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);
@@ -145,7 +144,7 @@ public class UpdateLocationResponseTest {
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        asc = new UpdateLocationResponseImpl(1, hlrNumber, null, false, false);
+        asc = new UpdateLocationResponseImplV2(1, hlrNumber, null, false, false);
 
         asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);

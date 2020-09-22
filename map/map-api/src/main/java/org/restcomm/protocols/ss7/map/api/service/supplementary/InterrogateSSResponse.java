@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
 import java.util.ArrayList;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
 
 /**
  *
@@ -47,12 +47,12 @@ ForwardingFeatureList ::= SEQUENCE SIZE (1..13) OF ForwardingFeature
  */
 public interface InterrogateSSResponse extends SupplementaryMessage {
 
-    SSStatus getSsStatus();
+    SSStatusImpl getSsStatus();
 
-    ArrayList<BasicServiceCode> getBasicServiceGroupList();
+    ArrayList<BasicServiceCodeImpl> getBasicServiceGroupList();
 
-    ArrayList<ForwardingFeature> getForwardingFeatureList();
+    ArrayList<ForwardingFeatureImpl> getForwardingFeatureList();
 
-    GenericServiceInfo getGenericServiceInfo();
+    GenericServiceInfoImpl getGenericServiceInfo();
 
 }

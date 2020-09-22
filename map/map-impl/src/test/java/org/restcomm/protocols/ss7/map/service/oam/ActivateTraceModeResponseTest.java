@@ -30,7 +30,7 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeResponseImpl_Base;
+import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeResponseImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -52,7 +52,7 @@ public class ActivateTraceModeResponseTest {
         AsnInputStream asn = new AsnInputStream(rawData);
 
         int tag = asn.readTag();
-        ActivateTraceModeResponseImpl_Base asc = new ActivateTraceModeResponseImpl_Base();
+        ActivateTraceModeResponseImpl asc = new ActivateTraceModeResponseImpl();
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -65,7 +65,7 @@ public class ActivateTraceModeResponseTest {
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
 
-        ActivateTraceModeResponseImpl_Base asc = new ActivateTraceModeResponseImpl_Base(MAPExtensionContainerTest.GetTestExtensionContainer(), true);
+        ActivateTraceModeResponseImpl asc = new ActivateTraceModeResponseImpl(MAPExtensionContainerTest.GetTestExtensionContainer(), true);
 
         AsnOutputStream asnOS = new AsnOutputStream();
         asc.encodeAll(asnOS);

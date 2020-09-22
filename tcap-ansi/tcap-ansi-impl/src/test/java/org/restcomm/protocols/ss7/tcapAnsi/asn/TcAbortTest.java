@@ -29,9 +29,8 @@ import io.netty.buffer.Unpooled;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.IntegerApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
@@ -86,7 +85,7 @@ public class TcAbortTest {
         assertNull(tcm.getUserAbortInformation().getExternal());
         assertNull(tcm.getPAbortCause());
         DialogPortionImpl dp = tcm.getDialogPortion();
-        assertEquals(((IntegerApplicationContextNameImpl)dp.getApplicationContext()).getValue(), new Long(111L));
+        assertEquals(dp.getApplicationContext().getInt(), new Long(111L));
 
         // 3
         result=parser.decode(Unpooled.wrappedBuffer(this.data3));
@@ -120,7 +119,7 @@ public class TcAbortTest {
         tcm = TcapFactory.createTCAbortMessage();
         tcm.setDestinationTransactionId(trId);
         DialogPortionImpl dp = TcapFactory.createDialogPortion();
-        ApplicationContext ac = TcapFactory.createApplicationContext(111);
+        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(111);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 

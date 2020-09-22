@@ -34,33 +34,32 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredLocationEventTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSEvent;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.AddGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.DeferredLocationEventTypeImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.DeferredmtlrDataImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ExtGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.GeranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSClientIDImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSLocationInfoImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.PeriodicLDRInfoImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.PositioningDataInformationImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.SLRArgExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.SLRArgPCSExtensionsImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ServingNodeAddressImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgPCSExtensionsImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.SubscriberLocationReportRequestImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.UtranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.UtranPositioningDataInfoImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.VelocityEstimateImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -199,9 +198,9 @@ public class SubscriberLocationReportRequestTest {
         ;
         IMSIImpl imsi = new IMSIImpl("1234512345");
         IMEIImpl imei = new IMEIImpl("1234567890123456");
-        ISDNAddressString naEsrd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl naEsrd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "8888899999");
-        ISDNAddressString naEsrk = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl naEsrk = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "8888800000");
         ExtGeographicalInformationImpl locationEstimate = new ExtGeographicalInformationImpl(
                 getDataExtGeographicalInformation());
@@ -234,8 +233,8 @@ public class SubscriberLocationReportRequestTest {
                 cellIdOrSai, hgmlcAddress, 7, true, true, AccuracyFulfilmentIndicator.requestedAccuracyFulfilled,
                 velocityEstimate, 9, periodicLDRInfo, true, geranGANSSpositioningData, utranGANSSpositioningData,
                 targetServingNodeForHandover);
-        // LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo, ISDNAddressString msisdn,
-        // IMSI imsi, IMEI imei, ISDNAddressString naEsrd, ISDNAddressString naEsrk, ExtGeographicalInformation
+        // LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo, ISDNAddressStringImpl msisdn,
+        // IMSI imsi, IMEI imei, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk, ExtGeographicalInformation
         // locationEstimate,
         // Integer ageOfLocationEstimate, SLRArgExtensionContainer slrArgExtensionContainer, AddGeographicalInformation
         // addLocationEstimate,

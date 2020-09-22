@@ -35,16 +35,13 @@ import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.GlobalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
@@ -56,7 +53,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
  */
 @Test(groups = { "asn" })
 public class InvokeTest {
-
+	ASNParser parser=new ASNParser();
+	
     private byte[] getData() {
         return new byte[] {
         		0x6c, 0x1f, //Component Tag
@@ -83,24 +81,21 @@ public class InvokeTest {
     @BeforeClass
 	public void setUp()
 	{		
-    	ASNGeneric.clear(ASNInvokeParameterImpl.class);
-    	ASNGeneric.registerAlternative(ASNInvokeParameterImpl.class, InvokeTestASN.class);    	
+    	parser.loadClass(ComponentImpl.class);
+    	
+    	parser.clearClassMapping(ASNInvokeParameterImpl.class);
+    	parser.registerAlternativeClassMapping(ASNInvokeParameterImpl.class, InvokeTestASN.class);    	
 	}
     
     @Test(groups = { "functional.encode" })
     public void testEncode() throws ASNException {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(ComponentImpl.class);
-    	
-        byte[] expected = this.getData();
+    	byte[] expected = this.getData();
 
         ComponentImpl invoke = TcapFactory.createComponentInvoke();
         invoke.getInvoke().setInvokeId(12l);
 
-        OperationCode oc = TcapFactory.createLocalOperationCode();
-
-        ((LocalOperationCodeImpl)oc).setLocalOperationCode(59L);
+        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(59L);
         invoke.getInvoke().setOperationCode(oc);
 
         InvokeTestASN invokeParameter=new InvokeTestASN();
@@ -125,8 +120,7 @@ public class InvokeTest {
         invoke = TcapFactory.createComponentInvoke();
         invoke.getInvoke().setInvokeId(-5L);
         invoke.getInvoke().setLinkedId(2L);
-        oc = TcapFactory.createGlobalOperationCode();
-        ((GlobalOperationCodeImpl)oc).setGlobalOperationCode(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }));
+        oc = TcapFactory.createGlobalOperationCode(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }));
         invoke.getInvoke().setOperationCode(oc);
 
         ASNOctetString pm=new ASNOctetString();
@@ -141,10 +135,7 @@ public class InvokeTest {
     @Test(groups = { "functional.decode" })
     public void testDecodeWithParaSequ() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(ComponentImpl.class);
-    	
-        byte[] b = this.getData();
+    	byte[] b = this.getData();
 
         Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
         assertTrue(output instanceof ComponentImpl);        
@@ -152,10 +143,10 @@ public class InvokeTest {
         assertEquals(ComponentType.Invoke, invokeComp.getType());
 
         assertTrue(12L == invokeComp.getInvoke().getInvokeId());
-        OperationCode oc = invokeComp.getInvoke().getOperationCode();
+        OperationCodeImpl oc = invokeComp.getInvoke().getOperationCode();
         assertNotNull(oc);
         assertEquals(OperationCodeType.Local, oc.getOperationType());
-        assertTrue(59 == ((LocalOperationCodeImpl)oc).getLocalOperationCode());
+        assertTrue(59 == oc.getLocalOperationCode());
                
         assertTrue(invokeComp.getInvoke().getParameter() instanceof InvokeTestASN);
         InvokeTestASN parameter=(InvokeTestASN)invokeComp.getInvoke().getParameter();
@@ -175,7 +166,7 @@ public class InvokeTest {
         oc = invokeComp.getInvoke().getOperationCode();
         assertNotNull(oc);
         assertEquals(OperationCodeType.Global, oc.getOperationType());
-        assertEquals(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }), ((GlobalOperationCodeImpl)oc).getGlobalOperationCode());
+        assertEquals(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }), oc.getGlobalOperationCode());
 
         assertTrue(invokeComp.getInvoke().getParameter() instanceof ASNOctetString);
         assertTrue(byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }), ((ASNOctetString)invokeComp.getInvoke().getParameter()).getValue()));

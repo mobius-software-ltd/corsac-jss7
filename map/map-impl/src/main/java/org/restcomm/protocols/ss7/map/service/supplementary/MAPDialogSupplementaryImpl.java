@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import java.util.ArrayList;
 
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
@@ -33,30 +32,23 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GuidanceInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPDialogSupplementary;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPServiceSupplementary;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
-import org.restcomm.protocols.ss7.tcap.api.TCAPException;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.PasswordImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Return;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
 /**
  *
@@ -69,484 +61,217 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
 	private static final long serialVersionUID = 1L;
 
 	protected MAPDialogSupplementaryImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
-            MAPServiceSupplementary mapService, AddressString origReference, AddressString destReference) {
+            MAPServiceSupplementary mapService, AddressStringImpl origReference, AddressStringImpl destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
-    public Long addProcessUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
-            AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
+    public Long addProcessUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString,
+            AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
         return this.addProcessUnstructuredSSRequest(_Timer_Default, ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
     }
 
 
     @Override
-    public Long addRegisterSSRequest(SSCode ssCode, BasicServiceCode basicService, AddressString forwardedToNumber, ISDNAddressString forwardedToSubaddress,
-            Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser, ISDNAddressString longFTNSupported) throws MAPException {
+    public Long addRegisterSSRequest(SSCodeImpl ssCode, BasicServiceCodeImpl basicService, AddressStringImpl forwardedToNumber, ISDNAddressStringImpl forwardedToSubaddress,
+            Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser, ISDNAddressStringImpl longFTNSupported) throws MAPException {
         return this.addRegisterSSRequest(_Timer_Default, ssCode, basicService, forwardedToNumber, forwardedToSubaddress, noReplyConditionTime, defaultPriority,
                 nbrUser, longFTNSupported);
     }
 
     @Override
-    public Long addRegisterSSRequest(int customInvokeTimeout, SSCode ssCode, BasicServiceCode basicService, AddressString forwardedToNumber,
-            ISDNAddressString forwardedToSubaddress, Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser,
-            ISDNAddressString longFTNSupported) throws MAPException {
+    public Long addRegisterSSRequest(int customInvokeTimeout, SSCodeImpl ssCode, BasicServiceCodeImpl basicService, AddressStringImpl forwardedToNumber,
+            ISDNAddressStringImpl forwardedToSubaddress, Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser,
+            ISDNAddressStringImpl longFTNSupported) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addRegisterSSRequest: must be networkFunctionalSsContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.registerSS);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         RegisterSSRequestImpl req = new RegisterSSRequestImpl(ssCode, basicService, forwardedToNumber, forwardedToSubaddress, noReplyConditionTime,
                 defaultPriority, nbrUser, longFTNSupported);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long)MAPOperationCode.registerSS, req, true, false);
     }
 
     @Override
-    public void addRegisterSSResponse(long invokeId, SSInfo ssInfo) throws MAPException {
+    public void addRegisterSSResponse(long invokeId, SSInfoImpl ssInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addRegisterSSResponse: must be networkFunctionalSsContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.registerSS);
-        resultLast.setOperationCode(oc);
-
-        if (ssInfo != null) {
-            RegisterSSResponseImpl req = new RegisterSSResponseImpl(ssInfo);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        RegisterSSResponseImpl req=null;
+        if (ssInfo != null)
+            req = new RegisterSSResponseImpl(ssInfo);
+            
+        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.registerSS, req, false, true);
     }
 
     @Override
-    public Long addEraseSSRequest(SSForBSCode ssForBSCode) throws MAPException {
+    public Long addEraseSSRequest(SSForBSCodeImpl ssForBSCode) throws MAPException {
         return this.addEraseSSRequest(_Timer_Default, ssForBSCode);
     }
 
     @Override
-    public Long addEraseSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException {
+    public Long addEraseSSRequest(int customInvokeTimeout, SSForBSCodeImpl ssForBSCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addEraseSSRequest: must be networkFunctionalSsContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout = getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.eraseSS);
-        invoke.setOperationCode(oc);
+        	customTimeout = customInvokeTimeout;
 
         EraseSSRequestImpl req = new EraseSSRequestImpl(ssForBSCode);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long)MAPOperationCode.eraseSS, req, true, false);
     }
 
     @Override
-    public void addEraseSSResponse(long invokeId, SSInfo ssInfo) throws MAPException {
+    public void addEraseSSResponse(long invokeId, SSInfoImpl ssInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addEraseSSResponse: must be networkFunctionalSsContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
+        EraseSSResponseImpl req = null;
+        if (ssInfo != null)
+            req = new EraseSSResponseImpl(ssInfo);
+            
 
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.eraseSS);
-        resultLast.setOperationCode(oc);
-
-        if (ssInfo != null) {
-            EraseSSResponseImpl req = new EraseSSResponseImpl(ssInfo);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.eraseSS, req, false, true);
     }
 
     @Override
-    public Long addActivateSSRequest(SSForBSCode ssForBSCode) throws MAPException {
+    public Long addActivateSSRequest(SSForBSCodeImpl ssForBSCode) throws MAPException {
         return this.addActivateSSRequest(_Timer_Default, ssForBSCode);
     }
 
     @Override
-    public Long addActivateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException {
+    public Long addActivateSSRequest(int customInvokeTimeout, SSForBSCodeImpl ssForBSCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addActivateSSRequest: must be networkFunctionalSsContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.activateSS);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         ActivateSSRequestImpl req = new ActivateSSRequestImpl(ssForBSCode);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.activateSS, req, true, false);
     }
 
     @Override
-    public void addActivateSSResponse(long invokeId, SSInfo ssInfo) throws MAPException {
+    public void addActivateSSResponse(long invokeId, SSInfoImpl ssInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addActivateSSResponse: must be networkFunctionalSsContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
+        ActivateSSResponseImpl req=null;
+        if (ssInfo != null)
+            req = new ActivateSSResponseImpl(ssInfo);            
 
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.activateSS);
-        resultLast.setOperationCode(oc);
-
-        if (ssInfo != null) {
-            ActivateSSResponseImpl req = new ActivateSSResponseImpl(ssInfo);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.activateSS, req, false, true);
     }
 
     @Override
-    public Long addDeactivateSSRequest(SSForBSCode ssForBSCode) throws MAPException {
+    public Long addDeactivateSSRequest(SSForBSCodeImpl ssForBSCode) throws MAPException {
         return this.addDeactivateSSRequest(_Timer_Default, ssForBSCode);
     }
 
     @Override
-    public Long addDeactivateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException {
+    public Long addDeactivateSSRequest(int customInvokeTimeout, SSForBSCodeImpl ssForBSCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addDeactivateSSRequest: must be networkFunctionalSsContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.deactivateSS);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         DeactivateSSRequestImpl req = new DeactivateSSRequestImpl(ssForBSCode);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.deactivateSS, req, true, false);
     }
 
     @Override
-    public void addDeactivateSSResponse(long invokeId, SSInfo ssInfo) throws MAPException {
+    public void addDeactivateSSResponse(long invokeId, SSInfoImpl ssInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addDeactivateSSResponse: must be networkFunctionalSsContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
+        DeactivateSSResponseImpl req=null;
+        if (ssInfo != null)
+            req = new DeactivateSSResponseImpl(ssInfo);           
 
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.deactivateSS);
-        resultLast.setOperationCode(oc);
-
-        if (ssInfo != null) {
-            DeactivateSSResponseImpl req = new DeactivateSSResponseImpl(ssInfo);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.deactivateSS, req, false, true);
     }
 
     @Override
-    public Long addInterrogateSSRequest(SSForBSCode ssForBSCode) throws MAPException {
+    public Long addInterrogateSSRequest(SSForBSCodeImpl ssForBSCode) throws MAPException {
         return this.addInterrogateSSRequest(_Timer_Default, ssForBSCode);
     }
 
     @Override
-    public Long addInterrogateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException {
+    public Long addInterrogateSSRequest(int customInvokeTimeout, SSForBSCodeImpl ssForBSCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSRequest: must be networkFunctionalSsContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.interrogateSS);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         InterrogateSSRequestImpl req = new InterrogateSSRequestImpl(ssForBSCode);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.interrogateSS, req, true, false);
     }
 
     @Override
-    public void addInterrogateSSResponse_SSStatus(long invokeId, SSStatus ssStatus) throws MAPException {
+    public void addInterrogateSSResponse_SSStatus(long invokeId, SSStatusImpl ssStatus) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
-
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.interrogateSS);
-        resultLast.setOperationCode(oc);
 
         InterrogateSSResponseImpl req = new InterrogateSSResponseImpl(ssStatus);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.interrogateSS, req, false, true);
     }
 
     @Override
-    public void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, ArrayList<BasicServiceCode> basicServiceGroupList) throws MAPException {
+    public void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, ArrayList<BasicServiceCodeImpl> basicServiceGroupList) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
-
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.interrogateSS);
-        resultLast.setOperationCode(oc);
 
         InterrogateSSResponseImpl req = new InterrogateSSResponseImpl(basicServiceGroupList, false);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.interrogateSS, req, false, true);
     }
 
     @Override
-    public void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, ArrayList<ForwardingFeature> forwardingFeatureList) throws MAPException {
+    public void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, ArrayList<ForwardingFeatureImpl> forwardingFeatureList) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
-
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.interrogateSS);
-        resultLast.setOperationCode(oc);
 
         InterrogateSSResponseImpl req = new InterrogateSSResponseImpl(forwardingFeatureList);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.interrogateSS, req, false, true);
     }
 
     @Override
-    public void addInterrogateSSResponse_GenericServiceInfo(long invokeId, GenericServiceInfo genericServiceInfo) throws MAPException {
+    public void addInterrogateSSResponse_GenericServiceInfo(long invokeId, GenericServiceInfoImpl genericServiceInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.interrogateSS);
-        resultLast.setOperationCode(oc);
-
         InterrogateSSResponseImpl req = new InterrogateSSResponseImpl(genericServiceInfo);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.interrogateSS, req, false, true);
     }
 
     @Override
@@ -560,336 +285,128 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addGetPasswordRequest: must be networkFunctionalSsContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getLongTimer());
+        	customTimeout=getLongTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.getPassword);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         GetPasswordRequestImpl req = new GetPasswordRequestImpl(guidanceInfo);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-            invoke.setLinkedId(linkedId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, linkedId, null, customTimeout.longValue(), (long) MAPOperationCode.getPassword, req, true, false);
     }
 
     @Override
-    public void addGetPasswordResponse(long invokeId, Password password) throws MAPException {
+    public void addGetPasswordResponse(long invokeId, PasswordImpl password) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addGetPasswordResponse: must be networkFunctionalSsContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.getPassword);
-        resultLast.setOperationCode(oc);
-
         GetPasswordResponseImpl req = new GetPasswordResponseImpl(password);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.getPassword, req, false, true);
     }
 
     @Override
-    public Long addRegisterPasswordRequest(SSCode ssCode) throws MAPException {
+    public Long addRegisterPasswordRequest(SSCodeImpl ssCode) throws MAPException {
         return this.addRegisterPasswordRequest(_Timer_Default, ssCode);
     }
 
     @Override
-    public Long addRegisterPasswordRequest(int customInvokeTimeout, SSCode ssCode) throws MAPException {
+    public Long addRegisterPasswordRequest(int customInvokeTimeout, SSCodeImpl ssCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addRegisterPasswordRequest: must be networkFunctionalSsContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.registerPassword);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         RegisterPasswordRequestImpl req = new RegisterPasswordRequestImpl(ssCode);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.registerPassword, req, true, false);
     }
 
     @Override
-    public void addRegisterPasswordResponse(long invokeId, Password password) throws MAPException {
+    public void addRegisterPasswordResponse(long invokeId, PasswordImpl password) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addRegisterPasswordResponse: must be networkFunctionalSsContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.registerPassword);
-        resultLast.setOperationCode(oc);
-
         RegisterPasswordResponseImpl req = new RegisterPasswordResponseImpl(password);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.registerPassword, req, false, true);
     }
 
 
     public Long addProcessUnstructuredSSRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
-            USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
+            USSDStringImpl ussdString, AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(600000); // 10 minutes
+        	customTimeout=600000; // 10 minutes
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         ProcessUnstructuredSSRequestImpl req = new ProcessUnstructuredSSRequestImpl(ussdDataCodingScheme, ussdString,
                 alertingPatter, msisdn);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
-
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.processUnstructuredSS_Request, req, true, false);
     }
 
-    public void addProcessUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString)
+    public void addProcessUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString)
             throws MAPException {
-        Return returnResult = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        returnResult.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request);
-        returnResult.setOperationCode(oc);
-
         ProcessUnstructuredSSResponseImpl req = new ProcessUnstructuredSSResponseImpl(ussdDataCodingScheme, ussdString);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        returnResult.setParameter(p);
-
-        this.sendReturnResultLastComponent((ReturnResultLast) returnResult);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.processUnstructuredSS_Request, req, false, true);
     }
 
-    public Long addUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
-            AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
+    public Long addUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString,
+            AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
         return this.addUnstructuredSSRequest(_Timer_Default, ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
     }
 
     public Long addUnstructuredSSRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
-            USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
+            USSDStringImpl ussdString, AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getLongTimer());
+        	customTimeout=getLongTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.unstructuredSS_Request);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         UnstructuredSSRequestImpl req = new UnstructuredSSRequestImpl(ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.unstructuredSS_Request, req, true, false);
     }
 
-    public Long addUnstructuredSSNotifyRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
-            AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
+    public Long addUnstructuredSSNotifyRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString,
+            AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
         return this.addUnstructuredSSNotifyRequest(_Timer_Default, ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
     }
 
     public Long addUnstructuredSSNotifyRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
-            USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
+            USSDStringImpl ussdString, AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getLongTimer());
+        	customTimeout = getLongTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+        	customTimeout = customInvokeTimeout;
 
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.unstructuredSS_Notify);
-        invoke.setOperationCode(oc);
-
-        if (ussdString != null) {
-            UnstructuredSSRequestImpl req = new UnstructuredSSRequestImpl(ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            invoke.setParameter(p);
-        }
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        UnstructuredSSRequestImpl req = null;
+        if (ussdString != null)
+            req = new UnstructuredSSRequestImpl(ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
+            
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.unstructuredSS_Notify, req, true, false);
     }
 
-    public void addUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString)
+    public void addUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString)
             throws MAPException {
 
-        Return returnResult = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        returnResult.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = TcapFactory.createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.unstructuredSS_Request);
-        returnResult.setOperationCode(oc);
-
-        if (ussdString != null) {
-            UnstructuredSSResponseImpl req = new UnstructuredSSResponseImpl(ussdDataCodingScheme, ussdString);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            returnResult.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent((ReturnResultLast) returnResult);
+    	UnstructuredSSResponseImpl req=null;
+        if (ussdString != null)
+            req = new UnstructuredSSResponseImpl(ussdDataCodingScheme, ussdString);
+            
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.unstructuredSS_Request, req, false, true);
     }
 
     public void addUnstructuredSSNotifyResponse(long invokeId) throws MAPException {
-
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // we need not Operation Code because no answer
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.unstructuredSS_Notify, null, false, true);
     }
-
 }

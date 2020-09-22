@@ -23,6 +23,9 @@
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
@@ -45,14 +48,28 @@ public class InvokeImpl implements RemoteOperation {
     private ASNInteger linkedId;
 	
 	// mandatory
-    private GlobalOperationCodeImpl globalOperationCode;
-    private LocalOperationCodeImpl localOperationCode;
+	@ASNChoise
+    private OperationCodeImpl operationCode;
     
     // optional
     @ASNWildcard
     private ASNInvokeParameterImpl parameter;
     
-	/*
+    @ASNGenericMapping
+    public Class<?> getMapping(Object parent,ASNParser parser) {
+    	if(operationCode!=null)
+    	{
+    		Class<?> result=parser.getLocalMapping(this.getClass(), operationCode);
+    		if(result==null)
+    			result=parser.getDefaultLocalMapping(this.getClass());
+    		
+    		return result;
+    	}
+    	
+    	return null;
+    }
+    
+    /*
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getInvokeId()
@@ -81,13 +98,8 @@ public class InvokeImpl implements RemoteOperation {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCode getOperationCode() {
-    	if(localOperationCode!=null)
-    		return localOperationCode;
-    	else if(globalOperationCode!=null)
-    		return globalOperationCode;
-    	
-        return null;
+    public OperationCodeImpl getOperationCode() {
+    	return operationCode;
     }
 
     /*
@@ -135,16 +147,8 @@ public class InvokeImpl implements RemoteOperation {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(org
      * .mobicents.protocols.ss7.tcap.asn.comp.OperationCode)
      */
-    public void setOperationCode(OperationCode i) {
-    	if(i instanceof LocalOperationCodeImpl) {
-    		this.localOperationCode=(LocalOperationCodeImpl)i;
-    		this.globalOperationCode=null;
-    	} else if(i instanceof GlobalOperationCodeImpl) {
-    		this.globalOperationCode=(GlobalOperationCodeImpl)i;
-    		this.localOperationCode=null;
-    	}
-    	else
-    		throw new IllegalArgumentException("Unsupported Operation Code");
+    public void setOperationCode(OperationCodeImpl i) {
+    	this.operationCode=i;
     }
 
     /*
@@ -164,11 +168,13 @@ public class InvokeImpl implements RemoteOperation {
 
     @Override
     public String toString() {
-    	OperationCode oc=this.localOperationCode;
-    	if(this.globalOperationCode!=null)
-    		oc=this.globalOperationCode;
-    	else if(this.localOperationCode!=null)
-    		oc=this.localOperationCode;
+    	Object oc=null;
+    	if(this.operationCode!=null) {
+    		if(this.operationCode.getLocalOperationCode()!=null)
+    			oc=this.operationCode.getLocalOperationCode();
+    		else if(this.operationCode.getGlobalOperationCode()!=null)
+    			oc=this.operationCode.getGlobalOperationCode();
+    	}
     	
     	Long invokeIdValue=null;
     	if(this.invokeId!=null)

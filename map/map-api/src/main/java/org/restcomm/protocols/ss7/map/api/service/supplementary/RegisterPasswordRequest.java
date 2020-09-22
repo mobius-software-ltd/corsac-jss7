@@ -46,6 +46,6 @@ RESULT Password
  */
 public interface RegisterPasswordRequest extends SupplementaryMessage {
 
-    SSCode getSsCode();
+	SSCodeImpl getSsCode();
 
 }

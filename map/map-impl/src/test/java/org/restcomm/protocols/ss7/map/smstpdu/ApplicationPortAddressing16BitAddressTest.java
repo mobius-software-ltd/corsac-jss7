@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import static org.testng.Assert.*;
 
-import org.restcomm.protocols.ss7.map.smstpdu.ApplicationPortAddressing16BitAddressImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ApplicationPortAddressing16BitAddressImpl;
 import org.testng.annotations.Test;
 
 /**

@@ -35,6 +35,6 @@ RESULT SS-Info
  */
 public interface RegisterSSResponse extends SupplementaryMessage {
 
-    SSInfo getSsInfo();
+	SSInfoImpl getSsInfo();
 
 }

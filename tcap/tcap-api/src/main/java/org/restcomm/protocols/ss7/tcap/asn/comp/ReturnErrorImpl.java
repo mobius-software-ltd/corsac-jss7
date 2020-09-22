@@ -23,6 +23,9 @@
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
@@ -39,26 +42,34 @@ public class ReturnErrorImpl implements BaseComponent {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x02,constructed=false,index=0)
 	private ASNInteger invokeId;
 
-	// mandatory
-	private GlobalErrorCodeImpl globalErrorCode;
-	private LocalErrorCodeImpl localErrorCode;
+	@ASNChoise
+	private ErrorCodeImpl errorCode;
 		    
 	// optional
 	@ASNWildcard
 	private ASNReturnErrorParameterImpl parameter;
 
-    /*
+	@ASNGenericMapping
+    public Class<?> getMapping(Object parent,ASNParser parser) {
+    	if(errorCode!=null)
+    	{
+    		Class<?> result=parser.getLocalMapping(this.getClass(), errorCode);
+    		if(result==null)
+    			result=parser.getDefaultLocalMapping(this.getClass());
+    		
+    		return result;
+    	}
+    	
+    	return null;
+    }
+	
+	/*
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#getErrorCode()
      */
-    public ErrorCode getErrorCode() {
-    	if(this.localErrorCode!=null)
-    		return this.localErrorCode;
-    	else if(this.globalErrorCode!=null)
-    		return this.globalErrorCode;
-    	
-        return null;
+    public ErrorCodeImpl getErrorCode() {
+    	return this.errorCode;
     }
 
     /*
@@ -91,16 +102,8 @@ public class ReturnErrorImpl implements BaseComponent {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setErrorCode(org
      * .mobicents.protocols.ss7.tcap.asn.comp.ErrorCode)
      */
-    public void setErrorCode(ErrorCode ec) {
-    	if(ec instanceof LocalErrorCodeImpl) {
-    		this.localErrorCode=(LocalErrorCodeImpl)ec;
-    		this.globalErrorCode=null;
-    	} else if(ec instanceof GlobalErrorCodeImpl) {
-    		this.globalErrorCode=(GlobalErrorCodeImpl)ec;
-    		this.localErrorCode=null;
-    	}
-    	else
-    		throw new IllegalArgumentException("Unsupported Error Code");
+    public void setErrorCode(ErrorCodeImpl ec) {
+    	this.errorCode=ec;
     }
 
     /*
@@ -132,9 +135,19 @@ public class ReturnErrorImpl implements BaseComponent {
     }
 
     public String toString() {
-    	ErrorCode ec=this.localErrorCode;
-    	if(this.globalErrorCode!=null)
-    		ec=this.globalErrorCode;
+    	Object ec=null;
+    	if(this.errorCode!=null) {
+    		switch(this.errorCode.getErrorType()) {
+				case Global:
+					ec=this.errorCode.getGlobalErrorCode();
+					break;
+				case Local:
+					ec=this.errorCode.getLocalErrorCode();
+					break;
+				default:
+					break;    		
+    		}
+    	}
     	
     	Long invokeIdValue=null;
     	if(this.invokeId!=null)

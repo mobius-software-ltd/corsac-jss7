@@ -4,26 +4,24 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AdditionalRequestedCAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedCAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSForBSCodeImpl;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -58,7 +56,7 @@ public class AnyTimeSubscriptionInterrogationRequestTest {
         assertTrue(request.getLongFTNSupported());
         assertEquals(request.getGsmScfAddress().getAddress(), "79207654321");
 
-        ISDNAddressString subscriberMsisdn = request.getSubscriberIdentity().getMSISDN();
+        ISDNAddressStringImpl subscriberMsisdn = request.getSubscriberIdentity().getMSISDN();
         assertEquals(subscriberMsisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(subscriberMsisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(subscriberMsisdn.getAddress(), "79201234567");
@@ -86,14 +84,14 @@ public class AnyTimeSubscriptionInterrogationRequestTest {
         ISDNAddressStringImpl subscriberMsisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79201234567");
         SubscriberIdentity subscriberIdentity = new SubscriberIdentityImpl(subscriberMsisdn);
 
-        SSCode ssCode = new SSCodeImpl(SupplementaryCodeValue.allChargingSS);
+        SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allChargingSS);
         BasicServiceCode basicServiceCode = new BasicServiceCodeImpl(new TeleserviceCodeImpl(TeleserviceCodeValue.allTeleservices));
         SSForBSCode ssForBSCode = new SSForBSCodeImpl(ssCode, basicServiceCode, false);
         RequestedSubscriptionInfo requestedSubscriptionInfo = new RequestedSubscriptionInfoImpl(ssForBSCode, true, RequestedCAMELSubscriptionInfo.oCSI,
                 true, false, null, AdditionalRequestedCAMELSubscriptionInfo.oImCSI, true, false, true,
                 false, true, false, true);
 
-        ISDNAddressString gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79207654321");
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79207654321");
 
         AnyTimeSubscriptionInterrogationRequestImpl request = new AnyTimeSubscriptionInterrogationRequestImpl(subscriberIdentity, requestedSubscriptionInfo,
                 gsmSCFAddress, MAPExtensionContainerTest.GetTestExtensionContainer(), true);

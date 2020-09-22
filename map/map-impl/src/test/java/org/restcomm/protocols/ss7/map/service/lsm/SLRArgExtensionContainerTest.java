@@ -34,10 +34,9 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
-import org.restcomm.protocols.ss7.map.primitives.MAPPrivateExtensionImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.SLRArgExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.SLRArgPCSExtensionsImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgPCSExtensionsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -104,13 +103,13 @@ public class SLRArgExtensionContainerTest {
 
         byte[] data = getEncodedData();
 
-        ArrayList<MAPPrivateExtension> privateExtensionList = new ArrayList<MAPPrivateExtension>();
+        ArrayList<MAPPrivateExtensionImpl> privateExtensionList = new ArrayList<MAPPrivateExtensionImpl>();
         MAPPrivateExtensionImpl pe = new MAPPrivateExtensionImpl(getDataOId(), getDataPe());
         privateExtensionList.add(pe);
         SLRArgPCSExtensionsImpl slrArgPcsExtensions = new SLRArgPCSExtensionsImpl(false);
 
         SLRArgExtensionContainerImpl imp = new SLRArgExtensionContainerImpl(privateExtensionList, slrArgPcsExtensions);
-        // ArrayList<MAPPrivateExtension> privateExtensionList, SLRArgPCSExtensions slrArgPcsExtensions
+        // ArrayList<MAPPrivateExtensionImpl> privateExtensionList, SLRArgPCSExtensions slrArgPcsExtensions
 
         AsnOutputStream asnOS = new AsnOutputStream();
         imp.encodeAll(asnOS);

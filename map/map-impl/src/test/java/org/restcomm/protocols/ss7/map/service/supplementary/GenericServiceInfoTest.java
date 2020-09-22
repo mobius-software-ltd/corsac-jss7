@@ -32,11 +32,11 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CCBSFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CCBSFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
-import org.restcomm.protocols.ss7.map.service.supplementary.CCBSFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.GenericServiceInfoImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.testng.annotations.Test;
 
 /**

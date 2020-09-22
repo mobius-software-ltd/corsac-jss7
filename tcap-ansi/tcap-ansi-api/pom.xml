@@ -25,6 +25,10 @@
 			<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
 			<artifactId>common</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
+			<artifactId>common</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

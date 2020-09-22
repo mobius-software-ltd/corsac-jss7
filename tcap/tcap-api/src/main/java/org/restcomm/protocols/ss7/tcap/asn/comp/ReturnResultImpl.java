@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
@@ -34,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,lengthIndefinite=false)
+@ASNPostprocess
 public class ReturnResultImpl implements BaseComponent {
 	// mandatory
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x02,constructed=false,index=0)
@@ -59,7 +61,7 @@ public class ReturnResultImpl implements BaseComponent {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCode getOperationCode() {
+    public OperationCodeImpl getOperationCode() {
     	if(inner==null)
     		return null;
     	
@@ -98,7 +100,7 @@ public class ReturnResultImpl implements BaseComponent {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(org
      * .mobicents.protocols.ss7.tcap.asn.comp.OperationCode)
      */
-    public void setOperationCode(OperationCode i) {
+    public void setOperationCode(OperationCodeImpl i) {
     	if(inner==null)
     		inner=new ReturnResultInnerImpl();
     	

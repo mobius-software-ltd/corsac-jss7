@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.pdpContextActivation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -46,12 +46,12 @@ AbsentSubscriberDiagnosticSM ::= INTEGER (0..255)
  */
 public interface SendRoutingInfoForGprsResponse extends PdpContextActivationMessage {
 
-    GSNAddress getSgsnAddress();
+    GSNAddressImpl getSgsnAddress();
 
-    GSNAddress getGgsnAddress();
+    GSNAddressImpl getGgsnAddress();
 
     Integer getMobileNotReachableReason();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
 }

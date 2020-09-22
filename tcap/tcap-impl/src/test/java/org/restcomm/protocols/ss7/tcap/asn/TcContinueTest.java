@@ -41,8 +41,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.LocalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
@@ -51,26 +50,30 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 @Test(groups = { "asn" })
 public class TcContinueTest {
-
+	ASNParser parser=new ASNParser();
+	
 	@BeforeClass
 	public void setUp() {
-		ASNGeneric.clear(ASNInvokeParameterImpl.class);
-		ASNGeneric.clear(ASNReturnResultParameterImpl.class);
-		ASNGeneric.registerAlternative(ASNInvokeParameterImpl.class, TCContinueTestASN.class);
-		ASNGeneric.registerAlternative(ASNReturnResultParameterImpl.class, TCEndTestASN.class);		
+		parser.loadClass(TCContinueMessageImpl.class);
+        
+		parser.clearClassMapping(ASNInvokeParameterImpl.class);
+		parser.clearClassMapping(ASNReturnResultParameterImpl.class);
+		parser.registerAlternativeClassMapping(ASNInvokeParameterImpl.class, TCContinueTestASN.class);
+		parser.registerAlternativeClassMapping(ASNReturnResultParameterImpl.class, TCEndTestASN.class);
+		
+		parser.clearClassMapping(ASNDialogPortionObjectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
+    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
 	}
 	
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testBasicTCContinue() throws ASNException {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCContinueMessageImpl.class);
-        
-        // OrigTran ID (full)............ 145031169
+    	// OrigTran ID (full)............ 145031169
         // DestTran ID (full)............ 144965633
 
         // no idea how to check rest...?
@@ -112,9 +115,9 @@ public class TcContinueTest {
 
         assertNotNull(i.getOperationCode(), "Operation code is null");
         assertNull(i.getParameter(), "Parameter not null");
-        OperationCode oc = i.getOperationCode();
+        OperationCodeImpl oc = i.getOperationCode();
         assertEquals(OperationCodeType.Local, oc.getOperationType(), "Wrong operation type");
-        assertEquals(new Long(0x37), ((LocalOperationCodeImpl)oc).getLocalOperationCode(), "Wrong operation code");
+        assertEquals(new Long(0x37), oc.getLocalOperationCode(), "Wrong operation code");
         
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
@@ -124,9 +127,6 @@ public class TcContinueTest {
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testBasicTCContinue_Long() throws ASNException {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCContinueMessageImpl.class);
-        
     	// trace
         byte[] b = new byte[] {
                 // TCContinue
@@ -191,9 +191,9 @@ public class TcContinueTest {
 
         assertNotNull(i.getOperationCode(), "Operation code is null");
         assertNotNull(i.getParameter(), "Parameter null");
-        OperationCode oc = i.getOperationCode();
+        OperationCodeImpl oc = i.getOperationCode();
         assertEquals(OperationCodeType.Local, oc.getOperationType(), "Wrong operation type");
-        assertEquals(new Long(42), ((LocalOperationCodeImpl)oc).getLocalOperationCode(), "Wrong operation code");
+        assertEquals(new Long(42), oc.getLocalOperationCode(), "Wrong operation code");
 
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
@@ -203,10 +203,7 @@ public class TcContinueTest {
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testTCContinueMessage_No_Dialog() throws ASNException {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCContinueMessageImpl.class);
-        
-        // no idea how to check rest...?
+    	// no idea how to check rest...?
 
         // created by hand
         byte[] b = new byte[] {
@@ -283,10 +280,10 @@ public class TcContinueTest {
         assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
-        OperationCode ocs = rrl.getOperationCode();
+        OperationCodeImpl ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(0x00FF), ((LocalOperationCodeImpl)ocs).getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Long(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 
@@ -298,10 +295,7 @@ public class TcContinueTest {
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testTCContinueMessage_No_Component() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCContinueMessageImpl.class);
-        
-        // created by hand
+    	// created by hand
         byte[] b = new byte[] {
                 // TCContinue
                 0x65, 56,
@@ -378,10 +372,7 @@ public class TcContinueTest {
     @Test(groups = { "functional.encode", "functional.decode" })
     public void testTCContinueMessage_No_Nothing() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCContinueMessageImpl.class);
-        
-        // no idea how to check rest...?
+    	// no idea how to check rest...?
 
         // created by hand
         byte[] b = new byte[] {
@@ -417,9 +408,6 @@ public class TcContinueTest {
     @Test
     public void testTCContinueMessage_All() throws ParseException, ASNException {
 
-    	ASNParser parser=new ASNParser();
-    	parser.loadClass(TCContinueMessageImpl.class);
-        
     	// no idea how to check rest...?
 
         // created by hand
@@ -543,10 +531,10 @@ public class TcContinueTest {
         assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
-        OperationCode ocs = rrl.getOperationCode();
+        OperationCodeImpl ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(1), ((LocalOperationCodeImpl)ocs).getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Long(1), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 

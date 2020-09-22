@@ -29,8 +29,8 @@ import java.util.Arrays;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityType;
-import org.restcomm.protocols.ss7.map.service.lsm.VelocityEstimateImpl;
 import org.testng.annotations.Test;
 
 /**

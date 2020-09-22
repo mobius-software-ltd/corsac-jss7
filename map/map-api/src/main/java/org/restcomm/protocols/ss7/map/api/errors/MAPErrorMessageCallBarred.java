@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
 /**
  *
@@ -38,7 +38,7 @@ public interface MAPErrorMessageCallBarred extends MAPErrorMessage {
 
     CallBarringCause getCallBarringCause();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     Boolean getUnauthorisedMessageOriginator();
 
@@ -46,7 +46,7 @@ public interface MAPErrorMessageCallBarred extends MAPErrorMessage {
 
     void setCallBarringCause(CallBarringCause callBarringCause);
 
-    void setExtensionContainer(MAPExtensionContainer extensionContainer);
+    void setExtensionContainer(MAPExtensionContainerImpl extensionContainer);
 
     void setUnauthorisedMessageOriginator(Boolean unauthorisedMessageOriginator);
 

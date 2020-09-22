@@ -32,12 +32,11 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.sms.ReportSMDeliveryStatusResponseImpl;
+import org.restcomm.protocols.ss7.map.service.sms.ReportSMDeliveryStatusResponseImplV3;
 import org.testng.annotations.Test;
 
 /**
@@ -63,7 +62,7 @@ public class ReportSMDeliveryStatusResponseTest {
         AsnInputStream asn = new AsnInputStream(rawData);
 
         int tag = asn.readTag();
-        ReportSMDeliveryStatusResponseImpl ind = new ReportSMDeliveryStatusResponseImpl(3);
+        ReportSMDeliveryStatusResponseImplV3 ind = new ReportSMDeliveryStatusResponseImplV3(3);
         ind.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -78,7 +77,7 @@ public class ReportSMDeliveryStatusResponseTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        ind = new ReportSMDeliveryStatusResponseImpl(2);
+        ind = new ReportSMDeliveryStatusResponseImplV3(2);
         ind.decodeAll(asn);
 
         assertEquals(tag, Tag.STRING_OCTET);
@@ -93,10 +92,10 @@ public class ReportSMDeliveryStatusResponseTest {
     @Test(groups = { "functional.encode", "service.sms" })
     public void testEncode() throws Exception {
 
-        ISDNAddressString storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "888777666");
-        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        ReportSMDeliveryStatusResponseImpl ind = new ReportSMDeliveryStatusResponseImpl(3, storedMSISDN, extensionContainer);
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        ReportSMDeliveryStatusResponseImplV3 ind = new ReportSMDeliveryStatusResponseImplV3(3, storedMSISDN, extensionContainer);
 
         AsnOutputStream asnOS = new AsnOutputStream();
         ind.encodeAll(asnOS);
@@ -105,7 +104,7 @@ public class ReportSMDeliveryStatusResponseTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ind = new ReportSMDeliveryStatusResponseImpl(2, storedMSISDN, null);
+        ind = new ReportSMDeliveryStatusResponseImplV3(2, storedMSISDN, null);
 
         asnOS = new AsnOutputStream();
         ind.encodeAll(asnOS);

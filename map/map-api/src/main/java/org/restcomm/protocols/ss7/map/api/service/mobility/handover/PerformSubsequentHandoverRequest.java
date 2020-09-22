@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -35,7 +35,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  * SubsequentHandoverFailure}
  *
  * PerformSubsequentHO-Arg ::= SEQUENCE { targetCellId GlobalCellId, servingCellId GlobalCellId, targetMSC-Number
- * ISDN-AddressString, classmarkInfo [10] ClassmarkInfo OPTIONAL}
+ * ISDN-AddressStringImpl, classmarkInfo [10] ClassmarkInfo OPTIONAL}
  *
  *
  * @author sergey vetyutnev
@@ -43,11 +43,11 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface PerformSubsequentHandoverRequest extends MobilityMessage {
 
-    GlobalCellId getTargetCellId();
+    GlobalCellIdImpl getTargetCellId();
 
-    GlobalCellId getServingCellId();
+    GlobalCellIdImpl getServingCellId();
 
-    ISDNAddressString getTargetMSCNumber();
+    ISDNAddressStringImpl getTargetMSCNumber();
 
     ClassmarkInfo getClassmarkInfo();
 

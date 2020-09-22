@@ -35,15 +35,15 @@ import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.LCSLocationInfoImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.SendRoutingInfoForLCSResponseImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
@@ -122,7 +122,7 @@ public class SendRoutingInfoForLCSResponseTest {
         assertNotNull(subsIdent);
 
         IMSI imsi = subsIdent.getIMSI();
-        ISDNAddressString msisdn = subsIdent.getMSISDN();
+        ISDNAddressStringImpl msisdn = subsIdent.getMSISDN();
 
         assertNotNull(msisdn);
         assertNull(imsi);
@@ -134,7 +134,7 @@ public class SendRoutingInfoForLCSResponseTest {
         LCSLocationInfo lcsLocInfo = impl.getLCSLocationInfo();
         assertNotNull(lcsLocInfo);
 
-        ISDNAddressString networkNodeNumber = lcsLocInfo.getNetworkNodeNumber();
+        ISDNAddressStringImpl networkNodeNumber = lcsLocInfo.getNetworkNodeNumber();
         assertNotNull(networkNodeNumber);
         assertEquals(networkNodeNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -189,11 +189,11 @@ public class SendRoutingInfoForLCSResponseTest {
     public void testEncode() throws Exception {
         byte[] data = getEncodedData();
 
-        ISDNAddressString msisdn = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressStringImpl msisdn = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "556182180007");
         SubscriberIdentity subsIdent = new SubscriberIdentityImpl(msisdn);
 
-        ISDNAddressString networkNodeNumber = this.MAPParameterFactory.createISDNAddressString(
+        ISDNAddressStringImpl networkNodeNumber = this.MAPParameterFactory.createISDNAddressString(
                 AddressNature.international_number, NumberingPlan.ISDN, "55619000");
 
         LCSLocationInfo lcsLocInfo = new LCSLocationInfoImpl(networkNodeNumber, null, null, false, null, null, null, null, null);
@@ -217,7 +217,7 @@ public class SendRoutingInfoForLCSResponseTest {
         impl = new SendRoutingInfoForLCSResponseImpl(subsIdent, lcsLocInfo,
                 MAPExtensionContainerTest.GetTestExtensionContainer(), vgmlcAddress, hGmlcAddress, pprAddress,
                 additionalVGmlcAddress);
-        // SubscriberIdentity targetMS, LCSLocationInfo lcsLocationInfo, MAPExtensionContainer extensionContainer,
+        // SubscriberIdentity targetMS, LCSLocationInfo lcsLocationInfo, MAPExtensionContainerImpl extensionContainer,
         // GSNAddress vgmlcAddress, GSNAddress hGmlcAddress, GSNAddress pprAddress, GSNAddress additionalVGmlcAddress
 
         asnOS = new AsnOutputStream();

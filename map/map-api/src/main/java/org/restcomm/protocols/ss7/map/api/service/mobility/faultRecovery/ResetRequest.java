@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery;
 
 import java.util.ArrayList;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
@@ -45,7 +45,7 @@ ResetArg ::= SEQUENCE {
   -- networkResource must be present in version 1
   -- networkResource must be absent in version greater 1
 
-  hlr-Number        ISDN-AddressString,
+  hlr-Number        ISDN-AddressStringImpl,
   hlr-List          HLR-List OPTIONAL,
   ...
 }
@@ -65,8 +65,8 @@ public interface ResetRequest extends MobilityMessage {
 
     NetworkResource getNetworkResource();
 
-    ISDNAddressString getHlrNumber();
+    ISDNAddressStringImpl getHlrNumber();
 
-    ArrayList<IMSI> getHlrList();
+    ArrayList<IMSIImpl> getHlrList();
 
 }

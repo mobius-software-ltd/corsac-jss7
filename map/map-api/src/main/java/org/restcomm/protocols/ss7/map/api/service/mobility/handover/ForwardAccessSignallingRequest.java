@@ -25,8 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 import java.util.ArrayList;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 import org.restcomm.protocols.ss7.map.api.service.oam.TracePropagationList;
 
@@ -74,7 +74,7 @@ public interface ForwardAccessSignallingRequest extends MobilityMessage {
 
     RadioResourceInformation getRadioResourceInformation();
 
-    MAPExtensionContainer getExtensionContainer();
+    MAPExtensionContainerImpl getExtensionContainer();
 
     ArrayList<RadioResource> getRadioResourceList();
 
@@ -101,6 +101,6 @@ public interface ForwardAccessSignallingRequest extends MobilityMessage {
     AoIPCodec getAoipSelectedCodecTarget();
 
     // for MAP V1-2 only
-    ExternalSignalInfo getBssAPDU();
+    ExternalSignalInfoImpl getBssAPDU();
 
 }

@@ -30,38 +30,37 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.oam.JobType;
 import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfiguration;
+import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepth;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2Impl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReferenceImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeRequestImpl_Base;
-import org.restcomm.protocols.ss7.map.service.oam.MDTConfigurationImpl;
-import org.restcomm.protocols.ss7.map.service.oam.MSCSEventListImpl;
-import org.restcomm.protocols.ss7.map.service.oam.MSCSInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.service.oam.TraceDepthListImpl;
-import org.restcomm.protocols.ss7.map.service.oam.TraceEventListImpl;
-import org.restcomm.protocols.ss7.map.service.oam.TraceInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.service.oam.TraceNETypeListImpl;
-import org.restcomm.protocols.ss7.map.service.oam.TraceReference2Impl;
-import org.restcomm.protocols.ss7.map.service.oam.TraceReferenceImpl;
-import org.restcomm.protocols.ss7.map.service.oam.TraceTypeImpl;
+import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeRequestImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -102,7 +101,7 @@ public class ActivateTraceModeRequestTest {
         AsnInputStream asn = new AsnInputStream(rawData);
 
         int tag = asn.readTag();
-        ActivateTraceModeRequestImpl_Base asc = new ActivateTraceModeRequestImpl_Base();
+        ActivateTraceModeRequestImpl asc = new ActivateTraceModeRequestImpl();
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -127,7 +126,7 @@ public class ActivateTraceModeRequestTest {
         asn = new AsnInputStream(rawData);
 
         tag = asn.readTag();
-        asc = new ActivateTraceModeRequestImpl_Base();
+        asc = new ActivateTraceModeRequestImpl();
         asc.decodeAll(asn);
 
         assertEquals(tag, Tag.SEQUENCE);
@@ -159,10 +158,10 @@ public class ActivateTraceModeRequestTest {
         IMSI imsi = new IMSIImpl("33333222220011");
         TraceReference traceReference = new TraceReferenceImpl(getTraceReferenceData());
         TraceType traceType = new TraceTypeImpl(55);
-        ActivateTraceModeRequestImpl_Base asc = new ActivateTraceModeRequestImpl_Base(imsi, traceReference, traceType, null, null, null, null, null, null, null, null,
+        ActivateTraceModeRequestImpl asc = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, null, null, null, null, null, null, null, null,
                 null);
-//        IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
-//        MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
+//        IMSI imsi, TraceReference traceReference, TraceType traceType, AddressStringImpl omcId,
+//        MAPExtensionContainerImpl extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
 //        TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration
 
         AsnOutputStream asnOS = new AsnOutputStream();
@@ -173,7 +172,7 @@ public class ActivateTraceModeRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        AddressString omcId = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1111133333");
+        AddressStringImpl omcId = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1111133333");
         TraceReference2 traceReference2 = new TraceReference2Impl(getTraceReference2Data());
         TraceDepthList traceDepthList = new TraceDepthListImpl(TraceDepth.maximum, TraceDepth.minimum, null, null, null, null, null, null, null, null);
         TraceNETypeList traceNeTypeList = new TraceNETypeListImpl(false, false, false, true, false, false, false, false, false, false);
@@ -186,7 +185,7 @@ public class ActivateTraceModeRequestTest {
         TraceEventList traceEventList = new TraceEventListImpl(mscSList2, null, null, null, null, null, null, null);
         GSNAddress traceCollectionEntity = new GSNAddressImpl(GSNAddressAddressType.IPv4, getTraceCollectionEntityData());
         MDTConfiguration mdtConfiguration = new MDTConfigurationImpl(JobType.immediateMdtAndTrace, null, null, null, null, null, null, null, null, null, null);
-        asc = new ActivateTraceModeRequestImpl_Base(imsi, traceReference, traceType, omcId, MAPExtensionContainerTest.GetTestExtensionContainer(), traceReference2,
+        asc = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, omcId, MAPExtensionContainerTest.GetTestExtensionContainer(), traceReference2,
                 traceDepthList, traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);
 
         asnOS = new AsnOutputStream();

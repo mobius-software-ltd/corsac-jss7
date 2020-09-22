@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
@@ -30,27 +29,22 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPServiceOam;
-import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfiguration;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthList;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventList;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceList;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeList;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
-import org.restcomm.protocols.ss7.tcap.api.TCAPException;
+import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2Impl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReferenceImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
 /**
  *
@@ -61,24 +55,24 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
 	private static final long serialVersionUID = 1L;
 
 	protected MAPDialogOamImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
-            MAPServiceOam mapService, AddressString origReference, AddressString destReference) {
+            MAPServiceOam mapService, AddressStringImpl origReference, AddressStringImpl destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
 
     @Override
-    public Long addActivateTraceModeRequest(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
-            MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
-            TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
+    public Long addActivateTraceModeRequest(IMSIImpl imsi, TraceReferenceImpl traceReference, TraceTypeImpl traceType, AddressStringImpl omcId,
+            MAPExtensionContainerImpl extensionContainer, TraceReference2Impl traceReference2, TraceDepthListImpl traceDepthList, TraceNETypeListImpl traceNeTypeList,
+            TraceInterfaceListImpl traceInterfaceList, TraceEventListImpl traceEventList, GSNAddressImpl traceCollectionEntity, MDTConfigurationImpl mdtConfiguration)
             throws MAPException {
         return this.addActivateTraceModeRequest(_Timer_Default, imsi, traceReference, traceType, omcId, extensionContainer, traceReference2, traceDepthList,
                 traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);
     }
 
     @Override
-    public Long addActivateTraceModeRequest(int customInvokeTimeout, IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
-            MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
-            TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
+    public Long addActivateTraceModeRequest(int customInvokeTimeout, IMSIImpl imsi, TraceReferenceImpl traceReference, TraceTypeImpl traceType, AddressStringImpl omcId,
+            MAPExtensionContainerImpl extensionContainer, TraceReference2Impl traceReference2, TraceDepthListImpl traceDepthList, TraceNETypeListImpl traceNeTypeList,
+            TraceInterfaceListImpl traceInterfaceList, TraceEventListImpl traceEventList, GSNAddressImpl traceCollectionEntity, MDTConfigurationImpl mdtConfiguration)
             throws MAPException {
 
         boolean isTracingContext = false;
@@ -100,43 +94,19 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
             throw new MAPException(
                     "Bad application context name for activateTraceModeRequest: must be tracingContext_V1, V2 or V3, networkLocUpContext_V1, V2 or V3 or gprsLocationUpdateContext_V3");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
+        	customTimeout=customInvokeTimeout;
 
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.activateTraceMode);
-        invoke.setOperationCode(oc);
-
-        ActivateTraceModeRequestImpl_Oam req = new ActivateTraceModeRequestImpl_Oam(imsi, traceReference, traceType, omcId, extensionContainer, traceReference2,
+        ActivateTraceModeRequestImpl req = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, omcId, extensionContainer, traceReference2,
                 traceDepthList, traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.activateTraceMode, req, true, false);
     }
 
     @Override
-    public void addActivateTraceModeResponse(long invokeId, MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) throws MAPException {
+    public void addActivateTraceModeResponse(long invokeId, MAPExtensionContainerImpl extensionContainer, boolean traceSupportIndicator) throws MAPException {
         boolean isTracingContext = false;
         boolean isNetworkLocUpContext = false;
         boolean isGprsLocationUpdateContext = false;
@@ -156,104 +126,42 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
             throw new MAPException(
                     "Bad application context name for activateTraceModeResponse: must be tracingContext_V1, V2 or V3, networkLocUpContext_V1, V2 or V3 or gprsLocationUpdateContext_V3");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        if ((traceSupportIndicator || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() >= 3) {
-            // Operation Code
-            OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-            oc.setLocalOperationCode((long) MAPOperationCode.activateTraceMode);
-            resultLast.setOperationCode(oc);
-
-            ActivateTraceModeResponseImpl_Oam req = new ActivateTraceModeResponseImpl_Oam(extensionContainer, traceSupportIndicator);
-            AsnOutputStream aos = new AsnOutputStream();
-            req.encodeData(aos);
-
-            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-            p.setTagClass(req.getTagClass());
-            p.setPrimitive(req.getIsPrimitive());
-            p.setTag(req.getTag());
-            p.setData(aos.toByteArray());
-            resultLast.setParameter(p);
-        }
-
-        this.sendReturnResultLastComponent(resultLast);
+        ActivateTraceModeResponseImpl req=null;
+        if ((traceSupportIndicator || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() >= 3)
+        	req = new ActivateTraceModeResponseImpl(extensionContainer, traceSupportIndicator);
+       
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.activateTraceMode, req, false, true);
     }
 
     @Override
-    public Long addSendImsiRequest(ISDNAddressString msisdn) throws MAPException {
+    public Long addSendImsiRequest(ISDNAddressStringImpl msisdn) throws MAPException {
         return this.addSendImsiRequest(_Timer_Default, msisdn);
     }
 
     @Override
-    public Long addSendImsiRequest(int customInvokeTimeout, ISDNAddressString msisdn) throws MAPException {
+    public Long addSendImsiRequest(int customInvokeTimeout, ISDNAddressStringImpl msisdn) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.imsiRetrievalContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
             throw new MAPException("Bad application context name for sendImsiRequest: must be imsiRetrievalContext_V2");
 
-        Invoke invoke = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCInvokeRequest();
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getMediumTimer());
+        	customTimeout=getMediumTimer();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.sendIMSI);
-        invoke.setOperationCode(oc);
+        	customTimeout=customInvokeTimeout;
 
         SendImsiRequestImpl req = new SendImsiRequestImpl(msisdn);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.sendIMSI, req, true, false);
     }
 
     @Override
-    public void addSendImsiResponse(long invokeId, IMSI imsi) throws MAPException {
+    public void addSendImsiResponse(long invokeId, IMSIImpl imsi) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.imsiRetrievalContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
             throw new MAPException("Bad application context name for addSendImsiResponse: must be imsiRetrievalContext_V2");
 
-        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) MAPOperationCode.sendIMSI);
-        resultLast.setOperationCode(oc);
-
         SendImsiResponseImpl req = new SendImsiResponseImpl(imsi);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.sendIMSI, req, false, true);
     }
 
 }

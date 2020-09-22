@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.api.service.callhandling;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 /*
@@ -34,11 +34,11 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
  *
  */
 public interface MAPServiceCallHandling extends MAPServiceBase {
-    MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-            AddressString destReference, Long localTrId) throws MAPException;
+    MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
+            AddressStringImpl destReference, Long localTrId) throws MAPException;
 
     MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress,
-            AddressString origReference, SccpAddress destAddress, AddressString destReference) throws MAPException;
+            AddressStringImpl origReference, SccpAddress destAddress, AddressStringImpl destReference) throws MAPException;
 
      void addMAPServiceListener(MAPServiceCallHandlingListener mapServiceListener);
 

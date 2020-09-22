@@ -43,12 +43,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ASNInvokeSetParameterImp
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.BaseComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.NationalOperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PrivateOperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
@@ -65,9 +64,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -767,8 +766,9 @@ public class TCAPComponentsTest extends SccpHarness {
         
         public ClientComponent(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress, final SccpAddress remoteAddress) {
             super(stack, parameterFactory, thisAddress, remoteAddress);
+            ASNParser parser=stack.getProvider().getParser();
             try {
-            	ASNGeneric.registerAlternative(ASNInvokeSetParameterImpl.class,ComponentTestASN.class);
+            	parser.registerAlternativeClassMapping(ASNInvokeSetParameterImpl.class,ComponentTestASN.class);
             } catch(Exception ex) {
             	//already registered;
             }
@@ -831,10 +831,8 @@ public class TCAPComponentsTest extends SccpHarness {
 
             invoke.setInvokeId(invokeId);
 
-            PrivateOperationCodeImpl oc = TcapFactory.createPrivateOperationCode();
-
+            OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(2357L);
 //            oc.setNationalOperationCode(10L);
-            oc.setOperationCode(2357L);
             invoke.setOperationCode(oc);
 
             ComponentTestASN p=new ComponentTestASN();
@@ -871,6 +869,12 @@ public class TCAPComponentsTest extends SccpHarness {
         public ServerComponent(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress, final SccpAddress remoteAddress) {
             super(stack, parameterFactory, thisAddress, remoteAddress);
             // TODO Auto-generated constructor stub
+            ASNParser parser=stack.getProvider().getParser();
+            try {
+            	parser.registerAlternativeClassMapping(ASNInvokeSetParameterImpl.class,ComponentTestASN.class);
+            } catch(Exception ex) {
+            	//already registered;
+            }
         }
 
         public void addNewInvoke(Long invokeId, Long timout) throws Exception {
@@ -878,9 +882,7 @@ public class TCAPComponentsTest extends SccpHarness {
             InvokeNotLastImpl invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
             invoke.setInvokeId(invokeId);
 
-            NationalOperationCodeImpl oc = TcapFactory.createNationalOperationCode();
-
-            oc.setOperationCode(10L);
+            OperationCodeImpl oc = TcapFactory.createNationalOperationCode(10L);
             invoke.setOperationCode(oc);
 
             invoke.setTimeout(timout);
@@ -945,8 +947,7 @@ public class TCAPComponentsTest extends SccpHarness {
             ReturnErrorImpl err = this.tcapProvider.getComponentPrimitiveFactory().createTCReturnErrorRequest();
             err.setCorrelationId(invokeId);
 
-            PrivateErrorCodeImpl ec = this.tcapProvider.getComponentPrimitiveFactory().createPrivateErrorCode();
-            ec.setErrorCode(1L);
+            ErrorCodeImpl ec = TcapFactory.createPrivateErrorCode(1L);           
 //            ec.setNationalErrorCode(10L);
             err.setErrorCode(ec);
 
@@ -1050,8 +1051,7 @@ public class TCAPComponentsTest extends SccpHarness {
     	private ASNInteger unexpectedParam=new ASNInteger();
 		public BadComponentMistypedComponent() {
             this.setInvokeId(1l);
-            NationalOperationCodeImpl oc=new NationalOperationCodeImpl();
-            oc.setOperationCode(20L);
+            OperationCodeImpl oc=TcapFactory.createNationalOperationCode(20L);            
             this.setOperationCode(oc);
         }
     }
@@ -1062,8 +1062,7 @@ public class TCAPComponentsTest extends SccpHarness {
      */
     class BadComponentBadlyStructuredComponent extends InvokeLastImpl {
 		public BadComponentBadlyStructuredComponent() {
-			NationalOperationCodeImpl oc=new NationalOperationCodeImpl();
-            oc.setOperationCode(20L);
+			OperationCodeImpl oc=TcapFactory.createNationalOperationCode(20L);            
             this.setOperationCode(oc);
         }
 		
