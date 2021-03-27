@@ -29,9 +29,6 @@ import static org.testng.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
@@ -42,6 +39,13 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -69,11 +73,11 @@ public class SLRArgExtensionContainerTest {
     }
 
     public byte[] getEncodedData() {
-        return new byte[] { 48, 14, -96, 10, 48, 8, 6, 3, 42, 22, 33, 1, 2, 3, -95, 0 };
+        return new byte[] { 48, 16, -96, 12, 48, 10, 6, 3, 42, 22, 33, 4, 3, 1, 2, 3, -95, 0 };
     }
 
-    public long[] getDataOId() {
-        return new long[] { 1, 2, 22, 33 };
+    public Long[] getDataOId() {
+        return new Long[] { 1L, 2L, 22L, 33L };
     }
 
     public byte[] getDataPe() {
@@ -82,41 +86,45 @@ public class SLRArgExtensionContainerTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SLRArgExtensionContainerImpl.class);
+    	
         byte[] data = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        SLRArgExtensionContainerImpl imp = new SLRArgExtensionContainerImpl();
-        imp.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SLRArgExtensionContainerImpl);
+        SLRArgExtensionContainerImpl imp = (SLRArgExtensionContainerImpl)result.getResult();
+        
         assertEquals(imp.getPrivateExtensionList().size(), 1);
-        assertTrue(Arrays.equals(imp.getPrivateExtensionList().get(0).getOId(), getDataOId()));
-        assertTrue(Arrays.equals(imp.getPrivateExtensionList().get(0).getData(), getDataPe()));
+        Long[] oids=new Long[imp.getPrivateExtensionList().get(0).getOId().size()];
+        oids=imp.getPrivateExtensionList().get(0).getOId().toArray(oids);
+        assertTrue(Arrays.equals(oids, getDataOId()));
+        
+        ByteBuf value=((ASNOctetString)imp.getPrivateExtensionList().get(0).getData()).getValue();
+        data=new byte[value.readableBytes()];
+        value.readBytes(data);
+        assertTrue(Arrays.equals(data, getDataPe()));
         assertFalse(imp.getSlrArgPcsExtensions().getNaEsrkRequest());
 
     }
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-
-        byte[] data = getEncodedData();
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SLRArgExtensionContainerImpl.class);
+    	
         ArrayList<MAPPrivateExtensionImpl> privateExtensionList = new ArrayList<MAPPrivateExtensionImpl>();
-        MAPPrivateExtensionImpl pe = new MAPPrivateExtensionImpl(getDataOId(), getDataPe());
+        ASNOctetString value=new ASNOctetString();
+        value.setValue(Unpooled.wrappedBuffer(getDataPe()));
+        MAPPrivateExtensionImpl pe = new MAPPrivateExtensionImpl(Arrays.asList(getDataOId()), value);
         privateExtensionList.add(pe);
         SLRArgPCSExtensionsImpl slrArgPcsExtensions = new SLRArgPCSExtensionsImpl(false);
 
         SLRArgExtensionContainerImpl imp = new SLRArgExtensionContainerImpl(privateExtensionList, slrArgPcsExtensions);
-        // ArrayList<MAPPrivateExtensionImpl> privateExtensionList, SLRArgPCSExtensions slrArgPcsExtensions
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
     }
 }

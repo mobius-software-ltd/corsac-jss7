@@ -23,24 +23,25 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author abhayani
@@ -54,22 +55,22 @@ public class AnyTimeInterrogationRequestTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AnyTimeInterrogationRequestImpl.class);
+    	
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AnyTimeInterrogationRequestImpl);
+        AnyTimeInterrogationRequestImpl anyTimeInt = (AnyTimeInterrogationRequestImpl)result.getResult();
 
-        AsnInputStream ansIS = new AsnInputStream(data);
-        int tag = ansIS.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        AnyTimeInterrogationRequestImpl anyTimeInt = new AnyTimeInterrogationRequestImpl();
-        anyTimeInt.decodeAll(ansIS);
-
-        SubscriberIdentity subsId = anyTimeInt.getSubscriberIdentity();
+        SubscriberIdentityImpl subsId = anyTimeInt.getSubscriberIdentity();
         ISDNAddressStringImpl isdnAddress = subsId.getMSISDN();
         assertEquals(isdnAddress.getAddress(), "553499775190");
 
         ISDNAddressStringImpl gscmSCFAddress = anyTimeInt.getGsmSCFAddress();
         assertEquals(gscmSCFAddress.getAddress(), "553496629943");
 
-        RequestedInfo requestedInfo = anyTimeInt.getRequestedInfo();
+        RequestedInfoImpl requestedInfo = anyTimeInt.getRequestedInfo();
         assertTrue(requestedInfo.getLocationInformation());
         assertTrue(requestedInfo.getSubscriberState());
         DomainType domainType = requestedInfo.getRequestedDomain();
@@ -79,21 +80,22 @@ public class AnyTimeInterrogationRequestTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AnyTimeInterrogationRequestImpl.class);
+    	
         ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553499775190");
-        SubscriberIdentity subsId = new SubscriberIdentityImpl(isdnAdd);
-        RequestedInfo requestedInfo = new RequestedInfoImpl(true, true, null, false, null, false, false, false);
+        SubscriberIdentityImpl subsId = new SubscriberIdentityImpl(isdnAdd);
+        RequestedInfoImpl requestedInfo = new RequestedInfoImpl(true, true, null, false, null, false, false, false);
         ISDNAddressStringImpl gscmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553496629943");
 
         AnyTimeInterrogationRequestImpl anyTimeInt = new AnyTimeInterrogationRequestImpl(subsId, requestedInfo, gscmSCFAddress,
                 null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        anyTimeInt.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(anyTimeInt);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

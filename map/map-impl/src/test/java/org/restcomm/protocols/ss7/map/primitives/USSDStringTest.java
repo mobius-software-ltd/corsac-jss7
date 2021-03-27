@@ -23,17 +23,11 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
@@ -45,6 +39,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -106,139 +106,104 @@ public class USSDStringTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = getDataGSM7();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        USSDStringImpl ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7,
-                CharacterSet.GSM7, null, null, false));
-        ussdStr.decodeAll(asn);
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(USSDStringImpl.class);
+    	
+    	byte[] data = getDataGSM7();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof USSDStringImpl);
+        USSDStringImpl ussdStr = (USSDStringImpl)result.getResult();
+        ussdStr.setDataCoding(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7,CharacterSet.GSM7, null, null, false));
         assertTrue(ussdStr.getString(null).equals("*88#"));
 
         data = getDataUcs2();
-        asn = new AsnInputStream(data);
-        asn.readTag();
-        ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralDataCodingIndication,
-                CharacterSet.UCS2, null, null, false));
-        ussdStr.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof USSDStringImpl);
+        ussdStr = (USSDStringImpl)result.getResult();
+        ussdStr.setDataCoding(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralDataCodingIndication,CharacterSet.UCS2, null, null, false));
         assertTrue(ussdStr.getString(null).equals("*88#"));
 
         data = getDataUcs2Lang();
-        asn = new AsnInputStream(data);
-        asn.readTag();
-        ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication,
-                CharacterSet.UCS2, null, null, false));
-        ussdStr.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof USSDStringImpl);
+        ussdStr = (USSDStringImpl)result.getResult();
+        ussdStr.setDataCoding(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication, CharacterSet.UCS2, null, null, false));
         assertTrue(ussdStr.getString(null).equals("ru\nGgTt"));
 
         data = getDataGsm7Lang();
-        asn = new AsnInputStream(data);
-        asn.readTag();
-        ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication,
-                CharacterSet.GSM7, null, null, false));
-        ussdStr.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof USSDStringImpl);
+        ussdStr = (USSDStringImpl)result.getResult();
+        ussdStr.setDataCoding(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication, CharacterSet.GSM7, null, null, false));
         assertTrue(ussdStr.getString(null).equals("ru\nGgTt"));
 
         data = getDataGsm7LangArabic();
-        asn = new AsnInputStream(data);
-        asn.readTag();
-        ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7,
-                CBSNationalLanguage.Arabic, null, false));
-        ussdStr.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof USSDStringImpl);
+        ussdStr = (USSDStringImpl)result.getResult();
+        ussdStr.setDataCoding(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7, CBSNationalLanguage.Arabic, null, false));
         assertTrue(ussdStr.getString(null).equals(getStringGsm7LangArabic()));
-
-//        data = getData2();
-//        asn = new AsnInputStream(data);
-//        tag = asn.readTag();
-//        ussdStr = new USSDStringImpl(new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7,
-//                null, null, false));
-//        ussdStr.decodeAll(asn);
-//        String s1 = ussdStr.getString(null);
-//        char c1 = s1.charAt(30);
-//        int i1 = (int)c1;
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        byte[] data = getDataGSM7();
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(USSDStringImpl.class);
+    	
+    	byte[] data = getDataGSM7();
 
         // first common case - dcs=15 - GSM7
-        CBSDataCodingScheme dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7, null, null,
-                false);
+        CBSDataCodingScheme dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7, null, null, false);
         USSDStringImpl ussdStr = new USSDStringImpl("*88#", dcs, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        ussdStr.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ByteBuf buffer=parser.encode(ussdStr);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         // second common case - dcs=72 - USC2
         data = getDataUcs2();
         dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralDataCodingIndication, CharacterSet.UCS2, null, null, false);
         ussdStr = new USSDStringImpl("*88#", dcs, null);
-        asnOS = new AsnOutputStream();
-        ussdStr.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(ussdStr);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         data = getDataUcs2Lang();
-        dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication, CharacterSet.UCS2, null, null,
-                false);
+        dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication, CharacterSet.UCS2, null, null, false);
         ussdStr = new USSDStringImpl("ru\nGgTt", dcs, null);
-        asnOS = new AsnOutputStream();
-        ussdStr.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(ussdStr);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         data = getDataGsm7Lang();
-        dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication, CharacterSet.GSM7, null, null,
-                false);
+        dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralWithLanguageIndication, CharacterSet.GSM7, null, null, false);
         ussdStr = new USSDStringImpl("ru\nGgTt", dcs, null);
-        asnOS = new AsnOutputStream();
-        ussdStr.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(ussdStr);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         data = getDataGsm7LangArabic();
-        dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7, CBSNationalLanguage.Arabic, null,
-                false);
+        dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7, CBSNationalLanguage.Arabic, null, false);
         assertEquals(dcs.getCode(), 34);
-        // CBSDataCodingGroup dataCodingGroup, CharacterSet characterSet, CBSNationalLanguage nationalLanguageShiftTable,
-        // DataCodingSchemaMessageClass messageClass, boolean isCompressed
         String s1 = getStringGsm7LangArabic();
         ussdStr = new USSDStringImpl(s1, dcs, null);
-        asnOS = new AsnOutputStream();
-        ussdStr.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(ussdStr);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);        
         assertTrue(Arrays.equals(data, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "primitives" })
-    public void testSerialization() throws Exception {
-        CBSDataCodingScheme dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7, null, null,
-                false);
-        USSDStringImpl original = new USSDStringImpl("*88#", dcs, null);
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        USSDStringImpl copy = (USSDStringImpl) o;
-
-        // test result
-        assertTrue(copy.getString(null).equals(original.getString(null)));
-
-        // TODO Charset is not Serializable now
-        // assertEquals(copy.getCharset(), original.getCharset());
     }
 }

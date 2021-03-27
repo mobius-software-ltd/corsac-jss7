@@ -22,19 +22,21 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,8 +46,7 @@ import org.testng.annotations.Test;
 public class CUGCheckInfoTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { -95, 49, 4, 4, 1, 2, 3, 4, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48,
-                5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 55, 4, 4, 1, 2, 3, 4, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     private byte[] getGugData() {
@@ -54,17 +55,15 @@ public class CUGCheckInfoTest {
 
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CUGCheckInfoImpl.class);
 
-        byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        CUGCheckInfoImpl ind = new CUGCheckInfoImpl();
-        assertEquals(tag, 1);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        ind.decodeAll(asn);
-
+    	byte[] data = this.getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CUGCheckInfoImpl);
+        CUGCheckInfoImpl ind = (CUGCheckInfoImpl)result.getResult();
+        
         assertTrue(Arrays.equals(ind.getCUGInterlock().getData(), getGugData()));
         assertTrue(ind.getCUGOutgoingAccess());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
@@ -72,16 +71,16 @@ public class CUGCheckInfoTest {
 
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CUGCheckInfoImpl.class);
 
-        CUGInterlock cugInterlock = new CUGInterlockImpl(getGugData());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getGugData());
         CUGCheckInfoImpl ind = new CUGCheckInfoImpl(cugInterlock, true, MAPExtensionContainerTest.GetTestExtensionContainer());
-        // CUGInterlock cugInterlock, boolean cugOutgoingAccess, MAPExtensionContainerImpl extensionContainer
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        ind.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 1);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+       
+        byte[] data=this.getEncodedData();
+        ByteBuf buffer=parser.encode(ind);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

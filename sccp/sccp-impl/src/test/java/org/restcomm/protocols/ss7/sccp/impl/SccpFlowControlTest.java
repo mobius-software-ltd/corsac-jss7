@@ -1,6 +1,5 @@
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import org.restcomm.protocols.ss7.sccp.impl.SccpFlowControl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SequenceNumberImpl;
 import org.testng.annotations.Test;
 

@@ -28,13 +28,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -43,21 +46,19 @@ import org.testng.annotations.Test;
 public class RequestedInfoTest {
 
     // Real Trace
-    byte[] data = new byte[] { (byte) 0xa1, 0x04, (byte) 0x80, 0x00, (byte) 0x81, 0x00 };
-    byte[] dataFull = new byte[] { 48, 56, -128, 0, -127, 0, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48,
-            5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 1, 1, -122,
-            0, -123, 0, -121, 0 };
+    byte[] data = new byte[] { 48, 0x04, (byte) 0x80, 0x00, (byte) 0x81, 0x00 };
+    byte[] dataFull = new byte[] { 48, 62, -128, 0, -127, 0, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 1, 1, -122, 0, -123, 0, -121, 0 };
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, 1);
-
-        RequestedInfoImpl requestedInfo = new RequestedInfoImpl();
-        requestedInfo.decodeAll(asn);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RequestedInfoImpl.class);
+    	                
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestedInfoImpl);
+        RequestedInfoImpl requestedInfo = (RequestedInfoImpl)result.getResult();
+        
         assertTrue(requestedInfo.getLocationInformation());
         assertTrue(requestedInfo.getSubscriberState());
         assertNull(requestedInfo.getExtensionContainer());
@@ -67,12 +68,10 @@ public class RequestedInfoTest {
         assertFalse(requestedInfo.getMsClassmark());
         assertFalse(requestedInfo.getMnpRequestedInfo());
 
-        asn = new AsnInputStream(dataFull);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        requestedInfo = new RequestedInfoImpl();
-        requestedInfo.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(dataFull));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestedInfoImpl);
+        requestedInfo = (RequestedInfoImpl)result.getResult();
 
         assertTrue(requestedInfo.getLocationInformation());
         assertTrue(requestedInfo.getSubscriberState());
@@ -87,19 +86,20 @@ public class RequestedInfoTest {
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RequestedInfoImpl.class);
+    	                
         RequestedInfoImpl requestedInfo = new RequestedInfoImpl(true, true, null, false, null, false, false, false);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        requestedInfo.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 1);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(requestedInfo);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(encodedData, data));
 
         requestedInfo = new RequestedInfoImpl(true, true, MAPExtensionContainerTest.GetTestExtensionContainer(), true,
                 DomainType.psDomain, true, true, true);
-        asnOS = new AsnOutputStream();
-        requestedInfo.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(requestedInfo);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(encodedData, dataFull));
     }
 }

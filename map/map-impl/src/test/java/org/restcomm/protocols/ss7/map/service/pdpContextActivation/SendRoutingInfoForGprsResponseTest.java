@@ -22,19 +22,23 @@
 
 package org.restcomm.protocols.ss7.map.service.pdpContextActivation;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.pdpContextActivation.SendRoutingInfoForGprsResponseImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -48,9 +52,7 @@ public class SendRoutingInfoForGprsResponseTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 58, (byte) 128, 5, 4, (byte) 192, (byte) 168, 4, 11, (byte) 129, 5, 4, (byte) 192, (byte) 168, 4, 22, (byte) 130, 1, 6,
-                (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
-                26, (byte) 161, 3, 31, 32, 33 };
+        return new byte[] { 48, 64, -128, 5, 4, -64, -88, 4, 11, -127, 5, 4, -64, -88, 4, 22, -126, 1, 6, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     private byte[] getAddressData() {
@@ -63,17 +65,15 @@ public class SendRoutingInfoForGprsResponseTest {
 
     @Test(groups = { "functional.decode", "service.pdpContextActivation" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendRoutingInfoForGprsResponseImpl.class);
+    	
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        SendRoutingInfoForGprsResponseImpl impl = new SendRoutingInfoForGprsResponseImpl();
-        impl.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInfoForGprsResponseImpl);
+        SendRoutingInfoForGprsResponseImpl impl = (SendRoutingInfoForGprsResponseImpl)result.getResult();
+        
 
         assertEquals(impl.getSgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
         assertEquals(impl.getSgsnAddress().getGSNAddressData(), getAddressData());
@@ -83,15 +83,10 @@ public class SendRoutingInfoForGprsResponseTest {
 
 
         rawData = getEncodedData2();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        impl = new SendRoutingInfoForGprsResponseImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInfoForGprsResponseImpl);
+        impl = (SendRoutingInfoForGprsResponseImpl)result.getResult();
 
         assertEquals(impl.getSgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
         assertEquals(impl.getSgsnAddress().getGSNAddressData(), getAddressData());
@@ -104,30 +99,25 @@ public class SendRoutingInfoForGprsResponseTest {
 
     @Test(groups = { "functional.encode", "service.pdpContextActivation" })
     public void testEncode() throws Exception {
-
-        GSNAddress sgsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData());
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendRoutingInfoForGprsResponseImpl.class);
+    	
+        GSNAddressImpl sgsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData());
         SendRoutingInfoForGprsResponseImpl impl = new SendRoutingInfoForGprsResponseImpl(sgsnAddress, null, null, null);
-        // GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason, MAPExtensionContainerImpl extensionContainer
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        GSNAddress ggsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData2());
+        GSNAddressImpl ggsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData2());
         impl = new SendRoutingInfoForGprsResponseImpl(sgsnAddress, ggsnAddress, 6, MAPExtensionContainerTest.GetTestExtensionContainer());
-
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

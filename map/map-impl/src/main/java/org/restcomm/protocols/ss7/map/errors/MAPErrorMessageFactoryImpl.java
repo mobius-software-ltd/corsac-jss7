@@ -185,8 +185,10 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
     public MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(long mapProtocolVersion,
             SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, byte[] signalInfo,
             MAPExtensionContainerImpl extensionContainer) {
-        return new MAPErrorMessageSMDeliveryFailureImpl(mapProtocolVersion, smEnumeratedDeliveryFailureCause, signalInfo,
-                extensionContainer);
+    	if(mapProtocolVersion<3)
+    		return new MAPErrorMessageSMDeliveryFailure1Impl(smEnumeratedDeliveryFailureCause);
+    	else
+    		return new MAPErrorMessageSMDeliveryFailureImpl(mapProtocolVersion, smEnumeratedDeliveryFailureCause, signalInfo, extensionContainer);
     }
 
     public MAPErrorMessageFacilityNotSup createMAPErrorMessageFacilityNotSup(MAPExtensionContainerImpl extensionContainer,

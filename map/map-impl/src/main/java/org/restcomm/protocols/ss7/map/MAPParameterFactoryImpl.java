@@ -23,7 +23,6 @@
 package org.restcomm.protocols.ss7.map;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
@@ -31,7 +30,6 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.primitives.ASNPCSExtentionImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNPrivateExtentionImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
@@ -271,11 +269,6 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRe
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeInterrogationResponseImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.ProcessUnstructuredSSRequestImpl;
@@ -285,6 +278,11 @@ import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSNotify
 import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSRequestImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSResponseImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
 /**
  *
@@ -371,11 +369,11 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new AddressStringImpl(addNature, numPlan, address);
     }
 
-    public ISDNAddressStringImpl createISDNAddressStringImpl(AddressNature addNature, NumberingPlan numPlan, String address) {
+    public ISDNAddressStringImpl createISDNAddressString(AddressNature addNature, NumberingPlan numPlan, String address) {
         return new ISDNAddressStringImpl(addNature, numPlan, address);
     }
 
-    public ISDNAddressStringImpl createISDNAddressStringImpl(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address) {
+    public ISDNAddressStringImpl createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address) {
         return new ISDNAddressStringImpl(extension, addNature, numPlan, address);
     }
 
@@ -383,11 +381,11 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new FTNAddressStringImpl(addNature, numPlan, address);
     }
 
-    public MAPPrivateExtensionImpl createMAPPrivateExtension(List<Long> oId, ASNPrivateExtentionImpl data) {
+    public MAPPrivateExtensionImpl createMAPPrivateExtension(List<Long> oId, Object data) {
         return new MAPPrivateExtensionImpl(oId, data);
     }
 
-    public MAPExtensionContainerImpl createMAPExtensionContainer(ArrayList<MAPPrivateExtensionImpl> privateExtensionList,
+    public MAPExtensionContainerImpl createMAPExtensionContainer(List<MAPPrivateExtensionImpl> privateExtensionList,
             ASNPCSExtentionImpl pcsExtensions) {
         return new MAPExtensionContainerImpl(privateExtensionList, pcsExtensions);
     }
@@ -587,11 +585,11 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new AuthenticationQuintupletImpl(rand, xres, ck, ik, autn);
     }
 
-    public TripletListImpl createTripletList(ArrayList<AuthenticationTripletImpl> authenticationTriplets) {
+    public TripletListImpl createTripletList(List<AuthenticationTripletImpl> authenticationTriplets) {
         return new TripletListImpl(authenticationTriplets);
     }
 
-    public QuintupletListImpl createQuintupletList(ArrayList<AuthenticationQuintupletImpl> quintupletList) {
+    public QuintupletListImpl createQuintupletList(List<AuthenticationQuintupletImpl> quintupletList) {
         return new QuintupletListImpl(quintupletList);
     }
 
@@ -623,7 +621,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new ReSynchronisationInfoImpl(rand, auts);
     }
 
-    public EpsAuthenticationSetListImpl createEpsAuthenticationSetList(ArrayList<EpcAvImpl> epcAv) {
+    public EpsAuthenticationSetListImpl createEpsAuthenticationSetList(List<EpcAvImpl> epcAv) {
         return new EpsAuthenticationSetListImpl(epcAv);
     }
 
@@ -646,7 +644,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     public SuperChargerInfoImpl createSuperChargerInfo() {
-        return new SuperChargerInfoImpl();
+        return new SuperChargerInfoImpl(true);
     }
 
     public SuperChargerInfoImpl createSuperChargerInfo(byte[] subscriberDataStored) {
@@ -674,7 +672,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new ADDInfoImpl(imeisv, skipSubscriberDataUpdate);
     }
 
-    public PagingAreaImpl createPagingArea(ArrayList<LocationAreaImpl> locationAreas) {
+    public PagingAreaImpl createPagingArea(List<LocationAreaImpl> locationAreas) {
         return new PagingAreaImpl(locationAreas);
     }
 
@@ -911,7 +909,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     public PSSubscriberStateImpl createPSSubscriberState(PSSubscriberState choice, NotReachableReason netDetNotReachable,
-            ArrayList<PDPContextInfoImpl> pdpContextInfoList) {
+            List<PDPContextInfoImpl> pdpContextInfoList) {
         return new PSSubscriberStateImpl(choice, netDetNotReachable, pdpContextInfoList);
     }
 
@@ -927,7 +925,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new AdditionalNumberImpl(null, sGSNNumber);
     }
 
-    public AreaDefinitionImpl createAreaDefinition(ArrayList<AreaImpl> areaList) {
+    public AreaDefinitionImpl createAreaDefinition(List<AreaImpl> areaList) {
         return new AreaDefinitionImpl(areaList);
     }
 
@@ -1027,7 +1025,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new ReportingPLMNImpl(plmnId, ranTechnology, ranPeriodicLocationSupport);
     }
 
-    public ReportingPLMNListImpl createReportingPLMNList(boolean plmnListPrioritized, ArrayList<ReportingPLMNImpl> plmnList) {
+    public ReportingPLMNListImpl createReportingPLMNList(boolean plmnListPrioritized, List<ReportingPLMNImpl> plmnList) {
         return new ReportingPLMNListImpl(plmnListPrioritized, plmnList);
     }
 
@@ -1047,7 +1045,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new ServingNodeAddressImpl(mmeNumber);
     }
 
-    public SLRArgExtensionContainerImpl createSLRArgExtensionContainer(ArrayList<MAPPrivateExtensionImpl> privateExtensionList,
+    public SLRArgExtensionContainerImpl createSLRArgExtensionContainer(List<MAPPrivateExtensionImpl> privateExtensionList,
             SLRArgPCSExtensionsImpl slrArgPcsExtensions) {
         return new SLRArgExtensionContainerImpl(privateExtensionList, slrArgPcsExtensions);
     }
@@ -1098,20 +1096,20 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     @Override
     public GmscCamelSubscriptionInfoImpl createGmscCamelSubscriptionInfo(TCSIImpl tCsi, OCSIImpl oCsi,
-            MAPExtensionContainerImpl extensionContainer, ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList,
-            ArrayList<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi) {
+            MAPExtensionContainerImpl extensionContainer, List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList,
+            List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi) {
         return new GmscCamelSubscriptionInfoImpl(tCsi, oCsi, extensionContainer, oBcsmCamelTDPCriteriaList,
                 tBcsmCamelTdpCriteriaList, dCsi);
     }
 
     @Override
-    public TCSIImpl createTCSI(ArrayList<TBcsmCamelTDPDataImpl> tBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
+    public TCSIImpl createTCSI(List<TBcsmCamelTDPDataImpl> tBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
             Integer camelCapabilityHandling, boolean notificationToCSE, boolean csiActive) {
         return new TCSIImpl(tBcsmCamelTDPDataList, extensionContainer, camelCapabilityHandling, notificationToCSE, csiActive);
     }
 
     @Override
-    public OCSIImpl createOCSI(ArrayList<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
+    public OCSIImpl createOCSI(List<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
             Integer camelCapabilityHandling, boolean notificationToCSE, boolean csiActive) {
         return new OCSIImpl(oBcsmCamelTDPDataList, extensionContainer, camelCapabilityHandling, notificationToCSE, csiActive);
     }
@@ -1324,14 +1322,14 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public CUGInfoImpl createCUGInfo(ArrayList<CUGSubscriptionImpl> cugSubscriptionList, ArrayList<CUGFeatureImpl> cugFeatureList,
+    public CUGInfoImpl createCUGInfo(List<CUGSubscriptionImpl> cugSubscriptionList, List<CUGFeatureImpl> cugFeatureList,
             MAPExtensionContainerImpl extensionContainer) {
         return new CUGInfoImpl(cugSubscriptionList, cugFeatureList, extensionContainer);
     }
 
     @Override
     public CUGSubscriptionImpl createCUGSubscription(int cugIndex, CUGInterlockImpl cugInterlock, IntraCUGOptions intraCugOptions,
-            ArrayList<ExtBasicServiceCodeImpl> basicService, MAPExtensionContainerImpl extensionContainer) {
+            List<ExtBasicServiceCodeImpl> basicService, MAPExtensionContainerImpl extensionContainer) {
         return new CUGSubscriptionImpl(cugIndex, cugInterlock, intraCugOptions, basicService, extensionContainer);
     }
 
@@ -1341,7 +1339,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ExtCallBarInfoImpl createExtCallBarInfo(SSCodeImpl ssCode, ArrayList<ExtCallBarringFeatureImpl> callBarringFeatureList,
+    public ExtCallBarInfoImpl createExtCallBarInfo(SSCodeImpl ssCode, List<ExtCallBarringFeatureImpl> callBarringFeatureList,
             MAPExtensionContainerImpl extensionContainer) {
         return new ExtCallBarInfoImpl(ssCode, callBarringFeatureList, extensionContainer);
     }
@@ -1361,7 +1359,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ExtForwInfoImpl createExtForwInfo(SSCodeImpl ssCode, ArrayList<ExtForwFeatureImpl> forwardingFeatureList,
+    public ExtForwInfoImpl createExtForwInfo(SSCodeImpl ssCode, List<ExtForwFeatureImpl> forwardingFeatureList,
             MAPExtensionContainerImpl extensionContainer) {
         return new ExtForwInfoImpl(ssCode, forwardingFeatureList, extensionContainer);
     }
@@ -1380,7 +1378,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     @Override
     public ExtSSDataImpl createExtSSData(SSCodeImpl ssCode, ExtSSStatusImpl ssStatus, SSSubscriptionOptionImpl ssSubscriptionOption,
-            ArrayList<ExtBasicServiceCodeImpl> basicServiceGroupList, MAPExtensionContainerImpl extensionContainer) {
+            List<ExtBasicServiceCodeImpl> basicServiceGroupList, MAPExtensionContainerImpl extensionContainer) {
         return new ExtSSDataImpl(ssCode, ssStatus, ssSubscriptionOption, basicServiceGroupList, extensionContainer);
     }
 
@@ -1415,13 +1413,13 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ExtSSStatusImpl createExtSSStatus(byte[] data) {
+    public ExtSSStatusImpl createExtSSStatus(byte data) {
         return new ExtSSStatusImpl(data);
     }
 
     @Override
     public GPRSSubscriptionDataImpl createGPRSSubscriptionData(boolean completeDataListIncluded,
-            ArrayList<PDPContextImpl> gprsDataList, MAPExtensionContainerImpl extensionContainer, APNOIReplacementImpl apnOiReplacement) {
+            List<PDPContextImpl> gprsDataList, MAPExtensionContainerImpl extensionContainer, APNOIReplacementImpl apnOiReplacement) {
         return new GPRSSubscriptionDataImpl(completeDataListIncluded, gprsDataList, extensionContainer, apnOiReplacement);
     }
 
@@ -1504,7 +1502,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     public APNConfigurationImpl createAPNConfiguration(int contextId, PDNTypeImpl pDNType, PDPAddressImpl servedPartyIPIPv4Address,
     		APNImpl apn, EPSQoSSubscribedImpl ePSQoSSubscribed, PDNGWIdentityImpl pdnGwIdentity, PDNGWAllocationType pdnGwAllocationType,
             boolean vplmnAddressAllowed, ChargingCharacteristicsImpl chargingCharacteristics, AMBRImpl ambr,
-            ArrayList<SpecificAPNInfoImpl> specificAPNInfoList, MAPExtensionContainerImpl extensionContainer,
+            List<SpecificAPNInfoImpl> specificAPNInfoList, MAPExtensionContainerImpl extensionContainer,
             PDPAddressImpl servedPartyIPIPv6Address, APNOIReplacementImpl apnOiReplacement, SIPTOPermission siptoPermission,
             LIPAPermission lipaPermission) {
         return new APNConfigurationImpl(contextId, pDNType, servedPartyIPIPv4Address, apn, ePSQoSSubscribed, pdnGwIdentity,
@@ -1514,18 +1512,18 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     @Override
     public APNConfigurationProfileImpl createAPNConfigurationProfile(int defaultContext, boolean completeDataListIncluded,
-            ArrayList<APNConfigurationImpl> ePSDataList, MAPExtensionContainerImpl extensionContainer) {
+            List<APNConfigurationImpl> ePSDataList, MAPExtensionContainerImpl extensionContainer) {
         return new APNConfigurationProfileImpl(defaultContext, completeDataListIncluded, ePSDataList, extensionContainer);
     }
 
     @Override
     public CSGSubscriptionDataImpl createCSGSubscriptionData(CSGIdImpl csgId, TimeImpl expirationDate,
-            MAPExtensionContainerImpl extensionContainer, ArrayList<APNImpl> lipaAllowedAPNList) {
+            MAPExtensionContainerImpl extensionContainer, List<APNImpl> lipaAllowedAPNList) {
         return new CSGSubscriptionDataImpl(csgId, expirationDate, extensionContainer, lipaAllowedAPNList);
     }
 
     @Override
-    public DCSIImpl createDCSI(ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList, Integer camelCapabilityHandling,
+    public DCSIImpl createDCSI(List<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList, Integer camelCapabilityHandling,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
         return new DCSIImpl(dpAnalysedInfoCriteriaList, camelCapabilityHandling, extensionContainer, notificationToCSE,
                 csiActive);
@@ -1533,7 +1531,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     @Override
     public DestinationNumberCriteriaImpl createDestinationNumberCriteria(MatchType matchType,
-            ArrayList<ISDNAddressStringImpl> destinationNumberList, ArrayList<Integer> destinationNumberLengthList) {
+            List<ISDNAddressStringImpl> destinationNumberList, List<Integer> destinationNumberLengthList) {
         return new DestinationNumberCriteriaImpl(matchType, destinationNumberList, destinationNumberLengthList);
     }
 
@@ -1578,23 +1576,23 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public GPRSCSIImpl createGPRSCSI(ArrayList<GPRSCamelTDPDataImpl> gprsCamelTDPDataList, Integer camelCapabilityHandling,
+    public GPRSCSIImpl createGPRSCSI(List<GPRSCamelTDPDataImpl> gprsCamelTDPDataList, Integer camelCapabilityHandling,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
         return new GPRSCSIImpl(gprsCamelTDPDataList, camelCapabilityHandling, extensionContainer, notificationToCSE, csiActive);
     }
 
     @Override
-    public LCSInformationImpl createLCSInformation(ArrayList<ISDNAddressStringImpl> gmlcList,
-            ArrayList<LCSPrivacyClassImpl> lcsPrivacyExceptionList, ArrayList<MOLRClassImpl> molrList,
-            ArrayList<LCSPrivacyClassImpl> addLcsPrivacyExceptionList) {
+    public LCSInformationImpl createLCSInformation(List<ISDNAddressStringImpl> gmlcList,
+            List<LCSPrivacyClassImpl> lcsPrivacyExceptionList, List<MOLRClassImpl> molrList,
+            List<LCSPrivacyClassImpl> addLcsPrivacyExceptionList) {
         return new LCSInformationImpl(gmlcList, lcsPrivacyExceptionList, molrList, addLcsPrivacyExceptionList);
     }
 
     @Override
     public LCSPrivacyClassImpl createLCSPrivacyClass(SSCodeImpl ssCode, ExtSSStatusImpl ssStatus,
-            NotificationToMSUser notificationToMSUser, ArrayList<ExternalClientImpl> externalClientList,
-            ArrayList<LCSClientInternalID> plmnClientList, MAPExtensionContainerImpl extensionContainer,
-            ArrayList<ExternalClientImpl> extExternalClientList, ArrayList<ServiceTypeImpl> serviceTypeList) {
+            NotificationToMSUser notificationToMSUser, List<ExternalClientImpl> externalClientList,
+            List<LCSClientInternalID> plmnClientList, MAPExtensionContainerImpl extensionContainer,
+            List<ExternalClientImpl> extExternalClientList, List<ServiceTypeImpl> serviceTypeList) {
         return new LCSPrivacyClassImpl(ssCode, ssStatus, notificationToMSUser, externalClientList, plmnClientList,
                 extensionContainer, extExternalClientList, serviceTypeList);
     }
@@ -1607,12 +1605,12 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     @Override
     public LSAInformationImpl createLSAInformation(boolean completeDataListIncluded, LSAOnlyAccessIndicator lsaOnlyAccessIndicator,
-            ArrayList<LSADataImpl> lsaDataList, MAPExtensionContainerImpl extensionContainer) {
+            List<LSADataImpl> lsaDataList, MAPExtensionContainerImpl extensionContainer) {
         return new LSAInformationImpl(completeDataListIncluded, lsaOnlyAccessIndicator, lsaDataList, extensionContainer);
     }
 
     @Override
-    public MCSIImpl createMCSI(ArrayList<MMCodeImpl> mobilityTriggers, long serviceKey, ISDNAddressStringImpl gsmSCFAddress,
+    public MCSIImpl createMCSI(List<MMCodeImpl> mobilityTriggers, long serviceKey, ISDNAddressStringImpl gsmSCFAddress,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
         return new MCSIImpl(mobilityTriggers, serviceKey, gsmSCFAddress, extensionContainer, notificationToCSE, csiActive);
     }
@@ -1624,7 +1622,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public MGCSIImpl createMGCSI(ArrayList<MMCodeImpl> mobilityTriggers, long serviceKey, ISDNAddressStringImpl gsmSCFAddress,
+    public MGCSIImpl createMGCSI(List<MMCodeImpl> mobilityTriggers, long serviceKey, ISDNAddressStringImpl gsmSCFAddress,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
         return new MGCSIImpl(mobilityTriggers, serviceKey, gsmSCFAddress, extensionContainer, notificationToCSE, csiActive);
     }
@@ -1641,14 +1639,14 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     @Override
     public MTsmsCAMELTDPCriteriaImpl createMTsmsCAMELTDPCriteria(SMSTriggerDetectionPoint smsTriggerDetectionPoint,
-            ArrayList<MTSMSTPDUType> tPDUTypeCriterion) {
+            List<MTSMSTPDUType> tPDUTypeCriterion) {
         return new MTsmsCAMELTDPCriteriaImpl(smsTriggerDetectionPoint, tPDUTypeCriterion);
     }
 
     @Override
     public OBcsmCamelTdpCriteriaImpl createOBcsmCamelTdpCriteria(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint,
-            DestinationNumberCriteriaImpl destinationNumberCriteria, ArrayList<ExtBasicServiceCodeImpl> basicServiceCriteria,
-            CallTypeCriteria callTypeCriteria, ArrayList<CauseValueImpl> oCauseValueCriteria,
+            DestinationNumberCriteriaImpl destinationNumberCriteria, List<ExtBasicServiceCodeImpl> basicServiceCriteria,
+            CallTypeCriteria callTypeCriteria, List<CauseValueImpl> oCauseValueCriteria,
             MAPExtensionContainerImpl extensionContainer) {
         return new OBcsmCamelTdpCriteriaImpl(oBcsmTriggerDetectionPoint, destinationNumberCriteria, basicServiceCriteria,
                 callTypeCriteria, oCauseValueCriteria, extensionContainer);
@@ -1718,7 +1716,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     @Override
     public SGSNCAMELSubscriptionInfoImpl createSGSNCAMELSubscriptionInfo(GPRSCSIImpl gprsCsi, SMSCSIImpl moSmsCsi,
             MAPExtensionContainerImpl extensionContainer, SMSCSIImpl mtSmsCsi,
-            ArrayList<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList, MGCSIImpl mgCsi) {
+            List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList, MGCSIImpl mgCsi) {
         return new SGSNCAMELSubscriptionInfoImpl(gprsCsi, moSmsCsi, extensionContainer, mtSmsCsi, mtSmsCamelTdpCriteriaList,
                 mgCsi);
     }
@@ -1731,7 +1729,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public SMSCSIImpl createSMSCSI(ArrayList<SMSCAMELTDPDataImpl> smsCamelTdpDataList, Integer camelCapabilityHandling,
+    public SMSCSIImpl createSMSCSI(List<SMSCAMELTDPDataImpl> smsCamelTdpDataList, Integer camelCapabilityHandling,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
         return new SMSCSIImpl(smsCamelTdpDataList, camelCapabilityHandling, extensionContainer, notificationToCSE, csiActive);
     }
@@ -1742,7 +1740,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public SSCamelDataImpl createSSCamelData(ArrayList<SSCodeImpl> ssEventList, ISDNAddressStringImpl gsmSCFAddress,
+    public SSCamelDataImpl createSSCamelData(List<SSCodeImpl> ssEventList, ISDNAddressStringImpl gsmSCFAddress,
             MAPExtensionContainerImpl extensionContainer) {
         return new SSCamelDataImpl(ssEventList, gsmSCFAddress, extensionContainer);
     }
@@ -1755,15 +1753,15 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     @Override
     public TBcsmCamelTdpCriteriaImpl createTBcsmCamelTdpCriteria(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint,
-            ArrayList<ExtBasicServiceCodeImpl> basicServiceCriteria, ArrayList<CauseValueImpl> tCauseValueCriteria) {
+            List<ExtBasicServiceCodeImpl> basicServiceCriteria, List<CauseValueImpl> tCauseValueCriteria) {
         return new TBcsmCamelTdpCriteriaImpl(tBcsmTriggerDetectionPoint, basicServiceCriteria, tCauseValueCriteria);
     }
 
     @Override
     public VlrCamelSubscriptionInfoImpl createVlrCamelSubscriptionInfo(OCSIImpl oCsi, MAPExtensionContainerImpl extensionContainer,
-            SSCSIImpl ssCsi, ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList, boolean tifCsi, MCSIImpl mCsi, SMSCSIImpl smsCsi,
-            TCSIImpl vtCsi, ArrayList<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi, SMSCSIImpl mtSmsCSI,
-            ArrayList<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList) {
+            SSCSIImpl ssCsi, List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList, boolean tifCsi, MCSIImpl mCsi, SMSCSIImpl smsCsi,
+            TCSIImpl vtCsi, List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi, SMSCSIImpl mtSmsCSI,
+            List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList) {
         return new VlrCamelSubscriptionInfoImpl(oCsi, extensionContainer, ssCsi, oBcsmCamelTDPCriteriaList, tifCsi, mCsi,
                 smsCsi, vtCsi, tBcsmCamelTdpCriteriaList, dCsi, mtSmsCSI, mtSmsCamelTdpCriteriaList);
     }
@@ -1973,7 +1971,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public GPRSSubscriptionDataWithdrawImpl createGPRSSubscriptionDataWithdraw(ArrayList<Integer> contextIdList) {
+    public GPRSSubscriptionDataWithdrawImpl createGPRSSubscriptionDataWithdraw(List<Integer> contextIdList) {
         return new GPRSSubscriptionDataWithdrawImpl(contextIdList);
     }
 
@@ -1983,7 +1981,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public LSAInformationWithdrawImpl createLSAInformationWithdraw(ArrayList<LSAIdentityImpl> lsaIdentityList) {
+    public LSAInformationWithdrawImpl createLSAInformationWithdraw(List<LSAIdentityImpl> lsaIdentityList) {
         return new LSAInformationWithdrawImpl(lsaIdentityList);
     }
 
@@ -1999,7 +1997,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public EPSSubscriptionDataWithdrawImpl createEPSSubscriptionDataWithdraw(ArrayList<Integer> contextIdList) {
+    public EPSSubscriptionDataWithdrawImpl createEPSSubscriptionDataWithdraw(List<Integer> contextIdList) {
         return new EPSSubscriptionDataWithdrawImpl(contextIdList);
     }
 
@@ -2031,18 +2029,18 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ForwardingInfoImpl createForwardingInfo(SSCodeImpl ssCode, ArrayList<ForwardingFeatureImpl> forwardingFeatureList) {
+    public ForwardingInfoImpl createForwardingInfo(SSCodeImpl ssCode, List<ForwardingFeatureImpl> forwardingFeatureList) {
         return new ForwardingInfoImpl(ssCode, forwardingFeatureList);
     }
 
     @Override
-    public SSDataImpl createSSData(SSCodeImpl ssCode, SSStatusImpl ssStatus, SSSubscriptionOptionImpl ssSubscriptionOption, ArrayList<BasicServiceCodeImpl> basicServiceGroupList,
+    public SSDataImpl createSSData(SSCodeImpl ssCode, SSStatusImpl ssStatus, SSSubscriptionOptionImpl ssSubscriptionOption, List<BasicServiceCodeImpl> basicServiceGroupList,
             EMLPPPriority defaultPriority, Integer nbrUser) {
         return new SSDataImpl(ssCode, ssStatus, ssSubscriptionOption, basicServiceGroupList, defaultPriority, nbrUser);
     }
 
     @Override
-    public CallBarringInfoImpl createCallBarringInfo(SSCodeImpl ssCode, ArrayList<CallBarringFeatureImpl> callBarringFeatureList) {
+    public CallBarringInfoImpl createCallBarringInfo(SSCodeImpl ssCode, List<CallBarringFeatureImpl> callBarringFeatureList) {
         return new CallBarringInfoImpl(ssCode, callBarringFeatureList);
     }
 
@@ -2059,7 +2057,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     @Override
     public GenericServiceInfoImpl createGenericServiceInfo(SSStatusImpl ssStatus, CliRestrictionOption cliRestrictionOption, EMLPPPriority maximumEntitledPriority,
-            EMLPPPriority defaultPriority, ArrayList<CCBSFeatureImpl> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN) {
+            EMLPPPriority defaultPriority, List<CCBSFeatureImpl> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN) {
         return new GenericServiceInfoImpl(ssStatus, cliRestrictionOption, maximumEntitledPriority, defaultPriority, ccbsFeatureList, nbrSB, nbrUser, nbrSN);
     }
 
@@ -2216,8 +2214,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public AreaScopeImpl createAreaScope(ArrayList<GlobalCellIdImpl> cgiList, ArrayList<EUtranCgiImpl> eUtranCgiList, ArrayList<RAIdentityImpl> routingAreaIdList,
-            ArrayList<LAIFixedLengthImpl> locationAreaIdList, ArrayList<TAIdImpl> trackingAreaIdList, MAPExtensionContainerImpl extensionContainer) {
+    public AreaScopeImpl createAreaScope(List<GlobalCellIdImpl> cgiList, List<EUtranCgiImpl> eUtranCgiList, List<RAIdentityImpl> routingAreaIdList,
+            List<LAIFixedLengthImpl> locationAreaIdList, List<TAIdImpl> trackingAreaIdList, MAPExtensionContainerImpl extensionContainer) {
         return new AreaScopeImpl(cgiList, eUtranCgiList, routingAreaIdList, locationAreaIdList, trackingAreaIdList, extensionContainer);
     }
 
@@ -2314,24 +2312,24 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new IMSIWithLMSIImpl(imsi, lmsi);
     }
 
-    public CAMELSubscriptionInfoImpl createCAMELSubscriptionInfo(OCSIImpl oCsi, ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTdpCriteriaList, DCSIImpl dCsi, TCSIImpl tCsi,
-            ArrayList<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, TCSIImpl vtCsi, ArrayList<TBcsmCamelTdpCriteriaImpl> vtBcsmCamelTdpCriteriaList,
+    public CAMELSubscriptionInfoImpl createCAMELSubscriptionInfo(OCSIImpl oCsi, List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTdpCriteriaList, DCSIImpl dCsi, TCSIImpl tCsi,
+            List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, TCSIImpl vtCsi, List<TBcsmCamelTdpCriteriaImpl> vtBcsmCamelTdpCriteriaList,
             boolean tifCsi, boolean tifCsiNotificationToCSE, GPRSCSIImpl gprsCsi, SMSCSIImpl smsCsi, SSCSIImpl ssCsi, MCSIImpl mCsi, MAPExtensionContainerImpl extensionContainer,
-            SpecificCSIWithdrawImpl specificCSIWithdraw, SMSCSIImpl mtSmsCsi, ArrayList<MTsmsCAMELTDPCriteriaImpl> mTsmsCAMELTDPCriteriaList, MGCSIImpl mgCsi, OCSIImpl oImCsi,
-            ArrayList<OBcsmCamelTdpCriteriaImpl> oImBcsmCamelTdpCriteriaList, DCSIImpl dImCsi, TCSIImpl vtImCsi, ArrayList<TBcsmCamelTdpCriteriaImpl> vtImBcsmCamelTdpCriteriaList) {
+            SpecificCSIWithdrawImpl specificCSIWithdraw, SMSCSIImpl mtSmsCsi, List<MTsmsCAMELTDPCriteriaImpl> mTsmsCAMELTDPCriteriaList, MGCSIImpl mgCsi, OCSIImpl oImCsi,
+            List<OBcsmCamelTdpCriteriaImpl> oImBcsmCamelTdpCriteriaList, DCSIImpl dImCsi, TCSIImpl vtImCsi, List<TBcsmCamelTdpCriteriaImpl> vtImBcsmCamelTdpCriteriaList) {
         return new CAMELSubscriptionInfoImpl(oCsi, oBcsmCamelTdpCriteriaList, dCsi, tCsi, tBcsmCamelTdpCriteriaList, vtCsi, vtBcsmCamelTdpCriteriaList,
                 tifCsi, tifCsiNotificationToCSE, gprsCsi, smsCsi, ssCsi, mCsi, extensionContainer, specificCSIWithdraw, mtSmsCsi, mTsmsCAMELTDPCriteriaList,
                 mgCsi, oImCsi, oImBcsmCamelTdpCriteriaList, dImCsi, vtImCsi, vtImBcsmCamelTdpCriteriaList);
     }
 
     @Override
-    public CallBarringDataImpl createCallBarringData(ArrayList<ExtCallBarringFeatureImpl> callBarringFeatureList, PasswordImpl password, Integer wrongPasswordAttemptsCounter,
+    public CallBarringDataImpl createCallBarringData(List<ExtCallBarringFeatureImpl> callBarringFeatureList, PasswordImpl password, Integer wrongPasswordAttemptsCounter,
             boolean notificationToCSE, MAPExtensionContainerImpl extensionContainer) {
         return new CallBarringDataImpl(callBarringFeatureList, password, wrongPasswordAttemptsCounter, notificationToCSE, extensionContainer);
     }
 
     @Override
-    public CallForwardingDataImpl createCallForwardingData(ArrayList<ExtForwFeatureImpl> forwardingFeatureList, boolean notificationToCSE,
+    public CallForwardingDataImpl createCallForwardingData(List<ExtForwFeatureImpl> forwardingFeatureList, boolean notificationToCSE,
             MAPExtensionContainerImpl extensionContainer) {
         return new CallForwardingDataImpl(forwardingFeatureList, notificationToCSE, extensionContainer);
     }
@@ -2342,7 +2340,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public CallWaitingDataImpl createCallWaitingData(ArrayList<ExtCwFeatureImpl> cwFeatureList, boolean notificationToCSE) {
+    public CallWaitingDataImpl createCallWaitingData(List<ExtCwFeatureImpl> cwFeatureList, boolean notificationToCSE) {
         return new CallWaitingDataImpl(cwFeatureList, notificationToCSE);
     }
 
@@ -2367,7 +2365,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public MSISDNBSImpl createMSISDNBS(ISDNAddressStringImpl msisdn, ArrayList<ExtBasicServiceCodeImpl> basicServiceList, MAPExtensionContainerImpl extensionContainer) {
+    public MSISDNBSImpl createMSISDNBS(ISDNAddressStringImpl msisdn, List<ExtBasicServiceCodeImpl> basicServiceList, MAPExtensionContainerImpl extensionContainer) {
         return new MSISDNBSImpl(msisdn, basicServiceList, extensionContainer);
     }
 

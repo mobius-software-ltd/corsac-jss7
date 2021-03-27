@@ -22,30 +22,32 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.AreaScope;
 import org.restcomm.protocols.ss7.map.api.service.oam.AreaScopeImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.JobType;
-import org.restcomm.protocols.ss7.map.api.service.oam.ListOfMeasurements;
 import org.restcomm.protocols.ss7.map.api.service.oam.ListOfMeasurementsImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.LoggingDuration;
 import org.restcomm.protocols.ss7.map.api.service.oam.LoggingInterval;
 import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportAmount;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportInterval;
-import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTrigger;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTriggerImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -59,9 +61,7 @@ public class MDTConfigurationTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 84, 10, 1, 2, 48, 11, (byte) 160, 9, 4, 7, 33, (byte) 240, 16, 7, (byte) 208, 4, 87, 4, 4, 11, 12, 13, 14, (byte) 128, 1, 121,
-                10, 1, 20, (byte) 129, 1, 6, 2, 1, 10, (byte) 130, 1, 11, (byte) 131, 1, 4, (byte) 132, 1, 2, (byte) 165, 39, (byte) 160, 32, 48, 10, 6, 3, 42,
-                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
+        return new byte[] { 48, 90, 10, 1, 2, 48, 11, -96, 9, 4, 7, 33, -16, 16, 7, -48, 4, 87, 4, 4, 11, 12, 13, 14, -128, 1, 121, 10, 1, 20, -127, 1, 6, 2, 1, 10, -126, 1, 11, -125, 1, 4, -124, 1, 2, -91, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     private byte[] getListOfMeasurements() {
@@ -70,17 +70,15 @@ public class MDTConfigurationTest {
 
     @Test(groups = { "functional.decode", "service.oam" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MDTConfigurationImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        MDTConfigurationImpl asc = new MDTConfigurationImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MDTConfigurationImpl);
+        MDTConfigurationImpl asc = (MDTConfigurationImpl)result.getResult();
+        
         assertEquals(asc.getJobType(), JobType.traceOnly);
 
         assertNull(asc.getAreaScope());
@@ -96,15 +94,11 @@ public class MDTConfigurationTest {
 
 
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new MDTConfigurationImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MDTConfigurationImpl);
+        asc = (MDTConfigurationImpl)result.getResult();
+        
         assertEquals(asc.getJobType(), JobType.traceOnly);
 
         assertEquals(asc.getAreaScope().getCgiList().size(), 1);
@@ -127,36 +121,31 @@ public class MDTConfigurationTest {
 
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MDTConfigurationImpl.class);
+    	
         MDTConfigurationImpl asc = new MDTConfigurationImpl(JobType.traceOnly, null, null, null, null, null, null, null, null, null, null);
-//        JobType jobType, AreaScope areaScope, ListOfMeasurements listOfMeasurements, ReportingTrigger reportingTrigger,
-//        ReportInterval reportInterval, ReportAmount reportAmount, Integer eventThresholdRSRP, Integer eventThresholdRSRQ, LoggingInterval loggingInterval,
-//        LoggingDuration loggingDuration, MAPExtensionContainerImpl extensionContainer
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<GlobalCellId> cgiList = new ArrayList<GlobalCellId>();
-        GlobalCellId globalCellId = new GlobalCellIdImpl(120, 1, 2000, 1111); // int mcc, int mnc, int lac, int cellId
+        ArrayList<GlobalCellIdImpl> cgiList = new ArrayList<GlobalCellIdImpl>();
+        GlobalCellIdImpl globalCellId = new GlobalCellIdImpl(120, 1, 2000, 1111); // int mcc, int mnc, int lac, int cellId
         cgiList.add(globalCellId);
-        AreaScope areaScope = new AreaScopeImpl(cgiList, null, null, null, null, null);
-        ListOfMeasurements listOfMeasurements = new ListOfMeasurementsImpl(getListOfMeasurements());
-        ReportingTrigger reportingTrigger = new ReportingTriggerImpl(121);
+        AreaScopeImpl areaScope = new AreaScopeImpl(cgiList, null, null, null, null, null);
+        ListOfMeasurementsImpl listOfMeasurements = new ListOfMeasurementsImpl(getListOfMeasurements());
+        ReportingTriggerImpl reportingTrigger = new ReportingTriggerImpl(121);
         asc = new MDTConfigurationImpl(JobType.traceOnly, areaScope, listOfMeasurements, reportingTrigger, ReportInterval.lte2048ms, ReportAmount.d64, 10, 11,
                 LoggingInterval.d20dot48, LoggingDuration.d2400sec, MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
-
     }
-
 }

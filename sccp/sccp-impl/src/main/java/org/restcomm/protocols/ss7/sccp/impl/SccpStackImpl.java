@@ -177,7 +177,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     protected SccpManagement sccpManagement;
     protected SccpRoutingControl sccpRoutingControl;
 
-    protected ConcurrentHashMap<LocalReference, SccpConnection> connections = new ConcurrentHashMap<LocalReference, SccpConnection>();
+    protected ConcurrentHashMap<Integer, SccpConnection> connections = new ConcurrentHashMap<Integer, SccpConnection>();
 
     protected int referenceNumberCounterMax = 0xffffff;
 
@@ -720,7 +720,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
             throw new IllegalArgumentException();
         }
 
-        connections.put(new LocalReferenceImpl(refNumber), conn);
+        connections.put(refNumber, conn);
         return conn;
     }
 
@@ -742,7 +742,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
             throw new MaxConnectionCountReached(String.format("Can't open more connections than %d", referenceNumberCounterMax + 1));
         }
 
-        while (connections.keySet().contains(referenceNumberCounter.get())) {
+        while (connections.containsKey(referenceNumberCounter.get())) {
             referenceNumberCounter.incrementAndGet();
         }
         return referenceNumberCounter.get();

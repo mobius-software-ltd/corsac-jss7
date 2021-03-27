@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,6 +100,9 @@ import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCUniIndicationImpl;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCUserAbortIndicationImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author baranowb
@@ -184,7 +184,7 @@ public class DialogImpl implements Dialog {
 
     private static Long getInvokeIdFromIndex(int index) {
         int tmp = index - _INVOKE_TABLE_SHIFT;
-        return new Long(tmp);
+        return (long)tmp;
     }
 
     /**
@@ -614,7 +614,6 @@ public class DialogImpl implements Dialog {
         }
 
         TCEndMessageImpl tcbm = null;
-
         if (state.get() == TRPseudoState.InitialReceived) {
             // TC-END request primitive issued in response to a TC-BEGIN
             // indication primitive
@@ -1865,7 +1864,7 @@ public class DialogImpl implements Dialog {
     	// this op died cause of timeout, TC-L-CANCEL!
         int index = getIndexFromInvokeId(tcInvokeRequestImpl.getInvokeId());
         freeInvokeId(tcInvokeRequestImpl.getInvokeId());
-        this.operationsSent[index] = null;        
+        this.operationsSent[index] = null;
         // lets call listener
         // This is done actually with COmponentIndication ....
     }

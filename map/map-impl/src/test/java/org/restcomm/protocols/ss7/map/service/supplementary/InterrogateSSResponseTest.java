@@ -22,26 +22,28 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.InterrogateSSResponseImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -68,18 +70,15 @@ public class InterrogateSSResponseTest {
 
     @Test(groups = { "functional.decode", "service.supplementary" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(InterrogateSSResponseImpl.class);
+    	        
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, InterrogateSSResponseImpl._TAG_ssStatus);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        InterrogateSSResponseImpl impl = new InterrogateSSResponseImpl();
-        impl.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InterrogateSSResponseImpl);
+        InterrogateSSResponseImpl impl = (InterrogateSSResponseImpl)result.getResult();
+        
         assertTrue(impl.getSsStatus().getABit());
         assertFalse(impl.getSsStatus().getPBit());
         assertFalse(impl.getSsStatus().getQBit());
@@ -91,15 +90,10 @@ public class InterrogateSSResponseTest {
 
 
         rawData = getEncodedData2();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, InterrogateSSResponseImpl._TAG_basicServiceGroupList);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        impl = new InterrogateSSResponseImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InterrogateSSResponseImpl);
+        impl = (InterrogateSSResponseImpl)result.getResult();
 
         assertNull(impl.getSsStatus());
 
@@ -111,15 +105,10 @@ public class InterrogateSSResponseTest {
 
 
         rawData = getEncodedData3();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, InterrogateSSResponseImpl._TAG_forwardingFeatureList);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        impl = new InterrogateSSResponseImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InterrogateSSResponseImpl);
+        impl = (InterrogateSSResponseImpl)result.getResult();
 
         assertNull(impl.getSsStatus());
         assertNull(impl.getBasicServiceGroupList());
@@ -132,15 +121,10 @@ public class InterrogateSSResponseTest {
 
 
         rawData = getEncodedData4();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, InterrogateSSResponseImpl._TAG_genericServiceInfo);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        impl = new InterrogateSSResponseImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InterrogateSSResponseImpl);
+        impl = (InterrogateSSResponseImpl)result.getResult();
 
         assertNull(impl.getSsStatus());
         assertNull(impl.getBasicServiceGroupList());
@@ -152,58 +136,47 @@ public class InterrogateSSResponseTest {
 
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
-
-//        private SSStatus ssStatus;
-//        private ArrayList<BasicServiceCode> basicServiceGroupList;
-//        private ArrayList<ForwardingFeature> forwardingFeatureList;
-//        private GenericServiceInfo genericServiceInfo;
-        SSStatus ssStatus = new SSStatusImpl(false, false, false, true);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(InterrogateSSResponseImpl.class);
+    	                
+        SSStatusImpl ssStatus = new SSStatusImpl(false, false, false, true);
         InterrogateSSResponseImpl impl = new InterrogateSSResponseImpl(ssStatus);
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<BasicServiceCode> basicServiceGroupList = new ArrayList<BasicServiceCode>();
-        TeleserviceCode teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.allFacsimileTransmissionServices);
+        List<BasicServiceCodeImpl> basicServiceGroupList = new ArrayList<BasicServiceCodeImpl>();
+        TeleserviceCodeImpl teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.allFacsimileTransmissionServices);
         BasicServiceCodeImpl item = new BasicServiceCodeImpl(teleservice);
         basicServiceGroupList.add(item);
         impl = new InterrogateSSResponseImpl(basicServiceGroupList, false);
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<ForwardingFeature> forwardingFeatureList = new ArrayList<ForwardingFeature>();
-        ForwardingFeature item2 = new ForwardingFeatureImpl(null, ssStatus, null, null, null, null, null);
+        List<ForwardingFeatureImpl> forwardingFeatureList = new ArrayList<ForwardingFeatureImpl>();
+        ForwardingFeatureImpl item2 = new ForwardingFeatureImpl(null, ssStatus, null, null, null, null, null);
         forwardingFeatureList.add(item2);
         impl = new InterrogateSSResponseImpl(forwardingFeatureList);
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData3();
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
         GenericServiceInfoImpl genericServiceInfo = new GenericServiceInfoImpl(ssStatus, null, null, null, null, null, null, null);
         impl = new InterrogateSSResponseImpl(genericServiceInfo);
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData4();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

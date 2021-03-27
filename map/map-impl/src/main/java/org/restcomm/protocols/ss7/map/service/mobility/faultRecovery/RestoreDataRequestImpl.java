@@ -50,9 +50,10 @@ public class RestoreDataRequestImpl extends MobilityMessageImpl implements Resto
     
     private LMSIImpl lmsi;
     
+    private MAPExtensionContainerImpl extensionContainer;
+    
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
     private VLRCapabilityImpl vlrCapability;
-    private MAPExtensionContainerImpl extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
     private ASNNull restorationIndicator;

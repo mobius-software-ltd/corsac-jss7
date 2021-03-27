@@ -43,11 +43,16 @@ public class SuperChargerInfoImpl {
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNOctetString subscriberDataStored;
 
+    public SuperChargerInfoImpl() {
+    	
+    }
+    
     /**
      *
      */
-    public SuperChargerInfoImpl() {
-    	this.sendSubscriberData=new ASNNull();
+    public SuperChargerInfoImpl(boolean sendSubscriberData) {
+    	if(sendSubscriberData)
+    		this.sendSubscriberData=new ASNNull();
     }
 
     /**

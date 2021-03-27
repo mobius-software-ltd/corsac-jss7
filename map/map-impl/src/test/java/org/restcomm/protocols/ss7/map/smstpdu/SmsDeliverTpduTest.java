@@ -39,6 +39,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
 import org.testng.annotations.Test;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
@@ -58,9 +61,7 @@ public class SmsDeliverTpduTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        SmsDeliverTpduImpl impl = new SmsDeliverTpduImpl(this.getData1(), null);
-        ;
-
+        SmsDeliverTpduImpl impl = new SmsDeliverTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
         impl.getUserData().decode();
         assertFalse(impl.getMoreMessagesToSend());
         assertFalse(impl.getForwardedOrSpawned());
@@ -91,28 +92,16 @@ public class SmsDeliverTpduTest {
         UserDataHeaderImpl udh = new UserDataHeaderImpl();
         udh.addInformationElement(0, this.getData1A());
         UserDataImpl ud = new UserDataImpl("Hello, world !!!", new DataCodingSchemeImpl(0), udh, null);
-
         AddressFieldImpl originatingAddress = new AddressFieldImpl(TypeOfNumber.InternationalNumber,
                 NumberingPlanIdentification.ISDNTelephoneNumberingPlan, "1234567890");
         ProtocolIdentifierImpl pi = new ProtocolIdentifierImpl(0);
         AbsoluteTimeStampImpl serviceCentreTimeStamp = new AbsoluteTimeStampImpl(7, 5, 15, 15, 1, 11, 12);
         SmsDeliverTpduImpl impl = new SmsDeliverTpduImpl(false, false, true, true, originatingAddress, pi,
                 serviceCentreTimeStamp, ud);
-        byte[] enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData1()));
-
-        // udh = new UserDataHeaderImpl();
-        // ud = new UserDataImpl(
-        // "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
-        // new DataCodingSchemeImpl(0), udh, null);
-        //
-        // originatingAddress = new AddressFieldImpl(TypeOfNumber.InternationalNumber,
-        // NumberingPlanIdentification.ISDNTelephoneNumberingPlan,
-        // "1234567890");
-        // pi = new ProtocolIdentifierImpl(0);
-        // serviceCentreTimeStamp = new AbsoluteTimeStampImpl(7, 5, 15, 15, 1, 11, 12);
-        // impl = new SmsDeliverTpduImpl(false, false, true, true, originatingAddress, pi, serviceCentreTimeStamp, ud);
-        // enc = impl.encodeData();
-        // assertTrue(Arrays.equals(enc, this.getData1()));
+        byte[] encData=new byte[this.getData1().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData1()));
     }
 }

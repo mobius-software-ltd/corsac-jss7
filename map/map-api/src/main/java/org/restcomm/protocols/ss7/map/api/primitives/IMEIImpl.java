@@ -22,13 +22,13 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-
 /**
  *
  * @author sergey vetyutnev
  *
  */
 public class IMEIImpl extends TbcdString {
+	
 	public IMEIImpl() {
         // There are some fake mobiles that IMEI length != 15
         super(1, 8, "IMEI", false);

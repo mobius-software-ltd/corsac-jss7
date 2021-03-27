@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASNEMLPPPriorityImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
@@ -67,7 +67,7 @@ public class GenericServiceInfoImpl {
     }
 
     public GenericServiceInfoImpl(SSStatusImpl ssStatus, CliRestrictionOption cliRestrictionOption, EMLPPPriority maximumEntitledPriority,
-            EMLPPPriority defaultPriority, ArrayList<CCBSFeatureImpl> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN) {
+            EMLPPPriority defaultPriority, List<CCBSFeatureImpl> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN) {
         this.ssStatus = ssStatus;
         
         if(cliRestrictionOption!=null) {
@@ -75,12 +75,12 @@ public class GenericServiceInfoImpl {
         	this.cliRestrictionOption.setType(cliRestrictionOption);
         }
         
-        if(this.maximumEntitledPriority!=null) {
+        if(maximumEntitledPriority!=null) {
         	this.maximumEntitledPriority = new ASNEMLPPPriorityImpl();
         	this.maximumEntitledPriority.setType(maximumEntitledPriority);
         }
         
-        if(this.defaultPriority!=null) {
+        if(defaultPriority!=null) {
         	this.defaultPriority = new ASNEMLPPPriorityImpl();
         	this.defaultPriority.setType(defaultPriority);
         }
@@ -129,7 +129,7 @@ public class GenericServiceInfoImpl {
         return defaultPriority.getType();
     }
 
-    public ArrayList<CCBSFeatureImpl> getCcbsFeatureList() {
+    public List<CCBSFeatureImpl> getCcbsFeatureList() {
     	if(ccbsFeatureList==null)
     		return null;
     	

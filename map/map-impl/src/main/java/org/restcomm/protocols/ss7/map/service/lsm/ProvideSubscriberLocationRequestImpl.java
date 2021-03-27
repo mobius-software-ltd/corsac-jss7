@@ -30,6 +30,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ASNLCSPriority;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodewordImpl;
@@ -83,7 +84,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
     private IMEIImpl imei;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
-    private LCSPriority lcsPriority;
+    private ASNLCSPriority lcsPriority;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1)
     private LCSQoSImpl lcsQoS;
@@ -166,7 +167,12 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
         this.msisdn = msisdn;
         this.lmsi = lmsi;
         this.imei = imei;
-        this.lcsPriority = lcsPriority;
+        
+        if(lcsPriority!=null) {
+        	this.lcsPriority = new ASNLCSPriority();
+        	this.lcsPriority.setType(lcsPriority);
+        }
+        
         this.lcsQoS = lcsQoS;
         this.extensionContainer = extensionContainer;
         this.supportedGADShapes = supportedGADShapes;
@@ -270,7 +276,10 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getLCSPriority()
      */
     public LCSPriority getLCSPriority() {
-        return this.lcsPriority;
+    	if(this.lcsPriority==null)
+    		return null;
+    	
+        return this.lcsPriority.getType();
     }
 
     /*

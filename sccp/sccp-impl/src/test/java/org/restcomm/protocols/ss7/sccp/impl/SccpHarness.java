@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.Random;
 
 import org.restcomm.protocols.ss7.sccp.Router;
@@ -29,11 +31,7 @@ import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.sccp.SccpResource;
-import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
-import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
-
-import static org.testng.Assert.assertEquals;
 
 /**
  * @author amit bhayani
@@ -200,7 +198,7 @@ public abstract class SccpHarness {
         if (sccpStack1 != sccpStack2) {
             return sccpProvider2.getConnections().values().iterator().next();
         } else {
-            return sccpProvider2.getConnections().get(new LocalReferenceImpl(sccpStack2.referenceNumberCounter.get()));
+            return sccpProvider2.getConnections().get(sccpStack2.referenceNumberCounter.get());
         }
     }
 }

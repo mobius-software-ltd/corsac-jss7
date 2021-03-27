@@ -26,8 +26,6 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.Unpooled;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,12 +43,6 @@ import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.M3UAManagementEventListener;
 import org.restcomm.protocols.ss7.m3ua.State;
-import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.AsState;
-import org.restcomm.protocols.ss7.m3ua.impl.AspFactoryImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.AspImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.AspState;
-import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
 import org.restcomm.protocols.ss7.m3ua.impl.message.M3UAMessageImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl;
@@ -94,6 +86,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
+
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 
 /**
  * This test is for FSM for SGW side ASP and AS

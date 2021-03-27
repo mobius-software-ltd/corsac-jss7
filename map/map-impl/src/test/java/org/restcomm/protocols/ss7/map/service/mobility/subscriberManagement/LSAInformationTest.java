@@ -22,26 +22,28 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAAttributes;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAAttributesImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSADataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAOnlyAccessIndicator;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -51,10 +53,7 @@ import org.testng.annotations.Test;
 public class LSAInformationTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 101, 5, 0, -127, 1, 1, -94, 53, 48, 51, -128, 3, 12, 34, 26, -127, 1, 5, -126, 0, -93, 39, -96,
-                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
-                25, 26, -95, 3, 31, 32, 33, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
-                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 113, 5, 0, -127, 1, 1, -94, 59, 48, 57, -128, 3, 12, 34, 26, -127, 1, 5, -126, 0, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     };
 
     public byte[] getDataLSAIdentity() {
@@ -63,23 +62,22 @@ public class LSAInformationTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LSAInformationImpl.class);
+    	
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-
-        LSAInformationImpl prim = new LSAInformationImpl();
-
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LSAInformationImpl);
+        LSAInformationImpl prim = (LSAInformationImpl)result.getResult();
+        
         assertTrue(prim.getCompleteDataListIncluded());
         assertEquals(prim.getLSAOnlyAccessIndicator(), LSAOnlyAccessIndicator.accessOutsideLSAsRestricted);
 
-        ArrayList<LSAData> lsaDataList = prim.getLSADataList();
+        List<LSADataImpl> lsaDataList = prim.getLSADataList();
         assertNotNull(lsaDataList);
         assertEquals(lsaDataList.size(), 1);
-        LSAData lsaData = lsaDataList.get(0);
+        LSADataImpl lsaData = lsaDataList.get(0);
 
         assertTrue(Arrays.equals(lsaData.getLSAIdentity().getData(), this.getDataLSAIdentity()));
         assertEquals(lsaData.getLSAAttributes().getData(), 5);
@@ -94,22 +92,25 @@ public class LSAInformationTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LSAInformationImpl.class);
+    	
         boolean completeDataListIncluded = true;
         LSAOnlyAccessIndicator lsaOnlyAccessIndicator = LSAOnlyAccessIndicator.accessOutsideLSAsRestricted;
-        ArrayList<LSAData> lsaDataList = new ArrayList<LSAData>();
-        LSAIdentity lsaIdentity = new LSAIdentityImpl(this.getDataLSAIdentity());
-        LSAAttributes lsaAttributes = new LSAAttributesImpl(5);
+        ArrayList<LSADataImpl> lsaDataList = new ArrayList<LSADataImpl>();
+        LSAIdentityImpl lsaIdentity = new LSAIdentityImpl(this.getDataLSAIdentity());
+        LSAAttributesImpl lsaAttributes = new LSAAttributesImpl(5);
         boolean lsaActiveModeIndicator = true;
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        LSAData lsaData = new LSADataImpl(lsaIdentity, lsaAttributes, lsaActiveModeIndicator, extensionContainer);
+        LSADataImpl lsaData = new LSADataImpl(lsaIdentity, lsaAttributes, lsaActiveModeIndicator, extensionContainer);
         lsaDataList.add(lsaData);
 
         LSAInformationImpl prim = new LSAInformationImpl(completeDataListIncluded, lsaOnlyAccessIndicator, lsaDataList,
                 extensionContainer);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        byte[] rawData = this.getData();
+        assertTrue(Arrays.equals(encodedData, rawData));
     }
 }

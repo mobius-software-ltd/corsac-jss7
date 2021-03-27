@@ -28,18 +28,9 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoSImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTime;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeCategory;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
@@ -48,6 +39,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -75,24 +72,22 @@ public class LCSQoSTest {
     }
 
     public byte[] getDataFull() {
-        return new byte[] { 48, 54, -128, 1, 10, -127, 0, -126, 1, 20, -93, 3, 10, 1, 0, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3,
-                4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32,
-                33 };
+        return new byte[] { 48, 60, -128, 1, 10, -127, 0, -126, 1, 20, -93, 3, 10, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LCSQoSImpl.class);
+    	
         byte[] data = getData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        LCSQoSImpl lcsQos = new LCSQoSImpl();
-        lcsQos.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LCSQoSImpl);
+        LCSQoSImpl lcsQos = (LCSQoSImpl)result.getResult();
 
         assertNotNull(lcsQos.getResponseTime());
-        ResponseTime resTime = lcsQos.getResponseTime();
+        ResponseTimeImpl resTime = lcsQos.getResponseTime();
         assertNotNull(resTime.getResponseTimeCategory());
         assertEquals(resTime.getResponseTimeCategory(), ResponseTimeCategory.lowdelay);
 
@@ -102,13 +97,10 @@ public class LCSQoSTest {
         assertNull(lcsQos.getExtensionContainer());
 
         data = getDataFull();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        lcsQos = new LCSQoSImpl();
-        lcsQos.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LCSQoSImpl);
+        lcsQos = (LCSQoSImpl)result.getResult();
 
         assertNotNull(lcsQos.getResponseTime());
         resTime = lcsQos.getResponseTime();
@@ -123,48 +115,24 @@ public class LCSQoSTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LCSQoSImpl.class);
+    	
         byte[] data = getData();
 
         LCSQoSImpl lcsQos = new LCSQoSImpl(null, null, false, new ResponseTimeImpl(ResponseTimeCategory.lowdelay), null);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        lcsQos.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ByteBuf buffer=parser.encode(lcsQos);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         data = getDataFull();
 
         lcsQos = new LCSQoSImpl(10, 20, true, new ResponseTimeImpl(ResponseTimeCategory.lowdelay),
                 MAPExtensionContainerTest.GetTestExtensionContainer());
-        // Integer horizontalAccuracy, Integer verticalAccuracy, boolean verticalCoordinateRequest, ResponseTime responseTime,
-        // MAPExtensionContainerImpl extensionContainer
-        asnOS = new AsnOutputStream();
-        lcsQos.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-
+        buffer=parser.encode(lcsQos);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "service.lsm" })
-    public void testSerialization() throws Exception {
-        LCSQoSImpl original = new LCSQoSImpl(null, null, false, new ResponseTimeImpl(ResponseTimeCategory.lowdelay), null);
-
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        LCSQoSImpl copy = (LCSQoSImpl) o;
-
-        // test result
-        assertEquals(copy, original);
     }
 }

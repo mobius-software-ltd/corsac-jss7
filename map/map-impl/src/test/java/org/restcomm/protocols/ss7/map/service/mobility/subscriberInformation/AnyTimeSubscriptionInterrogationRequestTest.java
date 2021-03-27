@@ -1,54 +1,50 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AdditionalRequestedCAMELSubscriptionInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedCAMELSubscriptionInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationRequestImpl;
-import org.testng.annotations.Test;
-
-import java.util.Arrays;
-
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
+import java.util.Arrays;
+
+import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AdditionalRequestedCAMELSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedCAMELSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  * @author vadim subbotin
  */
 public class AnyTimeSubscriptionInterrogationRequestTest {
-    private byte[] data = {48, 91, -96, 9, -127, 7, -111, -105, 2, 33, 67, 101, -9, -95, 26, -95, 6, 4, 1, 112, -125, 1,
-            0, -126, 0, -125, 1, 0, -124, 0, -121, 1, 2, -120, 0, -118, 0, -116, 0, -114, 0, -126, 7, -111, -105, 2, 103,
-            69, 35, -15, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6,
-            3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -124, 0};
+    private byte[] data = {48, 97, -96, 9, -127, 7, -111, -105, 2, 33, 67, 101, -9, -95, 26, -95, 6, 4, 1, 112, -125, 1, 0, -126, 0, -125, 1, 0, -124, 0, -121, 1, 2, -120, 0, -118, 0, -116, 0, -114, 0, -126, 7, -111, -105, 2, 103, 69, 35, -15, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -124, 0};
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
-        AsnInputStream ansIS = new AsnInputStream(data);
-        int tag = ansIS.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        AnyTimeSubscriptionInterrogationRequestImpl request = new AnyTimeSubscriptionInterrogationRequestImpl();
-        request.decodeAll(ansIS);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AnyTimeSubscriptionInterrogationRequestImpl.class);
+    	
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AnyTimeSubscriptionInterrogationRequestImpl);
+        AnyTimeSubscriptionInterrogationRequestImpl request = (AnyTimeSubscriptionInterrogationRequestImpl)result.getResult();
+        
         assertNotNull(request.getSubscriberIdentity());
         assertNotNull(request.getGsmScfAddress());
         assertNotNull(request.getRequestedSubscriptionInfo());
@@ -61,7 +57,7 @@ public class AnyTimeSubscriptionInterrogationRequestTest {
         assertEquals(subscriberMsisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(subscriberMsisdn.getAddress(), "79201234567");
 
-        RequestedSubscriptionInfo subscriptionInfo = request.getRequestedSubscriptionInfo();
+        RequestedSubscriptionInfoImpl subscriptionInfo = request.getRequestedSubscriptionInfo();
         assertEquals(subscriptionInfo.getRequestedSSInfo().getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allChargingSS);
         assertEquals(subscriptionInfo.getRequestedSSInfo().getBasicService().getTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allTeleservices);
         assertFalse(subscriptionInfo.getRequestedSSInfo().getLongFtnSupported());
@@ -81,13 +77,16 @@ public class AnyTimeSubscriptionInterrogationRequestTest {
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AnyTimeSubscriptionInterrogationRequestImpl.class);
+    	
         ISDNAddressStringImpl subscriberMsisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79201234567");
-        SubscriberIdentity subscriberIdentity = new SubscriberIdentityImpl(subscriberMsisdn);
+        SubscriberIdentityImpl subscriberIdentity = new SubscriberIdentityImpl(subscriberMsisdn);
 
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allChargingSS);
-        BasicServiceCode basicServiceCode = new BasicServiceCodeImpl(new TeleserviceCodeImpl(TeleserviceCodeValue.allTeleservices));
-        SSForBSCode ssForBSCode = new SSForBSCodeImpl(ssCode, basicServiceCode, false);
-        RequestedSubscriptionInfo requestedSubscriptionInfo = new RequestedSubscriptionInfoImpl(ssForBSCode, true, RequestedCAMELSubscriptionInfo.oCSI,
+        BasicServiceCodeImpl basicServiceCode = new BasicServiceCodeImpl(new TeleserviceCodeImpl(TeleserviceCodeValue.allTeleservices));
+        SSForBSCodeImpl ssForBSCode = new SSForBSCodeImpl(ssCode, basicServiceCode, false);
+        RequestedSubscriptionInfoImpl requestedSubscriptionInfo = new RequestedSubscriptionInfoImpl(ssForBSCode, true, RequestedCAMELSubscriptionInfo.oCSI,
                 true, false, null, AdditionalRequestedCAMELSubscriptionInfo.oImCSI, true, false, true,
                 false, true, false, true);
 
@@ -96,9 +95,9 @@ public class AnyTimeSubscriptionInterrogationRequestTest {
         AnyTimeSubscriptionInterrogationRequestImpl request = new AnyTimeSubscriptionInterrogationRequestImpl(subscriberIdentity, requestedSubscriptionInfo,
                 gsmSCFAddress, MAPExtensionContainerTest.GetTestExtensionContainer(), true);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        request.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(request);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
     }
 }

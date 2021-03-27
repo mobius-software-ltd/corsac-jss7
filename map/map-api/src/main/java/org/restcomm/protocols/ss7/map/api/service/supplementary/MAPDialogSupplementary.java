@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -75,9 +75,9 @@ public interface MAPDialogSupplementary extends MAPDialog {
 
     void addInterrogateSSResponse_SSStatus(long invokeId, SSStatusImpl ssStatus) throws MAPException;
 
-    void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, ArrayList<BasicServiceCodeImpl> basicServiceGroupList) throws MAPException;
+    void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, List<BasicServiceCodeImpl> basicServiceGroupList) throws MAPException;
 
-    void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, ArrayList<ForwardingFeatureImpl> forwardingFeatureList) throws MAPException;
+    void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, List<ForwardingFeatureImpl> forwardingFeatureList) throws MAPException;
 
     void addInterrogateSSResponse_GenericServiceInfo(long invokeId, GenericServiceInfoImpl genericServiceInfo) throws MAPException;
 

@@ -36,7 +36,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MDTConfigurationImpl {
-	private ASNJobTypeImpl jobType;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=10,constructed=false,index=0)
+    private ASNJobTypeImpl jobType;
     
 	private AreaScopeImpl areaScope;
     

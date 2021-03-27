@@ -179,7 +179,7 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 				ASNGenericMapping mapping=method.getAnnotation(ASNGenericMapping.class);
 				if(mapping!=null) {
 					mappingTags+=1;					
-					if(params.size()!=2)
+					if(params.size()!=1)
 						processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNGenericMapping should have two parameter", className, method.getSimpleName()));
 				}
 			}

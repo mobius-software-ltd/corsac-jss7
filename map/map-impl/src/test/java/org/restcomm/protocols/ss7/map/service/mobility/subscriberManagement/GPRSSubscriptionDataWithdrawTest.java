@@ -22,16 +22,22 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdrawImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -41,41 +47,33 @@ import org.testng.annotations.Test;
 public class GPRSSubscriptionDataWithdrawTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 5, 0 };
+        return new byte[] { 48, 2, 5, 0 };
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 6, 2, 1, 1, 2, 1, 12 };
+        return new byte[] { 48, 8, 48, 6, 2, 1, 1, 2, 1, 12 };
     }
 
     @Test
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GPRSSubscriptionDataWithdrawImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        GPRSSubscriptionDataWithdrawImpl asc = new GPRSSubscriptionDataWithdrawImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.NULL);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertTrue(asn.isTagPrimitive());
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GPRSSubscriptionDataWithdrawImpl);
+        GPRSSubscriptionDataWithdrawImpl asc = (GPRSSubscriptionDataWithdrawImpl)result.getResult();
+        
         assertTrue(asc.getAllGPRSData());
         assertNull(asc.getContextIdList());
 
 
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new GPRSSubscriptionDataWithdrawImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertFalse(asn.isTagPrimitive());
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GPRSSubscriptionDataWithdrawImpl);
+        asc = (GPRSSubscriptionDataWithdrawImpl)result.getResult();
 
         assertFalse(asc.getAllGPRSData());
         assertEquals(asc.getContextIdList().size(), 2);
@@ -85,13 +83,14 @@ public class GPRSSubscriptionDataWithdrawTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GPRSSubscriptionDataWithdrawImpl.class);
+    	
         GPRSSubscriptionDataWithdrawImpl asc = new GPRSSubscriptionDataWithdrawImpl(true);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);        
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -101,10 +100,9 @@ public class GPRSSubscriptionDataWithdrawTest {
         arr.add(12);
         asc = new GPRSSubscriptionDataWithdrawImpl(arr);
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }

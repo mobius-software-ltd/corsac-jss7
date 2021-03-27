@@ -28,10 +28,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
-import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSMState;
-import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSMStateEventHandler;
-import org.restcomm.protocols.ss7.m3ua.impl.fsm.TransitionHandler;
 import org.restcomm.protocols.ss7.m3ua.impl.scheduler.M3UAScheduler;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

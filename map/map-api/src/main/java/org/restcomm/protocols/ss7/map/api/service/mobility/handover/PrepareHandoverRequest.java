@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASCICallReference;
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
@@ -99,7 +99,7 @@ public interface PrepareHandoverRequest extends MobilityMessage {
 
     AllowedUMTSAlgorithms getAllowedUMTSAlgorithms();
 
-    ArrayList<RadioResource> getRadioResourceList();
+    List<RadioResource> getRadioResourceList();
 
     MAPExtensionContainerImpl getExtensionContainer();
 
@@ -109,7 +109,7 @@ public interface PrepareHandoverRequest extends MobilityMessage {
 
     RANAPServiceHandover getRANAPServiceHandover();
 
-    ArrayList<BSSMAPServiceHandoverInfo> getBSSMAPServiceHandoverList();
+    List<BSSMAPServiceHandoverInfo> getBSSMAPServiceHandoverList();
 
     ASCICallReference getASCICallReference();
 
@@ -129,7 +129,7 @@ public interface PrepareHandoverRequest extends MobilityMessage {
 
     AoIPCodecsList getAoipSupportedCodecsListAnchor();
 
-    ArrayList<ZoneCodeImpl> getRegionalSubscriptionData();
+    List<ZoneCodeImpl> getRegionalSubscriptionData();
 
     LCLSGlobalCallReference getGlobalCallReference();
 

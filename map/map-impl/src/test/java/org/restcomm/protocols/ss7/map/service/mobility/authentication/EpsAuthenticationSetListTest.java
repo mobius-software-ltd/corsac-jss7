@@ -23,18 +23,22 @@
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAv;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAvImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetListImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -57,18 +61,16 @@ public class EpsAuthenticationSetListTest {
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(EpsAuthenticationSetListImpl.class);
 
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        EpsAuthenticationSetListImpl asc = new EpsAuthenticationSetListImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ArrayList<EpcAv> epcAvs = asc.getEpcAv();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EpsAuthenticationSetListImpl);
+        EpsAuthenticationSetListImpl asc = (EpsAuthenticationSetListImpl)result.getResult();
+        
+        List<EpcAvImpl> epcAvs = asc.getEpcAv();
         assertEquals(epcAvs.size(), 2);
 
         assertTrue(Arrays.equals(epcAvs.get(0).getRand(), EpcAvTest.getRandData()));
@@ -84,21 +86,20 @@ public class EpsAuthenticationSetListTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(EpsAuthenticationSetListImpl.class);
 
-        EpcAvImpl d1 = new EpcAvImpl(EpcAvTest.getRandData(), EpcAvTest.getXresData(), EpcAvTest.getAutnData(),
-                EpcAvTest.getKasmeData(), null);
-        EpcAvImpl d2 = new EpcAvImpl(EpcAvTest.getRandData(), getXresData(), EpcAvTest.getAutnData(), EpcAvTest.getKasmeData(),
-                null);
-        ArrayList<EpcAv> arr = new ArrayList<EpcAv>();
+        EpcAvImpl d1 = new EpcAvImpl(EpcAvTest.getRandData(), EpcAvTest.getXresData(), EpcAvTest.getAutnData(),EpcAvTest.getKasmeData(), null);
+        EpcAvImpl d2 = new EpcAvImpl(EpcAvTest.getRandData(), getXresData(), EpcAvTest.getAutnData(), EpcAvTest.getKasmeData(),null);
+        ArrayList<EpcAvImpl> arr = new ArrayList<EpcAvImpl>();
         arr.add(d1);
         arr.add(d2);
         EpsAuthenticationSetListImpl asc = new EpsAuthenticationSetListImpl(arr);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

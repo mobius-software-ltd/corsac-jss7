@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -34,16 +35,17 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class LAIFixedLengthListWrapperImpl {
-	private ArrayList<LAIFixedLengthImpl> laiFixedLengthList;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1)
+    private List<LAIFixedLengthImpl> laiFixedLengthList;
 
     public LAIFixedLengthListWrapperImpl() {
     }
 
-    public LAIFixedLengthListWrapperImpl(ArrayList<LAIFixedLengthImpl> laiFixedLengthList) {
+    public LAIFixedLengthListWrapperImpl(List<LAIFixedLengthImpl> laiFixedLengthList) {
         this.laiFixedLengthList = laiFixedLengthList;
     }
 
-    public ArrayList<LAIFixedLengthImpl> getLAIFixedLengthList() {
+    public List<LAIFixedLengthImpl> getLAIFixedLengthList() {
     	return laiFixedLengthList;
     }
 }

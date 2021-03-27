@@ -22,6 +22,7 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 
@@ -49,8 +50,8 @@ public class DestinationNumberCriteriaImpl {
     public DestinationNumberCriteriaImpl() {
     }
 
-    public DestinationNumberCriteriaImpl(MatchType matchType, ArrayList<ISDNAddressStringImpl> destinationNumberList,
-            ArrayList<Integer> destinationNumberLengthList) {
+    public DestinationNumberCriteriaImpl(MatchType matchType, List<ISDNAddressStringImpl> destinationNumberList,
+            List<Integer> destinationNumberLengthList) {
     	if(matchType!=null) {
     		this.matchType = new ASNMatchType();
     		this.matchType.setType(matchType);
@@ -61,7 +62,7 @@ public class DestinationNumberCriteriaImpl {
     	}
     	
     	if(destinationNumberLengthList!=null) {
-    		ArrayList<ASNInteger> realList=new ArrayList<ASNInteger>();
+    		List<ASNInteger> realList=new ArrayList<ASNInteger>();
     		for(Integer curr:destinationNumberLengthList) {
     			ASNInteger wrappedCurr=new ASNInteger();
     			wrappedCurr.setValue(curr.longValue());
@@ -78,18 +79,18 @@ public class DestinationNumberCriteriaImpl {
         return this.matchType.getType();
     }
 
-    public ArrayList<ISDNAddressStringImpl> getDestinationNumberList() {
+    public List<ISDNAddressStringImpl> getDestinationNumberList() {
     	if(this.destinationNumberList==null)
     		return null;
     	
         return this.destinationNumberList.getDestinationNumberList();
     }
 
-    public ArrayList<Integer> getDestinationNumberLengthList() {
+    public List<Integer> getDestinationNumberLengthList() {
     	if(this.destinationNumberLengthList==null || this.destinationNumberLengthList.getDestinationNumberLengthList()==null)
     		return null;
     	
-    	ArrayList<Integer> output=new ArrayList<Integer>();
+    	List<Integer> output=new ArrayList<Integer>();
     	for(ASNInteger curr:this.destinationNumberLengthList.getDestinationNumberLengthList())
     		output.add(curr.getValue().intValue());
     	

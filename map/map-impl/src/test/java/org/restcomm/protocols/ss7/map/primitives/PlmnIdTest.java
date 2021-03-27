@@ -23,15 +23,19 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -58,60 +62,65 @@ public class PlmnIdTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(PlmnIdImpl.class);
+    	        
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        PlmnIdImpl pi = new PlmnIdImpl();
-        pi.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof PlmnIdImpl);
+        PlmnIdImpl pi = (PlmnIdImpl)result.getResult();
+        
         assertTrue(Arrays.equals(getData(), pi.getData()));
 
         rawData = getEncodedData3Dig();
-        asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
-        pi = new PlmnIdImpl();
-        pi.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof PlmnIdImpl);
+        pi = (PlmnIdImpl)result.getResult();
+        
         assertEquals(pi.getMcc(), 405);
         assertEquals(pi.getMnc(), 391);
 
         rawData = getEncodedData2Dig();
-        asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
-        pi = new PlmnIdImpl();
-        pi.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof PlmnIdImpl);
+        pi = (PlmnIdImpl)result.getResult();
+        
         assertEquals(pi.getMcc(), 405);
         assertEquals(pi.getMnc(), 39);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(PlmnIdImpl.class);
+    	                
         PlmnIdImpl pi = new PlmnIdImpl(getData());
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        pi.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(pi);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         pi = new PlmnIdImpl(405, 391);
-        asnOS = new AsnOutputStream();
-        pi.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(pi);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedData3Dig();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         pi = new PlmnIdImpl(405, 39);
-        asnOS = new AsnOutputStream();
-        pi.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(pi);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedData2Dig();
         assertTrue(Arrays.equals(rawData, encodedData));
     }

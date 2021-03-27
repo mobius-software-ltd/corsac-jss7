@@ -17,11 +17,11 @@ import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortProviderReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortSource;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.DeactivateSSRequest;
@@ -44,8 +44,8 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNo
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  * A simple example show-casing how to use MAP stack. Demonstrates how to listen to incoming Dialog from peer and process the
@@ -89,7 +89,7 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
 
     public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest ind) {
 
-        USSDString ussdString = ind.getUSSDString();
+        USSDStringImpl ussdString = ind.getUSSDString();
         MAPDialogSupplementary currentMapDialog = ind.getMAPDialog();
 
         try {
@@ -99,7 +99,7 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
             String response = "Your balans is 100$";
 
             CBSDataCodingScheme ussdDataCodingScheme = new CBSDataCodingSchemeImpl(0x0f);
-            USSDString ussdResponse = paramFact.createUSSDString(response, null, null);
+            USSDStringImpl ussdResponse = paramFact.createUSSDString(response, null, null);
 
             currentMapDialog.addProcessUnstructuredSSResponse(ind.getInvokeId(), ussdDataCodingScheme, ussdResponse);
         } catch (MAPException e1) {
@@ -123,7 +123,7 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
 
     }
 
-    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
         // TODO Auto-generated method stub
 
     }
@@ -181,12 +181,12 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
     }
 
     public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
+            ApplicationContextNameImpl alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
         // TODO Auto-generated method stub
 
     }
 
-    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason, MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoiseImpl userReason, MAPExtensionContainerImpl extensionContainer) {
         // TODO Auto-generated method stub
 
     }

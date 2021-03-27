@@ -21,16 +21,19 @@
  */
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AccessRestrictionDataImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,22 +47,20 @@ public class AccessRestrictionDataTest {
     };
 
     public byte[] getData1() {
-        return new byte[] { 3, 2, 2, -88 };
+        return new byte[] { 3, 2, 3, -88 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AccessRestrictionDataImpl.class);
+    	
         byte[] rawData = getData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        AccessRestrictionDataImpl imp = new AccessRestrictionDataImpl();
-        imp.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AccessRestrictionDataImpl);
+        AccessRestrictionDataImpl imp = (AccessRestrictionDataImpl)result.getResult();
+        
         assertTrue(!imp.getUtranNotAllowed());
         assertTrue(imp.getGeranNotAllowed());
         assertTrue(!imp.getGanNotAllowed());
@@ -68,14 +69,10 @@ public class AccessRestrictionDataTest {
         assertTrue(imp.getHoToNon3GPPAccessNotAllowed());
 
         rawData = getData1();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        imp = new AccessRestrictionDataImpl();
-        imp.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AccessRestrictionDataImpl);
+        imp = (AccessRestrictionDataImpl)result.getResult();
 
         assertTrue(imp.getUtranNotAllowed());
         assertTrue(!imp.getGeranNotAllowed());
@@ -87,14 +84,19 @@ public class AccessRestrictionDataTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AccessRestrictionDataImpl.class);
+    	
         AccessRestrictionDataImpl imp = new AccessRestrictionDataImpl(false, true, false, true, false, true);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-        assertTrue(Arrays.equals(getData(), asnOS.toByteArray()));
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(getData(), encodedData));
 
         imp = new AccessRestrictionDataImpl(true, false, true, false, true, false);
-        asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-        assertTrue(Arrays.equals(getData1(), asnOS.toByteArray()));
+        buffer=parser.encode(imp);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(getData1(), encodedData));
     }
 }

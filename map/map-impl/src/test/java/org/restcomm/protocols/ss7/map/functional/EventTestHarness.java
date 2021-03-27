@@ -8,7 +8,7 @@ import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortProviderReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortSource;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
@@ -105,8 +105,8 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNo
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,13 +151,13 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
     }
 
     public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
+            ApplicationContextNameImpl alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
         this.logger.debug("onDialogReject");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogReject, mapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
-    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason, MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoiseImpl userReason, MAPExtensionContainerImpl extensionContainer) {
         this.logger.debug("onDialogUserAbort");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogUserAbort, mapDialog, sequence++);
         this.observerdEvents.add(te);
@@ -200,7 +200,7 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
         this.observerdEvents.add(te);
     }
 
-    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
         this.logger.debug("onRejectComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.RejectComponent, mapDialog, sequence++);
         this.observerdEvents.add(te);

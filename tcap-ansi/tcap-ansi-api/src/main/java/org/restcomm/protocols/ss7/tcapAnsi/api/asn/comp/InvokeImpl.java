@@ -80,7 +80,7 @@ public abstract class InvokeImpl implements BaseComponent {
     }
     
     @ASNGenericMapping
-    public Class<?> getMapping(Object parent,ASNParser parser) {
+    public Class<?> getMapping(ASNParser parser) {
     	if(operationCode!=null)
     	{
     		Class<?> result=parser.getLocalMapping(this.getClass(), operationCode);

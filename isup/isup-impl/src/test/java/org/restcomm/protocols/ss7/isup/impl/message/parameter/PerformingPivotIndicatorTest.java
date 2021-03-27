@@ -27,8 +27,6 @@ import io.netty.buffer.Unpooled;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.PerformingPivotIndicatorImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.PivotReasonImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
 import org.testng.Assert;
 import org.testng.annotations.Test;

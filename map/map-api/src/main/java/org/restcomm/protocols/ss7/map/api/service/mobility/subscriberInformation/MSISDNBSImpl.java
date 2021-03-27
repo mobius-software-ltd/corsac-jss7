@@ -28,7 +28,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vsubbotin on 26/05/16.
@@ -46,7 +46,7 @@ public class MSISDNBSImpl {
     public MSISDNBSImpl() {
     }
 
-    public MSISDNBSImpl(ISDNAddressStringImpl msisdn, ArrayList<ExtBasicServiceCodeImpl> basicServiceList,
+    public MSISDNBSImpl(ISDNAddressStringImpl msisdn, List<ExtBasicServiceCodeImpl> basicServiceList,
             MAPExtensionContainerImpl extensionContainer) {
         this.msisdn = msisdn;
         
@@ -60,7 +60,7 @@ public class MSISDNBSImpl {
         return this.msisdn;
     }
 
-    public ArrayList<ExtBasicServiceCodeImpl> getBasicServiceList() {
+    public List<ExtBasicServiceCodeImpl> getBasicServiceList() {
     	if(this.basicServiceList==null)
     		return null;
     	

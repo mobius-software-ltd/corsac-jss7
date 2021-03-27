@@ -22,36 +22,33 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeaturesImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.RegionalSubscriptionResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -61,50 +58,47 @@ import org.testng.annotations.Test;
 public class InsertSubscriberDataResponseTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 81, -95, 3, 4, 1, 16, -94, 3, 4, 1, 38, -93, 3, 4, 1, 0, -124, 5, 3, 74, -43, 85, 80, -123, 1,
-                1, -122, 2, 4, -16, -89, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48,
-                11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -120, 2, 1, -2, -119, 5, 6, 85, 85, 85, 64 };
+        return new byte[] { 48, 87, -95, 3, 4, 1, 16, -94, 3, 4, 1, 38, -93, 3, 4, 1, 0, -124, 5, 4, 74, -43, 85, 80, -123, 1, 1, -122, 2, 4, -16, -89, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -120, 2, 1, -2, -119, 5, 6, 85, 85, 85, 64 };
     };
 
     public byte[] getData1() {
-        return new byte[] { 48, 25, -95, 3, 4, 1, 16, -94, 3, 4, 1, 38, -93, 3, 4, 1, 0, -124, 5, 3, 74, -43, 85, 80, -123, 1,
-                1 };
+        return new byte[] { 48, 25, -95, 3, 4, 1, 16, -94, 3, 4, 1, 38, -93, 3, 4, 1, 0, -124, 5, 4, 74, -43, 85, 80, -123, 1, 1 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        // ISD Response V3 Test
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(InsertSubscriberDataResponseImpl.class);
+    	
+    	// ISD Response V3 Test
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        InsertSubscriberDataResponseImpl prim = new InsertSubscriberDataResponseImpl(3);
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InsertSubscriberDataResponseImpl);
+        InsertSubscriberDataResponseImpl prim = (InsertSubscriberDataResponseImpl)result.getResult();
+        
         // teleserviceList
-        ArrayList<ExtTeleserviceCode> teleserviceList = prim.getTeleserviceList();
+        List<ExtTeleserviceCodeImpl> teleserviceList = prim.getTeleserviceList();
         assertNotNull(teleserviceList);
         assertEquals(teleserviceList.size(), 1);
-        ExtTeleserviceCode extTeleserviceCode = teleserviceList.get(0);
+        ExtTeleserviceCodeImpl extTeleserviceCode = teleserviceList.get(0);
         assertEquals(extTeleserviceCode.getTeleserviceCodeValue(), TeleserviceCodeValue.allSpeechTransmissionServices);
 
         // bearerServiceList
-        ArrayList<ExtBearerServiceCode> bearerServiceList = prim.getBearerServiceList();
+        List<ExtBearerServiceCodeImpl> bearerServiceList = prim.getBearerServiceList();
         assertNotNull(bearerServiceList);
         assertEquals(bearerServiceList.size(), 1);
-        ExtBearerServiceCode extBearerServiceCode = bearerServiceList.get(0);
+        ExtBearerServiceCodeImpl extBearerServiceCode = bearerServiceList.get(0);
         assertEquals(extBearerServiceCode.getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
 
         // ssList
-        ArrayList<SSCodeImpl> ssList = prim.getSSList();
+        List<SSCodeImpl> ssList = prim.getSSList();
         assertNotNull(ssList);
         assertEquals(ssList.size(), 1);
         SSCodeImpl ssCode = ssList.get(0);
         assertEquals(ssCode.getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
 
-        ODBGeneralData odbGeneralData = prim.getODBGeneralData();
+        ODBGeneralDataImpl odbGeneralData = prim.getODBGeneralData();
         assertTrue(!odbGeneralData.getAllOGCallsBarred());
         assertTrue(odbGeneralData.getInternationalOGCallsBarred());
         assertTrue(!odbGeneralData.getInternationalOGCallsNotToHPLMNCountryBarred());
@@ -137,7 +131,7 @@ public class InsertSubscriberDataResponseTest {
 
         assertEquals(prim.getRegionalSubscriptionResponse(), RegionalSubscriptionResponse.tooManyZoneCodes);
 
-        SupportedCamelPhases supportedCamelPhases = prim.getSupportedCamelPhases();
+        SupportedCamelPhasesImpl supportedCamelPhases = prim.getSupportedCamelPhases();
         assertTrue(supportedCamelPhases.getPhase1Supported());
         assertTrue(supportedCamelPhases.getPhase2Supported());
         assertTrue(supportedCamelPhases.getPhase3Supported());
@@ -146,7 +140,7 @@ public class InsertSubscriberDataResponseTest {
         assertNotNull(prim.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
 
-        OfferedCamel4CSIs offeredCamel4CSIs = prim.getOfferedCamel4CSIs();
+        OfferedCamel4CSIsImpl offeredCamel4CSIs = prim.getOfferedCamel4CSIs();
         assertTrue(offeredCamel4CSIs.getDCsi());
         assertTrue(offeredCamel4CSIs.getMgCsi());
         assertTrue(offeredCamel4CSIs.getMtSmsCsi());
@@ -155,7 +149,7 @@ public class InsertSubscriberDataResponseTest {
         assertTrue(offeredCamel4CSIs.getTCsi());
         assertTrue(offeredCamel4CSIs.getVtCsi());
 
-        SupportedFeatures supportedFeatures = prim.getSupportedFeatures();
+        SupportedFeaturesImpl supportedFeatures = prim.getSupportedFeatures();
         assertTrue(!supportedFeatures.getOdbAllApn());
         assertTrue(supportedFeatures.getOdbHPLMNApn());
         assertTrue(!supportedFeatures.getOdbVPLMNApn());
@@ -185,14 +179,11 @@ public class InsertSubscriberDataResponseTest {
 
         // IST Response V2 Test
         data = this.getData();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new InsertSubscriberDataResponseImpl(3);
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InsertSubscriberDataResponseImpl);
+        prim = (InsertSubscriberDataResponseImpl)result.getResult();
+        
         // teleserviceList
         teleserviceList = prim.getTeleserviceList();
         assertNotNull(teleserviceList);
@@ -251,16 +242,18 @@ public class InsertSubscriberDataResponseTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        // Start ISD Response Vesrion 3 Test
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(InsertSubscriberDataResponseImpl.class);
+    	
+    	// Start ISD Response Vesrion 3 Test
 
         // teleserviceList
-        ArrayList<ExtTeleserviceCode> teleserviceList = new ArrayList<ExtTeleserviceCode>();
-        ExtTeleserviceCode extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allSpeechTransmissionServices);
+        ArrayList<ExtTeleserviceCodeImpl> teleserviceList = new ArrayList<ExtTeleserviceCodeImpl>();
+        ExtTeleserviceCodeImpl extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allSpeechTransmissionServices);
         teleserviceList.add(extTeleservice);
 
         // bearerServiceList
-        ArrayList<ExtBearerServiceCode> bearerServiceList = new ArrayList<ExtBearerServiceCode>();
+        ArrayList<ExtBearerServiceCodeImpl> bearerServiceList = new ArrayList<ExtBearerServiceCodeImpl>();
         ExtBearerServiceCodeImpl extBearerServiceCode = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         bearerServiceList.add(extBearerServiceCode);
 
@@ -269,38 +262,39 @@ public class InsertSubscriberDataResponseTest {
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allSS);
         ssList.add(ssCode);
 
-        ODBGeneralData odbGeneralData = new ODBGeneralDataImpl(false, true, false, true, false, true, false, true, false, true,
+        ODBGeneralDataImpl odbGeneralData = new ODBGeneralDataImpl(false, true, false, true, false, true, false, true, false, true,
                 false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false,
                 true, false);
 
         RegionalSubscriptionResponse regionalSubscriptionResponse = RegionalSubscriptionResponse.tooManyZoneCodes;
 
-        SupportedCamelPhases supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, true);
+        SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, true);
 
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        OfferedCamel4CSIs offeredCamel4CSIs = new OfferedCamel4CSIsImpl(true, true, true, true, true, true, true);
+        OfferedCamel4CSIsImpl offeredCamel4CSIs = new OfferedCamel4CSIsImpl(true, true, true, true, true, true, true);
 
-        SupportedFeatures supportedFeatures = new SupportedFeaturesImpl(false, true, false, true, false, true, false, true,
+        SupportedFeaturesImpl supportedFeatures = new SupportedFeaturesImpl(false, true, false, true, false, true, false, true,
                 false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false,
                 true);
 
         InsertSubscriberDataResponseImpl prim = new InsertSubscriberDataResponseImpl(3, teleserviceList, bearerServiceList,
                 ssList, odbGeneralData, regionalSubscriptionResponse, supportedCamelPhases, extensionContainer,
                 offeredCamel4CSIs, supportedFeatures);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        byte[] rawData = this.getData();
+        assertEquals(encodedData, rawData);
 
         // Start ISD Response Vesrion 2 Test
         prim = new InsertSubscriberDataResponseImpl(2, teleserviceList, bearerServiceList, ssList, odbGeneralData,
                 regionalSubscriptionResponse);
 
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
-
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData = this.getData1();
+        assertEquals(encodedData, rawData);
     }
 }

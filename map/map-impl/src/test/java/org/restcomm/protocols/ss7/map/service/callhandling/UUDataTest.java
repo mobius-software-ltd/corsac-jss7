@@ -22,20 +22,24 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UUDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUI;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIndicator;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIndicatorImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -49,8 +53,7 @@ public class UUDataTest {
     }
 
     public byte[] getData2() {
-        return new byte[] { 48, 53, (byte) 128, 1, (byte) 140, (byte) 129, 5, 1, 2, 3, 4, 5, (byte) 130, 0, (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42,
-                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
+        return new byte[] { 48, 59, -128, 1, -116, -127, 5, 1, 2, 3, 4, 5, -126, 0, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     public byte[] getUUIData() {
@@ -59,15 +62,15 @@ public class UUDataTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UUDataImpl.class);
 
         byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        UUDataImpl elem = new UUDataImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-        elem.decodeAll(ais);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof UUDataImpl);
+        UUDataImpl elem = (UUDataImpl)result.getResult();
+        
         assertEquals(elem.getUUIndicator().getData(), 140);
         assertNull(elem.getUUI());
         assertFalse(elem.getUusCFInteraction());
@@ -75,12 +78,10 @@ public class UUDataTest {
 
 
         data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new UUDataImpl();
-        tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-        elem.decodeAll(ais);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof UUDataImpl);
+        elem = (UUDataImpl)result.getResult();
 
         assertEquals(elem.getUUIndicator().getData(), 140);
         assertEquals(elem.getUUI().getData(), getUUIData());
@@ -90,75 +91,25 @@ public class UUDataTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UUDataImpl.class);
 
-        UUIndicator uuIndicator = new UUIndicatorImpl(140);
+        UUIndicatorImpl uuIndicator = new UUIndicatorImpl(140);
         UUDataImpl elem = new UUDataImpl(uuIndicator, null, false, null);
-        // UUIndicator uuIndicator, UUI uuI, boolean uusCFInteraction, MAPExtensionContainerImpl extensionContainer
+        
+        byte[] data=getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
-
-
-        UUI uuI = new UUIImpl(getUUIData());
+        UUIImpl uuI = new UUIImpl(getUUIData());
         elem = new UUDataImpl(uuIndicator, uuI, true, MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        data=getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerialize() throws Exception {
-
-        UUIndicator uuIndicator = new UUIndicatorImpl(140);
-        UUDataImpl original = new UUDataImpl(uuIndicator, null, false, null);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "uuData", UUDataImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        UUDataImpl copy = reader.read("uuData", UUDataImpl.class);
-
-        assertEquals(copy.getUUIndicator().getData(), original.getUUIndicator().getData());
-        assertNull(copy.getUUI());
-        assertEquals(copy.getUusCFInteraction(), original.getUusCFInteraction());
-        assertNull(copy.getExtensionContainer());
-
-
-        UUI uuI = new UUIImpl(getUUIData());
-        original = new UUDataImpl(uuIndicator, uuI, true, MAPExtensionContainerTest.GetTestExtensionContainer());
-
-        // Writes the area to a file.
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "uuData", UUDataImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-        copy = reader.read("uuData", UUDataImpl.class);
-
-        assertEquals(copy.getUUIndicator().getData(), original.getUUIndicator().getData());
-        assertEquals(copy.getUUI().getData(), original.getUUI().getData());
-        assertEquals(copy.getUusCFInteraction(), original.getUusCFInteraction());
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(copy.getExtensionContainer()));
-    }*/
 }

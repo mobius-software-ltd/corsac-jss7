@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -45,7 +45,7 @@ public class ReportingPLMNListImpl {
     public ReportingPLMNListImpl() {
     }
 
-    public ReportingPLMNListImpl(boolean plmnListPrioritized, ArrayList<ReportingPLMNImpl> plmnList) {
+    public ReportingPLMNListImpl(boolean plmnListPrioritized, List<ReportingPLMNImpl> plmnList) {
     	if(plmnListPrioritized)
     		this.plmnListPrioritized = new ASNNull();
     	
@@ -57,7 +57,7 @@ public class ReportingPLMNListImpl {
         return plmnListPrioritized!=null;
     }
 
-    public ArrayList<ReportingPLMNImpl> getPlmnList() {
+    public List<ReportingPLMNImpl> getPlmnList() {
     	if(plmnList==null)
     		return null;
     	

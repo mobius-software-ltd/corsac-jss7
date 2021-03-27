@@ -55,6 +55,8 @@ public class VoiceGroupCallDataImpl {
         this.additionalSubscriptions = additionalSubscriptions;
         this.additionalInfo = additionalInfo;
         this.longGroupId = longGroupId;
+        if(this.longGroupId!=null)
+        	this.groupId=new GroupIdImpl("");
     }
 
     public GroupIdImpl getGroupId() {

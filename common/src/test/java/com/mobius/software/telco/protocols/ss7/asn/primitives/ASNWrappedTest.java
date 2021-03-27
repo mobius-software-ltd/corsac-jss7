@@ -28,14 +28,15 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class ASNWrappedTest 
 {
@@ -44,7 +45,7 @@ public class ASNWrappedTest
 	@Test
 	public void testWrappedPrimitive1() {	
 		parser=parser.getParser(this.getClass());
-		parser.loadClass(ASNWrappedPrimitive1.class);
+		parser.replaceClass(ASNWrappedPrimitive1.class);
 		
 		byte[] encodedValue1=new byte[] {(byte)0xD7, 0x01, 0x19, 0x02, 0x01, 0x1C, 0x01, 0x01, 0x00};				
 		ASNWrappedPrimitive1 primitive1=new ASNWrappedPrimitive1(25L, 28L, false);
@@ -59,8 +60,8 @@ public class ASNWrappedTest
 			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(encodedValue1);
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
 			assertTrue(decodedValue instanceof ASNWrappedPrimitive1);
-			assertEquals(((ASNWrappedPrimitive1)decodedValue).getField1(),new Long(25));
-			assertEquals(((ASNWrappedPrimitive1)decodedValue).getField2(),new Long(28));
+			assertEquals(((ASNWrappedPrimitive1)decodedValue).getField1(),Long.valueOf(25L));
+			assertEquals(((ASNWrappedPrimitive1)decodedValue).getField2(),Long.valueOf(28L));
 			assertFalse(((ASNWrappedPrimitive1)decodedValue).getField3());			
 		}
 		catch(Exception ex)
@@ -68,5 +69,5 @@ public class ASNWrappedTest
 			ex.printStackTrace();
 			assertEquals(1, 2);
 		}
-	}		
+	}
 }

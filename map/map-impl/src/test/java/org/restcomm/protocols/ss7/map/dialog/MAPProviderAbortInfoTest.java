@@ -23,17 +23,21 @@
 package org.restcomm.protocols.ss7.map.dialog;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPProviderAbortReason;
-import org.restcomm.protocols.ss7.map.dialog.MAPProviderAbortInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,35 +47,32 @@ import org.testng.annotations.Test;
 public class MAPProviderAbortInfoTest {
 
     private byte[] getDataFull() {
-        return new byte[] { -91, 44, 10, 1, 1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
-                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { -91, 50, 10, 1, 1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     @Test(groups = { "functional.decode", "dialog" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(MAPProviderAbortInfoImpl.class);
+    	
         // The raw data is from last packet of long ussd-abort from msc2.txt
         byte[] data = new byte[] { (byte) 0xA5, 0x03, (byte) 0x0A, 0x01, 0x00 };
 
-        AsnInputStream asnIs = new AsnInputStream(data);
-        int tag = asnIs.readTag();
-        assertEquals(tag, 5);
-
-        MAPProviderAbortInfoImpl mapProviderAbortInfo = new MAPProviderAbortInfoImpl();
-        mapProviderAbortInfo.decodeAll(asnIs);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MAPProviderAbortInfoImpl);
+        MAPProviderAbortInfoImpl mapProviderAbortInfo = (MAPProviderAbortInfoImpl)result.getResult();
+        
         MAPProviderAbortReason reason = mapProviderAbortInfo.getMAPProviderAbortReason();
-
         assertNotNull(reason);
-
         assertEquals(reason, MAPProviderAbortReason.abnormalDialogue);
 
         data = this.getDataFull();
-        asnIs = new AsnInputStream(data);
-        tag = asnIs.readTag();
-        assertEquals(tag, 5);
-
-        mapProviderAbortInfo = new MAPProviderAbortInfoImpl();
-        mapProviderAbortInfo.decodeAll(asnIs);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MAPProviderAbortInfoImpl);
+        mapProviderAbortInfo = (MAPProviderAbortInfoImpl)result.getResult();
+        
         reason = mapProviderAbortInfo.getMAPProviderAbortReason();
 
         assertNotNull(reason);
@@ -82,30 +83,25 @@ public class MAPProviderAbortInfoTest {
 
     @Test(groups = { "functional.encode", "dialog" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(MAPProviderAbortInfoImpl.class);
+    	
         MAPProviderAbortInfoImpl mapProviderAbortInfo = new MAPProviderAbortInfoImpl();
         mapProviderAbortInfo.setMAPProviderAbortReason(MAPProviderAbortReason.invalidPDU);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        mapProviderAbortInfo.encodeAll(asnOS);
-
-        byte[] data = asnOS.toByteArray();
-
-        // System.out.println(dump(data, data.length, false));
-
+        ByteBuf buffer=parser.encode(mapProviderAbortInfo);
+        byte[] data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
         assertTrue(Arrays.equals(new byte[] { (byte) 0xA5, 0x03, (byte) 0x0A, 0x01, 0x01 }, data));
 
         mapProviderAbortInfo = new MAPProviderAbortInfoImpl();
         mapProviderAbortInfo.setMAPProviderAbortReason(MAPProviderAbortReason.invalidPDU);
         mapProviderAbortInfo.setExtensionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        asnOS = new AsnOutputStream();
-        mapProviderAbortInfo.encodeAll(asnOS);
-
-        data = asnOS.toByteArray();
+        buffer=parser.encode(mapProviderAbortInfo);
+        data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
         assertTrue(Arrays.equals(this.getDataFull(), data));
-
     }
-
 }

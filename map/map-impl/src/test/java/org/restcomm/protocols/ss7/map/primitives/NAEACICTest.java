@@ -1,17 +1,21 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEACICImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationTypeValue;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class NAEACICTest {
 
@@ -25,24 +29,27 @@ public class NAEACICTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        NAEACICImpl prim = new NAEACICImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+    	ASNParser parser=new ASNParser(false);
+    	parser.replaceClass(NAEACICImpl.class);
+    	
+    	byte[] data = this.getData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof NAEACICImpl);
+        NAEACICImpl prim = (NAEACICImpl)result.getResult();
+        
         assertTrue(prim.getCarrierCode().equals("1234"));
         assertEquals(prim.getNetworkIdentificationPlanValue(), NetworkIdentificationPlanValue.fourDigitCarrierIdentification);
         assertEquals(prim.getNetworkIdentificationTypeValue(), NetworkIdentificationTypeValue.nationalNetworkIdentification);
 
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new NAEACICImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof NAEACICImpl);
+        prim = (NAEACICImpl)result.getResult();
+        
         assertTrue(prim.getCarrierCode().equals("123"));
         assertEquals(prim.getNetworkIdentificationPlanValue(), NetworkIdentificationPlanValue.threeDigitCarrierIdentification);
         assertEquals(prim.getNetworkIdentificationTypeValue(), NetworkIdentificationTypeValue.nationalNetworkIdentification);
@@ -50,20 +57,23 @@ public class NAEACICTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        // option 1
-        NAEACICImpl prim = new NAEACICImpl("1234", NetworkIdentificationPlanValue.fourDigitCarrierIdentification,
-                NetworkIdentificationTypeValue.nationalNetworkIdentification);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+    	ASNParser parser=new ASNParser(false);
+    	parser.replaceClass(NAEACICImpl.class);
+    	
+    	// option 1
+        NAEACICImpl prim = new NAEACICImpl("1234", NetworkIdentificationPlanValue.fourDigitCarrierIdentification, NetworkIdentificationTypeValue.nationalNetworkIdentification);
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertTrue(Arrays.equals(encodedData, this.getData()));
 
         // option 2
-        prim = new NAEACICImpl("123", NetworkIdentificationPlanValue.threeDigitCarrierIdentification,
-                NetworkIdentificationTypeValue.nationalNetworkIdentification);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        prim = new NAEACICImpl("123", NetworkIdentificationPlanValue.threeDigitCarrierIdentification, NetworkIdentificationTypeValue.nationalNetworkIdentification);
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertTrue(Arrays.equals(encodedData, this.getData2()));
     }
-
 }

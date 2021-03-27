@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -34,23 +35,29 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPExtensionContainerImpl {
 	
-	private ArrayList<MAPPrivateExtensionImpl> privateExtensionList;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
+    private MAPPrivateExtensionsListWrapperImpl privateExtensionList;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
     private ASNPCSExtentionImpl pcsExtensions;
 
     public MAPExtensionContainerImpl() {
     }
 
-    public MAPExtensionContainerImpl(ArrayList<MAPPrivateExtensionImpl> privateExtensionList, ASNPCSExtentionImpl pcsExtensions) {
-        this.privateExtensionList = privateExtensionList;
+    public MAPExtensionContainerImpl(List<MAPPrivateExtensionImpl> privateExtensionList, ASNPCSExtentionImpl pcsExtensions) {
+        this.privateExtensionList = new MAPPrivateExtensionsListWrapperImpl(privateExtensionList);
         this.pcsExtensions = pcsExtensions;
     }
-
-    public ArrayList<MAPPrivateExtensionImpl> getPrivateExtensionList() {
-        return this.privateExtensionList;
+    
+    public List<MAPPrivateExtensionImpl> getPrivateExtensionList() {
+    	if(this.privateExtensionList==null)
+    		return null;
+    	
+        return this.privateExtensionList.getMAPPrivateExtensions();
     }
 
-    public void setPrivateExtensionList(ArrayList<MAPPrivateExtensionImpl> privateExtensionList) {
-        this.privateExtensionList = privateExtensionList;
+    public void setPrivateExtensionList(List<MAPPrivateExtensionImpl> privateExtensionList) {
+        this.privateExtensionList = new MAPPrivateExtensionsListWrapperImpl(privateExtensionList);
     }
 
     public ASNPCSExtentionImpl getPcsExtensions() {
@@ -67,8 +74,8 @@ public class MAPExtensionContainerImpl {
         sb.append("Extension Container [");
         sb.append(" [");
 
-        if (this.privateExtensionList != null && this.privateExtensionList.size() > 0) {
-            for (MAPPrivateExtensionImpl pe : this.privateExtensionList) {
+        if (this.privateExtensionList != null && this.privateExtensionList.getMAPPrivateExtensions() != null && this.privateExtensionList.getMAPPrivateExtensions().size() > 0) {
+            for (MAPPrivateExtensionImpl pe : this.privateExtensionList.getMAPPrivateExtensions()) {
                 sb.append("\n");
                 sb.append(pe.toString());
             }

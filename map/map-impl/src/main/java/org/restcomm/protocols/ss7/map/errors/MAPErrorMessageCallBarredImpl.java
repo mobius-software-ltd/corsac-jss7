@@ -40,7 +40,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implements MAPErrorMessageCallBarred {
-	private long mapProtocolVersion;
+	private long mapProtocolVersion=3;
     private ASNCallBaringCauseImpl callBarringCause;
     private MAPExtensionContainerImpl extensionContainer;
     

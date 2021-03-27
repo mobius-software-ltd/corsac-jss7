@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeImpl;
@@ -62,16 +62,16 @@ public interface SubscriberData extends Serializable {
 
     SubscriberStatus getSubscriberStatus();
 
-    ArrayList<BearerServiceCodeImpl> getBearerServiceList();
+    List<BearerServiceCodeImpl> getBearerServiceList();
 
-    ArrayList<TeleserviceCodeImpl> getTeleserviceList();
+    List<TeleserviceCodeImpl> getTeleserviceList();
 
-    ArrayList<SSInfoImpl> getProvisionedSS();
+    List<SSInfoImpl> getProvisionedSS();
 
     ODBDataImpl getOdbData();
 
     boolean getRoamingRestrictionDueToUnsupportedFeature();
 
-    ArrayList<ZoneCodeImpl> getRegionalSubscriptionData();
+    List<ZoneCodeImpl> getRegionalSubscriptionData();
 
 }

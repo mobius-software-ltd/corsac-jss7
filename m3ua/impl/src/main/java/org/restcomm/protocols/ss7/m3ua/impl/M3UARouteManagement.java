@@ -304,7 +304,7 @@ public class M3UARouteManagement {
     	Iterator<Entry<RoutingKey, RouteAs>> iterator=this.route.entrySet().iterator();
     	while(iterator.hasNext()) {
     		Entry<RoutingKey, RouteAs> currEntry=iterator.next();    	    
-            if (currEntry.getKey().getDpc().equals(Integer.toString(dpc))) {
+            if (currEntry.getKey().getDpc().equals(Integer.valueOf(dpc))) {
                 RouteAsImpl asList = (RouteAsImpl)currEntry.getValue();
                 if(asList.hasAs(asImpl)){
                     return;
@@ -319,7 +319,7 @@ public class M3UARouteManagement {
         } else {
             row.removeServedByAs(asImpl);
             if (row.servedByAsSize() == 0) {
-                this.routeTable.remove(row);
+                this.routeTable.remove(dpc);
             }
         }
     }

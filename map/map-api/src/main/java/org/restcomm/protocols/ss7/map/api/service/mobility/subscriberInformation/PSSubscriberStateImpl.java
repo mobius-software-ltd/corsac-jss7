@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -60,7 +60,7 @@ public class PSSubscriberStateImpl {
     }
 
     public PSSubscriberStateImpl(PSSubscriberState choice, NotReachableReason netDetNotReachable,
-            ArrayList<PDPContextInfoImpl> pdpContextInfoList) {
+            List<PDPContextInfoImpl> pdpContextInfoList) {
         switch (choice) {
 			case netDetNotReachable:
 				if(netDetNotReachable!=null) {
@@ -117,7 +117,7 @@ public class PSSubscriberStateImpl {
         return this.netDetNotReachable.getType();
     }
 
-    public ArrayList<PDPContextInfoImpl> getPDPContextInfoList() {
+    public List<PDPContextInfoImpl> getPDPContextInfoList() {
     	if(psPDPActiveNotReachableForPaging!=null)
     		return psPDPActiveNotReachableForPaging.getPDPContextInfoList();
     	else if(psPDPActiveReachableForPaging!=null)
@@ -141,7 +141,7 @@ public class PSSubscriberStateImpl {
             sb.append(this.netDetNotReachable.toString());
         }
         
-        ArrayList<PDPContextInfoImpl> pdpContextInfoList=getPDPContextInfoList();
+        List<PDPContextInfoImpl> pdpContextInfoList=getPDPContextInfoList();
         if (pdpContextInfoList != null && pdpContextInfoList.size() > 0) {
             sb.append(", pdpContextInfoList [");
             for (PDPContextInfoImpl p : pdpContextInfoList) {

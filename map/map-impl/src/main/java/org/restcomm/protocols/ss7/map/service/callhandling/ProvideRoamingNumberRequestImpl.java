@@ -116,7 +116,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=21,constructed=false,index=-1)
     private ASNNull mtRoamingRetrySupported;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=true,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=true,index=-1)
     private PagingAreaImpl pagingArea;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=false,index=-1)
@@ -130,6 +130,10 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     
     private long mapProtocolVersion;
 
+    public ProvideRoamingNumberRequestImpl() {
+    	this.mapProtocolVersion=3;
+    }
+    
     public ProvideRoamingNumberRequestImpl(IMSIImpl imsi, ISDNAddressStringImpl mscNumber, ISDNAddressStringImpl msisdn, LMSIImpl lmsi,
             ExternalSignalInfoImpl gsmBearerCapability, ExternalSignalInfoImpl networkSignalInfo, boolean suppressionOfAnnouncement,
             ISDNAddressStringImpl gmscAddress, CallReferenceNumberImpl callReferenceNumber, boolean orInterrogation,

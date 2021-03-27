@@ -22,23 +22,30 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -65,33 +72,41 @@ public class CellGlobalIdOrServiceAreaIdOrLAITest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl.class);
+    	
         byte[] data = new byte[] { (byte) 0x80, 0x07, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b };
 
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl();
-        cellGlobalIdOrServiceAreaIdOrLAI.decodeAll(asn);
-
-        assertNotNull(cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdFixedLength());
-        assertTrue(Arrays.equals(new byte[] { 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b }, cellGlobalIdOrServiceAreaIdOrLAI
-                .getCellGlobalIdOrServiceAreaIdFixedLength().getData()));
-
+        ASNDecodeResult result = parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl);
+        CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl cellGlobalIdOrServiceAreaIdOrLAI = (CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl)result.getResult();
+        
+        assertNotNull(cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength());
+        assertNull(cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength());
+        
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl lai = cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength();
+        assertEquals(lai.getMCC(), 506);
+        assertEquals(lai.getMNC(), 700);
+        assertEquals(lai.getLac(), 0x0809);
+        assertEquals(lai.getCellIdOrServiceAreaCode(), 0x0a0b);
     }
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl.class);
+    	
         byte[] data = new byte[] { (byte) 0x80, 0x07, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b };
 
-        CellGlobalIdOrServiceAreaIdFixedLength par = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(new byte[] { 0x05, 0x06,
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl par = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(new byte[] { 0x05, 0x06,
                 0x07, 0x08, 0x09, 0x0a, 0x0b });
         CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl(par);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        cellGlobalIdOrServiceAreaIdOrLAI.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl wrapper=new CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl(cellGlobalIdOrServiceAreaIdOrLAI);
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         assertTrue(Arrays.equals(data, encodedData));
 
     }

@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
@@ -48,7 +48,7 @@ public class SSCamelDataImpl {
     public SSCamelDataImpl() {
     }
 
-    public SSCamelDataImpl(ArrayList<SSCodeImpl> ssEventList, ISDNAddressStringImpl gsmSCFAddress,
+    public SSCamelDataImpl(List<SSCodeImpl> ssEventList, ISDNAddressStringImpl gsmSCFAddress,
             MAPExtensionContainerImpl extensionContainer) {
         if(ssEventList!=null)
         	this.ssEventList = new SSCodeListWrapperImpl(ssEventList);
@@ -57,7 +57,7 @@ public class SSCamelDataImpl {
         this.extensionContainer = extensionContainer;
     }
 
-    public ArrayList<SSCodeImpl> getSsEventList() {
+    public List<SSCodeImpl> getSsEventList() {
     	if(this.ssEventList==null)
     		return null;
     	

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
@@ -153,21 +153,21 @@ public interface InsertSubscriberDataRequest extends MobilityMessage {
 
     SubscriberStatus getSubscriberStatus();
 
-    ArrayList<ExtBearerServiceCodeImpl> getBearerServiceList();
+    List<ExtBearerServiceCodeImpl> getBearerServiceList();
 
-    ArrayList<ExtTeleserviceCodeImpl> getTeleserviceList();
+    List<ExtTeleserviceCodeImpl> getTeleserviceList();
 
-    ArrayList<ExtSSInfoImpl> getProvisionedSS();
+    List<ExtSSInfoImpl> getProvisionedSS();
 
     ODBDataImpl getODBData();
 
     boolean getRoamingRestrictionDueToUnsupportedFeature();
 
-    ArrayList<ZoneCodeImpl> getRegionalSubscriptionData();
+    List<ZoneCodeImpl> getRegionalSubscriptionData();
 
-    ArrayList<VoiceBroadcastDataImpl> getVbsSubscriptionData();
+    List<VoiceBroadcastDataImpl> getVbsSubscriptionData();
 
-    ArrayList<VoiceGroupCallDataImpl> getVgcsSubscriptionData();
+    List<VoiceGroupCallDataImpl> getVgcsSubscriptionData();
 
     VlrCamelSubscriptionInfoImpl getVlrCamelSubscriptionInfo();
 
@@ -205,7 +205,7 @@ public interface InsertSubscriberDataRequest extends MobilityMessage {
 
     EPSSubscriptionDataImpl getEpsSubscriptionData();
 
-    ArrayList<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
+    List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
 
     boolean getUeReachabilityRequestIndicator();
 

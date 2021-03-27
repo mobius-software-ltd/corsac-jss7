@@ -22,19 +22,24 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTSMSTPDUType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteriaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSTriggerDetectionPoint;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -49,16 +54,16 @@ public class MTsmsCAMELTDPCriteriaTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        MTsmsCAMELTDPCriteriaImpl prim = new MTsmsCAMELTDPCriteriaImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ArrayList<MTSMSTPDUType> tPDUTypeCriterion = prim.getTPDUTypeCriterion();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MTsmsCAMELTDPCriteriaImpl.class);
+    	
+    	byte[] data = this.getData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MTsmsCAMELTDPCriteriaImpl);
+        MTsmsCAMELTDPCriteriaImpl prim = (MTsmsCAMELTDPCriteriaImpl)result.getResult();
+        
+        List<MTSMSTPDUType> tPDUTypeCriterion = prim.getTPDUTypeCriterion();
         assertNotNull(tPDUTypeCriterion);
         assertEquals(tPDUTypeCriterion.size(), 2);
         MTSMSTPDUType one = tPDUTypeCriterion.get(0);
@@ -74,17 +79,19 @@ public class MTsmsCAMELTDPCriteriaTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MTsmsCAMELTDPCriteriaImpl.class);
+    	
         SMSTriggerDetectionPoint smsTriggerDetectionPoint = SMSTriggerDetectionPoint.smsCollectedInfo;
         ArrayList<MTSMSTPDUType> tPDUTypeCriterion = new ArrayList<MTSMSTPDUType>();
         tPDUTypeCriterion.add(MTSMSTPDUType.smsDELIVER);
         tPDUTypeCriterion.add(MTSMSTPDUType.smsSTATUSREPORT);
 
         MTsmsCAMELTDPCriteriaImpl prim = new MTsmsCAMELTDPCriteriaImpl(smsTriggerDetectionPoint, tPDUTypeCriterion);
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        byte[] rawData = this.getData();
+        assertTrue(Arrays.equals(encodedData, rawData));
     }
 }

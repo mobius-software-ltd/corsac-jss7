@@ -103,7 +103,10 @@ public class SmsStatusReportTpduImpl extends SmsTpduImpl {
             throw new MAPException("Error creating a new SmsStatusReport instance: Status field has not been found");
         this.status = new StatusImpl(bt);
 
-        bt = stm.readByte() & 0x0FF;
+        bt = -1;
+        if(stm.readableBytes()>0)
+        	bt = stm.readByte() & 0x0FF;
+        
         if (bt == -1)
             this.parameterIndicator = new ParameterIndicatorImpl(0);
         else

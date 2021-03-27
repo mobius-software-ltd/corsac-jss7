@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.TransactionID;
 
 /**
  * @author amit bhayani

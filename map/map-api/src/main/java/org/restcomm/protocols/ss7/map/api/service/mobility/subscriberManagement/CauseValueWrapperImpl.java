@@ -22,10 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -36,17 +35,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CauseValueWrapperImpl {
 	
-	@ASNChoise
-    private ArrayList<CauseValueImpl> causeValueImpl;
+	private List<CauseValueImpl> causeValueImpl;
 
     public CauseValueWrapperImpl() {
     }
 
-    public CauseValueWrapperImpl(ArrayList<CauseValueImpl> causeValueImpl) {
+    public CauseValueWrapperImpl(List<CauseValueImpl> causeValueImpl) {
         this.causeValueImpl = causeValueImpl;
     }
 
-    public ArrayList<CauseValueImpl> getCauseValueImpl() {
+    public List<CauseValueImpl> getCauseValueImpl() {
     	return causeValueImpl;
     }
 }

@@ -23,20 +23,13 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredLocationEventType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredLocationEventTypeImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LocationEstimateType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LocationTypeImpl;
@@ -46,12 +39,22 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  * @author amit bhayani
  *
  */
 public class LocationTypeTest {
 
+	byte[] data = new byte[] { 0x30, 0x03, (byte) 0x80, 0x01, 0x00 };
+
+	byte[] data2 = new byte[] { 0x30, 0x07, (byte) 0x80, 0x01, 0x00, (byte) 0x81, 0x02, 0x04, (byte) -16 };
+	
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
@@ -70,13 +73,14 @@ public class LocationTypeTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
-        byte[] data = new byte[] { 0x30, 0x03, (byte) 0x80, 0x01, 0x00 };
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        LocationTypeImpl locType = new LocationTypeImpl();
-        locType.decodeAll(asn);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LocationTypeImpl.class);
+    	
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LocationTypeImpl);
+        LocationTypeImpl locType = (LocationTypeImpl)result.getResult();
+        
         assertNotNull(locType.getLocationEstimateType());
         assertEquals(locType.getLocationEstimateType(), LocationEstimateType.currentLocation);
         assertNull(locType.getDeferredLocationEventType());
@@ -85,26 +89,25 @@ public class LocationTypeTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-        byte[] data = new byte[] { 0x30, 0x03, (byte) 0x80, 0x01, 0x00 };
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LocationTypeImpl.class);
+    	
         LocationTypeImpl locType = new LocationTypeImpl(LocationEstimateType.currentLocation, null);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        locType.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ByteBuf buffer=parser.encode(locType);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
     }
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode1() throws Exception {
-        byte[] data = new byte[] { 0x30, 0x07, (byte) 0x80, 0x01, 0x00, (byte) 0x81, 0x02, 0x04, (byte) -16 };
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        LocationTypeImpl locType = new LocationTypeImpl();
-        locType.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LocationTypeImpl.class);
+    	
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data2));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LocationTypeImpl);
+        LocationTypeImpl locType = (LocationTypeImpl)result.getResult();
 
         assertNotNull(locType.getLocationEstimateType());
         assertEquals(locType.getLocationEstimateType(), LocationEstimateType.currentLocation);
@@ -120,41 +123,15 @@ public class LocationTypeTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode1() throws Exception {
-        byte[] data = new byte[] { 0x30, 0x07, (byte) 0x80, 0x01, 0x00, (byte) 0x81, 0x02, 0x04, (byte) -16 };
-
-        DeferredLocationEventType deferredLocationEventType = new DeferredLocationEventTypeImpl(true, true, true, true);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LocationTypeImpl.class);
+    	
+        DeferredLocationEventTypeImpl deferredLocationEventType = new DeferredLocationEventTypeImpl(true, true, true, true);
 
         LocationTypeImpl locType = new LocationTypeImpl(LocationEstimateType.currentLocation, deferredLocationEventType);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        locType.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
-        assertTrue(Arrays.equals(data, encodedData));
+        ByteBuf buffer=parser.encode(locType);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data2, encodedData));
     }
-
-    @Test(groups = { "functional.serialize", "service.lsm" })
-    public void testSerialization() throws Exception {
-        DeferredLocationEventType deferredLocationEventType = new DeferredLocationEventTypeImpl(true, true, true, true);
-
-        LocationTypeImpl original = new LocationTypeImpl(LocationEstimateType.currentLocation, deferredLocationEventType);
-
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        LocationTypeImpl copy = (LocationTypeImpl) o;
-
-        // test result
-        assertEquals(copy, original);
-    }
-
 }

@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
@@ -56,7 +56,7 @@ public interface ExtCallBarringInfoForCSE extends Serializable {
 
 	SSCodeImpl getSsCode();
 
-    ArrayList<ExtCallBarringFeatureImpl> getCallBarringFeatureList();
+    List<ExtCallBarringFeatureImpl> getCallBarringFeatureList();
 
     PasswordImpl getPassword();
 

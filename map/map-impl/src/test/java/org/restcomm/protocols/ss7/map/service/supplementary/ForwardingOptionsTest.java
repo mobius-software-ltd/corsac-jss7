@@ -22,13 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptionsImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
 import org.testng.annotations.AfterClass;
@@ -36,6 +35,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /*
  *
@@ -63,27 +68,30 @@ public class ForwardingOptionsTest {
 
     @Test(groups = { "functional.decode", "service.supplementary" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ForwardingOptionsImpl.class);
+    	        
         byte[] data1 = new byte[] { 0x4, 0x1, (byte) 0xE4 };
         byte[] data2 = new byte[] { 0x4, 0x1, (byte) 0x00 };
         byte[] data3 = new byte[] { 0x4, 0x1, (byte) 0xA8 };
         byte[] data4 = new byte[] { 0x4, 0x1, (byte) 0xC8 };
         byte[] data5 = new byte[] { 0x4, 0x1, (byte) 0x24 };
 
-        AsnInputStream asn = new AsnInputStream(data1);
-        asn.readTag();
-        ForwardingOptionsImpl fo = new ForwardingOptionsImpl();
-        fo.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data1));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ForwardingOptionsImpl);
+        ForwardingOptionsImpl fo = (ForwardingOptionsImpl)result.getResult();
+        
         // logger.info(":::::" + fo.getEncodedDataString());
         assertTrue(fo.isNotificationToForwardingParty());
         assertTrue(fo.isRedirectingPresentation());
         assertTrue(fo.isNotificationToCallingParty());
         assertTrue(fo.getForwardingReason() == ForwardingReason.busy);
 
-        asn = new AsnInputStream(data2);
-        asn.readTag();
-        fo = new ForwardingOptionsImpl();
-        fo.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data2));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ForwardingOptionsImpl);
+        fo = (ForwardingOptionsImpl)result.getResult();
 
         // logger.info(":::::" + fo.getEncodedDataString());
         assertTrue(!fo.isNotificationToForwardingParty());
@@ -91,10 +99,10 @@ public class ForwardingOptionsTest {
         assertTrue(!fo.isNotificationToCallingParty());
         assertTrue(fo.getForwardingReason() == ForwardingReason.notReachable);
 
-        asn = new AsnInputStream(data3);
-        asn.readTag();
-        fo = new ForwardingOptionsImpl();
-        fo.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data3));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ForwardingOptionsImpl);
+        fo = (ForwardingOptionsImpl)result.getResult();
 
         // logger.info(":::::" + fo.getEncodedDataString());
         assertTrue(fo.isNotificationToForwardingParty());
@@ -102,10 +110,10 @@ public class ForwardingOptionsTest {
         assertTrue(fo.isNotificationToCallingParty());
         assertTrue(fo.getForwardingReason() == ForwardingReason.noReply);
 
-        asn = new AsnInputStream(data4);
-        asn.readTag();
-        fo = new ForwardingOptionsImpl();
-        fo.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data4));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ForwardingOptionsImpl);
+        fo = (ForwardingOptionsImpl)result.getResult();
 
         // logger.info(":::::" + fo.getEncodedDataString());
         assertTrue(fo.isNotificationToForwardingParty());
@@ -113,10 +121,10 @@ public class ForwardingOptionsTest {
         assertTrue(!fo.isNotificationToCallingParty());
         assertTrue(fo.getForwardingReason() == ForwardingReason.noReply);
 
-        asn = new AsnInputStream(data5);
-        asn.readTag();
-        fo = new ForwardingOptionsImpl();
-        fo.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data5));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ForwardingOptionsImpl);
+        fo = (ForwardingOptionsImpl)result.getResult();
 
         // logger.info(":::::" + fo.getEncodedDataString());
         assertTrue(!fo.isNotificationToForwardingParty());
@@ -127,6 +135,9 @@ public class ForwardingOptionsTest {
 
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ForwardingOptionsImpl.class);
+    	        
         byte[] data1 = new byte[] { 0x4, 0x1, (byte) 0xE4 };
         byte[] data2 = new byte[] { 0x4, 0x1, (byte) 0x00 };
         byte[] data3 = new byte[] { 0x4, 0x1, (byte) 0xA8 };
@@ -134,48 +145,33 @@ public class ForwardingOptionsTest {
         byte[] data5 = new byte[] { 0x4, 0x1, (byte) 0x24 };
 
         ForwardingOptionsImpl fo = new ForwardingOptionsImpl(true, true, true, ForwardingReason.busy);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        fo.encodeAll(asnOS);
-
-        // logger.info("1:::::" + fo.getEncodedDataString());
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(fo);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data1, encodedData));
 
         fo = new ForwardingOptionsImpl(false, false, false, ForwardingReason.notReachable);
-        asnOS = new AsnOutputStream();
-        fo.encodeAll(asnOS);
-
-        // logger.info("2:::::" + fo.getEncodedDataString());
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(fo);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data2, encodedData));
 
         fo = new ForwardingOptionsImpl(true, false, true, ForwardingReason.noReply);
-        asnOS = new AsnOutputStream();
-        fo.encodeAll(asnOS);
-
-        // logger.info("3:::::" + fo.getEncodedDataString());
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(fo);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data3, encodedData));
 
         fo = new ForwardingOptionsImpl(true, true, false, ForwardingReason.noReply);
-        asnOS = new AsnOutputStream();
-        fo.encodeAll(asnOS);
-
-        // logger.info("4:::::" + fo.getEncodedDataString());
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(fo);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data4, encodedData));
 
         fo = new ForwardingOptionsImpl(false, false, true, ForwardingReason.busy);
-        asnOS = new AsnOutputStream();
-        fo.encodeAll(asnOS);
-
-        // logger.info("5:::::" + fo.getEncodedDataString());
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(fo);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data5, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "service.supplementary" })
-    public void testSerialization() throws Exception {
-
     }
 }

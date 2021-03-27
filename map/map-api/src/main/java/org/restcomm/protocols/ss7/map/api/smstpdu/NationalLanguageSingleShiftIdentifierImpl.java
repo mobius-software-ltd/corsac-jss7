@@ -30,6 +30,8 @@ import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
  *
  */
 public class NationalLanguageSingleShiftIdentifierImpl extends Gsm7NationalLanguageIdentifierImpl {
+	private static final long serialVersionUID = 1L;
+
 	public NationalLanguageSingleShiftIdentifierImpl(NationalLanguageIdentifier nationalLanguageCode) {
         super(nationalLanguageCode);
     }

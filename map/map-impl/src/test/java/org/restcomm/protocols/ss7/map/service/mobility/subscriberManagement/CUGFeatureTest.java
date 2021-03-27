@@ -23,27 +23,30 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InterCUGRestrictions;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InterCUGRestrictionsImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InterCUGRestrictionsValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -53,105 +56,76 @@ import org.testng.annotations.Test;
 public class CUGFeatureTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 50, -126, 1, 38, 2, 1, 1, 4, 1, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 56, -126, 1, 38, 2, 1, 1, 4, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     };
 
     public byte[] getData1() {
-        return new byte[] { 48, 50, -125, 1, 17, 2, 1, 1, 4, 1, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 56, -125, 1, 17, 2, 1, 1, 4, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        {
-            byte[] data = this.getData();
-            AsnInputStream asn = new AsnInputStream(data);
-            int tag = asn.readTag();
-            CUGFeatureImpl prim = new CUGFeatureImpl();
-            prim.decodeAll(asn);
-
-            assertEquals(tag, Tag.SEQUENCE);
-            assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
-            // assertTrue(Arrays.equals(prim.getBasicService().getExtBearerService().getData(),
-            // this.getData2()));
-            assertEquals(prim.getBasicService().getExtBearerService().getBearerServiceCodeValue(),
-                    BearerServiceCodeValue.padAccessCA_9600bps);
-            assertNull(prim.getBasicService().getExtTeleservice());
-            // assertTrue(prim.getPreferentialCugIndicator().equals(new Integer(1)));
-            assertEquals((int) prim.getPreferentialCugIndicator(), 1);
-            // assertTrue(prim.getInterCugRestrictions().getInterCUGRestrictionsValue().equals(
-            // InterCUGRestrictionsValue.CUGOnlyFacilities));
-            assertEquals(prim.getInterCugRestrictions().getInterCUGRestrictionsValue(),
-                    InterCUGRestrictionsValue.CUGOnlyFacilities);
-            assertNotNull(extensionContainer);
-            assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
-        }
-
-        {
-            byte[] data = this.getData1();
-            AsnInputStream asn = new AsnInputStream(data);
-            int tag = asn.readTag();
-            CUGFeatureImpl prim = new CUGFeatureImpl();
-            prim.decodeAll(asn);
-
-            assertEquals(tag, Tag.SEQUENCE);
-            assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
-            // assertTrue(Arrays.equals(prim.getBasicService().getExtTeleservice().getData(),
-            // this.getData3()));
-            assertEquals(prim.getBasicService().getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
-            assertNull(prim.getBasicService().getExtBearerService());
-            // assertTrue(prim.getPreferentialCugIndicator().equals(new Integer(1)));
-            assertEquals((int) prim.getPreferentialCugIndicator(), 1);
-            assertTrue(prim.getInterCugRestrictions().getInterCUGRestrictionsValue()
-                    .equals(InterCUGRestrictionsValue.CUGOnlyFacilities));
-            assertNotNull(extensionContainer);
-        }
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CUGFeatureImpl.class);
+    	
+        byte[] data = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CUGFeatureImpl);
+        CUGFeatureImpl prim = (CUGFeatureImpl)result.getResult();   
+        
+        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+    	assertEquals(prim.getBasicService().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
+    	assertNull(prim.getBasicService().getExtTeleservice());
+    	assertEquals((int) prim.getPreferentialCugIndicator(), 1);
+    	assertEquals(prim.getInterCugRestrictions().getInterCUGRestrictionsValue(), InterCUGRestrictionsValue.CUGOnlyFacilities);
+    	assertNotNull(extensionContainer);
+    	assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+        
+    	data = this.getData1();
+    	result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CUGFeatureImpl);
+        prim = (CUGFeatureImpl)result.getResult();
+        
+    	extensionContainer = prim.getExtensionContainer();
+    	assertEquals(prim.getBasicService().getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
+    	assertNull(prim.getBasicService().getExtBearerService());
+    	assertEquals((int) prim.getPreferentialCugIndicator(), 1);
+    	assertTrue(prim.getInterCugRestrictions().getInterCUGRestrictionsValue().equals(InterCUGRestrictionsValue.CUGOnlyFacilities));
+    	assertNotNull(extensionContainer);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CUGFeatureImpl.class);
+    	
+        ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
+    	ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
+    	Integer preferentialCugIndicator = 1;
+        InterCUGRestrictionsImpl interCugRestrictions = new InterCUGRestrictionsImpl(InterCUGRestrictionsValue.CUGOnlyFacilities);
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        CUGFeatureImpl prim = new CUGFeatureImpl(basicService, preferentialCugIndicator, interCugRestrictions, extensionContainer);
 
-        {
-            // ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(this.getData2());
-            ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
-            ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
-            // Integer preferentialCugIndicator = new Integer(1);
-            Integer preferentialCugIndicator = 1;
-            // InterCUGRestrictions interCugRestrictions = new InterCUGRestrictionsImpl(0);
-            InterCUGRestrictions interCugRestrictions = new InterCUGRestrictionsImpl(
-                    InterCUGRestrictionsValue.CUGOnlyFacilities);
-            // MAPExtensionContainerImpl extensionContainer = getMapExtensionContainer();
-            MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-            CUGFeatureImpl prim = new CUGFeatureImpl(basicService, preferentialCugIndicator, interCugRestrictions,
-                    extensionContainer);
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertTrue(Arrays.equals(encodedData, this.getData()));
 
-            AsnOutputStream asn = new AsnOutputStream();
-            prim.encodeAll(asn);
+        ExtTeleserviceCodeImpl t = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.telephony);
+        basicService = new ExtBasicServiceCodeImpl(t);
 
-            assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-        }
-        {
-            // ExtTeleserviceCodeImpl b = new ExtTeleserviceCodeImpl(this.getData3());
-            ExtTeleserviceCodeImpl b = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.telephony);
-            ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
+        preferentialCugIndicator = 1;
+        interCugRestrictions = new InterCUGRestrictionsImpl(0);
+        extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        prim = new CUGFeatureImpl(basicService, preferentialCugIndicator, interCugRestrictions, extensionContainer);
 
-            Integer preferentialCugIndicator = new Integer(1);
-            InterCUGRestrictions interCugRestrictions = new InterCUGRestrictionsImpl(0);
-            // MAPExtensionContainerImpl extensionContainer = getMapExtensionContainer();
-            MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-            CUGFeatureImpl prim = new CUGFeatureImpl(basicService, preferentialCugIndicator, interCugRestrictions,
-                    extensionContainer);
-
-            AsnOutputStream asn = new AsnOutputStream();
-            prim.encodeAll(asn);
-
-            assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
-        }
-
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertTrue(Arrays.equals(encodedData, this.getData1()));        
     }
-
 }

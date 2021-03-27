@@ -38,7 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,lengthIndefinite=false)
 public class LocationInfoWithLMSIImpl {
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=0)
     private ISDNAddressStringImpl networkNodeNumber;

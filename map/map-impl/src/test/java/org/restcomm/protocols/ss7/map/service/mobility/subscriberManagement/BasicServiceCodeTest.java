@@ -23,22 +23,24 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,40 +50,34 @@ import org.testng.annotations.Test;
 public class BasicServiceCodeTest {
 
     private byte[] getEncodedData1() {
-        return new byte[] { -126, 1, 38 };
+        return new byte[] { 48, 3, -126, 1, 38 };
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { -125, 1, 33 };
+        return new byte[] { 48, 3, -125, 1, 33 };
     }
 
     @Test(groups = { "functional.decode", "service.subscriberManagement" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(BasicServiceCodeImpl.class);
+    	
         byte[] rawData = getEncodedData1();
 
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, BasicServiceCodeImpl._TAG_bearerService);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        BasicServiceCodeImpl impl = new BasicServiceCodeImpl();
-        impl.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BasicServiceCodeImpl);
+        BasicServiceCodeImpl impl = (BasicServiceCodeImpl)result.getResult();
+        
         assertEquals(impl.getBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
         assertNull(impl.getTeleservice());
 
         rawData = getEncodedData2();
 
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, BasicServiceCodeImpl._TAG_teleservice);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        impl = new BasicServiceCodeImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BasicServiceCodeImpl);
+        impl = (BasicServiceCodeImpl)result.getResult();
 
         assertEquals(impl.getTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.shortMessageMT_PP);
         assertNull(impl.getBearerService());
@@ -89,26 +85,23 @@ public class BasicServiceCodeTest {
 
     @Test(groups = { "functional.encode", "service.subscriberManagement" })
     public void testEncode() throws Exception {
-
-        BearerServiceCode bearerService = new BearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(BasicServiceCodeImpl.class);
+    	
+        BearerServiceCodeImpl bearerService = new BearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         BasicServiceCodeImpl impl = new BasicServiceCodeImpl(bearerService);
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData1();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        TeleserviceCode teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.shortMessageMT_PP);
+        TeleserviceCodeImpl teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.shortMessageMT_PP);
         impl = new BasicServiceCodeImpl(teleservice);
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

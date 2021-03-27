@@ -23,15 +23,19 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -54,33 +58,28 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
+    	
         byte[] data = this.getData();
+        ASNDecodeResult result = parser.decode(Unpooled.wrappedBuffer(data));
 
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        CellGlobalIdOrServiceAreaIdFixedLengthImpl prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl();
-        prim.decodeAll(asn);
-
-        assertNotNull(prim.getData());
-        assertTrue(Arrays.equals(getDataVal(), prim.getData()));
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CellGlobalIdOrServiceAreaIdFixedLengthImpl);
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl prim = (CellGlobalIdOrServiceAreaIdFixedLengthImpl)result.getResult();
+        
         assertEquals(prim.getMCC(), 250);
         assertEquals(prim.getMNC(), 1);
         assertEquals(prim.getLac(), 4444);
         assertEquals(prim.getCellIdOrServiceAreaCode(), 3333);
 
         data = this.getData2();
+        result = parser.decode(Unpooled.wrappedBuffer(data));
 
-        asn = new AsnInputStream(data);
-        asn.readTag();
-
-        prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl();
-        prim.decodeAll(asn);
-
-        assertNotNull(prim.getData());
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CellGlobalIdOrServiceAreaIdFixedLengthImpl);
+        prim = (CellGlobalIdOrServiceAreaIdFixedLengthImpl)result.getResult();
+        
         assertEquals(prim.getMCC(), 11);
         assertEquals(prim.getMNC(), 246);
         assertEquals(prim.getLac(), 333);
@@ -89,27 +88,29 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
+    	
         CellGlobalIdOrServiceAreaIdFixedLengthImpl prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(250, 1, 4444, 3333);
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer = parser.encode(prim);
+        byte[] data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
+        assertTrue(Arrays.equals(data, this.getData()));
 
         prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(getDataVal());
+        buffer = parser.encode(prim);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
 
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        assertTrue(Arrays.equals(data, this.getData()));
 
         prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(11, 246, 333, 444);
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        buffer = parser.encode(prim);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
+        assertTrue(Arrays.equals(data, this.getData2()));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "primitives" })

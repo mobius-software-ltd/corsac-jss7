@@ -23,19 +23,17 @@
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptionsImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
 import org.testng.annotations.AfterClass;
@@ -43,6 +41,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /*
  *
@@ -68,17 +72,19 @@ public class ForwardingDataTest {
     public void tearDown() {
     }
 
+    byte[] data = new byte[] { 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };
+
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
-        byte[] data = new byte[] { 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ForwardingDataImpl.class);
 
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        ForwardingDataImpl forwardingData = new ForwardingDataImpl();
-        forwardingData.decodeAll(asn);
-
-        ForwardingOptions forwardingOptions = forwardingData.getForwardingOptions();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ForwardingDataImpl);
+        ForwardingDataImpl forwardingData = (ForwardingDataImpl)result.getResult();
+        
+        ForwardingOptionsImpl forwardingOptions = forwardingData.getForwardingOptions();
         ISDNAddressStringImpl isdnAdd = forwardingData.getForwardedToNumber();
 
         assertNotNull(isdnAdd);
@@ -94,22 +100,17 @@ public class ForwardingDataTest {
 
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
-        byte[] data = new byte[] { 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ForwardingDataImpl.class);
 
-        ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+    	ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
         ForwardingOptionsImpl forwardingOptions = new ForwardingOptionsImpl(false, false, true, ForwardingReason.busy);
         ForwardingDataImpl forwardingData = new ForwardingDataImpl(isdnAdd, null, forwardingOptions, null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        forwardingData.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(forwardingData);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "service.callhandling" })
-    public void testSerialization() throws Exception {
-
     }
 }

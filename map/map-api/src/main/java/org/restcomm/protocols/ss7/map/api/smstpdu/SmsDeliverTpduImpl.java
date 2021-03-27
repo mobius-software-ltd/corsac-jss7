@@ -106,7 +106,7 @@ public class SmsDeliverTpduImpl extends SmsTpduImpl {
         if (this.userDataLength == -1)
             throw new MAPException("Error creating a new SmsDeliverTpduImpl instance: userDataLength field has not been found");
 
-        byte[] buf = new byte[userDataLength];
+        byte[] buf = new byte[stm.readableBytes()];
         stm.readBytes(buf);
         userData = new UserDataImpl(buf, dataCodingScheme, userDataLength, userDataHeaderIndicator, gsm8Charset);
     }

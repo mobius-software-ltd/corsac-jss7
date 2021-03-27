@@ -20,14 +20,13 @@ import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortProviderReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortSource;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.DeactivateSSRequest;
@@ -105,7 +104,7 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
         // The Charset is null, here we let system use default Charset (UTF-7 as
         // explained in GSM 03.38. However if MAP User wants, it can set its own
         // impl of Charset
-        USSDString ussdString = paramFact.createUSSDString(ussdMessage, null, null);
+        USSDStringImpl ussdString = paramFact.createUSSDString(ussdMessage, null, null);
 
         currentMapDialog.addProcessUnstructuredSSRequest(ussdDataCodingScheme, ussdString, alertingPattern, msisdn);
         // This will initiate the TC-BEGIN with INVOKE component
@@ -113,7 +112,7 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
     }
 
     public void onProcessUnstructuredSSResponse(ProcessUnstructuredSSResponse ind) {
-        USSDString ussdString = ind.getUSSDString();
+        USSDStringImpl ussdString = ind.getUSSDString();
         try {
             ussdString.getString(null);
             // processing USSD response
@@ -190,7 +189,7 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
 
     }
 
-    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason, MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoiseImpl userReason, MAPExtensionContainerImpl extensionContainer) {
         // TODO Auto-generated method stub
 
     }

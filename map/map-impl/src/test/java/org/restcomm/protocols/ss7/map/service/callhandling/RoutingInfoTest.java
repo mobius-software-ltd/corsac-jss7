@@ -23,21 +23,18 @@
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptionsImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
 import org.testng.annotations.AfterClass;
@@ -45,6 +42,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /*
  *
@@ -54,6 +57,9 @@ import org.testng.annotations.Test;
 public class RoutingInfoTest {
     Logger logger = Logger.getLogger(RoutingInfoTest.class);
 
+    byte[] data = new byte[] { 48, 9, 4, 7, -111, -105, 114, 99, 80, 24, -7 };
+    byte[] _data = new byte[] { 48, 14, 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
@@ -72,16 +78,16 @@ public class RoutingInfoTest {
 
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
-        byte[] data = new byte[] { 4, 7, -111, -105, 114, 99, 80, 24, -7 };
-        byte[] _data = new byte[] { 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RoutingInfoImpl.class);
+
         // 4 = 00|0|00100, 7 = length
 
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        RoutingInfoImpl routeInfo = new RoutingInfoImpl();
-        routeInfo.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RoutingInfoImpl);
+        RoutingInfoImpl routeInfo = (RoutingInfoImpl)result.getResult();
+        
         ISDNAddressStringImpl isdnAdd = routeInfo.getRoamingNumber();
 
         assertNotNull(isdnAdd);
@@ -90,14 +96,13 @@ public class RoutingInfoTest {
         assertEquals(isdnAdd.getAddress(), "79273605819");
 
         // :::::::::::::::::::::::::::::
-        AsnInputStream _asn = new AsnInputStream(_data);
-        _asn.readTag();
-
-        RoutingInfoImpl _routeInfo = new RoutingInfoImpl();
-        _routeInfo.decodeAll(_asn);
-
-        ForwardingData _forwardingData = _routeInfo.getForwardingData();
-        ForwardingOptions _forwardingOptions = _forwardingData.getForwardingOptions();
+        result=parser.decode(Unpooled.wrappedBuffer(_data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RoutingInfoImpl);
+        routeInfo = (RoutingInfoImpl)result.getResult();
+        
+        ForwardingDataImpl _forwardingData = routeInfo.getForwardingData();
+        ForwardingOptionsImpl _forwardingOptions = _forwardingData.getForwardingOptions();
         ISDNAddressStringImpl _isdnAdd = _forwardingData.getForwardedToNumber();
 
         assertNotNull(_isdnAdd);
@@ -113,39 +118,33 @@ public class RoutingInfoTest {
 
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
-        byte[] data = new byte[] { 4, 7, -111, -105, 114, 99, 80, 24, -7 };
-        byte[] _data = new byte[] { 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RoutingInfoImpl.class);
+
         // 4 = 00|0|00100, 7 = length
 
         ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
         RoutingInfoImpl routeInfo = new RoutingInfoImpl(isdnAdd);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        routeInfo.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(routeInfo);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         // :::::::::::::::::::::::
         ISDNAddressStringImpl _isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
-        ForwardingData _forwardingData = null;
-        ForwardingOptions _forwardingOptions = null;
+        ForwardingDataImpl _forwardingData = null;
+        ForwardingOptionsImpl _forwardingOptions = null;
         _forwardingOptions = new ForwardingOptionsImpl(false, false, true, ForwardingReason.busy);
         _forwardingData = new ForwardingDataImpl(_isdnAdd, null, _forwardingOptions, null, null);
 
-        RoutingInfoImpl _routeInfo = new RoutingInfoImpl(_forwardingData);
+        routeInfo = new RoutingInfoImpl(_forwardingData);
 
-        AsnOutputStream _asnOS = new AsnOutputStream();
-        _routeInfo.encodeAll(_asnOS);
-
-        byte[] _encodedData = _asnOS.toByteArray();
-        assertTrue(Arrays.equals(_data, _encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "service.callhandling" })
-    public void testSerialization() throws Exception {
-
+        buffer=parser.encode(routeInfo);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(_data, encodedData));
     }
 }

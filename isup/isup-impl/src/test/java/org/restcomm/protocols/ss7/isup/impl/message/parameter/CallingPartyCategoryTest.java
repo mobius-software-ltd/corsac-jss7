@@ -27,7 +27,6 @@ import static org.testng.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;

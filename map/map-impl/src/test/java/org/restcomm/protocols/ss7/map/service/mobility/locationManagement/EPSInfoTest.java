@@ -22,21 +22,23 @@
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISRInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISRInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PDNGWUpdate;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PDNGWUpdateImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,41 +48,35 @@ import org.testng.annotations.Test;
 public class EPSInfoTest {
 
     public byte[] getData1() {
-        return new byte[] { -96, 44, -126, 1, 2, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 52, -96, 50, -126, 1, 2, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     };
 
     public byte[] getData2() {
-        return new byte[] { -127, 2, 5, -32 };
+        return new byte[] { 48, 4, -127, 2, 5, -32 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(EPSInfoImpl.class);
+    	
         // option 1
         byte[] data = this.getData1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-
-        EPSInfoImpl prim = new EPSInfoImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, EPSInfoImpl._TAG_pndGwUpdate);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        assertEquals(prim.getPndGwUpdate().getContextId(), new Integer(2));
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EPSInfoImpl);
+        EPSInfoImpl prim = (EPSInfoImpl)result.getResult();
+        
+        assertEquals(prim.getPndGwUpdate().getContextId(), Integer.valueOf(2));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getPndGwUpdate().getExtensionContainer()));
 
         // option 2
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-
-        prim = new EPSInfoImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, EPSInfoImpl._TAG_isrInformation);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EPSInfoImpl);
+        prim = (EPSInfoImpl)result.getResult();
+        
         assertTrue(prim.getIsrInformation().getCancelSGSN());
         assertTrue(prim.getIsrInformation().getInitialAttachIndicator());
         assertTrue(prim.getIsrInformation().getUpdateMME());
@@ -88,22 +84,26 @@ public class EPSInfoTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(EPSInfoImpl.class);
+    	
         // option 1
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        PDNGWUpdate pndGwUpdate = new PDNGWUpdateImpl(null, null, new Integer(2), extensionContainer);
+        PDNGWUpdateImpl pndGwUpdate = new PDNGWUpdateImpl(null, null, 2, extensionContainer);
         EPSInfoImpl prim = new EPSInfoImpl(pndGwUpdate);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
+        byte[] data=this.getData1();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         // option 2
-        ISRInformation isrInformation = new ISRInformationImpl(true, true, true);
+        ISRInformationImpl isrInformation = new ISRInformationImpl(true, true, true);
         prim = new EPSInfoImpl(isrInformation);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        data=this.getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

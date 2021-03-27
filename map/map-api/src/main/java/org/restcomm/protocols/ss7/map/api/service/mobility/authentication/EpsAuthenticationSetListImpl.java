@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EpsAuthenticationSetListImpl {
-	private ArrayList<EpcAvImpl> epcAvs;
+	private List<EpcAvImpl> epcAvs;
 
     public EpsAuthenticationSetListImpl() {
     }
 
-    public EpsAuthenticationSetListImpl(ArrayList<EpcAvImpl> epcAv) {
+    public EpsAuthenticationSetListImpl(List<EpcAvImpl> epcAv) {
         this.epcAvs = epcAv;
     }
 
-    public ArrayList<EpcAvImpl> getEpcAv() {
+    public List<EpcAvImpl> getEpcAv() {
         return epcAvs;
     }
 

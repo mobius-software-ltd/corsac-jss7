@@ -24,7 +24,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vsubbotin on 26/05/16.
@@ -40,7 +40,7 @@ public class CallWaitingDataImpl {
     public CallWaitingDataImpl() {
     }
 
-    public CallWaitingDataImpl(ArrayList<ExtCwFeatureImpl> cwFeatureList, boolean notificationToCSE) {
+    public CallWaitingDataImpl(List<ExtCwFeatureImpl> cwFeatureList, boolean notificationToCSE) {
         if(cwFeatureList!=null)
         	this.cwFeatureList = new ExtCwFeatureListWrapperImpl(cwFeatureList);
         
@@ -48,7 +48,7 @@ public class CallWaitingDataImpl {
         	this.notificationToCSE = new ASNNull();
     }
 
-    public ArrayList<ExtCwFeatureImpl> getCwFeatureList() {
+    public List<ExtCwFeatureImpl> getCwFeatureList() {
     	if(cwFeatureList==null)
     		return null;
     	

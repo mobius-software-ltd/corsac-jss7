@@ -22,16 +22,21 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSNetworkCapabilityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSRadioAccessCapabilityImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -54,62 +59,31 @@ public class GPRSMSClassTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GPRSMSClassImpl.class);
+    	
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        asn.readTag();
-        //GPRSMSClassImpl impl = new GPRSMSClassImpl();
-
-        // TODO: fix a test
-
-        // impl.decodeAll(asn);
-        // assertEquals(tag, Tag.SEQUENCE);
-        //
-        // assertTrue(Arrays.equals(impl.getMSNetworkCapability().getData(), this.getEncodedDataNetworkCapability()));
-        // assertTrue(Arrays.equals(impl.getMSRadioAccessCapability().getData(), this.getEncodedDataRadioAccessCapability()));
-        asn.close();        
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GPRSMSClassImpl);
+        GPRSMSClassImpl impl = (GPRSMSClassImpl)result.getResult();
+        
+        assertTrue(Arrays.equals(impl.getMSNetworkCapability().getData(), this.getEncodedDataNetworkCapability()));
+        assertTrue(Arrays.equals(impl.getMSRadioAccessCapability().getData(), this.getEncodedDataRadioAccessCapability()));               
     }
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GPRSMSClassImpl.class);
+    	
         MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(this.getEncodedDataNetworkCapability());
         MSRadioAccessCapabilityImpl rac = new MSRadioAccessCapabilityImpl(this.getEncodedDataRadioAccessCapability());
         GPRSMSClassImpl impl = new GPRSMSClassImpl(nc, rac);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
-    public void testXMLSerialize() throws Exception {
-
-        MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(this.getEncodedDataNetworkCapability());
-        MSRadioAccessCapabilityImpl rac = new MSRadioAccessCapabilityImpl(this.getEncodedDataRadioAccessCapability());
-        GPRSMSClassImpl original = new GPRSMSClassImpl(nc, rac);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "gprsMSClass", GPRSMSClassImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        GPRSMSClassImpl copy = reader.read("gprsMSClass", GPRSMSClassImpl.class);
-
-        assertEquals(copy.getMSNetworkCapability().getData(), original.getMSNetworkCapability().getData());
-        assertEquals(copy.getMSRadioAccessCapability().getData(), original.getMSRadioAccessCapability().getData());
-    }*/
 }

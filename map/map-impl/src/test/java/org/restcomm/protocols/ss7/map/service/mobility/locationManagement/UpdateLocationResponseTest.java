@@ -29,15 +29,18 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateLocationResponse;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImplV2;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class UpdateLocationResponseTest {
 
@@ -46,8 +49,7 @@ public class UpdateLocationResponseTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 51, 4, 4, -111, -112, 120, -10, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 5, 0, -128, 0 };
+        return new byte[] { 48, 57, 4, 4, -111, -112, 120, -10, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 5, 0, -128, 0 };
     }
 
     private byte[] getEncodedData_V1() {
@@ -56,18 +58,16 @@ public class UpdateLocationResponseTest {
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        UpdateLocationResponseImplV2 asc = new UpdateLocationResponseImplV2(3);
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertEquals(asc.getMapProtocolVersion(), 3);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UpdateLocationResponseImplV2.class);
+    	parser.replaceClass(UpdateLocationResponseImplV1.class);
+    	
+        byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof UpdateLocationResponse);
+        UpdateLocationResponse asc = (UpdateLocationResponse)result.getResult();
+        
         ISDNAddressStringImpl mscNumber = asc.getHlrNumber();
         assertTrue(mscNumber.getAddress().equals("09876"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
@@ -77,16 +77,11 @@ public class UpdateLocationResponseTest {
         assertFalse(asc.getAddCapability());
         assertFalse(asc.getPagingAreaCapability());
 
-        rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new UpdateLocationResponseImplV2(3);
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertEquals(asc.getMapProtocolVersion(), 3);
+        data = getEncodedData2();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof UpdateLocationResponse);
+        asc = (UpdateLocationResponse)result.getResult();
 
         mscNumber = asc.getHlrNumber();
         assertTrue(mscNumber.getAddress().equals("09876"));
@@ -97,16 +92,11 @@ public class UpdateLocationResponseTest {
         assertTrue(asc.getAddCapability());
         assertTrue(asc.getPagingAreaCapability());
 
-        rawData = getEncodedData_V1();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new UpdateLocationResponseImplV2(1);
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertEquals(asc.getMapProtocolVersion(), 1);
+        data = getEncodedData_V1();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof UpdateLocationResponse);
+        asc = (UpdateLocationResponse)result.getResult();
 
         mscNumber = asc.getHlrNumber();
         assertTrue(mscNumber.getAddress().equals("09876"));
@@ -120,37 +110,34 @@ public class UpdateLocationResponseTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UpdateLocationResponseImplV2.class);
+    	parser.replaceClass(UpdateLocationResponseImplV1.class);
+    	
         ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "09876");
-        UpdateLocationResponseImplV2 asc = new UpdateLocationResponseImplV2(3, hlrNumber, null, false, false);
-        // long mapProtocolVersion, ISDNAddressStringImpl hlrNumber, MAPExtensionContainerImpl extensionContainer, boolean
-        // addCapability,
-        // boolean pagingAreaCapability
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        UpdateLocationResponse asc = new UpdateLocationResponseImplV2(3, hlrNumber, null, false, false);
+        
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         asc = new UpdateLocationResponseImplV2(3, hlrNumber, MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
+        data=getEncodedData2();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData2();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        asc = new UpdateLocationResponseImplV1(1, hlrNumber);
 
-        asc = new UpdateLocationResponseImplV2(1, hlrNumber, null, false, false);
-
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData_V1();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data=getEncodedData_V1();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));        
     }
 }

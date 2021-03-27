@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
@@ -84,14 +84,18 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
 
     private long mapProtocolVersion;
 
+    public InsertSubscriberDataResponseImpl() {
+    	this.mapProtocolVersion=3;
+    }
+    
     // For incoming messages
     public InsertSubscriberDataResponseImpl(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
     // For outgoing messages - MAP V2
-    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, ArrayList<ExtTeleserviceCodeImpl> teleserviceList,
-            ArrayList<ExtBearerServiceCodeImpl> bearerServiceList, ArrayList<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
+    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, List<ExtTeleserviceCodeImpl> teleserviceList,
+            List<ExtBearerServiceCodeImpl> bearerServiceList, List<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
             RegionalSubscriptionResponse regionalSubscriptionResponse) {
         this.mapProtocolVersion = mapProtocolVersion;
         
@@ -113,8 +117,8 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     // For outgoing messages - MAP V3
-    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, ArrayList<ExtTeleserviceCodeImpl> teleserviceList,
-            ArrayList<ExtBearerServiceCodeImpl> bearerServiceList, ArrayList<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
+    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, List<ExtTeleserviceCodeImpl> teleserviceList,
+            List<ExtBearerServiceCodeImpl> bearerServiceList, List<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
             RegionalSubscriptionResponse regionalSubscriptionResponse, SupportedCamelPhasesImpl supportedCamelPhases,
             MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIs, SupportedFeaturesImpl supportedFeatures) {
 
@@ -155,7 +159,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public ArrayList<ExtTeleserviceCodeImpl> getTeleserviceList() {
+    public List<ExtTeleserviceCodeImpl> getTeleserviceList() {
     	if(this.teleserviceList==null)
     		return null;
     	
@@ -163,7 +167,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public ArrayList<ExtBearerServiceCodeImpl> getBearerServiceList() {
+    public List<ExtBearerServiceCodeImpl> getBearerServiceList() {
     	if(this.bearerServiceList==null)
     		return null;
     	
@@ -171,7 +175,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public ArrayList<SSCodeImpl> getSSList() {
+    public List<SSCodeImpl> getSSList() {
     	if(this.ssList==null)
     		return null;
     	

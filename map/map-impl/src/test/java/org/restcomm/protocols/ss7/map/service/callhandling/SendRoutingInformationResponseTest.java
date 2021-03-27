@@ -32,67 +32,53 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEACICImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
-import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.SignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.AllowedServices;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.AllowedServicesImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CCBSIndicatorsImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.SendRoutingInformationResponse;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UnavailabilityCause;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NumberPortabilityStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptionsImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationResponseImplV3;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /*
  *
@@ -119,40 +105,16 @@ public class SendRoutingInformationResponseTest {
     public void tearDown() {
     }
 
-    private byte[] getMAPV3ParameterTestData() {
-        return new byte[] { -93, -126, 1, 94, -119, 8, 16, 33, 2, 2, 16, -119, 34, -9, 48, 12, -123, 7, -111, -105, 114, 99,
-                80, 24, -7, -122, 1, 36, -93, 49, 4, 4, 1, 2, 3, 4, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13,
-                14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -122, 0,
-                -89, 50, -96, 44, 2, 1, 1, -128, 8, 16, 0, 0, 0, 0, 0, 0, 0, -127, 7, -111, -105, 114, 99, 80, 24, -7, -93, 9,
-                -128, 7, 39, -12, 67, 121, -98, 41, -96, -122, 7, -111, -105, 114, 99, 80, 24, -7, -119, 0, -95, 2, -128, 0,
-                -95, 3, 4, 1, 96, -91, 3, -126, 1, 22, -124, 0, -126, 7, -111, -105, 114, 99, 80, 24, -7, -96, 39, -96, 32, 48,
-                10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26,
-                -95, 3, 31, 32, 33, -86, 46, -128, 3, 15, 48, 5, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -85, 45, -128, 0,
-                -127, 0, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42,
-                3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -116, 7, -111, -105, 114, 99, 80, 24, -7, -115, 1, 5, -114,
-                1, 5, -113, 2, 4, -32, -112, 2, 1, -2, -79, 9, 4, 7, -111, -105, 114, 99, 80, 24, -7, -78, 3, 4, 1, 96, -77, 3,
-                -126, 1, 22, -108, 2, 6, -64, -107, 1, 4, -106, 0, -73, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
-    }
-
-    private byte[] getMAPV3ParameterTestData2() {
-        return new byte[] { 48, 70, 4, 8, 16, 33, 2, 2, 16, -119, 34, -9, 4, 7, -111, -105, 114, 99, 80, 24, -7, 48, 49, 4, 4,
-                1, 2, 3, 4, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11,
-                6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
-    }
-
-    private byte[] getMAPV3ParameterTestData3() {
+    public byte[] getData1() {
         return new byte[] { 48, 19, 4, 8, 16, 33, 2, 2, 16, -119, 34, -9, 4, 7, -111, -105, 114, 99, 80, 24, -7 };
     }
 
-    public byte[] getData1() {
-        return new byte[] { (byte) 163, 19, (byte) 137, 8, 16, 33, 2, 2, 16, -119, 34, -9, 4, 7, -111, -105, 114, 99, 80, 24,
-                -7 };
+    public byte[] getData2() {
+        return new byte[] { 48, 24, 4, 8, 16, 33, 2, 2, 16, -119, 34, -9, 48, 12, -123, 7, -111, -105, 114, 99, 80, 24, -7, -122, 1, 36 };
     }
 
-    public byte[] getData2() {
-        return new byte[] { (byte) 163, 24, (byte) 137, 8, 16, 33, 2, 2, 16, -119, 34, -9, 48, 12, (byte) 133, 7, -111, -105,
-                114, 99, 80, 24, -7, (byte) 134, 1, 36 };
+    private byte[] getData3() {
+        return new byte[] { -93, -126, 1, 118, -119, 8, 16, 33, 2, 2, 16, -119, 34, -9, 48, 12, -123, 7, -111, -105, 114, 99, 80, 24, -7, -122, 1, 36, -93, 55, 4, 4, 1, 2, 3, 4, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -122, 0, -89, 50, -96, 44, 2, 1, 1, -128, 8, 16, 0, 0, 0, 0, 0, 0, 0, -127, 7, -111, -105, 114, 99, 80, 24, -7, -93, 9, -128, 7, 39, -12, 67, 121, -98, 41, -96, -122, 7, -111, -105, 114, 99, 80, 24, -7, -119, 0, -95, 2, -128, 0, -95, 3, 4, 1, 96, -91, 3, -126, 1, 22, -124, 0, -126, 7, -111, -105, 114, 99, 80, 24, -7, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -86, 52, -128, 3, 15, 48, 5, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -85, 51, -128, 0, -127, 0, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -116, 7, -111, -105, 114, 99, 80, 24, -7, -115, 1, 5, -114, 1, 5, -113, 2, 5, -32, -112, 2, 1, -2, -79, 9, 4, 7, -111, -105, 114, 99, 80, 24, -7, -78, 3, 4, 1, 96, -77, 3, -126, 1, 22, -108, 2, 6, -64, -107, 1, 4, -106, 0, -73, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
     }
 
     byte[] dataGeographicalInformation = new byte[] { 16, 0, 0, 0, 0, 0, 0, 0 };
@@ -175,18 +137,22 @@ public class SendRoutingInformationResponseTest {
 
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendRoutingInformationResponseImplV3.class);
+    	parser.replaceClass(SendRoutingInformationResponseImplV1.class);
+
         byte[] data = getData1();
         byte[] data_ = getData2();
 
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInformationResponse);
+        SendRoutingInformationResponse sri = (SendRoutingInformationResponse)result.getResult();
+        
 
-        SendRoutingInformationResponseImplV3 sri = new SendRoutingInformationResponseImplV3();
-        sri.decodeAll(asn);
-
-        IMSI imsi = sri.getIMSI();
-        ExtendedRoutingInfo extRoutingInfo = sri.getExtendedRoutingInfo();
-        RoutingInfo routingInfo = extRoutingInfo.getRoutingInfo();
+        IMSIImpl imsi = sri.getIMSI();
+        ExtendedRoutingInfoImpl extRoutingInfo = sri.getExtendedRoutingInfo();
+        RoutingInfoImpl routingInfo = sri.getRoutingInfo2();
         ISDNAddressStringImpl roamingNumber = routingInfo.getRoamingNumber();
 
         assertNotNull(imsi);
@@ -198,18 +164,16 @@ public class SendRoutingInformationResponseTest {
         assertEquals(roamingNumber.getAddress(), "79273605819");
 
         // :::::::::::::::::::::::::::::::::
-        AsnInputStream asn_ = new AsnInputStream(data_);
-        asn_.readTag();
+        result=parser.decode(Unpooled.wrappedBuffer(data_));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInformationResponse);
+        SendRoutingInformationResponse sri_ = (SendRoutingInformationResponse)result.getResult();
 
-        SendRoutingInformationResponseImplV3 sri_ = new SendRoutingInformationResponseImplV3();
-        sri_.decodeAll(asn_);
-
-        IMSI imsi_ = sri_.getIMSI();
-        ExtendedRoutingInfo extRoutingInfo_ = sri_.getExtendedRoutingInfo();
-        RoutingInfo routingInfo_ = extRoutingInfo_.getRoutingInfo();
-        ForwardingData forwardingData_ = routingInfo_.getForwardingData();
+        IMSIImpl imsi_ = sri_.getIMSI();
+        RoutingInfoImpl routingInfo_ = sri_.getRoutingInfo2();
+        ForwardingDataImpl forwardingData_ = routingInfo_.getForwardingData();
         ISDNAddressStringImpl isdnAdd_ = forwardingData_.getForwardedToNumber();
-        ForwardingOptions forwardingOptions_ = forwardingData_.getForwardingOptions();
+        ForwardingOptionsImpl forwardingOptions_ = forwardingData_.getForwardingOptions();
 
         assertNotNull(imsi_);
         assertNotNull(forwardingData_);
@@ -225,14 +189,11 @@ public class SendRoutingInformationResponseTest {
         assertTrue(forwardingOptions_.getForwardingReason() == ForwardingReason.busy);
 
         // MAP V3 All parameter test
-        data = this.getMAPV3ParameterTestData();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        SendRoutingInformationResponseImplV3 prim = new SendRoutingInformationResponseImplV3();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, SendRoutingInformationResponseImplV3.TAG_sendRoutingInfoRes);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        data = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInformationResponse);
+        SendRoutingInformationResponse prim = (SendRoutingInformationResponse)result.getResult();
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
         imsi = prim.getIMSI();
@@ -242,12 +203,12 @@ public class SendRoutingInformationResponseTest {
         assertNotNull(imsi);
         assertEquals(imsi.getData(), "011220200198227");
         assertNull(roamingNumber);
-        ForwardingData forwardingData = routingInfo.getForwardingData();
+        ForwardingDataImpl forwardingData = routingInfo.getForwardingData();
         ISDNAddressStringImpl isdnAdd = forwardingData_.getForwardedToNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
         assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(isdnAdd.getAddress(), "79273605819");
-        ForwardingOptions forwardingOptions = forwardingData.getForwardingOptions();
+        ForwardingOptionsImpl forwardingOptions = forwardingData.getForwardingOptions();
         assertTrue(!forwardingOptions.isNotificationToForwardingParty());
         assertTrue(!forwardingOptions.isRedirectingPresentation());
         assertTrue(forwardingOptions.isNotificationToCallingParty());
@@ -261,7 +222,7 @@ public class SendRoutingInformationResponseTest {
         assertTrue(prim.getCUGSubscriptionFlag());
 
         // subscriberInfo
-        LocationInformation locInfo = prim.getSubscriberInfo().getLocationInformation();
+        LocationInformationImpl locInfo = prim.getSubscriberInfo().getLocationInformation();
         assertNotNull(locInfo);
         assertEquals((int) locInfo.getAgeOfLocationInformation(), 1);
         assertTrue(Arrays.equals(locInfo.getGeographicalInformation().getData(), dataGeographicalInformation));
@@ -280,7 +241,7 @@ public class SendRoutingInformationResponseTest {
         assertEquals(mscN.getNumberingPlan(), NumberingPlan.ISDN);
         assertFalse(locInfo.getCurrentLocationRetrieved());
         assertTrue(locInfo.getSaiPresent());
-        SubscriberState subState = prim.getSubscriberInfo().getSubscriberState();
+        SubscriberStateImpl subState = prim.getSubscriberInfo().getSubscriberState();
         assertEquals(subState.getSubscriberStateChoice(), SubscriberStateChoice.assumedIdle);
         // ssList
         assertNotNull(prim.getSSList());
@@ -314,13 +275,13 @@ public class SendRoutingInformationResponseTest {
         assertEquals(prim.getNumberPortabilityStatus(), NumberPortabilityStatus.foreignNumberPortedIn);
         assertEquals(prim.getISTAlertTimer().intValue(), 5);
         // supportedCamelPhases
-        SupportedCamelPhases scf = prim.getSupportedCamelPhasesInVMSC();
+        SupportedCamelPhasesImpl scf = prim.getSupportedCamelPhasesInVMSC();
         assertTrue(scf.getPhase1Supported());
         assertTrue(scf.getPhase2Supported());
         assertTrue(scf.getPhase3Supported());
         assertFalse(scf.getPhase4Supported());
         // offeredCamel4CSIs
-        OfferedCamel4CSIs offeredCamel4CSIs = prim.getOfferedCamel4CSIsInVMSC();
+        OfferedCamel4CSIsImpl offeredCamel4CSIs = prim.getOfferedCamel4CSIsInVMSC();
         assertTrue(offeredCamel4CSIs.getDCsi());
         assertTrue(offeredCamel4CSIs.getMgCsi());
         assertTrue(offeredCamel4CSIs.getMtSmsCsi());
@@ -343,7 +304,7 @@ public class SendRoutingInformationResponseTest {
         assertTrue(Arrays.equals(prim.getBasicService2().getExtBearerService().getData(), this.getExtBearerServiceData()));
         assertNull(prim.getBasicService2().getExtTeleservice());
         // allowedServices
-        AllowedServices allowedServices = prim.getAllowedServices();
+        AllowedServicesImpl allowedServices = prim.getAllowedServices();
         assertTrue(allowedServices.getFirstServiceAllowed());
         assertTrue(allowedServices.getSecondServiceAllowed());
         // unavailabilityCause
@@ -356,143 +317,15 @@ public class SendRoutingInformationResponseTest {
         assertTrue(Arrays.equals(getSignalInfoData(), signalInfo2));
         assertNotNull(protocolId2);
         assertEquals(protocolId2, ProtocolId.gsm_0806);
-        assertEquals(prim.getMapProtocolVersion(), 3);
-
-        // MAP V2
-        data = this.getMAPV3ParameterTestData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new SendRoutingInformationResponseImplV3(2);
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        assertNull(prim.getExtensionContainer());
-        imsi = prim.getIMSI();
-        assertNull(prim.getExtendedRoutingInfo());
-        assertNotNull(imsi);
-        assertEquals(imsi.getData(), "011220200198227");
-
-        // cugCheckInfo
-        assertTrue(Arrays.equals(prim.getCUGCheckInfo().getCUGInterlock().getData(), getGugData()));
-        assertTrue(prim.getCUGCheckInfo().getCUGOutgoingAccess());
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getCUGCheckInfo().getExtensionContainer()));
-        // cugSubscriptionFlag
-        assertFalse(prim.getCUGSubscriptionFlag());
-        // subscriberInfo
-        assertNull(prim.getSubscriberInfo());
-        // ssList
-        assertNull(prim.getSSList());
-
-        // basicService
-        assertNull(prim.getBasicService());
-
-        // forwardingInterrogationRequired
-        assertFalse(prim.getForwardingInterrogationRequired());
-        // vmscAddress
-        assertNull(prim.getVmscAddress());
-
-        // naeaPreferredCI
-        assertNull(prim.getNaeaPreferredCI());
-        // ccbsIndicators
-        assertNull(prim.getCCBSIndicators());
-        // msisdn
-        assertNull(prim.getMsisdn());
-        // nrPortabilityStatus
-        assertNull(prim.getNumberPortabilityStatus());
-        // supportedCamelPhases
-        assertNull(prim.getSupportedCamelPhasesInVMSC());
-        // offeredCamel4CSIs
-        assertNull(prim.getOfferedCamel4CSIsInVMSC());
-        // /getRoutingInfo2
-        roamingNumber = prim.getRoutingInfo2().getRoamingNumber();
-        assertNotNull(roamingNumber);
-        assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
-        assertEquals(roamingNumber.getAddress(), "79273605819");
-        // ssList2
-        assertNull(prim.getSSList2());
-        // basicService2
-        assertNull(prim.getBasicService2());
-        // allowedServices
-        assertNull(prim.getAllowedServices());
-        // unavailabilityCause
-        assertNull(prim.getUnavailabilityCause());
-        // releaseResourcesSupported
-        assertFalse(prim.getReleaseResourcesSupported());
-        // gsmBearerCapability
-        assertNull(prim.getGsmBearerCapability());
-        assertEquals(prim.getMapProtocolVersion(), 2);
-
-        // MAP V1
-        data = this.getMAPV3ParameterTestData3();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new SendRoutingInformationResponseImplV3(2);
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        assertNull(prim.getExtensionContainer());
-        imsi = prim.getIMSI();
-        assertNull(prim.getExtendedRoutingInfo());
-        assertNotNull(imsi);
-        assertEquals(imsi.getData(), "011220200198227");
-
-        // cugCheckInfo
-        assertNull(prim.getCUGCheckInfo());
-        // cugSubscriptionFlag
-        assertFalse(prim.getCUGSubscriptionFlag());
-        // subscriberInfo
-        assertNull(prim.getSubscriberInfo());
-        // ssList
-        assertNull(prim.getSSList());
-
-        // basicService
-        assertNull(prim.getBasicService());
-
-        // forwardingInterrogationRequired
-        assertFalse(prim.getForwardingInterrogationRequired());
-        // vmscAddress
-        assertNull(prim.getVmscAddress());
-
-        // naeaPreferredCI
-        assertNull(prim.getNaeaPreferredCI());
-        // ccbsIndicators
-        assertNull(prim.getCCBSIndicators());
-        // msisdn
-        assertNull(prim.getMsisdn());
-        // nrPortabilityStatus
-        assertNull(prim.getNumberPortabilityStatus());
-        // supportedCamelPhases
-        assertNull(prim.getSupportedCamelPhasesInVMSC());
-        // offeredCamel4CSIs
-        assertNull(prim.getOfferedCamel4CSIsInVMSC());
-        // /getRoutingInfo2
-        roamingNumber = prim.getRoutingInfo2().getRoamingNumber();
-        assertNotNull(roamingNumber);
-        assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
-        assertEquals(roamingNumber.getAddress(), "79273605819");
-        // ssList2
-        assertNull(prim.getSSList2());
-        // basicService2
-        assertNull(prim.getBasicService2());
-        // allowedServices
-        assertNull(prim.getAllowedServices());
-        // unavailabilityCause
-        assertNull(prim.getUnavailabilityCause());
-        // releaseResourcesSupported
-        assertFalse(prim.getReleaseResourcesSupported());
-        // gsmBearerCapability
-        assertNull(prim.getGsmBearerCapability());
-        assertEquals(prim.getMapProtocolVersion(), 2);
+        assertEquals(prim.getMapProtocolVersion(), 3);       
     }
 
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendRoutingInformationResponseImplV3.class);
+    	parser.replaceClass(SendRoutingInformationResponseImplV1.class);
+
         byte[] data = getData1();
         byte[] data_ = getData2();
 
@@ -500,35 +333,32 @@ public class SendRoutingInformationResponseTest {
         ISDNAddressStringImpl roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
         RoutingInfoImpl routingInfo = new RoutingInfoImpl(roamingNumber);
-        ExtendedRoutingInfoImpl extRoutingInfo = new ExtendedRoutingInfoImpl(routingInfo);
-        SendRoutingInformationResponseImplV3 sri = new SendRoutingInformationResponseImplV3(imsi, extRoutingInfo, null, null);
+        SendRoutingInformationResponse sri = new SendRoutingInformationResponseImplV1(imsi, routingInfo, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        sri.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(sri);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         // :::::::::::::::::::::::::::::::::
         IMSIImpl imsi_ = new IMSIImpl("011220200198227");
         ISDNAddressStringImpl isdnAdd_ = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
-        ForwardingOptions forwardingOptions_ = new ForwardingOptionsImpl(false, false, true, ForwardingReason.busy);
-        ForwardingData forwardingData_ = new ForwardingDataImpl(isdnAdd_, null, forwardingOptions_, null, null);
+        ForwardingOptionsImpl forwardingOptions_ = new ForwardingOptionsImpl(false, false, true, ForwardingReason.busy);
+        ForwardingDataImpl forwardingData_ = new ForwardingDataImpl(isdnAdd_, null, forwardingOptions_, null, null);
         RoutingInfoImpl routingInfo_ = new RoutingInfoImpl(forwardingData_);
         ExtendedRoutingInfoImpl extRoutingInfo_ = new ExtendedRoutingInfoImpl(routingInfo_);
-        SendRoutingInformationResponseImplV3 sri_ = new SendRoutingInformationResponseImplV3(imsi_, extRoutingInfo_, null, null);
+        SendRoutingInformationResponse sri_ = new SendRoutingInformationResponseImplV1(imsi_, routingInfo_, null);
 
-        AsnOutputStream asnOS_ = new AsnOutputStream();
-        sri_.encodeAll(asnOS_);
-
-        byte[] encodedData_ = asnOS_.toByteArray();
-        assertTrue(Arrays.equals(data_, encodedData_));
+        buffer=parser.encode(sri_);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data_, encodedData));
 
         // MAP V3 Parameter test
         // cugCheckInfo
-        CUGInterlock cugInterlock = new CUGInterlockImpl(getGugData());
-        CUGCheckInfo cugCheckInfo = new CUGCheckInfoImpl(cugInterlock, true,
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getGugData());
+        CUGCheckInfoImpl cugCheckInfo = new CUGCheckInfoImpl(cugInterlock, true,
                 MAPExtensionContainerTest.GetTestExtensionContainer());
         // cugSubscriptionFlag
         boolean cugSubscriptionFlag = true;
@@ -538,12 +368,12 @@ public class SendRoutingInformationResponseTest {
         ISDNAddressStringImpl mscN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
         CellGlobalIdOrServiceAreaIdFixedLengthImpl c0 = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(724, 34, 31134, 10656);
-        CellGlobalIdOrServiceAreaIdOrLAI c = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c0);
+        CellGlobalIdOrServiceAreaIdOrLAIImpl c = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c0);
         GeographicalInformationImpl gi = new GeographicalInformationImpl(dataGeographicalInformation);
         LocationInformationImpl li = new LocationInformationImpl(1, gi, vlrN, null, c, null, null, mscN, null, false, true,
                 null, null);
         SubscriberStateImpl ss = new SubscriberStateImpl(SubscriberStateChoice.assumedIdle, null);
-        SubscriberInfo subscriberInfo = new SubscriberInfoImpl(li, ss, null, null, null, null, null, null, null);
+        SubscriberInfoImpl subscriberInfo = new SubscriberInfoImpl(li, ss, null, null, null, null, null, null, null);
         // ssList
         ArrayList<SSCodeImpl> ssList = new ArrayList<SSCodeImpl>();
         ssList.add(new SSCodeImpl(SupplementaryCodeValue.allCommunityOfInterestSS));
@@ -558,7 +388,7 @@ public class SendRoutingInformationResponseTest {
         // extensionContainer
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         // naeaPreferredCI
-        NAEACIC naeaPreferredCIC = new NAEACICImpl(this.getNAEACICIData());
+        NAEACICImpl naeaPreferredCIC = new NAEACICImpl(this.getNAEACICIData());
         NAEAPreferredCIImpl naeaPreferredCI = new NAEAPreferredCIImpl(naeaPreferredCIC,
                 MAPExtensionContainerTest.GetTestExtensionContainer());
         // ccbsIndicators
@@ -570,12 +400,11 @@ public class SendRoutingInformationResponseTest {
         // nrPortabilityStatus
         NumberPortabilityStatus nrPortabilityStatus = NumberPortabilityStatus.foreignNumberPortedIn;
         // istAlertTimer
-        Integer istAlertTimer = new Integer(5);
+        Integer istAlertTimer = 5;
         // supportedCamelPhases
-        SupportedCamelPhases supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, false);
-        ;
+        SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, false);
         // offeredCamel4CSIs
-        OfferedCamel4CSIs offeredCamel4CSIs = new OfferedCamel4CSIsImpl(true, true, true, true, true, true, true);
+        OfferedCamel4CSIsImpl offeredCamel4CSIs = new OfferedCamel4CSIsImpl(true, true, true, true, true, true, true);
         // routingInfo2
         ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "79273605819");
@@ -586,15 +415,15 @@ public class SendRoutingInformationResponseTest {
         // basicService2
         ExtBasicServiceCodeImpl basicService2 = new ExtBasicServiceCodeImpl(b);
         // allowedServices
-        AllowedServices allowedServices = new AllowedServicesImpl(true, true);
+        AllowedServicesImpl allowedServices = new AllowedServicesImpl(true, true);
         // unavailabilityCause
         UnavailabilityCause unavailabilityCause = UnavailabilityCause.busySubscriber;
         // releaseResourcesSupported
         boolean releaseResourcesSupported = true;
         // gsmBearerCapability
-        SignalInfo signalInfo = new SignalInfoImpl(getSignalInfoData());
+        SignalInfoImpl signalInfo = new SignalInfoImpl(getSignalInfoData());
         ProtocolId protocolId = ProtocolId.gsm_0806;
-        ExternalSignalInfo gsmBearerCapability = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
+        ExternalSignalInfoImpl gsmBearerCapability = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
         long mapProtocolVersion = 3;
 
         SendRoutingInformationResponseImplV3 prim = new SendRoutingInformationResponseImplV3(mapProtocolVersion, imsi_,
@@ -603,42 +432,10 @@ public class SendRoutingInformationResponseTest {
                 nrPortabilityStatus, istAlertTimer, supportedCamelPhases, offeredCamel4CSIs, routingInfo2, ssList2,
                 basicService2, allowedServices, unavailabilityCause, releaseResourcesSupported, gsmBearerCapability);
 
-        asnOS = new AsnOutputStream();
-        prim.encodeAll(asnOS);
-
-        assertTrue(Arrays.equals(getMAPV3ParameterTestData(), asnOS.toByteArray()));
-
-        // MAP V 2
-        mapProtocolVersion = 2;
-
-        prim = new SendRoutingInformationResponseImplV3(mapProtocolVersion, imsi_, extRoutingInfo_, cugCheckInfo,
-                cugSubscriptionFlag, subscriberInfo, ssList, basicService, forwardingInterrogationRequired, vmscAddress,
-                extensionContainer, naeaPreferredCI, ccbsIndicators, msisdn, nrPortabilityStatus, istAlertTimer,
-                supportedCamelPhases, offeredCamel4CSIs, routingInfo2, ssList2, basicService2, allowedServices,
-                unavailabilityCause, releaseResourcesSupported, gsmBearerCapability);
-
-        asnOS = new AsnOutputStream();
-        prim.encodeAll(asnOS);
-
-        assertTrue(Arrays.equals(getMAPV3ParameterTestData2(), asnOS.toByteArray()));
-
-        // MAP V 1
-        mapProtocolVersion = 1;
-        prim = new SendRoutingInformationResponseImplV3(mapProtocolVersion, imsi_, extRoutingInfo_, cugCheckInfo,
-                cugSubscriptionFlag, subscriberInfo, ssList, basicService, forwardingInterrogationRequired, vmscAddress,
-                extensionContainer, naeaPreferredCI, ccbsIndicators, msisdn, nrPortabilityStatus, istAlertTimer,
-                supportedCamelPhases, offeredCamel4CSIs, routingInfo2, ssList2, basicService2, allowedServices,
-                unavailabilityCause, releaseResourcesSupported, gsmBearerCapability);
-
-        asnOS = new AsnOutputStream();
-        prim.encodeAll(asnOS);
-
-        assertTrue(Arrays.equals(getMAPV3ParameterTestData3(), asnOS.toByteArray()));
-
-    }
-
-    @Test(groups = { "functional.serialize", "service.callhandling" })
-    public void testSerialization() throws Exception {
-
+        data=getData3();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));                
     }
 }

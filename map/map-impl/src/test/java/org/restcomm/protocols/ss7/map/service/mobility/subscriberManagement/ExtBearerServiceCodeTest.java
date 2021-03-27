@@ -23,16 +23,20 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -42,7 +46,7 @@ import org.testng.annotations.Test;
 public class ExtBearerServiceCodeTest {
 
     private byte[] getEncodedData1() {
-        return new byte[] { (byte) 130, 1, 38 };
+        return new byte[] { 4, 1, 38 };
     }
 
     private byte[] getData1() {
@@ -51,54 +55,36 @@ public class ExtBearerServiceCodeTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtBearerServiceCodeImpl.class);
+    	
         byte[] rawData = getEncodedData1();
-        AsnInputStream asn = new AsnInputStream(rawData);
-        asn.readTag();
-        ExtBearerServiceCodeImpl impl = new ExtBearerServiceCodeImpl();
-        impl.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtBearerServiceCodeImpl);
+        ExtBearerServiceCodeImpl impl = (ExtBearerServiceCodeImpl)result.getResult();
+        
         assertTrue(Arrays.equals(impl.getData(), this.getData1()));
         assertEquals(impl.getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtBearerServiceCodeImpl.class);
+    	        
         ExtBearerServiceCodeImpl impl = new ExtBearerServiceCodeImpl(this.getData1());
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 2);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData1();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         impl = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 2);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData1();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerializaion() throws Exception {
-        ExtBearerServiceCodeImpl original = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t");
-        writer.write(original, "extBearerServiceCode", ExtBearerServiceCodeImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ExtBearerServiceCodeImpl copy = reader.read("extBearerServiceCode", ExtBearerServiceCodeImpl.class);
-
-        assertEquals(copy.getBearerServiceCodeValue(), original.getBearerServiceCodeValue());
-    }*/
 }

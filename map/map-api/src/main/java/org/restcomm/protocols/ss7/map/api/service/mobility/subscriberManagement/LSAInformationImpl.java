@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -52,7 +52,7 @@ public class LSAInformationImpl {
     }
 
     public LSAInformationImpl(boolean completeDataListIncluded, LSAOnlyAccessIndicator lsaOnlyAccessIndicator,
-            ArrayList<LSADataImpl> lsaDataList, MAPExtensionContainerImpl extensionContainer) {
+            List<LSADataImpl> lsaDataList, MAPExtensionContainerImpl extensionContainer) {
         if(completeDataListIncluded)
         	this.completeDataListIncluded = new ASNNull();
         
@@ -78,7 +78,7 @@ public class LSAInformationImpl {
         return this.lsaOnlyAccessIndicator.getType();
     }
 
-    public ArrayList<LSADataImpl> getLSADataList() {
+    public List<LSADataImpl> getLSADataList() {
     	if(this.lsaDataList==null)
     		return null;
     	

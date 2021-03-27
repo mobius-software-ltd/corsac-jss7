@@ -43,14 +43,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class SubscriberLocationReportResponseImpl extends LsmMessageImpl implements SubscriberLocationReportResponse {
 	private static final long serialVersionUID = 1L;
 
+	private MAPExtensionContainerImpl extensionContainer;
+
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private ISDNAddressStringImpl naEsrd;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ISDNAddressStringImpl naEsrk;
     
-    private MAPExtensionContainerImpl extensionContainer;
-
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    private ISDNAddressStringImpl naEsrd;
+    
     /**
      *
      */

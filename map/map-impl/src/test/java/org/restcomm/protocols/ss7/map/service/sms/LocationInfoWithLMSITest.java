@@ -22,27 +22,27 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -56,24 +56,20 @@ public class LocationInfoWithLMSITest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { (byte) 160, 67, (byte) 129, 6, (byte) 168, 33, 67, 101, (byte) 135, 9, 4, 4, 4, 3, 2, 1, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42,
-                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 133, 0,
-                (byte) 166, 8, (byte) 129, 6, (byte) 185, (byte) 137, 103, 69, 35, (byte) 241 };
+        return new byte[] { -96, 73, -127, 6, -88, 33, 67, 101, -121, 9, 4, 4, 4, 3, 2, 1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -123, 0, -90, 8, -127, 6, -71, -119, 103, 69, 35, -15 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LocationInfoWithLMSIImpl.class);
+    	        
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        LocationInfoWithLMSIImpl liw = new LocationInfoWithLMSIImpl();
-        liw.decodeAll(asn);
-
-        assertEquals(tag, 0);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LocationInfoWithLMSIImpl);
+        LocationInfoWithLMSIImpl liw = (LocationInfoWithLMSIImpl)result.getResult();
+        
         ISDNAddressStringImpl nnm = liw.getNetworkNodeNumber();
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
         assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
@@ -83,14 +79,10 @@ public class LocationInfoWithLMSITest {
         assertNull(liw.getAdditionalNumber());
 
         rawData = getEncodedDataFull();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        liw = new LocationInfoWithLMSIImpl();
-        liw.decodeAll(asn);
-
-        assertEquals(tag, 0);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LocationInfoWithLMSIImpl);
+        liw = (LocationInfoWithLMSIImpl)result.getResult();
 
         nnm = liw.getNetworkNodeNumber();
         assertEquals(nnm.getAddressNature(), AddressNature.national_significant_number);
@@ -107,15 +99,16 @@ public class LocationInfoWithLMSITest {
 
     @Test(groups = { "functional.encode", "service.sms" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LocationInfoWithLMSIImpl.class);
+    	                
         ISDNAddressStringImpl nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79033700222");
         LMSIImpl lmsi = new LMSIImpl(new byte[] { 0, 3, 98, 49 });
         LocationInfoWithLMSIImpl liw = new LocationInfoWithLMSIImpl(nnm, lmsi, null, false, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        liw.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(liw);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -123,39 +116,12 @@ public class LocationInfoWithLMSITest {
         ISDNAddressStringImpl sgsnAn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.private_plan,
                 "987654321");
         lmsi = new LMSIImpl(new byte[] { 4, 3, 2, 1 });
-        AdditionalNumber an = new AdditionalNumberImpl(null, sgsnAn);
+        AdditionalNumberImpl an = new AdditionalNumberImpl(null, sgsnAn);
         liw = new LocationInfoWithLMSIImpl(nnm, lmsi, MAPExtensionContainerTest.GetTestExtensionContainer(), true, an);
-
-        asnOS.reset();
-        liw.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(liw);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedDataFull();
         assertTrue(Arrays.equals(rawData, encodedData));
-
-    }
-
-    @Test(groups = { "functional.serialize", "service.sms" })
-    public void testSerialization() throws Exception {
-        ISDNAddressStringImpl nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79033700222");
-        LMSIImpl lmsi = new LMSIImpl(new byte[] { 0, 3, 98, 49 });
-        LocationInfoWithLMSIImpl original = new LocationInfoWithLMSIImpl(nnm, lmsi, null, true, null);
-
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        LocationInfoWithLMSIImpl copy = (LocationInfoWithLMSIImpl) o;
-
-        // test result
-        assertEquals(copy.getNetworkNodeNumber(), original.getNetworkNodeNumber());
-        assertEquals(copy.getLMSI(), original.getLMSI());
     }
 }

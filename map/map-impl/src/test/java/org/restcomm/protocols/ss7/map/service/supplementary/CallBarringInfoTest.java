@@ -27,17 +27,18 @@ import static org.testng.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeature;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -56,18 +57,15 @@ public class CallBarringInfoTest {
 
     @Test(groups = { "functional.decode", "service.supplementary" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CallBarringInfoImpl.class);
+    	
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        CallBarringInfoImpl impl = new CallBarringInfoImpl();
-        impl.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallBarringInfoImpl);
+        CallBarringInfoImpl impl = (CallBarringInfoImpl)result.getResult();
+        
         assertNull(impl.getSsCode());
 
         assertEquals(impl.getCallBarringFeatureList().size(), 1);
@@ -75,15 +73,10 @@ public class CallBarringInfoTest {
         assertTrue(impl.getCallBarringFeatureList().get(0).getSsStatus().getPBit());
 
         rawData = getEncodedData2();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        impl = new CallBarringInfoImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallBarringInfoImpl);
+        impl = (CallBarringInfoImpl)result.getResult();
 
         assertEquals(impl.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
 
@@ -94,30 +87,27 @@ public class CallBarringInfoTest {
 
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
-
-        ArrayList<CallBarringFeature> forwardingFeatureList = new ArrayList<CallBarringFeature>();
-        SSStatus ssStatus = new SSStatusImpl(true, true, true, false);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CallBarringInfoImpl.class);
+    	
+        ArrayList<CallBarringFeatureImpl> forwardingFeatureList = new ArrayList<CallBarringFeatureImpl>();
+        SSStatusImpl ssStatus = new SSStatusImpl(true, true, true, false);
         CallBarringFeatureImpl callBarringFeature = new CallBarringFeatureImpl(null, ssStatus);
         forwardingFeatureList.add(callBarringFeature);
         CallBarringInfoImpl impl = new CallBarringInfoImpl(null, forwardingFeatureList);
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
         impl = new CallBarringInfoImpl(ssCode, forwardingFeatureList);
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

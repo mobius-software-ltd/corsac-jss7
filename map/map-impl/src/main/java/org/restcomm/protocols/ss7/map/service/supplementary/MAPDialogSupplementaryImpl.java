@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
@@ -245,7 +245,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, ArrayList<BasicServiceCodeImpl> basicServiceGroupList) throws MAPException {
+    public void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, List<BasicServiceCodeImpl> basicServiceGroupList) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
@@ -255,7 +255,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, ArrayList<ForwardingFeatureImpl> forwardingFeatureList) throws MAPException {
+    public void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, List<ForwardingFeatureImpl> forwardingFeatureList) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");

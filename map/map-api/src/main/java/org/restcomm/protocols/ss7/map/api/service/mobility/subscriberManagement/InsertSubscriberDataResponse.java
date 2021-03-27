@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
@@ -72,11 +72,11 @@ SS-List ::= SEQUENCE SIZE (1..30) OF SS-Code
  */
 public interface InsertSubscriberDataResponse extends MobilityMessage {
 
-    ArrayList<ExtTeleserviceCodeImpl> getTeleserviceList();
+    List<ExtTeleserviceCodeImpl> getTeleserviceList();
 
-    ArrayList<ExtBearerServiceCodeImpl> getBearerServiceList();
+    List<ExtBearerServiceCodeImpl> getBearerServiceList();
 
-    ArrayList<SSCodeImpl> getSSList();
+    List<SSCodeImpl> getSSList();
 
     ODBGeneralDataImpl getODBGeneralData();
 

@@ -29,9 +29,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
@@ -41,7 +38,6 @@ import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySets;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.AfterClass;
@@ -49,6 +45,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -77,10 +79,7 @@ public class LCSLocationInfoTest {
     }
 
     public byte[] getEncodedData() {
-        return new byte[] { 48, 96, 4, 5, -111, 85, 22, 9, 112, -128, 4, 11, 12, 13, 14, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3,
-                4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32,
-                33, -126, 0, -93, 8, -128, 6, -111, 34, 34, 17, 34, 34, -124, 2, 3, -64, -123, 2, 3, -32, -122, 9, 21, 22, 23,
-                23, 25, 26, 27, 28, 29, -120, 9, 31, 32, 33, 33, 35, 36, 37, 38, 39 };
+        return new byte[] { 48, 102, 4, 5, -111, 85, 22, 9, 112, -128, 4, 11, 12, 13, 14, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 0, -93, 8, -128, 6, -111, 34, 34, 17, 34, 34, -124, 2, 6, -64, -123, 2, 5, -32, -122, 9, 21, 22, 23, 23, 25, 26, 27, 28, 29, -120, 9, 31, 32, 33, 33, 35, 36, 37, 38, 39 };
     }
 
     public byte[] getDataLmsi() {
@@ -97,14 +96,16 @@ public class LCSLocationInfoTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LCSLocationInfoImpl.class);
+    	
         byte[] data = getEncodedData();
 
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        LCSLocationInfoImpl imp = new LCSLocationInfoImpl();
-        imp.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LCSLocationInfoImpl);
+        LCSLocationInfoImpl imp = (LCSLocationInfoImpl)result.getResult();
+        
         ISDNAddressStringImpl networkNodeNumber = imp.getNetworkNodeNumber();
         assertEquals(networkNodeNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -117,13 +118,13 @@ public class LCSLocationInfoTest {
         assertTrue(imp.getAdditionalNumber().getMSCNumber().getAddress().equals("2222112222"));
         assertNull(imp.getAdditionalNumber().getSGSNNumber());
 
-        SupportedLCSCapabilitySets supportedLCSCapabilitySets = imp.getSupportedLCSCapabilitySets();
+        SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets = imp.getSupportedLCSCapabilitySets();
         assertTrue(supportedLCSCapabilitySets.getCapabilitySetRelease98_99());
         assertTrue(supportedLCSCapabilitySets.getCapabilitySetRelease4());
         assertFalse(supportedLCSCapabilitySets.getCapabilitySetRelease5());
         assertFalse(supportedLCSCapabilitySets.getCapabilitySetRelease6());
 
-        SupportedLCSCapabilitySets additionalLCSCapabilitySets = imp.getAdditionalLCSCapabilitySets();
+        SupportedLCSCapabilitySetsImpl additionalLCSCapabilitySets = imp.getAdditionalLCSCapabilitySets();
         assertTrue(additionalLCSCapabilitySets.getCapabilitySetRelease98_99());
         assertTrue(additionalLCSCapabilitySets.getCapabilitySetRelease4());
         assertTrue(additionalLCSCapabilitySets.getCapabilitySetRelease5());
@@ -135,6 +136,9 @@ public class LCSLocationInfoTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LCSLocationInfoImpl.class);
+    	
         byte[] data = getEncodedData();
 
         ISDNAddressStringImpl networkNodeNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
@@ -153,15 +157,10 @@ public class LCSLocationInfoTest {
         LCSLocationInfoImpl imp = new LCSLocationInfoImpl(networkNodeNumber, lmsi,
                 MAPExtensionContainerTest.GetTestExtensionContainer(), true, additionalNumber, supportedLCSCapabilitySets,
                 additionalLCSCapabilitySets, mmeName, aaaServerName);
-        // ISDNAddressStringImpl networkNodeNumber, LMSI lmsi, MAPExtensionContainerImpl extensionContainer, boolean gprsNodeIndicator,
-        // AdditionalNumber additionalNumber, SupportedLCSCapabilitySets supportedLCSCapabilitySets, SupportedLCSCapabilitySets
-        // additionalLCSCapabilitySets,
-        // DiameterIdentity mmeName, DiameterIdentity aaaServerName
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
     }
 }

@@ -19,6 +19,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureListWrapperImpl;
@@ -27,8 +29,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
-
-import java.util.ArrayList;
 
 /**
  * Created by vsubbotin on 24/05/16.
@@ -44,7 +44,7 @@ public class CallForwardingDataImpl {
     public CallForwardingDataImpl() {
     }
 
-    public CallForwardingDataImpl(ArrayList<ExtForwFeatureImpl> forwardingFeatureList, boolean isNotificationToCSE,
+    public CallForwardingDataImpl(List<ExtForwFeatureImpl> forwardingFeatureList, boolean isNotificationToCSE,
             MAPExtensionContainerImpl extensionContainer) {
     	
     	if(forwardingFeatureList!=null)
@@ -56,7 +56,7 @@ public class CallForwardingDataImpl {
         this.extensionContainer = extensionContainer;
     }
 
-    public ArrayList<ExtForwFeatureImpl> getForwardingFeatureList() {
+    public List<ExtForwFeatureImpl> getForwardingFeatureList() {
     	if(this.forwardingFeatureList==null)
     		return null;
     	

@@ -22,27 +22,29 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.service.supplementary.RegisterSSRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -58,18 +60,15 @@ public class RegisterSSRequestTest {
 
     @Test(groups = { "functional.decode", "service.supplementary" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RegisterSSRequestImpl.class);
+    	        
         byte[] rawData = getEncodedData1();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        RegisterSSRequestImpl impl = new RegisterSSRequestImpl();
-        impl.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RegisterSSRequestImpl);
+        RegisterSSRequestImpl impl = (RegisterSSRequestImpl)result.getResult();
+        
         assertEquals(impl.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.clir);
         assertEquals(impl.getBasicService().getBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_1200_75bps);
         assertEquals(impl.getForwardedToNumber().getAddress(), "1110001");
@@ -83,26 +82,22 @@ public class RegisterSSRequestTest {
 
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RegisterSSRequestImpl.class);
+    	                
     	SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.clir);
-        BearerServiceCode bearerService = new BearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_1200_75bps);
-        BasicServiceCode basicService = new BasicServiceCodeImpl(bearerService);
+        BearerServiceCodeImpl bearerService = new BearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_1200_75bps);
+        BasicServiceCodeImpl basicService = new BasicServiceCodeImpl(bearerService);
         AddressStringImpl forwardedToNumber = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1110001");
         ISDNAddressStringImpl forwardedToSubaddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1110002");
         ISDNAddressStringImpl longFTNSupported = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1110003");;
 
-        RegisterSSRequestImpl impl = new RegisterSSRequestImpl(ssCode, basicService, forwardedToNumber, forwardedToSubaddress, 1, EMLPPPriority.priorityLevelA,
-                2, longFTNSupported);
-//        SSCode ssCode, BasicServiceCode basicService, AddressStringImpl forwardedToNumber, ISDNAddressStringImpl forwardedToSubaddress,
-//        Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser, ISDNAddressStringImpl longFTNSupported
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        RegisterSSRequestImpl impl = new RegisterSSRequestImpl(ssCode, basicService, forwardedToNumber, forwardedToSubaddress, 1, EMLPPPriority.priorityLevelA, 2, longFTNSupported);
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData1();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

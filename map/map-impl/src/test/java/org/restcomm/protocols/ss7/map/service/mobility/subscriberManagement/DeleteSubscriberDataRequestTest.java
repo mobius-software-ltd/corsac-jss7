@@ -22,36 +22,32 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdraw;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdraw;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdraw;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdraw;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DeleteSubscriberDataRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -65,30 +61,25 @@ public class DeleteSubscriberDataRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 74, -128, 6, 17, 33, 34, 51, 67, 68, -95, 3, -126, 1, 48, -94, 6, 4, 1, 33, 4, 1, 17, -124, 0, -123, 2, 0, 11, -121, 0, -120,
-                0, -119, 0, -90, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
-                26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 80, -128, 6, 17, 33, 34, 51, 67, 68, -95, 3, -126, 1, 48, -94, 6, 4, 1, 33, 4, 1, 17, -124, 0, -123, 2, 0, 11, -121, 0, -120, 0, -119, 0, -90, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     private byte[] getEncodedData3() {
-        return new byte[] { 48, 42, (byte) 128, 6, 17, 33, 34, 51, 67, 68, (byte) 170, 2, 5, 0, (byte) 139, 0, (byte) 172, 2, 5, 0, (byte) 141, 0, (byte) 142,
-                0, (byte) 143, 3, 2, (byte) 144, 0, (byte) 144, 0, (byte) 145, 0, (byte) 178, 5, 48, 3, 2, 1, 15, (byte) 147, 0, (byte) 148, 0 };
+        return new byte[] { 48, 41, -128, 6, 17, 33, 34, 51, 67, 68, -86, 2, 5, 0, -117, 0, -84, 2, 5, 0, -115, 0, -114, 0, -113, 2, 4, -112, -112, 0, -111, 0, -78, 5, 48, 3, 2, 1, 15, -109, 0, -108, 0 };
     }
 
     @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(DeleteSubscriberDataRequestImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        DeleteSubscriberDataRequestImpl asc = new DeleteSubscriberDataRequestImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        IMSI imsi = asc.getImsi();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DeleteSubscriberDataRequestImpl);
+        DeleteSubscriberDataRequestImpl asc = (DeleteSubscriberDataRequestImpl)result.getResult();
+        
+        IMSIImpl imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("111222333444"));
 
         assertNull(asc.getBasicServiceList());
@@ -113,14 +104,10 @@ public class DeleteSubscriberDataRequestTest {
 
 
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new DeleteSubscriberDataRequestImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DeleteSubscriberDataRequestImpl);
+        asc = (DeleteSubscriberDataRequestImpl)result.getResult();
 
         imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("111222333444"));
@@ -131,7 +118,7 @@ public class DeleteSubscriberDataRequestTest {
         assertEquals(asc.getSsList().get(0).getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
         assertEquals(asc.getSsList().get(1).getSupplementaryCodeValue(), SupplementaryCodeValue.clip);
         assertTrue(asc.getRoamingRestrictionDueToUnsupportedFeature());
-        assertEquals(asc.getRegionalSubscriptionIdentifier().getValue(), 11);
+        assertEquals(asc.getRegionalSubscriptionIdentifier().getIntValue(), 11);
         assertTrue(asc.getVbsGroupIndication());
         assertTrue(asc.getVgcsGroupIndication());
         assertTrue(asc.getCamelSubscriptionInfoWithdraw());
@@ -151,14 +138,10 @@ public class DeleteSubscriberDataRequestTest {
 
 
         rawData = getEncodedData3();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new DeleteSubscriberDataRequestImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DeleteSubscriberDataRequestImpl);
+        asc = (DeleteSubscriberDataRequestImpl)result.getResult();
 
         imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("111222333444"));
@@ -178,7 +161,7 @@ public class DeleteSubscriberDataRequestTest {
         assertTrue(asc.getGmlcListWithdraw());
         assertTrue(asc.getIstInformationWithdraw());
 
-        SpecificCSIWithdraw specificCSIWithdraw = asc.getSpecificCSIWithdraw();
+        SpecificCSIWithdrawImpl specificCSIWithdraw = asc.getSpecificCSIWithdraw();
         assertTrue(specificCSIWithdraw.getOCsi());
         assertFalse(specificCSIWithdraw.getSsCsi());
         assertFalse(specificCSIWithdraw.getTifCsi());
@@ -195,63 +178,54 @@ public class DeleteSubscriberDataRequestTest {
 
     @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(DeleteSubscriberDataRequestImpl.class);
+    	
         IMSIImpl imsi = new IMSIImpl("111222333444");
         DeleteSubscriberDataRequestImpl asc = new DeleteSubscriberDataRequestImpl(imsi, null, null, false, null, false, false, false, null, null, false, null,
                 false, false, null, false, false, null, false, false);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        byte[] rawData = this.getEncodedData();
+        assertEquals(encodedData, rawData);
 
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        ArrayList<ExtBasicServiceCode> basicServiceList = new ArrayList<ExtBasicServiceCode>();
-        ExtBearerServiceCode extBearerService = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.allAlternateSpeech_DataCDA);
-        ExtBasicServiceCode basicService = new ExtBasicServiceCodeImpl(extBearerService);
+        ArrayList<ExtBasicServiceCodeImpl> basicServiceList = new ArrayList<ExtBasicServiceCodeImpl>();
+        ExtBearerServiceCodeImpl extBearerService = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.allAlternateSpeech_DataCDA);
+        ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(extBearerService);
         basicServiceList.add(basicService);
         ArrayList<SSCodeImpl> ssList = new ArrayList<SSCodeImpl>();
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
         SSCodeImpl ssCode2 = new SSCodeImpl(SupplementaryCodeValue.clip);
         ssList.add(ssCode);
         ssList.add(ssCode2);
-        ZoneCode regionalSubscriptionIdentifier = new ZoneCodeImpl(11);
+        ZoneCodeImpl regionalSubscriptionIdentifier = new ZoneCodeImpl(11);
         asc = new DeleteSubscriberDataRequestImpl(imsi, basicServiceList, ssList, true, regionalSubscriptionIdentifier, true, true, true,
                 MAPExtensionContainerTest.GetTestExtensionContainer(), null, false, null, false, false, null, false, false, null, false, false);
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData = this.getEncodedData2();
+        assertEquals(encodedData, rawData);
 
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData2();
-        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw = new GPRSSubscriptionDataWithdrawImpl(true);
-        LSAInformationWithdraw lsaInformationWithdraw = new LSAInformationWithdrawImpl(true);
-        SpecificCSIWithdraw specificCSIWithdraw = new SpecificCSIWithdrawImpl(true, false, false, true, false, false, false, false, false, false, false, false,
+        GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw = new GPRSSubscriptionDataWithdrawImpl(true);
+        LSAInformationWithdrawImpl lsaInformationWithdraw = new LSAInformationWithdrawImpl(true);
+        SpecificCSIWithdrawImpl specificCSIWithdraw = new SpecificCSIWithdrawImpl(true, false, false, true, false, false, false, false, false, false, false, false,
                 false, false);
         ArrayList<Integer> contextIdList = new ArrayList<Integer>();
         contextIdList.add(15);
-        EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw = new EPSSubscriptionDataWithdrawImpl(contextIdList);
+        EPSSubscriptionDataWithdrawImpl epsSubscriptionDataWithdraw = new EPSSubscriptionDataWithdrawImpl(contextIdList);
         asc = new DeleteSubscriberDataRequestImpl(imsi, null, null, false, null, false, false, false, null, gprsSubscriptionDataWithdraw, true,
                 lsaInformationWithdraw, true, true, specificCSIWithdraw, true, true, epsSubscriptionDataWithdraw, true, true);
-//        IMSI imsi, ArrayList<ExtBasicServiceCode> basicServiceList, ArrayList<SSCode> ssList,
-//        boolean roamingRestrictionDueToUnsupportedFeature, ZoneCode regionalSubscriptionIdentifier, boolean vbsGroupIndication,
-//        boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainerImpl extensionContainer,
-//        GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
-//        LSAInformationWithdraw lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdraw specificCSIWithdraw,
-//        boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw,
-//        boolean apnOiReplacementWithdraw, boolean csgSubscriptionDeleted        
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData3();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData = this.getEncodedData3();
+        assertEquals(encodedData, rawData);
     }
-
 }

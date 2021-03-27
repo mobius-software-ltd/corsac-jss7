@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
@@ -61,7 +61,7 @@ public class ExtSSDataImpl {
      *
      */
     public ExtSSDataImpl(SSCodeImpl ssCode, ExtSSStatusImpl ssStatus, SSSubscriptionOptionImpl ssSubscriptionOption,
-            ArrayList<ExtBasicServiceCodeImpl> basicServiceGroupList, MAPExtensionContainerImpl extensionContainer) {
+            List<ExtBasicServiceCodeImpl> basicServiceGroupList, MAPExtensionContainerImpl extensionContainer) {
         this.ssCode = ssCode;
         this.ssStatus = ssStatus;
         this.ssSubscriptionOption = ssSubscriptionOption;
@@ -84,7 +84,7 @@ public class ExtSSDataImpl {
         return this.ssSubscriptionOption;
     }
 
-    public ArrayList<ExtBasicServiceCodeImpl> getBasicServiceGroupList() {
+    public List<ExtBasicServiceCodeImpl> getBasicServiceGroupList() {
     	if(this.basicServiceGroupList==null)
     		return null;
     	

@@ -53,6 +53,10 @@ public class UpdateLocationResponseImplV2 extends MobilityMessageImpl implements
     private ASNNull pagingAreaCapability;
     private long mapProtocolVersion;
 
+    public UpdateLocationResponseImplV2() {
+    	this.mapProtocolVersion = 2;
+    }
+    
     public UpdateLocationResponseImplV2(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

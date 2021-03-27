@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -37,16 +37,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ExtSSInfoListWrapperImpl {
 	
 	@ASNChoise
-	private ArrayList<ExtSSInfoImpl> extSSInfo;
+	private List<ExtSSInfoImpl> extSSInfo;
 
     public ExtSSInfoListWrapperImpl() {
     }
 
-    public ExtSSInfoListWrapperImpl(ArrayList<ExtSSInfoImpl> extSSInfo) {
+    public ExtSSInfoListWrapperImpl(List<ExtSSInfoImpl> extSSInfo) {
         this.extSSInfo = extSSInfo;
     }
 
-    public ArrayList<ExtSSInfoImpl> getExtSSInfo() {
+    public List<ExtSSInfoImpl> getExtSSInfo() {
     	return extSSInfo;
     }
 }

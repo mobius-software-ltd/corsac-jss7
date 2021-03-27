@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class OBcsmCamelTDPDataWrapperImpl {
-	private ArrayList<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList;
+	private List<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList;
 
     public OBcsmCamelTDPDataWrapperImpl() {
     }
 
-    public OBcsmCamelTDPDataWrapperImpl(ArrayList<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList) {
+    public OBcsmCamelTDPDataWrapperImpl(List<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList) {
         this.oBcsmCamelTDPDataList = oBcsmCamelTDPDataList;
     }
 
-    public ArrayList<OBcsmCamelTDPDataImpl> getOBcsmCamelTDPDataList() {
+    public List<OBcsmCamelTDPDataImpl> getOBcsmCamelTDPDataList() {
     	return oBcsmCamelTDPDataList;
     }
 }

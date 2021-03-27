@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CCBSFeatureListWrapperImpl {
-	private ArrayList<CCBSFeatureImpl> ccbsFeatures;
+	private List<CCBSFeatureImpl> ccbsFeatures;
 
     public CCBSFeatureListWrapperImpl() {
     }
 
-    public CCBSFeatureListWrapperImpl(ArrayList<CCBSFeatureImpl> ccbsFeatures) {
+    public CCBSFeatureListWrapperImpl(List<CCBSFeatureImpl> ccbsFeatures) {
         this.ccbsFeatures = ccbsFeatures;
     }
 
-    public ArrayList<CCBSFeatureImpl> getCCBSFeatures() {
+    public List<CCBSFeatureImpl> getCCBSFeatures() {
     	return ccbsFeatures;
     }
 }

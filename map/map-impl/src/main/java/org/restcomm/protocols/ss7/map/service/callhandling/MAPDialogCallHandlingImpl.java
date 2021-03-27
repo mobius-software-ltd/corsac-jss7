@@ -64,7 +64,7 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /*
  *
@@ -165,8 +165,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
 
     public void addSendRoutingInformationResponse(long invokeId, IMSIImpl imsi, CUGCheckInfoImpl cugCheckInfo, RoutingInfoImpl routingInfo2)
             throws MAPException {
-        this.addSendRoutingInformationResponse(invokeId, imsi, null, cugCheckInfo, false, null, null, null, false, null, null,
-                null, null, null, null, null, null, null, routingInfo2, null, null, null, null, false, null);
+    	this.doAddSendRoutingInformationResponse(invokeId, imsi, cugCheckInfo, routingInfo2);
     }
     
     protected void doAddSendRoutingInformationResponse(long invokeId, IMSIImpl imsi, CUGCheckInfoImpl cugCheckInfo, RoutingInfoImpl routingInfo2) throws MAPException {
@@ -185,12 +184,12 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
 
     @Override
     public void addSendRoutingInformationResponse(long invokeId, IMSIImpl imsi, ExtendedRoutingInfoImpl extRoutingInfo,
-            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, ArrayList<SSCodeImpl> ssList,
+            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, List<SSCodeImpl> ssList,
             ExtBasicServiceCodeImpl basicService, boolean forwardingInterrogationRequired, ISDNAddressStringImpl vmscAddress,
             MAPExtensionContainerImpl extensionContainer, NAEAPreferredCIImpl naeaPreferredCI, CCBSIndicatorsImpl ccbsIndicators,
             ISDNAddressStringImpl msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
             SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2,
-            ArrayList<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
+            List<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
             UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfoImpl gsmBearerCapability)
             throws MAPException {
         doAddSendRoutingInformationResponse(false, invokeId, imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
@@ -202,12 +201,12 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
 
     @Override
     public void addSendRoutingInformationResponse_NonLast(long invokeId, IMSIImpl imsi, ExtendedRoutingInfoImpl extRoutingInfo,
-            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, ArrayList<SSCodeImpl> ssList,
+            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, List<SSCodeImpl> ssList,
             ExtBasicServiceCodeImpl basicService, boolean forwardingInterrogationRequired, ISDNAddressStringImpl vmscAddress,
             MAPExtensionContainerImpl extensionContainer, NAEAPreferredCIImpl naeaPreferredCI, CCBSIndicatorsImpl ccbsIndicators,
             ISDNAddressStringImpl msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
             SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2,
-            ArrayList<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
+            List<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
             UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfoImpl gsmBearerCapability)
             throws MAPException {
         doAddSendRoutingInformationResponse(true, invokeId, imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
@@ -219,11 +218,11 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
 
     protected void doAddSendRoutingInformationResponse(boolean nonLast, long invokeId, IMSIImpl imsi,
             ExtendedRoutingInfoImpl extRoutingInfo, CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag,
-            SubscriberInfoImpl subscriberInfo, ArrayList<SSCodeImpl> ssList, ExtBasicServiceCodeImpl basicService,
+            SubscriberInfoImpl subscriberInfo, List<SSCodeImpl> ssList, ExtBasicServiceCodeImpl basicService,
             boolean forwardingInterrogationRequired, ISDNAddressStringImpl vmscAddress, MAPExtensionContainerImpl extensionContainer,
             NAEAPreferredCIImpl naeaPreferredCI, CCBSIndicatorsImpl ccbsIndicators, ISDNAddressStringImpl msisdn,
             NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer, SupportedCamelPhasesImpl supportedCamelPhases,
-            OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2, ArrayList<SSCodeImpl> ssList2,
+            OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2, List<SSCodeImpl> ssList2,
             ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices, UnavailabilityCause unavailabilityCause,
             boolean releaseResourcesSupported, ExternalSignalInfoImpl gsmBearerCapability) throws MAPException {
 

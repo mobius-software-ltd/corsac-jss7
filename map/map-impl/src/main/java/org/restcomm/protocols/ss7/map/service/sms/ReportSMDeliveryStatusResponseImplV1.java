@@ -43,6 +43,10 @@ public class ReportSMDeliveryStatusResponseImplV1 extends SmsMessageImpl impleme
     
     private long mapProtocolVersion;
 
+    public ReportSMDeliveryStatusResponseImplV1() {
+    	this.mapProtocolVersion=1;
+    }
+    
     public ReportSMDeliveryStatusResponseImplV1(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

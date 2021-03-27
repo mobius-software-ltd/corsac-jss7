@@ -22,24 +22,25 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.RestoreDataRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -53,9 +54,7 @@ public class RestoreDataRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 64, 4, 7, 17, 33, 34, 51, 67, 68, 85, 4, 4, 22, 33, 44, 55, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 166, 4, (byte) 128, 2, 4, (byte) 192,
-                (byte) 135, 0 };
+        return new byte[] { 48, 70, 4, 7, 17, 33, 34, 51, 67, 68, 85, 4, 4, 22, 33, 44, 55, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -90, 4, -128, 2, 6, -64, -121, 0 };
     }
 
     private byte[] getLmsiData() {
@@ -64,18 +63,16 @@ public class RestoreDataRequestTest {
 
     @Test
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        RestoreDataRequestImpl prim = new RestoreDataRequestImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        IMSI imsi = prim.getImsi();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RestoreDataRequestImpl.class);
+    	
+        byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RestoreDataRequestImpl);
+        RestoreDataRequestImpl prim = (RestoreDataRequestImpl)result.getResult();
+        
+        IMSIImpl imsi = prim.getImsi();
         assertTrue(imsi.getData().equals("11122233344455"));
 
         assertNull(prim.getLmsi());
@@ -84,23 +81,19 @@ public class RestoreDataRequestTest {
         assertFalse(prim.getRestorationIndicator());
 
 
-        rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        prim = new RestoreDataRequestImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        data = getEncodedData2();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RestoreDataRequestImpl);
+        prim = (RestoreDataRequestImpl)result.getResult();
 
         imsi = prim.getImsi();
         assertTrue(imsi.getData().equals("11122233344455"));
 
         assertEquals(prim.getLmsi().getData(), getLmsiData());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
-        VLRCapability vlrCapability = prim.getVLRCapability();
-        SupportedCamelPhases supportedCamelPhases = vlrCapability.getSupportedCamelPhases();
+        VLRCapabilityImpl vlrCapability = prim.getVLRCapability();
+        SupportedCamelPhasesImpl supportedCamelPhases = vlrCapability.getSupportedCamelPhases();
         assertTrue(supportedCamelPhases.getPhase1Supported());
         assertTrue(supportedCamelPhases.getPhase2Supported());
         assertFalse(supportedCamelPhases.getPhase3Supported());
@@ -112,36 +105,27 @@ public class RestoreDataRequestTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RestoreDataRequestImpl.class);
+    	
         IMSIImpl imsi = new IMSIImpl("11122233344455");
         RestoreDataRequestImpl prim = new RestoreDataRequestImpl(imsi, null, null, null, false);
-        // IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainerImpl extensionContainer, boolean restorationIndicator
+        
+        byte[] data=this.getEncodedData();
+    	ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        prim.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-
-        LMSI lmsi = new LMSIImpl(getLmsiData());
-        SupportedCamelPhases supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, false, false);
-        VLRCapability vlrCapability = new VLRCapabilityImpl(supportedCamelPhases, null, false, null, null, false, null, null, null, false, false);
-//      SupportedCamelPhases supportedCamelPhases, MAPExtensionContainerImpl extensionContainer,
-//      boolean solsaSupportIndicator, ISTSupportIndicator istSupportIndicator,
-//      SuperChargerInfo superChargerSupportedInServingNetworkEntity, boolean longFtnSupported,
-//      SupportedLCSCapabilitySets supportedLCSCapabilitySets, OfferedCamel4CSIs offeredCamel4CSIs,
-//      SupportedRATTypes supportedRATTypesIndicator, boolean longGroupIDSupported, boolean mtRoamingForwardingSupported        
+        LMSIImpl lmsi = new LMSIImpl(getLmsiData());
+        SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, false, false);
+        VLRCapabilityImpl vlrCapability = new VLRCapabilityImpl(supportedCamelPhases, null, false, null, null, false, null, null, null, false, false);
         prim = new RestoreDataRequestImpl(imsi, lmsi, vlrCapability, MAPExtensionContainerTest.GetTestExtensionContainer(), true);
 
-        asnOS = new AsnOutputStream();
-        prim.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData2();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
+        data=this.getEncodedData2();
+    	buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

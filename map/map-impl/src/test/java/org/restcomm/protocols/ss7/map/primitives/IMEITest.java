@@ -23,20 +23,19 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -55,78 +54,51 @@ public class IMEITest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(IMEIImpl.class);
+    	
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        IMEIImpl imei = new IMEIImpl();
-        imei.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof IMEIImpl);
+        IMEIImpl imei = (IMEIImpl)result.getResult();
+        
         assertEquals(imei.getIMEI(), "1234567890123456");
 
         // Testing IMEI length != 15
         rawData = getEncodedDataImeiLengthLessThan15();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        imei = new IMEIImpl();
-        imei.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof IMEIImpl);
+        imei = (IMEIImpl)result.getResult();
 
         assertEquals(imei.getIMEI(), "1");
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(IMEIImpl.class);
+    	
         IMEIImpl imei = new IMEIImpl("1234567890123456");
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        imei.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ByteBuf buffer=parser.encode(imei);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
-
         assertTrue(Arrays.equals(rawData, encodedData));
 
         // Testing IMEI length != 15
         imei = new IMEIImpl("1");
-        asnOS = new AsnOutputStream();
-        imei.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(imei);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedDataImeiLengthLessThan15();
 
         assertTrue(Arrays.equals(rawData, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "primitives" })
-    public void testSerialization() throws Exception {
-        IMEIImpl original = new IMEIImpl("1234567890123456");
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        IMEIImpl copy = (IMEIImpl) o;
-
-        // test result
-        assertEquals(copy.getIMEI(), original.getIMEI());
-
     }
 
     /*@Test(groups = { "functional.xml.serialize", "primitives" })

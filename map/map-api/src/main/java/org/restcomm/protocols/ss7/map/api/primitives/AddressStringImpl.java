@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.primitives;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.Serializable;
+
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
@@ -42,7 +44,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class AddressStringImpl  {
+public class AddressStringImpl implements Serializable  {
+	private static final long serialVersionUID = 1L;
+	
 	protected int NO_EXTENSION_MASK = 0x80;
     protected int NATURE_OF_ADD_IND_MASK = 0x70;
     protected int NUMBERING_PLAN_IND_MASK = 0x0F;
@@ -151,7 +155,7 @@ public class AddressStringImpl  {
         int numbPlanInd = (nature & NUMBERING_PLAN_IND_MASK);
         this.numberingPlan = NumberingPlan.getInstance(numbPlanInd);
         
-		TbcdString.decodeString(buffer);
+		this.address=TbcdString.decodeString(buffer);
 		return false;
 	}
 

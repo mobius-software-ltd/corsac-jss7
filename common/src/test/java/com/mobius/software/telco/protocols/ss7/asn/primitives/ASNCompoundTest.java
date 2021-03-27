@@ -28,8 +28,6 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +36,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class ASNCompoundTest 
 {
@@ -60,8 +61,8 @@ public class ASNCompoundTest
 			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(encodedValue1);
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
 			assertTrue(decodedValue instanceof ASNCompoundPrimitive1);
-			assertEquals(((ASNCompoundPrimitive1)decodedValue).getField1(),new Long(25));
-			assertEquals(((ASNCompoundPrimitive1)decodedValue).getField2(),new Long(28));
+			assertEquals(((ASNCompoundPrimitive1)decodedValue).getField1(),Long.valueOf(25));
+			assertEquals(((ASNCompoundPrimitive1)decodedValue).getField2(),Long.valueOf(28));
 			assertFalse(((ASNCompoundPrimitive1)decodedValue).getField3());			
 		}
 		catch(Exception ex)
@@ -84,7 +85,7 @@ public class ASNCompoundTest
 		
 		byte[] plainLongBytes=longTestString.getBytes();
 		Integer longLength=ASNParser.getLengthLength(plainLongBytes.length);		
-		assertEquals(longLength,new Integer(2));
+		assertEquals(longLength,Integer.valueOf(2));
 		
 		byte[] longLengthBytes=new byte[3];
 		ByteBuf longLengthBuf=Unpooled.wrappedBuffer(longLengthBytes);
@@ -146,7 +147,7 @@ public class ASNCompoundTest
 		
 		byte[] plainLongBytes=longTestString.getBytes();
 		Integer longLength=ASNParser.getLengthLength(plainLongBytes.length);		
-		assertEquals(longLength,new Integer(2));
+		assertEquals(longLength,Integer.valueOf(2));
 		
 		byte[] longLengthBytes=new byte[3];
 		ByteBuf longLengthBuf=Unpooled.wrappedBuffer(longLengthBytes);
@@ -212,8 +213,8 @@ public class ASNCompoundTest
 			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(encodedValue1);
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
 			assertTrue(decodedValue instanceof ASNCompundPrimitive4);
-			assertEquals(((ASNCompundPrimitive4)decodedValue).getField1(),new Long(25));
-			assertEquals(((ASNCompundPrimitive4)decodedValue).getField2(),new Long(28));
+			assertEquals(((ASNCompundPrimitive4)decodedValue).getField1(),Long.valueOf(25));
+			assertEquals(((ASNCompundPrimitive4)decodedValue).getField2(),Long.valueOf(28));
 			assertFalse(((ASNCompundPrimitive4)decodedValue).getField3());			
 		}
 		catch(Exception ex)
@@ -245,8 +246,8 @@ public class ASNCompoundTest
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
 			assertTrue(decodedValue instanceof ASNCompundPrimitiveWithList1);
 			assertEquals(((ASNCompundPrimitiveWithList1)decodedValue).getField1().size(),2);
-			assertEquals(((ASNCompundPrimitiveWithList1)decodedValue).getField1().get(0),new Long(25));
-			assertEquals(((ASNCompundPrimitiveWithList1)decodedValue).getField1().get(1),new Long(28));			
+			assertEquals(((ASNCompundPrimitiveWithList1)decodedValue).getField1().get(0),Long.valueOf(25));
+			assertEquals(((ASNCompundPrimitiveWithList1)decodedValue).getField1().get(1),Long.valueOf(28));			
 		}
 		catch(Exception ex)
 		{

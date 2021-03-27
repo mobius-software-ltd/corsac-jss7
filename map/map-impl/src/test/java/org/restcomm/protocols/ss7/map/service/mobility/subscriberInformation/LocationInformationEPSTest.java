@@ -23,13 +23,11 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgiImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
@@ -37,6 +35,12 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationEPSImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAIdImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -73,16 +77,16 @@ public class LocationInformationEPSTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LocationInformationEPSImpl.class);
+    	
         byte[] rawData = getEncodedData();
 
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        LocationInformationEPSImpl impl = new LocationInformationEPSImpl();
-        impl.decodeAll(asn);
-        assertEquals(tag, Tag.SEQUENCE);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LocationInformationEPSImpl);
+        LocationInformationEPSImpl impl = (LocationInformationEPSImpl)result.getResult();
+        
         assertTrue(Arrays.equals(impl.getEUtranCellGlobalIdentity().getData(), this.getEncodedDataEUtranCgi()));
         assertTrue(Arrays.equals(impl.getTrackingAreaIdentity().getData(), this.getTAId()));
         assertTrue(Arrays.equals(impl.getGeographicalInformation().getData(), this.getGeographicalInformation()));
@@ -90,68 +94,23 @@ public class LocationInformationEPSTest {
         assertTrue(impl.getCurrentLocationRetrieved());
         assertEquals((int) impl.getAgeOfLocationInformation(), 5);
         assertTrue(Arrays.equals(impl.getMmeName().getData(), this.getDiameterIdentity()));
-        // public DiameterIdentity getMmeName();
-
     }
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LocationInformationEPSImpl.class);
+    	
         EUtranCgiImpl euc = new EUtranCgiImpl(this.getEncodedDataEUtranCgi());
         TAIdImpl ta = new TAIdImpl(this.getTAId());
         GeographicalInformationImpl ggi = new GeographicalInformationImpl(this.getGeographicalInformation());
         GeodeticInformationImpl gdi = new GeodeticInformationImpl(this.getGeodeticInformation());
         DiameterIdentityImpl di = new DiameterIdentityImpl(this.getDiameterIdentity());
         LocationInformationEPSImpl impl = new LocationInformationEPSImpl(euc, ta, null, ggi, gdi, true, 5, di);
-        // EUtranCgi eUtranCellGlobalIdentity, TAId trackingAreaIdentity, MAPExtensionContainerImpl extensionContainer,
-        // GeographicalInformation geographicalInformation, GeodeticInformation geodeticInformation, boolean
-        // currentLocationRetrieved,
-        // Integer ageOfLocationInformation, DiameterIdentity mmeName
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
-    public void testXMLSerialize() throws Exception {
-
-        EUtranCgiImpl euc = new EUtranCgiImpl(this.getEncodedDataEUtranCgi());
-        TAIdImpl ta = new TAIdImpl(this.getTAId());
-        GeographicalInformationImpl ggi = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle,
-                -70.33, -0.5, 58);
-        GeodeticInformationImpl gdi = new GeodeticInformationImpl(3, TypeOfShape.EllipsoidPointWithUncertaintyCircle, 21.5,
-                171, 8, 11);
-        DiameterIdentityImpl di = new DiameterIdentityImpl(this.getDiameterIdentity());
-        LocationInformationEPSImpl original = new LocationInformationEPSImpl(euc, ta,
-                MAPExtensionContainerTest.GetTestExtensionContainer(), ggi, gdi, true, 5, di);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "locationInformationEPS", LocationInformationEPSImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        LocationInformationEPSImpl copy = reader.read("locationInformationEPS", LocationInformationEPSImpl.class);
-
-        assertEquals(copy.getEUtranCellGlobalIdentity().getData(), original.getEUtranCellGlobalIdentity().getData());
-        assertEquals(copy.getTrackingAreaIdentity().getData(), original.getTrackingAreaIdentity().getData());
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(copy.getExtensionContainer()));
-        assertEquals(copy.getGeographicalInformation().getLatitude(), original.getGeographicalInformation().getLatitude());
-
-        assertEquals(copy.getGeodeticInformation().getLatitude(), original.getGeodeticInformation().getLatitude());
-        assertEquals(copy.getCurrentLocationRetrieved(), original.getCurrentLocationRetrieved());
-        assertEquals(copy.getAgeOfLocationInformation(), original.getAgeOfLocationInformation());
-        assertEquals(copy.getMmeName().getData(), original.getMmeName().getData());
-    }*/
 }

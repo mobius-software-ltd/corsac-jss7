@@ -22,10 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -36,17 +35,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ExtCallBarringFeatureListWrapperImpl {
 	
-	@ASNChoise
-    private ArrayList<ExtCallBarringFeatureImpl> extCallBarringFeature;
+	private List<ExtCallBarringFeatureImpl> extCallBarringFeature;
 
     public ExtCallBarringFeatureListWrapperImpl() {
     }
 
-    public ExtCallBarringFeatureListWrapperImpl(ArrayList<ExtCallBarringFeatureImpl> extCallBarringFeature) {
+    public ExtCallBarringFeatureListWrapperImpl(List<ExtCallBarringFeatureImpl> extCallBarringFeature) {
         this.extCallBarringFeature = extCallBarringFeature;
     }
 
-    public ArrayList<ExtCallBarringFeatureImpl> getExtCallBarringFeature() {
+    public List<ExtCallBarringFeatureImpl> getExtCallBarringFeature() {
     	return extCallBarringFeature;
     }
 }

@@ -56,6 +56,9 @@ public class VoiceBroadcastDataImpl {
         
         this.extensionContainer = extensionContainer;
         this.longGroupId = longGroupId;
+        
+        if(this.longGroupId!=null)
+        	this.groupId=new GroupIdImpl("");
     }
 
     public GroupIdImpl getGroupId() {

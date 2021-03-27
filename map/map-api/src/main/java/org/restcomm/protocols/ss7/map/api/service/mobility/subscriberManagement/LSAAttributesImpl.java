@@ -33,6 +33,10 @@ public class LSAAttributesImpl extends ASNSingleByte {
     private static int activeModeSupport_mask = 0x20;
     private static int lsaIdentificationPriority_mask = 0x0F;
 
+    public LSAAttributesImpl() {
+    	
+    }
+    
     public LSAAttributesImpl(int data) {
         setValue(data);
     }

@@ -29,9 +29,6 @@ import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
-import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
-import org.restcomm.protocols.ss7.mtp.RoutingLabelFormat;
 import org.testng.annotations.Test;
 
 /**

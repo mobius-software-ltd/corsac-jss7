@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -47,7 +47,7 @@ public class AreaDefinitionImpl {
     /**
      * @param areaList
      */
-    public AreaDefinitionImpl(ArrayList<AreaImpl> areaList) {
+    public AreaDefinitionImpl(List<AreaImpl> areaList) {
         if(areaList!=null)
         	this.areaList = new AreaListWrapperImpl(areaList);
     }
@@ -57,7 +57,7 @@ public class AreaDefinitionImpl {
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition#getAreaList ()
      */
-    public ArrayList<AreaImpl> getAreaList() {
+    public List<AreaImpl> getAreaList() {
     	if(this.areaList==null)
     		return null;
     	

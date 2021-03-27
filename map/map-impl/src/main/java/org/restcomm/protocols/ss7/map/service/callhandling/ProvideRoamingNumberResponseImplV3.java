@@ -67,6 +67,10 @@ public class ProvideRoamingNumberResponseImplV3 extends CallHandlingMessageImpl 
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
+    public ProvideRoamingNumberResponseImplV3() {
+    	this.mapProtocolVersion=3;
+    }
+    
     @Override
     public MAPMessageType getMessageType() {
         return MAPMessageType.privideRoamingNumber_Response;

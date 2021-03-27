@@ -23,21 +23,25 @@
 package org.restcomm.protocols.ss7.map.service.sms;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.sms.ReportSMDeliveryStatusResponse;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.sms.ReportSMDeliveryStatusResponseImplV3;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -47,8 +51,7 @@ import org.testng.annotations.Test;
 public class ReportSMDeliveryStatusResponseTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 49, 4, 6, -111, -120, 120, 119, 102, -10, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13,
-                14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 55, 4, 6, -111, -120, 120, 119, 102, -10, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     private byte[] getEncodedDataV2() {
@@ -57,32 +60,27 @@ public class ReportSMDeliveryStatusResponseTest {
 
     @Test(groups = { "functional.decode", "service.sms" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ReportSMDeliveryStatusResponseImplV3.class);
+    	parser.replaceClass(ReportSMDeliveryStatusResponseImplV1.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        ReportSMDeliveryStatusResponseImplV3 ind = new ReportSMDeliveryStatusResponseImplV3(3);
-        ind.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReportSMDeliveryStatusResponse);
+        ReportSMDeliveryStatusResponse ind = (ReportSMDeliveryStatusResponse)result.getResult();  
+        
         assertEquals(ind.getStoredMSISDN().getAddressNature(), AddressNature.international_number);
         assertEquals(ind.getStoredMSISDN().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(ind.getStoredMSISDN().getAddress(), "888777666");
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
 
         rawData = getEncodedDataV2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        ind = new ReportSMDeliveryStatusResponseImplV3(2);
-        ind.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReportSMDeliveryStatusResponse);
+        ind = (ReportSMDeliveryStatusResponse)result.getResult();  
+        
         assertEquals(ind.getStoredMSISDN().getAddressNature(), AddressNature.international_number);
         assertEquals(ind.getStoredMSISDN().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(ind.getStoredMSISDN().getAddress(), "888777666");
@@ -91,25 +89,27 @@ public class ReportSMDeliveryStatusResponseTest {
 
     @Test(groups = { "functional.encode", "service.sms" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ReportSMDeliveryStatusResponseImplV3.class);
+    	parser.replaceClass(ReportSMDeliveryStatusResponseImplV1.class);
+    	
         ISDNAddressStringImpl storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "888777666");
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        ReportSMDeliveryStatusResponseImplV3 ind = new ReportSMDeliveryStatusResponseImplV3(3, storedMSISDN, extensionContainer);
+        ReportSMDeliveryStatusResponse ind = new ReportSMDeliveryStatusResponseImplV3(3, storedMSISDN, extensionContainer);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        ind.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(ind);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ind = new ReportSMDeliveryStatusResponseImplV3(2, storedMSISDN, null);
-
-        asnOS = new AsnOutputStream();
-        ind.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        ind = new ReportSMDeliveryStatusResponseImplV1(2, storedMSISDN);
+        buffer=parser.encode(ind);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedDataV2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }

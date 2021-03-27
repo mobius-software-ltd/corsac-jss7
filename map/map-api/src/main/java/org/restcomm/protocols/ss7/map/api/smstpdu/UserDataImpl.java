@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.map.api.smstpdu;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 
@@ -178,14 +177,12 @@ public class UserDataImpl {
 
                 case GSM8:
                     if (gsm8Charset != null) {
-                        ByteBuffer javaBuffer = gsm8Charset.encode(this.decodedMessage);
-                        this.encodedData = new byte[javaBuffer.limit()];
-                        javaBuffer.get(this.encodedData);
+                        this.encodedData = this.decodedMessage.getBytes(gsm8Charset);
                         if (buf2 != null) {
                             byte[] tempBuf = this.encodedData;
                             int buf2Length=buf2.readableBytes();
                             this.encodedData = new byte[buf2Length + tempBuf.length];
-                            buf2.readBytes(this.encodedData);
+                            buf2.readBytes(this.encodedData,0,buf2Length);
                             System.arraycopy(tempBuf, 0, this.encodedData, buf2Length, tempBuf.length);
                         }
                         this.encodedUserDataLength = this.encodedData.length;
@@ -196,14 +193,12 @@ public class UserDataImpl {
                     break;
 
                 case UCS2:
-                    ByteBuffer javaBuffer = ucs2Charset.encode(this.decodedMessage);
-                    this.encodedData = new byte[javaBuffer.limit()];
-                    javaBuffer.get(this.encodedData);
+                    this.encodedData = this.decodedMessage.getBytes(ucs2Charset);
                     if (buf2 != null) {
                         byte[] tempBuf = this.encodedData;
                         int buf2Length=buf2.readableBytes();
                         this.encodedData = new byte[buf2Length + tempBuf.length];
-                        buf2.readBytes(this.encodedData);
+                        buf2.readBytes(this.encodedData,0,buf2Length);
                         System.arraycopy(tempBuf, 0, this.encodedData, buf2Length, tempBuf.length);
                     }
                     this.encodedUserDataLength = this.encodedData.length;
@@ -283,8 +278,7 @@ public class UserDataImpl {
                                 System.arraycopy(this.encodedData, offset, buf, 0, len - offset);
                             }
                         }
-                        ByteBuffer javaBuffer = ByteBuffer.wrap(buf);
-                        this.decodedMessage = gsm8Charset.decode(javaBuffer).toString();
+                        this.decodedMessage = new String(buf, gsm8Charset);
                     }
                     break;
 
@@ -301,8 +295,7 @@ public class UserDataImpl {
                             System.arraycopy(this.encodedData, offset, buf, 0, len - offset);
                         }
                     }
-                    ByteBuffer javaBuffer = ByteBuffer.wrap(buf);
-                    this.decodedMessage = ucs2Charset.decode(javaBuffer).toString();
+                    this.decodedMessage = new String(buf, ucs2Charset);
                     break;
 				default:
 					break;

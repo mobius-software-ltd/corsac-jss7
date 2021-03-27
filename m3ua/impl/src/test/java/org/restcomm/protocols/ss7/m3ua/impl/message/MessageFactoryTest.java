@@ -30,8 +30,6 @@ import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 
-import org.restcomm.protocols.ss7.m3ua.impl.message.M3UAMessageImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.message.MessageType;
 import org.restcomm.protocols.ss7.m3ua.message.transfer.PayloadData;
 import org.restcomm.protocols.ss7.m3ua.parameter.ProtocolData;

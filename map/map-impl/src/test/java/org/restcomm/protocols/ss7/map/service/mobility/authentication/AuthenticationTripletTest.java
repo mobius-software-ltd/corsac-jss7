@@ -22,16 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -60,17 +63,15 @@ public class AuthenticationTripletTest {
 
     @Test
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AuthenticationTripletImpl.class);
 
-        byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        AuthenticationTripletImpl asc = new AuthenticationTripletImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+    	byte[] rawData = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AuthenticationTripletImpl);
+        AuthenticationTripletImpl asc = (AuthenticationTripletImpl)result.getResult();
+        
         assertTrue(Arrays.equals(asc.getRand(), getRandData()));
         assertTrue(Arrays.equals(asc.getSres(), getSresData()));
         assertTrue(Arrays.equals(asc.getKc(), getKcData()));
@@ -79,15 +80,14 @@ public class AuthenticationTripletTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AuthenticationTripletImpl.class);
 
         AuthenticationTripletImpl asc = new AuthenticationTripletImpl(getRandData(), getSresData(), getKcData());
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        byte[] data=getEncodedData();        		
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

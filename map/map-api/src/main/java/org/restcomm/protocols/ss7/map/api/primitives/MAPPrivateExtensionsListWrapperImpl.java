@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -35,16 +35,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPPrivateExtensionsListWrapperImpl {
 	
-	private ArrayList<MAPPrivateExtensionImpl> mapPrivateExtensions;
+	private List<MAPPrivateExtensionImpl> mapPrivateExtensions;
 
     public MAPPrivateExtensionsListWrapperImpl() {
     }
 
-    public MAPPrivateExtensionsListWrapperImpl(ArrayList<MAPPrivateExtensionImpl> mapPrivateExtensions) {
+    public MAPPrivateExtensionsListWrapperImpl(List<MAPPrivateExtensionImpl> mapPrivateExtensions) {
         this.mapPrivateExtensions = mapPrivateExtensions;
     }
 
-    public ArrayList<MAPPrivateExtensionImpl> getMAPPrivateExtensions() {
+    public List<MAPPrivateExtensionImpl> getMAPPrivateExtensions() {
     	return mapPrivateExtensions;
     }
 }

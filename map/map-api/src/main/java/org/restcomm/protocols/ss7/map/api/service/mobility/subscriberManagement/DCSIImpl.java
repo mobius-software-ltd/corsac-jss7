@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -56,7 +56,7 @@ public class DCSIImpl {
     public DCSIImpl() {        
     }
 
-    public DCSIImpl(ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList, Integer camelCapabilityHandling,
+    public DCSIImpl(List<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList, Integer camelCapabilityHandling,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
     	
     	if(dpAnalysedInfoCriteriaList!=null)
@@ -76,7 +76,7 @@ public class DCSIImpl {
         	this.csiActive = new ASNNull();
     }
 
-    public ArrayList<DPAnalysedInfoCriteriumImpl> getDPAnalysedInfoCriteriaList() {
+    public List<DPAnalysedInfoCriteriumImpl> getDPAnalysedInfoCriteriaList() {
     	if(this.dpAnalysedInfoCriteriaList==null)
     		return null;
     	

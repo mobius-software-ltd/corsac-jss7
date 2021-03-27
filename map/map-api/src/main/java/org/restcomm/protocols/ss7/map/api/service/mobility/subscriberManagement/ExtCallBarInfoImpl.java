@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
@@ -51,7 +51,7 @@ public class ExtCallBarInfoImpl {
     /**
      *
      */
-    public ExtCallBarInfoImpl(SSCodeImpl ssCode, ArrayList<ExtCallBarringFeatureImpl> callBarringFeatureList,
+    public ExtCallBarInfoImpl(SSCodeImpl ssCode, List<ExtCallBarringFeatureImpl> callBarringFeatureList,
             MAPExtensionContainerImpl extensionContainer) {
         this.ssCode = ssCode;
         
@@ -65,7 +65,7 @@ public class ExtCallBarInfoImpl {
         return this.ssCode;
     }
 
-    public ArrayList<ExtCallBarringFeatureImpl> getCallBarringFeatureList() {
+    public List<ExtCallBarringFeatureImpl> getCallBarringFeatureList() {
     	if(this.callBarringFeatureList==null)
     		return null;
     	

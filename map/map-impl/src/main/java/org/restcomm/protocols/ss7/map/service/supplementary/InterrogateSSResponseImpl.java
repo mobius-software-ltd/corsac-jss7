@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
@@ -66,12 +66,12 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
         this.ssStatus = ssStatus;
     }
 
-    public InterrogateSSResponseImpl(ArrayList<BasicServiceCodeImpl> basicServiceGroupList, boolean doommyPar) {
-    	if(this.basicServiceGroupList!=null)
+    public InterrogateSSResponseImpl(List<BasicServiceCodeImpl> basicServiceGroupList, boolean doommyPar) {
+    	if(basicServiceGroupList!=null)
     		this.basicServiceGroupList = new BasicServiceCodeListWrapperImpl(basicServiceGroupList);
     }
 
-    public InterrogateSSResponseImpl(ArrayList<ForwardingFeatureImpl> forwardingFeatureList) {
+    public InterrogateSSResponseImpl(List<ForwardingFeatureImpl> forwardingFeatureList) {
     	if(forwardingFeatureList!=null)
     		this.forwardingFeatureList = new ForwardingFeatureListWrapperImpl(forwardingFeatureList);
     }
@@ -96,7 +96,7 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
     }
 
     @Override
-    public ArrayList<BasicServiceCodeImpl> getBasicServiceGroupList() {
+    public List<BasicServiceCodeImpl> getBasicServiceGroupList() {
     	if(basicServiceGroupList==null)
     		return null;
     	
@@ -104,7 +104,7 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
     }
 
     @Override
-    public ArrayList<ForwardingFeatureImpl> getForwardingFeatureList() {
+    public List<ForwardingFeatureImpl> getForwardingFeatureList() {
     	if(forwardingFeatureList==null)
     		return null;
     	

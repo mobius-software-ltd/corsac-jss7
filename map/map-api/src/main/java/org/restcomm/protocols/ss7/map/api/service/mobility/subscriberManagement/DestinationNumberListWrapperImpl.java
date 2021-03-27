@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 
@@ -36,16 +36,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,lengthIndefinite=false)
 public class DestinationNumberListWrapperImpl {
-	private ArrayList<ISDNAddressStringImpl> destinationNumberList;
+	private List<ISDNAddressStringImpl> destinationNumberList;
 
     public DestinationNumberListWrapperImpl() {
     }
 
-    public DestinationNumberListWrapperImpl(ArrayList<ISDNAddressStringImpl> destinationNumberList) {
+    public DestinationNumberListWrapperImpl(List<ISDNAddressStringImpl> destinationNumberList) {
         this.destinationNumberList = destinationNumberList;
     }
 
-    public ArrayList<ISDNAddressStringImpl> getDestinationNumberList() {
+    public List<ISDNAddressStringImpl> getDestinationNumberList() {
     	return destinationNumberList;
     }
 }

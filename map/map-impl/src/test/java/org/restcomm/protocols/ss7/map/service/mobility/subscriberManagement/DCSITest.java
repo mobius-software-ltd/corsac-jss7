@@ -22,26 +22,30 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriterium;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriteriumImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -51,91 +55,79 @@ import org.testng.annotations.Test;
 public class DCSITest {
 
     public byte[] getData() {
-        return new byte[] { 48, 111, -96, 61, 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48,
-                39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22,
-                23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 2, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0 };
+        return new byte[] { 48, 123, -96, 67, 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 2, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0 };
     };
 
     public byte[] getData2() {
-        return new byte[] { 48, 127, -96, 122, 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48,
-                39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22,
-                23, 24, 25, 26, -95, 3, 31, 32, 33, 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 8, 4, 4, -111, 34, 50, -11, 2, 1, 1,
-                48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21,
-                22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 2 };
+        return new byte[] { 48, -127, -116, -96, -127, -122, 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 8, 4, 4, -111, 34, 50, -11, 2, 1, 1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 2 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        {
-            byte[] data = this.getData();
-            AsnInputStream asn = new AsnInputStream(data);
-            int tag = asn.readTag();
-            DCSIImpl prim = new DCSIImpl();
-            prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(DCSIImpl.class);
+    	                
+        byte[] data = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DCSIImpl);
+        DCSIImpl prim = (DCSIImpl)result.getResult(); 
+        
+    	MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+    	List<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList = prim.getDPAnalysedInfoCriteriaList();
+    	assertNotNull(dpAnalysedInfoCriteriaList);
+    	assertEquals(dpAnalysedInfoCriteriaList.size(), 1);
+    	DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
+    	assertNotNull(dpAnalysedInfoCriterium);
+    	ISDNAddressStringImpl dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
+    	assertTrue(dialledNumber.getAddress().equals("22234"));
+    	assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
+    	assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
+    	assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
+    	ISDNAddressStringImpl gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
+    	assertTrue(gsmSCFAddress.getAddress().equals("22235"));
+    	assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
+    	assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+    	assertEquals(dpAnalysedInfoCriterium.getDefaultCallHandling(), DefaultCallHandling.continueCall);
+    	assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+    	assertEquals(prim.getCamelCapabilityHandling().intValue(), 2);
+    	assertTrue(prim.getCsiActive());
+    	assertTrue(prim.getNotificationToCSE());
+        
+    	data = this.getData2();
+    	result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DCSIImpl);
+        prim = (DCSIImpl)result.getResult(); 
 
-            assertEquals(tag, Tag.SEQUENCE);
-            assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
-            ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = prim.getDPAnalysedInfoCriteriaList();
-            assertNotNull(dpAnalysedInfoCriteriaList);
-            assertEquals(dpAnalysedInfoCriteriaList.size(), 1);
-            DPAnalysedInfoCriterium dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
-            assertNotNull(dpAnalysedInfoCriterium);
-            ISDNAddressStringImpl dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
-            assertTrue(dialledNumber.getAddress().equals("22234"));
-            assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
-            assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
-            assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
-            ISDNAddressStringImpl gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
-            assertTrue(gsmSCFAddress.getAddress().equals("22235"));
-            assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-            assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
-            assertEquals(dpAnalysedInfoCriterium.getDefaultCallHandling(), DefaultCallHandling.continueCall);
-            assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
-            assertEquals(prim.getCamelCapabilityHandling().intValue(), 2);
-            assertTrue(prim.getCsiActive());
-            assertTrue(prim.getNotificationToCSE());
-        }
-
-        {
-            byte[] data = this.getData2();
-            AsnInputStream asn = new AsnInputStream(data);
-            int tag = asn.readTag();
-            DCSIImpl prim = new DCSIImpl();
-            prim.decodeAll(asn);
-
-            assertEquals(tag, Tag.SEQUENCE);
-            assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-            MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
-            ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = prim.getDPAnalysedInfoCriteriaList();
-            assertNotNull(dpAnalysedInfoCriteriaList);
-            assertEquals(dpAnalysedInfoCriteriaList.size(), 2);
-            DPAnalysedInfoCriterium dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
-            assertNotNull(dpAnalysedInfoCriterium);
-            ISDNAddressStringImpl dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
-            assertTrue(dialledNumber.getAddress().equals("22234"));
-            assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
-            assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
-            assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
-            ISDNAddressStringImpl gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
-            assertTrue(gsmSCFAddress.getAddress().equals("22235"));
-            assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-            assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
-            assertEquals(dpAnalysedInfoCriterium.getDefaultCallHandling(), DefaultCallHandling.continueCall);
-            assertNull(extensionContainer);
-            assertEquals(prim.getCamelCapabilityHandling().intValue(), 2);
-            assertTrue(!prim.getCsiActive());
-            assertTrue(!prim.getNotificationToCSE());
-        }
-
+    	extensionContainer = prim.getExtensionContainer();
+    	dpAnalysedInfoCriteriaList = prim.getDPAnalysedInfoCriteriaList();
+    	assertNotNull(dpAnalysedInfoCriteriaList);
+    	assertEquals(dpAnalysedInfoCriteriaList.size(), 2);
+    	dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
+    	assertNotNull(dpAnalysedInfoCriterium);
+    	dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
+    	assertTrue(dialledNumber.getAddress().equals("22234"));
+    	assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
+    	assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
+    	assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
+    	gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
+    	assertTrue(gsmSCFAddress.getAddress().equals("22235"));
+    	assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
+    	assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+    	assertEquals(dpAnalysedInfoCriterium.getDefaultCallHandling(), DefaultCallHandling.continueCall);
+    	assertNull(extensionContainer);
+    	assertEquals(prim.getCamelCapabilityHandling().intValue(), 2);
+    	assertTrue(!prim.getCsiActive());
+    	assertTrue(!prim.getNotificationToCSE());
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(DCSIImpl.class);
+    	                
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22234");
@@ -145,15 +137,16 @@ public class DCSITest {
         DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialledNumber, 7, gsmSCFAddress,
                 DefaultCallHandling.continueCall, extensionContainer);
 
-        ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = new ArrayList<DPAnalysedInfoCriterium>();
+        ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList = new ArrayList<DPAnalysedInfoCriteriumImpl>();
         dpAnalysedInfoCriteriaList.add(dpAnalysedInfoCriterium);
 
         DCSIImpl prim = new DCSIImpl(dpAnalysedInfoCriteriaList, 2, extensionContainer, true, true);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        byte[] rawData=this.getData();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium2 = new DPAnalysedInfoCriteriumImpl(dialledNumber, 8, gsmSCFAddress,
@@ -161,9 +154,10 @@ public class DCSITest {
         dpAnalysedInfoCriteriaList.add(dpAnalysedInfoCriterium2);
         prim = new DCSIImpl(dpAnalysedInfoCriteriaList, 2, null, false, false);
 
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData=this.getData2();
+        assertTrue(Arrays.equals(encodedData, rawData));
     }
 }

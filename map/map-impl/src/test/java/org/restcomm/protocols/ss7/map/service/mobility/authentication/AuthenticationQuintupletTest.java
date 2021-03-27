@@ -22,16 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationQuintupletImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -68,36 +71,34 @@ public class AuthenticationQuintupletTest {
 
     @Test
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AuthenticationQuintupletImpl.class);
 
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        AuthenticationQuintupletImpl asc = new AuthenticationQuintupletImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AuthenticationQuintupletImpl);
+        AuthenticationQuintupletImpl asc = (AuthenticationQuintupletImpl)result.getResult();
+        
         assertTrue(Arrays.equals(asc.getRand(), getRandData()));
         assertTrue(Arrays.equals(asc.getXres(), getXresData()));
         assertTrue(Arrays.equals(asc.getCk(), getCkData()));
         assertTrue(Arrays.equals(asc.getIk(), getIkData()));
         assertTrue(Arrays.equals(asc.getAutn(), getAutnData()));
-
     }
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AuthenticationQuintupletImpl.class);
 
         AuthenticationQuintupletImpl asc = new AuthenticationQuintupletImpl(getRandData(), getXresData(), getCkData(),
                 getIkData(), getAutnData());
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

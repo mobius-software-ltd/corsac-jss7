@@ -21,15 +21,14 @@
  */
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import java.nio.ByteBuffer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -54,6 +53,7 @@ public class TimeImpl extends ASNOctetString {
         long ntpTime = getNtpTime(cal.getTimeInMillis());
         ByteBuf buf=Unpooled.buffer(4);
         buf.writeBytes(longToBytes(ntpTime));
+        setValue(buf);
     }
 
     public byte[] getData() {
@@ -141,19 +141,17 @@ public class TimeImpl extends ASNOctetString {
         }
     }
 
-    public byte[] longToBytes(long x) {
-        ByteBuffer buffer = ByteBuffer.allocate(8);
-        buffer.putLong(x);
-        return buffer.array();
+    public ByteBuf longToBytes(long x) {
+        ByteBuf buffer = Unpooled.buffer(8);
+        buffer.writeLong(x);
+        return buffer.slice(4,4);
     }
 
     public long bytesToLong(byte[] bytes) {
-        ByteBuffer buffer = ByteBuffer.allocate(8);
         byte[] eightbytes = new byte[8];
         System.arraycopy(bytes, 0, eightbytes, 4, 4);
-        buffer.put(eightbytes);
-        buffer.flip();
-        return buffer.getLong();
+        ByteBuf buffer = Unpooled.wrappedBuffer(eightbytes);        
+        return buffer.readLong();
     }
 
     @Override

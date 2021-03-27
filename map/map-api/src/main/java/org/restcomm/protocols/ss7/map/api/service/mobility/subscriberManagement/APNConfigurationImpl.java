@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ASNLIPAPermissionImpl;
@@ -96,7 +96,7 @@ public class APNConfigurationImpl {
     public APNConfigurationImpl(int contextId, PDNTypeImpl pDNType, PDPAddressImpl servedPartyIPIPv4Address, APNImpl apn,
             EPSQoSSubscribedImpl ePSQoSSubscribed, PDNGWIdentityImpl pdnGwIdentity, PDNGWAllocationType pdnGwAllocationType,
             boolean vplmnAddressAllowed, ChargingCharacteristicsImpl chargingCharacteristics, AMBRImpl ambr,
-            ArrayList<SpecificAPNInfoImpl> specificAPNInfoList, MAPExtensionContainerImpl extensionContainer,
+            List<SpecificAPNInfoImpl> specificAPNInfoList, MAPExtensionContainerImpl extensionContainer,
             PDPAddressImpl servedPartyIPIPv6Address, APNOIReplacementImpl apnOiReplacement, SIPTOPermission siptoPermission,
             LIPAPermission lipaPermission) {
         this.contextId = new ASNInteger();
@@ -107,7 +107,7 @@ public class APNConfigurationImpl {
         this.ePSQoSSubscribed = ePSQoSSubscribed;
         this.pdnGwIdentity = pdnGwIdentity;
         
-        if(pdnGwAllocationType==null) {
+        if(pdnGwAllocationType!=null) {
         	this.pdnGwAllocationType = new ASNPDNGWAllocationType();
         	this.pdnGwAllocationType.setType(pdnGwAllocationType);
         }
@@ -182,7 +182,7 @@ public class APNConfigurationImpl {
         return this.ambr;
     }
 
-    public ArrayList<SpecificAPNInfoImpl> getSpecificAPNInfoList() {
+    public List<SpecificAPNInfoImpl> getSpecificAPNInfoList() {
     	if(this.specificAPNInfoList==null)
     		return null;
     	

@@ -138,7 +138,7 @@ public class ASNParser
 	}
 	
 	public void registerAlternativeClassMapping(Class<?> rootClazz, Class<?> clazz) {
-		getParser(rootClazz).loadClass(clazz);
+		getParser(rootClazz).replaceClass(clazz);
 	}
 	
 	public void registerLocalMapping(Class<?> rootClazz, Object key, Class<?> clazz) {
@@ -162,7 +162,7 @@ public class ASNParser
 	public void loadClass(Class<?> newClass) {
 		ASNTag tag=newClass.getAnnotation(ASNTag.class);
 		if(tag==null) {
-			loadWrappedClass(newClass);
+			loadWrappedClass(newClass,false);
 			return;
 		}
 		
@@ -181,10 +181,28 @@ public class ASNParser
 		rootClassMapping.put(newHeader, newClass);
 	}
 	
-	private void loadWrappedClass(Class<?> newClass) {
+	public void replaceClass(Class<?> newClass) {
+		ASNTag tag=newClass.getAnnotation(ASNTag.class);
+		if(tag==null) {
+			loadWrappedClass(newClass,true);
+			return;
+		}
+		
+		try
+		{
+			newClass.getConstructor();
+		}
+		catch(Exception ex) {
+			throw new RuntimeException("only classes with empty constructor are supported");			
+		}
+		
+		ASNHeader newHeader=new ASNHeader(tag,tag.asnClass(),tag.tag(),tag.constructed(),null);
+		rootClassMapping.put(newHeader, newClass);
+	}
+	
+	private void loadWrappedClass(Class<?> newClass, boolean replace) {
 		ASNWrappedTag tag=newClass.getAnnotation(ASNWrappedTag.class);
 		if(tag==null) {
-			loadWrappedClass(newClass);
 			return;
 		}
 		
@@ -204,10 +222,10 @@ public class ASNParser
 		ConcurrentHashMap<ASNHeader, FieldData> fieldsMap=cachedData.getFieldsMap();
 		Iterator<Entry<ASNHeader, FieldData>> iterator=fieldsMap.entrySet().iterator();		
 		//in cassed we have wrapped at this level for this class we should clear all the items first
-		rootClassMapping.clear();
+		//rootClassMapping.clear();
 		while(iterator.hasNext()) {
 			ASNHeader newHeader=iterator.next().getKey();
-			if(rootClassMapping.containsKey(newHeader))
+			if(!replace && rootClassMapping.containsKey(newHeader))
 				throw new RuntimeException("class with this ASNTag already registered");
 			
 			rootClassMapping.put(newHeader, newClass);
@@ -223,7 +241,27 @@ public class ASNParser
 			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,new ConcurrentHashMap<Integer,Object>());
 		}
 		catch(Exception ex) {
-			throw new ASNException(ex.getMessage());
+			ex.printStackTrace();
+			throw new ASNException(ex.getMessage());			
+		}
+	}
+	
+	public void merge(Object first,Object second) {
+		Class<?> effectiveClass=first.getClass();
+		ParserClassData cachedData=cachedElements.get(effectiveClass.getCanonicalName());
+		if(cachedData==null) {
+			cachedData=processField(effectiveClass,cachedElements);			
+		}
+		
+		for(FieldData currField:cachedData.getFields()) {
+			try {
+				if(currField.getField().isAccessible() && currField.getField().get(second)!=null) {
+					currField.getField().set(first, currField.getField().get(second));
+				}
+			}
+			catch(Exception ex) {
+				
+			}
 		}
 	}
 	
@@ -234,6 +272,7 @@ public class ASNParser
 		ASNHeaderWithLength header=readHeader(buffer);
 		ASNHeader currHeader=new ASNHeader(header.getAsnClass(), header.getIsConstructed(), header.getAsnTag(), header.getIndefiniteLength(),index);
 		Class<?> effectiveClass=classMapping.get(currHeader);
+		
 		if(effectiveClass==null) {
 			currHeader=new ASNHeader(header.getAsnClass(), header.getIsConstructed(), header.getAsnTag(), header.getIndefiniteLength(),null);
 			effectiveClass=classMapping.get(currHeader);
@@ -257,14 +296,18 @@ public class ASNParser
 						return new DecodeResult(null,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true);
 					}
 					else
-						throw new ASNException("no class found for matching tag:" + currHeader.getAsnClass() + "," + currHeader.getAsnTag() + "," + currHeader.getIsConstructed() + "," + currHeader.getIndefiniteLength());
+						throw new ASNException("no class found for matching tag:" + currHeader.getAsnClass() + "," + currHeader.getAsnTag() + "," + currHeader.getIsConstructed() + "," + currHeader.getIndefiniteLength());					
 				}
 			}						
 		}
 		
+		Boolean isChoise = false;
+		FieldData fieldData = null;
 		if(fieldsMap!=null) {
-			FieldData fieldData=fieldsMap.get(currHeader);
+			fieldData=fieldsMap.get(currHeader);
+			
 			if(fieldData!=null && fieldData.getFieldType()==FieldType.CHOISE) {
+				isChoise = true;
 				header.setLength(header.getLength() + buffer.readerIndex()-oldIndex);
 				buffer.resetReaderIndex();	
 				
@@ -284,9 +327,9 @@ public class ASNParser
 
 		Boolean hadErrors=false;
 		Constructor<?> ctor = effectiveClass.getConstructor();
-		Object currObject = ctor.newInstance(new Object[] {  });
+		Object currObject = ctor.newInstance(new Object[] {  });		
 		if(cachedData.getHasWrappedTag())
-			buffer.resetReaderIndex();
+			buffer.resetReaderIndex();					
 		
 		if(handler!=null) {
 			ASNPreprocess preprocessAnnotation=effectiveClass.getAnnotation(ASNPreprocess.class);
@@ -300,7 +343,12 @@ public class ASNParser
 			for(Method method:methods) {
 				ASNDecode asnDecode=method.getAnnotation(ASNDecode.class);
 				if(asnDecode!=null) {
-					hadErrors|=(Boolean)method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), new Boolean(skipErrors) });
+					if(parent!=null && wildcardField!=null && wildcardField.isAccessible() && wildcardField.get(parent)!=null) {
+						//patching in case multiple items get through wildcard to same item
+						currObject=wildcardField.get(parent);
+					}
+					
+					hadErrors|=(Boolean)method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), skipErrors });
 					buffer.skipBytes(header.getLength());
 					break;
 				}
@@ -315,6 +363,9 @@ public class ASNParser
 				remainingBytes=header.getLength();
 			
 			int innerIndex=0;
+			if(isChoise)
+				innerIndex=index;
+			
 			int originalIndex=buffer.readerIndex();
 			while((buffer.readerIndex()-originalIndex)<remainingBytes) {
 				DecodeResult innerValue=decode(currObject, buffer,skipErrors, cachedData.getWildcardField(),cachedData.getFieldsMap(),cachedData.getInnerMap(),cachedElements,innerIndex,mappedData);
@@ -350,7 +401,8 @@ public class ASNParser
 						f.set(currObject, innerValue.getResult());
 					}
 					
-					innerIndex++;
+					if(!isChoise)
+						innerIndex++;
 				}
 			}
 		}
@@ -461,7 +513,6 @@ public class ASNParser
 			return buffer;
 		}
 		catch(Exception ex) {
-			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}
@@ -648,8 +699,10 @@ public class ASNParser
 			if(asnTag.lengthIndefinite())
 				//2 bytes end of tag and one length
 				length+=3;
-			else
-				length+=getLengthLength(length);
+			else {
+				Integer lengthLength=getLengthLength(length);
+				length += lengthLength + 1;				
+			}
 			
 			if(realTag!=null)
 				length+=getTagLength(realTag)+1;
@@ -764,7 +817,7 @@ public class ASNParser
 		if(tag<31)
 			return 0;
 			
-		Integer testValue=new Integer(tag);
+		Integer testValue=tag;
 		int result=0;
 		while(testValue>0)
 		{
@@ -775,19 +828,19 @@ public class ASNParser
 		if(result==0)
 			result=1;
 		
-		return result+1;
+		return result;
 	}
 	
 	public static Integer getLengthLength(Integer value) {
 		if(value<128)
-			return 1;
+			return 0;
 		
-		Integer testValue=new Integer(value);
+		Integer testValue=value;
 		int result=0;
 		while(testValue>0)
 		{
 			result+=1;
-			testValue=((testValue>>8) & 0x0FFFFFFF);			
+			testValue=((testValue>>8) & Integer.MAX_VALUE);			
 		}
 		
 		if(result==0)
@@ -816,10 +869,10 @@ public class ASNParser
 			
 			buffer.writeByte(header);
 			
-			Integer testValue=new Integer(realTag);
+			Integer testValue=realTag;
 			while(testValue>0)
 			{
-				int currByte=testValue& 0x7F;
+				int currByte=testValue & 0x07F;
 				testValue=((testValue>>7) & Integer.MAX_VALUE);
 				if(testValue==0)
 					buffer.writeByte(currByte);
@@ -839,9 +892,8 @@ public class ASNParser
 			int totalBytes=getLengthLength(value);
 			buffer.writeByte(0x80 | totalBytes);
 			
-			byte[] data=new byte[totalBytes];
-			for(int i=0,size=(totalBytes-1)*8;i<data.length;i++,size-=8)
-				buffer.writeByte((value>>size)&0xFF);
+			for(int i=0,size=(totalBytes-1)*8;i<totalBytes;i++,size-=8)
+				buffer.writeByte((value>>size) & 0x0FF);
 		}		
 	}
 	
@@ -877,7 +929,6 @@ public class ASNParser
 						}
 						else {
 							ASNTag innerTag = null;
-
 							if(fields[i].getType().isAssignableFrom(List.class) && !fields[i].getType().equals(Object.class)) {
 								Type[] innerTypes = ((ParameterizedType) fields[i].getGenericType()).getActualTypeArguments();
 								if(innerTypes.length==1) {
@@ -887,9 +938,8 @@ public class ASNParser
 							else if(fields[i].getType().isAssignableFrom(ASNGeneric.class) && !fields[i].getType().equals(Object.class)) {
 								innerTag=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]).getAnnotation(ASNTag.class);
 							}	
-							else {
-								innerTag=fields[i].getType().getAnnotation(ASNTag.class);							
-							}
+							else
+								innerTag=fields[i].getType().getAnnotation(ASNTag.class);		
 							
 							if(innerTag!=null) {
 								annotatedFields.add(new FieldData(FieldType.STANDARD,fields[i]));

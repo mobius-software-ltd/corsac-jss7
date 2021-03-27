@@ -39,8 +39,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ParameterCompatibilityInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityInstructionIndicators;
 import org.testng.annotations.Test;
 

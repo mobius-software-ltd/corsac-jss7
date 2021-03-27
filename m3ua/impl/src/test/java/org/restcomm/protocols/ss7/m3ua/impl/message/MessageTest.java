@@ -31,8 +31,6 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.m3ua.impl.message.M3UAMessageImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.aspsm.ASPDownAckImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.aspsm.ASPDownImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.aspsm.ASPUpAckImpl;

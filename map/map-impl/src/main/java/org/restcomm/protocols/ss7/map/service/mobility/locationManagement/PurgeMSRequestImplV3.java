@@ -53,6 +53,10 @@ public class PurgeMSRequestImplV3 extends MobilityMessageImpl implements PurgeMS
     private MAPExtensionContainerImpl extensionContainer;
     private long mapProtocolVersion;
 
+    public PurgeMSRequestImplV3() {
+    	this.mapProtocolVersion=3;
+    }
+    
     public PurgeMSRequestImplV3(long mapProtocolVersion) {
         super();
         this.mapProtocolVersion = mapProtocolVersion;

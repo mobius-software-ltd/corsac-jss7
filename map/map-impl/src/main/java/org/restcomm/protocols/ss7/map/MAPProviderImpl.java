@@ -86,6 +86,7 @@ import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageParameterlessImpl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessagePositionMethodFailureImpl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessagePwRegistrationFailureImpl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageRoamingNotAllowedImpl;
+import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSMDeliveryFailure1Impl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSMDeliveryFailureImpl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSsErrorStatusImpl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageSsIncompatibilityImpl;
@@ -395,7 +396,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
         	errorCode=new ErrorCodeImpl();
         	errorCode.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSMDeliveryFailureImpl.class);
+        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSMDeliveryFailure1Impl.class);
         	errorCode=new ErrorCodeImpl();
         	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
         	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriberSMImpl.class);
@@ -445,8 +446,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	
         	//registering error options
         	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageExtensionContainerImpl.class, MAPErrorMessageExtensionContainerImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailureImpl.class, MAPErrorMessageSMDeliveryFailureImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriberSMImpl.class, MAPErrorMessageAbsentSubscriberSMImpl.class);
+        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailureImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailure1Impl.class);
         	
         	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSytemFailure1Impl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSystemFailureImpl.class);
@@ -838,11 +841,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	tcapProvider.getParser().registerAlternativeClassMapping(RegisterPasswordResponseImpl.class, RegisterPasswordResponseImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(RegisterSSResponseImpl.class, RegisterSSResponseImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSNotifyResponseImpl.class, UnstructuredSSNotifyResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSResponseImpl.class, UnstructuredSSResponseImpl.class);
-        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSResponseImpl.class, UnstructuredSSResponseImpl.class);        	
         } catch(Exception ex) {
         	//already registered
-        }      
+        }
     }
 
     public TCAPProvider getTCAPProvider() {
@@ -1945,8 +1947,15 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                     if (p != null && p instanceof MAPErrorMessage) {
                         msgErr=(MAPErrorMessage)p;
                     }
-                    perfSer.deliverErrorComponent(mapDialogImpl, comp.getInvokeId(), msgErr);
-
+                    else if(p != null) {
+                    	ProblemImpl problem = new ProblemImpl();
+                         problem.setReturnErrorProblemType(ReturnErrorProblemType.MistypedParameter);
+                         mapDialogImpl.sendRejectComponent(invokeId, problem);
+                         perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+                         return;
+                    }
+                    
+                    perfSer.deliverErrorComponent(mapDialogImpl, comp.getInvokeId(), msgErr);                    
                     return;
                 }
 
@@ -1964,9 +1973,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
             try {
 
             	//null for Forward Check SS Indication
-            	if(parameter!=null && !(parameter instanceof MAPMessage))
+            	if(parameter!=null && !(parameter instanceof MAPMessage)) {
             		throw new MAPParsingComponentException("MAPServiceHandling: unknown incoming operation code: " + oc.getLocalOperationCode(),
-                            MAPParsingComponentExceptionReason.UnrecognizedOperation);
+                            MAPParsingComponentExceptionReason.MistypedParameter);
+            	}
             	
             	MAPMessage realMessage=(MAPMessage)parameter;
             	if(realMessage!=null) {

@@ -22,30 +22,27 @@
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CK;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Cksn;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CksnImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IK;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Kc;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KcImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextDataImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -55,11 +52,11 @@ import org.testng.annotations.Test;
 public class CurrentSecurityContextTest {
 
     public byte[] getData1() {
-        return new byte[] { -96, 13, 4, 8, 4, 4, 1, 2, 3, 4, 4, 4, 4, 1, 4 };
+        return new byte[] { 48, 15, -96, 13, 4, 8, 4, 4, 1, 2, 3, 4, 4, 4, 4, 1, 4 };
     };
 
     public byte[] getData2() {
-        return new byte[] { -95, 39, 4, 16, 4, 4, 1, 2, 3, 4, 4, 4, 1, 2, 3, 4, 4, 4, 1, 2, 4, 16, 2, 5, 27, 6, 23, 23, 34, 56,
+        return new byte[] { 48, 41, -95, 39, 4, 16, 4, 4, 1, 2, 3, 4, 4, 4, 1, 2, 3, 4, 4, 4, 1, 2, 4, 16, 2, 5, 27, 6, 23, 23, 34, 56,
                 34, 76, 34, 4, 4, 1, 2, 3, 4, 1, 2 };
     };
 
@@ -77,33 +74,28 @@ public class CurrentSecurityContextTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CurrentSecurityContextImpl.class);
+
         // option 1
         byte[] data = this.getData1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-
-        CurrentSecurityContextImpl prim = new CurrentSecurityContextImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, CurrentSecurityContextImpl._TAG_gsmSecurityContextData);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        GSMSecurityContextData gsm = prim.getGSMSecurityContextData();
-        UMTSSecurityContextData umts = prim.getUMTSSecurityContextData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CurrentSecurityContextImpl);
+        CurrentSecurityContextImpl prim = (CurrentSecurityContextImpl)result.getResult();
+        
+        GSMSecurityContextDataImpl gsm = prim.getGSMSecurityContextData();
+        UMTSSecurityContextDataImpl umts = prim.getUMTSSecurityContextData();
         assertNull(umts);
         assertTrue(Arrays.equals(gsm.getKc().getData(), getDataKc()));
         assertEquals(gsm.getCksn().getData(), 4);
 
         // option 2
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-
-        prim = new CurrentSecurityContextImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, CurrentSecurityContextImpl._TAG_umtsSecurityContextData);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CurrentSecurityContextImpl);
+        prim = (CurrentSecurityContextImpl)result.getResult();
 
         gsm = prim.getGSMSecurityContextData();
         umts = prim.getUMTSSecurityContextData();
@@ -116,27 +108,33 @@ public class CurrentSecurityContextTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CurrentSecurityContextImpl.class);
+
         // option 1
-        Kc kc = new KcImpl(getDataKc());
-        Cksn cksn = new CksnImpl(4);
+        KcImpl kc = new KcImpl(getDataKc());
+        CksnImpl cksn = new CksnImpl(4);
 
         GSMSecurityContextDataImpl gsm = new GSMSecurityContextDataImpl(kc, cksn);
         CurrentSecurityContextImpl prim = new CurrentSecurityContextImpl(gsm);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
+        byte[] data=getData1();        		
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         // option 2
-        CK ck = new CKImpl(getDataCk());
-        IK ik = new IKImpl(getDataIk());
-        KSI ksi = new KSIImpl(2);
+        CKImpl ck = new CKImpl(getDataCk());
+        IKImpl ik = new IKImpl(getDataIk());
+        KSIImpl ksi = new KSIImpl(2);
         UMTSSecurityContextDataImpl umts = new UMTSSecurityContextDataImpl(ck, ik, ksi);
         prim = new CurrentSecurityContextImpl(umts);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        
+        data=getData2();        		
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

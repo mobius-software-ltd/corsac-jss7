@@ -26,7 +26,6 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.restcomm.protocols.ss7.m3ua.impl.TransitionState;
 import org.restcomm.protocols.ss7.m3ua.impl.message.M3UAMessageImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.mgmt.NotifyImpl;

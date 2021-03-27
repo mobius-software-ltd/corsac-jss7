@@ -31,8 +31,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;

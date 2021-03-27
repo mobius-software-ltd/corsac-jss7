@@ -22,23 +22,23 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
-
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GroupId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GroupIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceBroadcastDataImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,32 +48,28 @@ import org.testng.annotations.Test;
 public class VoiceBroadcastDataTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 54, 4, 3, -1, -1, -1, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5,
-                6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 4, 33, 67, 101, -121 };
+        return new byte[] { 48, 60, 4, 3, -1, -1, -1, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 4, 33, 67, 101, -121 };
     };
 
     public byte[] getData2() {
-        return new byte[] { 48, 48, 4, 3, 33, 67, 101, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48,
-                5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 54, 4, 3, 33, 67, 101, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     };
 
     public byte[] getData3() {
-        return new byte[] { 48, 54, 4, 3, -1, -1, -1, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5,
-                6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 4, 33, 67, 101, -121 };
+        return new byte[] { 48, 60, 4, 3, -1, -1, -1, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 4, 33, 67, 101, -121 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        // Option 1
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(VoiceBroadcastDataImpl.class);
+    	// Option 1
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        VoiceBroadcastDataImpl prim = new VoiceBroadcastDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VoiceBroadcastDataImpl);
+        VoiceBroadcastDataImpl prim = (VoiceBroadcastDataImpl)result.getResult();
+        
         assertTrue(prim.getGroupId().getGroupId().equals(""));
         assertTrue(prim.getLongGroupId().getLongGroupId().equals("12345678"));
         assertTrue(prim.getBroadcastInitEntitlement());
@@ -82,14 +78,11 @@ public class VoiceBroadcastDataTest {
 
         // Option 2
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new VoiceBroadcastDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VoiceBroadcastDataImpl);
+        prim = (VoiceBroadcastDataImpl)result.getResult();
+        
         assertTrue(prim.getGroupId().getGroupId().equals("123456"));
         assertNull(prim.getLongGroupId());
         assertTrue(prim.getBroadcastInitEntitlement());
@@ -98,13 +91,10 @@ public class VoiceBroadcastDataTest {
 
         // Option 3
         data = this.getData3();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new VoiceBroadcastDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VoiceBroadcastDataImpl);
+        prim = (VoiceBroadcastDataImpl)result.getResult();
 
         assertTrue(prim.getGroupId().getGroupId().equals(""));
         assertTrue(prim.getLongGroupId().getLongGroupId().equals("12345678"));
@@ -116,30 +106,37 @@ public class VoiceBroadcastDataTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        // option 1
-        GroupId groupId = new GroupIdImpl("123456");
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(VoiceBroadcastDataImpl.class);
+    	// option 1
+        GroupIdImpl groupId = new GroupIdImpl("123456");
         boolean broadcastInitEntitlement = true;
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        LongGroupId longGroupId = new LongGroupIdImpl("12345678");
+        LongGroupIdImpl longGroupId = new LongGroupIdImpl("12345678");
 
         VoiceBroadcastDataImpl prim = new VoiceBroadcastDataImpl(groupId, broadcastInitEntitlement, extensionContainer,
                 longGroupId);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        byte[] rawData = this.getData();
+        assertEquals(encodedData, rawData);
+        
         // option 2
         prim = new VoiceBroadcastDataImpl(groupId, broadcastInitEntitlement, extensionContainer, null);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData = this.getData2();
+        assertEquals(encodedData, rawData);
 
         // option 3
         prim = new VoiceBroadcastDataImpl(null, broadcastInitEntitlement, extensionContainer, longGroupId);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData3()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData = this.getData3();
+        assertEquals(encodedData, rawData);
     }
-
 }

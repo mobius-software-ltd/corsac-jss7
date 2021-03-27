@@ -22,23 +22,20 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.BitSetStrictLength;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredLocationEventTypeImpl;
-import org.restcomm.protocols.ss7.map.primitives.BitStringBase;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGIdImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -61,90 +58,99 @@ public class BitStringBaseTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TestBitStringImpl.class);
+    	
         // correct data
         byte[] rawData = getEncodedData();
 
-        AsnInputStream asn = new AsnInputStream(rawData);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TestBitStringImpl);
+        TestBitStringImpl pi = (TestBitStringImpl)result.getResult();
+                
+        assertTrue(pi.isBitSet(0));
+        assertTrue(pi.isBitSet(1));
+        assertTrue(pi.isBitSet(2));
+        assertTrue(pi.isBitSet(3));
+        assertFalse(pi.isBitSet(4));
+        assertFalse(pi.isBitSet(5));
+        assertFalse(pi.isBitSet(6));
+        assertFalse(pi.isBitSet(7));
+        assertTrue(pi.isBitSet(8));
+        assertTrue(pi.isBitSet(9));
+        assertTrue(pi.isBitSet(10));
+        assertTrue(pi.isBitSet(11));        
 
-        int tag = asn.readTag();
-        TestBitStringImpl pi = new TestBitStringImpl();
-        pi.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        assertTrue(pi.getData().get(0));
-        assertTrue(pi.getData().get(1));
-        assertTrue(pi.getData().get(2));
-        assertTrue(pi.getData().get(3));
-        assertFalse(pi.getData().get(4));
-        assertFalse(pi.getData().get(5));
-        assertFalse(pi.getData().get(6));
-        assertFalse(pi.getData().get(7));
-        assertTrue(pi.getData().get(8));
-        assertTrue(pi.getData().get(9));
-        assertTrue(pi.getData().get(10));
-        assertTrue(pi.getData().get(11));
-        assertEquals(pi.getData().getStrictLength(), 12);
-
-        // bad data
         rawData = getEncodedDataTooShort();
-        asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
-        pi = new TestBitStringImpl();
-        try {
-            pi.decodeAll(asn);
-            assertFalse(true);
-        } catch (MAPParsingComponentException e) {
-            assertNotNull(e);
-        }
-
+        result = parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TestBitStringImpl);
+        pi = (TestBitStringImpl)result.getResult();
+                
+        assertTrue(pi.isBitSet(0));
+        assertTrue(pi.isBitSet(1));
+        assertTrue(pi.isBitSet(2));
+        assertTrue(pi.isBitSet(3));
+        assertFalse(pi.isBitSet(4));
+        assertFalse(pi.isBitSet(5));
+        assertFalse(pi.isBitSet(6));
+        assertFalse(pi.isBitSet(7));
+        assertFalse(pi.isBitSet(8));
+        assertFalse(pi.isBitSet(9));
+        assertFalse(pi.isBitSet(10));
+        assertFalse(pi.isBitSet(11));   
+        
         rawData = getEncodedDataTooLong();
-        asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
-        pi = new TestBitStringImpl();
-        try {
-            pi.decodeAll(asn);
-            assertFalse(true);
-        } catch (MAPParsingComponentException e) {
-            assertNotNull(e);
-        }
+        result = parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TestBitStringImpl);
+        pi = (TestBitStringImpl)result.getResult();
+                
+        assertTrue(pi.isBitSet(0));
+        assertTrue(pi.isBitSet(1));
+        assertTrue(pi.isBitSet(2));
+        assertTrue(pi.isBitSet(3));
+        assertFalse(pi.isBitSet(4));
+        assertFalse(pi.isBitSet(5));
+        assertFalse(pi.isBitSet(6));
+        assertFalse(pi.isBitSet(7));
+        assertTrue(pi.isBitSet(8));
+        assertTrue(pi.isBitSet(9));
+        assertTrue(pi.isBitSet(10));
+        assertTrue(pi.isBitSet(11));   
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TestBitStringImpl.class);
+    	
         // correct data
-        BitSetStrictLength bs = new BitSetStrictLength(12);
-        bs.set(0);
-        bs.set(1);
-        bs.set(2);
-        bs.set(3);
-        bs.set(8);
-        bs.set(9);
-        bs.set(10);
-        bs.set(11);
+    	TestBitStringImpl pi=new TestBitStringImpl();
+    	pi.setBit(0);
+    	pi.setBit(1);
+    	pi.setBit(2);
+    	pi.setBit(3);
+    	pi.setBit(8);
+    	pi.setBit(9);
+    	pi.setBit(10);
+    	pi.setBit(11);
 
-        TestBitStringImpl pi = new TestBitStringImpl(bs);
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        pi.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(pi);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         // bad data
-        pi = new TestBitStringImpl(null);
-        asnOS = new AsnOutputStream();
         try {
-            pi.encodeAll(asnOS);
-            assertFalse(true);
-        } catch (MAPException e) {
+        	pi = new TestBitStringImpl(null);            
+        } catch (Exception e) {
             assertNotNull(e);
         }
-
     }
 
     @Test(groups = { "functional.encode", "equality" })
@@ -152,27 +158,9 @@ public class BitStringBaseTest {
         DeferredLocationEventTypeImpl imp1 = new DeferredLocationEventTypeImpl(true, false, true, false);
         DeferredLocationEventTypeImpl imp2 = new DeferredLocationEventTypeImpl(true, false, true, false);
         DeferredLocationEventTypeImpl imp3 = new DeferredLocationEventTypeImpl(false, true, true, false);
-        CSGIdImpl implx = new CSGIdImpl();
-
+        
         assertTrue(imp1.equals(imp2));
         assertFalse(imp1.equals(imp3));
         assertFalse(imp2.equals(imp3));
-        assertFalse(implx.equals(imp3));
-    }
-
-    private class TestBitStringImpl extends BitStringBase {
-		private static final long serialVersionUID = 1L;
-
-		public TestBitStringImpl(BitSetStrictLength data) {
-            super(12, 20, 12, "Test BitString primitive", data);
-        }
-
-        public TestBitStringImpl() {
-            super(12, 20, 12, "Test BitString primitive");
-        }
-
-        public BitSetStrictLength getData() {
-            return this.bitString;
-        }
     }
 }

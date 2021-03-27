@@ -39,7 +39,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

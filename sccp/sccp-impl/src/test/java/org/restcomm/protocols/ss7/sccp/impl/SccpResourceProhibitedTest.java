@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.sccp.impl;
 import org.restcomm.protocols.ss7.sccp.ConcernedSignalingPointCode;
 import org.restcomm.protocols.ss7.sccp.RemoteSignalingPointCode;
 import org.restcomm.protocols.ss7.sccp.RemoteSubSystem;
-import org.restcomm.protocols.ss7.sccp.impl.SccpResourceImpl;
 import org.testng.annotations.*;
 
 import static org.testng.Assert.*;

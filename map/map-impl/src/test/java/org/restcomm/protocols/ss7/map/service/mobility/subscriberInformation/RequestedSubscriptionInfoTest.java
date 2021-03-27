@@ -1,8 +1,12 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AdditionalRequestedCAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedCAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
@@ -15,31 +19,27 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCod
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author vadim subbotin
  */
 public class RequestedSubscriptionInfoTest {
-    private byte[] data = {48, 77, -95, 8, 4, 1, 64, -126, 1, 0, -124, 0, -126, 0, -125, 1, 0, -124, 0, -123, 0, -90,
-            39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21,
-            22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -121, 1, 0, -120, 0, -119, 0, -118, 0, -117, 0, -116, 0, -115, 0,
-            -114, 0};
+    private byte[] data = {48, 83, -95, 8, 4, 1, 64, -126, 1, 0, -124, 0, -126, 0, -125, 1, 0, -124, 0, -123, 0, -90, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -121, 1, 0, -120, 0, -119, 0, -118, 0, -117, 0, -116, 0, -115, 0, -114, 0};
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode() throws Exception {
-        AsnInputStream asn = new AsnInputStream(data);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        RequestedSubscriptionInfoImpl requestedSubscriptionInfo = new RequestedSubscriptionInfoImpl();
-        requestedSubscriptionInfo.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RequestedSubscriptionInfoImpl.class);
+    	                
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestedSubscriptionInfoImpl);
+        RequestedSubscriptionInfoImpl requestedSubscriptionInfo = (RequestedSubscriptionInfoImpl)result.getResult();
 
         assertNotNull(requestedSubscriptionInfo.getRequestedSSInfo());
         assertTrue(requestedSubscriptionInfo.getOdb());
@@ -60,6 +60,9 @@ public class RequestedSubscriptionInfoTest {
 
     @Test(groups = {"functional.encode", "subscriberInformation"})
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(RequestedSubscriptionInfoImpl.class);
+    	                
         BearerServiceCodeImpl bearerServiceCode = new BearerServiceCodeImpl(BearerServiceCodeValue.allBearerServices);
         BasicServiceCodeImpl basicServiceCode = new BasicServiceCodeImpl(bearerServiceCode);
         SSForBSCodeImpl ssForBSCode = new SSForBSCodeImpl(new SSCodeImpl(SupplementaryCodeValue.allCallCompletionSS), basicServiceCode, true);
@@ -68,9 +71,9 @@ public class RequestedSubscriptionInfoTest {
                 RequestedCAMELSubscriptionInfo.oCSI, true, true, MAPExtensionContainerTest.GetTestExtensionContainer(),
                 AdditionalRequestedCAMELSubscriptionInfo.mtSmsCSI, true, true, true, true, true, true, true);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        requestedSubscriptionInfo.encodeAll(asnOS);
-        byte[] raw = asnOS.toByteArray();
-        assertTrue(Arrays.equals(raw, data));
+        ByteBuf buffer=parser.encode(requestedSubscriptionInfo);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, data));
     }
 }

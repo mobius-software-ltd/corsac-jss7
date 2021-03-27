@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -56,7 +56,7 @@ public class GPRSCSIImpl {
     public GPRSCSIImpl() {
     }
 
-    public GPRSCSIImpl(ArrayList<GPRSCamelTDPDataImpl> gprsCamelTDPDataList, Integer camelCapabilityHandling,
+    public GPRSCSIImpl(List<GPRSCamelTDPDataImpl> gprsCamelTDPDataList, Integer camelCapabilityHandling,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
         if(gprsCamelTDPDataList!=null)
         	this.gprsCamelTDPDataList = new GPRSCamelTDPDataListWrapperImpl(gprsCamelTDPDataList);
@@ -75,7 +75,7 @@ public class GPRSCSIImpl {
         	this.csiActive = new ASNNull();
     }
 
-    public ArrayList<GPRSCamelTDPDataImpl> getGPRSCamelTDPDataList() {
+    public List<GPRSCamelTDPDataImpl> getGPRSCamelTDPDataList() {
     	if(this.gprsCamelTDPDataList==null)
     		return null;
     	

@@ -22,16 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeaturesImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,24 +48,21 @@ public class SupportedFeaturesTest {
     };
 
     public byte[] getData1() {
-        return new byte[] { 3, 5, 6, -86, -86, -86, -128 };
+        return new byte[] { 3, 5, 7, -86, -86, -86, -128 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SupportedFeaturesImpl.class);
+    	
         // test one
         byte[] data = this.getData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-
-        SupportedFeaturesImpl prim = new SupportedFeaturesImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SupportedFeaturesImpl);
+        SupportedFeaturesImpl prim = (SupportedFeaturesImpl)result.getResult();
+        
         assertTrue(!prim.getOdbAllApn());
         assertTrue(prim.getOdbHPLMNApn());
         assertTrue(!prim.getOdbVPLMNApn());
@@ -92,15 +92,10 @@ public class SupportedFeaturesTest {
 
         // test two
         data = this.getData1();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-
-        prim = new SupportedFeaturesImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SupportedFeaturesImpl);
+        prim = (SupportedFeaturesImpl)result.getResult();
 
         assertTrue(prim.getOdbAllApn());
         assertTrue(!prim.getOdbHPLMNApn());
@@ -133,22 +128,26 @@ public class SupportedFeaturesTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SupportedFeaturesImpl.class);
+    	
         // Test one
         SupportedFeaturesImpl prim = new SupportedFeaturesImpl(false, true, false, true, false, true, false, true, false, true,
                 false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] data=this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         // Tes two
         prim = new SupportedFeaturesImpl(true, false, true, false, true, false, true, false, true, false, true, false, true,
                 false, true, false, true, false, true, false, true, false, true, false, true, false);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
-
+        data=this.getData1();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

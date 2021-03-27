@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class PDPContextListWrapperImpl {
-	private ArrayList<PDPContextImpl> pdpContextList;
+	private List<PDPContextImpl> pdpContextList;
 
     public PDPContextListWrapperImpl() {
     }
 
-    public PDPContextListWrapperImpl(ArrayList<PDPContextImpl> pdpContextList) {
+    public PDPContextListWrapperImpl(List<PDPContextImpl> pdpContextList) {
         this.pdpContextList = pdpContextList;
     }
 
-    public ArrayList<PDPContextImpl> getPDPContextList() {
+    public List<PDPContextImpl> getPDPContextList() {
     	return pdpContextList;
     }
 }

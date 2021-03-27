@@ -27,7 +27,9 @@ package org.restcomm.protocols.ss7.map.api.smstpdu;
  * @author sergey vetyutnev
  *
  */
-public class ConcatenatedShortMessagesIdentifierImpl {
+public class ConcatenatedShortMessagesIdentifierImpl implements UserDataHeaderElement {
+	private static final long serialVersionUID = 1L;
+	
 	private boolean referenceIs16bit;
     private int reference;
     private int mesageSegmentCount;

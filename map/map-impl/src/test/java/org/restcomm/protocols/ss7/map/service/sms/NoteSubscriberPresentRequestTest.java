@@ -22,17 +22,20 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.service.sms.NoteSubscriberPresentRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -47,34 +50,31 @@ public class NoteSubscriberPresentRequestTest {
 
     @Test(groups = { "functional.decode", "service.sms" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(NoteSubscriberPresentRequestImpl.class);
+        
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        NoteSubscriberPresentRequestImpl impl = new NoteSubscriberPresentRequestImpl();
-        impl.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof NoteSubscriberPresentRequestImpl);
+        NoteSubscriberPresentRequestImpl impl = (NoteSubscriberPresentRequestImpl)result.getResult();  
 
         assertEquals(impl.getIMSI().getData(), "1111122222333");
     }
 
     @Test(groups = { "functional.encode", "service.sms" })
     public void testEncode() throws Exception {
-
-        IMSI imsi = new IMSIImpl("1111122222333");
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(NoteSubscriberPresentRequestImpl.class);
+        
+        IMSIImpl imsi = new IMSIImpl("1111122222333");
         NoteSubscriberPresentRequestImpl impl = new NoteSubscriberPresentRequestImpl(imsi);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

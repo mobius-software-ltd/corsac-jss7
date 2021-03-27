@@ -19,6 +19,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeatureListWrapperImpl;
@@ -29,8 +31,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
-
-import java.util.ArrayList;
 
 /**
  * Created by vsubbotin on 25/05/16.
@@ -48,7 +48,7 @@ public class CallBarringDataImpl {
     public CallBarringDataImpl() {
     }
 
-    public CallBarringDataImpl(ArrayList<ExtCallBarringFeatureImpl> callBarringFeatureList, PasswordImpl password,
+    public CallBarringDataImpl(List<ExtCallBarringFeatureImpl> callBarringFeatureList, PasswordImpl password,
             Integer wrongPasswordAttemptsCounter, boolean notificationToCSE, MAPExtensionContainerImpl extensionContainer) {
         if(callBarringFeatureList!=null)
         	this.callBarringFeatureList = new ExtCallBarringFeatureListWrapperImpl(callBarringFeatureList);
@@ -66,7 +66,7 @@ public class CallBarringDataImpl {
         this.extensionContainer = extensionContainer;
     }
 
-    public ArrayList<ExtCallBarringFeatureImpl> getCallBarringFeatureList() {
+    public List<ExtCallBarringFeatureImpl> getCallBarringFeatureList() {
     	if(this.callBarringFeatureList==null)
     		return null;
     	

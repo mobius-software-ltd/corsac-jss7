@@ -48,6 +48,10 @@ public class AlertServiceCentreRequestImpl extends SmsMessageImpl implements Ale
 	private AddressStringImpl serviceCentreAddress;
     private int operationCode;
 
+    public AlertServiceCentreRequestImpl() {
+    	
+    }
+    
     public AlertServiceCentreRequestImpl(int operationCode) {
         this.operationCode = operationCode;
     }

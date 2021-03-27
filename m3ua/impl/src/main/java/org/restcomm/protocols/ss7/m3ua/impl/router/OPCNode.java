@@ -62,7 +62,7 @@ public class OPCNode {
     }
 
     protected AsImpl getAs(short si) {
-    	SINode siNode=siList.get(si);
+    	SINode siNode=siList.get(Integer.valueOf(si));
     	if(siNode!=null) {
     		return siNode.asImpl;
     	}

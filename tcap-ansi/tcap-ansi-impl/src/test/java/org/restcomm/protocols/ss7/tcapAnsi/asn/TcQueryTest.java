@@ -47,7 +47,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

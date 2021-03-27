@@ -34,8 +34,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.InformationRequestIndicatorsImpl;
 import org.testng.annotations.Test;
 
 /**

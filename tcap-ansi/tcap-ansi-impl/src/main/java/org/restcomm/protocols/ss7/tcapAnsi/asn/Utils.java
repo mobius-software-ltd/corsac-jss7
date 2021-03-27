@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import java.nio.ByteBuffer;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Class with some utility methods.
@@ -43,8 +44,8 @@ public final class Utils {
             longRep[6] = data[1];
             longRep[7] = data[0];
         }
-        ByteBuffer bb = ByteBuffer.wrap(longRep);
-        return bb.getLong();
+        ByteBuf bb = Unpooled.wrappedBuffer(longRep);
+        return bb.readLong();
 
     }
 

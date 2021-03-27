@@ -54,6 +54,10 @@ public class CheckImeiRequestImplV3 extends MobilityMessageImpl implements Check
 
     private long mapProtocolVersion;
 
+    public CheckImeiRequestImplV3() {
+    	this.mapProtocolVersion = 3;
+    }
+    
     // For incoming messages
     public CheckImeiRequestImplV3(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;

@@ -1,5 +1,12 @@
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -26,13 +33,6 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
 */
 
 import io.netty.buffer.ByteBuf;
-
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class ASNSingleByte {
@@ -67,7 +67,10 @@ public class ASNSingleByte {
 		if(buffer.readableBytes()==0)
 			return false;
 		
-		value=buffer.readByte() & 0x0F;
+		if(buffer.readableBytes()!=1)
+			return true;
+		
+		value=buffer.readByte() & 0x0FF;
 		return false;
 	}
 }

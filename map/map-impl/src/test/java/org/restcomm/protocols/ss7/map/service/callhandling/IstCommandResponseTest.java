@@ -22,22 +22,26 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Arrays;
+
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.callhandling.IstCommandResponseImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /*
  *
@@ -63,11 +67,9 @@ public class IstCommandResponseTest {
     public void tearDown() {
     }
 
-    private byte[] getMAPParameterTestData() {
-        return new byte[] { 48, 41, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33};
+    private byte[] getData2() {
+        return new byte[] { 48, 47, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
-
 
     public byte[] getData1() {
         return new byte[] { 48, 0 };
@@ -75,57 +77,45 @@ public class IstCommandResponseTest {
 
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(IstCommandResponseImpl.class);
 
         byte[] data = this.getData1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        IstCommandResponseImpl prim = new IstCommandResponseImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof IstCommandResponseImpl);
+        IstCommandResponseImpl prim = (IstCommandResponseImpl)result.getResult();
+        
         assertNull(prim.getExtensionContainer());
 
 
-        data = this.getMAPParameterTestData();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new IstCommandResponseImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        data = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof IstCommandResponseImpl);
+        prim = (IstCommandResponseImpl)result.getResult();
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
-
     }
 
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
-        byte[] data = getData1();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(IstCommandResponseImpl.class);
 
         IstCommandResponseImpl sri = new IstCommandResponseImpl(null);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        sri.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        assertEquals(data, encodedData);
+        byte[] data=getData1();
+        ByteBuf buffer=parser.encode(sri);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         // extensionContainer
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-
-        IstCommandResponseImpl prim = new IstCommandResponseImpl(extensionContainer);
-
-        asnOS = new AsnOutputStream();
-        prim.encodeAll(asnOS);
-
-        assertEquals(getMAPParameterTestData(), asnOS.toByteArray());
-    }
-
-    @Test(groups = { "functional.serialize", "service.callhandling" })
-    public void testSerialization() throws Exception {
-
+        sri = new IstCommandResponseImpl(extensionContainer);
+        data=getData2();
+        buffer=parser.encode(sri);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

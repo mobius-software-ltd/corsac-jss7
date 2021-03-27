@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class TAIdListWrapperImpl {
-	private ArrayList<TAIdImpl> taidList;
+	private List<TAIdImpl> taidList;
 
     public TAIdListWrapperImpl() {
     }
 
-    public TAIdListWrapperImpl(ArrayList<TAIdImpl> taidList) {
+    public TAIdListWrapperImpl(List<TAIdImpl> taidList) {
         this.taidList = taidList;
     }
 
-    public ArrayList<TAIdImpl> getTAIdList() {
+    public List<TAIdImpl> getTAIdList() {
     	return taidList;
     }
 }

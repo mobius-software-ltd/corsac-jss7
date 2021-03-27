@@ -1,66 +1,52 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CallTypeCriteria;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValueCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValueImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriterium;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriteriumImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultGPRSHandling;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultSMSHandling;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MGCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MGCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTSMSTPDUType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteria;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteriaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTdpCriteria;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTdpCriteriaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCamelData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCamelDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdraw;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTdpCriteria;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTdpCriteriaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
@@ -68,15 +54,11 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCod
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -84,18 +66,7 @@ import static org.testng.Assert.assertTrue;
  *
  */
 public class CAMELSubscriptionInfoTest {
-    private byte[] data = {48, -127, -10, -96, 28, 48, 19, 48, 17, 10, 1, 2, 2, 1, 3, -128, 6, -111,
-            33, 67, 101, -121, 9, -127, 1, 1, -128, 1, 4, -127, 0, -126, 0, -95, 8, 48, 6, 10, 1, 4,
-            -126, 1, 0, -94, 33, -96, 24, 48, 22, 4, 6, -111, 33, 67, 101, -121, -7, 2, 1, 2, 4, 6,
-            -111, 33, 67, 101, -121, 9, 2, 1, 0, -127, 1, 4, -125, 0, -124, 0, -93, 28, 48, 19, 48, 17,
-            10, 1, 13, 2, 1, 5, -128, 6, -111, 33, 67, 101, -121, 9, -127, 1, 1, -128, 1, 4, -127, 0,
-            -126, 0, -121, 0, -120, 0, -87, 24, -96, 19, 48, 17, -128, 1, 1, -127, 1, 6, -126, 6, -111,
-            33, 67, 101, -121, 9, -125, 1, 0, -127, 1, 4, -86, 28, -96, 19, 48, 17, -128, 1, 2, -127, 1,
-            7, -126, 6, -111, 33, 67, 101, -121, 9, -125, 1, 0, -127, 1, 4, -125, 0, -124, 0, -85, 15,
-            48, 13, 48, 3, 4, 1, -128, 4, 6, -111, 33, 67, 101, -121, 9, -84, 16, 48, 3, 4, 1, -125, 2,
-            1, 8, -128, 6, -111, 33, 67, 101, -121, 9, -83, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12,
-            13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3,
-            31, 32, 33, -114, 3, 2, -2, 0};
+    private byte[] data = {48, -127, -5, -96, 28, 48, 19, 48, 17, 10, 1, 2, 2, 1, 3, -128, 6, -111, 33, 67, 101, -121, 9, -127, 1, 1, -128, 1, 4, -127, 0, -126, 0, -95, 8, 48, 6, 10, 1, 4, -126, 1, 0, -94, 33, -96, 24, 48, 22, 4, 6, -111, 33, 67, 101, -121, -7, 2, 1, 2, 4, 6, -111, 33, 67, 101, -121, 9, 2, 1, 0, -127, 1, 4, -125, 0, -124, 0, -93, 28, 48, 19, 48, 17, 10, 1, 13, 2, 1, 5, -128, 6, -111, 33, 67, 101, -121, 9, -127, 1, 1, -128, 1, 4, -127, 0, -126, 0, -121, 0, -120, 0, -87, 24, -96, 19, 48, 17, -128, 1, 1, -127, 1, 6, -126, 6, -111, 33, 67, 101, -121, 9, -125, 1, 0, -127, 1, 4, -86, 28, -96, 19, 48, 17, -128, 1, 2, -127, 1, 7, -126, 6, -111, 33, 67, 101, -121, 9, -125, 1, 0, -127, 1, 4, -125, 0, -124, 0, -85, 15, 48, 13, 48, 3, 4, 1, -128, 4, 6, -111, 33, 67, 101, -121, 9, -84, 16, 48, 3, 4, 1, -125, 2, 1, 8, -128, 6, -111, 33, 67, 101, -121, 9, -83, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -114, 2, 1, -2};
 
     private byte[] data1 = {48, -127, -8, -92, 15, 48, 13, 10, 1, 13, -96, 3, -125, 1, 32, -95, 3, 4, 1,
             83, -91, 28, 48, 19, 48, 17, 10, 1, 13, 2, 1, 5, -128, 6, -111, 33, 67, 101, -121, 9, -127,
@@ -111,28 +82,27 @@ public class CAMELSubscriptionInfoTest {
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode() throws Exception {
-        AsnInputStream asn = new AsnInputStream(data);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        CAMELSubscriptionInfoImpl camelSubscriptionInfo = new CAMELSubscriptionInfoImpl();
-        camelSubscriptionInfo.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CAMELSubscriptionInfoImpl.class);
+    	        
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CAMELSubscriptionInfoImpl);
+        CAMELSubscriptionInfoImpl camelSubscriptionInfo = (CAMELSubscriptionInfoImpl)result.getResult();
 
         // check o-CSI
-        OCSI ocsi = camelSubscriptionInfo.getOCsi();
+        OCSIImpl ocsi = camelSubscriptionInfo.getOCsi();
         assertNotNull(ocsi);
         assertNull(ocsi.getExtensionContainer());
         assertEquals(ocsi.getCamelCapabilityHandling().intValue(), 4);
 
-        List<OBcsmCamelTDPData> oBcsmCamelTDPDataList = ocsi.getOBcsmCamelTDPDataList();
+        List<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList = ocsi.getOBcsmCamelTDPDataList();
         assertNotNull(oBcsmCamelTDPDataList);
         assertEquals(oBcsmCamelTDPDataList.size(), 1);
         assertTrue(ocsi.getNotificationToCSE());
         assertTrue(ocsi.getCsiActive());
 
-        OBcsmCamelTDPData oBcsmCamelTDPData = oBcsmCamelTDPDataList.get(0);
+        OBcsmCamelTDPDataImpl oBcsmCamelTDPData = oBcsmCamelTDPDataList.get(0);
         ISDNAddressStringImpl gsmSCFAddress = oBcsmCamelTDPData.getGsmSCFAddress();
         assertEquals(oBcsmCamelTDPData.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
         assertEquals(oBcsmCamelTDPData.getServiceKey(), 3);
@@ -146,7 +116,7 @@ public class CAMELSubscriptionInfoTest {
         assertNotNull(camelSubscriptionInfo.getOBcsmCamelTDPCriteriaList());
         assertEquals(camelSubscriptionInfo.getOBcsmCamelTDPCriteriaList().size(), 1);
 
-        OBcsmCamelTdpCriteria oBcsmCamelTdpCriteria = camelSubscriptionInfo.getOBcsmCamelTDPCriteriaList().get(0);
+        OBcsmCamelTdpCriteriaImpl oBcsmCamelTdpCriteria = camelSubscriptionInfo.getOBcsmCamelTDPCriteriaList().get(0);
         assertEquals(oBcsmCamelTdpCriteria.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.routeSelectFailure);
         assertNull(oBcsmCamelTdpCriteria.getDestinationNumberCriteria());
         assertNull(oBcsmCamelTdpCriteria.getBasicServiceCriteria());
@@ -157,7 +127,7 @@ public class CAMELSubscriptionInfoTest {
         // check d-CSI
         assertNotNull(camelSubscriptionInfo.getDCsi());
 
-        DCSI dcsi = camelSubscriptionInfo.getDCsi();
+        DCSIImpl dcsi = camelSubscriptionInfo.getDCsi();
         assertNotNull(dcsi.getDPAnalysedInfoCriteriaList());
         assertEquals(dcsi.getDPAnalysedInfoCriteriaList().size(), 1);
         assertEquals(dcsi.getCamelCapabilityHandling().intValue(), 4);
@@ -165,7 +135,7 @@ public class CAMELSubscriptionInfoTest {
         assertTrue(dcsi.getNotificationToCSE());
         assertTrue(dcsi.getCsiActive());
 
-        DPAnalysedInfoCriterium dpAnalysedInfoCriterium = dcsi.getDPAnalysedInfoCriteriaList().get(0);
+        DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = dcsi.getDPAnalysedInfoCriteriaList().get(0);
         ISDNAddressStringImpl dialedNumber = dpAnalysedInfoCriterium.getDialledNumber();
         gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
         assertEquals(dpAnalysedInfoCriterium.getDefaultCallHandling(), DefaultCallHandling.continueCall);
@@ -181,7 +151,7 @@ public class CAMELSubscriptionInfoTest {
         // check t-CSI
         assertNotNull(camelSubscriptionInfo.getTCsi());
 
-        TCSI tcsi = camelSubscriptionInfo.getTCsi();
+        TCSIImpl tcsi = camelSubscriptionInfo.getTCsi();
         assertNotNull(tcsi.getTBcsmCamelTDPDataList());
         assertEquals(tcsi.getTBcsmCamelTDPDataList().size(), 1);
         assertNull(tcsi.getExtensionContainer());
@@ -189,7 +159,7 @@ public class CAMELSubscriptionInfoTest {
         assertTrue(tcsi.getNotificationToCSE());
         assertTrue(tcsi.getCsiActive());
 
-        TBcsmCamelTDPData tBcsmCamelTDPData = tcsi.getTBcsmCamelTDPDataList().get(0);
+        TBcsmCamelTDPDataImpl tBcsmCamelTDPData = tcsi.getTBcsmCamelTDPDataList().get(0);
         gsmSCFAddress = tBcsmCamelTDPData.getGsmSCFAddress();
         assertEquals(tBcsmCamelTDPData.getTBcsmTriggerDetectionPoint(), TBcsmTriggerDetectionPoint.tBusy);
         assertEquals(tBcsmCamelTDPData.getServiceKey(), 5);
@@ -202,7 +172,7 @@ public class CAMELSubscriptionInfoTest {
         // check gprs-CSI
         assertNotNull(camelSubscriptionInfo.getGprsCsi());
 
-        GPRSCSI gprscsi = camelSubscriptionInfo.getGprsCsi();
+        GPRSCSIImpl gprscsi = camelSubscriptionInfo.getGprsCsi();
         assertNotNull(gprscsi.getGPRSCamelTDPDataList());
         assertEquals(gprscsi.getGPRSCamelTDPDataList().size(), 1);
         assertEquals(gprscsi.getCamelCapabilityHandling().intValue(), 4);
@@ -210,7 +180,7 @@ public class CAMELSubscriptionInfoTest {
         assertFalse(gprscsi.getNotificationToCSE());
         assertFalse(gprscsi.getCsiActive());
 
-        GPRSCamelTDPData gprsCamelTDPData = gprscsi.getGPRSCamelTDPDataList().get(0);
+        GPRSCamelTDPDataImpl gprsCamelTDPData = gprscsi.getGPRSCamelTDPDataList().get(0);
         gsmSCFAddress = gprsCamelTDPData.getGsmSCFAddress();
         assertEquals(gprsCamelTDPData.getGPRSTriggerDetectionPoint(), GPRSTriggerDetectionPoint.attach);
         assertEquals(gprsCamelTDPData.getServiceKey(), 6);
@@ -223,7 +193,7 @@ public class CAMELSubscriptionInfoTest {
         // check mo-sms-CSI
         assertNotNull(camelSubscriptionInfo.getMoSmsCsi());
 
-        SMSCSI smscsi = camelSubscriptionInfo.getMoSmsCsi();
+        SMSCSIImpl smscsi = camelSubscriptionInfo.getMoSmsCsi();
         assertNotNull(smscsi.getSmsCamelTdpDataList());
         assertEquals(smscsi.getSmsCamelTdpDataList().size(), 1);
         assertEquals(smscsi.getCamelCapabilityHandling().intValue(), 4);
@@ -231,7 +201,7 @@ public class CAMELSubscriptionInfoTest {
         assertTrue(smscsi.getNotificationToCSE());
         assertTrue(smscsi.getCsiActive());
 
-        SMSCAMELTDPData smsCamelTdpData = smscsi.getSmsCamelTdpDataList().get(0);
+        SMSCAMELTDPDataImpl smsCamelTdpData = smscsi.getSmsCamelTdpDataList().get(0);
         gsmSCFAddress = smsCamelTdpData.getGsmSCFAddress();
         assertEquals(smsCamelTdpData.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsDeliveryRequest);
         assertEquals(smsCamelTdpData.getServiceKey(), 7);
@@ -244,13 +214,13 @@ public class CAMELSubscriptionInfoTest {
         // check ss-CSI
         assertNotNull(camelSubscriptionInfo.getSsCsi());
 
-        SSCSI sscsi = camelSubscriptionInfo.getSsCsi();
+        SSCSIImpl sscsi = camelSubscriptionInfo.getSsCsi();
         assertNotNull(sscsi.getSsCamelData());
         assertNull(sscsi.getExtensionContainer());
         assertFalse(sscsi.getNotificationToCSE());
         assertFalse(sscsi.getCsiActive());
 
-        SSCamelData ssCamelData = sscsi.getSsCamelData();
+        SSCamelDataImpl ssCamelData = sscsi.getSsCamelData();
         gsmSCFAddress = ssCamelData.getGsmSCFAddress();
         assertNotNull(ssCamelData.getSsEventList());
         assertEquals(ssCamelData.getSsEventList().size(), 1);
@@ -265,7 +235,7 @@ public class CAMELSubscriptionInfoTest {
         // check m-CSI
         assertNotNull(camelSubscriptionInfo.getMCsi());
 
-        MCSI mcsi = camelSubscriptionInfo.getMCsi();
+        MCSIImpl mcsi = camelSubscriptionInfo.getMCsi();
         gsmSCFAddress = mcsi.getGsmSCFAddress();
         assertNotNull(mcsi.getMobilityTriggers());
         assertEquals(mcsi.getMobilityTriggers().size(), 1);
@@ -277,7 +247,7 @@ public class CAMELSubscriptionInfoTest {
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(gsmSCFAddress.getAddress(), "1234567890");
 
-        MMCode mmCode = mcsi.getMobilityTriggers().get(0);
+        MMCodeImpl mmCode = mcsi.getMobilityTriggers().get(0);
         assertEquals(mmCode.getMMCodeValue(), MMCodeValue.GPRSAttach);
 
         // check extensionContainer
@@ -286,7 +256,7 @@ public class CAMELSubscriptionInfoTest {
         // check specificCSIDeletedList
         assertNotNull(camelSubscriptionInfo.getSpecificCSIDeletedList());
 
-        SpecificCSIWithdraw specificCSIWithdraw = camelSubscriptionInfo.getSpecificCSIDeletedList();
+        SpecificCSIWithdrawImpl specificCSIWithdraw = camelSubscriptionInfo.getSpecificCSIDeletedList();
         assertTrue(specificCSIWithdraw.getOCsi());
         assertTrue(specificCSIWithdraw.getSsCsi());
         assertTrue(specificCSIWithdraw.getTifCsi());
@@ -315,14 +285,13 @@ public class CAMELSubscriptionInfoTest {
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode1() throws Exception {
-        AsnInputStream asn = new AsnInputStream(data1);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        CAMELSubscriptionInfoImpl camelSubscriptionInfo = new CAMELSubscriptionInfoImpl();
-        camelSubscriptionInfo.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CAMELSubscriptionInfoImpl.class);
+    	        
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data1));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CAMELSubscriptionInfoImpl);
+        CAMELSubscriptionInfoImpl camelSubscriptionInfo = (CAMELSubscriptionInfoImpl)result.getResult();
 
         assertNotNull(camelSubscriptionInfo.getTBcsmCamelTdpCriteriaList());
         assertEquals(camelSubscriptionInfo.getTBcsmCamelTdpCriteriaList().size(), 1);
@@ -340,18 +309,18 @@ public class CAMELSubscriptionInfoTest {
         assertNotNull(camelSubscriptionInfo.getVtImCsi());
         assertNotNull(camelSubscriptionInfo.getVtImBcsmCamelTdpCriteriaList());
 
-        TBcsmCamelTdpCriteria tBcsmCamelTdpCriteria = camelSubscriptionInfo.getTBcsmCamelTdpCriteriaList().get(0);
+        TBcsmCamelTdpCriteriaImpl tBcsmCamelTdpCriteria = camelSubscriptionInfo.getTBcsmCamelTdpCriteriaList().get(0);
         assertEquals(tBcsmCamelTdpCriteria.getTBcsmTriggerDetectionPoint(), TBcsmTriggerDetectionPoint.tBusy);
         assertNotNull(tBcsmCamelTdpCriteria.getBasicServiceCriteria());
         assertEquals(tBcsmCamelTdpCriteria.getBasicServiceCriteria().size(), 1);
         assertNotNull(tBcsmCamelTdpCriteria.getTCauseValueCriteria());
         assertEquals(tBcsmCamelTdpCriteria.getTCauseValueCriteria().size(), 1);
-        ExtBasicServiceCode basicServiceCode = tBcsmCamelTdpCriteria.getBasicServiceCriteria().get(0);
+        ExtBasicServiceCodeImpl basicServiceCode = tBcsmCamelTdpCriteria.getBasicServiceCriteria().get(0);
         assertEquals(basicServiceCode.getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allShortMessageServices);
-        CauseValue causeValue = tBcsmCamelTdpCriteria.getTCauseValueCriteria().get(0);
+        CauseValueImpl causeValue = tBcsmCamelTdpCriteria.getTCauseValueCriteria().get(0);
         assertEquals(causeValue.getCauseValueCodeValue(), CauseValueCodeValue.ASuspendedCallExists);
 
-        TCSI tcsi = camelSubscriptionInfo.getVtCsi();
+        TCSIImpl tcsi = camelSubscriptionInfo.getVtCsi();
         assertNotNull(tcsi.getTBcsmCamelTDPDataList());
         assertEquals(tcsi.getTBcsmCamelTDPDataList().size(), 1);
         assertNull(tcsi.getExtensionContainer());
@@ -370,7 +339,7 @@ public class CAMELSubscriptionInfoTest {
         causeValue = tBcsmCamelTdpCriteria.getTCauseValueCriteria().get(0);
         assertEquals(causeValue.getCauseValueCodeValue(), CauseValueCodeValue.ASuspendedCallExists);
 
-        SMSCSI smscsi = camelSubscriptionInfo.getMtSmsCsi();
+        SMSCSIImpl smscsi = camelSubscriptionInfo.getMtSmsCsi();
         assertNotNull(smscsi.getSmsCamelTdpDataList());
         assertEquals(smscsi.getSmsCamelTdpDataList().size(), 1);
         assertEquals(smscsi.getCamelCapabilityHandling().intValue(), 4);
@@ -378,36 +347,36 @@ public class CAMELSubscriptionInfoTest {
         assertTrue(smscsi.getNotificationToCSE());
         assertTrue(smscsi.getCsiActive());
 
-        MTsmsCAMELTDPCriteria mTsmsCAMELTDPCriteria = camelSubscriptionInfo.getMtSmsCamelTdpCriteriaList().get(0);
+        MTsmsCAMELTDPCriteriaImpl mTsmsCAMELTDPCriteria = camelSubscriptionInfo.getMtSmsCamelTdpCriteriaList().get(0);
         assertEquals(mTsmsCAMELTDPCriteria.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
         assertNotNull(mTsmsCAMELTDPCriteria.getTPDUTypeCriterion());
         assertEquals(mTsmsCAMELTDPCriteria.getTPDUTypeCriterion().size(), 1);
         MTSMSTPDUType mtsmstpduType = mTsmsCAMELTDPCriteria.getTPDUTypeCriterion().get(0);
         assertEquals(mtsmstpduType, MTSMSTPDUType.smsDELIVER);
 
-        MGCSI mgcsi = camelSubscriptionInfo.getMgCsi();
+        MGCSIImpl mgcsi = camelSubscriptionInfo.getMgCsi();
         assertNotNull(mgcsi.getMobilityTriggers());
         assertEquals(mgcsi.getMobilityTriggers().size(), 1);
         assertEquals(mgcsi.getServiceKey(), 10);
         assertEquals(mgcsi.getGsmSCFAddress().getAddress(), "1234567890");
         assertFalse(mgcsi.getNotificationToCSE());
         assertTrue(mgcsi.getCsiActive());
-        MMCode mmCode = mgcsi.getMobilityTriggers().get(0);
+        MMCodeImpl mmCode = mgcsi.getMobilityTriggers().get(0);
         assertEquals(mmCode.getMMCodeValue(), MMCodeValue.GPRSAttach);
 
-        OCSI ocsi = camelSubscriptionInfo.geToImCsi();
+        OCSIImpl ocsi = camelSubscriptionInfo.geToImCsi();
         assertNotNull(ocsi.getOBcsmCamelTDPDataList());
         assertEquals(ocsi.getOBcsmCamelTDPDataList().size(), 1);
         assertEquals(ocsi.getCamelCapabilityHandling().intValue(), 4);
         assertTrue(ocsi.getNotificationToCSE());
         assertTrue(ocsi.getCsiActive());
-        OBcsmCamelTDPData oBcsmCamelTDPData = ocsi.getOBcsmCamelTDPDataList().get(0);
+        OBcsmCamelTDPDataImpl oBcsmCamelTDPData = ocsi.getOBcsmCamelTDPDataList().get(0);
         assertEquals(oBcsmCamelTDPData.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
         assertEquals(oBcsmCamelTDPData.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertEquals(oBcsmCamelTDPData.getServiceKey(), 3);
         assertEquals(oBcsmCamelTDPData.getGsmSCFAddress().getAddress(), "1234567890");
 
-        OBcsmCamelTdpCriteria oBcsmCamelTdpCriteria = camelSubscriptionInfo.getOImBcsmCamelTdpCriteriaList().get(0);
+        OBcsmCamelTdpCriteriaImpl oBcsmCamelTdpCriteria = camelSubscriptionInfo.getOImBcsmCamelTdpCriteriaList().get(0);
         assertEquals(oBcsmCamelTdpCriteria.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.routeSelectFailure);
         assertNull(oBcsmCamelTdpCriteria.getDestinationNumberCriteria());
         assertNull(oBcsmCamelTdpCriteria.getBasicServiceCriteria());
@@ -415,7 +384,7 @@ public class CAMELSubscriptionInfoTest {
         assertNull(oBcsmCamelTdpCriteria.getOCauseValueCriteria());
         assertNull(oBcsmCamelTdpCriteria.getExtensionContainer());
 
-        DCSI dcsi = camelSubscriptionInfo.getDImCsi();
+        DCSIImpl dcsi = camelSubscriptionInfo.getDImCsi();
         assertNotNull(dcsi.getDPAnalysedInfoCriteriaList());
         assertEquals(dcsi.getDPAnalysedInfoCriteriaList().size(), 1);
         assertEquals(dcsi.getCamelCapabilityHandling().intValue(), 4);
@@ -445,43 +414,46 @@ public class CAMELSubscriptionInfoTest {
 
     @Test(groups = {"functional.encode", "subscriberInformation"})
     public void testEncode() throws Exception {
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567890");
-        final OBcsmCamelTDPData oBcsmCamelTDPData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CAMELSubscriptionInfoImpl.class);
+    	        
+    	ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567890");
+        final OBcsmCamelTDPDataImpl oBcsmCamelTDPData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
         
-        ArrayList<OBcsmCamelTDPData> obcsmCamelTDPDataList=new ArrayList<OBcsmCamelTDPData>();
+        ArrayList<OBcsmCamelTDPDataImpl> obcsmCamelTDPDataList=new ArrayList<OBcsmCamelTDPDataImpl>();
         obcsmCamelTDPDataList.add(oBcsmCamelTDPData);
         OCSIImpl ocsi = new OCSIImpl(obcsmCamelTDPDataList, null, 4, true, true);
 
-        final OBcsmCamelTdpCriteria oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, null, null,
+        final OBcsmCamelTdpCriteriaImpl oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, null, null,
                 CallTypeCriteria.forwarded, null, null);
 
         ISDNAddressStringImpl dialedNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "123456789");
-        final DPAnalysedInfoCriterium dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialedNumber, 2, gsmSCFAddress,
+        final DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialedNumber, 2, gsmSCFAddress,
                 DefaultCallHandling.continueCall, null);
         
-        ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriumList=new ArrayList<DPAnalysedInfoCriterium>();
+        ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriumList=new ArrayList<DPAnalysedInfoCriteriumImpl>();
         dpAnalysedInfoCriteriumList.add(dpAnalysedInfoCriterium);
         DCSIImpl dcsi = new DCSIImpl(dpAnalysedInfoCriteriumList, 4, null, true, true);
 
-        final TBcsmCamelTDPData tBcsmCamelTDPData = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.tBusy, 5, gsmSCFAddress,
+        final TBcsmCamelTDPDataImpl tBcsmCamelTDPData = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.tBusy, 5, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
         
-        ArrayList<TBcsmCamelTDPData> tbcsmCamelTDPDataList=new ArrayList<TBcsmCamelTDPData>();
+        ArrayList<TBcsmCamelTDPDataImpl> tbcsmCamelTDPDataList=new ArrayList<TBcsmCamelTDPDataImpl>();
         tbcsmCamelTDPDataList.add(tBcsmCamelTDPData);
         TCSIImpl tcsi = new TCSIImpl(tbcsmCamelTDPDataList, null, 4, true, true);
 
-        final GPRSCamelTDPData gprsCamelTDPData = new GPRSCamelTDPDataImpl(GPRSTriggerDetectionPoint.attach, 6, gsmSCFAddress,
+        final GPRSCamelTDPDataImpl gprsCamelTDPData = new GPRSCamelTDPDataImpl(GPRSTriggerDetectionPoint.attach, 6, gsmSCFAddress,
                 DefaultGPRSHandling.continueTransaction, null);
         
-        ArrayList<GPRSCamelTDPData> gprsCamelTDPDataList=new ArrayList<GPRSCamelTDPData>();
+        ArrayList<GPRSCamelTDPDataImpl> gprsCamelTDPDataList=new ArrayList<GPRSCamelTDPDataImpl>();
         gprsCamelTDPDataList.add(gprsCamelTDPData);
         GPRSCSIImpl gprscsi = new GPRSCSIImpl(gprsCamelTDPDataList, 4, null, false, false);
 
-        final SMSCAMELTDPData smscameltdpData = new SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint.smsDeliveryRequest, 7, gsmSCFAddress,
+        final SMSCAMELTDPDataImpl smscameltdpData = new SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint.smsDeliveryRequest, 7, gsmSCFAddress,
                 DefaultSMSHandling.continueTransaction, null);
         
-        ArrayList<SMSCAMELTDPData> smsCAMELTDPDataList=new ArrayList<SMSCAMELTDPData>();
+        ArrayList<SMSCAMELTDPDataImpl> smsCAMELTDPDataList=new ArrayList<SMSCAMELTDPDataImpl>();
         smsCAMELTDPDataList.add(smscameltdpData);
         SMSCSIImpl smscsi = new SMSCSIImpl(smsCAMELTDPDataList, 4, null, true, true);
 
@@ -493,7 +465,7 @@ public class CAMELSubscriptionInfoTest {
         SSCSIImpl sscsi = new SSCSIImpl(ssCamelData, null, false, false);
 
         final MMCodeImpl mmCode = new MMCodeImpl(MMCodeValue.GPRSAttach);
-        ArrayList<MMCode> mmCodeList=new ArrayList<MMCode>();
+        ArrayList<MMCodeImpl> mmCodeList=new ArrayList<MMCodeImpl>();
         mmCodeList.add(mmCode);
         MCSIImpl mcsi = new MCSIImpl(mmCodeList, 8, gsmSCFAddress, null, false, false);
 
@@ -502,84 +474,87 @@ public class CAMELSubscriptionInfoTest {
         SpecificCSIWithdrawImpl specificCSIWithdraw = new SpecificCSIWithdrawImpl(true, true, true, true, true, true, true, false, false, false,
                 false, false, false, false);
 
-        ArrayList<OBcsmCamelTdpCriteria> obcsmCamelTdpCriteriaList=new ArrayList<OBcsmCamelTdpCriteria>();
+        ArrayList<OBcsmCamelTdpCriteriaImpl> obcsmCamelTdpCriteriaList=new ArrayList<OBcsmCamelTdpCriteriaImpl>();
         obcsmCamelTdpCriteriaList.add(oBcsmCamelTdpCriteria);
         CAMELSubscriptionInfoImpl camelSubscriptionInfo = new CAMELSubscriptionInfoImpl(ocsi, obcsmCamelTdpCriteriaList,
                 dcsi, tcsi, null, null, null, true, true, gprscsi, smscsi, sscsi, mcsi, extensionContainer, specificCSIWithdraw,
                 null, null, null, null, null, null, null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        camelSubscriptionInfo.encodeAll(asnOS);
-        byte[] raw = asnOS.toByteArray();
-        assertTrue(Arrays.equals(raw, data));
+        ByteBuf buffer=parser.encode(camelSubscriptionInfo);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, data));
     }
 
     @Test(groups = {"functional.encode", "subscriberInformation"})
     public void testEncode1() throws Exception {
-        final ExtBasicServiceCode basicServiceCode = new ExtBasicServiceCodeImpl(new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allShortMessageServices));
-        ArrayList<ExtBasicServiceCode> extBasicServiceCodeList=new ArrayList<ExtBasicServiceCode>();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CAMELSubscriptionInfoImpl.class);
+    	        
+    	final ExtBasicServiceCodeImpl basicServiceCode = new ExtBasicServiceCodeImpl(new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allShortMessageServices));
+        ArrayList<ExtBasicServiceCodeImpl> extBasicServiceCodeList=new ArrayList<ExtBasicServiceCodeImpl>();
         extBasicServiceCodeList.add(basicServiceCode);
         
-        ArrayList<CauseValue> causeValueList=new ArrayList<CauseValue>();
+        ArrayList<CauseValueImpl> causeValueList=new ArrayList<CauseValueImpl>();
         causeValueList.add(new CauseValueImpl(CauseValueCodeValue.ASuspendedCallExists));
 
         final TBcsmCamelTdpCriteriaImpl tBcsmCamelTdpCriteria = new TBcsmCamelTdpCriteriaImpl(TBcsmTriggerDetectionPoint.tBusy,extBasicServiceCodeList,causeValueList);
         
-        ArrayList<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList = new ArrayList<TBcsmCamelTdpCriteria>();
+        ArrayList<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList = new ArrayList<TBcsmCamelTdpCriteriaImpl>();
         tBcsmCamelTdpCriteriaList.add(tBcsmCamelTdpCriteria);
 
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567890");
-        final TBcsmCamelTDPData tBcsmCamelTDPData = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.tBusy, 5, gsmSCFAddress,
+        final TBcsmCamelTDPDataImpl tBcsmCamelTDPData = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.tBusy, 5, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
         
-        ArrayList<TBcsmCamelTDPData> tbcsmCamelTDPDataList=new ArrayList<TBcsmCamelTDPData>();
+        ArrayList<TBcsmCamelTDPDataImpl> tbcsmCamelTDPDataList=new ArrayList<TBcsmCamelTDPDataImpl>();
         tbcsmCamelTDPDataList.add(tBcsmCamelTDPData);
         TCSIImpl tcsi = new TCSIImpl(tbcsmCamelTDPDataList, null, 4, true, true);
 
-        final SMSCAMELTDPData smscameltdpData = new SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint.smsDeliveryRequest, 7, gsmSCFAddress,
+        final SMSCAMELTDPDataImpl smscameltdpData = new SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint.smsDeliveryRequest, 7, gsmSCFAddress,
                 DefaultSMSHandling.continueTransaction, null);
         
-        ArrayList<SMSCAMELTDPData> smscAMELTDPDataList=new ArrayList<SMSCAMELTDPData>();
+        ArrayList<SMSCAMELTDPDataImpl> smscAMELTDPDataList=new ArrayList<SMSCAMELTDPDataImpl>();
         smscAMELTDPDataList.add(smscameltdpData);
         SMSCSIImpl smscsi = new SMSCSIImpl(smscAMELTDPDataList, 4, null, true, true);
 
         ArrayList<MTSMSTPDUType> mtSMSTPDUTypeList=new ArrayList<MTSMSTPDUType>();
         mtSMSTPDUTypeList.add(MTSMSTPDUType.smsDELIVER);
-        final MTsmsCAMELTDPCriteria mTsmsCAMELTDPCriteria = new MTsmsCAMELTDPCriteriaImpl(SMSTriggerDetectionPoint.smsCollectedInfo,mtSMSTPDUTypeList);
-        ArrayList<MTsmsCAMELTDPCriteria> mTsmsCAMELTDPCriteriaList = new ArrayList<MTsmsCAMELTDPCriteria>();
+        final MTsmsCAMELTDPCriteriaImpl mTsmsCAMELTDPCriteria = new MTsmsCAMELTDPCriteriaImpl(SMSTriggerDetectionPoint.smsCollectedInfo,mtSMSTPDUTypeList);
+        ArrayList<MTsmsCAMELTDPCriteriaImpl> mTsmsCAMELTDPCriteriaList = new ArrayList<MTsmsCAMELTDPCriteriaImpl>();
         mTsmsCAMELTDPCriteriaList.add(mTsmsCAMELTDPCriteria);
 
-        ArrayList<MMCode> mmCodeList=new ArrayList<MMCode>();
+        ArrayList<MMCodeImpl> mmCodeList=new ArrayList<MMCodeImpl>();
         mmCodeList.add(new MMCodeImpl(MMCodeValue.GPRSAttach));        
         MGCSIImpl mgcsi = new MGCSIImpl(mmCodeList, 10, gsmSCFAddress, null, false, true);
 
-        final OBcsmCamelTDPData oBcsmCamelTDPData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
+        final OBcsmCamelTDPDataImpl oBcsmCamelTDPData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
         
-        ArrayList<OBcsmCamelTDPData> obcsmCamelTDPDataList=new ArrayList<OBcsmCamelTDPData>();
+        ArrayList<OBcsmCamelTDPDataImpl> obcsmCamelTDPDataList=new ArrayList<OBcsmCamelTDPDataImpl>();
         obcsmCamelTDPDataList.add(oBcsmCamelTDPData);
         OCSIImpl ocsi = new OCSIImpl(obcsmCamelTDPDataList, null, 4, true, true);
 
-        final OBcsmCamelTdpCriteria oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, null, null,
+        final OBcsmCamelTdpCriteriaImpl oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, null, null,
                 CallTypeCriteria.forwarded, null, null);
 
         ISDNAddressStringImpl dialedNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "123456789");
-        final DPAnalysedInfoCriterium dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialedNumber, 2, gsmSCFAddress,
+        final DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialedNumber, 2, gsmSCFAddress,
                 DefaultCallHandling.continueCall, null);
         
-        ArrayList<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriumList=new ArrayList<DPAnalysedInfoCriterium>();
+        ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriumList=new ArrayList<DPAnalysedInfoCriteriumImpl>();
         dpAnalysedInfoCriteriumList.add(dpAnalysedInfoCriterium);
         DCSIImpl dcsi = new DCSIImpl(dpAnalysedInfoCriteriumList, 4, null, true, true);
 
-        ArrayList<OBcsmCamelTdpCriteria> obcsmCamelTdpCriteriaList=new ArrayList<OBcsmCamelTdpCriteria>();
+        ArrayList<OBcsmCamelTdpCriteriaImpl> obcsmCamelTdpCriteriaList=new ArrayList<OBcsmCamelTdpCriteriaImpl>();
         obcsmCamelTdpCriteriaList.add(oBcsmCamelTdpCriteria);
         CAMELSubscriptionInfoImpl camelSubscriptionInfo = new CAMELSubscriptionInfoImpl(null, null, null, null, tBcsmCamelTdpCriteriaList, tcsi,
                 tBcsmCamelTdpCriteriaList, false, false, null, null, null, null, null, null, smscsi, mTsmsCAMELTDPCriteriaList, mgcsi, ocsi,
                 obcsmCamelTdpCriteriaList, dcsi, tcsi, tBcsmCamelTdpCriteriaList);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        camelSubscriptionInfo.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(camelSubscriptionInfo);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data1, encodedData));
     }
 }

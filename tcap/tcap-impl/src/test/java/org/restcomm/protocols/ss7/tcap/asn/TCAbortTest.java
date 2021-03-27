@@ -33,13 +33,6 @@ import io.netty.buffer.Unpooled;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
-import org.restcomm.protocols.ss7.tcap.asn.ASNAbortSource;
-import org.restcomm.protocols.ss7.tcap.asn.AbortSourceType;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.ParseException;
-import org.restcomm.protocols.ss7.tcap.asn.TCAbortMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
@@ -120,7 +120,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     public DeleteSubscriberDataRequestImpl() {
     }
 
-    public DeleteSubscriberDataRequestImpl(IMSIImpl imsi, ArrayList<ExtBasicServiceCodeImpl> basicServiceList, ArrayList<SSCodeImpl> ssList,
+    public DeleteSubscriberDataRequestImpl(IMSIImpl imsi, List<ExtBasicServiceCodeImpl> basicServiceList, List<SSCodeImpl> ssList,
             boolean roamingRestrictionDueToUnsupportedFeature, ZoneCodeImpl regionalSubscriptionIdentifier, boolean vbsGroupIndication,
             boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainerImpl extensionContainer,
             GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
@@ -135,7 +135,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if(ssList!=null)
         	this.ssList = new SSCodeListWrapperImpl(ssList);
         
-        if(roamingRestrictedInSgsnDueToUnsuppportedFeature)
+        if(roamingRestrictionDueToUnsupportedFeature)
         	this.roamingRestrictionDueToUnsupportedFeature = new ASNNull();
         
         this.regionalSubscriptionIdentifier = regionalSubscriptionIdentifier;
@@ -198,7 +198,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<ExtBasicServiceCodeImpl> getBasicServiceList() {
+    public List<ExtBasicServiceCodeImpl> getBasicServiceList() {
     	if(basicServiceList==null)
     		return null;
     	
@@ -206,7 +206,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<SSCodeImpl> getSsList() {
+    public List<SSCodeImpl> getSsList() {
     	if(ssList==null)
     		return null;
     	

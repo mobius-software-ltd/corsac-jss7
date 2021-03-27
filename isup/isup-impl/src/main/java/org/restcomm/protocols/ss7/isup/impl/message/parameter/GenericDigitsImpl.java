@@ -29,8 +29,6 @@ import org.restcomm.protocols.ss7.isup.util.BcdHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import javax.xml.bind.DatatypeConverter;
-
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
@@ -43,7 +41,8 @@ import java.nio.charset.Charset;
  */
 public class GenericDigitsImpl extends AbstractISUPParameter implements GenericDigits {
 	private static final Charset asciiCharset = Charset.forName("ASCII");
-
+	private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
+    
     private int encodingScheme;
     private int typeOfDigits;
     private ByteBuf digits;
@@ -181,7 +180,7 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
         	buffer.readBytes(data);
         	
             sb.append(", encodedDigits=[");
-            sb.append(DatatypeConverter.printHexBinary(data));
+            sb.append(printHexBinary(data));
             sb.append("]");
 
             try {
@@ -195,5 +194,14 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
         sb.append("]");
 
         return sb.toString();
+    }
+    
+    public String printHexBinary(byte[] data) {
+        StringBuilder r = new StringBuilder(data.length * 2);
+        for (byte b : data) {
+            r.append(hexCode[(b >> 4) & 0xF]);
+            r.append(hexCode[(b & 0xF)]);
+        }
+        return r.toString();
     }
 }

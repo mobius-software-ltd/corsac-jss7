@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionsListWrapperImpl;
@@ -47,7 +47,7 @@ public class SLRArgExtensionContainerImpl {
     public SLRArgExtensionContainerImpl() {
     }
 
-    public SLRArgExtensionContainerImpl(ArrayList<MAPPrivateExtensionImpl> privateExtensionList,
+    public SLRArgExtensionContainerImpl(List<MAPPrivateExtensionImpl> privateExtensionList,
             SLRArgPCSExtensionsImpl slrArgPcsExtensions) {
         
     	if(privateExtensionList!=null) {
@@ -57,7 +57,7 @@ public class SLRArgExtensionContainerImpl {
         this.slrArgPcsExtensions = slrArgPcsExtensions;
     }
 
-    public ArrayList<MAPPrivateExtensionImpl> getPrivateExtensionList() {
+    public List<MAPPrivateExtensionImpl> getPrivateExtensionList() {
     	if(privateExtensionList==null)
     		return null;
     	

@@ -70,6 +70,10 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
     private LMSIImpl newLmsi;
     private long mapProtocolVersion;
 
+    public SendIdentificationRequestImplV3() {
+    	this.mapProtocolVersion = 3;
+    }
+    
     public SendIdentificationRequestImplV3(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

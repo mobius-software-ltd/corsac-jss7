@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
@@ -56,7 +56,7 @@ public interface SSInvocationNotificationRequest extends SupplementaryMessage {
 
     SSCodeImpl getSsEvent();
 
-    ArrayList<AddressStringImpl> getSsEventSpecification();
+    List<AddressStringImpl> getSsEventSpecification();
 
     MAPExtensionContainerImpl getExtensionContainer();
 

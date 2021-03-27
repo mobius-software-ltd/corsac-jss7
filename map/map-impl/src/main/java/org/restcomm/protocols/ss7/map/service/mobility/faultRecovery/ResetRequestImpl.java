@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
@@ -52,11 +52,15 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
 
     private long mapProtocolVersion;
 
+    public ResetRequestImpl() {
+    	this.mapProtocolVersion = 3;
+    }
+    
     public ResetRequestImpl(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public ResetRequestImpl(NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, ArrayList<IMSIImpl> hlrList, long mapProtocolVersion) {
+    public ResetRequestImpl(NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, List<IMSIImpl> hlrList, long mapProtocolVersion) {
         if(networkResource!=null) {
         	this.networkResource = new ASNNetworkResourceImpl();
         	this.networkResource.setType(networkResource);
@@ -98,7 +102,7 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
     }
 
     @Override
-    public ArrayList<IMSIImpl> getHlrList() {
+    public List<IMSIImpl> getHlrList() {
     	if(hlrList==null)
     		return null;
     	

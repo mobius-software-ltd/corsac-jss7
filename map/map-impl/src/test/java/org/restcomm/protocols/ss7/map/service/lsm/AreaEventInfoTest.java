@@ -23,28 +23,18 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinitionImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
@@ -54,6 +44,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -87,19 +83,19 @@ public class AreaEventInfoTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AreaEventInfoImpl.class);
+    	
         byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaEventInfoImpl);
+        AreaEventInfoImpl areaEvtInf = (AreaEventInfoImpl)result.getResult();
 
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        AreaEventInfo areaEvtInf = new AreaEventInfoImpl();
-        ((AreaEventInfoImpl) areaEvtInf).decodeAll(asn);
-
-        AreaDefinition areaDef = areaEvtInf.getAreaDefinition();
+        AreaDefinitionImpl areaDef = areaEvtInf.getAreaDefinition();
         assertNotNull(areaDef);
 
-        ArrayList<Area> areaList = areaDef.getAreaList();
+        List<AreaImpl> areaList = areaDef.getAreaList();
 
         assertNotNull(areaList);
         assertEquals(areaList.size(), 1);
@@ -121,59 +117,22 @@ public class AreaEventInfoTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AreaEventInfoImpl.class);
+    	
         byte[] data = getEncodedData();
 
-        AreaIdentification ai1 = new AreaIdentificationImpl(AreaType.routingAreaId, 210, 177, 1000, 100);
-        Area area1 = new AreaImpl(AreaType.routingAreaId, ai1);
+        AreaIdentificationImpl ai1 = new AreaIdentificationImpl(AreaType.routingAreaId, 210, 177, 1000, 100);
+        AreaImpl area1 = new AreaImpl(AreaType.routingAreaId, ai1);
 
-        ArrayList<Area> areaList = new ArrayList<Area>();
+        ArrayList<AreaImpl> areaList = new ArrayList<AreaImpl>();
         areaList.add(area1);
-        AreaDefinition areaDef = new AreaDefinitionImpl(areaList);
+        AreaDefinitionImpl areaDef = new AreaDefinitionImpl(areaList);
 
-        AreaEventInfo areaEvtInf = new AreaEventInfoImpl(areaDef, OccurrenceInfo.multipleTimeEvent, 32766);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        ((AreaEventInfoImpl) areaEvtInf).encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        AreaEventInfoImpl areaEvtInf = new AreaEventInfoImpl(areaDef, OccurrenceInfo.multipleTimeEvent, 32766);
+        ByteBuf buffer=parser.encode(areaEvtInf);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
-    }
-
-    @Test(groups = { "functional.serialize", "service.lsm" })
-    public void testSerialization() throws Exception {
-        AreaIdentification ai1 = new AreaIdentificationImpl(AreaType.routingAreaId, 210, 177, 1000, 100);
-        Area area1 = new AreaImpl(AreaType.routingAreaId, ai1);
-
-        ArrayList<Area> areaList = new ArrayList<Area>();
-        areaList.add(area1);
-        AreaDefinition areaDef = new AreaDefinitionImpl(areaList);
-
-        AreaEventInfo original = new AreaEventInfoImpl(areaDef, OccurrenceInfo.multipleTimeEvent, 32766);
-
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        AreaEventInfoImpl copy = (AreaEventInfoImpl) o;
-
-        // test result
-        for (int i = 0; i < areaList.size(); i++) {
-            Area a1 = copy.getAreaDefinition().getAreaList().get(i);
-            Area a2 = original.getAreaDefinition().getAreaList().get(i);
-            assertTrue(a1.equals(a2));
-        }
-        assertEquals(copy.getOccurrenceInfo(), original.getOccurrenceInfo());
-        assertEquals((int) copy.getIntervalTime(), (int) original.getIntervalTime());
-        assertTrue(copy.equals(original));
-
     }
 }

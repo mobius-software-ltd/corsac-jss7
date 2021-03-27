@@ -22,15 +22,20 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -49,15 +54,15 @@ public class CallReferenceNumberTest {
 
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
-
-        byte[] data = this.getData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        CallReferenceNumberImpl prim = new CallReferenceNumberImpl();
-        prim.decodeAll(asn);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CallReferenceNumberImpl.class);
+    	
+    	byte[] data = this.getData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallReferenceNumberImpl);
+        CallReferenceNumberImpl prim = (CallReferenceNumberImpl)result.getResult();
+        
         assertNotNull(prim.getData());
         assertTrue(Arrays.equals(getDataVal(), prim.getData()));
 
@@ -65,38 +70,14 @@ public class CallReferenceNumberTest {
 
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CallReferenceNumberImpl.class);
 
         CallReferenceNumberImpl prim = new CallReferenceNumberImpl(getDataVal());
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] data=this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "service.callhandling" })
-    public void testXMLSerialize() throws Exception {
-
-        CallReferenceNumberImpl original = new CallReferenceNumberImpl(getDataVal());
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "callReferenceNumber", CallReferenceNumberImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CallReferenceNumberImpl copy = reader.read("callReferenceNumber", CallReferenceNumberImpl.class);
-
-        assertEquals(copy.getData(), original.getData());
-
-    }*/
 }

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MMCodeListWrapperImpl {
-	private ArrayList<MMCodeImpl> mmCode;
+	private List<MMCodeImpl> mmCode;
 
     public MMCodeListWrapperImpl() {
     }
 
-    public MMCodeListWrapperImpl(ArrayList<MMCodeImpl> mmCode) {
+    public MMCodeListWrapperImpl(List<MMCodeImpl> mmCode) {
         this.mmCode = mmCode;
     }
 
-    public ArrayList<MMCodeImpl> getMMCode() {
+    public List<MMCodeImpl> getMMCode() {
     	return mmCode;
     }
 }

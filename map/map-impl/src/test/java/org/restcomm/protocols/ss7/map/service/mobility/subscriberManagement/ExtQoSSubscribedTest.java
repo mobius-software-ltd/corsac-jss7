@@ -22,11 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_DeliveryOfErroneousSdus;
@@ -38,6 +37,12 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_TrafficHandlingPriority;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_TransferDelayImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -56,15 +61,15 @@ public class ExtQoSSubscribedTest {
 
     @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtQoSSubscribedImpl.class);
+    	
         byte[] data = this.getData1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ExtQoSSubscribedImpl prim = new ExtQoSSubscribedImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtQoSSubscribedImpl);
+        ExtQoSSubscribedImpl prim = (ExtQoSSubscribedImpl)result.getResult();
+        
         assertEquals(prim.getAllocationRetentionPriority(), 3);
         assertEquals(prim.getDeliveryOfErroneousSdus(), ExtQoSSubscribed_DeliveryOfErroneousSdus.erroneousSdusAreNotDelivered_No);
         assertEquals(prim.getDeliveryOrder(), ExtQoSSubscribed_DeliveryOrder.withoutDeliveryOrderNo);
@@ -81,13 +86,10 @@ public class ExtQoSSubscribedTest {
 
 
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new ExtQoSSubscribedImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtQoSSubscribedImpl);
+        prim = (ExtQoSSubscribedImpl)result.getResult();
 
         assertEquals(prim.getAllocationRetentionPriority(), 15);
         assertEquals(prim.getDeliveryOfErroneousSdus(), ExtQoSSubscribed_DeliveryOfErroneousSdus.erroneousSdusAreDelivered_Yes);
@@ -106,6 +108,9 @@ public class ExtQoSSubscribedTest {
 
     @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtQoSSubscribedImpl.class);
+    	
         ExtQoSSubscribed_MaximumSduSizeImpl maximumSduSize = new ExtQoSSubscribed_MaximumSduSizeImpl(1500, false);
         ExtQoSSubscribed_BitRateImpl maximumBitRateForUplink = new ExtQoSSubscribed_BitRateImpl(8640, false);
         ExtQoSSubscribed_BitRateImpl maximumBitRateForDownlink = new ExtQoSSubscribed_BitRateImpl(8640, false);
@@ -117,10 +122,10 @@ public class ExtQoSSubscribedTest {
                 maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER._1_10_minus_5, ExtQoSSubscribed_SduErrorRatio._1_10_minus_4,
                 ExtQoSSubscribed_TrafficHandlingPriority.priorityLevel_3, transferDelay, guaranteedBitRateForUplink, guaranteedBitRateForDownlink);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertEquals(asn.toByteArray(), this.getData1());
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertEquals(encodedData, this.getData1());
 
 
         maximumSduSize = new ExtQoSSubscribed_MaximumSduSizeImpl(1502, false);
@@ -134,54 +139,9 @@ public class ExtQoSSubscribedTest {
                 maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER._5_10_minus_2, ExtQoSSubscribed_SduErrorRatio._1_10_minus_6,
                 ExtQoSSubscribed_TrafficHandlingPriority.priorityLevel_1, transferDelay, guaranteedBitRateForUplink, guaranteedBitRateForDownlink);
 
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertEquals(asn.toByteArray(), this.getData2());
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertEquals(encodedData, this.getData2());
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
-    public void testXMLSerialize() throws Exception {
-
-        ExtQoSSubscribed_MaximumSduSizeImpl maximumSduSize = new ExtQoSSubscribed_MaximumSduSizeImpl(1502, false);
-        ExtQoSSubscribed_BitRateImpl maximumBitRateForUplink = new ExtQoSSubscribed_BitRateImpl(23, false);
-        ExtQoSSubscribed_BitRateImpl maximumBitRateForDownlink = new ExtQoSSubscribed_BitRateImpl(576, false);
-        ExtQoSSubscribed_TransferDelayImpl transferDelay = new ExtQoSSubscribed_TransferDelayImpl(40, false);
-        ExtQoSSubscribed_BitRateImpl guaranteedBitRateForUplink = new ExtQoSSubscribed_BitRateImpl(24, false);
-        ExtQoSSubscribed_BitRateImpl guaranteedBitRateForDownlink = new ExtQoSSubscribed_BitRateImpl(25, false);
-
-        ExtQoSSubscribedImpl original = new ExtQoSSubscribedImpl(3, ExtQoSSubscribed_DeliveryOfErroneousSdus.erroneousSdusAreNotDelivered_No,
-                ExtQoSSubscribed_DeliveryOrder.withoutDeliveryOrderNo, ExtQoSSubscribed_TrafficClass.interactiveClass, maximumSduSize, maximumBitRateForUplink,
-                maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER._1_10_minus_5, ExtQoSSubscribed_SduErrorRatio._1_10_minus_4,
-                ExtQoSSubscribed_TrafficHandlingPriority.priorityLevel_3, transferDelay, guaranteedBitRateForUplink, guaranteedBitRateForDownlink);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "extQoSSubscribed", ExtQoSSubscribedImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ExtQoSSubscribedImpl copy = reader.read("extQoSSubscribed", ExtQoSSubscribedImpl.class);
-
-        assertEquals(copy.getAllocationRetentionPriority(), original.getAllocationRetentionPriority());
-        assertEquals(copy.getDeliveryOfErroneousSdus(), original.getDeliveryOfErroneousSdus());
-        assertEquals(copy.getDeliveryOrder(), original.getDeliveryOrder());
-        assertEquals(copy.getTrafficClass(), original.getTrafficClass());
-        assertEquals(copy.getMaximumSduSize().getMaximumSduSize(), original.getMaximumSduSize().getMaximumSduSize());
-        assertEquals(copy.getMaximumBitRateForUplink().getBitRate(), original.getMaximumBitRateForUplink().getBitRate());
-        assertEquals(copy.getMaximumBitRateForDownlink().getBitRate(), original.getMaximumBitRateForDownlink().getBitRate());
-        assertEquals(copy.getResidualBER(), original.getResidualBER());
-        assertEquals(copy.getSduErrorRatio(), original.getSduErrorRatio());
-        assertEquals(copy.getTrafficHandlingPriority(), original.getTrafficHandlingPriority());
-        assertEquals(copy.getGuaranteedBitRateForUplink().getBitRate(), original.getGuaranteedBitRateForUplink().getBitRate());
-        assertEquals(copy.getGuaranteedBitRateForDownlink().getBitRate(), original.getGuaranteedBitRateForDownlink().getBitRate());
-    }*/
 }

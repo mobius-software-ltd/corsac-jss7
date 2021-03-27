@@ -62,7 +62,7 @@ public class ClirDataImpl {
     }
 
     public CliRestrictionOption getCliRestrictionOption() {
-    	if(this.cliRestrictionOption!=null)
+    	if(this.cliRestrictionOption==null)
     		return null;
     	
         return this.cliRestrictionOption.getType();

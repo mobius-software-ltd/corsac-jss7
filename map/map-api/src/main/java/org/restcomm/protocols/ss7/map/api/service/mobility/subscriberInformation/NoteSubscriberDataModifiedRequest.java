@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
@@ -90,7 +90,7 @@ public interface NoteSubscriberDataModifiedRequest extends MobilityMessage {
 
     ServingNode getUeReachable();
 
-    ArrayList<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
+    List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
 
     CallWaitingDataImpl getCwData();
 

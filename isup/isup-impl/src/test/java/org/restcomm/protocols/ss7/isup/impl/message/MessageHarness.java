@@ -40,8 +40,6 @@ import java.lang.reflect.Array;
 
 import org.restcomm.protocols.ss7.isup.ISUPMessageFactory;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
-import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
-import org.restcomm.protocols.ss7.isup.impl.message.ISUPMessageFactoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ParameterHarness;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;

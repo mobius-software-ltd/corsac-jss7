@@ -22,40 +22,37 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class OfferedCamel4CSIsTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 2, 1, (byte) 148 };
+        return new byte[] { 3, 2, 2, (byte) 148 };
     }
-
-//    private byte[] getEncodedData2() {
-//        // short form - without the first bit string bit
-//        return new byte[] { 3, 1, (byte) 148 };
-//    }
 
     @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(OfferedCamel4CSIsImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        OfferedCamel4CSIsImpl imp = new OfferedCamel4CSIsImpl();
-        imp.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof OfferedCamel4CSIsImpl);
+        OfferedCamel4CSIsImpl imp = (OfferedCamel4CSIsImpl)result.getResult();
+        
         assertTrue(imp.getOCsi());
         assertFalse(imp.getDCsi());
         assertFalse(imp.getVtCsi());
@@ -63,42 +60,17 @@ public class OfferedCamel4CSIsTest {
         assertFalse(imp.getMtSmsCsi());
         assertTrue(imp.getMgCsi());
         assertFalse(imp.getPsiEnhancements());
-
-
-//        rawData = getEncodedData2();
-//        asn = new AsnInputStream(rawData);
-//
-//        tag = asn.readTag();
-//        imp = new OfferedCamel4CSIsImpl();
-//        imp.decodeAll(asn);
-//
-//        assertEquals(tag, Tag.STRING_BIT);
-//        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-//
-//        assertTrue(imp.getOCsi());
-//        assertFalse(imp.getDCsi());
-//        assertFalse(imp.getVtCsi());
-//        assertTrue(imp.getTCsi());
-//        assertFalse(imp.getMtSmsCsi());
-//        assertTrue(imp.getMgCsi());
-//        assertFalse(imp.getPsiEnhancements());
-    }
-
-    private void assertTrue(boolean initiateCallAttempt) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(OfferedCamel4CSIsImpl.class);
+    	
         OfferedCamel4CSIsImpl imp = new OfferedCamel4CSIsImpl(true, false, false, true, false, true, false);
-//        boolean oCsi, boolean dCsi, boolean vtCsi, boolean tCsi, boolean mtSMSCsi, boolean mgCsi,
-//        boolean psiEnhancements
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-        assertTrue(Arrays.equals(getEncodedData(), asnOS.toByteArray()));
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(getEncodedData(), encodedData));
     }
-
 }

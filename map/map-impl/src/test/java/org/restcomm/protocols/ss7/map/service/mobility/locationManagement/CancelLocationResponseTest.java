@@ -22,22 +22,21 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
-import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.CancelLocationResponseImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -47,49 +46,34 @@ import org.testng.annotations.Test;
 public class CancelLocationResponseTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 41, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11,
-                6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
-    }
-
-    public static MAPExtensionContainerImpl GetTestExtensionContainer() {
-        MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
-
-        ArrayList<MAPPrivateExtensionImpl> al = new ArrayList<MAPPrivateExtensionImpl>();
-        al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 4 }, new byte[] { 11, 12, 13, 14, 15 }));
-        al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 6 }, null));
-        al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 5 }, new byte[] { 21, 22, 23, 24, 25, 26 }));
-
-        MAPExtensionContainerImpl cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
-
-        return cnt;
+        return new byte[] { 48, 47, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        CancelLocationResponseImpl asc = new CancelLocationResponseImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CancelLocationResponseImpl.class);
+    	
+        byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CancelLocationResponseImpl);
+        CancelLocationResponseImpl asc = (CancelLocationResponseImpl)result.getResult();        
         assertNotNull(asc.getExtensionContainer());
     }
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
-        MAPExtensionContainerImpl extensionContainer = GetTestExtensionContainer();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CancelLocationResponseImpl.class);
+    	
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         CancelLocationResponseImpl asc = new CancelLocationResponseImpl(extensionContainer);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

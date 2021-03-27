@@ -23,13 +23,13 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
@@ -45,8 +45,8 @@ public class LocationInformationGPRSImpl {
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
     private CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl cellGlobalIdOrServiceAreaIdOrLAIWrapped;
     
-    @ASNChoise
-    private CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    private CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl cellGlobalIdOrServiceAreaIdOrLAIPrimitive;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private RAIdentityImpl routeingAreaIdentity = null;
@@ -97,7 +97,8 @@ public class LocationInformationGPRSImpl {
     		RAIdentityImpl routeingAreaIdentity, GeographicalInformationImpl geographicalInformation, ISDNAddressStringImpl sgsnNumber,
             LSAIdentityImpl selectedLSAIdentity, MAPExtensionContainerImpl extensionContainer, boolean saiPresent,
             GeodeticInformationImpl geodeticInformation, boolean currentLocationRetrieved, Integer ageOfLocationInformation) {
-        if(cellGlobalIdOrServiceAreaIdOrLAI!=null)
+        
+    	if(cellGlobalIdOrServiceAreaIdOrLAI!=null)
         	this.cellGlobalIdOrServiceAreaIdOrLAIWrapped = new CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl(cellGlobalIdOrServiceAreaIdOrLAI);
         
         this.routeingAreaIdentity = routeingAreaIdentity;
@@ -127,8 +128,8 @@ public class LocationInformationGPRSImpl {
      * LocationInformationGPRS#getCellGlobalIdOrServiceAreaIdOrLAI()
      */
     public CellGlobalIdOrServiceAreaIdOrLAIImpl getCellGlobalIdOrServiceAreaIdOrLAI() {
-    	if(this.cellGlobalIdOrServiceAreaIdOrLAI!=null)
-    		return this.cellGlobalIdOrServiceAreaIdOrLAI;
+    	if(this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive!=null)
+    		return this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive.getCellGlobalIdOrServiceAreaIdOrLAI();
     	else if(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped!=null)
     		return this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI();
     	
@@ -226,9 +227,12 @@ public class LocationInformationGPRSImpl {
         StringBuilder sb = new StringBuilder();
         sb.append("LocationInformationGPRS [");
 
-        if (this.cellGlobalIdOrServiceAreaIdOrLAI != null) {
+        if (this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive != null && this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive.getCellGlobalIdOrServiceAreaIdOrLAI()!=null) {
             sb.append("cellGlobalIdOrServiceAreaIdOrLAI=");
-            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAI);
+            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive.getCellGlobalIdOrServiceAreaIdOrLAI());
+        } else if(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped!=null && this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI()!=null) {
+        	sb.append("cellGlobalIdOrServiceAreaIdOrLAI=");
+            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive.getCellGlobalIdOrServiceAreaIdOrLAI());
         }
 
         if (this.routeingAreaIdentity != null) {

@@ -46,7 +46,7 @@ public class SSCodeImpl extends ASNSingleByte {
     }
 
     public SupplementaryCodeValue getSupplementaryCodeValue() {
-    	return SupplementaryCodeValue.getInstance(getData());
+    	return SupplementaryCodeValue.getInstance(getValue());
     }
 
     @Override

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
@@ -78,7 +78,7 @@ public interface ResumeCallHandlingRequest extends CallHandlingMessage {
 
      DCSIImpl getDCsi();
 
-     ArrayList<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList();
+     List<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList();
 
      ExtBasicServiceCodeImpl getBasicServiceGroup2();
 

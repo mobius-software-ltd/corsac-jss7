@@ -23,13 +23,13 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
@@ -56,8 +56,8 @@ public class LocationInformationImpl {
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
     private CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl cellGlobalIdOrServiceAreaIdOrLAIWrapped;
     
-    @ASNChoise
-    private CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
+    private CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl cellGlobalIdOrServiceAreaIdOrLAIPrimitive;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1)
     private MAPExtensionContainerImpl extensionContainer;
@@ -138,8 +138,8 @@ public class LocationInformationImpl {
     }
 
     public CellGlobalIdOrServiceAreaIdOrLAIImpl getCellGlobalIdOrServiceAreaIdOrLAI() {
-    	if(cellGlobalIdOrServiceAreaIdOrLAI!=null)
-    		return cellGlobalIdOrServiceAreaIdOrLAI;
+    	if(cellGlobalIdOrServiceAreaIdOrLAIPrimitive!=null)
+    		return cellGlobalIdOrServiceAreaIdOrLAIPrimitive.getCellGlobalIdOrServiceAreaIdOrLAI();
     	
     	if(cellGlobalIdOrServiceAreaIdOrLAIWrapped!=null)
     		return cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI();
@@ -200,11 +200,16 @@ public class LocationInformationImpl {
             sb.append(", locationNumber=");
             sb.append(this.locationNumber.toString());
         }
-        if (this.cellGlobalIdOrServiceAreaIdOrLAI != null) {
+        if (this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive != null && this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive.getCellGlobalIdOrServiceAreaIdOrLAI() != null) {
             sb.append(", cellGlobalIdOrServiceAreaIdOrLAI=[");
-            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAI.toString());
+            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAIPrimitive.getCellGlobalIdOrServiceAreaIdOrLAI().toString());
+            sb.append("]");
+        } else if (this.cellGlobalIdOrServiceAreaIdOrLAIWrapped != null && this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI() != null) {
+            sb.append(", cellGlobalIdOrServiceAreaIdOrLAI=[");
+            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI().toString());
             sb.append("]");
         }
+        
         if (this.extensionContainer != null) {
             sb.append(", extensionContainer=");
             sb.append(this.extensionContainer.toString());

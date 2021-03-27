@@ -22,27 +22,28 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgi;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgiImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.AreaScopeImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -56,10 +57,7 @@ public class AreaScopeTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 91, (byte) 160, 9, 4, 7, 82, (byte) 240, 112, 69, (byte) 224, 87, (byte) 172, (byte) 161, 9, 4, 7, 1, 2, 3, 4, 5, 6, 7,
-                (byte) 162, 8, 4, 6, 11, 12, 13, 14, 15, 16, (byte) 163, 7, 4, 5, 81, (byte) 240, 17, 13, 5, (byte) 164, 7, 4, 5, 21, 22, 23, 24, 25,
-                (byte) 165, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
-                26, (byte) 161, 3, 31, 32, 33 };
+        return new byte[] { 48, 97, -96, 9, 4, 7, 82, -16, 112, 69, -32, 87, -84, -95, 9, 4, 7, 1, 2, 3, 4, 5, 6, 7, -94, 8, 4, 6, 11, 12, 13, 14, 15, 16, -93, 7, 4, 5, 81, -16, 17, 13, 5, -92, 7, 4, 5, 21, 22, 23, 24, 25, -91, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     private byte[] getEUtranCgiData() {
@@ -76,17 +74,15 @@ public class AreaScopeTest {
 
     @Test(groups = { "functional.decode", "service.oam" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AreaScopeImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        AreaScopeImpl asc = new AreaScopeImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaScopeImpl);
+        AreaScopeImpl asc = (AreaScopeImpl)result.getResult();
+        
         assertEquals(asc.getCgiList().size(), 1);
         assertEquals(asc.getCgiList().get(0).getMcc(), 250);
         assertEquals(asc.getCgiList().get(0).getMnc(), 7);
@@ -98,16 +94,11 @@ public class AreaScopeTest {
         assertNull(asc.getTrackingAreaIdList());
         assertNull(asc.getExtensionContainer());
 
-
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new AreaScopeImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaScopeImpl);
+        asc = (AreaScopeImpl)result.getResult();
 
         assertEquals(asc.getCgiList().size(), 1);
         assertEquals(asc.getCgiList().get(0).getMcc(), 250);
@@ -134,41 +125,38 @@ public class AreaScopeTest {
 
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
-
-        ArrayList<GlobalCellId> cgiList = new ArrayList<GlobalCellId>();
-        GlobalCellId gci = new GlobalCellIdImpl(250, 7, 17888, 22444); // int mcc, int mnc, int lac, int cellId
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AreaScopeImpl.class);
+    	
+        ArrayList<GlobalCellIdImpl> cgiList = new ArrayList<GlobalCellIdImpl>();
+        GlobalCellIdImpl gci = new GlobalCellIdImpl(250, 7, 17888, 22444); // int mcc, int mnc, int lac, int cellId
         cgiList.add(gci);
         AreaScopeImpl asc = new AreaScopeImpl(cgiList, null, null, null, null, null);
-//        ArrayList<GlobalCellId> cgiList, ArrayList<EUtranCgi> eUtranCgiList, ArrayList<RAIdentity> routingAreaIdList,
-//        ArrayList<LAIFixedLength> locationAreaIdList, ArrayList<TAId> trackingAreaIdList, MAPExtensionContainerImpl extensionContainer
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        ArrayList<EUtranCgi> eUtranCgiList = new ArrayList<EUtranCgi>();
-        EUtranCgi eUtranCgi = new EUtranCgiImpl(getEUtranCgiData());
+        ArrayList<EUtranCgiImpl> eUtranCgiList = new ArrayList<EUtranCgiImpl>();
+        EUtranCgiImpl eUtranCgi = new EUtranCgiImpl(getEUtranCgiData());
         eUtranCgiList.add(eUtranCgi);
-        ArrayList<RAIdentity> routingAreaIdList = new ArrayList<RAIdentity>();
-        RAIdentity raIdentity = new RAIdentityImpl(getRAIdentity());
+        ArrayList<RAIdentityImpl> routingAreaIdList = new ArrayList<RAIdentityImpl>();
+        RAIdentityImpl raIdentity = new RAIdentityImpl(getRAIdentity());
         routingAreaIdList.add(raIdentity);
-        ArrayList<LAIFixedLength> locationAreaIdList = new ArrayList<LAIFixedLength>();
-        LAIFixedLength laiFixedLength = new LAIFixedLengthImpl(150, 11, 3333); // int mcc, int mnc, int lac
+        ArrayList<LAIFixedLengthImpl> locationAreaIdList = new ArrayList<LAIFixedLengthImpl>();
+        LAIFixedLengthImpl laiFixedLength = new LAIFixedLengthImpl(150, 11, 3333); // int mcc, int mnc, int lac
         locationAreaIdList.add(laiFixedLength);
-        ArrayList<TAId> trackingAreaIdList = new ArrayList<TAId>();
-        TAId taId = new TAIdImpl(getTAId());
+        ArrayList<TAIdImpl> trackingAreaIdList = new ArrayList<TAIdImpl>();
+        TAIdImpl taId = new TAIdImpl(getTAId());
         trackingAreaIdList.add(taId);
         asc = new AreaScopeImpl(cgiList, eUtranCgiList, routingAreaIdList, locationAreaIdList, trackingAreaIdList,
                 MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }

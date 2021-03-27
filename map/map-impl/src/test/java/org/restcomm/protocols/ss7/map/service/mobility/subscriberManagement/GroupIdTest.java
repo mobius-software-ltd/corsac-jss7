@@ -21,16 +21,19 @@
  */
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GroupIdImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -69,121 +72,120 @@ public class GroupIdTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GroupIdImpl.class);
+    	
         // option 1
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        GroupIdImpl prim = new GroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GroupIdImpl);
+        GroupIdImpl prim = (GroupIdImpl)result.getResult();
         assertTrue(prim.getGroupId().equals("123456"));
 
         // option 2
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new GroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GroupIdImpl);
+        prim = (GroupIdImpl)result.getResult();
         assertTrue(prim.getGroupId().equals("12345"));
 
         // option 3
         data = this.getData3();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new GroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GroupIdImpl);
+        prim = (GroupIdImpl)result.getResult();
         assertTrue(prim.getGroupId().equals("1234"));
 
         // option 4
         data = this.getData4();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new GroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GroupIdImpl);
+        prim = (GroupIdImpl)result.getResult();
         assertTrue(prim.getGroupId().equals("123"));
 
         // option 5
         data = this.getData5();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new GroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GroupIdImpl);
+        prim = (GroupIdImpl)result.getResult();
         assertTrue(prim.getGroupId().equals("12"));
 
         // option 6
         data = this.getData6();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new GroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GroupIdImpl);
+        prim = (GroupIdImpl)result.getResult();
         assertTrue(prim.getGroupId().equals("1"));
 
         // option 7
         data = this.getData7();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new GroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GroupIdImpl);
+        prim = (GroupIdImpl)result.getResult();
         assertTrue(prim.getGroupId().equals(""));
 
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GroupIdImpl.class);
+    	
         // option 1
         GroupIdImpl prim = new GroupIdImpl("123456");
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);       
+        assertTrue(Arrays.equals(encodedData, this.getData()));
 
         // option 2
         prim = new GroupIdImpl("12345");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData2()));
 
         // option 3
         prim = new GroupIdImpl("1234");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData3()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData3()));
 
         // option 4
         prim = new GroupIdImpl("123");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData4()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData4()));
 
         // option 5
         prim = new GroupIdImpl("12");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData5()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData5()));
 
         // option 6
         prim = new GroupIdImpl("1");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData6()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData6()));
 
         // option 7
         prim = new GroupIdImpl("");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData7()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData7()));
     }
 
 }

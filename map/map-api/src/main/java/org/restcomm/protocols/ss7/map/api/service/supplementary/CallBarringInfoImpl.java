@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -41,9 +41,9 @@ public class CallBarringInfoImpl {
     public CallBarringInfoImpl() {        
     }
 
-    public CallBarringInfoImpl(SSCodeImpl ssCode, ArrayList<CallBarringFeatureImpl> callBarringFeatureList) {        
+    public CallBarringInfoImpl(SSCodeImpl ssCode, List<CallBarringFeatureImpl> callBarringFeatureList) {        
         this.ssCode = ssCode;        
-        if(this.callBarringFeatureList!=null) {
+        if(callBarringFeatureList!=null) {
         	this.callBarringFeatureList = new CallBarringFeatureListWrapperImpl(callBarringFeatureList);
         }
     }
@@ -52,7 +52,7 @@ public class CallBarringInfoImpl {
     	return ssCode;
     }
 
-    public ArrayList<CallBarringFeatureImpl> getCallBarringFeatureList() {
+    public List<CallBarringFeatureImpl> getCallBarringFeatureList() {
     	if(callBarringFeatureList==null)
     		return null;
     	

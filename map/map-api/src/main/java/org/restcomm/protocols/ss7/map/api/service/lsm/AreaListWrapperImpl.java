@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class AreaListWrapperImpl {
-	private ArrayList<AreaImpl> area;
+	private List<AreaImpl> area;
 
     public AreaListWrapperImpl() {
     }
 
-    public AreaListWrapperImpl(ArrayList<AreaImpl> area) {
+    public AreaListWrapperImpl(List<AreaImpl> area) {
         this.area = area;
     }
 
-    public ArrayList<AreaImpl> getArea() {
+    public List<AreaImpl> getArea() {
     	return area;
     }
 }

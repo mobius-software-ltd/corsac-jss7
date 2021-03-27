@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
 
-import org.restcomm.protocols.ss7.map.primitives.OidContainer;
 import org.testng.annotations.Test;
 
 /**

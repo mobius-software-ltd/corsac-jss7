@@ -45,7 +45,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl implements MAPErrorMessageSMDeliveryFailure {
-	private long mapProtocolVersion;
+	private long mapProtocolVersion = 3;
     private ASNSMEnumeratedDeliveryFailureCauseImpl sMEnumeratedDeliveryFailureCause;
     private ASNOctetString signalInfo;
     private MAPExtensionContainerImpl extensionContainer;

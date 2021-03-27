@@ -95,6 +95,7 @@ public class AreaIdentificationImpl extends ASNOctetString {
         }
 
         ByteBuf result=Unpooled.wrappedBuffer(data);
+        result.resetWriterIndex();
         TbcdString.encodeString(result, sb.toString());
         
         if (type != AreaType.countryCode) {

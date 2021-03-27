@@ -35,7 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SM_RP_OAImpl {
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=1)
     private ISDNAddressStringImpl msisdn;

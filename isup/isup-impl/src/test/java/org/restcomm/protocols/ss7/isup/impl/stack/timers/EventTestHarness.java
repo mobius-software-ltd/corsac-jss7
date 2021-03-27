@@ -341,7 +341,7 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
         // // }
         //
         // /* (non-Javadoc)
-        // * @see org.restcomm.protocols.ss7.mtp.Mtp3UserPart#read(java.nio.ByteBuffer)
+        // * @see org.restcomm.protocols.ss7.mtp.Mtp3UserPart#read(io.netty.buffer.ByteBuf)
         // */
         // @Override
         // public int read(ByteBuffer arg0) throws IOException {
@@ -355,7 +355,7 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
         // }
         //
         // /* (non-Javadoc)
-        // * @see org.restcomm.protocols.ss7.mtp.Mtp3UserPart#write(java.nio.ByteBuffer)
+        // * @see org.restcomm.protocols.ss7.mtp.Mtp3UserPart#write(io.netty.buffer.ByteBuf)
         // */
         // @Override
         // public int write(ByteBuffer arg0) throws IOException {

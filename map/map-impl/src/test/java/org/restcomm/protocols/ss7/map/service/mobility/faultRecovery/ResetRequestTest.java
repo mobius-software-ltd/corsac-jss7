@@ -22,22 +22,26 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.ResetRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -56,67 +60,56 @@ public class ResetRequestTest {
 
     @Test(groups = { "functional.decode", "service.mobility.faultRecovery" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        ResetRequestImpl prim = new ResetRequestImpl(1);
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        assertEquals(prim.getMapProtocolVersion(), 1);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ResetRequestImpl.class);
+    	
+        byte[] data = getEncodedData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ResetRequestImpl);
+        ResetRequestImpl prim = (ResetRequestImpl)result.getResult();
+        
+        assertEquals(prim.getMapProtocolVersion(), 3);
         assertEquals(prim.getNetworkResource(), NetworkResource.hlr);
         assertEquals(prim.getHlrNumber().getAddress(), "12345");
         assertNull(prim.getHlrList());
 
+        data = getEncodedData2();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ResetRequestImpl);
+        prim = (ResetRequestImpl)result.getResult();
 
-        rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        prim = new ResetRequestImpl(2);
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        assertEquals(prim.getMapProtocolVersion(), 2);
+        assertEquals(prim.getMapProtocolVersion(), 3);
         assertNull(prim.getNetworkResource());
         assertEquals(prim.getHlrNumber().getAddress(), "12345");
         assertEquals(prim.getHlrList().size(), 1);
         assertEquals(prim.getHlrList().get(0).getData(), "1234001");
-
     }
 
     @Test(groups = { "functional.encode", "service.mobility.faultRecovery" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ResetRequestImpl.class);
+    	
         ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12345");
         ResetRequestImpl prim = new ResetRequestImpl(NetworkResource.hlr, hlrNumber, null, 1);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        prim.encodeAll(asnOS);
+        byte[] data=this.getEncodedData();
+    	ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-
-        ArrayList<IMSI> hlrList = new ArrayList<IMSI>();
+        ArrayList<IMSIImpl> hlrList = new ArrayList<IMSIImpl>();
         IMSIImpl imsi = new IMSIImpl("1234001");
         hlrList.add(imsi);
         prim = new ResetRequestImpl(null, hlrNumber, hlrList, 2);
 
-        asnOS = new AsnOutputStream();
-        prim.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData2();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
+        data=this.getEncodedData2();
+    	buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

@@ -22,11 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 
@@ -44,6 +39,9 @@ import org.restcomm.protocols.ss7.map.api.datacoding.Gsm7EncodingStyle;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author amit bhayani
@@ -58,6 +56,10 @@ public class USSDStringImpl extends ASNOctetString {
             GSMCharset.urduExtentionMap);
     private static Charset ucs2Charset = Charset.forName("UTF-16BE");
 
+    public USSDStringImpl() {
+    	
+    }
+    
     public USSDStringImpl(CBSDataCodingScheme dataCodingScheme) {
         if (dataCodingScheme == null) {
             dataCodingScheme = new CBSDataCodingSchemeImpl(15);
@@ -107,10 +109,7 @@ public class USSDStringImpl extends ASNOctetString {
 
                 case GSM8:
                     if (gsm8Charset != null) {
-                    	ByteBuffer javaBuffer = gsm8Charset.encode(ussdString);
-                    	byte[] data = new byte[javaBuffer.limit()];
-                    	javaBuffer.get(data);
-                    	setValue(Unpooled.wrappedBuffer(data));                    	
+                    	setValue(Unpooled.wrappedBuffer(ussdString.getBytes(gsm8Charset)));                    	
                     } else {
                         throw new MAPException(
                                 "Error encoding a text in USSDStringImpl: gsm8Charset is not defined for GSM8 dataCodingScheme");
@@ -135,24 +134,22 @@ public class USSDStringImpl extends ASNOctetString {
                         } catch (Exception e) {
                             // This can not occur
                         }
-                        byte[] buf1;
+                        ByteBuf buf1=null;
                         if (bb != null) {
-                            buf1 = new byte[bb.readableBytes()];
-                            bb.readBytes(buf1);
-                        } else
-                            buf1 = new byte[0];
-
+                        	buf1=Unpooled.wrappedBuffer(bb);
+                        	buf1.resetReaderIndex();
+                        }
+                        
                         String sb2 = ussdString.substring(3);
-                        ByteBuffer javaBuffer = ucs2Charset.encode(sb2);
-                        byte[] data = new byte[buf1.length + javaBuffer.limit()];
-                        System.arraycopy(buf1, 0, data, 0, buf1.length);
-                        javaBuffer.get(data, buf1.length, data.length - buf1.length);
-                        setValue(Unpooled.wrappedBuffer(data));
+                        ByteBuf buf2=Unpooled.wrappedBuffer(sb2.getBytes(ucs2Charset));
+                        buf2.resetReaderIndex();
+                        
+                        if(buf1==null)
+                        	setValue(buf2);
+                        else
+                        	setValue(Unpooled.wrappedBuffer(buf1,buf2));                        
                     } else {
-                        ByteBuffer javaBuffer = ucs2Charset.encode(ussdString);
-                        byte[] data = new byte[javaBuffer.limit()];
-                        javaBuffer.get(data);
-                        setValue(Unpooled.wrappedBuffer(data));
+                        setValue(Unpooled.wrappedBuffer(ussdString.getBytes(ucs2Charset)));
                     }
                     break;
 				default:
@@ -168,6 +165,10 @@ public class USSDStringImpl extends ASNOctetString {
         return data;
     }
 
+    public void setDataCoding(CBSDataCodingSchemeImpl dataCodingScheme) {
+    	this.dataCodingScheme=dataCodingScheme;
+    }
+    
     public String getString(Charset gsm8Charset) throws MAPException {
 
         String res = "";
@@ -207,12 +208,8 @@ public class USSDStringImpl extends ASNOctetString {
                     break;
 
                 case GSM8:
-                    if (gsm8Charset != null) {
-                        byte[] buf = data;
-                        ByteBuffer javaBuffer = ByteBuffer.wrap(buf);
-                        CharBuffer cb = gsm8Charset.decode(javaBuffer);
-                        res = cb.toString();
-                    }
+                    if (gsm8Charset != null)
+                        res = new String(data,gsm8Charset);
                     break;
 
                 case UCS2:
@@ -244,13 +241,9 @@ public class USSDStringImpl extends ASNOctetString {
                             System.arraycopy(data, 3, buf, 0, buf.length);
                         }
 
-                        ByteBuffer javaBuffer = ByteBuffer.wrap(buf);
-                        CharBuffer cb = ucs2Charset.decode(javaBuffer);
-                        res = pref + cb.toString();
+                        res = pref + new String(buf,ucs2Charset);
                     } else {
-                    	ByteBuffer javaBuffer = ByteBuffer.wrap(buf);
-                        CharBuffer cb = ucs2Charset.decode(javaBuffer);
-                        res = cb.toString();
+                    	res = new String(buf,ucs2Charset);
                     }
                     break;
 				default:

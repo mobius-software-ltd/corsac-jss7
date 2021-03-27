@@ -36,6 +36,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
 import org.testng.annotations.Test;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
@@ -54,7 +57,7 @@ public class SmsDeliverReportTpduTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        SmsDeliverReportTpduImpl impl = new SmsDeliverReportTpduImpl(this.getData1(), null);
+        SmsDeliverReportTpduImpl impl = new SmsDeliverReportTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
         assertFalse(impl.getUserDataHeaderIndicator());
         assertEquals(impl.getFailureCause().getCode(), 200);
         assertEquals(impl.getParameterIndicator().getCode(), 6);
@@ -63,7 +66,7 @@ public class SmsDeliverReportTpduTest {
         assertEquals(impl.getDataCodingScheme().getCode(), 0);
         assertTrue(impl.getUserData().getDecodedMessage().equals("Hello !!!!"));
 
-        impl = new SmsDeliverReportTpduImpl(this.getData2(), null);
+        impl = new SmsDeliverReportTpduImpl(Unpooled.wrappedBuffer(this.getData2()), null);
         assertFalse(impl.getUserDataHeaderIndicator());
         assertNull(impl.getFailureCause());
         assertEquals(impl.getParameterIndicator().getCode(), 1);
@@ -78,12 +81,18 @@ public class SmsDeliverReportTpduTest {
         UserDataImpl ud = new UserDataImpl("Hello !!!!", new DataCodingSchemeImpl(0), null, null);
         FailureCauseImpl failureCause = new FailureCauseImpl(200);
         SmsDeliverReportTpduImpl impl = new SmsDeliverReportTpduImpl(failureCause, null, ud);
-        byte[] enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData1()));
+        byte[] encData=new byte[this.getData1().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData1()));
 
         ProtocolIdentifierImpl pi = new ProtocolIdentifierImpl(44);
         impl = new SmsDeliverReportTpduImpl(null, pi, null);
-        enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData2()));
+        encData=new byte[this.getData2().length];
+        buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData2()));
     }
 }

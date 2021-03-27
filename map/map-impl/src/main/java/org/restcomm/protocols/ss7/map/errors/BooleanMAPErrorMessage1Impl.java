@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriber;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriberSM;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageBusySubscriber;
@@ -42,6 +41,7 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnauthorizedLCSClient;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnknownSubscriber;
 
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 
 /**
@@ -51,9 +51,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
  * @author amit bhayani
  *
  */
-public abstract class BooleanMAPErrorMessage1Impl extends ASNBoolean implements MAPErrorMessage {
+@ASNWrappedTag
+public abstract class BooleanMAPErrorMessage1Impl extends MAPErrorMessageImpl {
 	protected Long errorCode;
 
+	private ASNBoolean value;
+		
     protected BooleanMAPErrorMessage1Impl(Long errorCode) {
         this.errorCode = errorCode;
     }
@@ -61,6 +64,20 @@ public abstract class BooleanMAPErrorMessage1Impl extends ASNBoolean implements 
     public BooleanMAPErrorMessage1Impl() {
     }
 
+    protected void setValue(Boolean value) {
+    	if(this.value==null)
+    		this.value=new ASNBoolean();
+    	
+    	this.value.setValue(value);
+    }
+    
+    protected Boolean getValue() {
+    	if(this.value==null)
+    		return null;
+    	
+    	return value.getValue();
+    }
+    
     public Long getErrorCode() {
         return errorCode;
     }

@@ -22,23 +22,26 @@
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.ProcessUnstructuredSSResponseImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author abhayani
@@ -63,18 +66,21 @@ public class ProcessUnstructuredSSResponseTest {
 
     @Test(groups = { "functional.decode", "service.ussd" })
     public void testDecode() throws Exception {
-        byte[] data = new byte[] { 0x30, 0x15, 0x04, 0x01, 0x0f, 0x04, 0x10, (byte) 0xd9, 0x77, 0x5d, 0x0e, 0x12, (byte) 0x87,
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProcessUnstructuredSSResponseImpl.class);
+    	
+    	byte[] data = new byte[] { 0x30, 0x15, 0x04, 0x01, 0x0f, 0x04, 0x10, (byte) 0xd9, 0x77, 0x5d, 0x0e, 0x12, (byte) 0x87,
                 (byte) 0xd9, 0x61, (byte) 0xf7, (byte) 0xb8, 0x0c, (byte) 0xea, (byte) 0x81, 0x66, 0x35, 0x18 };
 
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProcessUnstructuredSSResponseImpl);
+        ProcessUnstructuredSSResponseImpl addNum = (ProcessUnstructuredSSResponseImpl)result.getResult();
 
-        ProcessUnstructuredSSResponseImpl addNum = new ProcessUnstructuredSSResponseImpl();
-        addNum.decodeAll(asn);
         CBSDataCodingScheme dataCodingScheme = addNum.getDataCodingScheme();
         assertEquals(dataCodingScheme.getCode(), (byte) 0x0f);
 
-        USSDString ussdString = addNum.getUSSDString();
+        USSDStringImpl ussdString = addNum.getUSSDString();
         assertNotNull(ussdString);
 
         assertEquals(ussdString.getString(null), "Your balance = 350");
@@ -83,17 +89,19 @@ public class ProcessUnstructuredSSResponseTest {
 
     @Test(groups = { "functional.encode", "service.ussd" })
     public void testEncode() throws Exception {
-        byte[] data = new byte[] { 0x30, 0x15, 0x04, 0x01, 0x0f, 0x04, 0x10, (byte) 0xd9, 0x77, 0x5d, 0x0e, 0x12, (byte) 0x87,
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProcessUnstructuredSSResponseImpl.class);
+    	
+    	byte[] data = new byte[] { 0x30, 0x15, 0x04, 0x01, 0x0f, 0x04, 0x10, (byte) 0xd9, 0x77, 0x5d, 0x0e, 0x12, (byte) 0x87,
                 (byte) 0xd9, 0x61, (byte) 0xf7, (byte) 0xb8, 0x0c, (byte) 0xea, (byte) 0x81, 0x66, 0x35, 0x18 };
 
-        USSDString ussdStr = new USSDStringImpl("Your balance = 350", null, null);
+        USSDStringImpl ussdStr = new USSDStringImpl("Your balance = 350", null, null);
         ProcessUnstructuredSSResponseImpl addNum = new ProcessUnstructuredSSResponseImpl(new CBSDataCodingSchemeImpl(0x0f),
                 ussdStr);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        addNum.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(addNum);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
 
         assertTrue(Arrays.equals(data, encodedData));
     }

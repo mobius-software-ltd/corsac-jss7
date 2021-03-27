@@ -56,8 +56,6 @@ public class GlobalCellIdImpl extends ASNOctetString {
         if (mnc < 0 || mnc > 999)
             throw new MAPException("Bad mnc value");
 
-        byte[] data = new byte[7];
-
         StringBuilder sb = new StringBuilder();
         StringBuilder sb2 = new StringBuilder();
         if (mcc < 100)
@@ -75,17 +73,17 @@ public class GlobalCellIdImpl extends ASNOctetString {
             sb2.append(mnc / 10);
         }
 
-        ByteBuf result=Unpooled.wrappedBuffer(data);
+        ByteBuf result=Unpooled.buffer(7);
         TbcdString.encodeString(result, sb.toString());
         
         TbcdString.encodeString(result, sb2.toString());
         
-        data[3] = (byte) (lac / 256);
-        data[4] = (byte) (lac % 256);
-        data[5] = (byte) (cellId / 256);
-        data[6] = (byte) (cellId % 256);
+        result.writeByte((byte) (lac / 256));
+        result.writeByte((byte) (lac % 256));
+        result.writeByte((byte) (cellId / 256));
+        result.writeByte((byte) (cellId % 256));
         
-        setValue(Unpooled.wrappedBuffer(data));
+        setValue(result);
     }
 
     public byte[] getData() {

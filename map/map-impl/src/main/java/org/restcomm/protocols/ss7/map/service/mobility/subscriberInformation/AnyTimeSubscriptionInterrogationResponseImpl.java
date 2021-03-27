@@ -44,7 +44,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vsubbotin on 24/05/16.
@@ -108,7 +108,7 @@ public class AnyTimeSubscriptionInterrogationResponseImpl extends MobilityMessag
     public AnyTimeSubscriptionInterrogationResponseImpl(CallForwardingDataImpl callForwardingData, CallBarringDataImpl callBarringData, ODBInfoImpl odbInfo,
             CAMELSubscriptionInfoImpl camelSubscriptionInfo, SupportedCamelPhasesImpl supportedVlrCamelPhases, SupportedCamelPhasesImpl supportedSgsnCamelPhases,
             MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIsInVlr, OfferedCamel4CSIsImpl offeredCamel4CSIsInSgsn,
-            ArrayList<MSISDNBSImpl> msisdnBsList, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl cwData, CallHoldDataImpl chData,
+            List<MSISDNBSImpl> msisdnBsList, List<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl cwData, CallHoldDataImpl chData,
             ClipDataImpl clipData, ClirDataImpl clirData, EctDataImpl ectData) {
         super();
         this.callForwardingData = callForwardingData;
@@ -170,14 +170,14 @@ public class AnyTimeSubscriptionInterrogationResponseImpl extends MobilityMessag
         return this.offeredCamel4CSIsInSgsn;
     }
 
-    public ArrayList<MSISDNBSImpl> getMsisdnBsList() {
+    public List<MSISDNBSImpl> getMsisdnBsList() {
     	if(this.msisdnBsList==null)
     		return null;
     	
         return this.msisdnBsList.getMSISDNBS();
     }
 
-    public ArrayList<CSGSubscriptionDataImpl> getCsgSubscriptionDataList() {
+    public List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList() {
     	if(this.csgSubscriptionDataList==null)
     		return null;
     	

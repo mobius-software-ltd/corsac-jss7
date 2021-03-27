@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
@@ -197,6 +197,10 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
 
     private long mapProtocolVersion;
 
+    public InsertSubscriberDataRequestImpl() {
+    	this.mapProtocolVersion=3;
+    }
+    
     // For incoming messages
     public InsertSubscriberDataRequestImpl(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
@@ -204,10 +208,10 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
 
     // For outgoing messages - MAP V2
     public InsertSubscriberDataRequestImpl(long mapProtocolVersion, IMSIImpl imsi, ISDNAddressStringImpl msisdn, CategoryImpl category,
-            SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
-            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            SubscriberStatus subscriberStatus, List<ExtBearerServiceCodeImpl> bearerServiceList,
+            List<ExtTeleserviceCodeImpl> teleserviceList, List<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCodeImpl> regionalSubscriptionData,
+            List<VoiceBroadcastDataImpl> vbsSubscriptionData, List<VoiceGroupCallDataImpl> vgcsSubscriptionData,
             VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo) {
         this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
@@ -247,10 +251,10 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
 
     // For outgoing messages - MAP V3
     public InsertSubscriberDataRequestImpl(long mapProtocolVersion, IMSIImpl imsi, ISDNAddressStringImpl msisdn, CategoryImpl category,
-            SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
-            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            SubscriberStatus subscriberStatus, List<ExtBearerServiceCodeImpl> bearerServiceList,
+            List<ExtTeleserviceCodeImpl> teleserviceList, List<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCodeImpl> regionalSubscriptionData,
+            List<VoiceBroadcastDataImpl> vbsSubscriptionData, List<VoiceGroupCallDataImpl> vgcsSubscriptionData,
             VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo, MAPExtensionContainerImpl extensionContainer,
             NAEAPreferredCIImpl naeaPreferredCI, GPRSSubscriptionDataImpl gprsSubscriptionData,
             boolean roamingRestrictedInSgsnDueToUnsupportedFeature, NetworkAccessMode networkAccessMode,
@@ -258,7 +262,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             AgeIndicatorImpl superChargerSupportedInHLR, MCSSInfoImpl mcSsInfo,
             CSAllocationRetentionPriorityImpl csAllocationRetentionPriority, SGSNCAMELSubscriptionInfoImpl sgsnCamelSubscriptionInfo,
             ChargingCharacteristicsImpl chargingCharacteristics, AccessRestrictionDataImpl accessRestrictionData, Boolean icsIndicator,
-            EPSSubscriptionDataImpl epsSubscriptionData, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList,
+            EPSSubscriptionDataImpl epsSubscriptionData, List<CSGSubscriptionDataImpl> csgSubscriptionDataList,
             boolean ueReachabilityRequestIndicator, ISDNAddressStringImpl sgsnNumber, DiameterIdentityImpl mmeName,
             Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent,
             Long subscribedPeriodicLAUtimer) {
@@ -404,7 +408,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<ExtBearerServiceCodeImpl> getBearerServiceList() {
+    public List<ExtBearerServiceCodeImpl> getBearerServiceList() {
     	if(this.bearerServiceList==null)
     		return null;
     	
@@ -412,7 +416,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<ExtTeleserviceCodeImpl> getTeleserviceList() {
+    public List<ExtTeleserviceCodeImpl> getTeleserviceList() {
     	if(this.teleserviceList==null)
     		return null;
     				
@@ -420,7 +424,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<ExtSSInfoImpl> getProvisionedSS() {
+    public List<ExtSSInfoImpl> getProvisionedSS() {
     	if(this.provisionedSS==null)
     		return null;
     	
@@ -438,7 +442,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<ZoneCodeImpl> getRegionalSubscriptionData() {
+    public List<ZoneCodeImpl> getRegionalSubscriptionData() {
     	if(this.regionalSubscriptionData==null)
     		return null;
     	
@@ -446,7 +450,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<VoiceBroadcastDataImpl> getVbsSubscriptionData() {
+    public List<VoiceBroadcastDataImpl> getVbsSubscriptionData() {
     	if(this.vbsSubscriptionData==null)
     		return null;
     	
@@ -454,7 +458,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<VoiceGroupCallDataImpl> getVgcsSubscriptionData() {
+    public List<VoiceGroupCallDataImpl> getVgcsSubscriptionData() {
     	if(this.vgcsSubscriptionData==null)
     		return null;
     	
@@ -561,7 +565,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ArrayList<CSGSubscriptionDataImpl> getCsgSubscriptionDataList() {
+    public List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList() {
     	if(this.csgSubscriptionDataList==null)
     		return null;
     	

@@ -112,7 +112,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)    
     private ASNInteger supportedCCBSPhase;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=false,index=-1)    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1)    
     private ExtExternalSignalInfoImpl additionalSignalInfo;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=false,index=-1)    
@@ -275,7 +275,9 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
         }
 
         this.msisdn = msisdn;
-        this.cugCheckInfo = cugCheckInfo;
+        
+        if(mapProtocolVersion>=2)
+        	this.cugCheckInfo = cugCheckInfo;
         
         if(numberOfForwarding!=null) {
         	this.numberOfForwarding = new ASNInteger();
@@ -324,7 +326,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
 
     @Override
     public Integer getORCapability() {
-    	if(this.orCapability!=null)
+    	if(this.orCapability==null)
     		return null;
     	
         return this.orCapability.getValue().intValue();

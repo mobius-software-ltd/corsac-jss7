@@ -46,7 +46,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
 import org.testng.annotations.Test;
 
 /**

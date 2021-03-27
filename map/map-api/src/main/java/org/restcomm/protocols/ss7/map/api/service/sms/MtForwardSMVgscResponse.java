@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
@@ -42,7 +42,7 @@ public interface MtForwardSMVgscResponse extends SmsMessage {
 
     SmsSignalInfoImpl getSM_RP_UI();
 
-    ArrayList<ISDNAddressStringImpl> getDispatcherList();
+    List<ISDNAddressStringImpl> getDispatcherList();
 
     boolean getOngoingCall();
 

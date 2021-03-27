@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
@@ -53,7 +53,7 @@ public class ExtForwInfoImpl {
     /**
      *
      */
-    public ExtForwInfoImpl(SSCodeImpl ssCode, ArrayList<ExtForwFeatureImpl> forwardingFeatureList,
+    public ExtForwInfoImpl(SSCodeImpl ssCode, List<ExtForwFeatureImpl> forwardingFeatureList,
             MAPExtensionContainerImpl extensionContainer) {
         this.ssCode = ssCode;
         
@@ -67,7 +67,7 @@ public class ExtForwInfoImpl {
         return this.ssCode;
     }
 
-    public ArrayList<ExtForwFeatureImpl> getForwardingFeatureList() {
+    public List<ExtForwFeatureImpl> getForwardingFeatureList() {
     	if(this.forwardingFeatureList==null)
     		return null;
     	

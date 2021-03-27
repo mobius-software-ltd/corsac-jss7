@@ -22,14 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CategoryImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CategoryValue;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -44,26 +49,29 @@ public class CategoryTest {
 
     @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CategoryImpl.class);
+    	
         byte[] data = this.getData1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        CategoryImpl prim = new CategoryImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CategoryImpl);
+        CategoryImpl prim = (CategoryImpl)result.getResult();
+        
         assertEquals(prim.getCategoryValue(), CategoryValue.ordinaryCallingSubscriber);
     }
 
     @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CategoryImpl.class);
+    	
         CategoryImpl prim = new CategoryImpl(CategoryValue.ordinaryCallingSubscriber);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertEquals(asn.toByteArray(), this.getData1());
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertEquals(encodedData, this.getData1());
     }
-
 }

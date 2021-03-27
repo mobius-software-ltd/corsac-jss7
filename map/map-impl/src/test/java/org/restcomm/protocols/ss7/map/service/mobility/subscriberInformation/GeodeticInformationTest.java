@@ -23,15 +23,20 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,15 +51,14 @@ public class GeodeticInformationTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        asn.readTag();
-        GeodeticInformationImpl impl = new GeodeticInformationImpl();
-        impl.decodeAll(asn);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GeodeticInformationImpl.class);
+    	
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(getEncodedData()));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GeodeticInformationImpl);
+        GeodeticInformationImpl impl = (GeodeticInformationImpl)result.getResult();
+        
         assertEquals(impl.getScreeningAndPresentationIndicators(), 3);
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
         assertTrue(Math.abs(impl.getLatitude() - 21.5) < 0.0001);
@@ -65,45 +69,14 @@ public class GeodeticInformationTest {
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
-
-        GeodeticInformationImpl impl = new GeodeticInformationImpl(3, TypeOfShape.EllipsoidPointWithUncertaintyCircle, 21.5,
-                171, 0, 11);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GeodeticInformationImpl.class);
+    	
+        GeodeticInformationImpl impl = new GeodeticInformationImpl(3, TypeOfShape.EllipsoidPointWithUncertaintyCircle, 21.5, 171, 0, 11);
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
-    public void testXMLSerialize() throws Exception {
-
-        GeodeticInformationImpl original = new GeodeticInformationImpl(3, TypeOfShape.EllipsoidPointWithUncertaintyCircle,
-                21.5, 171, 8, 11);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "geodeticInformation", GeodeticInformationImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        GeodeticInformationImpl copy = reader.read("geodeticInformation", GeodeticInformationImpl.class);
-
-        assertEquals(copy.getScreeningAndPresentationIndicators(), original.getScreeningAndPresentationIndicators());
-        assertEquals(copy.getTypeOfShape(), original.getTypeOfShape());
-        assertEquals(copy.getLatitude(), original.getLatitude());
-        assertEquals(copy.getLongitude(), original.getLongitude());
-        assertEquals(copy.getUncertainty(), original.getUncertainty());
-        assertEquals(copy.getConfidence(), original.getConfidence());
-
-    }*/
 }

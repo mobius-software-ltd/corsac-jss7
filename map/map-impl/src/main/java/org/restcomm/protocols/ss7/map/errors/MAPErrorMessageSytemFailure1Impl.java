@@ -35,15 +35,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
  */
 public class MAPErrorMessageSytemFailure1Impl extends EnumeratedMAPErrorMessage1Impl implements
 MAPErrorMessageSystemFailure {
-	private NetworkResource networkResource;
 	private static final long mapProtocolVersion = 2;
     
     public MAPErrorMessageSytemFailure1Impl(NetworkResource networkResource) {
         super((long) MAPErrorCode.systemFailure);
 
-        this.networkResource = networkResource;
-        if(this.networkResource!=null)
-        	setValue(Long.valueOf(this.networkResource.getCode()));
+        if(networkResource!=null)
+        	setValue(Long.valueOf(networkResource.getCode()));
     }
 
     public MAPErrorMessageSytemFailure1Impl() {
@@ -60,12 +58,15 @@ MAPErrorMessageSystemFailure {
 
     @Override
     public NetworkResource getNetworkResource() {
-    	return networkResource;
+    	Long value=getValue();
+    	if(value==null)
+    		return null;
+    	
+    	return NetworkResource.getInstance(value.intValue());
     }
 
     @Override
     public void setNetworkResource(NetworkResource val) {
-    	this.networkResource=val;    
     	if(val!=null)
     		setValue(Long.valueOf(val.getCode()));
     	else
@@ -78,8 +79,10 @@ MAPErrorMessageSystemFailure {
 
         sb.append("MAPErrorMessageSystemFailure [");
 
-        if (this.networkResource != null)
-            sb.append("networkResource=" + this.networkResource.toString());
+        NetworkResource networkResource=getNetworkResource();
+        if (networkResource != null)
+            sb.append("networkResource=" + networkResource.toString());
+        
         sb.append("]");
 
         return sb.toString();

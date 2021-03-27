@@ -50,10 +50,10 @@ public class AnyTimeInterrogationRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
     private RequestedInfoImpl requestedInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
     private ISDNAddressStringImpl gsmSCFAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
     private MAPExtensionContainerImpl extensionContainer;
 
     public AnyTimeInterrogationRequestImpl() {

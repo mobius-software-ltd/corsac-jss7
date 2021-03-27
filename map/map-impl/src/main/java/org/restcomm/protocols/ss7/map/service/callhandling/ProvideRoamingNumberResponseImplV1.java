@@ -42,6 +42,10 @@ public class ProvideRoamingNumberResponseImplV1 extends CallHandlingMessageImpl 
 	public ISDNAddressStringImpl roamingNumber;    
     private long mapProtocolVersion;
     
+    public ProvideRoamingNumberResponseImplV1() {
+    	this.mapProtocolVersion=2;
+    }
+    
     public ProvideRoamingNumberResponseImplV1(ISDNAddressStringImpl roamingNumber, long mapProtocolVersion) {
         super();
         this.roamingNumber = roamingNumber;

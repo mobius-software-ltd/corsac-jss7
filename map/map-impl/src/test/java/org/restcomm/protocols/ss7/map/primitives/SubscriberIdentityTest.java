@@ -23,31 +23,32 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityWrapperImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Trace are from Brazil Operator
@@ -74,74 +75,61 @@ public class SubscriberIdentityTest {
     public void tearDown() {
     }
 
-    byte[] data = new byte[] { (byte) 0x80, 0x08, 0x27, (byte) 0x94, (byte) 0x99, 0x09, 0x00, 0x00, 0x00, (byte) 0xf7 };
-    byte[] dataMsIsdn = new byte[] { -127, 7, -111, 34, 34, 34, 51, 51, -13 };
+    byte[] data = new byte[] { 48, 10, (byte) 0x80, 0x08, 0x27, (byte) 0x94, (byte) 0x99, 0x09, 0x00, 0x00, 0x00, (byte) 0xf7 };
+    byte[] dataMsIsdn = new byte[] { 48, 9, -127, 7, -111, 34, 34, 34, 51, 51, -13 };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-        SubscriberIdentityImpl subsIdent = new SubscriberIdentityImpl();
-        subsIdent.decodeAll(asn);
-        IMSI imsi = subsIdent.getIMSI();
-        ISDNAddressStringImpl msisdn = subsIdent.getMSISDN();
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SubscriberIdentityWrapperImpl.class);
+    	              
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SubscriberIdentityWrapperImpl);
+        SubscriberIdentityWrapperImpl subsIdent = (SubscriberIdentityWrapperImpl)result.getResult();
+        
+        assertNotNull(subsIdent.getSubscriberIdentity());
+        IMSIImpl imsi = subsIdent.getSubscriberIdentity().getIMSI();
+        ISDNAddressStringImpl msisdn = subsIdent.getSubscriberIdentity().getMSISDN();
         assertNotNull(imsi);
         assertNull(msisdn);
         assertTrue(imsi.getData().equals("724999900000007"));
 
-        asn = new AsnInputStream(dataMsIsdn);
-        asn.readTag();
-        subsIdent = new SubscriberIdentityImpl();
-        subsIdent.decodeAll(asn);
-        imsi = subsIdent.getIMSI();
-        msisdn = subsIdent.getMSISDN();
+        result=parser.decode(Unpooled.wrappedBuffer(dataMsIsdn));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SubscriberIdentityWrapperImpl);
+        subsIdent = (SubscriberIdentityWrapperImpl)result.getResult();
+        
+        assertNotNull(subsIdent.getSubscriberIdentity());
+        imsi = subsIdent.getSubscriberIdentity().getIMSI();
+        msisdn = subsIdent.getSubscriberIdentity().getMSISDN();
         assertNull(imsi);
         assertNotNull(msisdn);
         assertTrue(msisdn.getAddress().equals("22222233333"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
-
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        IMSI imsi = this.MAPParameterFactory.createIMSI("724999900000007");
-        SubscriberIdentityImpl subsIdent = new SubscriberIdentityImpl(imsi);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        subsIdent.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SubscriberIdentityWrapperImpl.class);
+    	
+        IMSIImpl imsi = this.MAPParameterFactory.createIMSI("724999900000007");
+        SubscriberIdentityWrapperImpl subsIdent = new SubscriberIdentityWrapperImpl(new SubscriberIdentityImpl(imsi));
+        ByteBuf buffer=parser.encode(subsIdent);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22222233333");
-        subsIdent = new SubscriberIdentityImpl(msisdn);
-        asnOS = new AsnOutputStream();
-        subsIdent.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        subsIdent = new SubscriberIdentityWrapperImpl(new SubscriberIdentityImpl(msisdn));
+        buffer=parser.encode(subsIdent);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(dataMsIsdn, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "primitives" })
-    public void testSerialization() throws Exception {
-        IMSI imsi = this.MAPParameterFactory.createIMSI("724999900000007");
-        SubscriberIdentityImpl original = new SubscriberIdentityImpl(imsi);
-
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        SubscriberIdentityImpl copy = (SubscriberIdentityImpl) o;
-
-        // test result
-        assertEquals(copy, original);
     }
 }

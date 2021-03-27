@@ -52,6 +52,10 @@ public class CheckImeiResponseImplV3 extends MobilityMessageImpl implements Chec
 
     private long mapProtocolVersion;
 
+    public CheckImeiResponseImplV3() {
+    	this.mapProtocolVersion = 3;
+    }
+    
     // For incoming messages
     public CheckImeiResponseImplV3(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;

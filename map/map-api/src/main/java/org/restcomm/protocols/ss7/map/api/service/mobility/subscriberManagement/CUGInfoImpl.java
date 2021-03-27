@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -52,7 +52,7 @@ public class CUGInfoImpl {
     /**
      *
      */
-    public CUGInfoImpl(ArrayList<CUGSubscriptionImpl> cugSubscriptionList, ArrayList<CUGFeatureImpl> cugFeatureList,
+    public CUGInfoImpl(List<CUGSubscriptionImpl> cugSubscriptionList, List<CUGFeatureImpl> cugFeatureList,
             MAPExtensionContainerImpl extensionContainer) {
     	
     	if(cugSubscriptionList!=null)
@@ -64,14 +64,14 @@ public class CUGInfoImpl {
         this.extensionContainer = extensionContainer;
     }
 
-    public ArrayList<CUGSubscriptionImpl> getCUGSubscriptionList() {
+    public List<CUGSubscriptionImpl> getCUGSubscriptionList() {
     	if(this.cugSubscriptionList==null)
     		return null;
     	
         return this.cugSubscriptionList.getCUGSubscription();
     }
 
-    public ArrayList<CUGFeatureImpl> getCUGFeatureList() {
+    public List<CUGFeatureImpl> getCUGFeatureList() {
     	if(cugFeatureList==null)
     		return null;
     	

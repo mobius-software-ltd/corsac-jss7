@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.map.api.datacoding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -313,7 +314,7 @@ public class GSMCharset {
         if (mainTable == null)
             return null;
 
-        ArrayList<String> res = new ArrayList<String>();
+        List<String> res = new ArrayList<String>();
         StringBuilder sb = new StringBuilder();
         int chCnt = 0;
         for (int i1 = 0; i1 < data.length(); i1++) {

@@ -21,16 +21,19 @@
  */
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,33 +46,30 @@ public class ExtSSStatusTest {
     };
 
     public byte[] getData2() {
-        return new byte[] { (byte) 132, 1, 15 };
+        return new byte[] { 4, 1, 15 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtSSStatusImpl.class);
+    	
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ExtSSStatusImpl prim = new ExtSSStatusImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtSSStatusImpl);
+        ExtSSStatusImpl prim = (ExtSSStatusImpl)result.getResult();
+        
         assertTrue(!prim.getBitQ());
         assertTrue(prim.getBitP());
         assertTrue(!prim.getBitR());
         assertTrue(prim.getBitA());
 
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new ExtSSStatusImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, 4);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtSSStatusImpl);
+        prim = (ExtSSStatusImpl)result.getResult();
 
         assertTrue(prim.getBitQ());
         assertTrue(prim.getBitP());
@@ -79,16 +79,21 @@ public class ExtSSStatusTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtSSStatusImpl.class);
+    	
         ExtSSStatusImpl prim = new ExtSSStatusImpl(false, true, false, true);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        byte[] rawData=this.getData();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         prim = new ExtSSStatusImpl(true, true, true, true);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn, Tag.CLASS_CONTEXT_SPECIFIC, 4);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData=this.getData2();
+        assertTrue(Arrays.equals(encodedData, rawData));
     }
 }

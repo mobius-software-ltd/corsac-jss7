@@ -19,6 +19,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSIImpl;
@@ -40,8 +42,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
-
-import java.util.ArrayList;
 
 /**
  * Created by vsubbotin on 25/05/16.
@@ -120,13 +120,13 @@ public class CAMELSubscriptionInfoImpl {
     public CAMELSubscriptionInfoImpl() {        
     }
 
-    public CAMELSubscriptionInfoImpl(OCSIImpl oCsi, ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList, DCSIImpl dCsi,
-    		TCSIImpl tCsi, ArrayList<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, TCSIImpl vtCsi,
-            ArrayList<TBcsmCamelTdpCriteriaImpl> vtBcsmCamelTdpCriteriaList, boolean tifCsi, boolean tifCsiNotificationToCSE,
+    public CAMELSubscriptionInfoImpl(OCSIImpl oCsi, List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList, DCSIImpl dCsi,
+    		TCSIImpl tCsi, List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, TCSIImpl vtCsi,
+            List<TBcsmCamelTdpCriteriaImpl> vtBcsmCamelTdpCriteriaList, boolean tifCsi, boolean tifCsiNotificationToCSE,
             GPRSCSIImpl gprsCsi, SMSCSIImpl moSmsCsi, SSCSIImpl ssCsi, MCSIImpl mCsi, MAPExtensionContainerImpl extensionContainer,
-            SpecificCSIWithdrawImpl specificCSIDeletedList, SMSCSIImpl mtSmsCsi, ArrayList<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList,
-            MGCSIImpl mgCsi, OCSIImpl oImCsi, ArrayList<OBcsmCamelTdpCriteriaImpl> oImBcsmCamelTdpCriteriaList, DCSIImpl dImCsi, TCSIImpl vtImCsi,
-            ArrayList<TBcsmCamelTdpCriteriaImpl> vtImBcsmCamelTdpCriteriaList) {
+            SpecificCSIWithdrawImpl specificCSIDeletedList, SMSCSIImpl mtSmsCsi, List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList,
+            MGCSIImpl mgCsi, OCSIImpl oImCsi, List<OBcsmCamelTdpCriteriaImpl> oImBcsmCamelTdpCriteriaList, DCSIImpl dImCsi, TCSIImpl vtImCsi,
+            List<TBcsmCamelTdpCriteriaImpl> vtImBcsmCamelTdpCriteriaList) {
         
     	this.oCsi = oCsi;
         
@@ -178,7 +178,7 @@ public class CAMELSubscriptionInfoImpl {
         return this.oCsi;
     }
 
-    public ArrayList<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList() {
+    public List<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList() {
     	if(this.oBcsmCamelTDPCriteriaList==null)
     		return null;
     	
@@ -193,7 +193,7 @@ public class CAMELSubscriptionInfoImpl {
         return this.tCsi;
     }
 
-    public ArrayList<TBcsmCamelTdpCriteriaImpl> getTBcsmCamelTdpCriteriaList() {
+    public List<TBcsmCamelTdpCriteriaImpl> getTBcsmCamelTdpCriteriaList() {
     	if(this.tBcsmCamelTdpCriteriaList==null)
     		return null;
     	
@@ -204,7 +204,7 @@ public class CAMELSubscriptionInfoImpl {
         return this.vtCsi;
     }
 
-    public ArrayList<TBcsmCamelTdpCriteriaImpl> getVtBcsmCamelTdpCriteriaList() {
+    public List<TBcsmCamelTdpCriteriaImpl> getVtBcsmCamelTdpCriteriaList() {
     	if(this.vtBcsmCamelTdpCriteriaList==null)
     		return null;
     	
@@ -247,7 +247,7 @@ public class CAMELSubscriptionInfoImpl {
         return this.mtSmsCsi;
     }
 
-    public ArrayList<MTsmsCAMELTDPCriteriaImpl> getMtSmsCamelTdpCriteriaList() {
+    public List<MTsmsCAMELTDPCriteriaImpl> getMtSmsCamelTdpCriteriaList() {
     	if(this.mtSmsCamelTdpCriteriaList==null)
     		return null;
     	
@@ -262,7 +262,7 @@ public class CAMELSubscriptionInfoImpl {
         return this.oImCsi;
     }
 
-    public ArrayList<OBcsmCamelTdpCriteriaImpl> getOImBcsmCamelTdpCriteriaList() {
+    public List<OBcsmCamelTdpCriteriaImpl> getOImBcsmCamelTdpCriteriaList() {
     	if(this.oImBcsmCamelTdpCriteriaList==null)
     		return null;
     	
@@ -277,7 +277,7 @@ public class CAMELSubscriptionInfoImpl {
         return this.vtImCsi;
     }
 
-    public ArrayList<TBcsmCamelTdpCriteriaImpl> getVtImBcsmCamelTdpCriteriaList() {
+    public List<TBcsmCamelTdpCriteriaImpl> getVtImBcsmCamelTdpCriteriaList() {
     	if(this.vtImBcsmCamelTdpCriteriaList==null)
     		return null;
     	

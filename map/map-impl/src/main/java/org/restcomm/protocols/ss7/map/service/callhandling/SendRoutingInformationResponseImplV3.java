@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
@@ -117,7 +117,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)
 	private OfferedCamel4CSIsImpl offeredCamel4CSIs;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=false,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1)
 	private RoutingInfoWrapperImpl routingInfo2;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=true,index=-1)
@@ -155,12 +155,12 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     public SendRoutingInformationResponseImplV3(long mapProtocolVersion, IMSIImpl imsi, ExtendedRoutingInfoImpl extRoutingInfo,
-            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, ArrayList<SSCodeImpl> ssList,
+            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, List<SSCodeImpl> ssList,
             ExtBasicServiceCodeImpl basicService, boolean forwardingInterrogationRequired, ISDNAddressStringImpl vmscAddress,
             MAPExtensionContainerImpl extensionContainer, NAEAPreferredCIImpl naeaPreferredCI, CCBSIndicatorsImpl ccbsIndicators,
             ISDNAddressStringImpl msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
             SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2,
-            ArrayList<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
+            List<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
             UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfoImpl gsmBearerCapability) {
 
         this.imsi = imsi;
@@ -253,7 +253,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public ArrayList<SSCodeImpl> getSSList() {
+    public List<SSCodeImpl> getSSList() {
     	if(this.ssList==null)
     		return null;
     	
@@ -333,7 +333,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public ArrayList<SSCodeImpl> getSSList2() {
+    public List<SSCodeImpl> getSSList2() {
     	if(this.ssList2==null)
     		return null;
     	

@@ -22,22 +22,26 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CCBSFeature;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CCBSFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -57,17 +61,14 @@ public class GenericServiceInfoTest {
 
     @Test(groups = { "functional.decode", "service.supplementary" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GenericServiceInfoImpl.class);
+    	                
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        GenericServiceInfoImpl impl = new GenericServiceInfoImpl();
-        impl.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GenericServiceInfoImpl);
+        GenericServiceInfoImpl impl = (GenericServiceInfoImpl)result.getResult();
 
         assertFalse(impl.getSsStatus().getABit());
         assertFalse(impl.getSsStatus().getPBit());
@@ -84,15 +85,10 @@ public class GenericServiceInfoTest {
 
 
         rawData = getEncodedData2();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        impl = new GenericServiceInfoImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GenericServiceInfoImpl);
+        impl = (GenericServiceInfoImpl)result.getResult();
 
         assertFalse(impl.getSsStatus().getABit());
         assertFalse(impl.getSsStatus().getPBit());
@@ -111,34 +107,29 @@ public class GenericServiceInfoTest {
 
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
-
-        SSStatus ssStatus = new SSStatusImpl(false, false, true, false);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GenericServiceInfoImpl.class);
+    	
+        SSStatusImpl ssStatus = new SSStatusImpl(false, false, true, false);
         GenericServiceInfoImpl impl = new GenericServiceInfoImpl(ssStatus, null, null, null, null, null, null, null);
-//        SSStatus ssStatus, CliRestrictionOption cliRestrictionOption, EMLPPPriority maximumEntitledPriority,
-//        EMLPPPriority defaultPriority, ArrayList<CCBSFeature> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN
 
-        AsnOutputStream asnOS = new AsnOutputStream();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
 
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        ArrayList<CCBSFeature> ccbsFeatureList = new ArrayList<CCBSFeature>();
-        CCBSFeature ccbs = new CCBSFeatureImpl(2, null, null, null);
+        ArrayList<CCBSFeatureImpl> ccbsFeatureList = new ArrayList<CCBSFeatureImpl>();
+        CCBSFeatureImpl ccbs = new CCBSFeatureImpl(2, null, null, null);
         ccbsFeatureList.add(ccbs);
-        impl = new GenericServiceInfoImpl(ssStatus, CliRestrictionOption.temporaryDefaultAllowed, EMLPPPriority.priorityLevel3, EMLPPPriority.priorityLevel4,
-                ccbsFeatureList, 11, 12, 13);
+        impl = new GenericServiceInfoImpl(ssStatus, CliRestrictionOption.temporaryDefaultAllowed, EMLPPPriority.priorityLevel3, EMLPPPriority.priorityLevel4,ccbsFeatureList, 11, 12, 13);
 
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedData2();
         assertEquals(rawData, encodedData);
     }
-
 }

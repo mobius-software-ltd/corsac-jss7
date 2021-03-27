@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
@@ -76,13 +76,13 @@ public interface ForwardAccessSignallingRequest extends MobilityMessage {
 
     MAPExtensionContainerImpl getExtensionContainer();
 
-    ArrayList<RadioResource> getRadioResourceList();
+    List<RadioResource> getRadioResourceList();
 
     BSSMAPServiceHandover getBSSMAPServiceHandover();
 
     RANAPServiceHandover getRANAPServiceHandover();
 
-    ArrayList<BSSMAPServiceHandoverInfo> getBSSMAPServiceHandoverList();
+    List<BSSMAPServiceHandoverInfo> getBSSMAPServiceHandoverList();
 
     Codec getCurrentlyUsedCodec();
 

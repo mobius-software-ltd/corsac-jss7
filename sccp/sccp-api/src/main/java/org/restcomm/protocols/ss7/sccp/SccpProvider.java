@@ -30,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.restcomm.protocols.ss7.sccp.message.MessageFactory;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpNoticeMessage;
-import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -108,7 +107,7 @@ public interface SccpProvider extends Serializable {
 
     SccpConnection newConnection(int localSsn, ProtocolClass protocolClass) throws MaxConnectionCountReached;
 
-    ConcurrentHashMap<LocalReference, SccpConnection> getConnections();
+    ConcurrentHashMap<Integer, SccpConnection> getConnections();
 
     /**
      * @return SCCP stack

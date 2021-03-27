@@ -28,13 +28,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,22 +47,21 @@ import org.testng.annotations.Test;
 public class ISDNAddressStringTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { -126, 7, -111, -105, 114, 99, 80, 24, -7 };
+        return new byte[] { 4, 7, -111, -105, 114, 99, 80, 24, -7 };
     }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser(false);
+    	parser.replaceClass(ISDNAddressStringImpl.class);
+    	
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        ISDNAddressStringImpl addStr = new ISDNAddressStringImpl();
-        addStr.decodeAll(asn);
-
-        assertEquals(tag, 2);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ISDNAddressStringImpl);
+        ISDNAddressStringImpl addStr = (ISDNAddressStringImpl)result.getResult();
+        
         assertFalse(addStr.isExtension());
         assertEquals(addStr.getAddressNature(), AddressNature.international_number);
         assertEquals(addStr.getNumberingPlan(), NumberingPlan.ISDN);
@@ -68,46 +70,15 @@ public class ISDNAddressStringTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        ISDNAddressStringImpl addStr = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                "79273605819");
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        addStr.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 2);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ISDNAddressStringImpl.class);
+    	
+        ISDNAddressStringImpl addStr = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79273605819");
+        ByteBuf buffer=parser.encode(addStr);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
-
         assertTrue(Arrays.equals(rawData, encodedData));
-
     }
-
-    /*@Test(groups = { "functional.serialize", "primitives" })
-    public void testSerialization() throws Exception {
-        ISDNAddressStringImpl original = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                "79273605819");
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "isdnAddressString", ISDNAddressStringImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ISDNAddressStringImpl copy = reader.read("isdnAddressString", ISDNAddressStringImpl.class);
-
-        // test result
-        assertEquals(copy.getAddressNature(), original.getAddressNature());
-        assertEquals(copy.getNumberingPlan(), original.getNumberingPlan());
-        assertEquals(copy.getAddress(), original.getAddress());
-    }*/
 }

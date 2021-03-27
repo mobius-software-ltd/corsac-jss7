@@ -47,8 +47,9 @@ public class InformServiceCentreRequestImpl extends SmsMessageImpl implements In
     private MWStatusImpl mwStatus;
     private MAPExtensionContainerImpl extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNInteger absentSubscriberDiagnosticSM;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNInteger additionalAbsentSubscriberDiagnosticSM;
 
     public InformServiceCentreRequestImpl() {

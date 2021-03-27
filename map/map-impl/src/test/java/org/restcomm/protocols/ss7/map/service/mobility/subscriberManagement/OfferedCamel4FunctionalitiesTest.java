@@ -22,15 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -40,25 +44,20 @@ import org.testng.annotations.Test;
 public class OfferedCamel4FunctionalitiesTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 4, 4, (byte) 170, 85, (byte) 192 };
-        // 0, 2, 4, 6 - 0
-        // 9, 11, 13, 15 - 1
-        // 16, 17 - 2
+        return new byte[] { 3, 4, 6, (byte) 170, 85, (byte) 192 };        
     }
 
     @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(OfferedCamel4FunctionalitiesImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        OfferedCamel4FunctionalitiesImpl imp = new OfferedCamel4FunctionalitiesImpl();
-        imp.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof OfferedCamel4FunctionalitiesImpl);
+        OfferedCamel4FunctionalitiesImpl imp = (OfferedCamel4FunctionalitiesImpl)result.getResult();
+        
         assertTrue(imp.getInitiateCallAttempt());
         assertFalse(imp.getSplitLeg());
         assertTrue(imp.getMoveLeg());
@@ -85,12 +84,14 @@ public class OfferedCamel4FunctionalitiesTest {
 
     @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(OfferedCamel4FunctionalitiesImpl.class);
+    	
         OfferedCamel4FunctionalitiesImpl imp = new OfferedCamel4FunctionalitiesImpl(true, false, true, false, true, false, true, false, false, true, false,
                 true, false, true, false, true, true, true, false, false);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-        assertTrue(Arrays.equals(getEncodedData(), asnOS.toByteArray()));
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(getEncodedData(), encodedData));
     }
-
 }

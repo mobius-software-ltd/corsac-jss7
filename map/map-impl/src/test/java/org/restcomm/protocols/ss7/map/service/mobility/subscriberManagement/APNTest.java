@@ -22,13 +22,18 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -51,90 +56,59 @@ public class APNTest {
 
     @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(APNImpl.class);
+    	
         byte[] data = this.getData1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        APNImpl prim = new APNImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof APNImpl);
+        APNImpl prim = (APNImpl)result.getResult();
+        
         assertEquals(prim.getApn(), "*");
 
-
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new APNImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof APNImpl);
+        prim = (APNImpl)result.getResult();
+        
         assertEquals(prim.getApn(), "BLACKBERRY.NET");
 
 
         data = this.getData3();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new APNImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof APNImpl);
+        prim = (APNImpl)result.getResult();
+        
         assertEquals(prim.getApn(), "yesinternet");
     }
 
     @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(APNImpl.class);
+    	
         APNImpl prim = new APNImpl("*");
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertEquals(asn.toByteArray(), this.getData1());
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);        
+        assertEquals(encodedData, this.getData1());
 
 
         prim = new APNImpl("BLACKBERRY.NET");
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertEquals(asn.toByteArray(), this.getData2());
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertEquals(encodedData, this.getData2());
 
 
         prim = new APNImpl("yesinternet");
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertEquals(asn.toByteArray(), this.getData3());
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertEquals(encodedData, this.getData3());
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
-    public void testXMLSerialize() throws Exception {
-
-        APNImpl original = new APNImpl("eee.com");
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "apn", APNImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        APNImpl copy = reader.read("apn", APNImpl.class);
-
-        assertEquals(copy.getApn(), original.getApn());
-    }*/
 }

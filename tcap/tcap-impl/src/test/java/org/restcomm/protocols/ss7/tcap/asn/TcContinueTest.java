@@ -31,11 +31,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
-import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
-import org.restcomm.protocols.ss7.tcap.asn.ParseException;
-import org.restcomm.protocols.ss7.tcap.asn.ResultType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;

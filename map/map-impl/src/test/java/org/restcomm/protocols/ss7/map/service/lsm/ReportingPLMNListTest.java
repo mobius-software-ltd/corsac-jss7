@@ -28,17 +28,19 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.RANTechnology;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMN;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -62,23 +64,21 @@ public class ReportingPLMNListTest {
 
     @Test(groups = { "functional.decode", "service.lms" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        ReportingPLMNListImpl imp = new ReportingPLMNListImpl();
-        imp.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ReportingPLMNListImpl.class);
+    	
+        byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReportingPLMNListImpl);
+        ReportingPLMNListImpl imp = (ReportingPLMNListImpl)result.getResult();
+        
         assertTrue(imp.getPlmnListPrioritized());
 
-        ArrayList<ReportingPLMN> al = imp.getPlmnList();
+        List<ReportingPLMNImpl> al = imp.getPlmnList();
         assertEquals(al.size(), 2);
-        ReportingPLMN p1 = al.get(0);
-        ReportingPLMN p2 = al.get(1);
+        ReportingPLMNImpl p1 = al.get(0);
+        ReportingPLMNImpl p2 = al.get(1);
         assertTrue(Arrays.equals(p1.getPlmnId().getData(), getDataPlmnId1()));
         assertTrue(Arrays.equals(p2.getPlmnId().getData(), getDataPlmnId2()));
         assertEquals(p1.getRanTechnology(), RANTechnology.gsm);
@@ -89,25 +89,23 @@ public class ReportingPLMNListTest {
 
     @Test(groups = { "functional.encode", "service.lms" })
     public void testEncode() throws Exception {
-
-        PlmnId plmnId = new PlmnIdImpl(getDataPlmnId1());
-        ReportingPLMN rp1 = new ReportingPLMNImpl(plmnId, RANTechnology.gsm, true);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ReportingPLMNListImpl.class);
+    	
+        PlmnIdImpl plmnId = new PlmnIdImpl(getDataPlmnId1());
+        ReportingPLMNImpl rp1 = new ReportingPLMNImpl(plmnId, RANTechnology.gsm, true);
         plmnId = new PlmnIdImpl(getDataPlmnId2());
-        ReportingPLMN rp2 = new ReportingPLMNImpl(plmnId, RANTechnology.umts, false);
+        ReportingPLMNImpl rp2 = new ReportingPLMNImpl(plmnId, RANTechnology.umts, false);
 
-        ArrayList<ReportingPLMN> plmnList = new ArrayList<ReportingPLMN>();
+        ArrayList<ReportingPLMNImpl> plmnList = new ArrayList<ReportingPLMNImpl>();
         plmnList.add(rp1);
         plmnList.add(rp2);
 
         ReportingPLMNListImpl imp = new ReportingPLMNListImpl(true, plmnList);
-        // boolean plmnListPrioritized, ArrayList<ReportingPLMN> plmnList
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        byte[] data = getEncodedData();
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

@@ -23,79 +23,74 @@
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SuperChargerInfoImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class SuperChargerInfoTest {
 
     private byte[] getEncodedData1() {
-        return new byte[] { (byte) 128, 0 };
+        return new byte[] { 4, 2, (byte) 128, 0 };
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { (byte) 129, 1, 5 };
+        return new byte[] { 4, 3, (byte) 129, 1, 5 };
     }
 
     @Test
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData1();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        SuperChargerInfoImpl asc = new SuperChargerInfoImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, SuperChargerInfoImpl._ID_sendSubscriberData);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SuperChargerInfoImpl.class);
+    	
+        byte[] data = getEncodedData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SuperChargerInfoImpl);
+        SuperChargerInfoImpl asc = (SuperChargerInfoImpl)result.getResult();
+        
         assertTrue(asc.getSendSubscriberData());
         assertNull(asc.getSubscriberDataStored());
 
-        rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
+        data = getEncodedData2();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SuperChargerInfoImpl);
+        asc = (SuperChargerInfoImpl)result.getResult();
 
-        tag = asn.readTag();
-        asc = new SuperChargerInfoImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, SuperChargerInfoImpl._ID_subscriberDataStored);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        assertNull(asc.getSendSubscriberData());
+        assertFalse(asc.getSendSubscriberData());
         assertEquals(asc.getSubscriberDataStored().length, 1);
         assertEquals(asc.getSubscriberDataStored()[0], 5);
     }
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SuperChargerInfoImpl.class);
+    	
         SuperChargerInfoImpl asc = new SuperChargerInfoImpl(true);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData1();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        byte[] data=this.getEncodedData1();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         asc = new SuperChargerInfoImpl(new byte[] { 5 });
-
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData2();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
+        data=this.getEncodedData2();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

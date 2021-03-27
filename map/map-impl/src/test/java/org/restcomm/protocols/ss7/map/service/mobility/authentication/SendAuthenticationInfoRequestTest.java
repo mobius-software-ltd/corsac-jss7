@@ -30,17 +30,18 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.RequestingNodeType;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImplV3;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoRequest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -68,19 +69,17 @@ public class SendAuthenticationInfoRequestTest {
 
     @Test
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendAuthenticationInfoRequestImplV3.class);
+    	parser.replaceClass(SendAuthenticationInfoRequestImplV1.class);
 
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        SendAuthenticationInfoRequestImplV3 asc = new SendAuthenticationInfoRequestImplV3(3);
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertEquals(asc.getMapProtocolVersion(), 3);
-
-        IMSI imsi = asc.getImsi();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendAuthenticationInfoRequest);
+        SendAuthenticationInfoRequest asc = (SendAuthenticationInfoRequest)result.getResult();
+        
+        IMSIImpl imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("111222333444"));
         assertEquals(asc.getRequestingNodeType(), RequestingNodeType.vlr);
         assertEquals(asc.getNumberOfRequestedVectors(), 4);
@@ -97,15 +96,10 @@ public class SendAuthenticationInfoRequestTest {
         assertTrue(asc.getAdditionalVectorsAreForEPS());
 
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new SendAuthenticationInfoRequestImplV3(3);
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertEquals(asc.getMapProtocolVersion(), 3);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendAuthenticationInfoRequest);
+        asc = (SendAuthenticationInfoRequest)result.getResult();
 
         imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("33333444444"));
@@ -114,7 +108,7 @@ public class SendAuthenticationInfoRequestTest {
 
         assertNull(asc.getRequestingPlmnId());
 
-        ReSynchronisationInfo rsi = asc.getReSynchronisationInfo();
+        ReSynchronisationInfoImpl rsi = asc.getReSynchronisationInfo();
         assertTrue(Arrays.equals(rsi.getRand(), ReSynchronisationInfoTest.getRandData()));
         assertTrue(Arrays.equals(rsi.getAuts(), ReSynchronisationInfoTest.getAutsData()));
 
@@ -126,15 +120,10 @@ public class SendAuthenticationInfoRequestTest {
         assertFalse(asc.getAdditionalVectorsAreForEPS());
 
         rawData = getEncodedData_V2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new SendAuthenticationInfoRequestImplV3(2);
-        asc.decodeAll(asn);
-        assertEquals(asc.getMapProtocolVersion(), 2);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendAuthenticationInfoRequest);
+        asc = (SendAuthenticationInfoRequest)result.getResult();
 
         imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("250070222032767"));
@@ -155,44 +144,37 @@ public class SendAuthenticationInfoRequestTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendAuthenticationInfoRequestImplV3.class);
+    	parser.replaceClass(SendAuthenticationInfoRequestImplV1.class);
 
         IMSIImpl imsi = new IMSIImpl("111222333444");
         PlmnIdImpl plmnId = new PlmnIdImpl(getRequestingPlmnId());
-        SendAuthenticationInfoRequestImplV3 asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 4, false, false, null, null,
-                RequestingNodeType.vlr, plmnId, null, true);
-        // long mapProtocolVersion, IMSI imsi, int numberOfRequestedVectors, boolean segmentationProhibited,
-        // boolean immediateResponsePreferred, ReSynchronisationInfo reSynchronisationInfo, MAPExtensionContainer
-        // extensionContainer,
-        // RequestingNodeType requestingNodeType, PlmnId requestingPlmnId, Integer numberOfRequestedAdditionalVectors, boolean
-        // additionalVectorsAreForEPS
+        SendAuthenticationInfoRequest asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 4, false, false, null, null, RequestingNodeType.vlr, plmnId, null, true);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         imsi = new IMSIImpl("33333444444");
-        ReSynchronisationInfoImpl rsi = new ReSynchronisationInfoImpl(ReSynchronisationInfoTest.getRandData(),
-                ReSynchronisationInfoTest.getAutsData());
+        ReSynchronisationInfoImpl rsi = new ReSynchronisationInfoImpl(ReSynchronisationInfoTest.getRandData(), ReSynchronisationInfoTest.getAutsData());
         asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 5, true, true, rsi, null, RequestingNodeType.sgsn, null, 6, false);
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData2();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data=getEncodedData2();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         imsi = new IMSIImpl("250070222032767");
-        asc = new SendAuthenticationInfoRequestImplV3(2, imsi, 0, false, false, null, null, null, null, null, false);
+        asc = new SendAuthenticationInfoRequestImplV1(2, imsi);
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData_V2();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data=getEncodedData_V2();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

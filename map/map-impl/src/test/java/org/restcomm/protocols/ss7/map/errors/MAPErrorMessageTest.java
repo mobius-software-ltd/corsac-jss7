@@ -30,9 +30,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.errors.AbsentSubscriberDiagnosticSM;
 import org.restcomm.protocols.ss7.map.api.errors.AbsentSubscriberReason;
 import org.restcomm.protocols.ss7.map.api.errors.AdditionalNetworkResource;
@@ -40,6 +37,7 @@ import org.restcomm.protocols.ss7.map.api.errors.AdditionalRoamingNotAllowedCaus
 import org.restcomm.protocols.ss7.map.api.errors.CUGRejectCause;
 import org.restcomm.protocols.ss7.map.api.errors.CallBarringCause;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
+import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriber;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriberSM;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageBusySubscriber;
@@ -47,11 +45,8 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageCUGReject;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageCallBarred;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageFacilityNotSup;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessagePositionMethodFailure;
-import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessagePwRegistrationFailure;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageRoamingNotAllowed;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSMDeliveryFailure;
-import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSsErrorStatus;
-import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSsIncompatibility;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSubscriberBusyForMtSms;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnauthorizedLCSClient;
@@ -62,298 +57,236 @@ import org.restcomm.protocols.ss7.map.api.errors.RoamingNotAllowedCause;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.restcomm.protocols.ss7.map.api.errors.UnauthorizedLCSClientDiagnostic;
 import org.restcomm.protocols.ss7.map.api.errors.UnknownSubscriberDiagnostic;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.FailureCause;
 import org.restcomm.protocols.ss7.map.api.smstpdu.FailureCauseImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageFactoryImpl;
-import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.tcap.asn.ParameterImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  * @author amit bhayani
+ * @author yulian oifa
  *
  */
 public class MAPErrorMessageTest {
-
-    private Parameter getDataExtContainerFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48,
-                11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataSmDeliveryFailure() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 10, 1, 5 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-        // 10, 1, 0
-    }
-
-    private Parameter getDataSmDeliveryFailureV1() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 1 });
-        par.setPrimitive(true);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.ENUMERATED);
-        return par;
-    }
-
-    private Parameter getDataSmDeliveryFailureFull() {
-        Parameter par = new ParameterImpl();
-//        par.setData(new byte[] { 10, 1, 4, 4, 5, 1, 3, 5, 7, 9, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-//                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 });
-        par.setData(new byte[] { 10, 1, 4, 4, 14, 0, -43, 7, 127, -10, 8, 1, 2, 0, 0, 0, 9, 9, 9, 48, 39, -96, 32, 48, 10, 6,
-                3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3,
-                31, 32, 33 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataAbsentSubscriberSM() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 2, 1, 1 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-        // 2, 1, 0
-        // 2, 1, 4
-    }
-
-    private Parameter getDataAbsentSubscriberSMFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 2, 1, 0, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 6 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataCallBarred() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 10, 1, 1 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataCallBarredFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 10, 1, 1, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 129, 0 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataSystemFailure() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 0 });
-        par.setPrimitive(true);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.ENUMERATED);
-        return par;
-    }
-
-    private Parameter getDataSystemFailureFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 10, 1, 2, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 3 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataFacilityNotSupFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48,
-                11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 0, (byte) 129, 0 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataUnknownSubscriberFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48,
-                11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, 10, 1, 1 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataSubscriberBusyForMTSMSFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48,
-                11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, 5, 0 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataAbsentSubscriberFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48,
-                11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 3 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataAbsentSubscriberV1() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { (byte) 255 });
-        par.setPrimitive(true);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.BOOLEAN);
-        return par;
-    }
-
-    private Parameter getDataUnauthorizedLCSClientFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { (byte) 128, 1, 2, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataPositionMethodFailureFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { (byte) 128, 1, 4, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataBusySubscriberFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48,
-                11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 0, (byte) 129, 0 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataCUGRejectFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 10, 1, 1, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataRoamingNotAllowedFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 10, 1, 0, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataSsErrorStatusFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 6 });
-        par.setPrimitive(true);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.STRING_OCTET);
-        return par;
-    }
-
-    private Parameter getDataSsIncompatibilityFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { (byte) 129, 1, 33, (byte) 131, 1, 17, (byte) 132, 1, 9 });
-        par.setPrimitive(false);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.SEQUENCE);
-        return par;
-    }
-
-    private Parameter getDataPwRegistrationFailureFull() {
-        Parameter par = new ParameterImpl();
-        par.setData(new byte[] { 2 });
-        par.setPrimitive(true);
-        par.setTagClass(Tag.CLASS_UNIVERSAL);
-        par.setTag(Tag.ENUMERATED);
-        return par;
-    }
-
+	
+	byte[] dataExtContainerFull = { (byte)-93, 55, 2, 1, 1, 2, 1, 36, 48, 47, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33 };
+    byte[] dataSMDeliveryFailure = { (byte)-93, 11, 2, 1, 1, 2, 1, 32, 48, 3, 10, 1, 5 };
+    byte[] dataSMDeliveryFailureFull = {(byte)-93, 74, 2, 1, 1, 2, 1, 32, 48, 66, 10, 1, 4, 4, 14, 0, (byte)-43, 7, 127, (byte)-10, 8, 1, 2, 0, 0, 0, 9, 9, 9, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
+    byte[] dataSMDeliveryFailureV1 = {(byte)-93, 9, 2, 1, 1, 2, 1, 32, 10, 1, 1};
+    byte[] dataAbsentSubscriberSM = {(byte)-93, 11, 2, 1, 1, 2, 1, 6, 48, 3, 2, 1, 1};
+    byte[] dataAbsentSubscriberSMFull = {(byte)-93, 61, 2, 1, 1, 2, 1, 6, 48, 53, 2, 1, 0, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 1, 6 };
+    byte[] dataSystemFailure = {(byte)-93, 9, 2, 1, 1, 2, 1, 34, 10, 1, 0};
+    byte[] dataSystemFailureFull = {(byte)-93, 61, 2, 1, 1, 2, 1, 34, 48, 53, 10, 1, 2, (byte)-128, 1, 3, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
+    byte[] dataCallBarred = {(byte)-93, 11, 2, 1, 1, 2, 1, 13, 48, 3, 10, 1, 1};
+    byte[] dataCallBarredFull = {(byte)-93, 60, 2, 1, 1, 2, 1, 13, 48, 52, 10, 1, 1, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-127, 0};
+    byte[] dataFacilityNotSupFull = {(byte)-93, 59, 2, 1, 1, 2, 1, 21, 48, 51, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 0, (byte)-127, 0 };
+    byte[] dataUnknownSubscriberFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 1, 48, 50, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, 10, 1, 1 };
+    byte[] dataSubscriberBusyForMTSMSFull = {(byte)-93, 57, 2, 1, 1, 2, 1, 31, 48, 49, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, 5, 0};
+    byte[] dataAbsentSubscriberFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 27, 48, 50, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 1, 3};
+    byte[] dataAbsentSubscriberV1 = {(byte)-93, 9, 2, 1, 1, 2, 1, 27, 1, 1, -1};
+    byte[] dataUnauthorizedLCSClientFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 53, 48, 50, (byte)-128, 1, 2, (byte)-95, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
+    byte[] dataPositionMethodFailureFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 54, 48, 50, (byte)-128, 1, 4, (byte)-95, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
+    byte[] dataBusySubscriberFull = {(byte)-93, 59, 2, 1, 1, 2, 1, 45, 48, 51, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 0, (byte)-127, 0};
+    byte[] dataCUGRejectFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 15, 48, 50, 10, 1, 1, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
+    byte[] dataRoamingNotAllowedFull = {(byte)-93, 61, 2, 1, 1, 2, 1, 8, 48, 53, 10, 1, 0, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 1, 0};
+    byte[] dataSsErrorStatusFull = {(byte)-93, 11, 2, 1, 1, 2, 1, 17, 48, 3, 4, 1, 6};
+    byte[] dataSsIncompatibilityFull = {(byte)-93, 17, 2, 1, 1, 2, 1, 20, 48, 9, (byte)-127, 1, 33, (byte)-125, 1, 17, (byte)-124, 1, 9};
+    byte[] dataPwRegistrationFailureFull = {(byte)-93, 9, 2, 1, 1, 2, 1, 37, 10, 1, 2};
+    
     private byte[] uData = { 1, 2, 0, 0, 0, 9, 9, 9 };
 
     @Test(groups = { "functional.decode", "dialog.message" })
     public void testDecode() throws Exception {
+		ASNParser parser=new ASNParser();
+    	parser.loadClass(ReturnErrorImpl.class);
+    	ErrorCodeImpl errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.unexpectedDataValue);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageExtensionContainerImpl.class, MAPErrorMessageExtensionContainerImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSMDeliveryFailure1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailureImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailure1Impl.class);
+        
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriberSMImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriberSMImpl.class, MAPErrorMessageAbsentSubscriberSMImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.systemFailure);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSytemFailure1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSytemFailure1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSystemFailureImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.callBarred);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCallBarred1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarred1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarredImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.facilityNotSupported);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageFacilityNotSupImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageFacilityNotSupImpl.class, MAPErrorMessageFacilityNotSupImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.unknownSubscriber);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnknownSubscriberImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageUnknownSubscriberImpl.class, MAPErrorMessageUnknownSubscriberImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.subscriberBusyForMTSMS);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSubscriberBusyForMtSmsImpl.class, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriber);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriber1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriber1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriberImpl.class);
+        
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.unauthorizedLCSClient);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnauthorizedLCSClientImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageUnauthorizedLCSClientImpl.class, MAPErrorMessageUnauthorizedLCSClientImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.positionMethodFailure);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePositionMethodFailureImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessagePositionMethodFailureImpl.class, MAPErrorMessagePositionMethodFailureImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.busySubscriber);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageBusySubscriberImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageBusySubscriberImpl.class, MAPErrorMessageBusySubscriberImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.cugReject);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCUGRejectImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageCUGRejectImpl.class, MAPErrorMessageCUGRejectImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.roamingNotAllowed);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageRoamingNotAllowedImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageRoamingNotAllowedImpl.class, MAPErrorMessageRoamingNotAllowedImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.ssErrorStatus);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsErrorStatusImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSsErrorStatusImpl.class, MAPErrorMessageSsErrorStatusImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.ssIncompatibility);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsIncompatibilityImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSsIncompatibilityImpl.class, MAPErrorMessageSsIncompatibilityImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.pwRegistrationFailure);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePwRegistrationFailureImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessagePwRegistrationFailureImpl.class, MAPErrorMessagePwRegistrationFailureImpl.class);
+    	
+    	//EXT ERROR
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(dataExtContainerFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        ReturnErrorImpl re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.unexpectedDataValue));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageExtensionContainerImpl);
+        
+        MAPErrorMessageExtensionContainerImpl errContainer=(MAPErrorMessageExtensionContainerImpl)re.getParameter();
+        assertNotNull(errContainer.getExtensionContainer());        
+        MAPExtensionContainerImpl innerContainer =  errContainer.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
 
-        MAPErrorMessageFactoryImpl fact = new MAPErrorMessageFactoryImpl();
-
-        Parameter p = getDataSmDeliveryFailure();
-        MAPErrorMessageImpl em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.smDeliveryFailure);
-        AsnInputStream ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmSMDeliveryFailure());
-        MAPErrorMessageSMDeliveryFailure emSMDeliveryFailure = em.getEmSMDeliveryFailure();
-        assertEquals(emSMDeliveryFailure.getSMEnumeratedDeliveryFailureCause(),
-                SMEnumeratedDeliveryFailureCause.invalidSMEAddress);
+        //SM FAILURE
+        result=parser.decode(Unpooled.wrappedBuffer(dataSMDeliveryFailure));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.smDeliveryFailure));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageSMDeliveryFailureImpl);
+        MAPErrorMessageSMDeliveryFailure emSMDeliveryFailure=(MAPErrorMessageSMDeliveryFailureImpl)re.getParameter();
+        assertEquals(emSMDeliveryFailure.getSMEnumeratedDeliveryFailureCause(),SMEnumeratedDeliveryFailureCause.invalidSMEAddress);
         assertNull(emSMDeliveryFailure.getSignalInfo());
         assertNull(emSMDeliveryFailure.getSmsDeliverReportTpdu());
         assertNull(emSMDeliveryFailure.getExtensionContainer());
         assertEquals(emSMDeliveryFailure.getMapProtocolVersion(), 3);
-
-        p = getDataSmDeliveryFailureFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.smDeliveryFailure);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmSMDeliveryFailure());
-        emSMDeliveryFailure = em.getEmSMDeliveryFailure();
+        
+        //SM FAILURE FULL
+        result=parser.decode(Unpooled.wrappedBuffer(dataSMDeliveryFailureFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.smDeliveryFailure));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageSMDeliveryFailureImpl);
+        
+        emSMDeliveryFailure=(MAPErrorMessageSMDeliveryFailureImpl)re.getParameter();
+        assertNotNull(emSMDeliveryFailure.getExtensionContainer());        
+        innerContainer =  emSMDeliveryFailure.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals(emSMDeliveryFailure.getSMEnumeratedDeliveryFailureCause(), SMEnumeratedDeliveryFailureCause.scCongestion);
         assertNotNull(emSMDeliveryFailure.getSignalInfo());
         assertNotNull(emSMDeliveryFailure.getExtensionContainer());
-        SmsDeliverReportTpdu tpdu = emSMDeliveryFailure.getSmsDeliverReportTpdu();
+        SmsDeliverReportTpduImpl tpdu = emSMDeliveryFailure.getSmsDeliverReportTpdu();
         assertEquals(tpdu.getFailureCause().getCode(), 0xd5);
         assertEquals(tpdu.getParameterIndicator().getCode(), 7);
         assertEquals(tpdu.getProtocolIdentifier().getCode(), 127);
@@ -361,979 +294,914 @@ public class MAPErrorMessageTest {
         assertEquals(tpdu.getUserData().getEncodedData(), uData);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emSMDeliveryFailure.getExtensionContainer()));
         assertEquals(emSMDeliveryFailure.getMapProtocolVersion(), 3);
-
-        p = getDataSmDeliveryFailureV1();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.smDeliveryFailure);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmSMDeliveryFailure());
-        emSMDeliveryFailure = em.getEmSMDeliveryFailure();
-        assertEquals(emSMDeliveryFailure.getSMEnumeratedDeliveryFailureCause(),
-                SMEnumeratedDeliveryFailureCause.equipmentProtocolError);
+        
+        //SM FAILURE V1
+        result=parser.decode(Unpooled.wrappedBuffer(dataSMDeliveryFailureV1));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.smDeliveryFailure));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessage);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageSMDeliveryFailure1Impl);
+        emSMDeliveryFailure=(MAPErrorMessageSMDeliveryFailure1Impl)re.getParameter();
+        assertEquals(emSMDeliveryFailure.getSMEnumeratedDeliveryFailureCause(),SMEnumeratedDeliveryFailureCause.equipmentProtocolError);
         assertNull(emSMDeliveryFailure.getSignalInfo());
         assertNull(emSMDeliveryFailure.getExtensionContainer());
         assertEquals(emSMDeliveryFailure.getMapProtocolVersion(), 1);
-
-        p = getDataAbsentSubscriberSM();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.absentSubscriberSM);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmAbsentSubscriberSM());
-        MAPErrorMessageAbsentSubscriberSM emAbsentSubscriberSMImpl = em.getEmAbsentSubscriberSM();
+        
+        //Absent Subscriber SM
+        result=parser.decode(Unpooled.wrappedBuffer(dataAbsentSubscriberSM));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.absentSubscriberSM));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessage);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageAbsentSubscriberSMImpl);
+        MAPErrorMessageAbsentSubscriberSM emAbsentSubscriberSMImpl = (MAPErrorMessageAbsentSubscriberSM)re.getParameter();
         assertEquals(emAbsentSubscriberSMImpl.getAbsentSubscriberDiagnosticSM(), AbsentSubscriberDiagnosticSM.IMSIDetached);
         assertNull(emAbsentSubscriberSMImpl.getAdditionalAbsentSubscriberDiagnosticSM());
         assertNull(emAbsentSubscriberSMImpl.getExtensionContainer());
-
-        p = getDataAbsentSubscriberSMFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.absentSubscriberSM);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmAbsentSubscriberSM());
-        emAbsentSubscriberSMImpl = em.getEmAbsentSubscriberSM();
-        assertEquals(emAbsentSubscriberSMImpl.getAbsentSubscriberDiagnosticSM(),
-                AbsentSubscriberDiagnosticSM.NoPagingResponseViaTheMSC);
-        assertEquals(emAbsentSubscriberSMImpl.getAdditionalAbsentSubscriberDiagnosticSM(),
-                AbsentSubscriberDiagnosticSM.GPRSDetached);
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emAbsentSubscriberSMImpl.getExtensionContainer()));
-
-        p = getDataSystemFailure();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.systemFailure);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmSystemFailure());
-        MAPErrorMessageSystemFailure emSystemFailure = em.getEmSystemFailure();
+        
+        //Absent Subscriber SM FULL
+        result=parser.decode(Unpooled.wrappedBuffer(dataAbsentSubscriberSMFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.absentSubscriberSM));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageAbsentSubscriberSMImpl);
+        
+        emAbsentSubscriberSMImpl=(MAPErrorMessageAbsentSubscriberSM)re.getParameter();
+        assertNotNull(emAbsentSubscriberSMImpl.getExtensionContainer());        
+        innerContainer =  emAbsentSubscriberSMImpl.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
+        assertEquals(emAbsentSubscriberSMImpl.getAbsentSubscriberDiagnosticSM(),AbsentSubscriberDiagnosticSM.NoPagingResponseViaTheMSC);
+        assertEquals(emAbsentSubscriberSMImpl.getAdditionalAbsentSubscriberDiagnosticSM(),AbsentSubscriberDiagnosticSM.GPRSDetached);
+        
+        //System FAILURE V1
+        result=parser.decode(Unpooled.wrappedBuffer(dataSystemFailure));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.systemFailure));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessage);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageSystemFailure);
+        MAPErrorMessageSystemFailure emSystemFailure=(MAPErrorMessageSystemFailure)re.getParameter();
         assertEquals(emSystemFailure.getMapProtocolVersion(), 2);
         assertEquals(emSystemFailure.getNetworkResource(), NetworkResource.plmn);
         assertNull(emSystemFailure.getAdditionalNetworkResource());
         assertNull(emSystemFailure.getExtensionContainer());
-
-        p = getDataSystemFailureFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.systemFailure);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmSystemFailure());
-        emSystemFailure = em.getEmSystemFailure();
+        
+        //System FAILURE FULL
+        result=parser.decode(Unpooled.wrappedBuffer(dataSystemFailureFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.systemFailure));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageSystemFailure);
+        
+        emSystemFailure=(MAPErrorMessageSystemFailure)re.getParameter();
+        assertNotNull(emSystemFailure.getExtensionContainer());        
+        innerContainer =  emSystemFailure.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals(emSystemFailure.getMapProtocolVersion(), 3);
         assertEquals(emSystemFailure.getNetworkResource(), NetworkResource.vlr);
         assertEquals(emSystemFailure.getAdditionalNetworkResource(), AdditionalNetworkResource.gsmSCF);
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emAbsentSubscriberSMImpl.getExtensionContainer()));
-
-        p = getDataCallBarred();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.callBarred);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmCallBarred());
-        MAPErrorMessageCallBarred emCallBarred = em.getEmCallBarred();
+        
+        //Call Barred
+        result=parser.decode(Unpooled.wrappedBuffer(dataCallBarred));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.callBarred));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessage);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageCallBarred);
+        MAPErrorMessageCallBarred emCallBarred=(MAPErrorMessageCallBarred)re.getParameter();
         assertEquals(emCallBarred.getMapProtocolVersion(), 3);
         assertEquals(emCallBarred.getCallBarringCause(), CallBarringCause.operatorBarring);
         assertEquals((boolean) emCallBarred.getUnauthorisedMessageOriginator(), false);
-        assertNull(emCallBarred.getExtensionContainer());
-
-        p = getDataCallBarredFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.callBarred);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmCallBarred());
-        emCallBarred = em.getEmCallBarred();
+        assertNull(emCallBarred.getExtensionContainer());      
+        
+        //Call Barred FULL
+        result=parser.decode(Unpooled.wrappedBuffer(dataCallBarredFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.callBarred));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageCallBarred);
+        
+        emCallBarred=(MAPErrorMessageCallBarred)re.getParameter();
+        assertNotNull(emCallBarred.getExtensionContainer());        
+        innerContainer =  emCallBarred.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals(emCallBarred.getMapProtocolVersion(), 3);
         assertEquals(emCallBarred.getCallBarringCause(), CallBarringCause.operatorBarring);
-        assertEquals((boolean) emCallBarred.getUnauthorisedMessageOriginator(), true);
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emCallBarred.getExtensionContainer()));
-
-        p = getDataFacilityNotSupFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.facilityNotSupported);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmFacilityNotSup());
-        MAPErrorMessageFacilityNotSup emFacilityNotSup = em.getEmFacilityNotSup();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emFacilityNotSup.getExtensionContainer()));
+        assertEquals((boolean) emCallBarred.getUnauthorisedMessageOriginator(), true);   
+        
+        //Facility Not Supported
+        result=parser.decode(Unpooled.wrappedBuffer(dataFacilityNotSupFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.facilityNotSupported));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageFacilityNotSup);
+        
+        MAPErrorMessageFacilityNotSup emFacilityNotSup=(MAPErrorMessageFacilityNotSup)re.getParameter();
+        assertNotNull(emFacilityNotSup.getExtensionContainer());        
+        innerContainer =  emFacilityNotSup.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals((boolean) emFacilityNotSup.getShapeOfLocationEstimateNotSupported(), true);
         assertEquals((boolean) emFacilityNotSup.getNeededLcsCapabilityNotSupportedInServingNode(), true);
-
-        p = getDataUnknownSubscriberFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.unknownSubscriber);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmUnknownSubscriber());
-        MAPErrorMessageUnknownSubscriber emUnknownSubscriber = em.getEmUnknownSubscriber();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emUnknownSubscriber.getExtensionContainer()));
+        
+        //Unknown Subscriber
+        result=parser.decode(Unpooled.wrappedBuffer(dataUnknownSubscriberFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.unknownSubscriber));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageUnknownSubscriber);
+        
+        MAPErrorMessageUnknownSubscriber emUnknownSubscriber=(MAPErrorMessageUnknownSubscriber)re.getParameter();
+        assertNotNull(emUnknownSubscriber.getExtensionContainer());        
+        innerContainer =  emUnknownSubscriber.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals(emUnknownSubscriber.getUnknownSubscriberDiagnostic(), UnknownSubscriberDiagnostic.gprsSubscriptionUnknown);
-
-        p = getDataSubscriberBusyForMTSMSFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.subscriberBusyForMTSMS);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmSubscriberBusyForMtSms());
-        MAPErrorMessageSubscriberBusyForMtSms emSubscriberBusyForMtSms = em.getEmSubscriberBusyForMtSms();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emSubscriberBusyForMtSms.getExtensionContainer()));
+        
+        //Subscriber Busy For MT SMS
+        result=parser.decode(Unpooled.wrappedBuffer(dataSubscriberBusyForMTSMSFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.subscriberBusyForMTSMS));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageSubscriberBusyForMtSms);
+        
+        MAPErrorMessageSubscriberBusyForMtSms emSubscriberBusyForMtSms=(MAPErrorMessageSubscriberBusyForMtSms)re.getParameter();
+        assertNotNull(emSubscriberBusyForMtSms.getExtensionContainer());        
+        innerContainer =  emSubscriberBusyForMtSms.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals((boolean) emSubscriberBusyForMtSms.getGprsConnectionSuspended(), true);
-
-        p = getDataAbsentSubscriberFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.absentSubscriber);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmAbsentSubscriber());
-        MAPErrorMessageAbsentSubscriber emAbsentSubscriber = em.getEmAbsentSubscriber();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emAbsentSubscriber.getExtensionContainer()));
+        
+        //Absent Subscriber
+        result=parser.decode(Unpooled.wrappedBuffer(dataAbsentSubscriberFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.absentSubscriber));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageAbsentSubscriber);
+        
+        MAPErrorMessageAbsentSubscriber emAbsentSubscriber=(MAPErrorMessageAbsentSubscriber)re.getParameter();
+        assertNotNull(emAbsentSubscriber.getExtensionContainer());        
+        innerContainer =  emAbsentSubscriber.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals(emAbsentSubscriber.getAbsentSubscriberReason(), AbsentSubscriberReason.purgedMS);
         assertNull(emAbsentSubscriber.getMwdSet());
-
-        p = getDataAbsentSubscriberV1();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.absentSubscriber);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmAbsentSubscriber());
-        emAbsentSubscriber = em.getEmAbsentSubscriber();
+        
+        //Absent Subscriber V1
+        result=parser.decode(Unpooled.wrappedBuffer(dataAbsentSubscriberV1));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.absentSubscriber));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessage);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageAbsentSubscriber1Impl);
+        emAbsentSubscriber=(MAPErrorMessageAbsentSubscriber1Impl)re.getParameter();
         assertNull(emAbsentSubscriber.getExtensionContainer());
         assertNull(emAbsentSubscriber.getAbsentSubscriberReason());
-        assertTrue(emAbsentSubscriber.getMwdSet());
-
-        p = getDataUnauthorizedLCSClientFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.unauthorizedLCSClient);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmUnauthorizedLCSClient());
-        MAPErrorMessageUnauthorizedLCSClient emUnauthorizedLCSClient = em.getEmUnauthorizedLCSClient();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emUnauthorizedLCSClient.getExtensionContainer()));
-        assertEquals(emUnauthorizedLCSClient.getUnauthorizedLCSClientDiagnostic(),
-                UnauthorizedLCSClientDiagnostic.callToClientNotSetup);
-
-        p = getDataPositionMethodFailureFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.positionMethodFailure);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmPositionMethodFailure());
-        MAPErrorMessagePositionMethodFailure emPositionMethodFailure = em.getEmPositionMethodFailure();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emPositionMethodFailure.getExtensionContainer()));
-        assertEquals(emPositionMethodFailure.getPositionMethodFailureDiagnostic(),
-                PositionMethodFailureDiagnostic.locationProcedureNotCompleted);
-
-        p = getDataBusySubscriberFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.busySubscriber);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmBusySubscriber());
-        MAPErrorMessageBusySubscriber emBusySubscriber = em.getEmBusySubscriber();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emBusySubscriber.getExtensionContainer()));
+        assertTrue(emAbsentSubscriber.getMwdSet()); 
+        
+        //Unauthorized LCS Client
+        result=parser.decode(Unpooled.wrappedBuffer(dataUnauthorizedLCSClientFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.unauthorizedLCSClient));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageUnauthorizedLCSClient);
+        
+        MAPErrorMessageUnauthorizedLCSClient emUnauthorizedLCSClient=(MAPErrorMessageUnauthorizedLCSClient)re.getParameter();
+        assertNotNull(emUnauthorizedLCSClient.getExtensionContainer());        
+        innerContainer =  emUnauthorizedLCSClient.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
+        assertEquals(emUnauthorizedLCSClient.getUnauthorizedLCSClientDiagnostic(),UnauthorizedLCSClientDiagnostic.callToClientNotSetup);
+        
+        //Position Method Failure
+        result=parser.decode(Unpooled.wrappedBuffer(dataPositionMethodFailureFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.positionMethodFailure));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessagePositionMethodFailure);
+        
+        MAPErrorMessagePositionMethodFailure emPositionMethodFailure=(MAPErrorMessagePositionMethodFailure)re.getParameter();
+        assertNotNull(emPositionMethodFailure.getExtensionContainer());        
+        innerContainer =  emPositionMethodFailure.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
+        assertEquals(emPositionMethodFailure.getPositionMethodFailureDiagnostic(),PositionMethodFailureDiagnostic.locationProcedureNotCompleted);
+        
+        //Busy Subscriber
+        result=parser.decode(Unpooled.wrappedBuffer(dataBusySubscriberFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.busySubscriber));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageBusySubscriber);
+        
+        MAPErrorMessageBusySubscriber emBusySubscriber=(MAPErrorMessageBusySubscriber)re.getParameter();
+        assertNotNull(emBusySubscriber.getExtensionContainer());        
+        innerContainer =  emBusySubscriber.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertTrue(emBusySubscriber.getCcbsPossible());
         assertTrue(emBusySubscriber.getCcbsBusy());
-
-        p = getDataCUGRejectFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.cugReject);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmCUGReject());
-        MAPErrorMessageCUGReject emCUGReject = em.getEmCUGReject();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emCUGReject.getExtensionContainer()));
+        
+        //CUG Reject
+        result=parser.decode(Unpooled.wrappedBuffer(dataCUGRejectFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.cugReject));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageCUGReject);
+        
+        MAPErrorMessageCUGReject emCUGReject=(MAPErrorMessageCUGReject)re.getParameter();
+        assertNotNull(emCUGReject.getExtensionContainer());        
+        innerContainer =  emCUGReject.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals(emCUGReject.getCUGRejectCause(), CUGRejectCause.subscriberNotMemberOfCUG);
-
-        p = getDataRoamingNotAllowedFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.roamingNotAllowed);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmRoamingNotAllowed());
-        MAPErrorMessageRoamingNotAllowed emRoamingNotAllowed = em.getEmRoamingNotAllowed();
-        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emRoamingNotAllowed.getExtensionContainer()));
+        
+        //Roaming Not Allowed
+        result=parser.decode(Unpooled.wrappedBuffer(dataRoamingNotAllowedFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.roamingNotAllowed));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageRoamingNotAllowed);
+        
+        MAPErrorMessageRoamingNotAllowed emRoamingNotAllowed=(MAPErrorMessageRoamingNotAllowed)re.getParameter();
+        assertNotNull(emRoamingNotAllowed.getExtensionContainer());        
+        innerContainer =  emRoamingNotAllowed.getExtensionContainer();
+        assertNotNull(innerContainer.getPrivateExtensionList());
+        assertNotNull(innerContainer.getPcsExtensions());
+        assertEquals(innerContainer.getPrivateExtensionList().size(),3);
+        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
+        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        
+        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        
         assertEquals(emRoamingNotAllowed.getRoamingNotAllowedCause(), RoamingNotAllowedCause.plmnRoamingNotAllowed);
-        assertEquals(emRoamingNotAllowed.getAdditionalRoamingNotAllowedCause(),
-                AdditionalRoamingNotAllowedCause.supportedRATTypesNotAllowed);
-
-        p = getDataSsErrorStatusFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.ssErrorStatus);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmSsErrorStatus());
-        MAPErrorMessageSsErrorStatus emSsErrorStatus = em.getEmSsErrorStatus();
+        assertEquals(emRoamingNotAllowed.getAdditionalRoamingNotAllowedCause(),AdditionalRoamingNotAllowedCause.supportedRATTypesNotAllowed);
+        
+        //SS Error Status
+        result=parser.decode(Unpooled.wrappedBuffer(dataSsErrorStatusFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.ssErrorStatus));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessage);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageSsErrorStatusImpl);
+        MAPErrorMessageSsErrorStatusImpl emSsErrorStatus=(MAPErrorMessageSsErrorStatusImpl)re.getParameter();
         assertFalse(emSsErrorStatus.getQBit());
         assertTrue(emSsErrorStatus.getPBit());
         assertTrue(emSsErrorStatus.getRBit());
         assertFalse(emSsErrorStatus.getABit());
-        assertEquals(emSsErrorStatus.getData(), 6);
-
-        p = getDataSsIncompatibilityFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.ssIncompatibility);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmSsIncompatibility());
-        MAPErrorMessageSsIncompatibility emSsIncompatibility = em.getEmSsIncompatibility();
+        assertEquals(emSsErrorStatus.getData(), 6); 
+        
+        //SS Incompatibility
+        result=parser.decode(Unpooled.wrappedBuffer(dataSsIncompatibilityFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.ssIncompatibility));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessage);
+        assertTrue(re.getParameter() instanceof MAPErrorMessageSsIncompatibilityImpl);
+        MAPErrorMessageSsIncompatibilityImpl emSsIncompatibility=(MAPErrorMessageSsIncompatibilityImpl)re.getParameter();
         assertEquals(emSsIncompatibility.getSSCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
-        assertEquals(emSsIncompatibility.getBasicService().getTeleservice().getTeleserviceCodeValue(),
-                TeleserviceCodeValue.telephony);
+        assertEquals(emSsIncompatibility.getBasicService().getTeleservice().getTeleserviceCodeValue(),TeleserviceCodeValue.telephony);
         assertTrue(emSsIncompatibility.getSSStatus().getQBit());
         assertFalse(emSsIncompatibility.getSSStatus().getPBit());
         assertFalse(emSsIncompatibility.getSSStatus().getRBit());
         assertTrue(emSsIncompatibility.getSSStatus().getABit());
-
-        p = getDataPwRegistrationFailureFull();
-        em = (MAPErrorMessageImpl) fact.createMessageFromErrorCode((long) MAPErrorCode.pwRegistrationFailure);
-        ais = new AsnInputStream(p.getData(), p.getTagClass(), p.isPrimitive(), p.getTag());
-        em.decodeData(ais, p.getData().length);
-        assertTrue(em.isEmPwRegistrationFailure());
-        MAPErrorMessagePwRegistrationFailure emPwRegistrationFailure = em.getEmPwRegistrationFailure();
+        
+        //Pw Registration Failure
+        result=parser.decode(Unpooled.wrappedBuffer(dataPwRegistrationFailureFull));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReturnErrorImpl);
+        re = (ReturnErrorImpl)result.getResult();
+        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertNotNull(re.getErrorCode());
+        assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.pwRegistrationFailure));
+        assertNotNull(re.getParameter());
+        assertTrue(re.getParameter() instanceof MAPErrorMessage);
+        assertTrue(re.getParameter() instanceof MAPErrorMessagePwRegistrationFailureImpl);
+        MAPErrorMessagePwRegistrationFailureImpl emPwRegistrationFailure=(MAPErrorMessagePwRegistrationFailureImpl)re.getParameter();
         assertEquals(emPwRegistrationFailure.getPWRegistrationFailureCause(), PWRegistrationFailureCause.newPasswordsMismatch);
-    }
-
-    @Test(groups = { "functional.encode", "dialog.message" })
+	}
+	
+	@Test(groups = { "functional.encode", "dialog.message" })
     public void testEncode() throws Exception {
-
-        MAPErrorMessageFactoryImpl fact = new MAPErrorMessageFactoryImpl();
-
-        MAPErrorMessageImpl em = (MAPErrorMessageImpl) fact.createMAPErrorMessageExtensionContainer(36L,
-                MAPExtensionContainerTest.GetTestExtensionContainer());
-        AsnOutputStream aos = new AsnOutputStream();
-        em.encodeData(aos);
-        Parameter p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataExtContainerFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageSMDeliveryFailure(3,
-                SMEnumeratedDeliveryFailureCause.invalidSMEAddress, null, null);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataSmDeliveryFailure(), p);
-
-        MAPErrorMessageSMDeliveryFailure smDeliveryFailure = fact.createMAPErrorMessageSMDeliveryFailure(3,
-                SMEnumeratedDeliveryFailureCause.scCongestion, null, MAPExtensionContainerTest.GetTestExtensionContainer());
-        FailureCause failureCause = new FailureCauseImpl(213);
-        ProtocolIdentifier protocolIdentifier = new ProtocolIdentifierImpl(127);
-        DataCodingScheme dataCodingScheme = new DataCodingSchemeImpl(246);
-        UserData userData = new UserDataImpl(uData, dataCodingScheme, uData.length, false, null);
-        SmsDeliverReportTpdu tpdu = new SmsDeliverReportTpduImpl(failureCause, protocolIdentifier, userData);
-        smDeliveryFailure.setSmsDeliverReportTpdu(tpdu);
-        em = (MAPErrorMessageImpl) smDeliveryFailure;
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataSmDeliveryFailureFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageSMDeliveryFailure(1,
-                SMEnumeratedDeliveryFailureCause.equipmentProtocolError, null, null);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataSmDeliveryFailureV1(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageAbsentSubscriberSM(AbsentSubscriberDiagnosticSM.IMSIDetached,
-                null, null);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataAbsentSubscriberSM(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageAbsentSubscriberSM(
-                AbsentSubscriberDiagnosticSM.NoPagingResponseViaTheMSC, MAPExtensionContainerTest.GetTestExtensionContainer(),
-                AbsentSubscriberDiagnosticSM.GPRSDetached);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataAbsentSubscriberSMFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageSystemFailure(2, NetworkResource.plmn, null, null);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataSystemFailure(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageSystemFailure(3, NetworkResource.vlr,
-                AdditionalNetworkResource.gsmSCF, MAPExtensionContainerTest.GetTestExtensionContainer());
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataSystemFailureFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageCallBarred(3L, CallBarringCause.operatorBarring, null, null);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataCallBarred(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageCallBarred(3L, CallBarringCause.operatorBarring,
-                MAPExtensionContainerTest.GetTestExtensionContainer(), true);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataCallBarredFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageFacilityNotSup(
-                MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataFacilityNotSupFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageUnknownSubscriber(
-                MAPExtensionContainerTest.GetTestExtensionContainer(), UnknownSubscriberDiagnostic.gprsSubscriptionUnknown);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataUnknownSubscriberFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageSubscriberBusyForMtSms(
-                MAPExtensionContainerTest.GetTestExtensionContainer(), true);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataSubscriberBusyForMTSMSFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageAbsentSubscriber(
-                MAPExtensionContainerTest.GetTestExtensionContainer(), AbsentSubscriberReason.purgedMS);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataAbsentSubscriberFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageAbsentSubscriber(true);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataAbsentSubscriberV1(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageUnauthorizedLCSClient(
-                UnauthorizedLCSClientDiagnostic.callToClientNotSetup, MAPExtensionContainerTest.GetTestExtensionContainer());
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataUnauthorizedLCSClientFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessagePositionMethodFailure(
-                PositionMethodFailureDiagnostic.locationProcedureNotCompleted,
-                MAPExtensionContainerTest.GetTestExtensionContainer());
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataPositionMethodFailureFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageBusySubscriber(
-                MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataBusySubscriberFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageCUGReject(CUGRejectCause.subscriberNotMemberOfCUG,
-                MAPExtensionContainerTest.GetTestExtensionContainer());
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataCUGRejectFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageRoamingNotAllowed(RoamingNotAllowedCause.plmnRoamingNotAllowed,
-                MAPExtensionContainerTest.GetTestExtensionContainer(),
-                AdditionalRoamingNotAllowedCause.supportedRATTypesNotAllowed);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataRoamingNotAllowedFull(), p);
-
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageSsErrorStatus(false, true, true, false);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataSsErrorStatusFull(), p);
-
+    	ASNParser parser=new ASNParser();
+    	parser.loadClass(ReturnErrorImpl.class);
+    	ErrorCodeImpl errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.unexpectedDataValue);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageExtensionContainerImpl.class, MAPErrorMessageExtensionContainerImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSMDeliveryFailure1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailureImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailure1Impl.class);
+        
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriberSMImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriberSMImpl.class, MAPErrorMessageAbsentSubscriberSMImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.systemFailure);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSytemFailure1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSytemFailure1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSystemFailureImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.callBarred);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCallBarred1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarred1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarredImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.facilityNotSupported);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageFacilityNotSupImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageFacilityNotSupImpl.class, MAPErrorMessageFacilityNotSupImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.unknownSubscriber);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnknownSubscriberImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageUnknownSubscriberImpl.class, MAPErrorMessageUnknownSubscriberImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.subscriberBusyForMTSMS);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSubscriberBusyForMtSmsImpl.class, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriber);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriber1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriber1Impl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriberImpl.class);
+        
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.unauthorizedLCSClient);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnauthorizedLCSClientImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageUnauthorizedLCSClientImpl.class, MAPErrorMessageUnauthorizedLCSClientImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.positionMethodFailure);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePositionMethodFailureImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessagePositionMethodFailureImpl.class, MAPErrorMessagePositionMethodFailureImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.busySubscriber);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageBusySubscriberImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageBusySubscriberImpl.class, MAPErrorMessageBusySubscriberImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.cugReject);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCUGRejectImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageCUGRejectImpl.class, MAPErrorMessageCUGRejectImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.roamingNotAllowed);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageRoamingNotAllowedImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageRoamingNotAllowedImpl.class, MAPErrorMessageRoamingNotAllowedImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.ssErrorStatus);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsErrorStatusImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSsErrorStatusImpl.class, MAPErrorMessageSsErrorStatusImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.ssIncompatibility);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsIncompatibilityImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessageSsIncompatibilityImpl.class, MAPErrorMessageSsIncompatibilityImpl.class);
+    	
+    	errorCode=new ErrorCodeImpl();
+    	errorCode.setLocalErrorCode((long)MAPErrorCode.pwRegistrationFailure);
+    	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePwRegistrationFailureImpl.class);
+    	parser.registerAlternativeClassMapping(MAPErrorMessagePwRegistrationFailureImpl.class, MAPErrorMessagePwRegistrationFailureImpl.class);
+    	
+    	MAPErrorMessageFactoryImpl fact = new MAPErrorMessageFactoryImpl();
+        
+        //EXT ERROR
+        MAPErrorMessage em = fact.createMAPErrorMessageExtensionContainer((long)MAPErrorCode.unexpectedDataValue,MAPExtensionContainerTest.GetTestExtensionContainer());
+        ReturnErrorImpl re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ErrorCodeImpl ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.unexpectedDataValue);
+        re.setErrorCode(ec);
+        
+        ByteBuf buffer=parser.encode(re);
+        byte[] data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataExtContainerFull));
+        
+        //SM FAILURE
+        em = fact.createMAPErrorMessageSMDeliveryFailure((long)MAPErrorCode.smDeliveryFailure,SMEnumeratedDeliveryFailureCause.invalidSMEAddress, null, null);
+        re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataSMDeliveryFailure));  
+        
+        //SM FAILURE FULL
+        em = fact.createMAPErrorMessageSMDeliveryFailure(3,SMEnumeratedDeliveryFailureCause.scCongestion, null, MAPExtensionContainerTest.GetTestExtensionContainer());
+        FailureCauseImpl failureCause = new FailureCauseImpl(213);
+        ProtocolIdentifierImpl protocolIdentifier = new ProtocolIdentifierImpl(127);
+        DataCodingSchemeImpl dataCodingScheme = new DataCodingSchemeImpl(246);
+        UserDataImpl userData = new UserDataImpl(uData, dataCodingScheme, uData.length, false, null);
+        SmsDeliverReportTpduImpl tpdu = new SmsDeliverReportTpduImpl(failureCause, protocolIdentifier, userData);
+        ((MAPErrorMessageSMDeliveryFailure)em).setSmsDeliverReportTpdu(tpdu);
+        re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataSMDeliveryFailureFull)); 
+        
+        //SM FAILURE V1
+        em = fact.createMAPErrorMessageSMDeliveryFailure(1,SMEnumeratedDeliveryFailureCause.equipmentProtocolError, null, null);
+        re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataSMDeliveryFailureV1));  
+        
+        //Absent Subscriber SM
+        em = fact.createMAPErrorMessageAbsentSubscriberSM(AbsentSubscriberDiagnosticSM.IMSIDetached, null, null);
+        re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataAbsentSubscriberSM)); 
+        
+        //Absent Subscriber SM Full
+        em = fact.createMAPErrorMessageAbsentSubscriberSM(AbsentSubscriberDiagnosticSM.NoPagingResponseViaTheMSC, MAPExtensionContainerTest.GetTestExtensionContainer(),AbsentSubscriberDiagnosticSM.GPRSDetached);
+        re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataAbsentSubscriberSMFull)); 
+        
+        //System Failure
+        em = fact.createMAPErrorMessageSystemFailure(2, NetworkResource.plmn, null, null);
+        re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.systemFailure);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataSystemFailure));
+        
+        //System Failure Full
+        em = fact.createMAPErrorMessageSystemFailure(3, NetworkResource.vlr,AdditionalNetworkResource.gsmSCF, MAPExtensionContainerTest.GetTestExtensionContainer());
+        re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.systemFailure);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataSystemFailureFull)); 
+        
+        //Call Barred
+        em = fact.createMAPErrorMessageCallBarred(3L, CallBarringCause.operatorBarring, null, null);re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.callBarred);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataCallBarred));  
+        
+        //Call Barred Full
+        em = fact.createMAPErrorMessageCallBarred(3L, CallBarringCause.operatorBarring, MAPExtensionContainerTest.GetTestExtensionContainer(), true);
+        re=new ReturnErrorImpl();
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.callBarred);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataCallBarredFull)); 
+        
+        //Facility Not Supported
+        em = fact.createMAPErrorMessageFacilityNotSup(MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.facilityNotSupported);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataFacilityNotSupFull));  
+        
+        //Unknown Subscriber
+        em = fact.createMAPErrorMessageUnknownSubscriber(MAPExtensionContainerTest.GetTestExtensionContainer(), UnknownSubscriberDiagnostic.gprsSubscriptionUnknown);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.unknownSubscriber);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataUnknownSubscriberFull));  
+        
+        //Subscriber Busy For MT SMS
+        em = fact.createMAPErrorMessageSubscriberBusyForMtSms(MAPExtensionContainerTest.GetTestExtensionContainer(), true);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.subscriberBusyForMTSMS);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataSubscriberBusyForMTSMSFull));  
+        
+        //Absent Subscriber
+        em = fact.createMAPErrorMessageAbsentSubscriber(MAPExtensionContainerTest.GetTestExtensionContainer(), AbsentSubscriberReason.purgedMS);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.absentSubscriber);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataAbsentSubscriberFull)); 
+        
+        //Absent Subscriber V1
+        em = fact.createMAPErrorMessageAbsentSubscriber(true);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.absentSubscriber);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataAbsentSubscriberV1));
+        
+        //Unauthorized LCS Client
+        em = fact.createMAPErrorMessageUnauthorizedLCSClient(UnauthorizedLCSClientDiagnostic.callToClientNotSetup, MAPExtensionContainerTest.GetTestExtensionContainer());
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.unauthorizedLCSClient);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataUnauthorizedLCSClientFull));   
+        
+        //Position Method Failure
+        em = fact.createMAPErrorMessagePositionMethodFailure(PositionMethodFailureDiagnostic.locationProcedureNotCompleted,MAPExtensionContainerTest.GetTestExtensionContainer());
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.positionMethodFailure);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataPositionMethodFailureFull));
+        
+        //Busy Subscriber
+        em = fact.createMAPErrorMessageBusySubscriber(MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.busySubscriber);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataBusySubscriberFull));
+        
+        //CUG Reject
+        em = fact.createMAPErrorMessageCUGReject(CUGRejectCause.subscriberNotMemberOfCUG,MAPExtensionContainerTest.GetTestExtensionContainer());
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.cugReject);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataCUGRejectFull));
+        
+        //Roaming Not Allowed
+        em = fact.createMAPErrorMessageRoamingNotAllowed(RoamingNotAllowedCause.plmnRoamingNotAllowed,MAPExtensionContainerTest.GetTestExtensionContainer(),AdditionalRoamingNotAllowedCause.supportedRATTypesNotAllowed);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.roamingNotAllowed);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataRoamingNotAllowedFull));
+        
+        //SS Error Status
+        em = fact.createMAPErrorMessageSsErrorStatus(false, true, true, false);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+        
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.ssErrorStatus);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataSsErrorStatusFull));
+        
+        //SS incompatibility
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
-        TeleserviceCode teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.telephony);
-        BasicServiceCode basicService = new BasicServiceCodeImpl(teleservice);
-        SSStatus ssStatus = new SSStatusImpl(true, false, false, true);
-        em = (MAPErrorMessageImpl) fact.createMAPErrorMessageSsIncompatibility(ssCode, basicService, ssStatus);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataSsIncompatibilityFull(), p);
-
-        em = (MAPErrorMessageImpl) fact
-                .createMAPErrorMessagePwRegistrationFailure(PWRegistrationFailureCause.newPasswordsMismatch);
-        aos = new AsnOutputStream();
-        em.encodeData(aos);
-        p = new ParameterImpl();
-        p.setTagClass(em.getTagClass());
-        p.setTag(em.getTag());
-        p.setPrimitive(em.getIsPrimitive());
-        p.setData(aos.toByteArray());
-        assertParameter(getDataPwRegistrationFailureFull(), p);
-    }
-
-    /*@Test(groups = { "functional.xml.serialize", "dialog.message" })
-    public void testXMLSerialize() throws Exception {
-        MAPErrorMessageFactoryImpl fact = new MAPErrorMessageFactoryImpl();
-
-        // MAPErrorMessageAbsentSubscriber
-        MAPErrorMessageAbsentSubscriberImpl em = (MAPErrorMessageAbsentSubscriberImpl) fact
-                .createMAPErrorMessageAbsentSubscriber(MAPExtensionContainerTest.GetTestExtensionContainer(),
-                        AbsentSubscriberReason.purgedMS);
-        em.setMwdSet(true);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em, "mapErrorMessageAbsentSubscriber", MAPErrorMessageAbsentSubscriberImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageAbsentSubscriberImpl copy = reader.read("mapErrorMessageAbsentSubscriber",
-                MAPErrorMessageAbsentSubscriberImpl.class);
-        assertEquals(copy.getAbsentSubscriberReason(), em.getAbsentSubscriberReason());
-        assertEquals(copy.getExtensionContainer(), em.getExtensionContainer());
-        assertEquals(copy.getMwdSet(), em.getMwdSet());
-        // assertNull(em.getMwdSet());
-
-        // MAPErrorMessageAbsentSubscriberSM
-        MAPErrorMessageAbsentSubscriberSMImpl em1 = (MAPErrorMessageAbsentSubscriberSMImpl) fact
-                .createMAPErrorMessageAbsentSubscriberSM(AbsentSubscriberDiagnosticSM.IMSIDetached,
-                        MAPExtensionContainerTest.GetTestExtensionContainer(), AbsentSubscriberDiagnosticSM.MSPurgedForGPRS);
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em1, "mapErrorMessageAbsentSubscriberSM", MAPErrorMessageAbsentSubscriberSMImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageAbsentSubscriberSMImpl copy1 = reader.read("mapErrorMessageAbsentSubscriberSM",
-                MAPErrorMessageAbsentSubscriberSMImpl.class);
-        assertEquals(copy1.getAbsentSubscriberDiagnosticSM(), em1.getAbsentSubscriberDiagnosticSM());
-        assertEquals(copy1.getAdditionalAbsentSubscriberDiagnosticSM(), em1.getAdditionalAbsentSubscriberDiagnosticSM());
-        assertEquals(copy1.getExtensionContainer(), em1.getExtensionContainer());
-
-        // MAPErrorMessageBusySubscriber
-        MAPErrorMessageBusySubscriberImpl em2 = (MAPErrorMessageBusySubscriberImpl) fact.createMAPErrorMessageBusySubscriber(
-                MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em2, "mapErrorMessageBusySubscriber", MAPErrorMessageBusySubscriberImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageBusySubscriberImpl copy2 = reader.read("mapErrorMessageBusySubscriber",
-                MAPErrorMessageBusySubscriberImpl.class);
-        assertEquals(copy2.getCcbsPossible(), em2.getCcbsPossible());
-        assertEquals(copy2.getCcbsBusy(), em2.getCcbsBusy());
-
-        // MAPErrorMessageCallBarred
-        MAPErrorMessageCallBarredImpl em3 = (MAPErrorMessageCallBarredImpl) fact.createMAPErrorMessageCallBarred(3L,
-                CallBarringCause.operatorBarring, null, null);
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em3, "mapErrorMessageCallBarred", MAPErrorMessageCallBarredImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageCallBarredImpl copy3 = reader.read("mapErrorMessageCallBarred", MAPErrorMessageCallBarredImpl.class);
-        assertEquals(copy3.getMapProtocolVersion(), em3.getMapProtocolVersion());
-        assertEquals(copy3.getCallBarringCause(), em3.getCallBarringCause());
-
-        // MAPErrorMessageCUGReject
-        MAPErrorMessageCUGRejectImpl em4 = (MAPErrorMessageCUGRejectImpl) fact.createMAPErrorMessageCUGReject(
-                CUGRejectCause.subscriberNotMemberOfCUG, MAPExtensionContainerTest.GetTestExtensionContainer());
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em4, "mapErrorMessageCUGReject", MAPErrorMessageCUGRejectImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageCUGRejectImpl copy4 = reader.read("mapErrorMessageCUGReject", MAPErrorMessageCUGRejectImpl.class);
-        assertEquals(copy4.getCUGRejectCause(), em4.getCUGRejectCause());
-        assertEquals(copy4.getExtensionContainer(), em4.getExtensionContainer());
-
-        // MAPErrorMessageExtensionContainer
-        MAPErrorMessageExtensionContainerImpl em5 = (MAPErrorMessageExtensionContainerImpl) fact
-                .createMAPErrorMessageExtensionContainer(36L, MAPExtensionContainerTest.GetTestExtensionContainer());
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em5, "mapErrorMessageExtensionContainer", MAPErrorMessageExtensionContainerImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageExtensionContainerImpl copy5 = reader.read("mapErrorMessageExtensionContainer",
-                MAPErrorMessageExtensionContainerImpl.class);
-        assertEquals(copy5.getExtensionContainer(), em5.getExtensionContainer());
-        assertEquals(copy5.getErrorCode(), em5.getErrorCode());
-
-        // MAPErrorMessageFacilityNotSup
-        MAPErrorMessageFacilityNotSupImpl em6 = (MAPErrorMessageFacilityNotSupImpl) fact.createMAPErrorMessageFacilityNotSup(
-                MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em6, "mapErrorMessageFacilityNotSup", MAPErrorMessageFacilityNotSupImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageFacilityNotSupImpl copy6 = reader.read("mapErrorMessageFacilityNotSup",
-                MAPErrorMessageFacilityNotSupImpl.class);
-        assertEquals(copy6.getShapeOfLocationEstimateNotSupported(), em6.getShapeOfLocationEstimateNotSupported());
-        assertEquals(copy6.getNeededLcsCapabilityNotSupportedInServingNode(),
-                em6.getNeededLcsCapabilityNotSupportedInServingNode());
-        assertEquals(copy6.getErrorCode(), em6.getErrorCode());
-        assertEquals(copy6.getExtensionContainer(), em6.getExtensionContainer());
-
-        // MAPErrorMessageParameterless
-        MAPErrorMessageParameterlessImpl em7 = (MAPErrorMessageParameterlessImpl) fact.createMAPErrorMessageParameterless(1l);
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em7, "mapErrorMessageParameterless", MAPErrorMessageParameterlessImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageParameterlessImpl copy7 = reader.read("mapErrorMessageParameterless",
-                MAPErrorMessageParameterlessImpl.class);
-        assertEquals(copy7.isEmParameterless(), em7.isEmParameterless());
-        assertEquals(copy7.getErrorCode(), em7.getErrorCode());
-
-        // MAPErrorMessagePositionMethodFailure
-        MAPErrorMessagePositionMethodFailureImpl em8 = (MAPErrorMessagePositionMethodFailureImpl) fact
-                .createMAPErrorMessagePositionMethodFailure(PositionMethodFailureDiagnostic.locationProcedureNotCompleted,
-                        MAPExtensionContainerTest.GetTestExtensionContainer());
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em8, "mapErrorMessagePositionMethodFailure", MAPErrorMessagePositionMethodFailureImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessagePositionMethodFailureImpl copy8 = reader.read("mapErrorMessagePositionMethodFailure",
-                MAPErrorMessagePositionMethodFailureImpl.class);
-        assertEquals(copy8.getErrorCode(), em8.getErrorCode());
-        assertEquals(copy8.getPositionMethodFailureDiagnostic(), em8.getPositionMethodFailureDiagnostic());
-        assertEquals(copy8.getExtensionContainer(), em8.getExtensionContainer());
-
-        // MAPErrorMessagePwRegistrationFailure
-        MAPErrorMessagePwRegistrationFailureImpl em9 = (MAPErrorMessagePwRegistrationFailureImpl) fact
-                .createMAPErrorMessagePwRegistrationFailure(PWRegistrationFailureCause.newPasswordsMismatch);
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em9, "mapErrorMessagePwRegistrationFailure", MAPErrorMessagePwRegistrationFailureImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessagePwRegistrationFailureImpl copy9 = reader.read("mapErrorMessagePwRegistrationFailure",
-                MAPErrorMessagePwRegistrationFailureImpl.class);
-        assertEquals(copy9.getErrorCode(), em9.getErrorCode());
-        assertEquals(copy9.getPWRegistrationFailureCause(), em9.getPWRegistrationFailureCause());
-
-        // AdditionalRoamingNotAllowedCause
-        MAPErrorMessageRoamingNotAllowedImpl em10 = (MAPErrorMessageRoamingNotAllowedImpl) fact
-                .createMAPErrorMessageRoamingNotAllowed(RoamingNotAllowedCause.plmnRoamingNotAllowed,
-                        MAPExtensionContainerTest.GetTestExtensionContainer(),
-                        AdditionalRoamingNotAllowedCause.supportedRATTypesNotAllowed);
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em10, "mapErrorMessageRoamingNotAllowed", MAPErrorMessageRoamingNotAllowedImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageRoamingNotAllowedImpl copy10 = reader.read("mapErrorMessageRoamingNotAllowed",
-                MAPErrorMessageRoamingNotAllowedImpl.class);
-        assertEquals(copy10.getErrorCode(), em10.getErrorCode());
-        assertEquals(copy10.getRoamingNotAllowedCause(), em10.getRoamingNotAllowedCause());
-        assertEquals(copy10.getAdditionalRoamingNotAllowedCause(), em10.getAdditionalRoamingNotAllowedCause());
-        assertEquals(copy10.getExtensionContainer(), em10.getExtensionContainer());
-
-        // MAPErrorMessageSMDeliveryFailureImpl
-        MAPErrorMessageSMDeliveryFailureImpl em11 = (MAPErrorMessageSMDeliveryFailureImpl) fact
-                .createMAPErrorMessageSMDeliveryFailure(3, SMEnumeratedDeliveryFailureCause.invalidSMEAddress, null, null);
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em11, "mapErrorMessageSMDeliveryFailure", MAPErrorMessageSMDeliveryFailureImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageSMDeliveryFailureImpl copy11 = reader.read("mapErrorMessageSMDeliveryFailure",
-                MAPErrorMessageSMDeliveryFailureImpl.class);
-        assertEquals(copy11.getErrorCode(), em11.getErrorCode());
-        assertEquals(copy11.getSMEnumeratedDeliveryFailureCause(), em11.getSMEnumeratedDeliveryFailureCause());
-        assertEquals(copy11.getMapProtocolVersion(), em11.getMapProtocolVersion());
-
-        MAPErrorMessageSMDeliveryFailure smDeliveryFailure = fact.createMAPErrorMessageSMDeliveryFailure(3,
-                SMEnumeratedDeliveryFailureCause.scCongestion, null, MAPExtensionContainerTest.GetTestExtensionContainer());
-        FailureCause failureCause = new FailureCauseImpl(213);
-        ProtocolIdentifier protocolIdentifier = new ProtocolIdentifierImpl(127);
-        DataCodingScheme dataCodingScheme = new DataCodingSchemeImpl(246);
-        UserData userData = new UserDataImpl(uData, dataCodingScheme, uData.length, false, null);
-        SmsDeliverReportTpdu tpdu = new SmsDeliverReportTpduImpl(failureCause, protocolIdentifier, userData);
-        smDeliveryFailure.setSmsDeliverReportTpdu(tpdu);
-        em11 = (MAPErrorMessageSMDeliveryFailureImpl) smDeliveryFailure;
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em11, "mapErrorMessageSMDeliveryFailure", MAPErrorMessageSMDeliveryFailureImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        copy11 = reader.read("mapErrorMessageSMDeliveryFailure", MAPErrorMessageSMDeliveryFailureImpl.class);
-        assertEquals(copy11.getErrorCode(), em11.getErrorCode());
-        assertEquals(copy11.getSMEnumeratedDeliveryFailureCause(), em11.getSMEnumeratedDeliveryFailureCause());
-        assertEquals(copy11.getMapProtocolVersion(), em11.getMapProtocolVersion());
-        assertEquals(copy11.getSignalInfo(), em11.getSignalInfo());
-
-        // MAPErrorMessageSsErrorStatus
-        MAPErrorMessageSsErrorStatusImpl em12 = (MAPErrorMessageSsErrorStatusImpl) fact.createMAPErrorMessageSsErrorStatus(
-                false, true, true, false);
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em12, "mapErrorMessageSsErrorStatus", MAPErrorMessageSsErrorStatusImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageSsErrorStatusImpl copy12 = reader.read("mapErrorMessageSsErrorStatus",
-                MAPErrorMessageSsErrorStatusImpl.class);
-        assertEquals(copy12.getErrorCode(), em12.getErrorCode());
-        assertEquals(copy12.getData(), em12.getData());
-        assertEquals(copy12.getQBit(), em12.getQBit());
-        assertEquals(copy12.getPBit(), em12.getPBit());
-        assertEquals(copy12.getRBit(), em12.getRBit());
-        assertEquals(copy12.getABit(), em12.getABit());
-
-        // MAPErrorMessageSsIncompatibility
-        SSCode ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
-        TeleserviceCode teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.telephony);
-        BasicServiceCode basicService = new BasicServiceCodeImpl(teleservice);
-        SSStatus ssStatus = new SSStatusImpl(true, false, false, true);
-        MAPErrorMessageSsIncompatibilityImpl em13 = (MAPErrorMessageSsIncompatibilityImpl) fact
-                .createMAPErrorMessageSsIncompatibility(ssCode, basicService, ssStatus);
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em13, "mapErrorMessageSsIncompatibility", MAPErrorMessageSsIncompatibilityImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageSsIncompatibilityImpl copy13 = reader.read("mapErrorMessageSsIncompatibility",
-                MAPErrorMessageSsIncompatibilityImpl.class);
-        assertEquals(copy13.getErrorCode(), em13.getErrorCode());
-        assertEquals(copy13.getSSCode(), em13.getSSCode());
-        assertEquals(copy13.getBasicService(), em13.getBasicService());
-
-        // MAPErrorMessageSubscriberBusyForMtSms
-        MAPErrorMessageSubscriberBusyForMtSmsImpl em14 = (MAPErrorMessageSubscriberBusyForMtSmsImpl) fact
-                .createMAPErrorMessageSubscriberBusyForMtSms(MAPExtensionContainerTest.GetTestExtensionContainer(), true);
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em14, "mapErrorMessageSubscriberBusyForMtSms", MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageSubscriberBusyForMtSmsImpl copy14 = reader.read("mapErrorMessageSubscriberBusyForMtSms",
-                MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
-        assertEquals(copy14.getErrorCode(), em14.getErrorCode());
-        assertEquals(copy14.getGprsConnectionSuspended(), em14.getGprsConnectionSuspended());
-
-        // MAPErrorMessageSystemFailure
-        MAPErrorMessageSystemFailureImpl em15 = (MAPErrorMessageSystemFailureImpl) fact.createMAPErrorMessageSystemFailure(2,
-                NetworkResource.plmn, null, null);
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em15, "mapErrorMessageSystemFailure", MAPErrorMessageSystemFailureImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageSystemFailureImpl copy15 = reader.read("mapErrorMessageSystemFailure",
-                MAPErrorMessageSystemFailureImpl.class);
-        assertEquals(copy15.getErrorCode(), em15.getErrorCode());
-        assertEquals(copy15.getMapProtocolVersion(), em15.getMapProtocolVersion());
-        assertEquals(copy15.getNetworkResource(), em15.getNetworkResource());
-        assertEquals(copy15.getAdditionalNetworkResource(), em15.getAdditionalNetworkResource());
-
-        // MAPErrorMessageUnauthorizedLCSClient
-        MAPErrorMessageUnauthorizedLCSClientImpl em16 = (MAPErrorMessageUnauthorizedLCSClientImpl) fact
-                .createMAPErrorMessageUnauthorizedLCSClient(UnauthorizedLCSClientDiagnostic.callToClientNotSetup,
-                        MAPExtensionContainerTest.GetTestExtensionContainer());
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em16, "mapErrorMessageUnauthorizedLCSClient", MAPErrorMessageUnauthorizedLCSClientImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageUnauthorizedLCSClientImpl copy16 = reader.read("mapErrorMessageUnauthorizedLCSClient",
-                MAPErrorMessageUnauthorizedLCSClientImpl.class);
-        assertEquals(copy16.getErrorCode(), em16.getErrorCode());
-        assertEquals(copy16.getUnauthorizedLCSClientDiagnostic(), em16.getUnauthorizedLCSClientDiagnostic());
-        assertEquals(copy16.getExtensionContainer(), em16.getExtensionContainer());
-
-        // MAPErrorMessageUnknownSubscriberImpl
-        MAPErrorMessageUnknownSubscriberImpl em17 = (MAPErrorMessageUnknownSubscriberImpl) fact
-                .createMAPErrorMessageUnknownSubscriber(MAPExtensionContainerTest.GetTestExtensionContainer(),
-                        UnknownSubscriberDiagnostic.gprsSubscriptionUnknown);
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(em17, "mapErrorMessageUnknownSubscriber", MAPErrorMessageUnknownSubscriberImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        MAPErrorMessageUnknownSubscriberImpl copy17 = reader.read("mapErrorMessageUnknownSubscriber",
-                MAPErrorMessageUnknownSubscriberImpl.class);
-        assertEquals(copy17.getErrorCode(), em17.getErrorCode());
-        assertEquals(copy17.getUnknownSubscriberDiagnostic(), em17.getUnknownSubscriberDiagnostic());
-        assertEquals(copy17.getExtensionContainer(), em17.getExtensionContainer());
-    }*/
-
-    private void assertParameter(Parameter p2, Parameter p1) {
-        assertNotNull(p1);
-        assertNotNull(p2);
-        assertEquals(p2.getTagClass(), p1.getTagClass());
-        assertEquals(p2.getTag(), p1.getTag());
-        assertEquals(p2.isPrimitive(), p1.isPrimitive());
-        assertTrue(Arrays.equals(p1.getData(), p2.getData()));
+        TeleserviceCodeImpl teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.telephony);
+        BasicServiceCodeImpl basicService = new BasicServiceCodeImpl(teleservice);
+        SSStatusImpl ssStatus = new SSStatusImpl(true, false, false, true);
+        em = fact.createMAPErrorMessageSsIncompatibility(ssCode, basicService, ssStatus);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+                
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.ssIncompatibility);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataSsIncompatibilityFull));
+        
+        //Pw Registration Failure
+        em = (MAPErrorMessageImpl) fact.createMAPErrorMessagePwRegistrationFailure(PWRegistrationFailureCause.newPasswordsMismatch);
+        re.setParameter(em);
+        re.setInvokeId(1L);
+                
+        ec=new ErrorCodeImpl();
+        ec.setLocalErrorCode((long)MAPErrorCode.pwRegistrationFailure);
+        re.setErrorCode(ec);
+        buffer=parser.encode(re);
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, dataPwRegistrationFailureFull));
     }
 }

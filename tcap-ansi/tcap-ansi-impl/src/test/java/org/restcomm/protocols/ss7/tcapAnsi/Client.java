@@ -32,7 +32,6 @@ import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.DialogImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;

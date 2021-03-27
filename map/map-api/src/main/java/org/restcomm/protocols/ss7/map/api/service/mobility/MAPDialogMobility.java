@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -240,9 +240,9 @@ public interface MAPDialogMobility extends MAPDialog {
     void addAuthenticationFailureReportResponse(long invokeId, MAPExtensionContainerImpl extensionContainer) throws MAPException;
 
     // -- Fault Recovery services
-    Long addResetRequest(NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, ArrayList<IMSIImpl> hlrList) throws MAPException;
+    Long addResetRequest(NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, List<IMSIImpl> hlrList) throws MAPException;
 
-    Long addResetRequest(int customInvokeTimeout, NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, ArrayList<IMSIImpl> hlrList) throws MAPException;
+    Long addResetRequest(int customInvokeTimeout, NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, List<IMSIImpl> hlrList) throws MAPException;
 
     Long addForwardCheckSSIndicationRequest() throws MAPException;
 
@@ -280,13 +280,13 @@ public interface MAPDialogMobility extends MAPDialog {
     void addAnyTimeSubscriptionInterrogationResponse(long invokeId, CallForwardingDataImpl callForwardingData, CallBarringDataImpl callBarringData, ODBInfoImpl odbInfo,
             CAMELSubscriptionInfoImpl camelSubscriptionInfo, SupportedCamelPhasesImpl supportedVlrCamelPhases, SupportedCamelPhasesImpl supportedSgsnCamelPhases,
             MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIsInVlr, OfferedCamel4CSIsImpl offeredCamel4CSIsInSgsn,
-            ArrayList<MSISDNBSImpl> msisdnBsList, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl callWaitingData,
+            List<MSISDNBSImpl> msisdnBsList, List<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl callWaitingData,
             CallHoldDataImpl callHoldData, ClipDataImpl clipData, ClirDataImpl clirData, EctDataImpl ectData) throws MAPException;
 
     void addAnyTimeSubscriptionInterrogationResponse_NonLast(long invokeId, CallForwardingDataImpl callForwardingData, CallBarringDataImpl callBarringData, ODBInfoImpl odbInfo,
             CAMELSubscriptionInfoImpl camelSubscriptionInfo, SupportedCamelPhasesImpl supportedVlrCamelPhases, SupportedCamelPhasesImpl supportedSgsnCamelPhases,
             MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIsInVlr, OfferedCamel4CSIsImpl offeredCamel4CSIsInSgsn,
-            ArrayList<MSISDNBSImpl> msisdnBsList, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl callWaitingData,
+            List<MSISDNBSImpl> msisdnBsList, List<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl callWaitingData,
             CallHoldDataImpl callHoldData, ClipDataImpl clipData, ClirDataImpl clirData, EctDataImpl ectData) throws MAPException;
 
     long addProvideSubscriberInfoRequest(IMSIImpl imsi, LMSIImpl lmsi, RequestedInfoImpl requestedInfo, MAPExtensionContainerImpl extensionContainer, EMLPPPriority callPriority)
@@ -301,24 +301,24 @@ public interface MAPDialogMobility extends MAPDialog {
 
     // -- Subscriber Management services
     Long addInsertSubscriberDataRequest(IMSIImpl imsi, ISDNAddressStringImpl msisdn, CategoryImpl category,
-            SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
-            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            SubscriberStatus subscriberStatus, List<ExtBearerServiceCodeImpl> bearerServiceList,
+            List<ExtTeleserviceCodeImpl> teleserviceList, List<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCodeImpl> regionalSubscriptionData,
+            List<VoiceBroadcastDataImpl> vbsSubscriptionData, List<VoiceGroupCallDataImpl> vgcsSubscriptionData,
             VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo) throws MAPException;
 
     Long addInsertSubscriberDataRequest(long customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl msisdn,
-            CategoryImpl category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
-            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            CategoryImpl category, SubscriberStatus subscriberStatus, List<ExtBearerServiceCodeImpl> bearerServiceList,
+            List<ExtTeleserviceCodeImpl> teleserviceList, List<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCodeImpl> regionalSubscriptionData,
+            List<VoiceBroadcastDataImpl> vbsSubscriptionData, List<VoiceGroupCallDataImpl> vgcsSubscriptionData,
             VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo) throws MAPException;
 
     Long addInsertSubscriberDataRequest(IMSIImpl imsi, ISDNAddressStringImpl msisdn, CategoryImpl category,
-            SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
-            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            SubscriberStatus subscriberStatus, List<ExtBearerServiceCodeImpl> bearerServiceList,
+            List<ExtTeleserviceCodeImpl> teleserviceList, List<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCodeImpl> regionalSubscriptionData,
+            List<VoiceBroadcastDataImpl> vbsSubscriptionData, List<VoiceGroupCallDataImpl> vgcsSubscriptionData,
             VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo, MAPExtensionContainerImpl extensionContainer,
             NAEAPreferredCIImpl naeaPreferredCI, GPRSSubscriptionDataImpl gprsSubscriptionData,
             boolean roamingRestrictedInSgsnDueToUnsupportedFeature, NetworkAccessMode networkAccessMode,
@@ -326,16 +326,16 @@ public interface MAPDialogMobility extends MAPDialog {
             AgeIndicatorImpl superChargerSupportedInHLR, MCSSInfoImpl mcSsInfo,
             CSAllocationRetentionPriorityImpl csAllocationRetentionPriority, SGSNCAMELSubscriptionInfoImpl sgsnCamelSubscriptionInfo,
             ChargingCharacteristicsImpl chargingCharacteristics, AccessRestrictionDataImpl accessRestrictionData, Boolean icsIndicator,
-            EPSSubscriptionDataImpl epsSubscriptionData, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList,
+            EPSSubscriptionDataImpl epsSubscriptionData, List<CSGSubscriptionDataImpl> csgSubscriptionDataList,
             boolean ueReachabilityRequestIndicator, ISDNAddressStringImpl sgsnNumber, DiameterIdentityImpl mmeName,
             Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent,
             Long subscribedPeriodicLAUtimer) throws MAPException;
 
     Long addInsertSubscriberDataRequest(long customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl msisdn,
-            CategoryImpl category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCodeImpl> bearerServiceList,
-            ArrayList<ExtTeleserviceCodeImpl> teleserviceList, ArrayList<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCodeImpl> regionalSubscriptionData,
-            ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData, ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData,
+            CategoryImpl category, SubscriberStatus subscriberStatus, List<ExtBearerServiceCodeImpl> bearerServiceList,
+            List<ExtTeleserviceCodeImpl> teleserviceList, List<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCodeImpl> regionalSubscriptionData,
+            List<VoiceBroadcastDataImpl> vbsSubscriptionData, List<VoiceGroupCallDataImpl> vgcsSubscriptionData,
             VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo, MAPExtensionContainerImpl extensionContainer,
             NAEAPreferredCIImpl naeaPreferredCI, GPRSSubscriptionDataImpl gprsSubscriptionData,
             boolean roamingRestrictedInSgsnDueToUnsupportedFeature, NetworkAccessMode networkAccessMode,
@@ -343,22 +343,22 @@ public interface MAPDialogMobility extends MAPDialog {
             AgeIndicatorImpl superChargerSupportedInHLR, MCSSInfoImpl mcSsInfo,
             CSAllocationRetentionPriorityImpl csAllocationRetentionPriority, SGSNCAMELSubscriptionInfoImpl sgsnCamelSubscriptionInfo,
             ChargingCharacteristicsImpl chargingCharacteristics, AccessRestrictionDataImpl accessRestrictionData, Boolean icsIndicator,
-            EPSSubscriptionDataImpl epsSubscriptionData, ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList,
+            EPSSubscriptionDataImpl epsSubscriptionData, List<CSGSubscriptionDataImpl> csgSubscriptionDataList,
             boolean ueReachabilityRequestIndicator, ISDNAddressStringImpl sgsnNumber, DiameterIdentityImpl mmeName,
             Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent,
             Long subscribedPeriodicLAUtimer) throws MAPException;
 
-    void addInsertSubscriberDataResponse(long invokeId, ArrayList<ExtTeleserviceCodeImpl> teleserviceList,
-            ArrayList<ExtBearerServiceCodeImpl> bearerServiceList, ArrayList<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
+    void addInsertSubscriberDataResponse(long invokeId, List<ExtTeleserviceCodeImpl> teleserviceList,
+            List<ExtBearerServiceCodeImpl> bearerServiceList, List<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
             RegionalSubscriptionResponse regionalSubscriptionResponse) throws MAPException;
 
-    void addInsertSubscriberDataResponse(long invokeId, ArrayList<ExtTeleserviceCodeImpl> teleserviceList,
-            ArrayList<ExtBearerServiceCodeImpl> bearerServiceList, ArrayList<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
+    void addInsertSubscriberDataResponse(long invokeId, List<ExtTeleserviceCodeImpl> teleserviceList,
+            List<ExtBearerServiceCodeImpl> bearerServiceList, List<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
             RegionalSubscriptionResponse regionalSubscriptionResponse, SupportedCamelPhasesImpl supportedCamelPhases,
             MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIs, SupportedFeaturesImpl supportedFeatures)
             throws MAPException;
 
-    Long addDeleteSubscriberDataRequest(IMSIImpl imsi, ArrayList<ExtBasicServiceCodeImpl> basicServiceList, ArrayList<SSCodeImpl> ssList,
+    Long addDeleteSubscriberDataRequest(IMSIImpl imsi, List<ExtBasicServiceCodeImpl> basicServiceList, List<SSCodeImpl> ssList,
             boolean roamingRestrictionDueToUnsupportedFeature, ZoneCodeImpl regionalSubscriptionIdentifier, boolean vbsGroupIndication,
             boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainerImpl extensionContainer,
             GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
@@ -366,7 +366,7 @@ public interface MAPDialogMobility extends MAPDialog {
             boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdrawImpl epsSubscriptionDataWithdraw,
             boolean apnOiReplacementWithdraw, boolean csgSubscriptionDeleted) throws MAPException;
 
-    Long addDeleteSubscriberDataRequest(long customInvokeTimeout, IMSIImpl imsi, ArrayList<ExtBasicServiceCodeImpl> basicServiceList, ArrayList<SSCodeImpl> ssList,
+    Long addDeleteSubscriberDataRequest(long customInvokeTimeout, IMSIImpl imsi, List<ExtBasicServiceCodeImpl> basicServiceList, List<SSCodeImpl> ssList,
             boolean roamingRestrictionDueToUnsupportedFeature, ZoneCodeImpl regionalSubscriptionIdentifier, boolean vbsGroupIndication,
             boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainerImpl extensionContainer,
             GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,

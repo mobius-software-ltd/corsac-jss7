@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -77,9 +77,9 @@ public class VlrCamelSubscriptionInfoImpl {
     }
 
     public VlrCamelSubscriptionInfoImpl(OCSIImpl oCsi, MAPExtensionContainerImpl extensionContainer, SSCSIImpl ssCsi,
-            ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList, boolean tifCsi, MCSIImpl mCsi, SMSCSIImpl smsCsi, TCSIImpl vtCsi,
-            ArrayList<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi, SMSCSIImpl mtSmsCSI,
-            ArrayList<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList) {
+            List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList, boolean tifCsi, MCSIImpl mCsi, SMSCSIImpl smsCsi, TCSIImpl vtCsi,
+            List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi, SMSCSIImpl mtSmsCSI,
+            List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList) {
         this.oCsi = oCsi;
         this.extensionContainer = extensionContainer;
         this.ssCsi = ssCsi;
@@ -116,7 +116,7 @@ public class VlrCamelSubscriptionInfoImpl {
         return this.ssCsi;
     }
 
-    public ArrayList<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList() {
+    public List<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList() {
     	if(this.oBcsmCamelTDPCriteriaList==null)
     		return null;
     	
@@ -139,7 +139,7 @@ public class VlrCamelSubscriptionInfoImpl {
         return this.vtCsi;
     }
 
-    public ArrayList<TBcsmCamelTdpCriteriaImpl> getTBcsmCamelTdpCriteriaList() {
+    public List<TBcsmCamelTdpCriteriaImpl> getTBcsmCamelTdpCriteriaList() {
     	if(this.tBcsmCamelTdpCriteriaList==null)
     		return null;
     	
@@ -154,8 +154,8 @@ public class VlrCamelSubscriptionInfoImpl {
         return this.mtSmsCSI;
     }
 
-    public ArrayList<MTsmsCAMELTDPCriteriaImpl> getMtSmsCamelTdpCriteriaList() {
-    	if(this.mtSmsCamelTdpCriteriaList!=null)
+    public List<MTsmsCAMELTDPCriteriaImpl> getMtSmsCamelTdpCriteriaList() {
+    	if(this.mtSmsCamelTdpCriteriaList==null)
     		return null;
     	
         return this.mtSmsCamelTdpCriteriaList.getMTSmsCAMELTDPCriteriaList();

@@ -22,17 +22,21 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidanceImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,39 +47,32 @@ import static org.testng.Assert.assertTrue;
 public class IpSmGwGuidanceTest {
 
     private byte[] getEncodedData() {
-        return new byte[] {32,6,2,1,30,2,1,40};
+        return new byte[] {48,6,2,1,30,2,1,40};
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] {32,47,2,1,30,2,1,40,48,39,-96,32,48,10,6,3,42,3,4,11,12,13,14,15,
-                48,5,6,3,42,3,6,48,11,6,3,42,3,5,21,22,23,24,25,26,-95,3,31,32,33};
+        return new byte[] {48, 53, 2, 1, 30, 2, 1, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33};
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(IpSmGwGuidanceImpl.class);
+    	        
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        IpSmGwGuidanceImpl ipSmGwGuidance = new IpSmGwGuidanceImpl();
-        ipSmGwGuidance.decodeAll(asn);
-
-        assertEquals(tag, 0);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof IpSmGwGuidanceImpl);
+        IpSmGwGuidanceImpl ipSmGwGuidance = (IpSmGwGuidanceImpl)result.getResult();
+        
         assertEquals(ipSmGwGuidance.getMinimumDeliveryTimeValue(), 30);
         assertEquals(ipSmGwGuidance.getRecommendedDeliveryTimeValue(), 40);
 
         rawData = getEncodedDataFull();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        ipSmGwGuidance = new IpSmGwGuidanceImpl();
-        ipSmGwGuidance.decodeAll(asn);
-
-        assertEquals(tag, 0);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof IpSmGwGuidanceImpl);
+        ipSmGwGuidance = (IpSmGwGuidanceImpl)result.getResult();
 
         assertEquals(ipSmGwGuidance.getMinimumDeliveryTimeValue(), 30);
         assertEquals(ipSmGwGuidance.getRecommendedDeliveryTimeValue(), 40);
@@ -84,22 +81,20 @@ public class IpSmGwGuidanceTest {
 
     @Test(groups = { "functional.encode", "service.sms" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(IpSmGwGuidanceImpl.class);
+        
         IpSmGwGuidanceImpl liw = new IpSmGwGuidanceImpl(30, 40, null);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        liw.encodeAll(asnOS, Tag.CLASS_UNIVERSAL, 0);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(liw);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         liw = new IpSmGwGuidanceImpl(30, 40, MAPExtensionContainerTest.GetTestExtensionContainer());
-
-        asnOS.reset();
-        liw.encodeAll(asnOS, Tag.CLASS_UNIVERSAL, 0);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(liw);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedDataFull();
         assertTrue(Arrays.equals(rawData, encodedData));
 

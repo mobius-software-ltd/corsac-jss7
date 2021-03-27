@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -56,7 +56,7 @@ public class TCSIImpl {
     public TCSIImpl() {       
     }
 
-    public TCSIImpl(ArrayList<TBcsmCamelTDPDataImpl> tBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
+    public TCSIImpl(List<TBcsmCamelTDPDataImpl> tBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
             Integer camelCapabilityHandling, boolean notificationToCSE, boolean csiActive) {        
         this.tBcsmCamelTDPDataList = new TBcsmCamelTDPDataWrapperImpl(tBcsmCamelTDPDataList);        
         this.extensionContainer = extensionContainer;
@@ -73,7 +73,7 @@ public class TCSIImpl {
         	this.csiActive = new ASNNull();
     }
 
-    public ArrayList<TBcsmCamelTDPDataImpl> getTBcsmCamelTDPDataList() {
+    public List<TBcsmCamelTDPDataImpl> getTBcsmCamelTDPDataList() {
     	if(tBcsmCamelTDPDataList==null)
     		return null;
     	

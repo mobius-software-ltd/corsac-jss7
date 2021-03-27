@@ -42,7 +42,7 @@ public class MAPErrorMessageUnauthorizedLCSClientImpl extends MAPErrorMessageImp
         MAPErrorMessageUnauthorizedLCSClient {
  	private ASNUnauthorizedLCSClientDiagnosticImpl unauthorizedLCSClientDiagnostic;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
     private MAPExtensionContainerImpl extensionContainer;
 
     public MAPErrorMessageUnauthorizedLCSClientImpl(UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic,

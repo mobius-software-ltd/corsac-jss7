@@ -29,20 +29,19 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
-
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.sms.MWStatus;
 import org.restcomm.protocols.ss7.map.api.service.sms.MWStatusImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.sms.InformServiceCentreRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,29 +51,25 @@ import org.testng.annotations.Test;
 public class InformServiceCentreRequestTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 4, 3, 2, 2, 64 };
+        return new byte[] { 48, 4, 3, 2, 6, 64 };
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 61, 4, 6, -111, 17, 33, 34, 51, -13, 3, 2, 2, 80, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11,
-                12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 2,
-                2, 2, 43, -128, 2, 1, -68 };
+        return new byte[] { 48, 67, 4, 6, -111, 17, 33, 34, 51, -13, 3, 2, 4, 80, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 2, 2, 2, 43, -128, 2, 1, -68 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(InformServiceCentreRequestImpl.class);
+    	                
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        InformServiceCentreRequestImpl isc = new InformServiceCentreRequestImpl();
-        isc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        MWStatus mwStatus = isc.getMwStatus();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InformServiceCentreRequestImpl);
+        InformServiceCentreRequestImpl isc = (InformServiceCentreRequestImpl)result.getResult();   
+        
+        MWStatusImpl mwStatus = isc.getMwStatus();
         assertNotNull(mwStatus);
         assertFalse(mwStatus.getScAddressNotIncluded());
         assertTrue(mwStatus.getMnrfSet());
@@ -82,14 +77,10 @@ public class InformServiceCentreRequestTest {
         assertFalse(mwStatus.getMnrgSet());
 
         rawData = getEncodedDataFull();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        isc = new InformServiceCentreRequestImpl();
-        isc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InformServiceCentreRequestImpl);
+        isc = (InformServiceCentreRequestImpl)result.getResult();   
 
         MAPExtensionContainerImpl extensionContainer = isc.getExtensionContainer();
         ISDNAddressStringImpl storedMSISDN = isc.getStoredMSISDN();
@@ -97,32 +88,34 @@ public class InformServiceCentreRequestTest {
         int absentSubscriberDiagnosticSM = isc.getAbsentSubscriberDiagnosticSM();
         int additionalAbsentSubscriberDiagnosticSM = isc.getAdditionalAbsentSubscriberDiagnosticSM();
 
-        Assert.assertNotNull(storedMSISDN);
-        Assert.assertEquals(AddressNature.international_number, storedMSISDN.getAddressNature());
-        Assert.assertEquals(NumberingPlan.ISDN, storedMSISDN.getNumberingPlan());
-        Assert.assertEquals("111222333", storedMSISDN.getAddress());
-        Assert.assertNotNull(mwStatus);
-        Assert.assertFalse(mwStatus.getScAddressNotIncluded());
-        Assert.assertTrue(mwStatus.getMnrfSet());
-        Assert.assertFalse(mwStatus.getMcefSet());
-        Assert.assertTrue(mwStatus.getMnrgSet());
-        Assert.assertNotNull(absentSubscriberDiagnosticSM);
-        Assert.assertEquals(555, (int) absentSubscriberDiagnosticSM);
-        Assert.assertNotNull(additionalAbsentSubscriberDiagnosticSM);
-        Assert.assertEquals(444, (int) additionalAbsentSubscriberDiagnosticSM);
-        Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+        assertNotNull(storedMSISDN);
+        assertEquals(AddressNature.international_number, storedMSISDN.getAddressNature());
+        assertEquals(NumberingPlan.ISDN, storedMSISDN.getNumberingPlan());
+        assertEquals("111222333", storedMSISDN.getAddress());
+        assertNotNull(mwStatus);
+        assertFalse(mwStatus.getScAddressNotIncluded());
+        assertTrue(mwStatus.getMnrfSet());
+        assertFalse(mwStatus.getMcefSet());
+        assertTrue(mwStatus.getMnrgSet());
+        assertNotNull(absentSubscriberDiagnosticSM);
+        assertEquals(555, (int) absentSubscriberDiagnosticSM);
+        assertNotNull(additionalAbsentSubscriberDiagnosticSM);
+        assertEquals(444, (int) additionalAbsentSubscriberDiagnosticSM);
+        assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
 
     @Test(groups = { "functional.encode", "service.sms" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(InformServiceCentreRequestImpl.class);
 
-        MWStatus mwStatus = new MWStatusImpl(false, true, false, false);
+        MWStatusImpl mwStatus = new MWStatusImpl(false, true, false, false);
         InformServiceCentreRequestImpl isc = new InformServiceCentreRequestImpl(null, mwStatus, null, null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        isc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(isc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -134,10 +127,10 @@ public class InformServiceCentreRequestTest {
         isc = new InformServiceCentreRequestImpl(storedMSISDN, mwStatus, MAPExtensionContainerTest.GetTestExtensionContainer(),
                 absentSubscriberDiagnosticSM, additionalAbsentSubscriberDiagnosticSM);
 
-        asnOS.reset();
-        isc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(isc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedDataFull();
         assertTrue(Arrays.equals(rawData, encodedData));
     }

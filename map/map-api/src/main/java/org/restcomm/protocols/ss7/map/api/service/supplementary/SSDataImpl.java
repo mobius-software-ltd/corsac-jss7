@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASNEMLPPPriorityImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
@@ -51,6 +51,8 @@ public class SSDataImpl {
     private SSSubscriptionOptionImpl ssSubscriptionOption;
     
     private BasicServiceCodeListWrapperImpl basicServiceGroupList;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=2,constructed=false,index=-1)
     private ASNEMLPPPriorityImpl defaultPriority;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
@@ -59,7 +61,7 @@ public class SSDataImpl {
     public SSDataImpl() {
     }
 
-    public SSDataImpl(SSCodeImpl ssCode, SSStatusImpl ssStatus, SSSubscriptionOptionImpl ssSubscriptionOption, ArrayList<BasicServiceCodeImpl> basicServiceGroupList,
+    public SSDataImpl(SSCodeImpl ssCode, SSStatusImpl ssStatus, SSSubscriptionOptionImpl ssSubscriptionOption, List<BasicServiceCodeImpl> basicServiceGroupList,
             EMLPPPriority defaultPriority, Integer nbrUser) {
         this.ssCode = ssCode;
         this.ssStatus = ssStatus;
@@ -92,7 +94,7 @@ public class SSDataImpl {
         return ssSubscriptionOption;
     }
 
-    public ArrayList<BasicServiceCodeImpl> getBasicServiceGroupList() {
+    public List<BasicServiceCodeImpl> getBasicServiceGroupList() {
     	if(basicServiceGroupList==null)
     		return null;
     	

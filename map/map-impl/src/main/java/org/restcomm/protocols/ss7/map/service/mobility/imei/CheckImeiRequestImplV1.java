@@ -43,14 +43,18 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class CheckImeiRequestImplV1 extends MobilityMessageImpl implements CheckImeiRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1)
 	private IMEIImpl imei = null;
 	
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0,constructed=false,index=-1)
 	private IMSIImpl imsi = null;
 	
 	private long mapProtocolVersion;
 
+	public CheckImeiRequestImplV1() {
+		this.mapProtocolVersion = 1;
+	}
+	
     // For incoming messages
     public CheckImeiRequestImplV1(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
@@ -108,6 +112,12 @@ public class CheckImeiRequestImplV1 extends MobilityMessageImpl implements Check
             sb.append(", ");
         }
 
+        if (this.imsi != null) {
+            sb.append("imsi=");
+            sb.append(imsi.toString());
+            sb.append(", ");
+        }
+        
         sb.append("mapProtocolVersion=");
         sb.append(mapProtocolVersion);
 

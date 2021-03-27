@@ -38,12 +38,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.InvokingPivotReasonImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.PerformingPivotIndicatorImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.PivotReasonImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.PivotRoutingForwardInformationImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ReturnToInvokingExchangeCallIdentifierImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ReturnToInvokingExchangePossibleImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingPivotReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.PerformingPivotIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;

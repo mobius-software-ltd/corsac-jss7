@@ -42,7 +42,7 @@ public class ASNBitString
 {	
 	private static final int masks[] = {128, 64, 32, 16, 8, 4, 2, 1};
 	private ConcurrentHashMap<Integer,AtomicInteger> value=new ConcurrentHashMap<Integer,AtomicInteger>();
-	private Integer maxByteUsed=new Integer(0);
+	private Integer maxByteUsed=0;
 	
 	public ASNBitString() {		
 	}
@@ -81,7 +81,10 @@ public class ASNBitString
 	
 	@ASNEncode
 	public void encode(ASNParser parser,ByteBuf buffer) {
-		Integer lastByte=value.get(maxByteUsed).get();
+		Integer lastByte=0;
+		AtomicInteger lastValue=value.get(maxByteUsed);
+		if(lastValue!=null)
+			lastByte=lastValue.get();
 		Integer remainingBits=0;
 		for(int i=masks.length-1;i>=0;i--) {
 			if((lastByte & masks[i])!=0)

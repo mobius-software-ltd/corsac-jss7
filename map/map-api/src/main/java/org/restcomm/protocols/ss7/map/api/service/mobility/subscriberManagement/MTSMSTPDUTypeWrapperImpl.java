@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -35,16 +35,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MTSMSTPDUTypeWrapperImpl {
 	
-	private ArrayList<ASNMTSMSTPDUType> mtSMSTPDUType;
+	private List<ASNMTSMSTPDUType> mtSMSTPDUType;
 
     public MTSMSTPDUTypeWrapperImpl() {
     }
 
-    public MTSMSTPDUTypeWrapperImpl(ArrayList<ASNMTSMSTPDUType> mtSMSTPDUType) {
+    public MTSMSTPDUTypeWrapperImpl(List<ASNMTSMSTPDUType> mtSMSTPDUType) {
         this.mtSMSTPDUType = mtSMSTPDUType;
     }
 
-    public ArrayList<ASNMTSMSTPDUType> getMTSMSTPDUType() {
+    public List<ASNMTSMSTPDUType> getMTSMSTPDUType() {
     	return mtSMSTPDUType;
     }
 }

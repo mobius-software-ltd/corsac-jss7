@@ -27,18 +27,20 @@ import static org.testng.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -57,71 +59,56 @@ public class ForwardingInfoTest {
 
     @Test(groups = { "functional.decode", "service.supplementary" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ForwardingInfoImpl.class);
+    	        
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ForwardingInfoImpl impl = new ForwardingInfoImpl();
-        impl.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ForwardingInfoImpl);
+        ForwardingInfoImpl impl = (ForwardingInfoImpl)result.getResult();
 
         assertNull(impl.getSsCode());
 
         assertEquals(impl.getForwardingFeatureList().size(), 1);
-        assertEquals(impl.getForwardingFeatureList().get(0).getBasicService().getTeleservice().getTeleserviceCodeValue(),
-                TeleserviceCodeValue.allVoiceGroupCallServices);
-
+        assertEquals(impl.getForwardingFeatureList().get(0).getBasicService().getTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allVoiceGroupCallServices);
 
         rawData = getEncodedData2();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        impl = new ForwardingInfoImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ForwardingInfoImpl);
+        impl = (ForwardingInfoImpl)result.getResult();
 
         assertEquals(impl.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
 
         assertEquals(impl.getForwardingFeatureList().size(), 1);
-        assertEquals(impl.getForwardingFeatureList().get(0).getBasicService().getTeleservice().getTeleserviceCodeValue(),
-                TeleserviceCodeValue.allVoiceGroupCallServices);
+        assertEquals(impl.getForwardingFeatureList().get(0).getBasicService().getTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allVoiceGroupCallServices);
     }
 
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ForwardingInfoImpl.class);
+        
         TeleserviceCodeImpl teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.allVoiceGroupCallServices);
         BasicServiceCodeImpl basicService = new BasicServiceCodeImpl(teleservice);
-        ArrayList<ForwardingFeature> forwardingFeatureList = new ArrayList<ForwardingFeature>();
+        ArrayList<ForwardingFeatureImpl> forwardingFeatureList = new ArrayList<ForwardingFeatureImpl>();
         ForwardingFeatureImpl forwardingFeature = new ForwardingFeatureImpl(basicService, null, null, null, null, null, null);
         forwardingFeatureList.add(forwardingFeature);
         ForwardingInfoImpl impl = new ForwardingInfoImpl(null, forwardingFeatureList);
-        //        (SSCode ssCode, ArrayList<ForwardingFeature> forwardingFeatureList
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
         impl = new ForwardingInfoImpl(ssCode, forwardingFeatureList);
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

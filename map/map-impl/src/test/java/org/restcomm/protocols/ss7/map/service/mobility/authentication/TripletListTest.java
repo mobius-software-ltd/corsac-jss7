@@ -23,19 +23,21 @@
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,15 +47,11 @@ import org.testng.annotations.Test;
 public class TripletListTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { (byte) 160, 36, 48, 34, 4, 16, 15, (byte) 254, 18, (byte) 164, (byte) 207, 43, (byte) 221,
-                (byte) 185, (byte) 178, (byte) 158, 109, 83, (byte) 180, (byte) 169, 77, (byte) 128, 4, 4, (byte) 224, 82,
-                (byte) 239, (byte) 242, 4, 8, 31, 72, (byte) 163, 97, 78, (byte) 239, (byte) 204, 0 };
+        return new byte[] { 48, 36, 48, 34, 4, 16, 15, -2, 18, -92, -49, 43, -35, -71, -78, -98, 109, 83, -76, -87, 77, -128, 4, 4, -32, 82, -17, -14, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0 };
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { -96, 72, 48, 34, 4, 16, 15, -2, 18, -92, -49, 43, -35, -71, -78, -98, 109, 83, -76, -87, 77, -128,
-                4, 4, -32, 82, -17, -14, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0, 48, 34, 4, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-                16, 16, 16, 16, 16, 16, 16, 16, 4, 4, 4, 4, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8 };
+        return new byte[] { 48, 72, 48, 34, 4, 16, 15, -2, 18, -92, -49, 43, -35, -71, -78, -98, 109, 83, -76, -87, 77, -128, 4, 4, -32, 82, -17, -14, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0, 48, 34, 4, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 4, 4, 4, 4, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8 };
     }
 
     public static byte[] getRandData() {
@@ -70,17 +68,15 @@ public class TripletListTest {
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TripletListImpl.class);
 
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        TripletListImpl asc = new TripletListImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, AuthenticationSetListImpl._TAG_tripletList);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TripletListImpl);
+        TripletListImpl asc = (TripletListImpl)result.getResult();
+        
         assertEquals(asc.getAuthenticationTriplets().size(), 1);
 
         assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(0).getRand(), AuthenticationTripletTest.getRandData()));
@@ -88,14 +84,10 @@ public class TripletListTest {
         assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(0).getKc(), AuthenticationTripletTest.getKcData()));
 
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new TripletListImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, AuthenticationSetListImpl._TAG_tripletList);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TripletListImpl);
+        asc = (TripletListImpl)result.getResult();
 
         assertEquals(asc.getAuthenticationTriplets().size(), 2);
 
@@ -111,33 +103,33 @@ public class TripletListTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TripletListImpl.class);
 
         AuthenticationTripletImpl d1 = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(),
                 AuthenticationTripletTest.getSresData(), AuthenticationTripletTest.getKcData());
-        ArrayList<AuthenticationTriplet> arr = new ArrayList<AuthenticationTriplet>();
+        ArrayList<AuthenticationTripletImpl> arr = new ArrayList<AuthenticationTripletImpl>();
         arr.add(d1);
         TripletListImpl asc = new TripletListImpl(arr);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, AuthenticationSetListImpl._TAG_tripletList);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         d1 = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(), AuthenticationTripletTest.getSresData(),
                 AuthenticationTripletTest.getKcData());
         AuthenticationTripletImpl d2 = new AuthenticationTripletImpl(getRandData(), getSresData(), getKcData());
-        arr = new ArrayList<AuthenticationTriplet>();
+        arr = new ArrayList<AuthenticationTripletImpl>();
         arr.add(d1);
         arr.add(d2);
         asc = new TripletListImpl(arr);
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, AuthenticationSetListImpl._TAG_tripletList);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData2();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data=getEncodedData2();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

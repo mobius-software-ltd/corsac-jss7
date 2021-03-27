@@ -35,7 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifie
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0,constructed=false,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPPrivateExtensionImpl {
 	private ASNObjectIdentifier oId;
 	
@@ -53,7 +53,7 @@ public class MAPPrivateExtensionImpl {
     }
 
     @ASNGenericMapping
-    public Class<?> getMapping(Object parent,ASNParser parser) {
+    public Class<?> getMapping(ASNParser parser) {
     	if(oId!=null && oId.getValue()!=null)
     	{
     		Class<?> result=parser.getLocalMapping(this.getClass(), oId.getValue());
@@ -94,6 +94,9 @@ public class MAPPrivateExtensionImpl {
      * @see org.restcomm.protocols.ss7.map.api.dialog.MAPPrivateExtension#getData()
      */
     public Object getData() {
+    	if(this.data==null)
+    		return null;
+    	
         return this.data.getValue();
     }
 
@@ -112,7 +115,7 @@ public class MAPPrivateExtensionImpl {
         StringBuilder sb = new StringBuilder();
         sb.append("PrivateExtension [");
 
-        if (this.oId != null || this.oId.getValue()!=null && this.oId.getValue().size() > 0) {
+        if (this.oId != null && this.oId.getValue()!=null && this.oId.getValue().size() > 0) {
             sb.append("Oid=");
             sb.append(this.ListToString(this.oId.getValue()));
         }

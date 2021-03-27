@@ -1,19 +1,22 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.OverrideCategory;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author vadim subbotin
@@ -23,14 +26,13 @@ public class ClipDataTest {
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode() throws Exception {
-        AsnInputStream asn = new AsnInputStream(data);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ClipDataImpl clipData = new ClipDataImpl();
-        clipData.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ClipDataImpl.class);
+    	        
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ClipDataImpl);
+        ClipDataImpl clipData = (ClipDataImpl)result.getResult();
 
         assertNotNull(clipData.getSsStatus());
         assertFalse(clipData.getSsStatus().getBitA());
@@ -43,11 +45,14 @@ public class ClipDataTest {
 
     @Test(groups = {"functional.encode", "subscriberInformation"})
     public void testEncode() throws Exception {
-        ClipDataImpl clipData = new ClipDataImpl(new ExtSSStatusImpl(false, false, false, false), OverrideCategory.overrideEnabled, true);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ClipDataImpl.class);
+    	        
+    	ClipDataImpl clipData = new ClipDataImpl(new ExtSSStatusImpl(false, false, false, false), OverrideCategory.overrideEnabled, true);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        clipData.encodeAll(asnOS);
-        byte[] raw = asnOS.toByteArray();
-        assertTrue(Arrays.equals(raw, data));
+    	ByteBuf buffer=parser.encode(clipData);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, data));
     }
 }

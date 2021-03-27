@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
@@ -97,7 +97,7 @@ public interface SendRoutingInformationResponse extends CallHandlingMessage {
 
     SubscriberInfoImpl getSubscriberInfo(); // SEQUENCE
 
-    ArrayList<SSCodeImpl> getSSList(); // SEQUENCE
+    List<SSCodeImpl> getSSList(); // SEQUENCE
 
     ExtBasicServiceCodeImpl getBasicService(); // CHOICE
 
@@ -124,7 +124,7 @@ public interface SendRoutingInformationResponse extends CallHandlingMessage {
     // This is used as RoutingInfo parameter for V2 and as RoutingInfo2 parameter for MAP V3
     RoutingInfoImpl getRoutingInfo2(); // CHOICE
 
-    ArrayList<SSCodeImpl> getSSList2(); // SEQUENCE
+    List<SSCodeImpl> getSSList2(); // SEQUENCE
 
     ExtBasicServiceCodeImpl getBasicService2(); // CHOICE
 

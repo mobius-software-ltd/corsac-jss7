@@ -1,56 +1,54 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeature;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  * @author vadim subbotin
  */
 public class CallForwardingDataTest {
-    private byte[] data = {48, 67, 48, 22, 48, 20, -124, 1, 5, -123, 6, -111, -119, 103, 69, 35, -15, -121, 1, 5, -118,
-            4, -111, 33, 67, -11, 5, 0, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-            3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33};
+    private byte[] data = {48, 73, 48, 22, 48, 20, -124, 1, 5, -123, 6, -111, -119, 103, 69, 35, -15, -121, 1, 5, -118, 4, -111, 33, 67, -11, 5, 0, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33};
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode() throws Exception {
-        AsnInputStream asn = new AsnInputStream(data);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        CallForwardingDataImpl callForwardingData = new CallForwardingDataImpl();
-        callForwardingData.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CallForwardingDataImpl.class);
+    	        
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallForwardingDataImpl);
+        CallForwardingDataImpl callForwardingData = (CallForwardingDataImpl)result.getResult();
 
         assertNotNull(callForwardingData.getForwardingFeatureList());
         assertEquals(callForwardingData.getForwardingFeatureList().size(), 1);
         assertTrue(callForwardingData.getNotificationToCSE());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(callForwardingData.getExtensionContainer()));
 
-        ExtForwFeature extForwFeature = callForwardingData.getForwardingFeatureList().get(0);
+        ExtForwFeatureImpl extForwFeature = callForwardingData.getForwardingFeatureList().get(0);
         ISDNAddressStringImpl forwardedToNumber = extForwFeature.getForwardedToNumber();
-        ExtSSStatus extSSStatus = extForwFeature.getSsStatus();
+        ExtSSStatusImpl extSSStatus = extForwFeature.getSsStatus();
         FTNAddressStringImpl longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
         assertNull(extForwFeature.getBasicService());
         assertNull(extForwFeature.getForwardedToSubaddress());
@@ -71,18 +69,21 @@ public class CallForwardingDataTest {
 
     @Test(groups = {"functional.encode", "subscriberInformation"})
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CallForwardingDataImpl.class);
+    	        
         ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "987654321");
         FTNAddressStringImpl longForwardedToNumber = new FTNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12345");
         final ExtForwFeatureImpl extForwFeature = new ExtForwFeatureImpl(null, new ExtSSStatusImpl(false, true, false, true), forwardedToNumber, null,
                 null, 5, null, longForwardedToNumber);
         
-        ArrayList<ExtForwFeature> extForwFeatureList=new ArrayList<ExtForwFeature>();
+        ArrayList<ExtForwFeatureImpl> extForwFeatureList=new ArrayList<ExtForwFeatureImpl>();
         extForwFeatureList.add(extForwFeature);
         CallForwardingDataImpl callForwardingData = new CallForwardingDataImpl(extForwFeatureList, true, MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        callForwardingData.encodeAll(asnOS);
-        byte[] raw = asnOS.toByteArray();
-        assertTrue(Arrays.equals(raw, data));
+        ByteBuf buffer=parser.encode(callForwardingData);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, data));
     }
 }

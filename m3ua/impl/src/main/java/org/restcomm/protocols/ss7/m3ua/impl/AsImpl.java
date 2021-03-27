@@ -559,7 +559,7 @@ public class AsImpl implements As {
             }
         }
 
-        this.appServerProcs.remove(aspImpl);
+        this.appServerProcs.remove(aspImpl.getName());
         aspImpl.setAs(null);
 
         if (aspLocalFSM != null) {

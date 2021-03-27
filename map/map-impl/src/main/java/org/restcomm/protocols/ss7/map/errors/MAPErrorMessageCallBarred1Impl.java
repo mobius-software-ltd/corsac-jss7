@@ -34,15 +34,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public class MAPErrorMessageCallBarred1Impl extends EnumeratedMAPErrorMessage1Impl implements
 MAPErrorMessageCallBarred {
-	private CallBarringCause callBarringCause;
 	private long mapProtocolVersion = 2;
     
     public MAPErrorMessageCallBarred1Impl(CallBarringCause callBarringCause) {
         super((long) MAPErrorCode.callBarred);
 
-        this.callBarringCause = callBarringCause;
-        if(this.callBarringCause!=null)
-        	setValue(Long.valueOf(this.callBarringCause.getCode()));
+        if(callBarringCause!=null)
+        	setValue(Long.valueOf(callBarringCause.getCode()));
     }
 
     public MAPErrorMessageCallBarred1Impl() {
@@ -59,12 +57,15 @@ MAPErrorMessageCallBarred {
 
     @Override
     public CallBarringCause getCallBarringCause() {
-    	return callBarringCause;
+    	Long value=getValue();
+    	if(value==null)
+    		return null;
+    	
+    	return CallBarringCause.getInstance(value.intValue());
     }
 
     @Override
     public void setCallBarringCause(CallBarringCause val) {
-    	this.callBarringCause=val;
     	if(val!=null)
     		setValue(Long.valueOf(val.getCode()));
     	else
@@ -76,9 +77,9 @@ MAPErrorMessageCallBarred {
         StringBuilder sb = new StringBuilder();
 
         sb.append("MAPErrorMessageSystemFailure [");
-
-        if (this.callBarringCause != null)
-            sb.append("callBarringCause=" + this.callBarringCause.toString());
+        CallBarringCause callBarringCause = getCallBarringCause();
+        if (callBarringCause != null)
+            sb.append("callBarringCause=" + callBarringCause.toString());
         sb.append("]");
 
         return sb.toString();

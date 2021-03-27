@@ -50,7 +50,7 @@ public class ReturnErrorImpl implements BaseComponent {
 	private ASNReturnErrorParameterImpl parameter;
 
 	@ASNGenericMapping
-    public Class<?> getMapping(Object parent,ASNParser parser) {
+    public Class<?> getMapping(ASNParser parser) {
     	if(errorCode!=null)
     	{
     		Class<?> result=parser.getLocalMapping(this.getClass(), errorCode);

@@ -23,16 +23,18 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
-
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,27 +47,26 @@ public class TeleserviceCodeTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-
-        TeleserviceCodeImpl impl = new TeleserviceCodeImpl();
-        impl.decodeAll(asn);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TeleserviceCodeImpl.class);
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TeleserviceCodeImpl);
+        TeleserviceCodeImpl impl = (TeleserviceCodeImpl)result.getResult();
+        
         assertEquals(impl.getData(), 0x11);
         assertEquals(impl.getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
     }
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TeleserviceCodeImpl.class);
+    	
         TeleserviceCodeImpl impl = new TeleserviceCodeImpl(TeleserviceCodeValue.telephony);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = data;
-        assertTrue(Arrays.equals(rawData, encodedData));
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertEquals(encodedData, data);
     }
-
 }

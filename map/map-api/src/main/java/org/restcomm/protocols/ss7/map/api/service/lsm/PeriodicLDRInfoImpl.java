@@ -47,7 +47,7 @@ public class PeriodicLDRInfoImpl {
         this.reportingAmount = new ASNInteger();
         this.reportingAmount.setValue((long)reportingAmount & 0x0FFFFFFFFL);        
         this.reportingInterval = new ASNInteger();
-        this.reportingInterval.setValue((long)reportingAmount & 0x0FFFFFFFFL);
+        this.reportingInterval.setValue((long)reportingInterval & 0x0FFFFFFFFL);
     }
 
     public int getReportingAmount() {

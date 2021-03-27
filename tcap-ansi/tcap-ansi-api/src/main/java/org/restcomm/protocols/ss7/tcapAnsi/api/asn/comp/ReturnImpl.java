@@ -50,7 +50,7 @@ public abstract class ReturnImpl implements BaseComponent {
     }
     
     @ASNGenericMapping
-    public Class<?> getMapping(Object parent,ASNParser parser) {
+    public Class<?> getMapping(ASNParser parser) {
     	OperationCodeImpl oc=operationCodeImpl;
     	if(oc==null && correlationId!=null && dialog!=null) {
     		InvokeImpl invoke=dialog.getInvoke(getCorrelationId());

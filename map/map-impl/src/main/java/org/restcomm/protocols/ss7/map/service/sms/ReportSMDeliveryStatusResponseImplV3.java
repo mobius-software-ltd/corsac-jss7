@@ -45,6 +45,10 @@ public class ReportSMDeliveryStatusResponseImplV3 extends SmsMessageImpl impleme
 
     private long mapProtocolVersion;
 
+    public ReportSMDeliveryStatusResponseImplV3() {
+    	this.mapProtocolVersion=3;
+    }
+    
     public ReportSMDeliveryStatusResponseImplV3(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

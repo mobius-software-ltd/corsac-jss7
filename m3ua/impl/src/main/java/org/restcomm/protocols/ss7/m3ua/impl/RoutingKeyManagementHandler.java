@@ -58,7 +58,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
 public class RoutingKeyManagementHandler extends MessageHandler {
     private static final Logger logger = Logger.getLogger(RoutingKeyManagementHandler.class);
 
-    private static final String KEY_SEPARATOR = ":";
+    //private static final String KEY_SEPARATOR = ":";
     private static final String AS_NAME = "asRkm";
 
     private AtomicInteger asCounter = new AtomicInteger(1);
@@ -219,8 +219,9 @@ public class RoutingKeyManagementHandler extends MessageHandler {
         RouteAs route = null;
         for (int i = 0; i < opcIntArr.length; i++) {
             for (int j = 0; j < siShortArr.length; j++) {
-                String sKey = (new StringBuffer().append(dpc).append(KEY_SEPARATOR).append(opcIntArr[i]).append(KEY_SEPARATOR).append(siShortArr[j])).toString();
-                route = aspFactoryImpl.m3UAManagementImpl.getRoute().get(sKey);
+                //String sKey = (new StringBuffer().append(dpc).append(KEY_SEPARATOR).append(opcIntArr[i]).append(KEY_SEPARATOR).append(siShortArr[j])).toString();
+                org.restcomm.protocols.ss7.m3ua.RoutingKey key=new org.restcomm.protocols.ss7.m3ua.RoutingKey(dpc, opcIntArr[i], Integer.valueOf(siShortArr[j]));
+                route = aspFactoryImpl.m3UAManagementImpl.getRoute().get(key);
                 if(route !=null)
                     return route;
             }

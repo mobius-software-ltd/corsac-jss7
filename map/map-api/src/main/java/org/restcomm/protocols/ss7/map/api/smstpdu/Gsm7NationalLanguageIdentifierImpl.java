@@ -29,7 +29,9 @@ import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
  * @author sergey vetyutnev
  *
  */
-public abstract class Gsm7NationalLanguageIdentifierImpl {
+public abstract class Gsm7NationalLanguageIdentifierImpl implements UserDataHeaderElement {
+	private static final long serialVersionUID = 1L;
+	
 	private NationalLanguageIdentifier nationalLanguageCode;
 
     public Gsm7NationalLanguageIdentifierImpl(NationalLanguageIdentifier nationalLanguageCode) {

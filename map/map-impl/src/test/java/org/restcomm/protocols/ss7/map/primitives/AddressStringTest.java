@@ -26,19 +26,18 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -53,26 +52,27 @@ public class AddressStringTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        AddressStringImpl addStr = new AddressStringImpl();
-        addStr.decodeAll(asn);
-
-        assertEquals(tag, 4);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AddressStringImpl.class);
+    	
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AddressStringImpl);
+        AddressStringImpl addStr = (AddressStringImpl)result.getResult();
+        
         assertFalse(addStr.isExtension());
         assertEquals(addStr.getAddressNature(), AddressNature.international_number);
         assertEquals(addStr.getNumberingPlan(), NumberingPlan.land_mobile);
         assertEquals(addStr.getAddress(), "204208300008002");
 
 
-        asn = new AsnInputStream(rawData2);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData2));
 
-        tag = asn.readTag();
-        addStr = new AddressStringImpl();
-        addStr.decodeAll(asn);
-
-        assertEquals(tag, 4);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AddressStringImpl);
+        addStr = (AddressStringImpl)result.getResult();
+        
         assertFalse(addStr.isExtension());
         assertEquals(addStr.getAddressNature(), AddressNature.international_number);
         assertEquals(addStr.getNumberingPlan(), NumberingPlan.land_mobile);
@@ -83,50 +83,24 @@ public class AddressStringTest {
     public void testEncode() throws Exception {
         AddressStringImpl addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile,
                 "204208300008002");
-        AsnOutputStream asnOS = new AsnOutputStream();
-        addStr.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AddressStringImpl.class);
+    	
+    	ByteBuf buffer=parser.encode(addStr);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile,
-                "123cc45");
-        asnOS = new AsnOutputStream();
-        addStr.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile, "123cc45");
+        buffer=parser.encode(addStr);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData2, encodedData));
 
-        addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile,
-                "123CC45");
-        asnOS = new AsnOutputStream();
-        addStr.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile, "123CC45");
+        buffer=parser.encode(addStr);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData2, encodedData));
     }
-
-    @Test(groups = { "functional.serialize", "primitives" })
-    public void testSerialization() throws Exception {
-        AddressStringImpl original = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile,
-                "204208300008002");
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        String xml = new String(pickled);
-        System.out.println(xml);
-
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        AddressStringImpl copy = (AddressStringImpl) o;
-
-        // test result
-        assertEquals(copy.getAddressNature(), original.getAddressNature());
-        assertEquals(copy.getNumberingPlan(), original.getNumberingPlan());
-        assertEquals(copy.getAddress(), original.getAddress());
-    }
-
 }

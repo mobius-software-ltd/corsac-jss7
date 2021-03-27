@@ -1,22 +1,23 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author vadim subbotin
@@ -26,17 +27,18 @@ public class ExtCwFeatureTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
-        AsnInputStream ansIS = new AsnInputStream(data);
-        int tag = ansIS.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtCwFeatureImpl.class);
+    	        
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtCwFeatureImpl);
+        ExtCwFeatureImpl extCwFeature = (ExtCwFeatureImpl)result.getResult();
 
-        ExtCwFeatureImpl extCwFeature = new ExtCwFeatureImpl();
-        extCwFeature.decodeAll(ansIS);
-
-        ExtBasicServiceCode extBasicServiceCode = extCwFeature.getBasicService();
+        ExtBasicServiceCodeImpl extBasicServiceCode = extCwFeature.getBasicService();
         assertEquals(extBasicServiceCode.getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allShortMessageServices);
 
-        ExtSSStatus extSSStatus = extCwFeature.getSsStatus();
+        ExtSSStatusImpl extSSStatus = extCwFeature.getSsStatus();
         assertTrue(extSSStatus.getBitQ());
         assertTrue(extSSStatus.getBitP());
         assertFalse(extSSStatus.getBitR());
@@ -45,12 +47,15 @@ public class ExtCwFeatureTest {
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
-        ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl(new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allShortMessageServices));
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtCwFeatureImpl.class);
+    	        
+    	ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allShortMessageServices));
         ExtCwFeatureImpl extCwFeature = new ExtCwFeatureImpl(extBasicServiceCode, new ExtSSStatusImpl(true, true, false, false));
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        extCwFeature.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(extCwFeature);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
     }
 }

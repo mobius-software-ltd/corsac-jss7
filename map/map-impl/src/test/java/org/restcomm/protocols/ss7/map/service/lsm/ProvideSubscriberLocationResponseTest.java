@@ -29,9 +29,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
@@ -48,12 +45,17 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ProvideSubscriberLocationResponseImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -121,15 +123,14 @@ public class ProvideSubscriberLocationResponseTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecodeProvideSubscriberLocationRequestIndication() throws Exception {
-        byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        ProvideSubscriberLocationResponseImpl impl = new ProvideSubscriberLocationResponseImpl();
-        impl.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProvideSubscriberLocationResponseImpl.class);
+    	
+        byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProvideSubscriberLocationResponseImpl);
+        ProvideSubscriberLocationResponseImpl impl = (ProvideSubscriberLocationResponseImpl)result.getResult();
 
         assertTrue(Arrays.equals(impl.getLocationEstimate().getData(), getExtGeographicalInformation()));
         assertEquals((int) impl.getAgeOfLocationEstimate(), 15);
@@ -148,15 +149,11 @@ public class ProvideSubscriberLocationResponseTest {
         assertNull(impl.getUtranGANSSpositioningData());
         assertNull(impl.getTargetServingNodeForHandover());
 
-        rawData = getEncodedDataFull();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        impl = new ProvideSubscriberLocationResponseImpl();
-        impl.decodeAll(asn);
+        data = getEncodedDataFull();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProvideSubscriberLocationResponseImpl);
+        impl = (ProvideSubscriberLocationResponseImpl)result.getResult();
 
         assertTrue(Arrays.equals(impl.getLocationEstimate().getData(), getExtGeographicalInformation()));
         assertEquals((int) impl.getAgeOfLocationEstimate(), 15);
@@ -181,20 +178,19 @@ public class ProvideSubscriberLocationResponseTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-        byte[] rawData = getEncodedData();
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProvideSubscriberLocationResponseImpl.class);
+    	
         ExtGeographicalInformationImpl egeo = new ExtGeographicalInformationImpl(getExtGeographicalInformation());
 
         ProvideSubscriberLocationResponseImpl reqInd = new ProvideSubscriberLocationResponseImpl(egeo, null, null, 15, null,
                 null, false, null, false, null, null, false, null, null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        reqInd.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        rawData = getEncodedDataFull();
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(reqInd);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         PositioningDataInformationImpl geranPositioningData = new PositioningDataInformationImpl(
                 getPositioningDataInformation());
@@ -217,21 +213,12 @@ public class ProvideSubscriberLocationResponseTest {
                 additionalLocationEstimate, null, true, cellGlobalIdOrServiceAreaIdOrLAI, true,
                 AccuracyFulfilmentIndicator.requestedAccuracyFulfilled, velocityEstimate, true, geranGANSSpositioningData,
                 utranGANSSpositioningData, targetServingNodeForHandover);
-        // ExtGeographicalInformation locationEstimate, PositioningDataInformation geranPositioningData,
-        // UtranPositioningDataInfo utranPositioningData, Integer ageOfLocationEstimate, AddGeographicalInformation
-        // additionalLocationEstimate,
-        // MAPExtensionContainerImpl extensionContainer, Boolean deferredMTLRResponseIndicator, CellGlobalIdOrServiceAreaIdOrLAI
-        // cellGlobalIdOrServiceAreaIdOrLAI,
-        // Boolean saiPresent, AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate,
-        // boolean moLrShortCircuitIndicator,
-        // GeranGANSSpositioningData geranGANSSpositioningData, UtranGANSSpositioningData utranGANSSpositioningData,
-        // ServingNodeAddress targetServingNodeForHandover
-
-        asnOS = new AsnOutputStream();
-        reqInd.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        
+        data=getEncodedDataFull();
+        buffer=parser.encode(reqInd);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 
 }

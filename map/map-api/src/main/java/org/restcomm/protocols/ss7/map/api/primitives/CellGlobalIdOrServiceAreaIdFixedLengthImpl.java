@@ -22,22 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
 public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString {
 	
 	public CellGlobalIdOrServiceAreaIdFixedLengthImpl() {
@@ -58,8 +55,8 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString {
         if (mnc < 0 || mnc > 999)
             throw new MAPException("Bad mnc value");
 
-        ByteBuf data=Unpooled.wrappedBuffer(new byte[7]);        
-
+        ByteBuf data=Unpooled.buffer(7);        
+        
         StringBuilder sb = new StringBuilder();
         StringBuilder sb2 = new StringBuilder();
         if (mcc < 100)
@@ -93,7 +90,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString {
 
         String res = null;
         try {
-            res = TbcdString.decodeString(data);
+            res = TbcdString.decodeString(data.slice(0, 3));
         } catch (MAPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding CellGlobalIdOrServiceAreaIdFixedLength: " + e.getMessage(), e);
         }
@@ -116,7 +113,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString {
 
         String res = null;
         try {
-            res = TbcdString.decodeString(data);
+            res = TbcdString.decodeString(data.slice(0, 3));
         } catch (MAPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding CellGlobalIdOrServiceAreaIdFixedLength: " + e.getMessage(), e);
         }

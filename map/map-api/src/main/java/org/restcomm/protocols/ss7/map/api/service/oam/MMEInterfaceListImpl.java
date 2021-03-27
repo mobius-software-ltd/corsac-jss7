@@ -43,15 +43,15 @@ public class MMEInterfaceListImpl extends ASNBitString {
 
     public MMEInterfaceListImpl(boolean s1Mme, boolean s3, boolean s6a, boolean s10, boolean s11) {
         if (s1Mme)
-            this.isBitSet(_ID_s1Mme);
+            this.setBit(_ID_s1Mme);
         if (s3)
-            this.isBitSet(_ID_s3);
+            this.setBit(_ID_s3);
         if (s6a)
-            this.isBitSet(_ID_s6a);
+            this.setBit(_ID_s6a);
         if (s10)
-            this.isBitSet(_ID_s10);
+            this.setBit(_ID_s10);
         if (s11)
-            this.isBitSet(_ID_s11);
+            this.setBit(_ID_s11);
     }
 
     public boolean getS1Mme() {

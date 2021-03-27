@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
-import java.nio.ByteBuffer;
+import io.netty.buffer.ByteBuf;
 
 public class Utils {
     // ///////////////////////
@@ -33,8 +33,10 @@ public class Utils {
      */
     public static final byte _VALUE_NOT_SET = -1;
 
-    public static final String dump(ByteBuffer buff, int size, boolean asBits) {
-        return dump(buff.array(), size, asBits);
+    public static final String dump(ByteBuf buff, int size, boolean asBits) {
+    	byte[] data=new byte[buff.readableBytes()];
+    	buff.readBytes(data);
+        return dump(buff, size, asBits);
     }
 
     public static final String dump(byte[] buff, int size, boolean asBits) {

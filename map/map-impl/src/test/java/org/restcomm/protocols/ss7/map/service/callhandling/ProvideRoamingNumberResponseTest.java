@@ -28,25 +28,26 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
-import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.service.callhandling.ProvideRoamingNumberResponseImplV1;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ProvideRoamingNumberResponse;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /*
  *
@@ -73,9 +74,7 @@ public class ProvideRoamingNumberResponseTest {
     }
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 59, 4, 7, -111, -108, -120, 115, 0, -110, -14, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12,
-                13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 4, 7,
-                -111, -110, 17, 19, 50, 19, -15 };
+        return new byte[] { 48, 65, 4, 7, -111, -108, -120, 115, 0, -110, -14, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 4, 7, -111, -110, 17, 19, 50, 19, -15 };
     }
 
     private byte[] getEncodedData1() {
@@ -83,33 +82,21 @@ public class ProvideRoamingNumberResponseTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 61, 4, 7, -111, -108, -120, 115, 0, -110, -14, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12,
-                13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 5, 0, 4,
-                7, -111, -110, 17, 19, 50, 19, -15 };
-    }
-
-    public static MAPExtensionContainerImpl GetTestExtensionContainer() {
-        MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
-
-        ArrayList<MAPPrivateExtensionImpl> al = new ArrayList<MAPPrivateExtensionImpl>();
-        al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 4 }, new byte[] { 11, 12, 13, 14, 15 }));
-        al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 6 }, null));
-        al.add(mapServiceFactory.createMAPPrivateExtension(new long[] { 1, 2, 3, 5 }, new byte[] { 21, 22, 23, 24, 25, 26 }));
-
-        MAPExtensionContainerImpl cnt = mapServiceFactory.createMAPExtensionContainer(al, new byte[] { 31, 32, 33 });
-
-        return cnt;
+        return new byte[] { 48, 67, 4, 7, -111, -108, -120, 115, 0, -110, -14, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 5, 0, 4, 7, -111, -110, 17, 19, 50, 19, -15 };
     }
 
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProvideRoamingNumberResponseImplV1.class);
+    	parser.replaceClass(ProvideRoamingNumberResponseImplV3.class);
 
-        AsnInputStream asn = new AsnInputStream(getEncodedData());
-        asn.readTag();
-
-        ProvideRoamingNumberResponseImplV1 prn = new ProvideRoamingNumberResponseImplV1(3);
-        prn.decodeAll(asn);
-
+    	byte[] data=this.getEncodedData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProvideRoamingNumberResponse);
+        ProvideRoamingNumberResponse prn = (ProvideRoamingNumberResponse)result.getResult();
+        
         ISDNAddressStringImpl roamingNumber = prn.getRoamingNumber();
         MAPExtensionContainerImpl extensionContainer = prn.getExtensionContainer();
         boolean releaseResourcesSupported = prn.getReleaseResourcesSupported();
@@ -129,11 +116,11 @@ public class ProvideRoamingNumberResponseTest {
         assertEquals(vmscAddress.getAddress(), "29113123311");
         assertEquals(mapProtocolVersion, 3);
 
-        asn = new AsnInputStream(getEncodedDataFull());
-        asn.readTag();
-
-        prn = new ProvideRoamingNumberResponseImplV1(3);
-        prn.decodeAll(asn);
+        data=this.getEncodedDataFull();
+    	result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProvideRoamingNumberResponse);
+        prn = (ProvideRoamingNumberResponse)result.getResult();
 
         roamingNumber = prn.getRoamingNumber();
         extensionContainer = prn.getExtensionContainer();
@@ -154,11 +141,11 @@ public class ProvideRoamingNumberResponseTest {
         assertEquals(vmscAddress.getAddress(), "29113123311");
         assertEquals(mapProtocolVersion, 3);
 
-        asn = new AsnInputStream(getEncodedData1());
-        asn.readTag();
-
-        prn = new ProvideRoamingNumberResponseImplV1(2);
-        prn.decodeAll(asn);
+        data=this.getEncodedData1();
+    	result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProvideRoamingNumberResponse);
+        prn = (ProvideRoamingNumberResponse)result.getResult();
 
         roamingNumber = prn.getRoamingNumber();
         extensionContainer = prn.getExtensionContainer();
@@ -180,46 +167,45 @@ public class ProvideRoamingNumberResponseTest {
 
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProvideRoamingNumberResponseImplV1.class);
+    	parser.replaceClass(ProvideRoamingNumberResponseImplV3.class);
 
         ISDNAddressStringImpl roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "49883700292");
-        MAPExtensionContainerImpl extensionContainer = GetTestExtensionContainer();
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         boolean releaseResourcesSupported = false;
         ISDNAddressStringImpl vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "29113123311");
         long mapProtocolVersion = 3;
 
-        ProvideRoamingNumberResponseImplV1 prn = new ProvideRoamingNumberResponseImplV1(roamingNumber, extensionContainer,
+        ProvideRoamingNumberResponse prn = new ProvideRoamingNumberResponseImplV3(roamingNumber, extensionContainer,
                 releaseResourcesSupported, vmscAddress, mapProtocolVersion);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        prn.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
-        // System.out.println("0   :   " + Arrays.toString(encodedData));
-        assertTrue(Arrays.equals(getEncodedData(), encodedData));
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(prn);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         releaseResourcesSupported = true;
-        prn = new ProvideRoamingNumberResponseImplV1(roamingNumber, extensionContainer, releaseResourcesSupported, vmscAddress,
+        prn = new ProvideRoamingNumberResponseImplV3(roamingNumber, extensionContainer, releaseResourcesSupported, vmscAddress,
                 mapProtocolVersion);
 
-        asnOS = new AsnOutputStream();
-        prn.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        // System.out.println("0   :   " + Arrays.toString(encodedData));
-        assertTrue(Arrays.equals(getEncodedDataFull(), encodedData));
+        data=getEncodedDataFull();
+        buffer=parser.encode(prn);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         // 2
         mapProtocolVersion = 2;
-        prn = new ProvideRoamingNumberResponseImplV1(roamingNumber, null, false, null, mapProtocolVersion);
+        prn = new ProvideRoamingNumberResponseImplV1(roamingNumber, mapProtocolVersion);
 
-        asnOS = new AsnOutputStream();
-        prn.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        // System.out.println("1   :   " + Arrays.toString(encodedData));
-        assertTrue(Arrays.equals(getEncodedData1(), encodedData));
-
+        data=getEncodedData1();
+        buffer=parser.encode(prn);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

@@ -34,7 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  * @author Lasith Waruna Perera
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class DPAnalysedInfoCriteriumImpl {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
 	private ISDNAddressStringImpl dialledNumber;

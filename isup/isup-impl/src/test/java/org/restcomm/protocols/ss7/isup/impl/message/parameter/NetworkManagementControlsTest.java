@@ -37,8 +37,6 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.NetworkManagementControlsImpl;
 import org.testng.annotations.Test;
 
 /**

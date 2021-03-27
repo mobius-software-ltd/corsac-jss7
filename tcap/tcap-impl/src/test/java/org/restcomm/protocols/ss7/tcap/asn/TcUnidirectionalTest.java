@@ -31,9 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCUniMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;

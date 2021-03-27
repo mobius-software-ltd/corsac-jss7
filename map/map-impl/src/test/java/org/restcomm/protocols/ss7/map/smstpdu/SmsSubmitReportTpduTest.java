@@ -37,6 +37,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitReportTpduImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
 import org.testng.annotations.Test;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
@@ -55,7 +58,7 @@ public class SmsSubmitReportTpduTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        SmsSubmitReportTpduImpl impl = new SmsSubmitReportTpduImpl(this.getData1(), null);
+        SmsSubmitReportTpduImpl impl = new SmsSubmitReportTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
         assertFalse(impl.getUserDataHeaderIndicator());
         assertEquals(impl.getFailureCause().getCode(), 200);
         assertEquals(impl.getServiceCentreTimeStamp().getYear(), 7);
@@ -71,7 +74,7 @@ public class SmsSubmitReportTpduTest {
         assertEquals(impl.getDataCodingScheme().getCode(), 0);
         assertTrue(impl.getUserData().getDecodedMessage().equals("Hello !!!!"));
 
-        impl = new SmsSubmitReportTpduImpl(this.getData2(), null);
+        impl = new SmsSubmitReportTpduImpl(Unpooled.wrappedBuffer(this.getData2()), null);
         assertFalse(impl.getUserDataHeaderIndicator());
         assertNull(impl.getFailureCause());
         assertEquals(impl.getServiceCentreTimeStamp().getYear(), 7);
@@ -94,12 +97,18 @@ public class SmsSubmitReportTpduTest {
         FailureCauseImpl failureCause = new FailureCauseImpl(200);
         AbsoluteTimeStampImpl serviceCentreTimeStamp = new AbsoluteTimeStampImpl(7, 5, 15, 15, 1, 11, 12);
         SmsSubmitReportTpduImpl impl = new SmsSubmitReportTpduImpl(failureCause, serviceCentreTimeStamp, null, ud);
-        byte[] enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData1()));
+        byte[] encData=new byte[this.getData1().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData1()));
 
         ProtocolIdentifierImpl pi = new ProtocolIdentifierImpl(44);
         impl = new SmsSubmitReportTpduImpl(null, serviceCentreTimeStamp, pi, null);
-        enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData2()));
+        encData=new byte[this.getData2().length];
+        buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData2()));
     }
 }

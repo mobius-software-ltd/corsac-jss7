@@ -92,6 +92,10 @@ public class UpdateLocationRequestImpl extends MobilityMessageImpl implements Up
     
     private long mapProtocolVersion;
 
+    public UpdateLocationRequestImpl() {
+    	this.mapProtocolVersion = 3;
+    }
+    
     public UpdateLocationRequestImpl(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

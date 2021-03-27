@@ -41,7 +41,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implements MAPErrorMessageSystemFailure {
-	private long mapProtocolVersion;
+	private long mapProtocolVersion=3;
     
 	private ASNNetworkResourceImpl networkResource;
 	

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class TripletListImpl {
-	private ArrayList<AuthenticationTripletImpl> authenticationTriplets;
+	private List<AuthenticationTripletImpl> authenticationTriplets;
 
     public TripletListImpl() {
     }
 
-    public TripletListImpl(ArrayList<AuthenticationTripletImpl> authenticationTriplets) {
+    public TripletListImpl(List<AuthenticationTripletImpl> authenticationTriplets) {
         this.authenticationTriplets = authenticationTriplets;
     }
 
-    public ArrayList<AuthenticationTripletImpl> getAuthenticationTriplets() {
+    public List<AuthenticationTripletImpl> getAuthenticationTriplets() {
         return authenticationTriplets;
     }
 

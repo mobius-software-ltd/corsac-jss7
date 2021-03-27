@@ -33,7 +33,6 @@ package org.restcomm.protocols.ss7.isup.impl.message;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.FacilityMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferNumber;

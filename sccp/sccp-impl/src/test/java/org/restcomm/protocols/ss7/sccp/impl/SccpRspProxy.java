@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import org.restcomm.protocols.ss7.sccp.impl.RemoteSignalingPointCodeImpl;
-
 /**
  * @author Sergey Vetyutnev
  *

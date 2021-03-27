@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -35,16 +35,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ASNIntegerListWrapperImpl {
-	private ArrayList<ASNInteger> integers;
+	private List<ASNInteger> integers;
 
     public ASNIntegerListWrapperImpl() {
     }
 
-    public ASNIntegerListWrapperImpl(ArrayList<ASNInteger> integers) {
+    public ASNIntegerListWrapperImpl(List<ASNInteger> integers) {
         this.integers = integers;
     }
 
-    public ArrayList<ASNInteger> getIntegers() {
+    public List<ASNInteger> getIntegers() {
     	return integers;
     }
 }

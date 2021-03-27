@@ -22,35 +22,29 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.oam.BMSCInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.BMSCInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.ENBInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.ENBInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.GGSNInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.GGSNInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MGWInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MGWInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MMEInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MMEInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.PGWInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.PGWInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.RNCInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.RNCInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGSNInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.SGSNInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGWInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.SGWInterfaceListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -60,23 +54,20 @@ import org.testng.annotations.Test;
 public class TraceInterfaceListTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 42, (byte) 128, 3, 6, 8, 0, (byte) 129, 2, 5, 32, (byte) 130, 3, 5, 64, 0, (byte) 131, 2, 5, (byte) 128, (byte) 132, 2, 4, 16,
-                (byte) 133, 2, 7, (byte) 128, (byte) 134, 2, 3, 8, (byte) 135, 2, 3, (byte) 128, (byte) 136, 2, 0, 4, (byte) 137, 2, 5, 64 };
+        return new byte[] { 48, 40, -128, 2, 3, 8, -127, 2, 5, 32, -126, 2, 6, 64, -125, 2, 7, -128, -124, 2, 4, 16, -123, 2, 7, -128, -122, 2, 3, 8, -121, 2, 7, -128, -120, 2, 2, 4, -119, 2, 6, 64 };
     }
 
     @Test(groups = { "functional.decode", "service.oam" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TraceInterfaceListImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        TraceInterfaceListImpl asc = new TraceInterfaceListImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TraceInterfaceListImpl);
+        TraceInterfaceListImpl asc = (TraceInterfaceListImpl)result.getResult();
+        
         assertTrue(asc.getMscSList().getMapB());
         assertFalse(asc.getMscSList().getA());
 
@@ -110,29 +101,25 @@ public class TraceInterfaceListTest {
 
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
-
-        MSCSInterfaceList mscSList = new MSCSInterfaceListImpl(false, false, false, false, true, false, false, false, false, false);
-        MGWInterfaceList mgwList = new MGWInterfaceListImpl(false, false, true);
-        SGSNInterfaceList sgsnList = new SGSNInterfaceListImpl(false, true, false, false, false, false, false, false, false, false, false);
-        GGSNInterfaceList ggsnList = new GGSNInterfaceListImpl(true, false, false);
-        RNCInterfaceList rncList = new RNCInterfaceListImpl(false, false, false, true);
-        BMSCInterfaceList bmscList = new BMSCInterfaceListImpl(true);
-        MMEInterfaceList mmeList = new MMEInterfaceListImpl(false, false, false, false, true);
-        SGWInterfaceList sgwList = new SGWInterfaceListImpl(true, false, false, false, false);
-        PGWInterfaceList pgwList = new PGWInterfaceListImpl(false, false, false, false, false, true, false, false);
-        ENBInterfaceList enbList = new ENBInterfaceListImpl(false, true, false);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TraceInterfaceListImpl.class);
+    	
+    	MSCSInterfaceListImpl mscSList = new MSCSInterfaceListImpl(false, false, false, false, true, false, false, false, false, false);
+    	MGWInterfaceListImpl mgwList = new MGWInterfaceListImpl(false, false, true);
+    	SGSNInterfaceListImpl sgsnList = new SGSNInterfaceListImpl(false, true, false, false, false, false, false, false, false, false, false);
+    	GGSNInterfaceListImpl ggsnList = new GGSNInterfaceListImpl(true, false, false);
+    	RNCInterfaceListImpl rncList = new RNCInterfaceListImpl(false, false, false, true);
+        BMSCInterfaceListImpl bmscList = new BMSCInterfaceListImpl(true);
+        MMEInterfaceListImpl mmeList = new MMEInterfaceListImpl(false, false, false, false, true);
+        SGWInterfaceListImpl sgwList = new SGWInterfaceListImpl(true, false, false, false, false);
+        PGWInterfaceListImpl pgwList = new PGWInterfaceListImpl(false, false, false, false, false, true, false, false);
+        ENBInterfaceListImpl enbList = new ENBInterfaceListImpl(false, true, false);
         TraceInterfaceListImpl asc = new TraceInterfaceListImpl(mscSList, mgwList, sgsnList, ggsnList, rncList, bmscList, mmeList, sgwList, pgwList, enbList);
-//        MSCSInterfaceList mscSList, MGWInterfaceList mgwList, SGSNInterfaceList sgsnList, GGSNInterfaceList ggsnList,
-//        RNCInterfaceList rncList, BMSCInterfaceList bmscList, MMEInterfaceList mmeList, SGWInterfaceList sgwList, PGWInterfaceList pgwList,
-//        ENBInterfaceList enbList
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
-
     }
-
 }

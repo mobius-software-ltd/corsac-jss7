@@ -35,7 +35,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

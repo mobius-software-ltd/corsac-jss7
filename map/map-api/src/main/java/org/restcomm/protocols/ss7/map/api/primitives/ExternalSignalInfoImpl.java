@@ -32,8 +32,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ExternalSignalInfoImpl {
+	private ASNProtocolIDImpl protocolId = null;
 	private SignalInfoImpl signalInfo = null;
-    private ASNProtocolIDImpl protocolId = null;
     private MAPExtensionContainerImpl extensionContainer = null;
 
     private static final String _PrimitiveName = "ExternalSignalInfo";

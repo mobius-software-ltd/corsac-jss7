@@ -22,23 +22,27 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
-import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.SignalInfoImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /*
  *
@@ -66,15 +70,17 @@ public class ExternalSignalInfoTest {
 
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
-        byte[] data = new byte[] { 48, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
+        ASNParser parser=new ASNParser();
+        parser.loadClass(ExternalSignalInfoImpl.class);
+        
+    	byte[] data = new byte[] { 48, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
         byte[] data_ = new byte[] { 10, 20, 30, 40 };
 
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        ExternalSignalInfoImpl extSignalInfo = new ExternalSignalInfoImpl();
-        extSignalInfo.decodeAll(asn);
-
+        ASNDecodeResult result = parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExternalSignalInfoImpl);
+        ExternalSignalInfoImpl extSignalInfo = (ExternalSignalInfoImpl)result.getResult();
+        
         ProtocolId protocolId = extSignalInfo.getProtocolId();
         byte[] signalInfo = extSignalInfo.getSignalInfo().getData();
 
@@ -85,22 +91,19 @@ public class ExternalSignalInfoTest {
 
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+        parser.loadClass(ExternalSignalInfoImpl.class);
+        
         byte[] data = new byte[] { 48, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
         byte[] data_ = new byte[] { 10, 20, 30, 40 };
 
-        SignalInfo signalInfo = new SignalInfoImpl(data_);
+        SignalInfoImpl signalInfo = new SignalInfoImpl(data_);
         ProtocolId protocolId = ProtocolId.gsm_0806;
         ExternalSignalInfoImpl extSignalInfo = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        extSignalInfo.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(extSignalInfo);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "service.callhandling" })
-    public void testSerialization() throws Exception {
-
     }
 }

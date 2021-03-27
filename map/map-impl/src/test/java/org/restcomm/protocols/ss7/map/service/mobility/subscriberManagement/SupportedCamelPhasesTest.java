@@ -22,15 +22,18 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
-
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -40,23 +43,21 @@ import org.testng.annotations.Test;
 public class SupportedCamelPhasesTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 2, 4, (byte) 160 };
+        return new byte[] { 3, 2, 5, (byte) 160 };
     }
 
     @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SupportedCamelPhasesImpl.class);
+    	
         byte[] rawData = getEncodedData();
 
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        SupportedCamelPhasesImpl impl = new SupportedCamelPhasesImpl();
-        impl.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SupportedCamelPhasesImpl);
+        SupportedCamelPhasesImpl impl = (SupportedCamelPhasesImpl)result.getResult();
+        
         assertTrue(impl.getPhase1Supported());
         assertFalse(impl.getPhase2Supported());
         assertTrue(impl.getPhase3Supported());
@@ -65,44 +66,14 @@ public class SupportedCamelPhasesTest {
 
     @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SupportedCamelPhasesImpl.class);
+    	
         SupportedCamelPhasesImpl impl = new SupportedCamelPhasesImpl(true, false, true, false);
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
-        byte[] rawData = getEncodedData();
-
-        assertTrue(Arrays.equals(rawData, encodedData));
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        byte[] rawData = this.getEncodedData();
+        assertEquals(encodedData, rawData);
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "mobility.subscriberManagement" })
-    public void testXMLSerialize() throws Exception {
-
-        SupportedCamelPhasesImpl original = new SupportedCamelPhasesImpl(true, false, true, false);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "supportedCamelPhases", SupportedCamelPhasesImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        SupportedCamelPhasesImpl copy = reader.read("supportedCamelPhases", SupportedCamelPhasesImpl.class);
-
-        assertEquals(copy.getPhase1Supported(), original.getPhase1Supported());
-        assertEquals(copy.getPhase2Supported(), original.getPhase2Supported());
-        assertEquals(copy.getPhase3Supported(), original.getPhase3Supported());
-        assertEquals(copy.getPhase4Supported(), original.getPhase4Supported());
-    }*/
 }

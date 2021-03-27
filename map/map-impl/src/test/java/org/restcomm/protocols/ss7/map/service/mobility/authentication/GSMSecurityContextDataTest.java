@@ -22,19 +22,21 @@
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Cksn;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CksnImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Kc;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KcImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -53,32 +55,32 @@ public class GSMSecurityContextDataTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GSMSecurityContextDataImpl.class);
+
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-
-        GSMSecurityContextDataImpl prim = new GSMSecurityContextDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GSMSecurityContextDataImpl);
+        GSMSecurityContextDataImpl prim = (GSMSecurityContextDataImpl)result.getResult();
+        
         assertTrue(Arrays.equals(prim.getKc().getData(), getDataKc()));
         assertEquals(prim.getCksn().getData(), 4);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GSMSecurityContextDataImpl.class);
 
-        Kc kc = new KcImpl(getDataKc());
-        Cksn cksn = new CksnImpl(4);
+        KcImpl kc = new KcImpl(getDataKc());
+        CksnImpl cksn = new CksnImpl(4);
 
         GSMSecurityContextDataImpl prim = new GSMSecurityContextDataImpl(kc, cksn);
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-
+        byte[] data=getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

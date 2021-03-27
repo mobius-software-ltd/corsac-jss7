@@ -23,16 +23,20 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -59,57 +63,48 @@ public class GSNAddressTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        GSNAddressImpl pi = new GSNAddressImpl();
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GSNAddressImpl.class);
+    	
+    	byte[] rawData = this.getEncodedData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
         
-        pi.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GSNAddressImpl);
+        GSNAddressImpl pi = (GSNAddressImpl)result.getResult();        
+        
         assertEquals(pi.getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
         assertEquals(pi.getGSNAddressData(), getData());
 
-
         rawData = getEncodedData2();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        pi = new GSNAddressImpl();
-        pi.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GSNAddressImpl);
+        pi = (GSNAddressImpl)result.getResult();        
+        
         assertEquals(pi.getGSNAddressAddressType(), GSNAddressAddressType.IPv6);
         assertEquals(pi.getGSNAddressData(), getData2());
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GSNAddressImpl.class);
+    	
         GSNAddressImpl pi = new GSNAddressImpl(GSNAddressAddressType.IPv4, getData());
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        pi.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer = parser.encode(pi);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-
         pi = new GSNAddressImpl(GSNAddressAddressType.IPv6, getData2());
-        asnOS = new AsnOutputStream();
+        buffer = parser.encode(pi);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
 
-        pi.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
 

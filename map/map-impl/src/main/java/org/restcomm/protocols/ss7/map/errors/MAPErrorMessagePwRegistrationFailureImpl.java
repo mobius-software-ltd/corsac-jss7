@@ -33,14 +33,12 @@ import org.restcomm.protocols.ss7.map.api.errors.PWRegistrationFailureCause;
  */
 public class MAPErrorMessagePwRegistrationFailureImpl extends EnumeratedMAPErrorMessage1Impl implements
         MAPErrorMessagePwRegistrationFailure {
-	private PWRegistrationFailureCause pwRegistrationFailureCause;
-
+	
     public MAPErrorMessagePwRegistrationFailureImpl(PWRegistrationFailureCause pwRegistrationFailureCause) {
         super((long) MAPErrorCode.pwRegistrationFailure);
 
-        this.pwRegistrationFailureCause = pwRegistrationFailureCause;
-        if(this.pwRegistrationFailureCause!=null)
-        	setValue(Long.valueOf(this.pwRegistrationFailureCause.getCode()));
+        if(pwRegistrationFailureCause!=null)
+        	setValue(Long.valueOf(pwRegistrationFailureCause.getCode()));
     }
 
     public MAPErrorMessagePwRegistrationFailureImpl() {
@@ -57,12 +55,19 @@ public class MAPErrorMessagePwRegistrationFailureImpl extends EnumeratedMAPError
 
     @Override
     public PWRegistrationFailureCause getPWRegistrationFailureCause() {
-    	return pwRegistrationFailureCause;
+    	Long value=getValue();
+    	if(value==null)
+    		return null;
+    	
+    	return PWRegistrationFailureCause.getInstance(value.intValue());
     }
 
     @Override
     public void setPWRegistrationFailureCause(PWRegistrationFailureCause val) {
-    	this.pwRegistrationFailureCause=val;    	
+    	if(val!=null)
+    		setValue(Long.valueOf(val.getCode()));
+    	else
+    		setValue(null);
     }
 
     @Override
@@ -70,9 +75,9 @@ public class MAPErrorMessagePwRegistrationFailureImpl extends EnumeratedMAPError
         StringBuilder sb = new StringBuilder();
 
         sb.append("MAPErrorMessagePwRegistrationFailure [");
-
-        if (this.pwRegistrationFailureCause != null)
-            sb.append("pwRegistrationFailureCause=" + this.pwRegistrationFailureCause.toString());
+        PWRegistrationFailureCause pwRegistrationFailureCause=getPWRegistrationFailureCause();
+        if (pwRegistrationFailureCause != null)
+            sb.append("pwRegistrationFailureCause=" + pwRegistrationFailureCause.toString());
         sb.append("]");
 
         return sb.toString();

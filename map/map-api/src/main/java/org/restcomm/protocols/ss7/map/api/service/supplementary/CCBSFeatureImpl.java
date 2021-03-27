@@ -52,7 +52,7 @@ public class CCBSFeatureImpl {
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ISDNAddressStringImpl bSubscriberSubaddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
     private BasicServiceCodeWrapperImpl basicServiceCode;
 
     public CCBSFeatureImpl() {

@@ -22,6 +22,7 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,7 +44,7 @@ public class MTsmsCAMELTDPCriteriaImpl {
     }
 
     public MTsmsCAMELTDPCriteriaImpl(SMSTriggerDetectionPoint smsTriggerDetectionPoint,
-            ArrayList<MTSMSTPDUType> tPDUTypeCriterion) {
+            List<MTSMSTPDUType> tPDUTypeCriterion) {
         if(smsTriggerDetectionPoint!=null) {
         	this.smsTriggerDetectionPoint = new ASNSMSTriggerDetectionPoint();
         	this.smsTriggerDetectionPoint.setType(smsTriggerDetectionPoint);
@@ -51,7 +52,7 @@ public class MTsmsCAMELTDPCriteriaImpl {
         
         if(tPDUTypeCriterion!=null)
         {
-        	ArrayList<ASNMTSMSTPDUType> wrappedData=new ArrayList<ASNMTSMSTPDUType>();
+        	List<ASNMTSMSTPDUType> wrappedData=new ArrayList<ASNMTSMSTPDUType>();
         	for(MTSMSTPDUType curr:tPDUTypeCriterion) {
         		ASNMTSMSTPDUType item=new ASNMTSMSTPDUType();
         		item.setType(curr);
@@ -69,11 +70,11 @@ public class MTsmsCAMELTDPCriteriaImpl {
         return this.smsTriggerDetectionPoint.getType();
     }
 
-    public ArrayList<MTSMSTPDUType> getTPDUTypeCriterion() {
+    public List<MTSMSTPDUType> getTPDUTypeCriterion() {
     	if(this.tPDUTypeCriterion==null)
     		return null;
     	
-    	ArrayList<MTSMSTPDUType> result=new ArrayList<MTSMSTPDUType>();
+    	List<MTSMSTPDUType> result=new ArrayList<MTSMSTPDUType>();
     	for(ASNMTSMSTPDUType curr:this.tPDUTypeCriterion.getMTSMSTPDUType())
     		result.add(curr.getType());
     	

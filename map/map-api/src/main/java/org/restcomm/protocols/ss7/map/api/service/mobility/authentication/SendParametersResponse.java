@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
@@ -38,6 +38,6 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface SendParametersResponse extends MobilityMessage {
 
-    ArrayList<SentParameter> getSentParameterList();
+    List<SentParameter> getSentParameterList();
 
 }

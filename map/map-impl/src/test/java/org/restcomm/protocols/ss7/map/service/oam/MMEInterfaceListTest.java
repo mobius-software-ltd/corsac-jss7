@@ -22,15 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.oam.MMEInterfaceListImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -45,17 +49,15 @@ public class MMEInterfaceListTest {
 
     @Test(groups = { "functional.decode", "service.oam" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MMEInterfaceListImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        MMEInterfaceListImpl asc = new MMEInterfaceListImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MMEInterfaceListImpl);
+        MMEInterfaceListImpl asc = (MMEInterfaceListImpl)result.getResult();
+        
         assertTrue(asc.getS1Mme());
         assertFalse(asc.getS3());
         assertTrue(asc.getS6a());
@@ -66,17 +68,15 @@ public class MMEInterfaceListTest {
 
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MMEInterfaceListImpl.class);
+    	
         MMEInterfaceListImpl asc = new MMEInterfaceListImpl(true, false, true, false, true);
-//        boolean s1Mme, boolean s3, boolean s6a, boolean s10, boolean s11
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
-
     }
-
 }

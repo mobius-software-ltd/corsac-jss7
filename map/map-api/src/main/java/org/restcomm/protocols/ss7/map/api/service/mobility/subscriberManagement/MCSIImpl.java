@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
@@ -37,7 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  * @author Lasith Waruna Perera
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MCSIImpl {
 	private MMCodeListWrapperImpl mobilityTriggers;
     private ASNInteger serviceKey;
@@ -57,7 +57,7 @@ public class MCSIImpl {
     public MCSIImpl() {
     }
 
-    public MCSIImpl(ArrayList<MMCodeImpl> mobilityTriggers, long serviceKey, ISDNAddressStringImpl gsmSCFAddress,
+    public MCSIImpl(List<MMCodeImpl> mobilityTriggers, long serviceKey, ISDNAddressStringImpl gsmSCFAddress,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
         
         if(mobilityTriggers!=null)
@@ -76,7 +76,7 @@ public class MCSIImpl {
         	this.csiActive = new ASNNull();
     }
 
-    public ArrayList<MMCodeImpl> getMobilityTriggers() {
+    public List<MMCodeImpl> getMobilityTriggers() {
     	if(this.mobilityTriggers==null)
     		return null;
     	

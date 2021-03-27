@@ -40,6 +40,8 @@ package org.restcomm.protocols.ss7.map.api.primitives;
  */
 
 public class FTNAddressStringImpl extends AddressStringImpl {
+	private static final long serialVersionUID = 1L;
+
 	public FTNAddressStringImpl() {
 		super(14);
     }

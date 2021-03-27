@@ -23,15 +23,19 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -41,7 +45,7 @@ import org.testng.annotations.Test;
 public class LAIFixedLengthTest {
 
     public byte[] getData() {
-        return new byte[] { 4, 5, 82, (byte) 240, 16, 17, 92 };
+        return new byte[] { -127, 5, 82, (byte) 240, 16, 17, 92 };
     };
 
     public byte[] getDataVal() {
@@ -49,37 +53,32 @@ public class LAIFixedLengthTest {
     };
 
     public byte[] getData2() {
-        return new byte[] { 4, 5, 16, 97, 66, 1, 77 };
+        return new byte[] { -127, 5, 16, 97, 66, 1, 77 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.loadClass(LAIFixedLengthImpl.class);
+    	
         byte[] data = this.getData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        LAIFixedLengthImpl prim = new LAIFixedLengthImpl();
-        prim.decodeAll(asn);
-
-        assertNotNull(prim.getData());
-        assertTrue(Arrays.equals(getDataVal(), prim.getData()));
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LAIFixedLengthImpl);
+        LAIFixedLengthImpl prim = (LAIFixedLengthImpl)result.getResult();
+        
         assertEquals(prim.getMCC(), 250);
         assertEquals(prim.getMNC(), 1);
         assertEquals(prim.getLac(), 4444);
 
         data = this.getData2();
-
-        asn = new AsnInputStream(data);
-        asn.readTag();
-
-        prim = new LAIFixedLengthImpl();
-        prim.decodeAll(asn);
-
-        assertNotNull(prim.getData());
-
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LAIFixedLengthImpl);
+        prim = (LAIFixedLengthImpl)result.getResult();
+        
         assertEquals(prim.getMCC(), 11);
         assertEquals(prim.getMNC(), 246);
         assertEquals(prim.getLac(), 333);
@@ -87,54 +86,29 @@ public class LAIFixedLengthTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.loadClass(LAIFixedLengthImpl.class);
+    	
         LAIFixedLengthImpl prim = new LAIFixedLengthImpl(250, 1, 4444);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertTrue(Arrays.equals(encodedData, this.getData()));
 
         prim = new LAIFixedLengthImpl(getDataVal());
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
 
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        assertTrue(Arrays.equals(encodedData, this.getData()));
 
         prim = new LAIFixedLengthImpl(11, 246, 333);
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
 
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        assertTrue(Arrays.equals(encodedData, this.getData2()));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        LAIFixedLengthImpl original = new LAIFixedLengthImpl(250, 1, 4444);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "laiFixedLength", LAIFixedLengthImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        LAIFixedLengthImpl copy = reader.read("laiFixedLength", LAIFixedLengthImpl.class);
-
-        assertEquals(copy.getMCC(), original.getMCC());
-        assertEquals(copy.getMNC(), original.getMNC());
-        assertEquals(copy.getLac(), original.getLac());
-
-    }*/
 }

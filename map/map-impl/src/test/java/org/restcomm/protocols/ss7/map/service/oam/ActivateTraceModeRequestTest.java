@@ -22,46 +22,39 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.oam.JobType;
-import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfiguration;
 import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepth;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthList;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeList;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2Impl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceReferenceImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -75,11 +68,7 @@ public class ActivateTraceModeRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 107, (byte) 128, 7, 51, 51, 35, 34, 34, 0, 17, (byte) 129, 1, 11, (byte) 130, 1, 55, (byte) 131, 6, (byte) 145, 17, 17, 49, 51,
-                51, (byte) 164, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
-                25, 26, (byte) 161, 3, 31, 32, 33, (byte) 133, 3, 12, 13, 14, (byte) 166, 6, (byte) 128, 1, 2, (byte) 129, 1, 0, (byte) 135, 3, 6, 16, 0,
-                (byte) 168, 5, (byte) 128, 3, 6, 64, 0, (byte) 169, 4, (byte) 128, 2, 3, (byte) 128, (byte) 138, 5, 4, (byte) 192, (byte) 168, 4, 1,
-                (byte) 171, 3, 10, 1, 3 };
+        return new byte[] { 48, 111, -128, 7, 51, 51, 35, 34, 34, 0, 17, -127, 1, 11, -126, 1, 55, -125, 6, -111, 17, 17, 49, 51, 51, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -123, 3, 12, 13, 14, -90, 6, -128, 1, 2, -127, 1, 0, -121, 2, 4, 16, -88, 4, -128, 2, 6, 64, -87, 4, -128, 2, 7, -128, -118, 5, 4, -64, -88, 4, 1, -85, 3, 10, 1, 3 };
     }
 
     private byte[] getTraceReferenceData() {
@@ -96,17 +85,15 @@ public class ActivateTraceModeRequestTest {
 
     @Test(groups = { "functional.decode", "service.oam" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ActivateTraceModeRequestImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        ActivateTraceModeRequestImpl asc = new ActivateTraceModeRequestImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ActivateTraceModeRequestImpl);
+        ActivateTraceModeRequestImpl asc = (ActivateTraceModeRequestImpl)result.getResult();
+        
         assertEquals(asc.getImsi().getData(), "33333222220011");
         assertEquals(asc.getTraceReference().getData(), getTraceReferenceData());
         assertEquals(asc.getTraceType().getData(), 55);
@@ -123,15 +110,11 @@ public class ActivateTraceModeRequestTest {
 
 
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new ActivateTraceModeRequestImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ActivateTraceModeRequestImpl);
+        asc = (ActivateTraceModeRequestImpl)result.getResult();
+        
         assertEquals(asc.getImsi().getData(), "33333222220011");
         assertEquals(asc.getTraceReference().getData(), getTraceReferenceData());
         assertEquals(asc.getTraceType().getData(), 55);
@@ -154,46 +137,38 @@ public class ActivateTraceModeRequestTest {
 
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
-
-        IMSI imsi = new IMSIImpl("33333222220011");
-        TraceReference traceReference = new TraceReferenceImpl(getTraceReferenceData());
-        TraceType traceType = new TraceTypeImpl(55);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ActivateTraceModeRequestImpl.class);
+    	
+        IMSIImpl imsi = new IMSIImpl("33333222220011");
+        TraceReferenceImpl traceReference = new TraceReferenceImpl(getTraceReferenceData());
+        TraceTypeImpl traceType = new TraceTypeImpl(55);
         ActivateTraceModeRequestImpl asc = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, null, null, null, null, null, null, null, null,
                 null);
-//        IMSI imsi, TraceReference traceReference, TraceType traceType, AddressStringImpl omcId,
-//        MAPExtensionContainerImpl extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
-//        TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-
         AddressStringImpl omcId = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1111133333");
-        TraceReference2 traceReference2 = new TraceReference2Impl(getTraceReference2Data());
-        TraceDepthList traceDepthList = new TraceDepthListImpl(TraceDepth.maximum, TraceDepth.minimum, null, null, null, null, null, null, null, null);
-        TraceNETypeList traceNeTypeList = new TraceNETypeListImpl(false, false, false, true, false, false, false, false, false, false);
-        // boolean mscS, boolean mgw, boolean sgsn, boolean ggsn, boolean rnc, boolean bmSc, boolean mme, boolean sgw, boolean pgw, boolean enb
-        MSCSInterfaceList mscSList = new MSCSInterfaceListImpl(false, true, false, false, false, false, false, false, false, false);
-        // boolean a, boolean iu, boolean mc, boolean mapG, boolean mapB, boolean mapE, boolean mapF, boolean cap, boolean mapD, boolean mapC
-        TraceInterfaceList traceInterfaceList = new TraceInterfaceListImpl(mscSList, null, null, null, null, null, null, null, null, null);
-        MSCSEventList mscSList2 = new MSCSEventListImpl(true, false, false, false, false);
-        // boolean moMtCall, boolean moMtSms, boolean luImsiAttachImsiDetach, boolean handovers, boolean ss
-        TraceEventList traceEventList = new TraceEventListImpl(mscSList2, null, null, null, null, null, null, null);
-        GSNAddress traceCollectionEntity = new GSNAddressImpl(GSNAddressAddressType.IPv4, getTraceCollectionEntityData());
-        MDTConfiguration mdtConfiguration = new MDTConfigurationImpl(JobType.immediateMdtAndTrace, null, null, null, null, null, null, null, null, null, null);
+        TraceReference2Impl traceReference2 = new TraceReference2Impl(getTraceReference2Data());
+        TraceDepthListImpl traceDepthList = new TraceDepthListImpl(TraceDepth.maximum, TraceDepth.minimum, null, null, null, null, null, null, null, null);
+        TraceNETypeListImpl traceNeTypeList = new TraceNETypeListImpl(false, false, false, true, false, false, false, false, false, false);
+        MSCSInterfaceListImpl mscSList = new MSCSInterfaceListImpl(false, true, false, false, false, false, false, false, false, false);
+        TraceInterfaceListImpl traceInterfaceList = new TraceInterfaceListImpl(mscSList, null, null, null, null, null, null, null, null, null);
+        MSCSEventListImpl mscSList2 = new MSCSEventListImpl(true, false, false, false, false);
+        TraceEventListImpl traceEventList = new TraceEventListImpl(mscSList2, null, null, null, null, null, null, null);
+        GSNAddressImpl traceCollectionEntity = new GSNAddressImpl(GSNAddressAddressType.IPv4, getTraceCollectionEntityData());
+        MDTConfigurationImpl mdtConfiguration = new MDTConfigurationImpl(JobType.immediateMdtAndTrace, null, null, null, null, null, null, null, null, null, null);
         asc = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, omcId, MAPExtensionContainerTest.GetTestExtensionContainer(), traceReference2,
                 traceDepthList, traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

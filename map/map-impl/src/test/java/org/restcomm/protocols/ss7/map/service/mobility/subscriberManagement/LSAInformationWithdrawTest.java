@@ -27,13 +27,15 @@ import static org.testng.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdrawImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -43,11 +45,11 @@ import org.testng.annotations.Test;
 public class LSAInformationWithdrawTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 5, 0 };
+        return new byte[] { 48, 2, 5, 0 };
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 5, 4, 3, 1, 2, 3 };
+        return new byte[] { 48, 7, 48, 5, 4, 3, 1, 2, 3 };
     }
 
     private byte[] getLsaIdData() {
@@ -56,33 +58,25 @@ public class LSAInformationWithdrawTest {
 
     @Test
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LSAInformationWithdrawImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        LSAInformationWithdrawImpl asc = new LSAInformationWithdrawImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.NULL);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertTrue(asn.isTagPrimitive());
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LSAInformationWithdrawImpl);
+        LSAInformationWithdrawImpl asc = (LSAInformationWithdrawImpl)result.getResult();
+        
         assertTrue(asc.getAllLSAData());
         assertNull(asc.getLSAIdentityList());
 
 
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new LSAInformationWithdrawImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        assertFalse(asn.isTagPrimitive());
-
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LSAInformationWithdrawImpl);
+        asc = (LSAInformationWithdrawImpl)result.getResult();
+        
         assertFalse(asc.getAllLSAData());
         assertEquals(asc.getLSAIdentityList().size(), 1);
         assertEquals(asc.getLSAIdentityList().get(0).getData(), getLsaIdData());
@@ -90,26 +84,25 @@ public class LSAInformationWithdrawTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LSAInformationWithdrawImpl.class);
+    	
         LSAInformationWithdrawImpl asc = new LSAInformationWithdrawImpl(true);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<LSAIdentity> arr = new ArrayList<LSAIdentity>();
-        LSAIdentity lsaId = new LSAIdentityImpl(getLsaIdData());
+        ArrayList<LSAIdentityImpl> arr = new ArrayList<LSAIdentityImpl>();
+        LSAIdentityImpl lsaId = new LSAIdentityImpl(getLsaIdData());
         arr.add(lsaId);
         asc = new LSAInformationWithdrawImpl(arr);
-
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }

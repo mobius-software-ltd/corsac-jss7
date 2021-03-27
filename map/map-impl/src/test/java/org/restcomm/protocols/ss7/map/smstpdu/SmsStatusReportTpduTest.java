@@ -41,6 +41,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
 import org.testng.annotations.Test;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
@@ -61,7 +64,7 @@ public class SmsStatusReportTpduTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        SmsStatusReportTpduImpl impl = new SmsStatusReportTpduImpl(this.getData1(), null);
+        SmsStatusReportTpduImpl impl = new SmsStatusReportTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
         assertFalse(impl.getUserDataHeaderIndicator());
         assertFalse(impl.getMoreMessagesToSend());
         assertFalse(impl.getForwardedOrSpawned());
@@ -91,7 +94,7 @@ public class SmsStatusReportTpduTest {
         assertNull(impl.getDataCodingScheme());
         assertNull(impl.getUserData());
 
-        impl = new SmsStatusReportTpduImpl(this.getDataFull(), null);
+        impl = new SmsStatusReportTpduImpl(Unpooled.wrappedBuffer(this.getDataFull()), null);
         assertFalse(impl.getUserDataHeaderIndicator());
         assertTrue(impl.getMoreMessagesToSend());
         assertFalse(impl.getForwardedOrSpawned());
@@ -135,8 +138,11 @@ public class SmsStatusReportTpduTest {
         StatusImpl status = new StatusImpl(0);
         SmsStatusReportTpduImpl impl = new SmsStatusReportTpduImpl(false, false, StatusReportQualifier.SmsSubmitResult, 26,
                 recipientAddress, serviceCentreTimeStamp, dischargeTime, status, null, null);
-        byte[] enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData1()));
+        byte[] encData=new byte[this.getData1().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData1()));
 
         UserDataImpl ud = new UserDataImpl("AaBv", new DataCodingSchemeImpl(0), null, null);
         ProtocolIdentifierImpl pi = new ProtocolIdentifierImpl(0);
@@ -147,7 +153,10 @@ public class SmsStatusReportTpduTest {
         status = new StatusImpl(10);
         impl = new SmsStatusReportTpduImpl(true, false, StatusReportQualifier.SmsCommandResult, 255, recipientAddress,
                 serviceCentreTimeStamp, dischargeTime, status, pi, ud);
-        enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getDataFull()));
+        encData=new byte[this.getDataFull().length];
+        buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getDataFull()));
     }
 }

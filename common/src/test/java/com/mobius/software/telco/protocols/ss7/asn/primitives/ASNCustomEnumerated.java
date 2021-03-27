@@ -27,7 +27,6 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=25,constructed=false,lengthIndefinite=false)
 public class ASNCustomEnumerated extends ASNEnumerated

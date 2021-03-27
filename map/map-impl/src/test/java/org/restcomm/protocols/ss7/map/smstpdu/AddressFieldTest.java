@@ -25,15 +25,15 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -60,8 +60,8 @@ public class AddressFieldTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        InputStream stm = new ByteArrayInputStream(this.getData());
-        AddressFieldImpl impl = AddressFieldImpl.createMessage(stm);
+        ByteBuf buffer = Unpooled.wrappedBuffer(this.getData());
+        AddressFieldImpl impl = AddressFieldImpl.createMessage(buffer);
         assertEquals(impl.getTypeOfNumber(), TypeOfNumber.InternationalNumber);
         assertEquals(impl.getNumberingPlanIdentification(), NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
         assertEquals(impl.getAddressValue(), "72223884321");
@@ -72,16 +72,18 @@ public class AddressFieldTest {
 
         AddressFieldImpl impl = new AddressFieldImpl(TypeOfNumber.InternationalNumber,
                 NumberingPlanIdentification.ISDNTelephoneNumberingPlan, "72223884321");
-        ByteArrayOutputStream stm = new ByteArrayOutputStream();
-        impl.encodeData(stm);
-        assertTrue(Arrays.equals(stm.toByteArray(), this.getData()));
+        byte[] encodedData=new byte[this.getData().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encodedData, this.getData()));
     }
 
     @Test(groups = { "functional.decode", "smstpduAlphaNumeric" })
     public void testDecodeAlphaNumericAwcc() throws Exception {
 
-        InputStream stm = new ByteArrayInputStream(this.getDataAlphaNumeric_AWCC());
-        AddressFieldImpl impl = AddressFieldImpl.createMessage(stm);
+        ByteBuf buffer = Unpooled.wrappedBuffer(this.getDataAlphaNumeric_AWCC());
+        AddressFieldImpl impl = AddressFieldImpl.createMessage(buffer);
         assertEquals(impl.getTypeOfNumber(), TypeOfNumber.Alphanumeric);
         assertEquals(impl.getNumberingPlanIdentification(), NumberingPlanIdentification.Unknown);
         assertEquals(impl.getAddressValue(), "AWCC");
@@ -91,17 +93,18 @@ public class AddressFieldTest {
     public void testEncodeAlphaNumericAwcc() throws Exception {
 
         AddressFieldImpl impl = new AddressFieldImpl(TypeOfNumber.Alphanumeric, NumberingPlanIdentification.Unknown, "AWCC");
-        ByteArrayOutputStream stm = new ByteArrayOutputStream();
-        impl.encodeData(stm);
-        byte[] encodedData = stm.toByteArray();
+        byte[] encodedData=new byte[this.getDataAlphaNumeric_AWCC().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
         assertTrue(Arrays.equals(encodedData, this.getDataAlphaNumeric_AWCC()));
     }
 
     @Test(groups = { "functional.decode", "smstpduAlphaNumeric" })
     public void testDecodeAlphaNumericUfone() throws Exception {
 
-        InputStream stm = new ByteArrayInputStream(this.getDataAlphaNumeric_Ufone());
-        AddressFieldImpl impl = AddressFieldImpl.createMessage(stm);
+    	ByteBuf buffer = Unpooled.wrappedBuffer(this.getDataAlphaNumeric_Ufone());
+        AddressFieldImpl impl = AddressFieldImpl.createMessage(buffer);
         assertEquals(impl.getTypeOfNumber(), TypeOfNumber.Alphanumeric);
         assertEquals(impl.getNumberingPlanIdentification(), NumberingPlanIdentification.Unknown);
         assertEquals(impl.getAddressValue(), "Ufone");
@@ -111,9 +114,10 @@ public class AddressFieldTest {
     public void testEncodeAlphaNumericUfone() throws Exception {
 
         AddressFieldImpl impl = new AddressFieldImpl(TypeOfNumber.Alphanumeric, NumberingPlanIdentification.Unknown, "Ufone");
-        ByteArrayOutputStream stm = new ByteArrayOutputStream();
-        impl.encodeData(stm);
-        byte[] encodedData = stm.toByteArray();
+        byte[] encodedData=new byte[this.getDataAlphaNumeric_Ufone().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
         assertTrue(Arrays.equals(encodedData, this.getDataAlphaNumeric_Ufone()));
     }
 }

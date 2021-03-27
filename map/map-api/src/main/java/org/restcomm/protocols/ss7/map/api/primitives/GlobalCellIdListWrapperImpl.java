@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class GlobalCellIdListWrapperImpl {
-	private ArrayList<GlobalCellIdImpl> globalCellIdList;
+	private List<GlobalCellIdImpl> globalCellIdList;
 
     public GlobalCellIdListWrapperImpl() {
     }
 
-    public GlobalCellIdListWrapperImpl(ArrayList<GlobalCellIdImpl> globalCellIdList) {
+    public GlobalCellIdListWrapperImpl(List<GlobalCellIdImpl> globalCellIdList) {
         this.globalCellIdList = globalCellIdList;
     }
 
-    public ArrayList<GlobalCellIdImpl> getGlobalCellIdList() {
+    public List<GlobalCellIdImpl> getGlobalCellIdList() {
     	return globalCellIdList;
     }
 }

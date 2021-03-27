@@ -63,7 +63,7 @@ public class LAIFixedLengthImpl extends ASNOctetString {
         if (mnc < 0 || mnc > 999)
             throw new MAPException("Bad mnc value");
 
-        ByteBuf data=Unpooled.wrappedBuffer(new byte[7]);        
+        ByteBuf data=Unpooled.buffer(5);        
 
         StringBuilder sb = new StringBuilder();
         StringBuilder sb2 = new StringBuilder();
@@ -97,7 +97,7 @@ public class LAIFixedLengthImpl extends ASNOctetString {
 
         String res = null;
         try {
-            res = TbcdString.decodeString(data);
+            res = TbcdString.decodeString(data.slice(0,3));
         } catch (MAPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding CellGlobalIdOrServiceAreaIdFixedLength: " + e.getMessage(), e);
         }
@@ -120,7 +120,7 @@ public class LAIFixedLengthImpl extends ASNOctetString {
 
         String res = null;
         try {
-            res = TbcdString.decodeString(data);
+            res = TbcdString.decodeString(data.slice(0,3));
         } catch (MAPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding CellGlobalIdOrServiceAreaIdFixedLength: " + e.getMessage(), e);
         }

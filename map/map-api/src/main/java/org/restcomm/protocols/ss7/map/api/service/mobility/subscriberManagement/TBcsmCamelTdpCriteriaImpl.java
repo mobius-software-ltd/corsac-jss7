@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,7 +46,7 @@ public class TBcsmCamelTdpCriteriaImpl {
     }
 
     public TBcsmCamelTdpCriteriaImpl(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint,
-            ArrayList<ExtBasicServiceCodeImpl> basicServiceCriteria, ArrayList<CauseValueImpl> tCauseValueCriteria) {
+            List<ExtBasicServiceCodeImpl> basicServiceCriteria, List<CauseValueImpl> tCauseValueCriteria) {
         if(tBcsmTriggerDetectionPoint!=null) {
         	this.tBcsmTriggerDetectionPoint = new ASNTBcsmTriggerDetectionPoint();
         	this.tBcsmTriggerDetectionPoint.setType(tBcsmTriggerDetectionPoint);
@@ -66,14 +66,14 @@ public class TBcsmCamelTdpCriteriaImpl {
         return this.tBcsmTriggerDetectionPoint.getType();
     }
 
-    public ArrayList<ExtBasicServiceCodeImpl> getBasicServiceCriteria() {
+    public List<ExtBasicServiceCodeImpl> getBasicServiceCriteria() {
     	if(this.basicServiceCriteria==null)
     		return null;
     	
         return this.basicServiceCriteria.getExtBasicServiceCodeImpl();
     }
 
-    public ArrayList<CauseValueImpl> getTCauseValueCriteria() {
+    public List<CauseValueImpl> getTCauseValueCriteria() {
     	if(this.tCauseValueCriteria==null)
     		return null;
     	

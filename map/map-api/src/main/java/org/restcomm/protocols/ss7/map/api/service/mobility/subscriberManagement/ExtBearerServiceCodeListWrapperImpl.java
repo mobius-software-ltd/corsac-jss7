@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ExtBearerServiceCodeListWrapperImpl {
-	private ArrayList<ExtBearerServiceCodeImpl> extBearerServiceCode;
+	private List<ExtBearerServiceCodeImpl> extBearerServiceCode;
 
     public ExtBearerServiceCodeListWrapperImpl() {
     }
 
-    public ExtBearerServiceCodeListWrapperImpl(ArrayList<ExtBearerServiceCodeImpl> extBearerServiceCode) {
+    public ExtBearerServiceCodeListWrapperImpl(List<ExtBearerServiceCodeImpl> extBearerServiceCode) {
         this.extBearerServiceCode = extBearerServiceCode;
     }
 
-    public ArrayList<ExtBearerServiceCodeImpl> getExtBearerServiceCode() {
+    public List<ExtBearerServiceCodeImpl> getExtBearerServiceCode() {
     	return extBearerServiceCode;
     }
 }

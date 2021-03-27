@@ -36,7 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SM_RP_DAImpl {
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0)
     private IMSIImpl imsi;
@@ -55,14 +55,17 @@ public class SM_RP_DAImpl {
 
     public SM_RP_DAImpl(IMSIImpl imsi) {
         this.imsi = imsi;
+        this.noSMRPDA = null;
     }
 
     public SM_RP_DAImpl(LMSIImpl lmsi) {
         this.lmsi = lmsi;
+        this.noSMRPDA = null;
     }
 
     public SM_RP_DAImpl(AddressStringImpl serviceCentreAddressDA) {
         this.serviceCentreAddressDA = serviceCentreAddressDA;
+        this.noSMRPDA = null;
     }
 
     public IMSIImpl getIMSI() {

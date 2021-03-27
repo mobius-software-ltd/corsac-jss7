@@ -22,21 +22,21 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtPDPTypeImpl;
-import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -50,11 +50,11 @@ public class OctetStringBaseTest {
     }
 
     private byte[] getEncodedDataTooShort() {
-        return new byte[] { 4, 1, 1 };
+        return new byte[] { 4, 2, 1 };
     }
 
     private byte[] getEncodedDataTooLong() {
-        return new byte[] { 5, 8, 1, 2, 3, 4, 5, 6, 7, 8 };
+        return new byte[] { 4, 6, 1, 2, 3, 4, 5, 6, 7, 8 };
     }
 
     private byte[] getData() {
@@ -71,85 +71,70 @@ public class OctetStringBaseTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TestOctetStringImpl.class);
+    	
         // correct data
         byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        TestOctetStringImpl pi = new TestOctetStringImpl();
-        pi.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TestOctetStringImpl);
+        TestOctetStringImpl pi = (TestOctetStringImpl)result.getResult();        
+        
         assertTrue(Arrays.equals(getData(), pi.getData()));
 
         // bad data
         rawData = getEncodedDataTooShort();
-        asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
-        pi = new TestOctetStringImpl();
         try {
-            pi.decodeAll(asn);
-            assertFalse(true);
-        } catch (MAPParsingComponentException e) {
+        	parser.decode(Unpooled.wrappedBuffer(rawData));
+        } catch (ASNException e) {
             assertNotNull(e);
-        }
-
+        }        
+        
         rawData = getEncodedDataTooLong();
-        asn = new AsnInputStream(rawData);
-        tag = asn.readTag();
-        pi = new TestOctetStringImpl();
         try {
-            pi.decodeAll(asn);
-            assertFalse(true);
-        } catch (MAPParsingComponentException e) {
+        	parser.decode(Unpooled.wrappedBuffer(rawData));
+        } catch (ASNException e) {
             assertNotNull(e);
-        }
+        }        
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TestOctetStringImpl.class);
+    	
         // correct data
         TestOctetStringImpl pi = new TestOctetStringImpl(getData());
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        pi.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer = parser.encode(pi);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         // bad data
         pi = new TestOctetStringImpl(null);
-        asnOS = new AsnOutputStream();
         try {
-            pi.encodeAll(asnOS);
-            assertFalse(true);
-        } catch (MAPException e) {
+        	parser.encode(pi);                       
+        } catch (ASNException e) {
             assertNotNull(e);
         }
 
         pi = new TestOctetStringImpl(getDataTooShort());
-        asnOS = new AsnOutputStream();
         try {
-            pi.encodeAll(asnOS);
-        } catch (MAPException e) {
+        	parser.encode(pi);                       
+        } catch (ASNException e) {
             assertNotNull(e);
         }
 
         pi = new TestOctetStringImpl(getDataTooLong());
-        asnOS = new AsnOutputStream();
         try {
-            pi.encodeAll(asnOS);
-            assertFalse(true);
-        } catch (MAPException e) {
+        	parser.encode(pi);                       
+        } catch (ASNException e) {
             assertNotNull(e);
         }
-
     }
 
     @Test(groups = { "functional.encode", "equality" })
@@ -168,26 +153,10 @@ public class OctetStringBaseTest {
         ExtPDPTypeImpl imp1 = new ExtPDPTypeImpl(testD1);
         ExtPDPTypeImpl imp2 = new ExtPDPTypeImpl(testD2);
         ExtPDPTypeImpl imp3 = new ExtPDPTypeImpl(testD3);
-
-        assertTrue(imp1.equals(imp1));
-        assertTrue(imp1.equals(imp2));
-        assertFalse(imp1.equals(imp3));
-        assertFalse(imp2.equals(imp3));
-    }
-
-    private class TestOctetStringImpl extends OctetStringBase {
-		private static final long serialVersionUID = 1L;
-
-		public TestOctetStringImpl(byte[] data) {
-            super(2, 7, "Test OctetString primitive", data);
-        }
-
-        public TestOctetStringImpl() {
-            super(2, 7, "Test OctetString primitive");
-        }
-
-        public byte[] getData() {
-            return this.data;
-        }
+        
+        assertTrue(Arrays.equals(imp1.getData(),imp1.getData()));
+        assertTrue(Arrays.equals(imp1.getData(),imp2.getData()));
+        assertFalse(Arrays.equals(imp1.getData(),imp3.getData()));
+        assertFalse(Arrays.equals(imp2.getData(),imp3.getData()));
     }
 }

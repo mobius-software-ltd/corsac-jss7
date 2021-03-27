@@ -21,16 +21,19 @@
  */
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -40,7 +43,7 @@ import org.testng.annotations.Test;
 public class ODBGeneralDataTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 5, 3, 74, -43, 85, 80 };
+        return new byte[] { 3, 5, 4, 74, -43, 85, 80 };
     }
 
     private byte[] getEncodedData1() {
@@ -49,17 +52,15 @@ public class ODBGeneralDataTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ODBGeneralDataImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        ODBGeneralDataImpl imp = new ODBGeneralDataImpl();
-        imp.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ODBGeneralDataImpl);
+        ODBGeneralDataImpl imp = (ODBGeneralDataImpl)result.getResult();
+        
         assertTrue(!imp.getAllOGCallsBarred());
         assertTrue(imp.getInternationalOGCallsBarred());
         assertTrue(!imp.getInternationalOGCallsNotToHPLMNCountryBarred());
@@ -91,14 +92,10 @@ public class ODBGeneralDataTest {
         assertTrue(!imp.getRegistrationInternationalCFBarred());
 
         rawData = getEncodedData1();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        imp = new ODBGeneralDataImpl();
-        imp.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ODBGeneralDataImpl);
+        imp = (ODBGeneralDataImpl)result.getResult();
 
         assertTrue(imp.getAllOGCallsBarred());
         assertTrue(!imp.getInternationalOGCallsBarred());
@@ -133,22 +130,26 @@ public class ODBGeneralDataTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ODBGeneralDataImpl.class);
+    	
         ODBGeneralDataImpl imp = new ODBGeneralDataImpl(false, true, false, true, false, true, false, true, false, true, false,
                 true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true,
                 false);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-
-        assertTrue(Arrays.equals(getEncodedData(), asnOS.toByteArray()));
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        byte[] rawData = this.getEncodedData();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         imp = new ODBGeneralDataImpl(true, false, true, false, true, false, true, false, true, false, true, false, true, false,
                 true, false, true, false, true, false, true, false, true, false, true, false, true, false, true);
 
-        asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-
-        assertTrue(Arrays.equals(getEncodedData1(), asnOS.toByteArray()));
+        buffer=parser.encode(imp);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData = this.getEncodedData1();
+        assertTrue(Arrays.equals(encodedData, rawData));
     }
 }

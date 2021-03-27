@@ -22,25 +22,29 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MGCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -50,29 +54,27 @@ import org.testng.annotations.Test;
 public class MGCSITest {
 
     public byte[] getData() {
-        return new byte[] { 48, 62, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 50, -11, -95, 39, -96, 32, 48, 10,
-                6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95,
-                3, 31, 32, 33, -126, 0, -125, 0 };
+        return new byte[] { 48, 68, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 50, -11, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 0, -125, 0 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        MGCSIImpl prim = new MGCSIImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ArrayList<MMCode> mobilityTriggers = prim.getMobilityTriggers();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MGCSIImpl.class);
+    	
+    	byte[] data = this.getData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MGCSIImpl);
+        MGCSIImpl prim = (MGCSIImpl)result.getResult();
+        
+        List<MMCodeImpl> mobilityTriggers = prim.getMobilityTriggers();
         assertNotNull(mobilityTriggers);
         assertEquals(mobilityTriggers.size(), 2);
-        MMCode one = mobilityTriggers.get(0);
+        MMCodeImpl one = mobilityTriggers.get(0);
         assertNotNull(one);
         assertEquals(MMCodeValue.GPRSAttach, one.getMMCodeValue());
-        MMCode two = mobilityTriggers.get(1);
+        MMCodeImpl two = mobilityTriggers.get(1);
         assertNotNull(two);
         assertEquals(MMCodeValue.IMSIAttach, two.getMMCodeValue());
 
@@ -92,21 +94,21 @@ public class MGCSITest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MGCSIImpl.class);
+    	
+    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
 
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                "22235");
-
-        ArrayList<MMCode> mobilityTriggers = new ArrayList<MMCode>();
+        ArrayList<MMCodeImpl> mobilityTriggers = new ArrayList<MMCodeImpl>();
         mobilityTriggers.add(new MMCodeImpl(MMCodeValue.GPRSAttach));
         mobilityTriggers.add(new MMCodeImpl(MMCodeValue.IMSIAttach));
 
         MGCSIImpl prim = new MGCSIImpl(mobilityTriggers, 3, gsmSCFAddress, extensionContainer, true, true);
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        byte[] rawData = this.getData();
+        assertTrue(Arrays.equals(encodedData, rawData));
     }
 }

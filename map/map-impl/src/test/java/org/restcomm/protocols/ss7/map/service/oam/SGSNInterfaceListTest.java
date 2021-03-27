@@ -22,15 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.oam.SGSNInterfaceListImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -45,17 +49,15 @@ public class SGSNInterfaceListTest {
 
     @Test(groups = { "functional.decode", "service.oam" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SGSNInterfaceListImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        SGSNInterfaceListImpl asc = new SGSNInterfaceListImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SGSNInterfaceListImpl);
+        SGSNInterfaceListImpl asc = (SGSNInterfaceListImpl)result.getResult();
+        
         assertTrue(asc.getGb());
         assertFalse(asc.getIu());
         assertTrue(asc.getGn());
@@ -72,19 +74,15 @@ public class SGSNInterfaceListTest {
 
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SGSNInterfaceListImpl.class);
+    	
         SGSNInterfaceListImpl asc = new SGSNInterfaceListImpl(true, false, true, true, false, true, true, false, true, false, true);
-//        boolean gb, boolean iu, boolean gn, boolean mapGr, boolean mapGd,
-//        boolean mapGf, boolean gs, boolean ge, boolean s3, boolean s4,
-//        boolean s6d
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
-
     }
-
 }

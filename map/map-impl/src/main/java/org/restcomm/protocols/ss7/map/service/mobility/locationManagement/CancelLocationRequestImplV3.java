@@ -78,6 +78,10 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
     private LMSIImpl newLmsi;
     private long mapProtocolVersion;
 
+    public CancelLocationRequestImplV3() {
+    	this.mapProtocolVersion=3;
+    }
+    
     public CancelLocationRequestImplV3(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }
@@ -87,8 +91,10 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
             boolean mtrfSupportedAndNotAuthorized, ISDNAddressStringImpl newMSCNumber, ISDNAddressStringImpl newVLRNumber,
             LMSIImpl newLmsi, long mapProtocolVersion) {
         super();
-        this.imsi = imsi;
-        this.imsiWithLmsi = imsiWithLmsi;
+        if(imsi!=null)
+        	this.imsi = imsi;
+        else if(imsiWithLmsi!=null)
+        	this.imsiWithLmsi = imsiWithLmsi;
         
         if(cancellationType!=null) {
         	this.cancellationType = new ASNCancellationTypeImpl();

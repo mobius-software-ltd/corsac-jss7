@@ -28,21 +28,21 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.BitSetStrictLength;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.Time;
 import org.restcomm.protocols.ss7.map.api.primitives.TimeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APN;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGIdImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,9 +52,7 @@ import org.testng.annotations.Test;
 public class CSGSubscriptionDataTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 60, 3, 5, 5, -128, 0, 0, 32, 4, 4, 10, 22, 41, 34, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11,
-                12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -96,
-                4, 4, 2, 6, 7 };
+        return new byte[] { 48, 66, 3, 5, 5, -128, 0, 0, 32, 4, 4, 10, 22, 41, 34, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -96, 4, 4, 2, 6, 7 };
     };
 
     public byte[] getTimeData() {
@@ -67,24 +65,23 @@ public class CSGSubscriptionDataTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CSGSubscriptionDataImpl.class);
+    	
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        CSGSubscriptionDataImpl prim = new CSGSubscriptionDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        BitSetStrictLength bs = prim.getCsgId().getData();
-        assertTrue(bs.get(0));
-        assertFalse(bs.get(1));
-        assertFalse(bs.get(25));
-        assertTrue(bs.get(26));
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CSGSubscriptionDataImpl);
+        CSGSubscriptionDataImpl prim = (CSGSubscriptionDataImpl)result.getResult();     
+        
+        assertTrue(prim.getCsgId().isBitSet(0));
+        assertFalse(prim.getCsgId().isBitSet(1));
+        assertFalse(prim.getCsgId().isBitSet(25));
+        assertTrue(prim.getCsgId().isBitSet(26));
 
         assertTrue(Arrays.equals(prim.getExpirationDate().getData(), this.getTimeData()));
 
-        ArrayList<APN> lipaAllowedAPNList = prim.getLipaAllowedAPNList();
+        List<APNImpl> lipaAllowedAPNList = prim.getLipaAllowedAPNList();
         assertNotNull(lipaAllowedAPNList);
         assertEquals(lipaAllowedAPNList.size(), 1);
         assertTrue(Arrays.equals(lipaAllowedAPNList.get(0).getData(), this.getAPNData()));
@@ -96,23 +93,24 @@ public class CSGSubscriptionDataTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CSGSubscriptionDataImpl.class);
+    	
+        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        BitSetStrictLength bs = new BitSetStrictLength(27);
-        bs.set(0);
-        bs.set(26);
-        CSGIdImpl csgId = new CSGIdImpl(bs);
-        Time expirationDate = new TimeImpl(this.getTimeData());
-        ArrayList<APN> lipaAllowedAPNList = new ArrayList<APN>();
-        APN apn = new APNImpl(this.getAPNData());
+        CSGIdImpl csgId = new CSGIdImpl();
+        csgId.setBit(0);
+        csgId.setBit(26);
+        TimeImpl expirationDate = new TimeImpl(this.getTimeData());
+        ArrayList<APNImpl> lipaAllowedAPNList = new ArrayList<APNImpl>();
+        APNImpl apn = new APNImpl(this.getAPNData());
         lipaAllowedAPNList.add(apn);
 
-        CSGSubscriptionDataImpl prim = new CSGSubscriptionDataImpl(csgId, expirationDate, extensionContainer,
-                lipaAllowedAPNList);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        CSGSubscriptionDataImpl prim = new CSGSubscriptionDataImpl(csgId, expirationDate, extensionContainer, lipaAllowedAPNList);
+        
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData()));
     }
-
 }

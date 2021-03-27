@@ -117,7 +117,7 @@ public class TraceDepthListImpl {
     	
     	if(enbTraceDepth!=null) {
     		this.enbTraceDepth = new ASNTraceDepthImpl();
-    		this.enbTraceDepth.setType(pgwTraceDepth);
+    		this.enbTraceDepth.setType(enbTraceDepth);
     	} 
     }
 

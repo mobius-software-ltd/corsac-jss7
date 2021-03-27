@@ -31,63 +31,51 @@ import static org.testng.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
-import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinitionImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientID;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientName;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientNameImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodewordImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPriority;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheckImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoS;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoSImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LocationEstimateType;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LocationType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LocationTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfo;
 import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.PrivacyCheckRelatedAction;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMN;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNList;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTime;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeCategory;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapes;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapesImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.ProvideSubscriberLocationRequestImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -148,17 +136,16 @@ public class ProvideSubscriberLocationRequestTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecodeProvideSubscriberLocationRequestIndication() throws Exception {
-        byte[] rawData = getEncodedData();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProvideSubscriberLocationRequestImpl.class);
+    	
+        byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProvideSubscriberLocationRequestImpl);
+        ProvideSubscriberLocationRequestImpl reqInd = (ProvideSubscriberLocationRequestImpl)result.getResult();
 
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        ProvideSubscriberLocationRequestImpl reqInd = new ProvideSubscriberLocationRequestImpl();
-        reqInd.decodeAll(asn);
-
-        LocationType locationType = reqInd.getLocationType();
+        LocationTypeImpl locationType = reqInd.getLocationType();
         assertNotNull(locationType);
         assertEquals(locationType.getLocationEstimateType(), LocationEstimateType.currentLocation);
 
@@ -168,28 +155,28 @@ public class ProvideSubscriberLocationRequestTest {
         assertEquals(mlcNumber.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(mlcNumber.getAddress(), "55619007");
 
-        LCSClientID lcsClientId = reqInd.getLCSClientID();
+        LCSClientIDImpl lcsClientId = reqInd.getLCSClientID();
         assertNotNull(lcsClientId);
         assertEquals(lcsClientId.getLCSClientType(), LCSClientType.plmnOperatorServices);
         assertEquals(lcsClientId.getLCSClientInternalID(), LCSClientInternalID.broadcastService);
-        LCSClientName lcsClientName = lcsClientId.getLCSClientName();
+        LCSClientNameImpl lcsClientName = lcsClientId.getLCSClientName();
         assertNotNull(lcsClientName);
         assertEquals(lcsClientName.getDataCodingScheme().getCode(), 0x0f);
         assertTrue(lcsClientName.getNameString().getString(null).equals("ndmgapp2ndmgapp2"));
 
-        IMSI imsi = reqInd.getIMSI();
+        IMSIImpl imsi = reqInd.getIMSI();
         assertNotNull(imsi);
         assertEquals(imsi.getData(), "724999900000007");
 
         assertEquals(reqInd.getLCSPriority(), LCSPriority.normalPriority);
 
-        LCSQoS lcsQoS = reqInd.getLCSQoS();
+        LCSQoSImpl lcsQoS = reqInd.getLCSQoS();
         assertNotNull(lcsQoS);
-        ResponseTime respTime = lcsQoS.getResponseTime();
+        ResponseTimeImpl respTime = lcsQoS.getResponseTime();
         assertNotNull(respTime);
         assertEquals(respTime.getResponseTimeCategory(), ResponseTimeCategory.lowdelay);
 
-        SupportedGADShapes suppGadShapes = reqInd.getSupportedGADShapes();
+        SupportedGADShapesImpl suppGadShapes = reqInd.getSupportedGADShapes();
         assertNotNull(suppGadShapes);
         assertTrue(suppGadShapes.getEllipsoidArc());
         assertTrue(suppGadShapes.getEllipsoidPoint());
@@ -215,15 +202,11 @@ public class ProvideSubscriberLocationRequestTest {
         assertNull(reqInd.getPeriodicLDRInfo());
         assertNull(reqInd.getReportingPLMNList());
 
-        rawData = getEncodedDataFull();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        reqInd = new ProvideSubscriberLocationRequestImpl();
-        reqInd.decodeAll(asn);
+        data = getEncodedDataFull();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProvideSubscriberLocationRequestImpl);
+        reqInd = (ProvideSubscriberLocationRequestImpl)result.getResult();
 
         locationType = reqInd.getLocationType();
         assertNotNull(locationType);
@@ -290,73 +273,65 @@ public class ProvideSubscriberLocationRequestTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-        byte[] rawData = getEncodedData();
-
-        LocationType locationType = new LocationTypeImpl(LocationEstimateType.currentLocation, null);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProvideSubscriberLocationRequestImpl.class);
+    	
+        LocationTypeImpl locationType = new LocationTypeImpl(LocationEstimateType.currentLocation, null);
         ISDNAddressStringImpl mlcNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "55619007");
 
-        USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
-        LCSClientName lcsClientName = new LCSClientNameImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
+        USSDStringImpl nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
+        LCSClientNameImpl lcsClientName = new LCSClientNameImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
 
-        LCSClientID lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, null,
+        LCSClientIDImpl lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, null,
                 LCSClientInternalID.broadcastService, lcsClientName, null, null, null);
 
-        IMSI imsi = MAPParameterFactory.createIMSI("724999900000007");
+        IMSIImpl imsi = MAPParameterFactory.createIMSI("724999900000007");
 
-        LCSQoS lcsQoS = new LCSQoSImpl(null, null, false, new ResponseTimeImpl(ResponseTimeCategory.lowdelay), null);
+        LCSQoSImpl lcsQoS = new LCSQoSImpl(null, null, false, new ResponseTimeImpl(ResponseTimeCategory.lowdelay), null);
 
-        SupportedGADShapes supportedGADShapes = new SupportedGADShapesImpl(true, true, true, true, true, true, true);
+        SupportedGADShapesImpl supportedGADShapes = new SupportedGADShapesImpl(true, true, true, true, true, true, true);
 
         ProvideSubscriberLocationRequestImpl reqInd = new ProvideSubscriberLocationRequestImpl(locationType, mlcNumber,
                 lcsClientID, false, imsi, null, null, null, LCSPriority.normalPriority, lcsQoS, null, supportedGADShapes, null,
                 null, null, null, null, null, false, null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        reqInd.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        rawData = getEncodedDataFull();
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(reqInd);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "765432100");
         LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
         IMEIImpl imei = new IMEIImpl("1234567890123456");
-        USSDString lcsCodewordString = MAPParameterFactory.createUSSDString("xxyyyzz");
+        USSDStringImpl lcsCodewordString = MAPParameterFactory.createUSSDString("xxyyyzz");
         LCSCodewordImpl lcsCodeword = new LCSCodewordImpl(new CBSDataCodingSchemeImpl(0x0f), lcsCodewordString);
         LCSPrivacyCheckImpl lcsPrivacyCheck = new LCSPrivacyCheckImpl(PrivacyCheckRelatedAction.allowedWithNotification,
                 PrivacyCheckRelatedAction.allowedWithoutNotification);
-        ArrayList<Area> areaList = new ArrayList<Area>();
-        AreaIdentification areaIdentification = new AreaIdentificationImpl(AreaType.countryCode, 250, 0, 0, 0);
+        ArrayList<AreaImpl> areaList = new ArrayList<AreaImpl>();
+        AreaIdentificationImpl areaIdentification = new AreaIdentificationImpl(AreaType.countryCode, 250, 0, 0, 0);
         AreaImpl area = new AreaImpl(AreaType.countryCode, areaIdentification);
         areaList.add(area);
-        AreaDefinition areaDefinition = new AreaDefinitionImpl(areaList);
+        AreaDefinitionImpl areaDefinition = new AreaDefinitionImpl(areaList);
         AreaEventInfoImpl areaEventInfo = new AreaEventInfoImpl(areaDefinition, null, null);
-        GSNAddress hgmlcAddress = new GSNAddressImpl(getDataHgmlcAddress());
-        PeriodicLDRInfo periodicLDRInfo = new PeriodicLDRInfoImpl(200, 100);
-        ArrayList<ReportingPLMN> lstRplmn = new ArrayList<ReportingPLMN>();
-        PlmnId plmnId = new PlmnIdImpl(getPlmnId());
-        ReportingPLMN rplmn = new ReportingPLMNImpl(plmnId, null, false);
+        GSNAddressImpl hgmlcAddress = new GSNAddressImpl(getDataHgmlcAddress());
+        PeriodicLDRInfoImpl periodicLDRInfo = new PeriodicLDRInfoImpl(200, 100);
+        ArrayList<ReportingPLMNImpl> lstRplmn = new ArrayList<ReportingPLMNImpl>();
+        PlmnIdImpl plmnId = new PlmnIdImpl(getPlmnId());
+        ReportingPLMNImpl rplmn = new ReportingPLMNImpl(plmnId, null, false);
         lstRplmn.add(rplmn);
-        ReportingPLMNList reportingPLMNList = new ReportingPLMNListImpl(false, lstRplmn);
+        ReportingPLMNListImpl reportingPLMNList = new ReportingPLMNListImpl(false, lstRplmn);
 
         reqInd = new ProvideSubscriberLocationRequestImpl(locationType, mlcNumber, lcsClientID, true, imsi, msisdn, lmsi, imei,
                 LCSPriority.normalPriority, lcsQoS, null, supportedGADShapes, 5, 6, lcsCodeword, lcsPrivacyCheck,
                 areaEventInfo, hgmlcAddress, true, periodicLDRInfo, reportingPLMNList);
-        // LocationType locationType, ISDNAddressStringImpl mlcNumber, LCSClientID lcsClientID, boolean privacyOverride,
-        // IMSI imsi, ISDNAddressStringImpl msisdn, LMSI lmsi, IMEI imei, LCSPriority lcsPriority, LCSQoS lcsQoS,
-        // MAPExtensionContainerImpl extensionContainer,
-        // SupportedGADShapes supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID, LCSCodeword lcsCodeword,
-        // LCSPrivacyCheck lcsPrivacyCheck, AreaEventInfo areaEventInfo, GSNAddress hgmlcAddress, boolean
-        // moLrShortCircuitIndicator,
-        // PeriodicLDRInfo periodicLDRInfo, ReportingPLMNList reportingPLMNList
 
-        asnOS = new AsnOutputStream();
-        reqInd.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data=getEncodedDataFull();
+        buffer=parser.encode(reqInd);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

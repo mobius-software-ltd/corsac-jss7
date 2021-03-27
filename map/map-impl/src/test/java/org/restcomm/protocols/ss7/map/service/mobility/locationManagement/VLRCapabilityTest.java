@@ -29,43 +29,38 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISTSupportIndicator;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SuperChargerInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapabilityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SuperChargerInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySets;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedRATTypes;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedRATTypesImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class VLRCapabilityTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 11, (byte) 128, 2, 4, (byte) 192, (byte) 129, 1, 1, (byte) 133, 2, 3, (byte) 240 };
+        return new byte[] { 48, 11, -128, 2, 6, -64, -127, 1, 1, -123, 2, 4, -16 };
     }
 
     private byte[] getEncodedDataEC() {
-        return new byte[] { 48, 26, (byte) 128, 2, 4, (byte) 224, 48, 20, (byte) 160, 18, 48, 16, 6, 8, 42, (byte) 134, 8, 8,
-                8, 8, 8, 1, 48, 4, 3, 2, 6, 64 };
+        return new byte[] { 48, 26, -128, 2, 5, -32, 48, 20, -96, 18, 48, 16, 6, 8, 42, -122, 8, 8, 8, 8, 8, 1, 48, 4, -123, 2, 6, 64 };
     }
 
-    private long[] getECOid() {
-        return new long[] { 1, 2, 776, 8, 8, 8, 8, 1 };
-    }
-
-    private byte[] getECData() {
-        return new byte[] { 48, 4, 3, 2, 6, 64 };
+    private Long[] getECOid() {
+        return new Long[] { 1L, 2L, 776L, 8L, 8L, 8L, 8L, 1L };
     }
 
     private byte[] getEncodedDataSuperChargerInfo() {
@@ -73,23 +68,25 @@ public class VLRCapabilityTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 16, -126, 0, -124, 0, -122, 2, 1, 14, -121, 2, 3, 80, -120, 0, -119, 0 };
+        return new byte[] { 48, 16, -126, 0, -124, 0, -122, 2, 1, 14, -121, 2, 4, 80, -120, 0, -119, 0 };
     }
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        VLRCapabilityImpl asc = new VLRCapabilityImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        SupportedCamelPhases scph = asc.getSupportedCamelPhases();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(VLRCapabilityImpl.class);
+    	
+    	List<Long> ecOIDs=Arrays.asList(getECOid());
+    	parser.registerLocalMapping(MAPPrivateExtensionImpl.class, ecOIDs, SGSNCapabilityImpl.class);
+    	parser.registerAlternativeClassMapping(SGSNCapabilityImpl.class, SGSNCapabilityImpl.class);
+    	
+        byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VLRCapabilityImpl);
+        VLRCapabilityImpl asc = (VLRCapabilityImpl)result.getResult();
+        
+        SupportedCamelPhasesImpl scph = asc.getSupportedCamelPhases();
         assertTrue(scph.getPhase1Supported());
         assertTrue(scph.getPhase2Supported());
         assertFalse(scph.getPhase3Supported());
@@ -104,7 +101,7 @@ public class VLRCapabilityTest {
         assertNull(asc.getSuperChargerSupportedInServingNetworkEntity());
         assertFalse(asc.getLongFtnSupported());
 
-        SupportedLCSCapabilitySets slcs = asc.getSupportedLCSCapabilitySets();
+        SupportedLCSCapabilitySetsImpl slcs = asc.getSupportedLCSCapabilitySets();
         assertTrue(slcs.getCapabilitySetRelease98_99());
         assertTrue(slcs.getCapabilitySetRelease4());
         assertTrue(slcs.getCapabilitySetRelease5());
@@ -116,15 +113,11 @@ public class VLRCapabilityTest {
         assertFalse(asc.getLongGroupIDSupported());
         assertFalse(asc.getMtRoamingForwardingSupported());
 
-        rawData = getEncodedDataEC();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new VLRCapabilityImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        data = getEncodedDataEC();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VLRCapabilityImpl);
+        asc = (VLRCapabilityImpl)result.getResult();
 
         scph = asc.getSupportedCamelPhases();
         assertTrue(scph.getPhase1Supported());
@@ -133,8 +126,10 @@ public class VLRCapabilityTest {
         assertFalse(scph.getPhase4Supported());
 
         MAPExtensionContainerImpl ext = asc.getExtensionContainer();
-        assertTrue(Arrays.equals(ext.getPrivateExtensionList().get(0).getOId(), getECOid()));
-        assertTrue(Arrays.equals(ext.getPrivateExtensionList().get(0).getData(), getECData()));
+        Long[] oids=new Long[ext.getPrivateExtensionList().get(0).getOId().size()];
+        oids=ext.getPrivateExtensionList().get(0).getOId().toArray(oids);
+        assertTrue(Arrays.equals(oids, getECOid()));
+        assertTrue(ext.getPrivateExtensionList().get(0).getData() instanceof SGSNCapabilityImpl);
 
         assertFalse(asc.getSolsaSupportIndicator());
 
@@ -150,15 +145,11 @@ public class VLRCapabilityTest {
         assertFalse(asc.getLongGroupIDSupported());
         assertFalse(asc.getMtRoamingForwardingSupported());
 
-        rawData = getEncodedDataSuperChargerInfo();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new VLRCapabilityImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        data = getEncodedDataSuperChargerInfo();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VLRCapabilityImpl);
+        asc = (VLRCapabilityImpl)result.getResult();
 
         assertNull(asc.getSupportedCamelPhases());
 
@@ -177,15 +168,11 @@ public class VLRCapabilityTest {
         assertFalse(asc.getLongGroupIDSupported());
         assertFalse(asc.getMtRoamingForwardingSupported());
 
-        rawData = getEncodedDataFull();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        asc = new VLRCapabilityImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        data = getEncodedDataFull();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VLRCapabilityImpl);
+        asc = (VLRCapabilityImpl)result.getResult();
 
         assertNull(asc.getSupportedCamelPhases());
         assertNull(asc.getExtensionContainer());
@@ -197,7 +184,7 @@ public class VLRCapabilityTest {
 
         assertNull(asc.getSupportedLCSCapabilitySets());
 
-        OfferedCamel4CSIs offeredCamel4CSIs = asc.getOfferedCamel4CSIs();
+        OfferedCamel4CSIsImpl offeredCamel4CSIs = asc.getOfferedCamel4CSIs();
         // boolean oCsi, boolean dCsi, boolean vtCsi, boolean tCsi, boolean mtSMSCsi, boolean mgCsi, boolean psiEnhancements
         assertFalse(offeredCamel4CSIs.getOCsi());
         assertFalse(offeredCamel4CSIs.getDCsi());
@@ -207,7 +194,7 @@ public class VLRCapabilityTest {
         assertTrue(offeredCamel4CSIs.getMgCsi());
         assertTrue(offeredCamel4CSIs.getPsiEnhancements());
 
-        SupportedRATTypes rat = asc.getSupportedRATTypesIndicator();
+        SupportedRATTypesImpl rat = asc.getSupportedRATTypesIndicator();
         // boolean utran, boolean geran, boolean gan, boolean i_hspa_evolution, boolean e_utran
         assertFalse(rat.getUtran());
         assertTrue(rat.getGeran());
@@ -221,58 +208,51 @@ public class VLRCapabilityTest {
 
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
-
-        SupportedCamelPhases scp = new SupportedCamelPhasesImpl(true, true, false, false);
-        SupportedLCSCapabilitySets slcs = new SupportedLCSCapabilitySetsImpl(true, true, true, true, false);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(VLRCapabilityImpl.class);
+    	
+        SupportedCamelPhasesImpl scp = new SupportedCamelPhasesImpl(true, true, false, false);
+        SupportedLCSCapabilitySetsImpl slcs = new SupportedLCSCapabilitySetsImpl(true, true, true, true, false);
         VLRCapabilityImpl asc = new VLRCapabilityImpl(scp, null, false, ISTSupportIndicator.istCommandSupported, null, false,
                 slcs, null, null, false, false);
-        // SupportedCamelPhases supportedCamelPhases, MAPExtensionContainerImpl extensionContainer, boolean solsaSupportIndicator,
-        // IstSupportIndicator istSupportIndicator, SuperChargerInfo superChargerSupportedInServingNetworkEntity, boolean
-        // longFtnSupported,
-        // SupportedLCSCapabilitySets supportedLCSCapabilitySets, OfferedCamel4CSIs offeredCamel4CSIs, SupportedRATTypes
-        // supportedRATTypesIndicator,
-        // boolean longGroupIDSupported, boolean mtRoamingForwardingSupported
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         scp = new SupportedCamelPhasesImpl(true, true, true, false);
         ArrayList<MAPPrivateExtensionImpl> privateExtensionList = new ArrayList<MAPPrivateExtensionImpl>();
-        MAPPrivateExtensionImpl pe = new MAPPrivateExtensionImpl(getECOid(), getECData());
+        
+        SupportedLCSCapabilitySetsImpl slcsInner = new SupportedLCSCapabilitySetsImpl(false, true, false, false, false);
+        SGSNCapabilityImpl wrappedExtension=new SGSNCapabilityImpl(false, null, null, false, null, slcsInner, null, false, null, null, false, null);
+        List<Long> ecOIDs=Arrays.asList(getECOid());
+        MAPPrivateExtensionImpl pe = new MAPPrivateExtensionImpl(ecOIDs, wrappedExtension);
         privateExtensionList.add(pe);
         MAPExtensionContainerImpl ext = new MAPExtensionContainerImpl(privateExtensionList, null);
         asc = new VLRCapabilityImpl(scp, ext, false, null, null, false, null, null, null, false, false);
+        data=getEncodedDataEC();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedDataEC();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        SuperChargerInfo sci = new SuperChargerInfoImpl(true);
+        SuperChargerInfoImpl sci = new SuperChargerInfoImpl(true);
         asc = new VLRCapabilityImpl(null, null, false, null, sci, false, null, null, null, false, false);
-
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedDataSuperChargerInfo();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data=getEncodedDataSuperChargerInfo();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         OfferedCamel4CSIsImpl offeredCamel4CSIs = new OfferedCamel4CSIsImpl(false, false, false, false, true, true, true);
         SupportedRATTypesImpl rat = new SupportedRATTypesImpl(false, true, false, true, false);
         asc = new VLRCapabilityImpl(null, null, true, null, null, true, null, offeredCamel4CSIs, rat, true, true);
-
-        asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedDataFull();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data=getEncodedDataFull();
+        buffer=parser.encode(asc);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

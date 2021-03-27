@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -56,7 +56,7 @@ public class SMSCSIImpl {
     public SMSCSIImpl() {
     }
 
-    public SMSCSIImpl(ArrayList<SMSCAMELTDPDataImpl> smsCamelTdpDataList, Integer camelCapabilityHandling,
+    public SMSCSIImpl(List<SMSCAMELTDPDataImpl> smsCamelTdpDataList, Integer camelCapabilityHandling,
             MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive) {
     	
     	if(smsCamelTdpDataList!=null)
@@ -76,7 +76,7 @@ public class SMSCSIImpl {
         	this.csiActive = new ASNNull();
     }
 
-    public ArrayList<SMSCAMELTDPDataImpl> getSmsCamelTdpDataList() {
+    public List<SMSCAMELTDPDataImpl> getSmsCamelTdpDataList() {
     	if(this.smsCamelTdpDataList==null)
     		return null;
     	

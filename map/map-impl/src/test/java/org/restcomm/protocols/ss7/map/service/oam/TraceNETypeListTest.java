@@ -22,15 +22,19 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -45,17 +49,15 @@ public class TraceNETypeListTest {
 
     @Test(groups = { "functional.decode", "service.oam" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TraceNETypeListImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        TraceNETypeListImpl asc = new TraceNETypeListImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TraceNETypeListImpl);
+        TraceNETypeListImpl asc = (TraceNETypeListImpl)result.getResult();
+        
         assertTrue(asc.getMscS());
         assertTrue(asc.getMgw());
         assertFalse(asc.getSgsn());
@@ -66,23 +68,19 @@ public class TraceNETypeListTest {
         assertTrue(asc.getSgw());
         assertFalse(asc.getPgw());
         assertTrue(asc.getEnb());
-
     }
 
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TraceNETypeListImpl.class);
+    	
         TraceNETypeListImpl asc = new TraceNETypeListImpl(true, true, false, true, true, false, true, true, false, true);
-//        boolean mscS, boolean mgw, boolean sgsn, boolean ggsn, boolean rnc, 
-//        boolean bmSc, boolean mme, boolean sgw, boolean pgw, boolean enb
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
-
     }
-
 }

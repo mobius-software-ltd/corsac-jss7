@@ -87,7 +87,7 @@ public class ASNInteger {
 	
 	public static int getLength(Long value)
 	{
-		Long testValue=new Long(value);
+		Long testValue=Long.valueOf(value);
 		int result=0;
 		while(testValue!=0)
 		{

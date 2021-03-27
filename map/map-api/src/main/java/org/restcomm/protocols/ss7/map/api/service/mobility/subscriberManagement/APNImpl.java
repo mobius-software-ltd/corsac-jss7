@@ -27,6 +27,7 @@ import io.netty.buffer.Unpooled;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPException;
 
@@ -94,7 +95,7 @@ public class APNImpl extends ASNOctetString {
         if (data.length < 2 || data.length > 63)
             throw new MAPException("Can not decode: data array must have length 2-63, found: " + data.length);
 
-        ArrayList<String> ress = new ArrayList<String>();
+        List<String> ress = new ArrayList<String>();
 
         int i1 = 0;
         while (true) {

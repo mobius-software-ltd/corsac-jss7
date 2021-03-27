@@ -26,10 +26,6 @@ import java.util.Iterator;
 import java.util.concurrent.Executors;
 
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPart;
-import org.restcomm.protocols.ss7.sccp.impl.SccpProviderImpl;
-import org.restcomm.protocols.ss7.sccp.impl.SccpResourceImpl;
-import org.restcomm.protocols.ss7.sccp.impl.SccpRoutingControl;
-import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.sccp.impl.router.RouterImpl;
 

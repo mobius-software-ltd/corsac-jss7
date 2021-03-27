@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriber;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriberSM;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageBusySubscriber;
@@ -42,6 +41,7 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnauthorizedLCSClient;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnknownSubscriber;
 
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 /**
@@ -51,9 +51,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
  * @author amit bhayani
  *
  */
-public abstract class EnumeratedMAPErrorMessage1Impl extends ASNEnumerated implements MAPErrorMessage {
+@ASNWrappedTag
+public abstract class EnumeratedMAPErrorMessage1Impl extends MAPErrorMessageImpl {
 	protected Long errorCode;
 
+	private ASNEnumerated value;
+	
     protected EnumeratedMAPErrorMessage1Impl(Long errorCode) {
         this.errorCode = errorCode;
     }
@@ -61,6 +64,20 @@ public abstract class EnumeratedMAPErrorMessage1Impl extends ASNEnumerated imple
     public EnumeratedMAPErrorMessage1Impl() {
     }
 
+    protected Long getValue() {
+    	if(this.value==null)
+    		return null;
+    	
+		return value.getValue();
+	}
+
+    protected void setValue(Long value) {
+    	if(this.value==null)
+    		this.value=new ASNEnumerated();
+    	
+		this.value.setValue(value);
+	}
+	
     public Long getErrorCode() {
         return errorCode;
     }

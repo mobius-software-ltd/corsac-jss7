@@ -30,15 +30,15 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageLockingShiftIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageLockingShiftIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageSingleShiftIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageSingleShiftIdentifierImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -99,7 +99,7 @@ public class UserDataHeaderTest {
         Map<Integer, byte[]> mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
         assertTrue(Arrays.equals(mp.get(8), new byte[] { 0, -47, 3, 2 }));
-        ConcatenatedShortMessagesIdentifier conc = impl.getConcatenatedShortMessagesIdentifier();
+        ConcatenatedShortMessagesIdentifierImpl conc = impl.getConcatenatedShortMessagesIdentifier();
         assertNotNull(conc);
         assertEquals(conc.getReferenceIs16bit(), true);
         assertEquals(conc.getReference(), 53504);
@@ -132,7 +132,7 @@ public class UserDataHeaderTest {
         mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
         assertTrue(Arrays.equals(mp.get(37), new byte[] { 2 }));
-        NationalLanguageLockingShiftIdentifier nls = impl.getNationalLanguageLockingShift();
+        NationalLanguageLockingShiftIdentifierImpl nls = impl.getNationalLanguageLockingShift();
         assertNotNull(nls);
         assertEquals(nls.getNationalLanguageIdentifier(), NationalLanguageIdentifier.Spanish);
 
@@ -140,7 +140,7 @@ public class UserDataHeaderTest {
         mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
         assertTrue(Arrays.equals(mp.get(36), new byte[] { 3 }));
-        NationalLanguageSingleShiftIdentifier nss = impl.getNationalLanguageSingleShift();
+        NationalLanguageSingleShiftIdentifierImpl nss = impl.getNationalLanguageSingleShift();
         assertNotNull(nss);
         assertEquals(nss.getNationalLanguageIdentifier(), NationalLanguageIdentifier.Portuguese);
 
@@ -158,33 +158,57 @@ public class UserDataHeaderTest {
         UserDataHeaderImpl impl = new UserDataHeaderImpl();
         UserDataHeaderElement ie = new ConcatenatedShortMessagesIdentifierImpl(true, 53504, 3, 2);
         impl.addInformationElement(ie);
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData1()));
+        byte[] encodedData=new byte[this.getData1().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.getEncodedData(buffer);
+        assertTrue(Arrays.equals(encodedData, this.getData1()));
 
         impl = new UserDataHeaderImpl();
         ie = new ConcatenatedShortMessagesIdentifierImpl(true, 266, 3, 2);
         impl.addInformationElement(ie);
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData11()));
+        encodedData=new byte[this.getData11().length];
+        buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.getEncodedData(buffer);
+        assertTrue(Arrays.equals(encodedData, this.getData11()));
 
         impl = new UserDataHeaderImpl();
         ie = new ConcatenatedShortMessagesIdentifierImpl(false, 140, 2, 1);
         impl.addInformationElement(ie);
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData2()));
+        encodedData=new byte[this.getData2().length];
+        buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.getEncodedData(buffer);
+        assertTrue(Arrays.equals(encodedData, this.getData2()));
 
         impl = new UserDataHeaderImpl();
         ie = new NationalLanguageLockingShiftIdentifierImpl(NationalLanguageIdentifier.Spanish);
         impl.addInformationElement(ie);
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getDataA1()));
+        encodedData=new byte[this.getDataA1().length];
+        buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.getEncodedData(buffer);
+        assertTrue(Arrays.equals(encodedData, this.getDataA1()));
 
         impl = new UserDataHeaderImpl();
         ie = new NationalLanguageSingleShiftIdentifierImpl(NationalLanguageIdentifier.Portuguese);
         impl.addInformationElement(ie);
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getDataA2()));
+        encodedData=new byte[this.getDataA2().length];
+        buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.getEncodedData(buffer);
+        assertTrue(Arrays.equals(encodedData, this.getDataA2()));
 
         // TODO: implement getData3()-getData7() encoding
 
         impl = new UserDataHeaderImpl();
         ie = new ConcatenatedShortMessagesIdentifierImpl(false, 140, 2, 1);
         impl.addInformationElement(112, new byte[] {});
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData8()));
+        encodedData=new byte[this.getData8().length];
+        buffer=Unpooled.wrappedBuffer(encodedData);
+        buffer.resetWriterIndex();
+        impl.getEncodedData(buffer);
+        assertTrue(Arrays.equals(encodedData, this.getData8()));
     }
 }

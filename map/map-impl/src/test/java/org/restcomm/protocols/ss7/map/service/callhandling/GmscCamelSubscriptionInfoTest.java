@@ -29,26 +29,26 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSIImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -58,27 +58,25 @@ import org.testng.annotations.Test;
 public class GmscCamelSubscriptionInfoTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { -96, 50, -96, 23, 48, 18, 48, 16, 10, 1, 12, 2, 1, 3, -128, 5, -111, 17, 34, 51, -13, -127, 1, 1,
+        return new byte[] { 48, 50, -96, 23, 48, 18, 48, 16, 10, 1, 12, 2, 1, 3, -128, 5, -111, 17, 34, 51, -13, -127, 1, 1,
                 -128, 1, 2, -95, 23, 48, 18, 48, 16, 10, 1, 2, 2, 1, 3, -128, 5, -111, 17, 34, 51, -13, -127, 1, 1, -128, 1, 2 };
     }
 
     @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GmscCamelSubscriptionInfoImpl.class);
 
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        GmscCamelSubscriptionInfoImpl ind = new GmscCamelSubscriptionInfoImpl();
-        assertEquals(tag, 0);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        ind.decodeAll(asn);
-
-        TCSI tcsi = ind.getTCsi();
-        ArrayList<TBcsmCamelTDPData> lst = tcsi.getTBcsmCamelTDPDataList();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GmscCamelSubscriptionInfoImpl);
+        GmscCamelSubscriptionInfoImpl ind = (GmscCamelSubscriptionInfoImpl)result.getResult();
+        
+        TCSIImpl tcsi = ind.getTCsi();
+        List<TBcsmCamelTDPDataImpl> lst = tcsi.getTBcsmCamelTDPDataList();
         assertEquals(lst.size(), 1);
-        TBcsmCamelTDPData cd = lst.get(0);
+        TBcsmCamelTDPDataImpl cd = lst.get(0);
         assertEquals(cd.getTBcsmTriggerDetectionPoint(), TBcsmTriggerDetectionPoint.termAttemptAuthorized);
         assertEquals(cd.getServiceKey(), 3);
         assertEquals(cd.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
@@ -92,10 +90,10 @@ public class GmscCamelSubscriptionInfoTest {
         assertFalse(tcsi.getNotificationToCSE());
         assertFalse(tcsi.getCsiActive());
 
-        OCSI ocsi = ind.getOCsi();
-        ArrayList<OBcsmCamelTDPData> lst2 = ocsi.getOBcsmCamelTDPDataList();
+        OCSIImpl ocsi = ind.getOCsi();
+        List<OBcsmCamelTDPDataImpl> lst2 = ocsi.getOBcsmCamelTDPDataList();
         assertEquals(lst2.size(), 1);
-        OBcsmCamelTDPData cd2 = lst2.get(0);
+        OBcsmCamelTDPDataImpl cd2 = lst2.get(0);
         assertEquals(cd2.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
         assertEquals(cd2.getServiceKey(), 3);
         assertEquals(cd2.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
@@ -108,38 +106,33 @@ public class GmscCamelSubscriptionInfoTest {
         assertEquals((int) ocsi.getCamelCapabilityHandling(), 2);
         assertFalse(ocsi.getNotificationToCSE());
         assertFalse(ocsi.getCsiActive());
-
-        // TODO: implement tests for missing and not yet implementing parameters
     }
 
     @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GmscCamelSubscriptionInfoImpl.class);
 
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "1122333");
         TBcsmCamelTDPDataImpl cind = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.termAttemptAuthorized, 3,
                 gsmSCFAddress, DefaultCallHandling.releaseCall, null);
-        ArrayList<TBcsmCamelTDPData> lst = new ArrayList<TBcsmCamelTDPData>();
+        ArrayList<TBcsmCamelTDPDataImpl> lst = new ArrayList<TBcsmCamelTDPDataImpl>();
         lst.add(cind);
         TCSIImpl ctsi = new TCSIImpl(lst, null, 2, false, false);
 
         OBcsmCamelTDPDataImpl oind = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
-        ArrayList<OBcsmCamelTDPData> lst2 = new ArrayList<OBcsmCamelTDPData>();
+        ArrayList<OBcsmCamelTDPDataImpl> lst2 = new ArrayList<OBcsmCamelTDPDataImpl>();
         lst2.add(oind);
         OCSIImpl otsi = new OCSIImpl(lst2, null, 2, false, false);
 
         GmscCamelSubscriptionInfoImpl ind = new GmscCamelSubscriptionInfoImpl(ctsi, otsi, null, null, null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        ind.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        // TODO: implement tests for missing and not yet implementing parameters
-
+        byte[] data=this.getEncodedData();
+        ByteBuf buffer=parser.encode(ind);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

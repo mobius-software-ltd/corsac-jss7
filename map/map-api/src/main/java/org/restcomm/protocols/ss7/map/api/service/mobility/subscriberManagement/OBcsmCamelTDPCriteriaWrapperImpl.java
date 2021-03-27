@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class OBcsmCamelTDPCriteriaWrapperImpl {
-	private ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList;
+	private List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList;
 
     public OBcsmCamelTDPCriteriaWrapperImpl() {
     }
 
-    public OBcsmCamelTDPCriteriaWrapperImpl(ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList) {
+    public OBcsmCamelTDPCriteriaWrapperImpl(List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList) {
         this.oBcsmCamelTDPCriteriaList = oBcsmCamelTDPCriteriaList;
     }
 
-    public ArrayList<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList() {
+    public List<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTDPCriteriaList() {
     	return oBcsmCamelTDPCriteriaList;
     }
 }

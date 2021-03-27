@@ -23,11 +23,9 @@
 package org.restcomm.protocols.ss7.map.datacoding;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharset;
@@ -37,7 +35,6 @@ import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetEncoder;
 import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetEncodingData;
 import org.restcomm.protocols.ss7.map.api.datacoding.Gsm7EncodingStyle;
 import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
@@ -46,11 +43,13 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifierImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverTpduImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -91,18 +90,18 @@ public class GSMCharsetTest {
         this.doTestEncode("*88#", new byte[] { 0x2a, 0x1c, 0x6e, (byte) 0x4 }, Gsm7EncodingStyle.bit7_ussd_style, null, 4);
 
         this.doTestEncode("Hell", new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 0, -78, -52, 102, 3 }, Gsm7EncodingStyle.bit7_sms_style,
-                new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 14);
+                Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }), 14);
 
         this.doTestEncode("[88]", new byte[] { 27, 30, 14, -73, -15, 1 }, Gsm7EncodingStyle.bit7_sms_style, null, 6);
         this.doTestEncode("[88]", new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, -64, -122, -121, -61, 109, 124 },
-                Gsm7EncodingStyle.bit7_sms_style, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 16);
+                Gsm7EncodingStyle.bit7_sms_style, Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }), 16);
 
         this.doTestEncode("Hell", new byte[] { 72, 101, 108, 108 }, Gsm7EncodingStyle.bit8_smpp_style, null, 0);
         this.doTestEncode("Hell", new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 72, 101, 108, 108 }, Gsm7EncodingStyle.bit8_smpp_style,
-                new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 0);
+        		Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }), 0);
         this.doTestEncode("[88]", new byte[] { 27, 60, 56, 56, 27, 62 }, Gsm7EncodingStyle.bit8_smpp_style, null, 0);
         this.doTestEncode("[88]", new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 27, 60, 56, 56, 27, 62 },
-                Gsm7EncodingStyle.bit8_smpp_style, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 0);
+                Gsm7EncodingStyle.bit8_smpp_style, Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }), 0);
     }
 
     @Test(groups = { "functional.decode", "datacoding" })
@@ -151,14 +150,14 @@ public class GSMCharsetTest {
         this.doTestDecode("He l", new byte[] { 72, 101, (byte) 200, 108 }, Gsm7EncodingStyle.bit8_smpp_style, 0, 0);
     }
 
-    private void doTestEncode(String decodedString, byte[] encodedData, Gsm7EncodingStyle gsm7EncodingStyle, byte[] bufUDH,
+    private void doTestEncode(String decodedString, byte[] encodedData, Gsm7EncodingStyle gsm7EncodingStyle, ByteBuf bufUDH,
             int totalSeptetCount) throws Exception {
-        GSMCharset cs = new GSMCharset("GSM", new String[] {});
+        GSMCharset cs = new GSMCharset();
         GSMCharsetEncoder encoder = (GSMCharsetEncoder) cs.newEncoder();
         encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(gsm7EncodingStyle, bufUDH));
-        ByteBuffer bb = encoder.encode(CharBuffer.wrap(decodedString));
-        byte[] data = new byte[bb.limit()];
-        bb.get(data);
+        ByteBuf bb = encoder.encode(decodedString);
+        byte[] data = new byte[bb.readableBytes()];
+        bb.readBytes(data);
         int len = encoder.getGSMCharsetEncodingData().getTotalSeptetCount();
 
         assertEquals(encodedData, data);
@@ -168,8 +167,8 @@ public class GSMCharsetTest {
     private void doTestDecode(String decodedString, byte[] encodedData, Gsm7EncodingStyle gsm7EncodingStyle, int totalSeptetCount,
             int leadingSeptetSkipCount) throws Exception {
 
-        ByteBuffer bb = ByteBuffer.wrap(encodedData);
-        GSMCharset cs = new GSMCharset("GSM", new String[] {});
+        ByteBuf bb = Unpooled.wrappedBuffer(encodedData);
+        GSMCharset cs = new GSMCharset();
         GSMCharsetDecoder decoder = (GSMCharsetDecoder) cs.newDecoder();
         switch (gsm7EncodingStyle) {
             case bit7_ussd_style:
@@ -184,10 +183,8 @@ public class GSMCharsetTest {
                 break;
         }
 
-        CharBuffer bf = null;
-        bf = decoder.decode(bb);
-        String s1 = bf.toString();
-
+        String s1 = decoder.decode(bb);
+        
 //        int i11 = s1.charAt(0);
 //        int i12 = s1.charAt(1);
 //        int i13 = s1.charAt(2);
@@ -208,9 +205,9 @@ public class GSMCharsetTest {
 
     @Test(groups = { "functional.decode", "datacoding" })
     public void testBufferOverflowTest() throws Exception {
-        AbsoluteTimeStamp serviceCentreTimeStamp = new AbsoluteTimeStampImpl(15, 5, 12, 2, 20, 11, 0);
+        AbsoluteTimeStampImpl serviceCentreTimeStamp = new AbsoluteTimeStampImpl(15, 5, 12, 2, 20, 11, 0);
         DataCodingSchemeImpl dcs = new DataCodingSchemeImpl(0);
-        UserDataHeader userDataHeader = new UserDataHeaderImpl();
+        UserDataHeaderImpl userDataHeader = new UserDataHeaderImpl();
         int messageReferenceNumber = 5;
         int messageSegmentCount = 1;
         int messageSegmentNumber = 3;
@@ -223,8 +220,10 @@ public class GSMCharsetTest {
                 new ProtocolIdentifierImpl(0), serviceCentreTimeStamp, ud);
         SmsSignalInfoImpl smsSignalInfo = new SmsSignalInfoImpl(smsDeliverTpduImpl, null);
 
-        byte[] data = smsSignalInfo.getData();
-
+        ByteBuf buffer=smsSignalInfo.getValue();
+        byte[] data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
         assertEquals(data, new byte[] { 64, 4, -111, 17, 17, 0, 0, 81, 80, 33, 32, 2, 17, 0, 11, 5, 0, 3, 5, 1, 3, -112, 101,
                 54, 27 });
     }
@@ -241,20 +240,19 @@ public class GSMCharsetTest {
         byte[] textPart = new byte[] { 0x74, 0x65, 0x73, 0x74, 0x73, 0x65, 0x6e, 0x64, 0x20, (byte) 0xc3, (byte) 0x87 };
         String msg = new String(textPart, utf8Charset);
 
-        GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
-        Charset cSet = gsm7Charset;
-        GSMCharsetEncoder encoder = (GSMCharsetEncoder) cSet.newEncoder();
+        GSMCharset gsm7Charset = new GSMCharset();
+        GSMCharsetEncoder encoder = gsm7Charset.newEncoder();
         // encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(buf2));
-        ByteBuffer bb = null;
+        ByteBuf bb = null;
 
         try {
-            bb = encoder.encode(CharBuffer.wrap(msg));
+            bb = encoder.encode(msg);
         } catch (Exception e) {
             // This can not occur
         }
         // int encodedUserDataLength = encoder.getGSMCharsetEncodingData().getTotalSeptetCount();
-        byte[] encodedData = new byte[bb.limit()];
-        bb.get(encodedData);
+        byte[] encodedData = new byte[bb.readableBytes()];
+        bb.readBytes(encodedData);
     }
 
     @Test(groups = { "datacoding" })
@@ -288,7 +286,7 @@ public class GSMCharsetTest {
 
     @Test(groups = { "datacoding" })
     public void testCheckAllCharsCanBeEncoded() throws Exception {
-        GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
+        GSMCharset gsm7Charset = new GSMCharset();
 
         assertTrue(gsm7Charset.checkAllCharsCanBeEncoded(""));
         assertTrue(gsm7Charset.checkAllCharsCanBeEncoded("[ **]"));
@@ -297,7 +295,7 @@ public class GSMCharsetTest {
 
     @Test(groups = { "datacoding" })
     public void testCheckEncodedDataLengthInChars() throws Exception {
-        GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
+        GSMCharset gsm7Charset = new GSMCharset();
 
         assertEquals(gsm7Charset.checkEncodedDataLengthInChars(""), 0);
         assertEquals(gsm7Charset.checkEncodedDataLengthInChars("123[]\u044B4"), 9);
@@ -305,7 +303,7 @@ public class GSMCharsetTest {
 
     @Test(groups = { "datacoding" })
     public void testSliceString() throws Exception {
-        GSMCharset gsm7Charset = new GSMCharset("GSM", new String[] {});
+        GSMCharset gsm7Charset = new GSMCharset();
 
         String[] ss = gsm7Charset.sliceString("123", 8);
         assertEquals(ss.length, 1);

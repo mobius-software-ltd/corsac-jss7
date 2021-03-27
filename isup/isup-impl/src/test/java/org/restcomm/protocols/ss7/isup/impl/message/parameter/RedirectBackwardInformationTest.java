@@ -36,11 +36,6 @@ import io.netty.buffer.Unpooled;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.InvokingRedirectReasonImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectBackwardInformationImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectReasonImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ReturnToInvokingExchangeCallIdentifierImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ReturnToInvokingExchangeDurationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingRedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectBackwardInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectReason;

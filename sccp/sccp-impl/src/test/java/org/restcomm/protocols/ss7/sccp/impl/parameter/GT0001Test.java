@@ -34,8 +34,6 @@ import io.netty.buffer.Unpooled;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
-import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0001Impl;
-import org.restcomm.protocols.ss7.sccp.impl.parameter.ParameterFactoryImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;

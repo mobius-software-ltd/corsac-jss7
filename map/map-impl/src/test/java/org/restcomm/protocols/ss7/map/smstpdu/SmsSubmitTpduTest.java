@@ -44,6 +44,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodFormat;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodImpl;
 import org.testng.annotations.Test;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
@@ -82,7 +85,7 @@ public class SmsSubmitTpduTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        SmsSubmitTpduImpl impl = new SmsSubmitTpduImpl(this.getData1(), null);
+        SmsSubmitTpduImpl impl = new SmsSubmitTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
         ;
         impl.getUserData().decode();
         assertFalse(impl.getRejectDuplicates());
@@ -102,7 +105,7 @@ public class SmsSubmitTpduTest {
         assertTrue(impl.getUserData().getDecodedMessage().equals("Hello !!!! 111 222 333 444 555 666"));
         assertTrue(Arrays.equals(impl.getUserData().getDecodedUserDataHeader().getInformationElementData(0), this.getData1A()));
 
-        impl = new SmsSubmitTpduImpl(this.getData2(), null);
+        impl = new SmsSubmitTpduImpl(Unpooled.wrappedBuffer(this.getData2()), null);
         ;
         impl.getUserData().decode();
         assertTrue(impl.getRejectDuplicates());
@@ -128,7 +131,7 @@ public class SmsSubmitTpduTest {
         assertTrue(impl.getUserData().getDecodedMessage().equals("AddressFieldImpl destAddress = new AddressFieldImpl"));
         assertNull(impl.getUserData().getDecodedUserDataHeader());
 
-        impl = new SmsSubmitTpduImpl(this.getData3(), Charset.forName("US-ASCII"));
+        impl = new SmsSubmitTpduImpl(Unpooled.wrappedBuffer(this.getData3()), Charset.forName("US-ASCII"));
         impl.getUserData().decode();
         assertFalse(impl.getRejectDuplicates());
         assertEquals(impl.getValidityPeriodFormat(), ValidityPeriodFormat.fieldPresentEnhancedFormat);
@@ -161,8 +164,11 @@ public class SmsSubmitTpduTest {
         ProtocolIdentifierImpl pi = new ProtocolIdentifierImpl(0);
         ValidityPeriodImpl vp = new ValidityPeriodImpl(173);
         SmsSubmitTpduImpl impl = new SmsSubmitTpduImpl(false, false, false, 83, destAddress, pi, vp, ud);
-        byte[] enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData1()));
+        byte[] encData=new byte[this.getData1().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData1()));
 
         ud = new UserDataImpl("AddressFieldImpl destAddress = new AddressFieldImpl", new DataCodingSchemeImpl(8), null, null);
         destAddress = new AddressFieldImpl(TypeOfNumber.InternationalNumber,
@@ -171,8 +177,11 @@ public class SmsSubmitTpduTest {
         AbsoluteTimeStampImpl ts = new AbsoluteTimeStampImpl(11, 1, 30, 2, 30, 58, -4);
         vp = new ValidityPeriodImpl(ts);
         impl = new SmsSubmitTpduImpl(true, true, false, 225, destAddress, pi, vp, ud);
-        enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData2()));
+        encData=new byte[this.getData2().length];
+        buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData2()));
 
         ud = new UserDataImpl("AddressFieldImpl destAddress = new AddressFieldImpl", new DataCodingSchemeImpl(4), null,
                 Charset.forName("US-ASCII"));
@@ -181,9 +190,10 @@ public class SmsSubmitTpduTest {
         ValidityEnhancedFormatDataImpl efd = new ValidityEnhancedFormatDataImpl(this.getData3B());
         vp = new ValidityPeriodImpl(efd);
         impl = new SmsSubmitTpduImpl(false, true, true, 0, destAddress, pi, vp, ud);
-        enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData3()));
-
-        // boolean rejectDuplicates, boolean replyPathExists, boolean statusReportRequest
+        encData=new byte[this.getData3().length];
+        buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData3()));
     }
 }

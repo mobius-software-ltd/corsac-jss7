@@ -35,10 +35,10 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MOLRClassImpl {
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=true,index=-1)
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
     private SSCodeImpl ssCode;
     
-    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=true,index=-1)
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
     private ExtSSStatusImpl ssStatus;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)

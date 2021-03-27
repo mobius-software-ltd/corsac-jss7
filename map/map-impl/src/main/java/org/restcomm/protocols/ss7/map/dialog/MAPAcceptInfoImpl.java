@@ -37,7 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=true,lengthIndefinite=false)
 public class MAPAcceptInfoImpl {
 	private MAPExtensionContainerImpl extensionContainer;
 

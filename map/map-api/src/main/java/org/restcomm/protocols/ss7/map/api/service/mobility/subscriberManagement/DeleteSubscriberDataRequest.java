@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
@@ -104,9 +104,9 @@ public interface DeleteSubscriberDataRequest extends MobilityMessage {
 
     IMSIImpl getImsi();
 
-    ArrayList<ExtBasicServiceCodeImpl> getBasicServiceList();
+    List<ExtBasicServiceCodeImpl> getBasicServiceList();
 
-    ArrayList<SSCodeImpl> getSsList();
+    List<SSCodeImpl> getSsList();
 
     boolean getRoamingRestrictionDueToUnsupportedFeature();
 

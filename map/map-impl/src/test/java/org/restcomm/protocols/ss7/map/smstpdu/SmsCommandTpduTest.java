@@ -37,6 +37,9 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.SmsCommandTpduImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.testng.annotations.Test;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
@@ -51,7 +54,7 @@ public class SmsCommandTpduTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        SmsCommandTpduImpl impl = new SmsCommandTpduImpl(this.getData1());
+        SmsCommandTpduImpl impl = new SmsCommandTpduImpl(Unpooled.wrappedBuffer(this.getData1()));
         assertFalse(impl.getUserDataHeaderIndicator());
         assertFalse(impl.getStatusReportRequest());
         assertEquals(impl.getMessageReference(), 11);
@@ -76,7 +79,10 @@ public class SmsCommandTpduTest {
         CommandTypeImpl commandType = new CommandTypeImpl(44);
         CommandDataImpl commandData = new CommandDataImpl("set A");
         SmsCommandTpduImpl impl = new SmsCommandTpduImpl(false, 11, pi, commandType, 12, destinationAddress, commandData);
-        byte[] enc = impl.encodeData();
-        assertTrue(Arrays.equals(enc, this.getData1()));
+        byte[] encData=new byte[this.getData1().length];
+        ByteBuf buffer=Unpooled.wrappedBuffer(encData);
+        buffer.resetWriterIndex();
+        impl.encodeData(buffer);
+        assertTrue(Arrays.equals(encData, this.getData1()));
     }
 }

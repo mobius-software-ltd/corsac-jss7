@@ -28,18 +28,20 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.BitSetStrictLength;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.CheckImeiResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuAImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuBImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.CheckImeiResponseImplV1;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.UESBIIuAImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.imei.UESBIIuBImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -55,108 +57,96 @@ public class CheckImeiResponseTest {
 
     private byte[] getEncodedDataV3() {
         // TODO this is self generated trace. We need trace from operator
-        return new byte[] { 48, 13, 10, 1, 0, 48, 8, -128, 2, 7, -128, -127, 2, 7, 0 };
+        return new byte[] { 48, 13, 10, 1, 0, 48, 8, -128, 2, 7, -128, -127, 2, 0, 0 };
     }
 
     private byte[] getEncodedDataV3Full() {
         // TODO this is self generated trace. We need trace from operator
-        return new byte[] { 48, 54, 10, 1, 0, 48, 8, -128, 2, 7, -128, -127, 2, 7, 0, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4,
-                11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 60, 10, 1, 0, 48, 8, -128, 2, 7, -128, -127, 2, 0, 0, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     @Test(groups = { "functional.decode", "imei" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CheckImeiResponseImplV1.class);
+    	parser.replaceClass(CheckImeiResponseImplV3.class);
+    	
         // Testing version 3
-        byte[] rawData = getEncodedDataV3();
-        AsnInputStream asnIS = new AsnInputStream(rawData);
-
-        int tag = asnIS.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        CheckImeiResponseImplV1 checkImeiImpl = new CheckImeiResponseImplV1(3);
-        checkImeiImpl.decodeAll(asnIS);
-
+        byte[] data = getEncodedDataV3();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CheckImeiResponse);
+        CheckImeiResponse checkImeiImpl = (CheckImeiResponse)result.getResult();
+        
         assertEquals(checkImeiImpl.getEquipmentStatus(), EquipmentStatus.whiteListed);
-        assertTrue(checkImeiImpl.getBmuef().getUESBI_IuA().getData().get(0));
-        assertFalse(checkImeiImpl.getBmuef().getUESBI_IuB().getData().get(0));
+        assertTrue(checkImeiImpl.getBmuef().getUESBI_IuA().isBitSet(0));
+        assertFalse(checkImeiImpl.getBmuef().getUESBI_IuB().isBitSet(0));
 
         // Testing version 3 Full
-        rawData = getEncodedDataV3Full();
-        asnIS = new AsnInputStream(rawData);
-
-        tag = asnIS.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        checkImeiImpl = new CheckImeiResponseImplV1(3);
-        checkImeiImpl.decodeAll(asnIS);
+        data = getEncodedDataV3Full();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CheckImeiResponse);
+        checkImeiImpl = (CheckImeiResponse)result.getResult();
 
         assertEquals(checkImeiImpl.getEquipmentStatus(), EquipmentStatus.whiteListed);
-        assertTrue(checkImeiImpl.getBmuef().getUESBI_IuA().getData().get(0));
-        assertFalse(checkImeiImpl.getBmuef().getUESBI_IuB().getData().get(0));
+        assertTrue(checkImeiImpl.getBmuef().getUESBI_IuA().isBitSet(0));
+        assertFalse(checkImeiImpl.getBmuef().getUESBI_IuB().isBitSet(0));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(checkImeiImpl.getExtensionContainer()));
 
         // Testing version 1 and 2
-        rawData = getEncodedDataV2();
-        asnIS = new AsnInputStream(rawData);
-
-        tag = asnIS.readTag();
-        assertEquals(tag, Tag.ENUMERATED);
-        checkImeiImpl = new CheckImeiResponseImplV1(2);
-        checkImeiImpl.decodeAll(asnIS);
+        data = getEncodedDataV2();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CheckImeiResponse);
+        checkImeiImpl = (CheckImeiResponse)result.getResult();
 
         assertEquals(checkImeiImpl.getEquipmentStatus(), EquipmentStatus.whiteListed);
     }
 
     @Test(groups = { "functional.encode", "imei" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(CheckImeiResponseImplV1.class);
+    	parser.replaceClass(CheckImeiResponseImplV3.class);
+    	
         // Testing version 3
-        BitSetStrictLength bsUESBIIuA = new BitSetStrictLength(1);
-        bsUESBIIuA.set(0);
-        UESBIIuAImpl impUESBIIuA = new UESBIIuAImpl(bsUESBIIuA);
-
-        BitSetStrictLength bsUESBIIuB = new BitSetStrictLength(1);
-        UESBIIuBImpl impUESBIIuB = new UESBIIuBImpl(bsUESBIIuB);
+        UESBIIuAImpl impUESBIIuA = new UESBIIuAImpl();
+        impUESBIIuA.setBit(0);
+        
+        UESBIIuBImpl impUESBIIuB = new UESBIIuBImpl();
 
         UESBIIuImpl bmuef = new UESBIIuImpl(impUESBIIuA, impUESBIIuB);
-        CheckImeiResponseImplV1 checkImei = new CheckImeiResponseImplV1(3, EquipmentStatus.whiteListed, bmuef, null);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        checkImei.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedDataV3();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        CheckImeiResponse checkImei = new CheckImeiResponseImplV3(3, EquipmentStatus.whiteListed, bmuef, null);
+        byte[] data=getEncodedDataV3();
+        ByteBuf buffer=parser.encode(checkImei);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         // Testing version 3 Full
-        bsUESBIIuA = new BitSetStrictLength(1);
-        bsUESBIIuA.set(0);
-        impUESBIIuA = new UESBIIuAImpl(bsUESBIIuA);
-
-        bsUESBIIuB = new BitSetStrictLength(1);
-        impUESBIIuB = new UESBIIuBImpl(bsUESBIIuB);
+        impUESBIIuA = new UESBIIuAImpl();
+        impUESBIIuA.setBit(0);
+        
+        impUESBIIuB = new UESBIIuBImpl();
 
         bmuef = new UESBIIuImpl(impUESBIIuA, impUESBIIuB);
 
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        checkImei = new CheckImeiResponseImplV1(3, EquipmentStatus.whiteListed, bmuef, extensionContainer);
-
-        asnOS = new AsnOutputStream();
-        checkImei.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedDataV3Full();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        checkImei = new CheckImeiResponseImplV3(3, EquipmentStatus.whiteListed, bmuef, extensionContainer);
+        data=getEncodedDataV3Full();
+        buffer=parser.encode(checkImei);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         // Testing version 1 and 2
-        checkImei = new CheckImeiResponseImplV1(2, EquipmentStatus.whiteListed, null, null);
-
-        asnOS = new AsnOutputStream();
-        checkImei.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedDataV2();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        checkImei = new CheckImeiResponseImplV1(2, EquipmentStatus.whiteListed);
+        data=getEncodedDataV2();
+        buffer=parser.encode(checkImei);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

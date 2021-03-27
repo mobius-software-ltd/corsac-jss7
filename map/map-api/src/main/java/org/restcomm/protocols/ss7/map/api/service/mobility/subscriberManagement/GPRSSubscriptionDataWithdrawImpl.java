@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASNIntegerListWrapperImpl;
 
@@ -49,9 +50,9 @@ public class GPRSSubscriptionDataWithdrawImpl {
     		this.allGPRSData = new ASNNull();
     }
 
-    public GPRSSubscriptionDataWithdrawImpl(ArrayList<Integer> contextIdList) {
+    public GPRSSubscriptionDataWithdrawImpl(List<Integer> contextIdList) {
     	if(contextIdList!=null) {
-    		ArrayList<ASNInteger> realData=new ArrayList<ASNInteger>();
+    		List<ASNInteger> realData=new ArrayList<ASNInteger>();
     		for(Integer curr:contextIdList) {
     			ASNInteger currData=new ASNInteger();
     			currData.setValue(curr.longValue());
@@ -66,11 +67,11 @@ public class GPRSSubscriptionDataWithdrawImpl {
         return allGPRSData!=null;
     }
 
-    public ArrayList<Integer> getContextIdList() {
+    public List<Integer> getContextIdList() {
     	if(this.contextIdList==null || this.contextIdList.getIntegers()==null)
     		return null;
     	
-    	ArrayList<Integer> realData=new ArrayList<Integer>();
+    	List<Integer> realData=new ArrayList<Integer>();
 		for(ASNInteger curr:contextIdList.getIntegers()) {
 			realData.add(curr.getValue().intValue());
 		}

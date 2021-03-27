@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.functional;
 
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
@@ -43,7 +45,7 @@ public class MAPServiceSupplementaryImplWrapper extends MAPServiceSupplementaryI
             // For reproducing FunctionalTestScenario.actionC MAPFunctionalTest
             // - remove temporally this comment comment
             ApplicationContextNameImpl ac = new ApplicationContextNameImpl();
-            ac.setOid(new long[] { 1, 2, 3 });
+            ac.setValue(Arrays.asList(new Long[] { 1L, 2L, 3L }));
             ServingCheckDataImpl i1 = new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, ac);
             return i1;
         }

@@ -23,15 +23,20 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -62,23 +67,25 @@ public class ExtGeographicalInformationTest {
 
     @Test(groups = { "functional.decode", "lsm" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData_EllipsoidPointWithUncertaintyCircle();
-        AsnInputStream asn = new AsnInputStream(rawData);
-        asn.readTag();
-        ExtGeographicalInformationImpl impl = new ExtGeographicalInformationImpl();
-        impl.decodeAll(asn);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtGeographicalInformationImpl.class);
+    	
+        byte[] data = getEncodedData_EllipsoidPointWithUncertaintyCircle();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtGeographicalInformationImpl);
+        ExtGeographicalInformationImpl impl = (ExtGeographicalInformationImpl)result.getResult();
+        
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
         assertTrue(Math.abs(impl.getLatitude() - 65) < 0.01);
         assertTrue(Math.abs(impl.getLongitude() - (-149)) < 0.01);  // -31
         assertTrue(Math.abs(impl.getUncertainty() - 9.48) < 0.01);
 
-        rawData = getEncodedData_EllipsoidPointWithUncertaintyEllipse();
-        asn = new AsnInputStream(rawData);
-        asn.readTag();
-        impl = new ExtGeographicalInformationImpl();
-        impl.decodeAll(asn);
+        data = getEncodedData_EllipsoidPointWithUncertaintyEllipse();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtGeographicalInformationImpl);
+        impl = (ExtGeographicalInformationImpl)result.getResult();
 
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyEllipse);
         assertTrue(Math.abs(impl.getLatitude() - (-65)) < 0.01);
@@ -88,11 +95,11 @@ public class ExtGeographicalInformationTest {
         assertTrue(Math.abs(impl.getAngleOfMajorAxis() - 22) < 0.01);
         assertEquals(impl.getConfidence(), 23);
 
-        rawData = getEncodedData_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid();
-        asn = new AsnInputStream(rawData);
-        asn.readTag();
-        impl = new ExtGeographicalInformationImpl();
-        impl.decodeAll(asn);
+        data = getEncodedData_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtGeographicalInformationImpl);
+        impl = (ExtGeographicalInformationImpl)result.getResult();
 
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPointWithAltitudeAndUncertaintyEllipsoid);
         assertTrue(Math.abs(impl.getLatitude() - (-65.5)) < 0.01);
@@ -104,11 +111,11 @@ public class ExtGeographicalInformationTest {
         assertTrue(Math.abs(impl.getUncertaintyAltitude() - 27.97) < 0.01);
         assertEquals(impl.getConfidence(), 29);
 
-        rawData = getEncodedData_EllipsoidArc();
-        asn = new AsnInputStream(rawData);
-        asn.readTag();
-        impl = new ExtGeographicalInformationImpl();
-        impl.decodeAll(asn);
+        data = getEncodedData_EllipsoidArc();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtGeographicalInformationImpl);
+        impl = (ExtGeographicalInformationImpl)result.getResult();
 
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidArc);
         assertTrue(Math.abs(impl.getLatitude() - 1) < 0.01);
@@ -119,11 +126,11 @@ public class ExtGeographicalInformationTest {
         assertTrue(Math.abs(impl.getIncludedAngle() - 24) < 0.01);
         assertEquals(impl.getConfidence(), 39);
 
-        rawData = getEncodedData_EllipsoidPoint();
-        asn = new AsnInputStream(rawData);
-        asn.readTag();
-        impl = new ExtGeographicalInformationImpl();
-        impl.decodeAll(asn);
+        data = getEncodedData_EllipsoidPoint();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtGeographicalInformationImpl);
+        impl = (ExtGeographicalInformationImpl)result.getResult();
 
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPoint);
         assertTrue(Math.abs(impl.getLatitude() - 0) < 0.01);
@@ -132,48 +139,42 @@ public class ExtGeographicalInformationTest {
 
     @Test(groups = { "functional.encode", "lsm" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ExtGeographicalInformationImpl.class);
+    	
+        ExtGeographicalInformationImpl impl = new ExtGeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle, 65, -149, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        byte[] data = getEncodedData_EllipsoidPointWithUncertaintyCircle();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
-        ExtGeographicalInformationImpl impl = new ExtGeographicalInformationImpl(
-                TypeOfShape.EllipsoidPointWithUncertaintyCircle, 65, -149, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        // TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty, double uncertaintySemiMajorAxis,
-        // double uncertaintySemiMinorAxis, double angleOfMajorAxis, int confidence, int altitude, double uncertaintyAltitude,
-        // int innerRadius,
-        // double uncertaintyRadius, double offsetAngle, double includedAngle
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
-        byte[] rawData = getEncodedData_EllipsoidPointWithUncertaintyCircle();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        impl = new ExtGeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyEllipse, -65, 31, 0, 100, 1000, 22, 23, 0, 0, 0, 0, 0, 0);
+        data = getEncodedData_EllipsoidPointWithUncertaintyEllipse();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
-        impl = new ExtGeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyEllipse, -65, 31, 0, 100, 1000, 22,
-                23, 0, 0, 0, 0, 0, 0);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData_EllipsoidPointWithUncertaintyEllipse();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        impl = new ExtGeographicalInformationImpl(TypeOfShape.EllipsoidPointWithAltitudeAndUncertaintyEllipsoid, -65.5, 31.3,
-                28, 50, 500, 28, 29, -17, 29, 0, 0, 0, 0);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        impl = new ExtGeographicalInformationImpl(TypeOfShape.EllipsoidPointWithAltitudeAndUncertaintyEllipsoid, -65.5, 31.3, 28, 50, 500, 28, 29, -17, 29, 0, 0, 0, 0);
+        data = getEncodedData_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         impl = new ExtGeographicalInformationImpl(TypeOfShape.EllipsoidArc, 1, 171.3, 0, 0, 0, 0, 39, 0, 0, 6000, 15, 22, 24);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData_EllipsoidArc();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data = getEncodedData_EllipsoidArc();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         impl = new ExtGeographicalInformationImpl(TypeOfShape.EllipsoidPoint, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
-        rawData = getEncodedData_EllipsoidPoint();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        data = getEncodedData_EllipsoidPoint();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }

@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
@@ -34,6 +32,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  *
@@ -53,7 +53,7 @@ public abstract class TbcdString {
     protected int minLength;
     protected int maxLength;
     protected String _PrimitiveName;
-    protected Boolean hasFiller;
+    protected Boolean hasFiller;    
     
     public TbcdString(int minLength, int maxLength, String _PrimitiveName,Boolean hasFiller) {
         this.minLength = minLength;
@@ -93,13 +93,13 @@ public abstract class TbcdString {
 	
 	@ASNDecode
 	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws MAPParsingComponentException {
-		decodeString(buffer);
+		data = decodeString(buffer);
 		return false;
 	}
 
     public static String decodeString(ByteBuf buffer) throws MAPParsingComponentException {
         StringBuilder s = new StringBuilder();
-        for (int i1 = 0; i1 < buffer.readableBytes(); i1++) {
+        while (buffer.readableBytes()>0) {
             int b = buffer.readByte();
 
             int digit1 = (b & DIGIT_1_MASK);

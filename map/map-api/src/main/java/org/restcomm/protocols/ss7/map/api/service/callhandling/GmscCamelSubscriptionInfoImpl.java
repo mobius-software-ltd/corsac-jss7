@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSIImpl;
@@ -44,10 +44,10 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class GmscCamelSubscriptionInfoImpl {
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
     private TCSIImpl tCsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
     private OCSIImpl oCsi;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
@@ -66,8 +66,8 @@ public class GmscCamelSubscriptionInfoImpl {
     }
 
     public GmscCamelSubscriptionInfoImpl(TCSIImpl tCsi, OCSIImpl oCsi, MAPExtensionContainerImpl extensionContainer,
-            ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList,
-            ArrayList<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi) {
+            List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList,
+            List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi) {
         this.tCsi = tCsi;
         this.oCsi = oCsi;
         this.extensionContainer = extensionContainer;
@@ -93,14 +93,14 @@ public class GmscCamelSubscriptionInfoImpl {
         return extensionContainer;
     }
 
-    public ArrayList<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTdpCriteriaList() {
+    public List<OBcsmCamelTdpCriteriaImpl> getOBcsmCamelTdpCriteriaList() {
     	if(oBcsmCamelTdpCriteriaList==null)
     		return null;
     	
         return oBcsmCamelTdpCriteriaList.getOBcsmCamelTDPCriteriaList();
     }
 
-    public ArrayList<TBcsmCamelTdpCriteriaImpl> getTBcsmCamelTdpCriteriaList() {
+    public List<TBcsmCamelTdpCriteriaImpl> getTBcsmCamelTdpCriteriaList() {
     	if(tBcsmCamelTdpCriteriaList==null)
     		return null;
     	

@@ -21,16 +21,19 @@
  */
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupIdImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -73,137 +76,141 @@ public class LongGroupIdTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LongGroupIdImpl.class);
+    	
         // option 1
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        LongGroupIdImpl prim = new LongGroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LongGroupIdImpl);
+        LongGroupIdImpl prim = (LongGroupIdImpl)result.getResult();
         assertTrue(prim.getLongGroupId().equals("12345678"));
 
         // option 2
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new LongGroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LongGroupIdImpl);
+        prim = (LongGroupIdImpl)result.getResult();
         assertTrue(prim.getLongGroupId().equals("1234567"));
 
         // option 3
         data = this.getData3();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new LongGroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LongGroupIdImpl);
+        prim = (LongGroupIdImpl)result.getResult();
         assertTrue(prim.getLongGroupId().equals("123456"));
 
         // option 4
         data = this.getData4();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new LongGroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LongGroupIdImpl);
+        prim = (LongGroupIdImpl)result.getResult();
         assertTrue(prim.getLongGroupId().equals("12345"));
 
         // option 5
         data = this.getData5();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new LongGroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LongGroupIdImpl);
+        prim = (LongGroupIdImpl)result.getResult();
         assertTrue(prim.getLongGroupId().equals("1234"));
 
         // option 6
         data = this.getData6();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new LongGroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LongGroupIdImpl);
+        prim = (LongGroupIdImpl)result.getResult();
         assertTrue(prim.getLongGroupId().equals("123"));
 
         // option 7
         data = this.getData7();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new LongGroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LongGroupIdImpl);
+        prim = (LongGroupIdImpl)result.getResult();
         assertTrue(prim.getLongGroupId().equals("12"));
 
         // option 8
         data = this.getData8();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new LongGroupIdImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LongGroupIdImpl);
+        prim = (LongGroupIdImpl)result.getResult();
         assertTrue(prim.getLongGroupId().equals("1"));
-
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LongGroupIdImpl.class);
+    	
         // option 1
         LongGroupIdImpl prim = new LongGroupIdImpl("12345678");
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        byte[] rawData=this.getData();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         // option 2
         prim = new LongGroupIdImpl("1234567");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        rawData=this.getData2();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         // option 3
         prim = new LongGroupIdImpl("123456");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData3()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        rawData=this.getData3();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         // option 4
         prim = new LongGroupIdImpl("12345");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData4()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        rawData=this.getData4();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         // option 5
         prim = new LongGroupIdImpl("1234");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData5()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        rawData=this.getData5();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         // option 6
         prim = new LongGroupIdImpl("123");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData6()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        rawData=this.getData6();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         // option 7
         prim = new LongGroupIdImpl("12");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData7()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        rawData=this.getData7();
+        assertTrue(Arrays.equals(encodedData, rawData));
 
         // option 8
         prim = new LongGroupIdImpl("1");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData8()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        rawData=this.getData8();
+        assertTrue(Arrays.equals(encodedData, rawData));
     }
-
 }

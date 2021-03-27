@@ -24,8 +24,6 @@ package org.restcomm.protocols.ss7.tcap;
 
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
@@ -43,7 +41,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.RefusalCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ASNDialogPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
@@ -59,6 +56,9 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Test for call flow.

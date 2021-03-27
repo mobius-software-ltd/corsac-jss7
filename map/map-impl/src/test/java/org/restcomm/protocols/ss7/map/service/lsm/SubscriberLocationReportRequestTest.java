@@ -28,9 +28,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
@@ -59,12 +56,17 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
-import org.restcomm.protocols.ss7.map.service.lsm.SubscriberLocationReportRequestImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -92,13 +94,7 @@ public class SubscriberLocationReportRequestTest {
     }
 
     public byte[] getEncodedData() {
-        return new byte[] { 48, -127, -92, 10, 1, 0, 48, 3, -128, 1, 2, 48, 8, 4, 6, -111, 68, 68, 84, 85, 85, -128, 6, -111,
-                102, 102, 118, 119, 119, -127, 5, 33, 67, 21, 50, 84, -126, 8, 33, 67, 101, -121, 9, 33, 67, 101, -125, 6,
-                -111, -120, -120, -104, -103, -103, -124, 6, -111, -120, -120, 8, 0, 0, -123, 1, 11, -122, 1, 5, -89, 4, -95,
-                2, -128, 0, -120, 1, 12, -87, 14, 3, 2, 4, -128, -95, 8, 4, 6, -111, 68, 68, 84, 85, 85, -118, 1, 6, -117, 2,
-                13, 14, -116, 3, 15, 16, 17, -83, 7, -127, 5, 34, -16, 33, 16, -31, -114, 5, 21, 22, 23, 24, 25, -113, 1, 7,
-                -111, 0, -110, 0, -109, 1, 0, -108, 4, 26, 27, 28, 29, -107, 1, 9, -74, 6, 2, 1, 10, 2, 1, 11, -105, 0, -104,
-                2, 31, 32, -103, 1, 33, -70, 8, -128, 6, -111, -111, -126, 115, 100, -11 };
+        return new byte[] { 48, -127, -92, 10, 1, 0, 48, 3, -128, 1, 2, 48, 8, 4, 6, -111, 68, 68, 84, 85, 85, -128, 6, -111, 102, 102, 118, 119, 119, -127, 5, 33, 67, 21, 50, 84, -126, 8, 33, 67, 101, -121, 9, 33, 67, 101, -125, 6, -111, -120, -120, -104, -103, -103, -124, 6, -111, -120, -120, 8, 0, 0, -123, 1, 11, -122, 1, 5, -89, 4, -95, 2, -128, 0, -120, 1, 12, -87, 14, 3, 2, 7, -128, -95, 8, 4, 6, -111, 68, 68, 84, 85, 85, -118, 1, 6, -117, 2, 13, 14, -116, 3, 15, 16, 17, -83, 7, -127, 5, 34, -16, 33, 16, -31, -114, 5, 21, 22, 23, 24, 25, -113, 1, 7, -111, 0, -110, 0, -109, 1, 0, -108, 4, 26, 27, 28, 29, -107, 1, 9, -74, 6, 2, 1, 10, 2, 1, 11, -105, 0, -104, 2, 31, 32, -103, 1, 33, -70, 8, -128, 6, -111, -111, -126, 115, 100, -11 };
     }
 
     public byte[] getDataExtGeographicalInformation() {
@@ -135,14 +131,14 @@ public class SubscriberLocationReportRequestTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SubscriberLocationReportRequestImpl.class);
+    	
         byte[] data = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        SubscriberLocationReportRequestImpl imp = new SubscriberLocationReportRequestImpl();
-        imp.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SubscriberLocationReportRequestImpl);
+        SubscriberLocationReportRequestImpl imp = (SubscriberLocationReportRequestImpl)result.getResult();
 
         assertEquals(imp.getLCSEvent(), LCSEvent.emergencyCallOrigination);
         assertEquals(imp.getLCSClientID().getLCSClientType(), LCSClientType.plmnOperatorServices);
@@ -184,7 +180,9 @@ public class SubscriberLocationReportRequestTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SubscriberLocationReportRequestImpl.class);
+    	
         byte[] data = getEncodedData();
 
         LCSClientIDImpl lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, null, null, null, null, null,
@@ -233,26 +231,10 @@ public class SubscriberLocationReportRequestTest {
                 cellIdOrSai, hgmlcAddress, 7, true, true, AccuracyFulfilmentIndicator.requestedAccuracyFulfilled,
                 velocityEstimate, 9, periodicLDRInfo, true, geranGANSSpositioningData, utranGANSSpositioningData,
                 targetServingNodeForHandover);
-        // LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo, ISDNAddressStringImpl msisdn,
-        // IMSI imsi, IMEI imei, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk, ExtGeographicalInformation
-        // locationEstimate,
-        // Integer ageOfLocationEstimate, SLRArgExtensionContainer slrArgExtensionContainer, AddGeographicalInformation
-        // addLocationEstimate,
-        // DeferredmtlrData deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformation geranPositioningData,
-        // UtranPositioningDataInfo utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAI cellIdOrSai, GSNAddress hgmlcAddress,
-        // Integer lcsServiceTypeID,
-        // boolean saiPresent, boolean pseudonymIndicator, AccuracyFulfilmentIndicator accuracyFulfilmentIndicator,
-        // VelocityEstimate velocityEstimate,
-        // Integer sequenceNumber, PeriodicLDRInfo periodicLDRInfo, boolean moLrShortCircuitIndicator, GeranGANSSpositioningData
-        // geranGANSSpositioningData,
-        // UtranGANSSpositioningData utranGANSSpositioningData, ServingNodeAddress targetServingNodeForHandover
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
     }
 }

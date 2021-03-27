@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASNIntegerListWrapperImpl;
 
@@ -49,9 +50,9 @@ public class EPSSubscriptionDataWithdrawImpl {
     		this.allEpsData = new ASNNull();
     }
 
-    public EPSSubscriptionDataWithdrawImpl(ArrayList<Integer> contextIdList) {
+    public EPSSubscriptionDataWithdrawImpl(List<Integer> contextIdList) {
     	if(contextIdList!=null) {
-    		ArrayList<ASNInteger> data=new ArrayList<ASNInteger>();
+    		List<ASNInteger> data=new ArrayList<ASNInteger>();
     		for(Integer curr:contextIdList) {
     			ASNInteger currData=new ASNInteger();
     			currData.setValue(curr.longValue());
@@ -67,11 +68,11 @@ public class EPSSubscriptionDataWithdrawImpl {
         return allEpsData!=null;
     }
 
-    public ArrayList<Integer> getContextIdList() {
+    public List<Integer> getContextIdList() {
     	if(contextIdList==null || contextIdList.getIntegers()==null)
     		return null;
     	
-    	ArrayList<Integer> data=new ArrayList<Integer>();
+    	List<Integer> data=new ArrayList<Integer>();
 		for(ASNInteger curr:contextIdList.getIntegers()) {
 			data.add(curr.getValue().intValue());
 		}

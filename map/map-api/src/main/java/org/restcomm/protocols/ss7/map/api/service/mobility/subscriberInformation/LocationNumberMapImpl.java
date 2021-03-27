@@ -53,8 +53,9 @@ public class LocationNumberMapImpl extends ASNOctetString {
         if (locationNumber == null)
             throw new MAPException("The locationNumber parameter must not be null");
         try {
-        	setValue(Unpooled.buffer());
-            ((LocationNumberImpl) locationNumber).encode(getValue());
+        	ByteBuf buffer=Unpooled.buffer();
+            ((LocationNumberImpl) locationNumber).encode(buffer);
+            setValue(buffer);
         } catch (ParameterException e) {
             throw new MAPException("ParameterException when encoding locationNumber: " + e.getMessage(), e);
         }

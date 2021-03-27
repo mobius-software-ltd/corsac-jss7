@@ -23,15 +23,20 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -58,25 +63,26 @@ public class GeographicalInformationTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GeographicalInformationImpl.class);
+    	
         byte[] rawData = getEncodedData01();
 
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        asn.readTag();
-        GeographicalInformationImpl impl = new GeographicalInformationImpl();
-        impl.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GeographicalInformationImpl);
+        GeographicalInformationImpl impl = (GeographicalInformationImpl)result.getResult();
+        
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
         assertTrue(Math.abs(impl.getLatitude() - (-31)) < 0.0001);
         assertTrue(Math.abs(impl.getLongitude() - (-127.00001)) < 0.0001);
         assertTrue(Math.abs(impl.getUncertainty() - 0) < 0.01);
 
         rawData = getEncodedData02();
-        asn = new AsnInputStream(rawData);
-        asn.readTag();
-        impl = new GeographicalInformationImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GeographicalInformationImpl);
+        impl = (GeographicalInformationImpl)result.getResult();
 
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
         assertTrue(Math.abs(impl.getLatitude() - 31) < 0.0001);
@@ -84,10 +90,10 @@ public class GeographicalInformationTest {
         assertTrue(Math.abs(impl.getUncertainty() - 0) < 0.01);
 
         rawData = getEncodedData();
-        asn = new AsnInputStream(rawData);
-        asn.readTag();
-        impl = new GeographicalInformationImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GeographicalInformationImpl);
+        impl = (GeographicalInformationImpl)result.getResult();
 
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
         assertTrue(Math.abs(impl.getLatitude() - 21.5) < 0.0001);
@@ -95,10 +101,10 @@ public class GeographicalInformationTest {
         assertTrue(Math.abs(impl.getUncertainty() - 0) < 0.01);
 
         rawData = getEncodedData2();
-        asn = new AsnInputStream(rawData);
-        asn.readTag();
-        impl = new GeographicalInformationImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GeographicalInformationImpl);
+        impl = (GeographicalInformationImpl)result.getResult();
 
         assertEquals(impl.getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
         assertTrue(Math.abs(impl.getLatitude() - (-70.33)) < 0.0001);
@@ -108,66 +114,38 @@ public class GeographicalInformationTest {
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(GeographicalInformationImpl.class);
+    	
         GeographicalInformationImpl impl = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle,
                 -31, -127.00001, 0);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData01();
         assertEquals(rawData, encodedData);
 
         impl = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle,
                 31, 53, 0);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData02();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         impl = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle,
                 21.5, 171, 0);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);        
         rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         impl = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle, -70.33, -179.5, 58);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);        
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
-    public void testXMLSerialize() throws Exception {
-
-        GeographicalInformationImpl original = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle,
-                -70.33, -0.5, 58);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "geographicalInformation", GeographicalInformationImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        GeographicalInformationImpl copy = reader.read("geographicalInformation", GeographicalInformationImpl.class);
-
-        assertEquals(copy.getTypeOfShape(), original.getTypeOfShape());
-        assertEquals(copy.getLatitude(), original.getLatitude());
-        assertEquals(copy.getLongitude(), original.getLongitude());
-        assertEquals(copy.getUncertainty(), original.getUncertainty());
-
-    }*/
 }

@@ -22,14 +22,21 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -52,15 +59,16 @@ public class GlobalCellIdTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
-        byte[] data = this.getData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        GlobalCellIdImpl prim = new GlobalCellIdImpl();
-        prim.decodeAll(asn);
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GlobalCellIdImpl.class);
+    	
+    	byte[] data = this.getData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GlobalCellIdImpl);
+        GlobalCellIdImpl prim = (GlobalCellIdImpl)result.getResult();        
+        
         assertNotNull(prim.getData());
         assertTrue(Arrays.equals(getDataVal(), prim.getData()));
 
@@ -71,12 +79,11 @@ public class GlobalCellIdTest {
 
 
         data = this.getData2();
-
-        asn = new AsnInputStream(data);
-        asn.readTag();
-
-        prim = new GlobalCellIdImpl();
-        prim.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GlobalCellIdImpl);
+        prim = (GlobalCellIdImpl)result.getResult();     
 
         assertNotNull(prim.getData());
 
@@ -84,18 +91,19 @@ public class GlobalCellIdTest {
         assertEquals(prim.getMnc(), 1);
         assertEquals(prim.getLac(), 4444);
         assertEquals(prim.getCellId(), 0);
-
     }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GlobalCellIdImpl.class);
+    	
         GlobalCellIdImpl prim = new GlobalCellIdImpl(250, 1, 4444, 3333);
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
+        assertTrue(Arrays.equals(data, this.getData()));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "primitives" })

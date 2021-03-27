@@ -44,6 +44,10 @@ public class UpdateLocationResponseImplV1 extends MobilityMessageImpl implements
     
 	private long mapProtocolVersion;
 
+	public UpdateLocationResponseImplV1() {
+		this.mapProtocolVersion = 1;
+	}
+	
     public UpdateLocationResponseImplV1(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

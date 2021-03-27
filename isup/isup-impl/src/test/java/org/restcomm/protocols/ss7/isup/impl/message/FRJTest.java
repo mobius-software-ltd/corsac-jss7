@@ -36,7 +36,6 @@ import static org.testng.Assert.assertNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.FacilityRejectedMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.testng.annotations.Test;

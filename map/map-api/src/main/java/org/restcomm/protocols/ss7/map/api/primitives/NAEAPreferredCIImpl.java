@@ -35,7 +35,7 @@ public class NAEAPreferredCIImpl {
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private NAEACICImpl naeaPreferredCIC;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
     private MAPExtensionContainerImpl extensionContainer;
 
     public NAEAPreferredCIImpl() {

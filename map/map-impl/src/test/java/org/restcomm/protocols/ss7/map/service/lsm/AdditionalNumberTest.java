@@ -23,31 +23,30 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * TODO Self generated trace. Please test from real trace
@@ -76,23 +75,24 @@ public class AdditionalNumberTest {
     }
 
     public byte[] getEncodedMscNumber() {
-        return new byte[] { (byte) 0x80, 0x05, (byte) 0x91, (byte) 0x55, 0x16, 0x09, 0x70 };
+        return new byte[] { 48, 7, -128, 5, -111, 85, 22, 9, 112 };
     }
 
     public byte[] getEncodedSgsnNumber() {
-        return new byte[] { (byte) 0x81, 0x05, (byte) 0x91, (byte) 0x55, 0x16, 0x09, 0x70 };
+        return new byte[] { 48, 7, -127, 5, -111, 85, 22, 9, 112 };
     }
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AdditionalNumberImpl.class);
+    	
         byte[] data = getEncodedMscNumber();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AdditionalNumberImpl);
+        AdditionalNumberImpl addNum = (AdditionalNumberImpl)result.getResult();
 
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, 0);
-
-        AdditionalNumberImpl addNum = new AdditionalNumberImpl();
-        addNum.decodeAll(asn);
         assertNotNull(addNum.getMSCNumber());
         assertNull(addNum.getSGSNNumber());
         ISDNAddressStringImpl isdnAdd = addNum.getMSCNumber();
@@ -102,12 +102,11 @@ public class AdditionalNumberTest {
 
         data = getEncodedSgsnNumber();
 
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, 1);
-
-        addNum = new AdditionalNumberImpl();
-        addNum.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AdditionalNumberImpl);
+        addNum = (AdditionalNumberImpl)result.getResult();
+        
         assertNull(addNum.getMSCNumber());
         assertNotNull(addNum.getSGSNNumber());
         isdnAdd = addNum.getSGSNNumber();
@@ -118,51 +117,25 @@ public class AdditionalNumberTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-        byte[] data = getEncodedMscNumber();
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AdditionalNumberImpl.class);
+    	
         ISDNAddressStringImpl isdnAdd = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "55619007");
-        AdditionalNumber addNum = new AdditionalNumberImpl(isdnAdd, null);
+        AdditionalNumberImpl addNum = new AdditionalNumberImpl(isdnAdd, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        ((AdditionalNumberImpl) addNum).encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        byte[] data = getEncodedMscNumber();
+        ByteBuf buffer=parser.encode(addNum);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
-        data = getEncodedSgsnNumber();
 
         addNum = new AdditionalNumberImpl(null, isdnAdd);
 
-        asnOS = new AsnOutputStream();
-        ((AdditionalNumberImpl) addNum).encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-
+        data = getEncodedSgsnNumber();
+        buffer=parser.encode(addNum);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "service.lsm" })
-    public void testSerialization() throws Exception {
-        ISDNAddressStringImpl isdnAdd = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
-                NumberingPlan.ISDN, "55619007");
-        AdditionalNumber original = new AdditionalNumberImpl(isdnAdd, null);
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        AdditionalNumberImpl copy = (AdditionalNumberImpl) o;
-
-        // test result
-        assertEquals(copy.getMSCNumber(), original.getMSCNumber());
-
     }
 }

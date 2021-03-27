@@ -22,19 +22,22 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEACICImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,8 +47,8 @@ import org.testng.annotations.Test;
 public class NAEAPreferredCITest {
 
     public byte[] getData() {
-        return new byte[] { 48, 46, -128, 3, 15, 48, 5, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
-                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 52, -128, 3, 15, 48, 5, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6,
+                3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     };
 
     public byte[] getNAEACICIData() {
@@ -54,15 +57,16 @@ public class NAEAPreferredCITest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        NAEAPreferredCIImpl prim = new NAEAPreferredCIImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+    	ASNParser parser=new ASNParser(false);
+    	parser.replaceClass(NAEAPreferredCIImpl.class);
+    	
+    	byte[] data = this.getData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof NAEAPreferredCIImpl);
+        NAEAPreferredCIImpl prim = (NAEAPreferredCIImpl)result.getResult();
+        
         MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
         assertEquals(prim.getNaeaPreferredCIC().getData(), this.getNAEACICIData());
         assertNotNull(extensionContainer);
@@ -71,13 +75,17 @@ public class NAEAPreferredCITest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        NAEACIC naeaPreferredCIC = new NAEACICImpl(this.getNAEACICIData());
+    	ASNParser parser=new ASNParser(false);
+    	parser.replaceClass(NAEAPreferredCIImpl.class);
+    	
+    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        NAEACICImpl naeaPreferredCIC = new NAEACICImpl(this.getNAEACICIData());
         NAEAPreferredCIImpl prim = new NAEAPreferredCIImpl(naeaPreferredCIC, extensionContainer);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertTrue(Arrays.equals(encodedData, this.getData()));
     }
 
 }

@@ -49,14 +49,20 @@ public class CancelLocationRequestImplV1 extends MobilityMessageImpl implements 
     private IMSIWithLMSIImpl imsiWithLmsi;
     private long mapProtocolVersion;
 
+    public CancelLocationRequestImplV1() {
+    	this.mapProtocolVersion=2;
+    }
+    
     public CancelLocationRequestImplV1(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
     public CancelLocationRequestImplV1(IMSIImpl imsi, IMSIWithLMSIImpl imsiWithLmsi,long mapProtocolVersion) {
         super();
-        this.imsi = imsi;
-        this.imsiWithLmsi = imsiWithLmsi;
+        if(imsi!=null)
+        	this.imsi = imsi;
+        else if(imsiWithLmsi!=null)
+        	this.imsiWithLmsi = imsiWithLmsi;
         
         this.mapProtocolVersion = mapProtocolVersion;
     }

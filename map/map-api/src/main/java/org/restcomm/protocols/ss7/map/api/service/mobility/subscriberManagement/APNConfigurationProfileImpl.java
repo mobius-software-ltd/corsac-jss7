@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -52,7 +52,7 @@ public class APNConfigurationProfileImpl {
     }
 
     public APNConfigurationProfileImpl(int defaultContext, boolean completeDataListIncluded,
-            ArrayList<APNConfigurationImpl> ePSDataList, MAPExtensionContainerImpl extensionContainer) {
+            List<APNConfigurationImpl> ePSDataList, MAPExtensionContainerImpl extensionContainer) {
         this.defaultContext = new ASNInteger();
         this.defaultContext.setValue((long)defaultContext & 0x0FFFFFFFFL);
         
@@ -76,7 +76,7 @@ public class APNConfigurationProfileImpl {
         return this.completeDataListIncluded!=null;
     }
 
-    public ArrayList<APNConfigurationImpl> getEPSDataList() {
+    public List<APNConfigurationImpl> getEPSDataList() {
     	if(this.ePSDataList==null)
     		return null;
     	

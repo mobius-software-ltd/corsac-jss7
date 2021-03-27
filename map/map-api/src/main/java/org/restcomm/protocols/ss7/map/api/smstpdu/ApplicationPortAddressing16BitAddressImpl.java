@@ -27,7 +27,9 @@ package org.restcomm.protocols.ss7.map.api.smstpdu;
 * @author sergey vetyutnev
 *
 */
-public class ApplicationPortAddressing16BitAddressImpl {
+public class ApplicationPortAddressing16BitAddressImpl implements UserDataHeaderElement {
+	private static final long serialVersionUID = 1L;
+	
 	private int destinationPort;
     private int originatorPort;
 

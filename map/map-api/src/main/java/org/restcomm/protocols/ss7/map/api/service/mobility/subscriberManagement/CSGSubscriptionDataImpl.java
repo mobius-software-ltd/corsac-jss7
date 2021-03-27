@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.TimeImpl;
@@ -48,7 +48,7 @@ public class CSGSubscriptionDataImpl {
     }
 
     public CSGSubscriptionDataImpl(CSGIdImpl csgId, TimeImpl expirationDate, MAPExtensionContainerImpl extensionContainer,
-            ArrayList<APNImpl> lipaAllowedAPNList) {
+            List<APNImpl> lipaAllowedAPNList) {
         this.csgId = csgId;
         this.expirationDate = expirationDate;
         this.extensionContainer = extensionContainer;
@@ -69,7 +69,7 @@ public class CSGSubscriptionDataImpl {
         return this.extensionContainer;
     }
 
-    public ArrayList<APNImpl> getLipaAllowedAPNList() {
+    public List<APNImpl> getLipaAllowedAPNList() {
     	if(this.lipaAllowedAPNList==null)
     		return null;
     	

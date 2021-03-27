@@ -36,8 +36,6 @@ import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.RouteAs;
 import org.restcomm.protocols.ss7.m3ua.RoutingKey;
-import org.restcomm.protocols.ss7.m3ua.impl.AsImpl;
-import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;

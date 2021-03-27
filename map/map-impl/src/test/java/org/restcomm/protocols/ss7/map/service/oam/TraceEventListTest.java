@@ -22,31 +22,27 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.oam.BMSCEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.BMSCEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.GGSNEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.GGSNEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MGWEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MGWEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MMEEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MMEEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.PGWEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.PGWEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGSNEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.SGSNEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGWEventList;
 import org.restcomm.protocols.ss7.map.api.service.oam.SGWEventListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -56,23 +52,20 @@ import org.testng.annotations.Test;
 public class TraceEventListTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 32, (byte) 128, 2, 3, (byte) 128, (byte) 129, 2, 7, (byte) 128, (byte) 130, 2, 4, 64, (byte) 131, 2, 6, 64, (byte) 132, 2, 7,
-                (byte) 128, (byte) 133, 2, 2, 36, (byte) 134, 2, 5, 32, (byte) 135, 2, 5, 64 };
+        return new byte[] { 48, 32, -128, 2, 7, -128, -127, 2, 7, -128, -126, 2, 6, 64, -125, 2, 6, 64, -124, 2, 7, -128, -123, 2, 2, 36, -122, 2, 5, 32, -121, 2, 6, 64 };
     }
 
     @Test(groups = { "functional.decode", "service.oam" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TraceEventListImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        TraceEventListImpl asc = new TraceEventListImpl();
-        asc.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TraceEventListImpl);
+        TraceEventListImpl asc = (TraceEventListImpl)result.getResult();
+        
         assertTrue(asc.getMscSList().getMoMtCall());
         assertFalse(asc.getMscSList().getSs());
 
@@ -93,33 +86,30 @@ public class TraceEventListTest {
         assertTrue(asc.getSgwList().getBearerActivationModificationDeletion());
         assertFalse(asc.getSgwList().getPdnConnectionCreation());
 
-        assertTrue(asc.getPgwList().getPdnConnectionTermination());
+        assertTrue(asc.getPgwList().getConnectionTermination());
         assertFalse(asc.getPgwList().getBearerActivationModificationDeletion());
 
     }
 
     @Test(groups = { "functional.encode", "service.oam" })
     public void testEncode() throws Exception {
-
-        MSCSEventList mscSList = new MSCSEventListImpl(true, false, false, false, false);
-        MGWEventList mgwList = new MGWEventListImpl(true);
-        SGSNEventList sgsnList = new SGSNEventListImpl(false, true, false, false);
-        GGSNEventList ggsnList = new GGSNEventListImpl(false, true);
-        BMSCEventList bmscList = new BMSCEventListImpl(true);
-        MMEEventList mmeList = new MMEEventListImpl(false, false, true, false, false, true);
-        SGWEventList sgwList = new SGWEventListImpl(false, false, true);
-        PGWEventList pgwList = new PGWEventListImpl(false, true, false);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(TraceEventListImpl.class);
+    	
+    	MSCSEventListImpl mscSList = new MSCSEventListImpl(true, false, false, false, false);
+    	MGWEventListImpl mgwList = new MGWEventListImpl(true);
+    	SGSNEventListImpl sgsnList = new SGSNEventListImpl(false, true, false, false);
+    	GGSNEventListImpl ggsnList = new GGSNEventListImpl(false, true);
+    	BMSCEventListImpl bmscList = new BMSCEventListImpl(true);
+    	MMEEventListImpl mmeList = new MMEEventListImpl(false, false, true, false, false, true);
+    	SGWEventListImpl sgwList = new SGWEventListImpl(false, false, true);
+    	PGWEventListImpl pgwList = new PGWEventListImpl(false, true, false);
         TraceEventListImpl asc = new TraceEventListImpl(mscSList, mgwList, sgsnList, ggsnList, bmscList, mmeList, sgwList, pgwList);
-//        MSCSEventList mscSList, MGWEventList mgwList, SGSNEventList sgsnList, GGSNEventList ggsnList,
-//        BMSCEventList bmscList, MMEEventList mmeList, SGWEventList sgwList, PGWEventList pgwList
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        asc.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(asc);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
-
     }
-
 }

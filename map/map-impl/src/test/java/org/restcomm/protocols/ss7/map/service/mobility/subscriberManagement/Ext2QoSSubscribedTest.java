@@ -22,16 +22,20 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateExtendedImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -50,15 +54,15 @@ public class Ext2QoSSubscribedTest {
 
     @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(Ext2QoSSubscribedImpl.class);
+    	
         byte[] data = this.getData1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        Ext2QoSSubscribedImpl prim = new Ext2QoSSubscribedImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof Ext2QoSSubscribedImpl);
+        Ext2QoSSubscribedImpl prim = (Ext2QoSSubscribedImpl)result.getResult();
+        
         assertEquals(prim.getSourceStatisticsDescriptor(), Ext2QoSSubscribed_SourceStatisticsDescriptor.speech);
         assertTrue(prim.isOptimisedForSignallingTraffic());
         assertEquals(prim.getMaximumBitRateForDownlinkExtended().getBitRate(), 16000);
@@ -67,13 +71,10 @@ public class Ext2QoSSubscribedTest {
 
 
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new Ext2QoSSubscribedImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof Ext2QoSSubscribedImpl);
+        prim = (Ext2QoSSubscribedImpl)result.getResult();
 
         assertEquals(prim.getSourceStatisticsDescriptor(), Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown);
         assertFalse(prim.isOptimisedForSignallingTraffic());
@@ -84,17 +85,19 @@ public class Ext2QoSSubscribedTest {
 
     @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
     public void testEncode() throws Exception {
-        ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(16000, false);
-        ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(256000, false);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(Ext2QoSSubscribedImpl.class);
+    	
+        ExtQoSSubscribed_BitRateExtendedImpl maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(16000, false);
+        ExtQoSSubscribed_BitRateExtendedImpl guaranteedBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(256000, false);
         Ext2QoSSubscribedImpl prim = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.speech, true, maximumBitRateForDownlinkExtended,
                 guaranteedBitRateForDownlinkExtended);
-//        Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,
-//        ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended, ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertEquals(asn.toByteArray(), this.getData1());
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertEquals(encodedData, this.getData1());
 
 
         maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(84000, false);
@@ -102,39 +105,10 @@ public class Ext2QoSSubscribedTest {
         prim = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown, false, maximumBitRateForDownlinkExtended,
                 guaranteedBitRateForDownlinkExtended);
 
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertEquals(asn.toByteArray(), this.getData2());
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
+        assertEquals(encodedData, this.getData2());
     }
-    
-    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
-    public void testXMLSerialize() throws Exception {
-
-        ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(16000, false);
-        ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(256000, false);
-        Ext2QoSSubscribedImpl original = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.speech, true, maximumBitRateForDownlinkExtended,
-                guaranteedBitRateForDownlinkExtended);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "ext2QoSSubscribed", Ext2QoSSubscribedImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        Ext2QoSSubscribedImpl copy = reader.read("ext2QoSSubscribed", Ext2QoSSubscribedImpl.class);
-
-        assertEquals(copy.getGuaranteedBitRateForDownlinkExtended().getBitRate(), original.getGuaranteedBitRateForDownlinkExtended().getBitRate());
-        assertEquals(copy.isOptimisedForSignallingTraffic(), original.isOptimisedForSignallingTraffic());
-        assertEquals(copy.getMaximumBitRateForDownlinkExtended().getBitRate(), original.getMaximumBitRateForDownlinkExtended().getBitRate());
-        assertEquals(copy.getSourceStatisticsDescriptor(), original.getSourceStatisticsDescriptor());
-    }*/
 }

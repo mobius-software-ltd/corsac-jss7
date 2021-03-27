@@ -45,8 +45,12 @@ public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl imp
 
 	private IMSIImpl imsi;
     
-    private long mapProtocolVersion;
+    private long mapProtocolVersion=1;
 
+    public SendAuthenticationInfoRequestImplV1() {
+    	
+    }
+    
     public SendAuthenticationInfoRequestImplV1(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

@@ -22,23 +22,26 @@
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSRequestImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -61,24 +64,27 @@ public class UnstructuredSSRequestTest {
     public void tearDown() {
     }
 
+    byte[] data = new byte[] { 0x30, 0x3e, 0x04, 0x01, 0x0f, 0x04, 0x39, (byte) 0xd5, (byte) 0xe9, (byte) 0x94, 0x08,
+            (byte) 0x9a, (byte) 0xd2, (byte) 0xe5, 0x69, (byte) 0xf7, 0x19, (byte) 0xa4, 0x03, 0x21, (byte) 0xcb, 0x6c,
+            (byte) 0xf6, 0x1b, 0x74, 0x7d, (byte) 0xcb, (byte) 0xd9, 0x64, 0x10, 0x6f, 0x28, (byte) 0xf5, (byte) 0x81,
+            0x62, 0x2e, (byte) 0x90, 0x30, (byte) 0xcc, 0x0e, (byte) 0xbb, (byte) 0xc7, 0x65, 0x10, 0x6f, 0x28,
+            (byte) 0xf5, (byte) 0x81, 0x64, 0x2e, 0x10, (byte) 0xb5, (byte) 0x8c, (byte) 0xa7, (byte) 0xcf, 0x41,
+            (byte) 0xd2, 0x72, 0x3b, (byte) 0x9c, 0x76, (byte) 0xa7, (byte) 0xdd, 0x67 };
+    
     @Test(groups = { "functional.decode", "service.ussd" })
     public void testDecode() throws Exception {
-        byte[] data = new byte[] { 0x30, 0x3e, 0x04, 0x01, 0x0f, 0x04, 0x39, (byte) 0xd5, (byte) 0xe9, (byte) 0x94, 0x08,
-                (byte) 0x9a, (byte) 0xd2, (byte) 0xe5, 0x69, (byte) 0xf7, 0x19, (byte) 0xa4, 0x03, 0x21, (byte) 0xcb, 0x6c,
-                (byte) 0xf6, 0x1b, 0x74, 0x7d, (byte) 0xcb, (byte) 0xd9, 0x64, 0x10, 0x6f, 0x28, (byte) 0xf5, (byte) 0x81,
-                0x62, 0x2e, (byte) 0x90, 0x30, (byte) 0xcc, 0x0e, (byte) 0xbb, (byte) 0xc7, 0x65, 0x10, 0x6f, 0x28,
-                (byte) 0xf5, (byte) 0x81, 0x64, 0x2e, 0x10, (byte) 0xb5, (byte) 0x8c, (byte) 0xa7, (byte) 0xcf, 0x41,
-                (byte) 0xd2, 0x72, 0x3b, (byte) 0x9c, 0x76, (byte) 0xa7, (byte) 0xdd, 0x67 };
-
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        UnstructuredSSRequestImpl addNum = new UnstructuredSSRequestImpl();
-        addNum.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UnstructuredSSRequestImpl.class);
+    	
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof UnstructuredSSRequestImpl);
+        UnstructuredSSRequestImpl addNum = (UnstructuredSSRequestImpl)result.getResult();
+        
         CBSDataCodingScheme dataCodingScheme = addNum.getDataCodingScheme();
         assertEquals(dataCodingScheme.getCode(), 0x0f);
 
-        USSDString ussdString = addNum.getUSSDString();
+        USSDStringImpl ussdString = addNum.getUSSDString();
         assertNotNull(ussdString);
 
         assertEquals(ussdString.getString(null), "USSD String : Hello World <CR> 1. Balance <CR> 2. Texts Remaining");
@@ -87,21 +93,14 @@ public class UnstructuredSSRequestTest {
 
     @Test(groups = { "functional.encode", "service.ussd" })
     public void testEncode() throws Exception {
-        byte[] data = new byte[] { 0x30, 0x3e, 0x04, 0x01, 0x0f, 0x04, 0x39, (byte) 0xd5, (byte) 0xe9, (byte) 0x94, 0x08,
-                (byte) 0x9a, (byte) 0xd2, (byte) 0xe5, 0x69, (byte) 0xf7, 0x19, (byte) 0xa4, 0x03, 0x21, (byte) 0xcb, 0x6c,
-                (byte) 0xf6, 0x1b, 0x74, 0x7d, (byte) 0xcb, (byte) 0xd9, 0x64, 0x10, 0x6f, 0x28, (byte) 0xf5, (byte) 0x81,
-                0x62, 0x2e, (byte) 0x90, 0x30, (byte) 0xcc, 0x0e, (byte) 0xbb, (byte) 0xc7, 0x65, 0x10, 0x6f, 0x28,
-                (byte) 0xf5, (byte) 0x81, 0x64, 0x2e, 0x10, (byte) 0xb5, (byte) 0x8c, (byte) 0xa7, (byte) 0xcf, 0x41,
-                (byte) 0xd2, 0x72, 0x3b, (byte) 0x9c, 0x76, (byte) 0xa7, (byte) 0xdd, 0x67 };
-
-        USSDString ussdStr = new USSDStringImpl("USSD String : Hello World <CR> 1. Balance <CR> 2. Texts Remaining", null, null);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UnstructuredSSRequestImpl.class);
+    	
+        USSDStringImpl ussdStr = new USSDStringImpl("USSD String : Hello World <CR> 1. Balance <CR> 2. Texts Remaining", null, null);
         UnstructuredSSRequestImpl addNum = new UnstructuredSSRequestImpl(new CBSDataCodingSchemeImpl(0x0f), ussdStr, null, null);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        addNum.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ByteBuf buffer=parser.encode(addNum);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
     }
 }

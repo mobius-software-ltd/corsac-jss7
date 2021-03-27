@@ -22,19 +22,24 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.service.supplementary.EraseSSResponseImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -49,18 +54,15 @@ public class EraseSSResponseTest {
 
     @Test(groups = { "functional.decode", "service.supplementary" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(EraseSSResponseImpl.class);
+    	
         byte[] rawData = getEncodedData1();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, SSInfoImpl._TAG_ssData);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        EraseSSResponseImpl impl = new EraseSSResponseImpl();
-        impl.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EraseSSResponseImpl);
+        EraseSSResponseImpl impl = (EraseSSResponseImpl)result.getResult();
+        
         assertEquals(impl.getSsInfo().getSsData().getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.clir);
         assertNull(impl.getSsInfo().getCallBarringInfo());
         assertNull(impl.getSsInfo().getForwardingInfo());
@@ -69,18 +71,17 @@ public class EraseSSResponseTest {
 
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(EraseSSResponseImpl.class);
+    	
     	SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.clir);
         SSDataImpl ssData = new SSDataImpl(ssCode, null, null, null, null, null);
         SSInfoImpl ssInfo = new SSInfoImpl(ssData);
 
         EraseSSResponseImpl impl = new EraseSSResponseImpl(ssInfo);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData1();
         assertTrue(Arrays.equals(rawData, encodedData));
     }

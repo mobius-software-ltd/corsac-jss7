@@ -527,7 +527,7 @@ public class AssociationImpl implements Association {
             this.getAssociationListener().onCommunicationShutdown(this);
 
             if (this.server != null) {
-            	this.server.anonymAssociations.remove(this);
+            	this.server.anonymAssociations.remove(this.getName());
             }
         }
     }

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CUGSubscriptionListWrapperImpl {
-	private ArrayList<CUGSubscriptionImpl> cugSubscription;
+	private List<CUGSubscriptionImpl> cugSubscription;
 
     public CUGSubscriptionListWrapperImpl() {
     }
 
-    public CUGSubscriptionListWrapperImpl(ArrayList<CUGSubscriptionImpl> cugSubscription) {
+    public CUGSubscriptionListWrapperImpl(List<CUGSubscriptionImpl> cugSubscription) {
         this.cugSubscription = cugSubscription;
     }
 
-    public ArrayList<CUGSubscriptionImpl> getCUGSubscription() {
+    public List<CUGSubscriptionImpl> getCUGSubscription() {
     	return cugSubscription;
     }
 }

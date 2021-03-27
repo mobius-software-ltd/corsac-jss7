@@ -33,7 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=false,lengthIndefinite=false)
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=true,lengthIndefinite=false)
 public class MAPCloseInfoImpl {	
 	private MAPExtensionContainerImpl extensionContainer;
 

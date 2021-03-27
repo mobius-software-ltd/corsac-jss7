@@ -23,22 +23,26 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
 import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -50,15 +54,15 @@ public class ServingNodeAddressTest {
     MAPParameterFactory MAPParameterFactory = new MAPParameterFactoryImpl();
 
     public byte[] getDataMsc() {
-        return new byte[] { -128, 5, -111, 49, 117, 9, 0 };
+        return new byte[] { 48, 7, -128, 5, -111, 49, 117, 9, 0 };
     }
 
     public byte[] getDataSgsn() {
-        return new byte[] { -127, 5, -111, 49, 117, 9, 0 };
+        return new byte[] { 48, 7, -127, 5, -111, 49, 117, 9, 0 };
     }
 
     public byte[] getDataMme() {
-        return new byte[] { -126, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+        return new byte[] { 48, 12, -126, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
     }
 
     public byte[] getDataDiameterIdentity() {
@@ -67,15 +71,15 @@ public class ServingNodeAddressTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ServingNodeAddressImpl.class);
+    	
         byte[] data = getDataMsc();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, ServingNodeAddressImpl._TAG_mscNumber);
-
-        ServingNodeAddressImpl impl = new ServingNodeAddressImpl();
-        impl.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ServingNodeAddressImpl);
+        ServingNodeAddressImpl impl = (ServingNodeAddressImpl)result.getResult();
+        
         ISDNAddressStringImpl isdnAdd = impl.getMscNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
         assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
@@ -84,13 +88,10 @@ public class ServingNodeAddressTest {
         assertNull(impl.getMmeNumber());
 
         data = getDataSgsn();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, ServingNodeAddressImpl._TAG_sgsnNumber);
-
-        impl = new ServingNodeAddressImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ServingNodeAddressImpl);
+        impl = (ServingNodeAddressImpl)result.getResult();
 
         isdnAdd = impl.getSgsnNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
@@ -100,15 +101,12 @@ public class ServingNodeAddressTest {
         assertNull(impl.getMmeNumber());
 
         data = getDataMme();
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ServingNodeAddressImpl);
+        impl = (ServingNodeAddressImpl)result.getResult();
 
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, ServingNodeAddressImpl._TAG_mmeNumber);
-
-        impl = new ServingNodeAddressImpl();
-        impl.decodeAll(asn);
-
-        DiameterIdentity di = impl.getMmeNumber();
+        DiameterIdentityImpl di = impl.getMmeNumber();
         assertTrue(Arrays.equals(di.getData(), getDataDiameterIdentity()));
         assertNull(impl.getMscNumber());
         assertNull(impl.getSgsnNumber());
@@ -116,37 +114,32 @@ public class ServingNodeAddressTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-        byte[] data = getDataMsc();
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ServingNodeAddressImpl.class);
+    	
         ISDNAddressStringImpl isdnAdd = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "13579000");
         ServingNodeAddressImpl impl = new ServingNodeAddressImpl(isdnAdd, true);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        byte[] data = getDataMsc();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
-        data = getDataSgsn();
 
         impl = new ServingNodeAddressImpl(isdnAdd, false);
-
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        data = getDataSgsn();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
+        DiameterIdentityImpl di = new DiameterIdentityImpl(getDataDiameterIdentity());
         data = getDataMme();
-
-        DiameterIdentity di = new DiameterIdentityImpl(getDataDiameterIdentity());
         impl = new ServingNodeAddressImpl(di);
-
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
     }
 }

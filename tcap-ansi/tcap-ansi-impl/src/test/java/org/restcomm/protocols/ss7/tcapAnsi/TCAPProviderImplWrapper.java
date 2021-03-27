@@ -25,8 +25,6 @@ package org.restcomm.protocols.ss7.tcapAnsi;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
-import org.restcomm.protocols.ss7.tcapAnsi.TCAPProviderImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 
 /**

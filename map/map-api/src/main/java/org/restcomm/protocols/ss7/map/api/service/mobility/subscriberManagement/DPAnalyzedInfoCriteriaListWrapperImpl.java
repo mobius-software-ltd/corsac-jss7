@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class DPAnalyzedInfoCriteriaListWrapperImpl {
-	private ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriumList;
+	private List<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriumList;
 
     public DPAnalyzedInfoCriteriaListWrapperImpl() {
     }
 
-    public DPAnalyzedInfoCriteriaListWrapperImpl(ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriumList) {
+    public DPAnalyzedInfoCriteriaListWrapperImpl(List<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriumList) {
         this.dpAnalysedInfoCriteriumList = dpAnalysedInfoCriteriumList;
     }
 
-    public ArrayList<DPAnalysedInfoCriteriumImpl> getDPAnalysedInfoCriteriumList() {
+    public List<DPAnalysedInfoCriteriumImpl> getDPAnalysedInfoCriteriumList() {
     	return dpAnalysedInfoCriteriumList;
     }
 }

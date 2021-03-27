@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -36,16 +36,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class PagingAreaImpl {
 	@ASNChoise
-    private ArrayList<LocationAreaImpl> locationAreas;
+    private List<LocationAreaImpl> locationAreas;
 
     public PagingAreaImpl() {
     }
 
-    public PagingAreaImpl(ArrayList<LocationAreaImpl> locationAreas) {
+    public PagingAreaImpl(List<LocationAreaImpl> locationAreas) {
         this.locationAreas = locationAreas;
     }
 
-    public ArrayList<LocationAreaImpl> getLocationAreas() {
+    public List<LocationAreaImpl> getLocationAreas() {
         return locationAreas;
     }
 

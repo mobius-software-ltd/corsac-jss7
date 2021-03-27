@@ -28,9 +28,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
@@ -45,6 +42,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -77,15 +80,15 @@ public class DeferredmtlrDataTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(DeferredmtlrDataImpl.class);
+    	
         byte[] data = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        DeferredmtlrDataImpl imp = new DeferredmtlrDataImpl();
-        imp.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DeferredmtlrDataImpl);
+        DeferredmtlrDataImpl imp = (DeferredmtlrDataImpl)result.getResult();
+        
         assertFalse(imp.getDeferredLocationEventType().getMsAvailable());
         assertTrue(imp.getDeferredLocationEventType().getEnteringIntoArea());
         assertFalse(imp.getDeferredLocationEventType().getLeavingFromArea());
@@ -98,27 +101,18 @@ public class DeferredmtlrDataTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-
-        byte[] data = getEncodedData();
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(DeferredmtlrDataImpl.class);
+    	
         DeferredLocationEventTypeImpl deferredLocationEventType = new DeferredLocationEventTypeImpl(false, true, false, true);
-        // boolean msAvailable, boolean enteringIntoArea, boolean leavingFromArea, boolean beingInsideArea
-        ISDNAddressStringImpl networkNodeNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "330044005500");
-        LCSLocationInfoImpl lcsLocationInfo = new LCSLocationInfoImpl(networkNodeNumber, null, null, false, null, null, null,
-                null, null);
-
-        DeferredmtlrDataImpl imp = new DeferredmtlrDataImpl(deferredLocationEventType, TerminationCause.mtlrRestart,
-                lcsLocationInfo);
-        // DeferredLocationEventType deferredLocationEventType, TerminationCause terminationCause, LCSLocationInfo
-        // lcsLocationInfo
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ISDNAddressStringImpl networkNodeNumber = new ISDNAddressStringImpl(AddressNature.international_number,NumberingPlan.ISDN, "330044005500");
+        LCSLocationInfoImpl lcsLocationInfo = new LCSLocationInfoImpl(networkNodeNumber, null, null, false, null, null, null,null, null);
+        DeferredmtlrDataImpl imp = new DeferredmtlrDataImpl(deferredLocationEventType, TerminationCause.mtlrRestart,lcsLocationInfo);
+        
+        byte[] data = getEncodedData();
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
     }
 }

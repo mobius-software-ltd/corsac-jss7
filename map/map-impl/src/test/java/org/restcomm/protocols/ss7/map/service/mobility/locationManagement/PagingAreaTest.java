@@ -23,23 +23,25 @@
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LAC;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -54,46 +56,45 @@ public class PagingAreaTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(PagingAreaImpl.class);
+    	
         byte[] data = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof PagingAreaImpl);
+        PagingAreaImpl prim = (PagingAreaImpl)result.getResult();
+        
+        List<LocationAreaImpl> lst = prim.getLocationAreas();
 
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-
-        PagingAreaImpl prim = new PagingAreaImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ArrayList<LocationArea> lst = prim.getLocationAreas();
-
-        LAIFixedLength lai = lst.get(0).getLAIFixedLength();
+        LAIFixedLengthImpl lai = lst.get(0).getLAIFixedLength();
         assertEquals(lai.getMCC(), 249);
         assertEquals(lai.getMNC(), 1);
         assertEquals(lai.getLac(), 14010);
         assertNull(lst.get(0).getLAC());
 
-        LAC lac = lst.get(1).getLAC();
+        LACImpl lac = lst.get(1).getLAC();
         assertEquals(lac.getLac(), 14010);
         assertNull(lst.get(1).getLAIFixedLength());
     }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
-
-        ArrayList<LocationArea> lst = new ArrayList<LocationArea>();
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(PagingAreaImpl.class);
+    	
+        ArrayList<LocationAreaImpl> lst = new ArrayList<LocationAreaImpl>();
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl(249, 1, 14010);
-        LAC lac = new LACImpl(14010);
+        LACImpl lac = new LACImpl(14010);
         LocationAreaImpl l1 = new LocationAreaImpl(lai);
         LocationAreaImpl l2 = new LocationAreaImpl(lac);
         lst.add(l1);
         lst.add(l2);
         PagingAreaImpl prim = new PagingAreaImpl(lst);
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
+        byte[] data=this.getData1();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

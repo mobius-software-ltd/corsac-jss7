@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -56,7 +56,7 @@ public class OCSIImpl {
     public OCSIImpl() {
     }
 
-    public OCSIImpl(ArrayList<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
+    public OCSIImpl(List<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
             Integer camelCapabilityHandling, boolean notificationToCSE, boolean csiActive) {
     	if(oBcsmCamelTDPDataList!=null)
     		this.oBcsmCamelTDPDataList = new OBcsmCamelTDPDataWrapperImpl(oBcsmCamelTDPDataList);
@@ -75,7 +75,7 @@ public class OCSIImpl {
         	this.csiActive = new ASNNull();
     }
 
-    public ArrayList<OBcsmCamelTDPDataImpl> getOBcsmCamelTDPDataList() {
+    public List<OBcsmCamelTDPDataImpl> getOBcsmCamelTDPDataList() {
     	if(oBcsmCamelTDPDataList==null)
     		return null;
     	

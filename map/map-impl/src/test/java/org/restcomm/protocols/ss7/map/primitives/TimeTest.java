@@ -22,15 +22,19 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.TimeImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -49,16 +53,17 @@ public class TimeTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        // option 1
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TimeImpl.class);
+    	
+    	// option 1
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        TimeImpl prim = new TimeImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeImpl);
+        TimeImpl prim = (TimeImpl)result.getResult();        
+        
         assertEquals(prim.getYear(), 1985);
         assertEquals(prim.getMonth(), 8);
         assertEquals(prim.getDay(), 19);
@@ -68,13 +73,11 @@ public class TimeTest {
 
         // option 2
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new TimeImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeImpl);
+        prim = (TimeImpl)result.getResult();  
 
         assertEquals(prim.getYear(), 2104);
         assertEquals(prim.getMonth(), 2);
@@ -87,14 +90,19 @@ public class TimeTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        TimeImpl prim = new TimeImpl(1985, 8, 19, 3, 40, 14);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TimeImpl.class);
+    	
+    	TimeImpl prim = new TimeImpl(1985, 8, 19, 3, 40, 14);
+    	ByteBuf buffer = parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData()));
 
         prim = new TimeImpl(2104, 2, 25, 14, 30, 54);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        buffer = parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData2()));
     }
 }

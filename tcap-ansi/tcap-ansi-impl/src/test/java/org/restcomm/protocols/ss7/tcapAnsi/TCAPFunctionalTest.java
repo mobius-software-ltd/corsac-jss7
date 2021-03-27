@@ -30,7 +30,6 @@ import java.util.List;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;

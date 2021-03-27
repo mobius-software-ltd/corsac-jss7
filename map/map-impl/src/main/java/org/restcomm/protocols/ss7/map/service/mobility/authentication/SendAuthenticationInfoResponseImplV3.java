@@ -54,6 +54,10 @@ public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl im
     
     private long mapProtocolVersion;
 
+    public SendAuthenticationInfoResponseImplV3() {
+    	this.mapProtocolVersion=3;
+    }
+    
     public SendAuthenticationInfoResponseImplV3(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

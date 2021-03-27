@@ -23,26 +23,17 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinitionImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
@@ -51,6 +42,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -84,16 +81,17 @@ public class AreaDefinitionTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AreaDefinitionImpl.class);
+    	
         byte[] data = getEncodedData();
 
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaDefinitionImpl);
+        AreaDefinitionImpl areaDef = (AreaDefinitionImpl)result.getResult();
 
-        AreaDefinition areaDef = new AreaDefinitionImpl();
-        ((AreaDefinitionImpl) areaDef).decodeAll(asn);
-
-        ArrayList<Area> areaList = areaDef.getAreaList();
+        List<AreaImpl> areaList = areaDef.getAreaList();
 
         assertNotNull(areaList);
         assertEquals(areaList.size(), 2);
@@ -112,58 +110,23 @@ public class AreaDefinitionTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AreaDefinitionImpl.class);
+    	
+        AreaIdentificationImpl ai1 = new AreaIdentificationImpl(AreaType.utranCellId, 201, 17, 0, 222222222);
+        AreaIdentificationImpl ai2 = new AreaIdentificationImpl(AreaType.routingAreaId, 210, 177, 1000, 100);
+        AreaImpl area1 = new AreaImpl(AreaType.utranCellId, ai1);
+        AreaImpl area2 = new AreaImpl(AreaType.routingAreaId, ai2);
+
+        ArrayList<AreaImpl> areaList = new ArrayList<AreaImpl>();
+        areaList.add(area1);
+        areaList.add(area2);
+        AreaDefinitionImpl areaDef = new AreaDefinitionImpl(areaList);
+
         byte[] data = getEncodedData();
-
-        AreaIdentification ai1 = new AreaIdentificationImpl(AreaType.utranCellId, 201, 17, 0, 222222222);
-        AreaIdentification ai2 = new AreaIdentificationImpl(AreaType.routingAreaId, 210, 177, 1000, 100);
-        Area area1 = new AreaImpl(AreaType.utranCellId, ai1);
-        Area area2 = new AreaImpl(AreaType.routingAreaId, ai2);
-
-        ArrayList<Area> areaList = new ArrayList<Area>();
-        areaList.add(area1);
-        areaList.add(area2);
-        AreaDefinition areaDef = new AreaDefinitionImpl(areaList);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        ((AreaDefinitionImpl) areaDef).encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ByteBuf buffer=parser.encode(areaDef);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
-    }
-
-    @Test(groups = { "functional.serialize", "service.lsm" })
-    public void testSerialization() throws Exception {
-        AreaIdentification ai1 = new AreaIdentificationImpl(AreaType.utranCellId, 201, 17, 0, 222222222);
-        AreaIdentification ai2 = new AreaIdentificationImpl(AreaType.routingAreaId, 210, 177, 1000, 100);
-        Area area1 = new AreaImpl(AreaType.utranCellId, ai1);
-        Area area2 = new AreaImpl(AreaType.routingAreaId, ai2);
-
-        ArrayList<Area> areaList = new ArrayList<Area>();
-        areaList.add(area1);
-        areaList.add(area2);
-
-        AreaDefinition original = new AreaDefinitionImpl(areaList);
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        AreaDefinitionImpl copy = (AreaDefinitionImpl) o;
-
-        // test result
-        for (int i = 0; i < areaList.size(); i++) {
-            Area a1 = copy.getAreaList().get(i);
-            Area a2 = original.getAreaList().get(i);
-            assertTrue(a1.equals(a2));
-        }
-
     }
 }

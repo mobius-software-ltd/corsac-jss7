@@ -23,30 +23,29 @@
 package org.restcomm.protocols.ss7.map.service.sms;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
 import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.sms.MoForwardShortMessageRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -72,72 +71,67 @@ public class MoForwardShortMessageRequestTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 80, -128, 8, 2, 1, 17, 50, 84, 118, -104, -16, -124, 6, -74, 16, 50, 84, 118, -104, 4, 9, 11,
-                22, 33, 44, 55, 66, 77, 88, 99, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
-                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 4, 8, 66, -128, 24, 33, 50, 67, 84,
-                -11 };
+        return new byte[] { 48, 86, -128, 8, 2, 1, 17, 50, 84, 118, -104, -16, -124, 6, -74, 16, 50, 84, 118, -104, 4, 9, 11, 22, 33, 44, 55, 66, 77, 88, 99, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 4, 8, 66, -128, 24, 33, 50, 67, 84, -11 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MoForwardShortMessageRequestImpl.class);
+        
         byte[] rawData = getEncodedDataSimple();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        MoForwardShortMessageRequestImpl ind = new MoForwardShortMessageRequestImpl();
-        ind.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        SM_RP_DA da = ind.getSM_RP_DA();
-        SM_RP_OA oa = ind.getSM_RP_OA();
-        SmsSignalInfo ui = ind.getSM_RP_UI();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MoForwardShortMessageRequestImpl);
+        MoForwardShortMessageRequestImpl ind = (MoForwardShortMessageRequestImpl)result.getResult();   
+        
+        SM_RP_DAImpl da = ind.getSM_RP_DA();
+        SM_RP_OAImpl oa = ind.getSM_RP_OA();
+        SmsSignalInfoImpl ui = ind.getSM_RP_UI();
         assertEquals(da.getServiceCentreAddressDA().getAddressNature(), AddressNature.international_number);
         assertEquals(da.getServiceCentreAddressDA().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(da.getServiceCentreAddressDA().getAddress(), "223334990223");
         assertEquals(oa.getMsisdn().getAddressNature(), AddressNature.international_number);
         assertEquals(oa.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(oa.getMsisdn().getAddress(), "2311231234334");
-        assertTrue(Arrays.equals(ui.getData(), new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8 }));
+        
+        ByteBuf buffer=ui.getValue();
+        byte[] data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
+        assertTrue(Arrays.equals(data, new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8 }));
 
         rawData = getEncodedDataComplex();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        ind = new MoForwardShortMessageRequestImpl();
-        ind.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MoForwardShortMessageRequestImpl);
+        ind = (MoForwardShortMessageRequestImpl)result.getResult();   
 
         da = ind.getSM_RP_DA();
         oa = ind.getSM_RP_OA();
         ui = ind.getSM_RP_UI();
-        IMSI imsi = ind.getIMSI();
+        IMSIImpl imsi = ind.getIMSI();
         assertEquals(da.getServiceCentreAddressDA().getAddressNature(), AddressNature.international_number);
         assertEquals(da.getServiceCentreAddressDA().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(da.getServiceCentreAddressDA().getAddress(), "2311231234334");
         assertEquals(oa.getMsisdn().getAddressNature(), AddressNature.international_number);
         assertEquals(oa.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(oa.getMsisdn().getAddress(), "223334990223");
-        assertTrue(Arrays.equals(ui.getData(), new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2,
-                2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4 }));
-        // assertEquals( (long)imsi.getMCC(),1);
-        // assertEquals( (long)imsi.getMNC(),1);
+        
+        buffer=ui.getValue();
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
+        assertTrue(Arrays.equals(data, new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2,
+                2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4 }));        
         assertEquals(imsi.getData(), "001012233349902");
 
         rawData = getEncodedDataNoDaOa();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        ind = new MoForwardShortMessageRequestImpl();
-        ind.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MoForwardShortMessageRequestImpl);
+        ind = (MoForwardShortMessageRequestImpl)result.getResult();   
+        
         da = ind.getSM_RP_DA();
         oa = ind.getSM_RP_OA();
         ui = ind.getSM_RP_UI();
@@ -146,53 +140,57 @@ public class MoForwardShortMessageRequestTest {
         assertNull(da.getLMSI());
         assertNull(oa.getMsisdn());
         assertNull(oa.getServiceCentreAddressOA());
-        assertTrue(Arrays.equals(ui.getData(), new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2,
+        
+        buffer=ui.getValue();
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
+        assertTrue(Arrays.equals(data, new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2,
                 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 99, 88, 77, 66, 55, 44, 44, 33, 22, 11, 11, 0 }));
 
         rawData = getEncodedDataFull();
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        ind = new MoForwardShortMessageRequestImpl();
-        ind.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MoForwardShortMessageRequestImpl);
+        ind = (MoForwardShortMessageRequestImpl)result.getResult();   
 
         da = ind.getSM_RP_DA();
         oa = ind.getSM_RP_OA();
         ui = ind.getSM_RP_UI();
         imsi = ind.getIMSI();
-        // assertEquals( (long)da.getIMSI().getMCC(),201);
-        // assertEquals( (long)da.getIMSI().getMNC(),1);
         assertEquals(da.getIMSI().getData(), "201011234567890");
         assertEquals(oa.getServiceCentreAddressOA().getAddressNature(), AddressNature.network_specific_number);
         assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.land_mobile);
         assertEquals(oa.getServiceCentreAddressOA().getAddress(), "0123456789");
-        assertTrue(Arrays.equals(ui.getData(), new byte[] { 11, 22, 33, 44, 55, 66, 77, 88, 99 }));
-        // assertEquals( (long)imsi.getMCC(),240);
-        // assertEquals( (long)imsi.getMNC(),88);
+        
+        buffer=ui.getValue();
+        data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        
+        assertTrue(Arrays.equals(data, new byte[] { 11, 22, 33, 44, 55, 66, 77, 88, 99 }));
         assertEquals(imsi.getData(), "240881122334455");
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
     }
 
     @Test(groups = { "functional.encode", "service.sms" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MoForwardShortMessageRequestImpl.class);
+                
         AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "223334990223");
-        SM_RP_DA sm_RP_DA = new SM_RP_DAImpl(sca);
+        SM_RP_DAImpl sm_RP_DA = new SM_RP_DAImpl(sca);
         ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "2311231234334");
         SM_RP_OAImpl sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setMsisdn(msisdn);
-        SmsSignalInfo sm_RP_UI = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8 },
+        SmsSignalInfoImpl sm_RP_UI = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8 },
                 null);
         MoForwardShortMessageRequestImpl ind = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        ind.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(ind);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedDataSimple();
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -203,13 +201,13 @@ public class MoForwardShortMessageRequestTest {
         sm_RP_OA.setMsisdn(msisdn);
         sm_RP_UI = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2, 2, 2,
                 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4 }, null);
-        IMSI imsi = new IMSIImpl("001012233349902");
+        IMSIImpl imsi = new IMSIImpl("001012233349902");
         ind = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, null, imsi);
 
-        asnOS = new AsnOutputStream();
-        ind.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(ind);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedDataComplex();
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -219,14 +217,14 @@ public class MoForwardShortMessageRequestTest {
                 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 99, 88, 77, 66, 55, 44, 44, 33, 22, 11, 11, 0 }, null);
         ind = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, null, null);
 
-        asnOS = new AsnOutputStream();
-        ind.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(ind);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedDataNoDaOa();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        IMSI imsi0 = new IMSIImpl("201011234567890");
+        IMSIImpl imsi0 = new IMSIImpl("201011234567890");
         sm_RP_DA = new SM_RP_DAImpl(imsi0);
         msisdn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.land_mobile, "0123456789");
         sm_RP_OA = new SM_RP_OAImpl();
@@ -236,12 +234,11 @@ public class MoForwardShortMessageRequestTest {
         imsi = new IMSIImpl("240881122334455");
         ind = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, extensionContainer, imsi);
 
-        asnOS = new AsnOutputStream();
-        ind.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(ind);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         rawData = getEncodedDataFull();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

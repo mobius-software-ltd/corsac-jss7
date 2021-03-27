@@ -34,15 +34,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
-import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
-import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDUImpl;
-import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
-import org.restcomm.protocols.ss7.tcap.asn.ParseException;
-import org.restcomm.protocols.ss7.tcap.asn.ResultType;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;

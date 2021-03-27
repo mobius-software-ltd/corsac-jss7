@@ -33,8 +33,6 @@ import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.DialogImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;

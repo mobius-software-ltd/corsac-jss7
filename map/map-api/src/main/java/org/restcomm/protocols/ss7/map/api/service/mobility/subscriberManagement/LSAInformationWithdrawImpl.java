@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -48,7 +48,7 @@ public class LSAInformationWithdrawImpl {
     		this.allLSAData = new ASNNull();
     }
 
-    public LSAInformationWithdrawImpl(ArrayList<LSAIdentityImpl> lsaIdentityList) {
+    public LSAInformationWithdrawImpl(List<LSAIdentityImpl> lsaIdentityList) {
     	if(lsaIdentityList!=null)
     		this.lsaIdentityList = new LSAIdentityListWrapperImpl(lsaIdentityList);
     }
@@ -58,7 +58,7 @@ public class LSAInformationWithdrawImpl {
         return this.allLSAData!=null;
     }
 
-    public ArrayList<LSAIdentityImpl> getLSAIdentityList() {
+    public List<LSAIdentityImpl> getLSAIdentityList() {
     	if(this.lsaIdentityList==null)
     		return null;
     	

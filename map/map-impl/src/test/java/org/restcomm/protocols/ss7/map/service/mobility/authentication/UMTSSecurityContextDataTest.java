@@ -22,21 +22,22 @@
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CK;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IK;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextDataImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -60,16 +61,15 @@ public class UMTSSecurityContextDataTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UMTSSecurityContextDataImpl.class);
+
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-
-        UMTSSecurityContextDataImpl prim = new UMTSSecurityContextDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof UMTSSecurityContextDataImpl);
+        UMTSSecurityContextDataImpl prim = (UMTSSecurityContextDataImpl)result.getResult();
+        
         assertTrue(Arrays.equals(prim.getCK().getData(), getDataCk()));
         assertTrue(Arrays.equals(prim.getIK().getData(), getDataIk()));
         assertEquals(prim.getKSI().getData(), 2);
@@ -77,16 +77,18 @@ public class UMTSSecurityContextDataTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UMTSSecurityContextDataImpl.class);
 
-        CK ck = new CKImpl(getDataCk());
-        IK ik = new IKImpl(getDataIk());
-        KSI ksi = new KSIImpl(2);
+        CKImpl ck = new CKImpl(getDataCk());
+        IKImpl ik = new IKImpl(getDataIk());
+        KSIImpl ksi = new KSIImpl(2);
         UMTSSecurityContextDataImpl prim = new UMTSSecurityContextDataImpl(ck, ik, ksi);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-
+        byte[] data=this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
 }

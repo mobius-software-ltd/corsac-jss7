@@ -35,16 +35,14 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
  * @author amit bhayani
  */
 public class MAPErrorMessageSMDeliveryFailure1Impl extends EnumeratedMAPErrorMessage1Impl implements
-MAPErrorMessageSMDeliveryFailure {
-	private SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause;
+MAPErrorMessageSMDeliveryFailure {	
 	private long mapProtocolVersion = 1;
     
     public MAPErrorMessageSMDeliveryFailure1Impl(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause) {
         super((long) MAPErrorCode.smDeliveryFailure);
 
-        this.smEnumeratedDeliveryFailureCause = smEnumeratedDeliveryFailureCause;
-        if(this.smEnumeratedDeliveryFailureCause!=null)
-        	setValue(Long.valueOf(this.smEnumeratedDeliveryFailureCause.getCode()));
+        if(smEnumeratedDeliveryFailureCause!=null)
+        	setValue(Long.valueOf(smEnumeratedDeliveryFailureCause.getCode()));
     }
 
     public MAPErrorMessageSMDeliveryFailure1Impl() {
@@ -61,12 +59,15 @@ MAPErrorMessageSMDeliveryFailure {
 
     @Override
     public SMEnumeratedDeliveryFailureCause getSMEnumeratedDeliveryFailureCause() {
-    	return smEnumeratedDeliveryFailureCause;
+    	Long result=getValue();
+    	if(result==null)
+    		return null;
+    	
+    	return SMEnumeratedDeliveryFailureCause.getInstance(result.intValue());    	
     }
 
     @Override
     public void setSMEnumeratedDeliveryFailureCause(SMEnumeratedDeliveryFailureCause val) {
-    	this.smEnumeratedDeliveryFailureCause=val;    
     	if(val!=null)
     		setValue(Long.valueOf(val.getCode()));
     	else
@@ -79,8 +80,10 @@ MAPErrorMessageSMDeliveryFailure {
 
         sb.append("MAPErrorMessageSystemFailure [");
 
-        if (this.smEnumeratedDeliveryFailureCause != null)
-            sb.append("smEnumeratedDeliveryFailureCause=" + this.smEnumeratedDeliveryFailureCause.toString());
+        SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause=getSMEnumeratedDeliveryFailureCause();
+        if (smEnumeratedDeliveryFailureCause != null)
+            sb.append("smEnumeratedDeliveryFailureCause=" + smEnumeratedDeliveryFailureCause.toString());
+        
         sb.append("]");
 
         return sb.toString();

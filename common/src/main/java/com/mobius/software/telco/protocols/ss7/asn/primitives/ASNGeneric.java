@@ -82,7 +82,6 @@ public abstract class ASNGeneric {
 					}
 					catch(Exception ex) 
 					{
-						
 					}
 					
 					if(innerClass!=null)
@@ -92,8 +91,17 @@ public abstract class ASNGeneric {
 			}
 		}
 		
-		ASNDecodeResult result=parser.getParser(clazz).decode(buffer,skipErrors);
-		this.value=result.getResult();
+		ASNDecodeResult result;
+		if(this.value!=null) {
+			result=parser.getParser(clazz).decode(buffer,skipErrors);
+			if(!result.getHadErrors() && result.getResult()!=null)
+				parser.getParser(clazz).merge(this.value, result.getResult());							
+		}
+		else {
+			result=parser.getParser(clazz).decode(buffer,skipErrors);
+			this.value=result.getResult();
+		} 
+			
 		return result.getHadErrors();
 	}
 

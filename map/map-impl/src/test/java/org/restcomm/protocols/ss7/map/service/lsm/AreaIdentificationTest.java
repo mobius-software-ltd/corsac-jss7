@@ -23,19 +23,23 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -74,16 +78,15 @@ public class AreaIdentificationTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AreaIdentificationImpl.class);
+    	
         byte[] data = this.getData1();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-
-        AreaIdentificationImpl prim = new AreaIdentificationImpl();
-        prim.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaIdentificationImpl);
+        AreaIdentificationImpl prim = (AreaIdentificationImpl)result.getResult();
+        
         assertNotNull(prim.getData());
         assertTrue(Arrays.equals(getData1Val(), prim.getData()));
 
@@ -120,13 +123,10 @@ public class AreaIdentificationTest {
         // prim.getUtranCellId();
 
         data = this.getData2();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-
-        prim = new AreaIdentificationImpl();
-        prim.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaIdentificationImpl);
+        prim = (AreaIdentificationImpl)result.getResult();
 
         assertNotNull(prim.getData());
 
@@ -158,14 +158,11 @@ public class AreaIdentificationTest {
         // prim.getUtranCellId();
 
         data = this.getData3();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-
-        prim = new AreaIdentificationImpl();
-        prim.decodeAll(asn);
-
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaIdentificationImpl);
+        prim = (AreaIdentificationImpl)result.getResult();
+        
         assertNotNull(prim.getData());
 
         assertEquals(prim.getMCC(), 250);
@@ -191,13 +188,10 @@ public class AreaIdentificationTest {
         // prim.getUtranCellId();
 
         data = this.getData4();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-
-        prim = new AreaIdentificationImpl();
-        prim.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaIdentificationImpl);
+        prim = (AreaIdentificationImpl)result.getResult();
 
         assertNotNull(prim.getData());
 
@@ -219,13 +213,10 @@ public class AreaIdentificationTest {
         // prim.getUtranCellId();
 
         data = this.getData5();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-
-        prim = new AreaIdentificationImpl();
-        prim.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaIdentificationImpl);
+        prim = (AreaIdentificationImpl)result.getResult();
 
         assertNotNull(prim.getData());
 
@@ -235,13 +226,10 @@ public class AreaIdentificationTest {
         assertEquals(prim.getCellId(), 55000);
 
         data = this.getData6();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-
-        prim = new AreaIdentificationImpl();
-        prim.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AreaIdentificationImpl);
+        prim = (AreaIdentificationImpl)result.getResult();
 
         assertNotNull(prim.getData());
 
@@ -252,54 +240,56 @@ public class AreaIdentificationTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AreaIdentificationImpl.class);
+    	
         AreaIdentificationImpl prim = new AreaIdentificationImpl(AreaType.countryCode, 250, 0, 0, 0);
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
+        byte[] data=getData1();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         prim = new AreaIdentificationImpl(getData1Val());
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
+        data=getData1();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
 
         prim = new AreaIdentificationImpl(AreaType.plmnId, 250, 7, 0, 0);
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        data=getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));       
 
         prim = new AreaIdentificationImpl(AreaType.locationAreaId, 250, 678, 4444, 0);
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData3()));
+        data=getData3();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));       
 
         prim = new AreaIdentificationImpl(AreaType.routingAreaId, 250, 678, 4444, 200);
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData4()));
+        data=getData4();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));       
 
         prim = new AreaIdentificationImpl(AreaType.cellGlobalId, 250, 678, 4444, 55000);
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData5()));
+        data=getData5();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));       
 
         prim = new AreaIdentificationImpl(AreaType.utranCellId, 250, 678, 0, (int) (4160749569L));
-
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData6()));
+        data=getData6();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));       
     }
 }

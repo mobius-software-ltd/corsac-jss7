@@ -110,4 +110,28 @@ public class DeferredLocationEventTypeImpl extends ASNBitString {
 
         return sb.toString();
     }
+    
+    @Override
+    public boolean equals(Object other) {
+    	if(other==null)
+    		return false;
+    	
+    	if(!(other instanceof DeferredLocationEventTypeImpl))
+    		return false;
+    	
+    	DeferredLocationEventTypeImpl second=(DeferredLocationEventTypeImpl)other;
+    	if(getMsAvailable()!=second.getMsAvailable())
+    		return false;
+    	
+    	if(getEnteringIntoArea()!=second.getEnteringIntoArea())
+    		return false;
+    	
+    	if(getLeavingFromArea()!=second.getLeavingFromArea())
+    		return false;
+    	
+    	if(getBeingInsideArea()!=second.getBeingInsideArea())
+    		return false;
+    	
+    	return true;
+    }
 }

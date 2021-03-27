@@ -23,23 +23,26 @@
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
-import org.restcomm.protocols.ss7.map.service.supplementary.ProcessUnstructuredSSRequestImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Real trace.
@@ -68,17 +71,19 @@ public class ProcessUnstructuredSSRequestTest {
 
     @Test(groups = { "functional.decode", "service.ussd" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProcessUnstructuredSSRequestImpl.class);
+    	
         byte[] data = new byte[] { 0x30, 0x0a, 0x04, 0x01, 0x0f, 0x04, 0x05, 0x2a, (byte) 0xd9, (byte) 0x8c, 0x36, 0x02 };
-
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        ProcessUnstructuredSSRequestImpl addNum = new ProcessUnstructuredSSRequestImpl();
-        addNum.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProcessUnstructuredSSRequestImpl);
+        ProcessUnstructuredSSRequestImpl addNum = (ProcessUnstructuredSSRequestImpl)result.getResult();
+       
         CBSDataCodingScheme dataCodingScheme = addNum.getDataCodingScheme();
         assertEquals(dataCodingScheme.getCode(), 0x0f);
 
-        USSDString ussdString = addNum.getUSSDString();
+        USSDStringImpl ussdString = addNum.getUSSDString();
         assertNotNull(ussdString);
 
         assertTrue(ussdString.getString(null).equals("*234#"));
@@ -87,53 +92,19 @@ public class ProcessUnstructuredSSRequestTest {
 
     @Test(groups = { "functional.encode", "service.ussd" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProcessUnstructuredSSRequestImpl.class);
+    	
         byte[] data = new byte[] { 0x30, 0x0a, 0x04, 0x01, 0x0f, 0x04, 0x05, 0x2a, (byte) 0xd9, (byte) 0x8c, 0x36, 0x02 };
 
-        USSDString ussdStr = new USSDStringImpl("*234#", null, null);
+        USSDStringImpl ussdStr = new USSDStringImpl("*234#", null, null);
         ProcessUnstructuredSSRequestImpl addNum = new ProcessUnstructuredSSRequestImpl(new CBSDataCodingSchemeImpl(0x0f),
                 ussdStr, null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        addNum.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(addNum);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
 
         assertTrue(Arrays.equals(data, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "service.ussd" })
-    public void testXMLSerialize() throws Exception {
-
-        ISDNAddressStringImpl isdnAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                "79273605819");
-        AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category3);
-        USSDString ussdStr = new USSDStringImpl("*234#", null, null);
-        ProcessUnstructuredSSRequestImpl original = new ProcessUnstructuredSSRequestImpl(new CBSDataCodingSchemeImpl(0x0f),
-                ussdStr, alertingPattern, isdnAddress);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "processUnstructuredSSRequest", ProcessUnstructuredSSRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ProcessUnstructuredSSRequestImpl copy = reader.read("processUnstructuredSSRequest",
-                ProcessUnstructuredSSRequestImpl.class);
-
-        assertEquals(copy.getMSISDNAddressString(), original.getMSISDNAddressString());
-        assertEquals(copy.getDataCodingScheme().getCode(), original.getDataCodingScheme().getCode());
-        assertEquals(copy.getUSSDString(), original.getUSSDString());
-        assertEquals(copy.getAlertingPattern(), original.getAlertingPattern());
-
-    }*/
 }

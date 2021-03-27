@@ -26,9 +26,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.indicator.AddressIndicator;
-import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
-import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

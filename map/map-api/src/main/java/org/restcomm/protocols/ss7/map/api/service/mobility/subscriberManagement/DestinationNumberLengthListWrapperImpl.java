@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -35,16 +35,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,lengthIndefinite=false)
 public class DestinationNumberLengthListWrapperImpl {
-	private ArrayList<ASNInteger> destinationNumberLengthList;
+	private List<ASNInteger> destinationNumberLengthList;
 
     public DestinationNumberLengthListWrapperImpl() {
     }
 
-    public DestinationNumberLengthListWrapperImpl(ArrayList<ASNInteger> destinationNumberLengthList) {
+    public DestinationNumberLengthListWrapperImpl(List<ASNInteger> destinationNumberLengthList) {
         this.destinationNumberLengthList = destinationNumberLengthList;
     }
 
-    public ArrayList<ASNInteger> getDestinationNumberLengthList() {
+    public List<ASNInteger> getDestinationNumberLengthList() {
     	return destinationNumberLengthList;
     }
 }

@@ -23,20 +23,13 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
@@ -44,12 +37,10 @@ import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalID;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientName;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientNameImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSRequestorIDImpl;
@@ -59,6 +50,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -84,13 +81,11 @@ public class LCSClientIDTest {
     }
 
     public byte[] getData() {
-        return new byte[] { (byte) 0xa0, 0x1b, (byte) 0x80, 0x01, 0x02, (byte) 0x83, 0x01, 0x00, (byte) 0xa4, 0x13,
-                (byte) 0x80, 0x01, 0x0f, (byte) 0x82, 0x0e, 0x6e, 0x72, (byte) 0xfb, 0x1c, (byte) 0x86, (byte) 0xc3, 0x65,
-                0x6e, 0x72, (byte) 0xfb, 0x1c, (byte) 0x86, (byte) 0xc3, 0x65 };
+        return new byte[] { 48, 27, -128, 1, 2, -125, 1, 0, -92, 19, -128, 1, 15, -126, 14, 110, 114, -5, 28, -122, -61, 101, 110, 114, -5, 28, -122, -61, 101 };
     }
 
     public byte[] getDataFull() {
-        return new byte[] { -96, 69, -128, 1, 2, -95, 7, -128, 5, -111, 68, 51, 34, 17, -126, 6, -111, 85, 68, 51, 34, 17,
+        return new byte[] { 48, 69, -128, 1, 2, -95, 7, -128, 5, -111, 68, 51, 34, 17, -126, 6, -111, 85, 68, 51, 34, 17,
                 -125, 1, 0, -92, 19, -128, 1, 15, -126, 14, 110, 114, -5, 28, -122, -61, 101, 110, 114, -5, 28, -122, -61, 101,
                 -123, 2, 11, 12, -90, 19, -128, 1, 15, -127, 14, 110, 114, -5, 28, -122, -61, 101, 110, 114, -5, 28, -122, -61,
                 101 };
@@ -102,15 +97,15 @@ public class LCSClientIDTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LCSClientIDImpl.class);
+    	
         byte[] data = getData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, 0);
-
-        LCSClientIDImpl lcsClientID = new LCSClientIDImpl();
-        lcsClientID.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LCSClientIDImpl);
+        LCSClientIDImpl lcsClientID = (LCSClientIDImpl)result.getResult();
+        
         assertNotNull(lcsClientID.getLCSClientType());
         assertEquals(lcsClientID.getLCSClientType(), LCSClientType.plmnOperatorServices);
 
@@ -122,19 +117,17 @@ public class LCSClientIDTest {
         assertNull(lcsClientID.getLCSAPN());
         assertNull(lcsClientID.getLCSRequestorID());
 
-        LCSClientName lcsClientName = lcsClientID.getLCSClientName();
+        LCSClientNameImpl lcsClientName = lcsClientID.getLCSClientName();
         assertNotNull(lcsClientName);
         assertEquals(lcsClientName.getDataCodingScheme().getCode(), 0x0f);
-        USSDString nameString = lcsClientName.getNameString();
+        USSDStringImpl nameString = lcsClientName.getNameString();
         assertTrue(nameString.getString(null).equals("ndmgapp2ndmgapp2"));
 
         data = getDataFull();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-
-        lcsClientID = new LCSClientIDImpl();
-        lcsClientID.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LCSClientIDImpl);
+        lcsClientID = (LCSClientIDImpl)result.getResult();
 
         assertNotNull(lcsClientID.getLCSClientType());
         assertEquals(lcsClientID.getLCSClientType(), LCSClientType.plmnOperatorServices);
@@ -157,64 +150,30 @@ public class LCSClientIDTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LCSClientIDImpl.class);
+    	
         byte[] data = getData();
 
-        USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
-        LCSClientName lcsClientName = new LCSClientNameImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
-
-        LCSClientIDImpl lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, null,
-                LCSClientInternalID.broadcastService, lcsClientName, null, null, null);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        lcsClientID.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        USSDStringImpl nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
+        LCSClientNameImpl lcsClientName = new LCSClientNameImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
+        LCSClientIDImpl lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, null,LCSClientInternalID.broadcastService, lcsClientName, null, null, null);
+        ByteBuf buffer=parser.encode(lcsClientID);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         data = getDataFull();
 
-        ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                "44332211");
-        LCSClientExternalID extId = new LCSClientExternalIDImpl(externalAddress, null);
-        AddressStringImpl clientDialedByMS = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                "5544332211");
+        ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,"44332211");
+        LCSClientExternalIDImpl extId = new LCSClientExternalIDImpl(externalAddress, null);
+        AddressStringImpl clientDialedByMS = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,"5544332211");
         APNImpl apn = new APNImpl(getDataAPN());
         LCSRequestorIDImpl reqId = new LCSRequestorIDImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
-
-        lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, extId, LCSClientInternalID.broadcastService,
-                lcsClientName, clientDialedByMS, apn, reqId);
-
-        asnOS = new AsnOutputStream();
-        lcsClientID.encodeAll(asnOS, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-
-        encodedData = asnOS.toByteArray();
-
+        lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, extId, LCSClientInternalID.broadcastService,lcsClientName, clientDialedByMS, apn, reqId);
+        buffer=parser.encode(lcsClientID);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "service.lsm" })
-    public void testSerialization() throws Exception {
-        USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
-        LCSClientName lcsClientName = new LCSClientNameImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
-
-        LCSClientIDImpl original = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, null,
-                LCSClientInternalID.broadcastService, lcsClientName, null, null, null);
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        LCSClientIDImpl copy = (LCSClientIDImpl) o;
-
-        // test result
-        assertEquals(copy, original);
     }
 }

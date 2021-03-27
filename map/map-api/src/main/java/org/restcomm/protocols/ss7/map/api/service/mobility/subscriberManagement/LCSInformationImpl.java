@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringWrapperImpl;
@@ -52,8 +52,8 @@ public class LCSInformationImpl {
     public LCSInformationImpl() {
     }
 
-    public LCSInformationImpl(ArrayList<ISDNAddressStringImpl> gmlcList, ArrayList<LCSPrivacyClassImpl> lcsPrivacyExceptionList,
-            ArrayList<MOLRClassImpl> molrList, ArrayList<LCSPrivacyClassImpl> addLcsPrivacyExceptionList) {        
+    public LCSInformationImpl(List<ISDNAddressStringImpl> gmlcList, List<LCSPrivacyClassImpl> lcsPrivacyExceptionList,
+            List<MOLRClassImpl> molrList, List<LCSPrivacyClassImpl> addLcsPrivacyExceptionList) {        
     	if(gmlcList!=null)
     		this.gmlcList = new ISDNAddressStringWrapperImpl(gmlcList);
     	
@@ -67,28 +67,28 @@ public class LCSInformationImpl {
     		this.addLcsPrivacyExceptionList = new LCSPrivacyClassListWrapperImpl(addLcsPrivacyExceptionList);
     }
 
-    public ArrayList<ISDNAddressStringImpl> getGmlcList() {
+    public List<ISDNAddressStringImpl> getGmlcList() {
     	if(this.gmlcList==null)
     		return null;
     	
         return this.gmlcList.getISDNAddressString();
     }
 
-    public ArrayList<LCSPrivacyClassImpl> getLcsPrivacyExceptionList() {
+    public List<LCSPrivacyClassImpl> getLcsPrivacyExceptionList() {
     	if(this.lcsPrivacyExceptionList==null)
     		return null;
     	
         return this.lcsPrivacyExceptionList.getLCSPrivacyClass();
     }
 
-    public ArrayList<MOLRClassImpl> getMOLRList() {
+    public List<MOLRClassImpl> getMOLRList() {
     	if(this.molrList==null)
     		return null;
     	
         return this.molrList.getMOLRClass();
     }
 
-    public ArrayList<LCSPrivacyClassImpl> getAddLcsPrivacyExceptionList() {
+    public List<LCSPrivacyClassImpl> getAddLcsPrivacyExceptionList() {
     	if(this.addLcsPrivacyExceptionList==null)
     		return null;
     	

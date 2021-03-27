@@ -22,21 +22,26 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DestinationNumberCriteriaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MatchType;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,16 +57,16 @@ public class DestinationNumberCriteriaTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(DestinationNumberCriteriaImpl.class);
+    	                
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        DestinationNumberCriteriaImpl prim = new DestinationNumberCriteriaImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ArrayList<ISDNAddressStringImpl> destinationNumberList = prim.getDestinationNumberList();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DestinationNumberCriteriaImpl);
+        DestinationNumberCriteriaImpl prim = (DestinationNumberCriteriaImpl)result.getResult(); 
+        
+        List<ISDNAddressStringImpl> destinationNumberList = prim.getDestinationNumberList();
         assertNotNull(destinationNumberList);
         assertEquals(destinationNumberList.size(), 2);
         ISDNAddressStringImpl destinationNumberOne = destinationNumberList.get(0);
@@ -75,7 +80,7 @@ public class DestinationNumberCriteriaTest {
         assertEquals(destinationNumberTwo.getAddressNature(), AddressNature.international_number);
         assertEquals(destinationNumberTwo.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(prim.getMatchType().getCode(), MatchType.enabling.getCode());
-        ArrayList<Integer> destinationNumberLengthList = prim.getDestinationNumberLengthList();
+        List<Integer> destinationNumberLengthList = prim.getDestinationNumberLengthList();
         assertNotNull(destinationNumberLengthList);
         assertEquals(destinationNumberLengthList.size(), 3);
         assertEquals(destinationNumberLengthList.get(0).intValue(), 2);
@@ -85,6 +90,8 @@ public class DestinationNumberCriteriaTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(DestinationNumberCriteriaImpl.class);
 
         ISDNAddressStringImpl destinationNumberOne = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "22234");
@@ -95,16 +102,16 @@ public class DestinationNumberCriteriaTest {
         destinationNumberList.add(destinationNumberOne);
         destinationNumberList.add(destinationNumberTwo);
         ArrayList<Integer> destinationNumberLengthList = new ArrayList<Integer>();
-        destinationNumberLengthList.add(new Integer(2));
-        destinationNumberLengthList.add(new Integer(4));
-        destinationNumberLengthList.add(new Integer(1));
+        destinationNumberLengthList.add(2);
+        destinationNumberLengthList.add(4);
+        destinationNumberLengthList.add(1);
 
         DestinationNumberCriteriaImpl prim = new DestinationNumberCriteriaImpl(MatchType.enabling, destinationNumberList,
                 destinationNumberLengthList);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, this.getData()));
     }
 }

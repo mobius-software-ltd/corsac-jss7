@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -58,7 +58,7 @@ public class SGSNCAMELSubscriptionInfoImpl {
     }
 
     public SGSNCAMELSubscriptionInfoImpl(GPRSCSIImpl gprsCsi, SMSCSIImpl moSmsCsi, MAPExtensionContainerImpl extensionContainer,
-            SMSCSIImpl mtSmsCsi, ArrayList<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList, MGCSIImpl mgCsi) {
+            SMSCSIImpl mtSmsCsi, List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList, MGCSIImpl mgCsi) {
         this.gprsCsi = gprsCsi;
         this.moSmsCsi = moSmsCsi;
         this.extensionContainer = extensionContainer;
@@ -86,7 +86,7 @@ public class SGSNCAMELSubscriptionInfoImpl {
         return this.mtSmsCsi;
     }
 
-    public ArrayList<MTsmsCAMELTDPCriteriaImpl> getMtSmsCamelTdpCriteriaList() {
+    public List<MTsmsCAMELTDPCriteriaImpl> getMtSmsCamelTdpCriteriaList() {
     	if(this.mtSmsCamelTdpCriteriaList==null)
     		return null;
     	

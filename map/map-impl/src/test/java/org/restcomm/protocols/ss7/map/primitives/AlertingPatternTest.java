@@ -23,14 +23,13 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
 import org.testng.annotations.AfterClass;
@@ -38,6 +37,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -62,31 +67,34 @@ public class AlertingPatternTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = new byte[] { (byte) 0x04, 0x01, 0x07 };
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AlertingPatternImpl.class);
+    	
+    	byte[] data = new byte[] { (byte) 0x04, 0x01, 0x07 };
 
-        AsnInputStream asn = new AsnInputStream(data);
-        asn.readTag();
-
-        AlertingPatternImpl addNum = new AlertingPatternImpl();
-        addNum.decodeAll(asn);
+    	ASNDecodeResult result = parser.decode(Unpooled.wrappedBuffer(data));
+    	assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AlertingPatternImpl);
+        
+        AlertingPatternImpl addNum = (AlertingPatternImpl)result.getResult();
         assertNull(addNum.getAlertingLevel());
         assertNotNull(addNum.getAlertingCategory());
-
         assertEquals(addNum.getAlertingCategory(), AlertingCategory.Category4);
 
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        byte[] data = new byte[] { (byte) 0x04, 0x01, 0x07 };
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AlertingPatternImpl.class);
+    	
+    	byte[] data = new byte[] { (byte) 0x04, 0x01, 0x07 };
 
         AlertingPatternImpl addNum = new AlertingPatternImpl(AlertingCategory.Category4);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        addNum.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ByteBuf buffer = parser.encode(addNum);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         assertTrue(Arrays.equals(data, encodedData));
     }
 

@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.api.smstpdu;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -73,9 +71,7 @@ public class CommandDataImpl {
 
         // TODO: what is an encoding algorithm ?
         Charset chs = Charset.forName("US-ASCII");
-        ByteBuffer bb = chs.encode(this.decodedMessage);
-        this.encodedData = new byte[bb.limit()];
-        bb.get(this.encodedData);
+        this.encodedData = this.decodedMessage.getBytes(chs);
     }
 
     public void decode() throws MAPException {
@@ -92,9 +88,7 @@ public class CommandDataImpl {
         // TODO: what is an encoding algorithm ?
         Charset chs = Charset.forName("US-ASCII");
         byte[] buf = this.encodedData;
-        ByteBuffer bb = ByteBuffer.wrap(buf);
-        CharBuffer bf = chs.decode(bb);
-        this.decodedMessage = bf.toString();
+        this.decodedMessage = new String(buf, chs);
     }
 
     private String printDataArr(byte[] arr) {

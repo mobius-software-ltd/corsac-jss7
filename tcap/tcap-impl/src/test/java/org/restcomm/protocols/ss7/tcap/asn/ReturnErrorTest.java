@@ -32,7 +32,6 @@ import io.netty.buffer.Unpooled;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnErrorParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;

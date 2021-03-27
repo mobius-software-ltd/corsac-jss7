@@ -22,6 +22,7 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ASNLCSClientInternalID;
@@ -68,9 +69,9 @@ public class LCSPrivacyClassImpl {
     }
 
     public LCSPrivacyClassImpl(SSCodeImpl ssCode, ExtSSStatusImpl ssStatus, NotificationToMSUser notificationToMSUser,
-            ArrayList<ExternalClientImpl> externalClientList, ArrayList<LCSClientInternalID> plmnClientList,
-            MAPExtensionContainerImpl extensionContainer, ArrayList<ExternalClientImpl> extExternalClientList,
-            ArrayList<ServiceTypeImpl> serviceTypeList) {
+            List<ExternalClientImpl> externalClientList, List<LCSClientInternalID> plmnClientList,
+            MAPExtensionContainerImpl extensionContainer, List<ExternalClientImpl> extExternalClientList,
+            List<ServiceTypeImpl> serviceTypeList) {
         this.ssCode = ssCode;
         this.ssStatus = ssStatus;
         
@@ -83,7 +84,7 @@ public class LCSPrivacyClassImpl {
         	this.externalClientList = new ExternalClientIDListWrapperImpl(externalClientList);
         
         if(plmnClientList!=null) {
-        	ArrayList<ASNLCSClientInternalID> realData=new ArrayList<ASNLCSClientInternalID>();
+        	List<ASNLCSClientInternalID> realData=new ArrayList<ASNLCSClientInternalID>();
         	for(LCSClientInternalID curr:plmnClientList) {
         		ASNLCSClientInternalID currData=new ASNLCSClientInternalID();
         		currData.setType(curr);
@@ -98,7 +99,7 @@ public class LCSPrivacyClassImpl {
         if(extExternalClientList!=null)
         	this.extExternalClientList = new ExternalClientIDListWrapperImpl(extExternalClientList);
         
-        if(this.serviceTypeList!=null)
+        if(serviceTypeList!=null)
         	this.serviceTypeList = new ServiceTypeListWrapperImpl(serviceTypeList);
     }
 
@@ -117,18 +118,18 @@ public class LCSPrivacyClassImpl {
         return this.notificationToMSUser.getType();
     }
 
-    public ArrayList<ExternalClientImpl> getExternalClientList() {
+    public List<ExternalClientImpl> getExternalClientList() {
     	if(this.externalClientList==null)
     		return null;
     	
         return this.externalClientList.getExternalClient();
     }
 
-    public ArrayList<LCSClientInternalID> getPLMNClientList() {
+    public List<LCSClientInternalID> getPLMNClientList() {
     	if(this.plmnClientList==null || this.plmnClientList.getLCSClientInternalID()==null)
     		return null;
     	
-    	ArrayList<LCSClientInternalID> result=new ArrayList<LCSClientInternalID>();
+    	List<LCSClientInternalID> result=new ArrayList<LCSClientInternalID>();
     	for(ASNLCSClientInternalID curr:plmnClientList.getLCSClientInternalID()) {
     		result.add(curr.getType());
     	}
@@ -139,14 +140,14 @@ public class LCSPrivacyClassImpl {
         return this.extensionContainer;
     }
 
-    public ArrayList<ExternalClientImpl> getExtExternalClientList() {
+    public List<ExternalClientImpl> getExtExternalClientList() {
     	if(this.extExternalClientList==null)
     		return null;
     	
         return this.extExternalClientList.getExternalClient();
     }
 
-    public ArrayList<ServiceTypeImpl> getServiceTypeList() {
+    public List<ServiceTypeImpl> getServiceTypeList() {
     	if(this.serviceTypeList==null)
     		return null;
     	

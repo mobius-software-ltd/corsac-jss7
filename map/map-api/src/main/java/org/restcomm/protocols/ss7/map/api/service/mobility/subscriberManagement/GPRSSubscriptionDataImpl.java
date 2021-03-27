@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextImpl;
@@ -54,7 +54,7 @@ public class GPRSSubscriptionDataImpl {
     public GPRSSubscriptionDataImpl() {
     }
 
-    public GPRSSubscriptionDataImpl(boolean completeDataListIncluded, ArrayList<PDPContextImpl> gprsDataList,
+    public GPRSSubscriptionDataImpl(boolean completeDataListIncluded, List<PDPContextImpl> gprsDataList,
             MAPExtensionContainerImpl extensionContainer, APNOIReplacementImpl apnOiReplacement) {
         if(completeDataListIncluded)
         	this.completeDataListIncluded = new ASNNull();
@@ -70,7 +70,7 @@ public class GPRSSubscriptionDataImpl {
         return this.completeDataListIncluded!=null;
     }
 
-    public ArrayList<PDPContextImpl> getGPRSDataList() {
+    public List<PDPContextImpl> getGPRSDataList() {
     	if(this.gprsDataList==null)
     		return null;
     	

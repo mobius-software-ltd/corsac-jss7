@@ -29,22 +29,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MNPInfoResImpl;
@@ -53,10 +47,15 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author abhayani
@@ -80,15 +79,15 @@ public class SubscriberInfoTest {
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SubscriberInfoImpl.class);
 
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SubscriberInfoImpl);
+        SubscriberInfoImpl subscriberInfo = (SubscriberInfoImpl)result.getResult();
 
-        SubscriberInfoImpl subscriberInfo = new SubscriberInfoImpl();
-        subscriberInfo.decodeAll(asn);
-
-        LocationInformation locInfo = subscriberInfo.getLocationInformation();
+        LocationInformationImpl locInfo = subscriberInfo.getLocationInformation();
         assertNotNull(locInfo);
         assertEquals((int) locInfo.getAgeOfLocationInformation(), 1);
         assertTrue(Arrays.equals(locInfo.getGeographicalInformation().getData(), dataGeographicalInformation));
@@ -108,21 +107,20 @@ public class SubscriberInfoTest {
         assertFalse(locInfo.getCurrentLocationRetrieved());
         assertTrue(locInfo.getSaiPresent());
 
-        SubscriberState subState = subscriberInfo.getSubscriberState();
+        SubscriberStateImpl subState = subscriberInfo.getSubscriberState();
         assertEquals(subState.getSubscriberStateChoice(), SubscriberStateChoice.assumedIdle);
 
-        asn = new AsnInputStream(dataFull);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        subscriberInfo = new SubscriberInfoImpl();
-        subscriberInfo.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(dataFull));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SubscriberInfoImpl);
+        subscriberInfo = (SubscriberInfoImpl)result.getResult();
 
         locInfo = subscriberInfo.getLocationInformation();
         vlrN = locInfo.getVlrNumber();
         assertTrue(vlrN.getAddress().equals("554433221100"));
         subState = subscriberInfo.getSubscriberState();
         assertEquals(subState.getSubscriberStateChoice(), SubscriberStateChoice.camelBusy);
-        LAIFixedLength lai = subscriberInfo.getLocationInformationGPRS().getCellGlobalIdOrServiceAreaIdOrLAI()
+        LAIFixedLengthImpl lai = subscriberInfo.getLocationInformationGPRS().getCellGlobalIdOrServiceAreaIdOrLAI()
                 .getLAIFixedLength();
         assertEquals(lai.getMCC(), 260);
         assertEquals(lai.getMNC(), 11);
@@ -137,32 +135,24 @@ public class SubscriberInfoTest {
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SubscriberInfoImpl.class);
+        
         ISDNAddressStringImpl vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553496629910");
         ISDNAddressStringImpl mscN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553496629910");
         CellGlobalIdOrServiceAreaIdFixedLengthImpl c0 = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(724, 34, 31134, 10656);
-        CellGlobalIdOrServiceAreaIdOrLAI c = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c0);
+        CellGlobalIdOrServiceAreaIdOrLAIImpl c = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c0);
         GeographicalInformationImpl gi = new GeographicalInformationImpl(dataGeographicalInformation);
         LocationInformationImpl li = new LocationInformationImpl(1, gi, vlrN, null, c, null, null, mscN, null, false, true,
                 null, null);
-        // Integer ageOfLocationInformation, GeographicalInformation geographicalInformation, ISDNAddressStringImpl vlrNumber,
-        // LocationNumberMap locationNumber, CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI,
-        // MAPExtensionContainerImpl extensionContainer,
-        // LSAIdentity selectedLSAId, ISDNAddressStringImpl mscNumber, GeodeticInformation geodeticInformation, boolean
-        // currentLocationRetrieved,
-        // boolean saiPresent, LocationInformationEPS locationInformationEPS, UserCSGInformation userCSGInformation
         SubscriberStateImpl ss = new SubscriberStateImpl(SubscriberStateChoice.assumedIdle, null);
 
         SubscriberInfoImpl impl = new SubscriberInfoImpl(li, ss, null, null, null, null, null, null, null);
-        // LocationInformation locationInformation, SubscriberState subscriberState, MAPExtensionContainerImpl extensionContainer,
-        // LocationInformationGPRS locationInformationGPRS, PSSubscriberState psSubscriberState, IMEI imei, MSClassmark2
-        // msClassmark2,
-        // GPRSMSClass gprsMSClass, MNPInfoRes mnpInfoRes
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = data;
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -183,62 +173,10 @@ public class SubscriberInfoTest {
         MNPInfoResImpl mnpInfoRes = new MNPInfoResImpl(null, imsi2, null, null, null);
 
         impl = new SubscriberInfoImpl(li, ss, null, liGprs, psSubscriberState, imei, msClassmark2, gprsMSClass, mnpInfoRes);
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = dataFull;
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "subscriberInformation" })
-    public void testXMLSerialize() throws Exception {
-
-        ISDNAddressStringImpl vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "554433221100");
-        LocationInformationImpl li = new LocationInformationImpl(null, null, vlrN, null, null, null, null, null, null, false, false, null, null);
-        SubscriberStateImpl ss = new SubscriberStateImpl(SubscriberStateChoice.camelBusy, null);
-        LAIFixedLengthImpl laiFixedLength = new LAIFixedLengthImpl(260, 11, 144);
-        CellGlobalIdOrServiceAreaIdOrLAIImpl cg = new CellGlobalIdOrServiceAreaIdOrLAIImpl(laiFixedLength);
-        LocationInformationGPRSImpl liGprs = new LocationInformationGPRSImpl(cg, null, null, null, null, null, false, null, false, null);
-        GPRSMSClassImpl gprsMSClass = new GPRSMSClassImpl(new MSNetworkCapabilityImpl(dataMSNetworkCapability), null);
-        MNPInfoResImpl mnpInfoRes = new MNPInfoResImpl(null, new IMSIImpl("456787654"), null, null, null);
-
-        ArrayList<PDPContextInfo> pdpContextInfoList = new ArrayList<PDPContextInfo>();
-        PDPContextInfoImpl ci1 = new PDPContextInfoImpl(5, false, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-        PDPContextInfoImpl ci2 = new PDPContextInfoImpl(6, false, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-        pdpContextInfoList.add(ci1);
-        pdpContextInfoList.add(ci2);
-        PSSubscriberStateImpl pSSubscriberState = new PSSubscriberStateImpl(PSSubscriberStateChoice.notProvidedFromSGSNorMME, null, pdpContextInfoList);
-        SubscriberInfoImpl original = new SubscriberInfoImpl(li, ss, null, liGprs, pSSubscriberState, new IMEIImpl("1122334455667788"), new MSClassmark2Impl(dataMsClassMark2), gprsMSClass, mnpInfoRes);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "subscriberInfo", SubscriberInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        SubscriberInfoImpl copy = reader.read("subscriberInfo", SubscriberInfoImpl.class);
-
-        assertEquals(copy.getLocationInformationGPRS().getCellGlobalIdOrServiceAreaIdOrLAI(), original.getLocationInformationGPRS().getCellGlobalIdOrServiceAreaIdOrLAI());
-        assertEquals(copy.getLocationInformationGPRS().isCurrentLocationRetrieved(), original.getLocationInformationGPRS().isCurrentLocationRetrieved());
-        assertEquals(copy.getLocationInformationGPRS().isSaiPresent(), original.getLocationInformationGPRS().isSaiPresent());
-
-        assertEquals(copy.getPSSubscriberState().getChoice(), original.getPSSubscriberState().getChoice());
-        assertEquals(copy.getPSSubscriberState().getPDPContextInfoList().get(0).getPdpContextIdentifier(), original.getPSSubscriberState().getPDPContextInfoList().get(0).getPdpContextIdentifier());
-        assertEquals(copy.getPSSubscriberState().getPDPContextInfoList().get(1).getPdpContextIdentifier(), original.getPSSubscriberState().getPDPContextInfoList().get(1).getPdpContextIdentifier());
-
-        assertEquals(copy.getGPRSMSClass().getMSNetworkCapability(), original.getGPRSMSClass().getMSNetworkCapability());
-
-        assertEquals(copy.getMNPInfoRes().getIMSI(), original.getMNPInfoRes().getIMSI());
-    }*/
 }

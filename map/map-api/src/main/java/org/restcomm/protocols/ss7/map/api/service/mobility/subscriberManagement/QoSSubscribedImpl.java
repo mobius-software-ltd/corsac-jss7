@@ -38,6 +38,7 @@ public class QoSSubscribedImpl extends ASNOctetString {
     }
 
     public QoSSubscribedImpl(byte[] data) {
+    	setValue(Unpooled.wrappedBuffer(data));
     }
 
     public QoSSubscribedImpl(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,

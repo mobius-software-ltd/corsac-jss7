@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -40,7 +40,7 @@ public class ForwardingInfoImpl {
     public ForwardingInfoImpl() {
     }
 
-    public ForwardingInfoImpl(SSCodeImpl ssCode, ArrayList<ForwardingFeatureImpl> forwardingFeatureList) {
+    public ForwardingInfoImpl(SSCodeImpl ssCode, List<ForwardingFeatureImpl> forwardingFeatureList) {
         this.ssCode = ssCode;
         
         if(forwardingFeatureList!=null)
@@ -51,7 +51,7 @@ public class ForwardingInfoImpl {
         return ssCode;
     }
 
-    public ArrayList<ForwardingFeatureImpl> getForwardingFeatureList() {
+    public List<ForwardingFeatureImpl> getForwardingFeatureList() {
     	if(this.forwardingFeatureList==null)
     		return null;
     	

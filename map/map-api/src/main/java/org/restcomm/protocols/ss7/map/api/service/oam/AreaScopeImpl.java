@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdListWrapperImpl;
@@ -68,8 +68,8 @@ public class AreaScopeImpl {
     public AreaScopeImpl() {
     }
 
-    public AreaScopeImpl(ArrayList<GlobalCellIdImpl> cgiList, ArrayList<EUtranCgiImpl> eUtranCgiList, ArrayList<RAIdentityImpl> routingAreaIdList,
-            ArrayList<LAIFixedLengthImpl> locationAreaIdList, ArrayList<TAIdImpl> trackingAreaIdList, MAPExtensionContainerImpl extensionContainer) {
+    public AreaScopeImpl(List<GlobalCellIdImpl> cgiList, List<EUtranCgiImpl> eUtranCgiList, List<RAIdentityImpl> routingAreaIdList,
+            List<LAIFixedLengthImpl> locationAreaIdList, List<TAIdImpl> trackingAreaIdList, MAPExtensionContainerImpl extensionContainer) {
     	
     	if(cgiList!=null)
     		this.cgiList = new GlobalCellIdListWrapperImpl(cgiList);
@@ -89,35 +89,35 @@ public class AreaScopeImpl {
         this.extensionContainer = extensionContainer;
     }
 
-    public ArrayList<GlobalCellIdImpl> getCgiList() {
+    public List<GlobalCellIdImpl> getCgiList() {
     	if(cgiList==null)
     		return null;
     	
         return cgiList.getGlobalCellIdList();
     }
 
-    public ArrayList<EUtranCgiImpl> getEUutranCgiList() {
+    public List<EUtranCgiImpl> getEUutranCgiList() {
     	if(eUtranCgiList==null)
     		return null;
     	
         return eUtranCgiList.getEUtranCgiList();
     }
 
-    public ArrayList<RAIdentityImpl> getRoutingAreaIdList() {
+    public List<RAIdentityImpl> getRoutingAreaIdList() {
     	if(routingAreaIdList==null)
     		return null;
     	
         return routingAreaIdList.getRAIdentityList();
     }
 
-    public ArrayList<LAIFixedLengthImpl> getLocationAreaIdList() {
+    public List<LAIFixedLengthImpl> getLocationAreaIdList() {
     	if(locationAreaIdList==null)
     		return null;
     	
         return locationAreaIdList.getLAIFixedLengthList();
     }
 
-    public ArrayList<TAIdImpl> getTrackingAreaIdList() {
+    public List<TAIdImpl> getTrackingAreaIdList() {
     	if(trackingAreaIdList==null)
     		return null;
     	

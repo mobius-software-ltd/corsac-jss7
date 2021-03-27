@@ -22,14 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgPCSExtensionsImpl;
@@ -38,6 +35,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -70,33 +73,28 @@ public class SLRArgPCSExtensionsTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SLRArgPCSExtensionsImpl.class);
+    	
         byte[] data = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        SLRArgPCSExtensionsImpl imp = new SLRArgPCSExtensionsImpl();
-        imp.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SLRArgPCSExtensionsImpl);
+        SLRArgPCSExtensionsImpl imp = (SLRArgPCSExtensionsImpl)result.getResult();
+        
         assertTrue(imp.getNaEsrkRequest());
-
     }
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-
-        byte[] data = getEncodedData();
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SLRArgPCSExtensionsImpl.class);
+    	
         SLRArgPCSExtensionsImpl imp = new SLRArgPCSExtensionsImpl(true);
-
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        byte[] data=getEncodedData();
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
     }
-
 }

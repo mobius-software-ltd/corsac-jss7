@@ -70,7 +70,7 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
     private PlmnIdImpl requestingPlmnId;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=54,constructed=false,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
     private ASNInteger numberOfRequestedAdditionalVectors;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
@@ -78,6 +78,10 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
     
     private long mapProtocolVersion;
 
+    public SendAuthenticationInfoRequestImplV3() {
+    	this.mapProtocolVersion=3;
+    }
+    
     public SendAuthenticationInfoRequestImplV3(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }
@@ -108,9 +112,9 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         
         this.requestingPlmnId = requestingPlmnId;
         
-        if(this.numberOfRequestedAdditionalVectors!=null) {
+        if(numberOfRequestedAdditionalVectors!=null) {
         	this.numberOfRequestedAdditionalVectors = new ASNInteger();
-        	this.numberOfRequestedAdditionalVectors.setValue(this.numberOfRequestedAdditionalVectors.getValue().longValue());
+        	this.numberOfRequestedAdditionalVectors.setValue(numberOfRequestedAdditionalVectors.longValue());
         }
         
         if(additionalVectorsAreForEPS)

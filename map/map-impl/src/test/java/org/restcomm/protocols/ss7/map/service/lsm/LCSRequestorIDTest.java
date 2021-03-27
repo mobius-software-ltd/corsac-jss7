@@ -23,24 +23,17 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSFormatIndicator;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSRequestorIDImpl;
 import org.testng.annotations.AfterClass;
@@ -48,6 +41,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -87,14 +86,14 @@ public class LCSRequestorIDTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LCSRequestorIDImpl.class);
+    	
         byte[] data = getData();
-
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        LCSRequestorIDImpl lcsRequestorID = new LCSRequestorIDImpl();
-        lcsRequestorID.decodeAll(asn);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LCSRequestorIDImpl);
+        LCSRequestorIDImpl lcsRequestorID = (LCSRequestorIDImpl)result.getResult();
 
         assertEquals(lcsRequestorID.getDataCodingScheme().getCode(), 0x0f);
         assertNotNull(lcsRequestorID.getRequestorIDString());
@@ -103,13 +102,10 @@ public class LCSRequestorIDTest {
         assertNull(lcsRequestorID.getLCSFormatIndicator());
 
         data = getDataFull();
-
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        lcsRequestorID = new LCSRequestorIDImpl();
-        lcsRequestorID.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LCSRequestorIDImpl);
+        lcsRequestorID = (LCSRequestorIDImpl)result.getResult();
 
         assertEquals(lcsRequestorID.getDataCodingScheme().getCode(), 0x0f);
         assertNotNull(lcsRequestorID.getRequestorIDString());
@@ -120,47 +116,24 @@ public class LCSRequestorIDTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(LCSRequestorIDImpl.class);
+    	
         byte[] data = getData();
 
-        USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
+        USSDStringImpl nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
         LCSRequestorIDImpl lcsRequestorID = new LCSRequestorIDImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        lcsRequestorID.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+        ByteBuf buffer=parser.encode(lcsRequestorID);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
         data = getDataFull();
 
         lcsRequestorID = new LCSRequestorIDImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, LCSFormatIndicator.emailAddress);
-        asnOS = new AsnOutputStream();
-        lcsRequestorID.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
-
+        buffer=parser.encode(lcsRequestorID);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-    }
-
-    @Test(groups = { "functional.serialize", "service.lsm" })
-    public void testSerialization() throws Exception {
-        USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
-        LCSRequestorIDImpl original = new LCSRequestorIDImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
-
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        LCSRequestorIDImpl copy = (LCSRequestorIDImpl) o;
-
-        // test result
-        assertEquals(copy, original);
     }
 }

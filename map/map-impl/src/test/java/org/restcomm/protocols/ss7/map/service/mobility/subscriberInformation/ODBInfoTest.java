@@ -1,50 +1,46 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBHPLMNData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBHPLMNDataImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author vadim subbotin
  */
 public class ODBInfoTest {
-    private byte[] data = {48, 97, 48, 52, 3, 5, 3, -1, -4, 0, 0, 3, 2, 4, -96, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4,
-            11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32,
-            33, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3,
-            42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33};
+    private byte[] data = {48, 107, 48, 56, 3, 3, 2, -1, -4, 3, 2, 5, -96, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33};
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode() throws Exception {
-        AsnInputStream asn = new AsnInputStream(data);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ODBInfoImpl odbInfo = new ODBInfoImpl();
-        odbInfo.decodeAll(asn);
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ODBInfoImpl.class);
+    	        
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ODBInfoImpl);
+        ODBInfoImpl odbInfo = (ODBInfoImpl)result.getResult();
 
         assertNotNull(odbInfo.getOdbData());
         assertTrue(odbInfo.getNotificationToCSE());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(odbInfo.getExtensionContainer()));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(odbInfo.getOdbData().getExtensionContainer()));
 
-        ODBGeneralData odbGeneralData = odbInfo.getOdbData().getODBGeneralData();
+        ODBGeneralDataImpl odbGeneralData = odbInfo.getOdbData().getODBGeneralData();
         assertTrue(odbGeneralData.getAllOGCallsBarred());
         assertTrue(odbGeneralData.getInternationalOGCallsBarred());
         assertTrue(odbGeneralData.getInternationalOGCallsNotToHPLMNCountryBarred());
@@ -75,7 +71,7 @@ public class ODBInfoTest {
         assertFalse(odbGeneralData.getRegistrationInterzonalCFNotToHPLMNBarred());
         assertFalse(odbGeneralData.getRegistrationInternationalCFBarred());
 
-        ODBHPLMNData odbhplmnData = odbInfo.getOdbData().getOdbHplmnData();
+        ODBHPLMNDataImpl odbhplmnData = odbInfo.getOdbData().getOdbHplmnData();
         assertTrue(odbhplmnData.getPlmnSpecificBarringType1());
         assertFalse(odbhplmnData.getPlmnSpecificBarringType2());
         assertTrue(odbhplmnData.getPlmnSpecificBarringType3());
@@ -84,7 +80,10 @@ public class ODBInfoTest {
 
     @Test(groups = {"functional.encode", "subscriberInformation"})
     public void testEncode() throws Exception {
-        ODBGeneralDataImpl odbGeneralData = new ODBGeneralDataImpl(true, true, true, true, true, true, true, true, true,
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ODBInfoImpl.class);
+    	        
+    	ODBGeneralDataImpl odbGeneralData = new ODBGeneralDataImpl(true, true, true, true, true, true, true, true, true,
                 true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, false);
         ODBHPLMNDataImpl odbhplmnData = new ODBHPLMNDataImpl(true, false, true, false);
@@ -92,9 +91,9 @@ public class ODBInfoTest {
 
         ODBInfoImpl odbInfo = new ODBInfoImpl(odbData, true, MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        odbInfo.encodeAll(asnOS);
-        byte[] raw = asnOS.toByteArray();
-        assertTrue(Arrays.equals(raw, data));
+        ByteBuf buffer=parser.encode(odbInfo);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(encodedData, data));
     }
 }

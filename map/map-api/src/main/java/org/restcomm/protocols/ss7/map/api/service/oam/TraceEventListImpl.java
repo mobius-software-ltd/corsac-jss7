@@ -33,15 +33,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class TraceEventListImpl {
-	public static final int _ID_mscSList = 0;
-    public static final int _ID_mgwList = 1;
-    public static final int _ID_sgsnList = 2;
-    public static final int _ID_ggsnList = 3;
-    public static final int _ID_bmscList = 4;
-    public static final int _ID_mmeList = 5;
-    public static final int _ID_sgwList = 6;
-    public static final int _ID_pgwList = 7;
-
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private MSCSEventListImpl mscSList;
     

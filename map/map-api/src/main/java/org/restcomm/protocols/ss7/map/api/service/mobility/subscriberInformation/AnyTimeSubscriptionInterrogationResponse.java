@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
@@ -82,9 +82,9 @@ public interface AnyTimeSubscriptionInterrogationResponse extends MobilityMessag
 
     OfferedCamel4CSIsImpl getOfferedCamel4CSIsInSgsn();
 
-    ArrayList<MSISDNBSImpl> getMsisdnBsList();
+    List<MSISDNBSImpl> getMsisdnBsList();
 
-    ArrayList<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
+    List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
 
     CallWaitingDataImpl getCwData();
 

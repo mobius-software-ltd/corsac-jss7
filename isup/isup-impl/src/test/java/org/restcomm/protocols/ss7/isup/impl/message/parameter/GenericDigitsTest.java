@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.util.BcdHelper;
 import org.testng.annotations.AfterClass;

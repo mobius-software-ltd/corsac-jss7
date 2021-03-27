@@ -23,33 +23,34 @@
 package org.restcomm.protocols.ss7.map.service.lsm;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.lsm.SendRoutingInfoForLCSResponseImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Trace is from Brazil Operator
@@ -84,10 +85,7 @@ public class SendRoutingInfoForLCSResponseTest {
     }
 
     public byte[] getEncodedDataFull() {
-        return new byte[] { 48, 89, -96, 9, -127, 7, -111, 85, 22, 40, -127, 0, 112, -95, 7, 4, 5, -111, 85, 22, 9, 0, -94, 39,
-                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
-                24, 25, 26, -95, 3, 31, 32, 33, -125, 5, 11, 12, 13, 14, 15, -124, 5, 21, 22, 23, 24, 25, -123, 5, 31, 32, 33,
-                34, 35, -122, 5, 41, 42, 43, 44, 45 };
+        return new byte[] { 48, 95, -96, 9, -127, 7, -111, 85, 22, 40, -127, 0, 112, -95, 7, 4, 5, -111, 85, 22, 9, 0, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 5, 11, 12, 13, 14, 15, -124, 5, 21, 22, 23, 24, 25, -123, 5, 31, 32, 33, 34, 35, -122, 5, 41, 42, 43, 44, 45 };
     }
 
     public byte[] getEncodedGSNAddress1() {
@@ -108,20 +106,19 @@ public class SendRoutingInfoForLCSResponseTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecodeProvideSubscriberLocationRequestIndication() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendRoutingInfoForLCSResponseImpl.class);
+    	
         byte[] data = getEncodedData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInfoForLCSResponseImpl);
+        SendRoutingInfoForLCSResponseImpl impl = (SendRoutingInfoForLCSResponseImpl)result.getResult();
 
-        AsnInputStream asn = new AsnInputStream(data);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        SendRoutingInfoForLCSResponseImpl impl = new SendRoutingInfoForLCSResponseImpl();
-        impl.decodeAll(asn);
-
-        SubscriberIdentity subsIdent = impl.getTargetMS();
+        SubscriberIdentityImpl subsIdent = impl.getTargetMS();
         assertNotNull(subsIdent);
 
-        IMSI imsi = subsIdent.getIMSI();
+        IMSIImpl imsi = subsIdent.getIMSI();
         ISDNAddressStringImpl msisdn = subsIdent.getMSISDN();
 
         assertNotNull(msisdn);
@@ -131,7 +128,7 @@ public class SendRoutingInfoForLCSResponseTest {
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(msisdn.getAddress().equals("556182180007"));
 
-        LCSLocationInfo lcsLocInfo = impl.getLCSLocationInfo();
+        LCSLocationInfoImpl lcsLocInfo = impl.getLCSLocationInfo();
         assertNotNull(lcsLocInfo);
 
         ISDNAddressStringImpl networkNodeNumber = lcsLocInfo.getNetworkNodeNumber();
@@ -147,14 +144,10 @@ public class SendRoutingInfoForLCSResponseTest {
         assertNull(impl.getAdditionalVGmlcAddress());
 
         data = getEncodedDataFull();
-
-        asn = new AsnInputStream(data);
-
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-
-        impl = new SendRoutingInfoForLCSResponseImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInfoForLCSResponseImpl);
+        impl = (SendRoutingInfoForLCSResponseImpl)result.getResult();
 
         subsIdent = impl.getTargetMS();
         assertNotNull(subsIdent);
@@ -187,27 +180,26 @@ public class SendRoutingInfoForLCSResponseTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
-        byte[] data = getEncodedData();
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendRoutingInfoForLCSResponseImpl.class);
+    	
         ISDNAddressStringImpl msisdn = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "556182180007");
-        SubscriberIdentity subsIdent = new SubscriberIdentityImpl(msisdn);
+        SubscriberIdentityImpl subsIdent = new SubscriberIdentityImpl(msisdn);
 
         ISDNAddressStringImpl networkNodeNumber = this.MAPParameterFactory.createISDNAddressString(
                 AddressNature.international_number, NumberingPlan.ISDN, "55619000");
 
-        LCSLocationInfo lcsLocInfo = new LCSLocationInfoImpl(networkNodeNumber, null, null, false, null, null, null, null, null);
+        LCSLocationInfoImpl lcsLocInfo = new LCSLocationInfoImpl(networkNodeNumber, null, null, false, null, null, null, null, null);
 
         SendRoutingInfoForLCSResponseImpl impl = new SendRoutingInfoForLCSResponseImpl(subsIdent, lcsLocInfo, null, null, null,
                 null, null);
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        byte[] data = getEncodedData();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
-
-        data = getEncodedDataFull();
 
         GSNAddressImpl vgmlcAddress = new GSNAddressImpl(getEncodedGSNAddress1());
         GSNAddressImpl hGmlcAddress = new GSNAddressImpl(getEncodedGSNAddress2());
@@ -217,13 +209,11 @@ public class SendRoutingInfoForLCSResponseTest {
         impl = new SendRoutingInfoForLCSResponseImpl(subsIdent, lcsLocInfo,
                 MAPExtensionContainerTest.GetTestExtensionContainer(), vgmlcAddress, hGmlcAddress, pprAddress,
                 additionalVGmlcAddress);
-        // SubscriberIdentity targetMS, LCSLocationInfo lcsLocationInfo, MAPExtensionContainerImpl extensionContainer,
-        // GSNAddress vgmlcAddress, GSNAddress hGmlcAddress, GSNAddress pprAddress, GSNAddress additionalVGmlcAddress
-
-        asnOS = new AsnOutputStream();
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        
+        data = getEncodedDataFull();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
     }
 }

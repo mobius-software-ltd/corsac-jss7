@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -34,16 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class IMSIListWrapperImpl {
-	private ArrayList<IMSIImpl> imsis;
+	private List<IMSIImpl> imsis;
 
     public IMSIListWrapperImpl() {
     }
 
-    public IMSIListWrapperImpl(ArrayList<IMSIImpl> imsis) {
+    public IMSIListWrapperImpl(List<IMSIImpl> imsis) {
         this.imsis = imsis;
     }
 
-    public ArrayList<IMSIImpl> getIMSIs() {
+    public List<IMSIImpl> getIMSIs() {
     	return imsis;
     }
 }

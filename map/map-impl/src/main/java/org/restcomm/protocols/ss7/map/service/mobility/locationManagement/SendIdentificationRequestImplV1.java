@@ -46,6 +46,10 @@ public class SendIdentificationRequestImplV1 extends MobilityMessageImpl impleme
     
 	private long mapProtocolVersion;
 
+	public SendIdentificationRequestImplV1() {
+		this.mapProtocolVersion = 2;
+	}
+	
     public SendIdentificationRequestImplV1(long mapProtocolVersion) {
         this.mapProtocolVersion = mapProtocolVersion;
     }

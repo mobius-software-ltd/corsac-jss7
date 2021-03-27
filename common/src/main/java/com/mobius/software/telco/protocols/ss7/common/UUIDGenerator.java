@@ -25,10 +25,12 @@ package com.mobius.software.telco.protocols.ss7.common;
 *
 */
 
-import java.nio.ByteBuffer;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class UUIDGenerator 
 {
@@ -82,15 +84,17 @@ public class UUIDGenerator
     
     public static byte[] uuidToBytes(UUID value)
     {
-    	ByteBuffer bb = ByteBuffer.allocate(16);
-    	bb.putLong(value.getMostSignificantBits());
-    	bb.putLong(value.getLeastSignificantBits());
-    	return bb.array();
+    	byte[] data=new byte[16];
+    	ByteBuf bb = Unpooled.wrappedBuffer(data);
+    	bb.resetWriterIndex();
+    	bb.writeLong(value.getMostSignificantBits());
+    	bb.writeLong(value.getLeastSignificantBits());
+    	return data;
     }
 	
-    public static UUID bytesToUUID(ByteBuffer value)
+    public static UUID bytesToUUID(ByteBuf value)
     {
-    	return new UUID(value.getLong(),value.getLong());    	
+    	return new UUID(value.readLong(),value.readLong());    	
     }
 	
     public static long getTimestamp(UUID uuid)
@@ -126,7 +130,7 @@ public class UUIDGenerator
     
     public UUID GenerateTimeBasedGuid(long time)
     {
-    	return bytesToUUID(ByteBuffer.wrap(GenerateTimeBasedGuidBytes(time)));
+    	return bytesToUUID(Unpooled.wrappedBuffer(GenerateTimeBasedGuidBytes(time)));
     }
     
 	public byte[] GenerateTimeBasedGuidBytes(long time)
@@ -134,7 +138,10 @@ public class UUIDGenerator
     	long ticks = (time - gregorianCalendarStart)*10000L;
         
         byte[] guid = new byte[16];
-        byte[] timestamp = ByteBuffer.allocate(8).putLong(ticks).array();
+        byte[] timestamp=new byte[8];
+        ByteBuf buffer=Unpooled.wrappedBuffer(timestamp);
+        buffer.resetWriterIndex();
+        buffer.writeLong(ticks);
         
         byte tempBuffer;
         for(int i=0;i<4;i++)
@@ -185,7 +192,10 @@ public class UUIDGenerator
     	long ticks = (time - gregorianCalendarStart)*10000L;
         
         byte[] guid = new byte[16];
-        byte[] timestamp = ByteBuffer.allocate(8).putLong(ticks).array();
+        byte[] timestamp=new byte[8];
+        ByteBuf buffer=Unpooled.wrappedBuffer(timestamp);
+        buffer.resetWriterIndex();
+        buffer.writeLong(ticks);
         
         byte tempBuffer;
         for(int i=0;i<4;i++)
@@ -240,7 +250,10 @@ public class UUIDGenerator
     	long ticks = (time - gregorianCalendarStart)*10000L;
         
         byte[] guid = new byte[16];
-        byte[] timestamp = ByteBuffer.allocate(8).putLong(ticks).array();
+        byte[] timestamp=new byte[8];
+        ByteBuf buffer=Unpooled.wrappedBuffer(timestamp);
+        buffer.resetWriterIndex();
+        buffer.writeLong(ticks);
         
         byte tempBuffer;
         for(int i=0;i<4;i++)
@@ -291,7 +304,10 @@ public class UUIDGenerator
     	long ticks = (time - gregorianCalendarStart)*10000L;
         
         byte[] guid = new byte[16];
-        byte[] timestamp = ByteBuffer.allocate(8).putLong(ticks).array();
+        byte[] timestamp=new byte[8];
+        ByteBuf buffer=Unpooled.wrappedBuffer(timestamp);
+        buffer.resetWriterIndex();
+        buffer.writeLong(ticks);
         
         byte tempBuffer;
         for(int i=0;i<4;i++)

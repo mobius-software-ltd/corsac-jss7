@@ -22,24 +22,27 @@
 
 package org.restcomm.protocols.ss7.map.service.pdpContextActivation;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.pdpContextActivation.SendRoutingInfoForGprsRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -53,9 +56,7 @@ public class SendRoutingInfoForGprsRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 64, (byte) 128, 7, 17, 17, 33, 34, 34, 51, (byte) 243, (byte) 129, 5, 4, (byte) 192, (byte) 168, 4, 22, (byte) 130, 5,
-                (byte) 145, (byte) 136, (byte) 136, 0, 0, (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6,
-                48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
+        return new byte[] { 48, 70, -128, 7, 17, 17, 33, 34, 34, 51, -13, -127, 5, 4, -64, -88, 4, 22, -126, 5, -111, -120, -120, 0, 0, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     }
 
     private byte[] getAddressData() {
@@ -64,18 +65,16 @@ public class SendRoutingInfoForGprsRequestTest {
 
     @Test(groups = { "functional.decode", "service.pdpContextActivation" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendRoutingInfoForGprsRequestImpl.class);
+    	
         byte[] rawData = getEncodedData();
 
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        SendRoutingInfoForGprsRequestImpl impl = new SendRoutingInfoForGprsRequestImpl();
-        impl.decodeAll(asn);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInfoForGprsRequestImpl);
+        SendRoutingInfoForGprsRequestImpl impl = (SendRoutingInfoForGprsRequestImpl)result.getResult();
+        
         assertEquals(impl.getImsi().getData(), "1111122222333");
         assertNull(impl.getGgsnAddress());
         assertEquals(impl.getGgsnNumber().getAddress(), "88880000");
@@ -83,15 +82,10 @@ public class SendRoutingInfoForGprsRequestTest {
 
 
         rawData = getEncodedData2();
-
-        asn = new AsnInputStream(rawData);
-
-        tag = asn.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        impl = new SendRoutingInfoForGprsRequestImpl();
-        impl.decodeAll(asn);
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendRoutingInfoForGprsRequestImpl);
+        impl = (SendRoutingInfoForGprsRequestImpl)result.getResult();
 
         assertEquals(impl.getImsi().getData(), "1111122222333");
         assertEquals(impl.getGgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
@@ -102,31 +96,26 @@ public class SendRoutingInfoForGprsRequestTest {
 
     @Test(groups = { "functional.encode", "service.pdpContextActivation" })
     public void testEncode() throws Exception {
-
-        IMSI imsi = new IMSIImpl("1111122222333");
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SendRoutingInfoForGprsRequestImpl.class);
+    	
+        IMSIImpl imsi = new IMSIImpl("1111122222333");
         ISDNAddressStringImpl ggsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "88880000");
         SendRoutingInfoForGprsRequestImpl impl = new SendRoutingInfoForGprsRequestImpl(imsi, null, ggsnNumber, null);
-        // IMSI imsi, GSNAddress ggsnAddress, ISDNAddressStringImpl ggsnNumber, MAPExtensionContainerImpl extensionContainer
 
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        GSNAddress ggsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData());
+        GSNAddressImpl ggsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData());
         impl = new SendRoutingInfoForGprsRequestImpl(imsi, ggsnAddress, ggsnNumber, MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-
-        encodedData = asnOS.toByteArray();
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
         rawData = getEncodedData2();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

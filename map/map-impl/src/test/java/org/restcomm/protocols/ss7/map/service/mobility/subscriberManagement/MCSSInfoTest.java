@@ -28,17 +28,19 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSSInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,23 +50,22 @@ import org.testng.annotations.Test;
 public class MCSSInfoTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 53, -128, 1, 33, -127, 1, 10, -126, 1, 2, -125, 1, 4, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4,
-                11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 59, -128, 1, 33, -127, 1, 10, -126, 1, 2, -125, 1, 4, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        MCSSInfoImpl prim = new MCSSInfoImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MCSSInfoImpl.class);
+    	
+    	byte[] data = this.getData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MCSSInfoImpl);
+        MCSSInfoImpl prim = (MCSSInfoImpl)result.getResult();
+        
         assertEquals(prim.getSSCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
-        ExtSSStatus ssStatus = prim.getSSStatus();
+        ExtSSStatusImpl ssStatus = prim.getSSStatus();
         assertFalse(ssStatus.getBitA());
         assertFalse(ssStatus.getBitP());
         assertTrue(ssStatus.getBitQ());
@@ -80,14 +81,17 @@ public class MCSSInfoTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(MCSSInfoImpl.class);
+    	
     	SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
-        ExtSSStatus ssStatus = new ExtSSStatusImpl(true, false, true, false);
+        ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(true, false, true, false);
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         MCSSInfoImpl prim = new MCSSInfoImpl(ssCode, ssStatus, 2, 4, extensionContainer);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData); 
+        byte[] rawData=this.getData();
+        assertTrue(Arrays.equals(encodedData, rawData));
     }
 }

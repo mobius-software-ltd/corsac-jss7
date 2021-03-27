@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
@@ -53,7 +53,7 @@ public interface PrepareHandoverResponse extends MobilityMessage {
 
     ISDNAddressStringImpl getHandoverNumber();
 
-    ArrayList<RelocationNumber> getRelocationNumberList();
+    List<RelocationNumber> getRelocationNumberList();
 
     AccessNetworkSignalInfo getAnAPDU();
 

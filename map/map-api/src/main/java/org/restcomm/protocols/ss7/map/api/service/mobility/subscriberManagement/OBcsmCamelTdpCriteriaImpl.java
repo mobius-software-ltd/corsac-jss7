@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 
@@ -57,8 +57,8 @@ public class OBcsmCamelTdpCriteriaImpl {
     }
 
     public OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint,
-            DestinationNumberCriteriaImpl destinationNumberCriteria, ArrayList<ExtBasicServiceCodeImpl> basicServiceCriteria,
-            CallTypeCriteria callTypeCriteria, ArrayList<CauseValueImpl> oCauseValueCriteria,
+            DestinationNumberCriteriaImpl destinationNumberCriteria, List<ExtBasicServiceCodeImpl> basicServiceCriteria,
+            CallTypeCriteria callTypeCriteria, List<CauseValueImpl> oCauseValueCriteria,
             MAPExtensionContainerImpl extensionContainer) {
         if(oBcsmTriggerDetectionPoint!=null) {
         	this.oBcsmTriggerDetectionPoint = new ASNOBcsmTriggerDetectionPoint();
@@ -92,7 +92,7 @@ public class OBcsmCamelTdpCriteriaImpl {
         return this.destinationNumberCriteria;
     }
 
-    public ArrayList<ExtBasicServiceCodeImpl> getBasicServiceCriteria() {
+    public List<ExtBasicServiceCodeImpl> getBasicServiceCriteria() {
     	if(this.basicServiceCriteria==null)
     		return null;
     	
@@ -106,7 +106,7 @@ public class OBcsmCamelTdpCriteriaImpl {
         return this.callTypeCriteria.getType();
     }
 
-    public ArrayList<CauseValueImpl> getOCauseValueCriteria() {
+    public List<CauseValueImpl> getOCauseValueCriteria() {
     	if(this.oCauseValueCriteria==null)
     		return null;
     	

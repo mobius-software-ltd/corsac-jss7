@@ -21,17 +21,19 @@
  */
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptionsImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,17 +48,15 @@ public class AdditionalSubscriptionsTest {
 
     @Test(groups = { "functional.decode", "service.lsm" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AdditionalSubscriptionsImpl.class);
+    	
         byte[] rawData = getEncodedData();
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        AdditionalSubscriptionsImpl imp = new AdditionalSubscriptionsImpl();
-        imp.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_BIT);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AdditionalSubscriptionsImpl);
+        AdditionalSubscriptionsImpl imp = (AdditionalSubscriptionsImpl)result.getResult();
+        
         assertTrue(imp.getPrivilegedUplinkRequest());
         assertFalse(imp.getEmergencyUplinkRequest());
         assertTrue(imp.getEmergencyReset());
@@ -64,10 +64,14 @@ public class AdditionalSubscriptionsTest {
 
     @Test(groups = { "functional.encode", "service.lsm" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(AdditionalSubscriptionsImpl.class);
+    	
         AdditionalSubscriptionsImpl imp = new AdditionalSubscriptionsImpl(true, false, true);
-        AsnOutputStream asnOS = new AsnOutputStream();
-        imp.encodeAll(asnOS);
-        assertTrue(Arrays.equals(getEncodedData(), asnOS.toByteArray()));
+        ByteBuf buffer=parser.encode(imp);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(getEncodedData(), encodedData));
     }
 
 }

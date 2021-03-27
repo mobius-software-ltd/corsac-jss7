@@ -43,17 +43,17 @@ public class MMEEventListImpl extends ASNBitString {
     public MMEEventListImpl(boolean ueInitiatedPDNconectivityRequest, boolean serviceRequestts, boolean initialAttachTrackingAreaUpdateDetach,
             boolean ueInitiatedPDNdisconnection, boolean bearerActivationModificationDeletion, boolean handover) {
         if (ueInitiatedPDNconectivityRequest)
-            this.isBitSet(_ID_ueInitiatedPDNconectivityRequest);
+            this.setBit(_ID_ueInitiatedPDNconectivityRequest);
         if (serviceRequestts)
-            this.isBitSet(_ID_serviceRequestts);
+            this.setBit(_ID_serviceRequestts);
         if (initialAttachTrackingAreaUpdateDetach)
-            this.isBitSet(_ID_initialAttachTrackingAreaUpdateDetach);
+            this.setBit(_ID_initialAttachTrackingAreaUpdateDetach);
         if (ueInitiatedPDNdisconnection)
-            this.isBitSet(_ID_ueInitiatedPDNdisconnection);
+            this.setBit(_ID_ueInitiatedPDNdisconnection);
         if (bearerActivationModificationDeletion)
-            this.isBitSet(_ID_bearerActivationModificationDeletion);
+            this.setBit(_ID_bearerActivationModificationDeletion);
         if (handover)
-            this.isBitSet(_ID_handover);
+            this.setBit(_ID_handover);
     }
 
     public boolean getUeInitiatedPDNconectivityRequest() {

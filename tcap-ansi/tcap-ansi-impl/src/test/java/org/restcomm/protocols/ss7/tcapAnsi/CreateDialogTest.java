@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -38,7 +39,6 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.message.MessageFactory;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpNoticeMessage;
-import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -178,7 +178,7 @@ public class CreateDialogTest {
         }
 
         @Override
-        public ConcurrentHashMap<LocalReference, SccpConnection> getConnections() {
+        public ConcurrentHashMap<Integer, SccpConnection> getConnections() {
             // TODO Auto-generated method stub
             return null;
         }

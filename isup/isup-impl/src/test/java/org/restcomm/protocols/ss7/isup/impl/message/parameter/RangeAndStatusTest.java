@@ -40,8 +40,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.AbstractISUPParameter;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.RangeAndStatusImpl;
 import org.testng.annotations.Test;
 
 /**

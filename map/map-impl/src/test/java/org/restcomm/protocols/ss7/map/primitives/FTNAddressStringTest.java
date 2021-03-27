@@ -23,22 +23,21 @@
 package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -53,18 +52,16 @@ public class FTNAddressStringTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-
-        byte[] rawData = getEncodedData();
-
-        AsnInputStream asn = new AsnInputStream(rawData);
-
-        int tag = asn.readTag();
-        FTNAddressStringImpl addrStr = new FTNAddressStringImpl();
-        addrStr.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FTNAddressStringImpl.class);
+        
+    	byte[] rawData = getEncodedData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+        
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof FTNAddressStringImpl);
+        FTNAddressStringImpl addrStr = (FTNAddressStringImpl)result.getResult();
+        
         assertEquals(addrStr.getAddressNature(), AddressNature.network_specific_number);
         assertEquals(addrStr.getNumberingPlan(), NumberingPlan.national);
         assertEquals(addrStr.getAddress(), "1234567890");
@@ -72,42 +69,16 @@ public class FTNAddressStringTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        FTNAddressStringImpl addrStr = new FTNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.national,
-                "1234567890");
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        addrStr.encodeAll(asnOS);
-
-        byte[] encodedData = asnOS.toByteArray();
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FTNAddressStringImpl.class);
+        
+        FTNAddressStringImpl addrStr = new FTNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.national, "1234567890");
+        ByteBuf buffer=parser.encode(addrStr);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        
         byte[] rawData = getEncodedData();
-
         assertTrue(Arrays.equals(rawData, encodedData));
-
-    }
-
-    @Test(groups = { "functional.serialize", "primitives" })
-    public void testSerialization() throws Exception {
-        FTNAddressStringImpl original = new FTNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.national,
-                "1234567890");
-        // serialize
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
-
-        // deserialize
-        byte[] pickled = out.toByteArray();
-        InputStream in = new ByteArrayInputStream(pickled);
-        ObjectInputStream ois = new ObjectInputStream(in);
-        Object o = ois.readObject();
-        FTNAddressStringImpl copy = (FTNAddressStringImpl) o;
-
-        // test result
-        assertEquals(copy.getAddressNature(), original.getAddressNature());
-        assertEquals(copy.getNumberingPlan(), original.getNumberingPlan());
-        assertEquals(copy.getAddress(), original.getAddress());
     }
 
 }

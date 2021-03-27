@@ -40,6 +40,7 @@ import org.restcomm.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMReques
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -56,13 +57,10 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
     private ISDNAddressStringImpl msisdn;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=1)
-    private ASNNull sm_RP_PRI;
+    private ASNBoolean sm_RP_PRI;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=2)
     private AddressStringImpl serviceCentreAddress;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private TeleserviceCodeImpl teleservice;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
     private MAPExtensionContainerImpl extensionContainer;
@@ -76,20 +74,23 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
     private SM_RP_SMEAImpl sM_RP_SMEA;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
-    private ASNNull ipSmGwGuidanceIndicator;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
+    private TeleserviceCodeImpl teleservice;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
+    private ASNNull ipSmGwGuidanceIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
     private ASNSMDeliveryNotIntended smDeliveryNotIntended;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)
+    private ASNNull t4TriggerIndicator;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=false,index=-1)
+    private ASNNull singleAttemptDelivery;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
     private IMSIImpl imsi;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=false,index=-1)
-    private ASNNull t4TriggerIndicator;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)
-    private ASNNull singleAttemptDelivery;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=true,index=-1)
     private CorrelationIDImpl correlationID;
@@ -103,8 +104,8 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
             boolean singleAttemptDelivery, TeleserviceCodeImpl teleservice, CorrelationIDImpl correlationID) {
         this.msisdn = msisdn;
         
-        if(sm_RP_PRI)
-        	this.sm_RP_PRI = new ASNNull();
+        this.sm_RP_PRI = new ASNBoolean();
+        this.sm_RP_PRI.setValue(sm_RP_PRI);
         
         this.serviceCentreAddress = serviceCentreAddress;
         this.extensionContainer = extensionContainer;
@@ -112,14 +113,14 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
         if(gprsSupportIndicator)
         	this.gprsSupportIndicator = new ASNNull();
         
-        if(this.sM_RP_MTI!=null) {
+        if(sM_RP_MTI!=null) {
         	this.sM_RP_MTI = new ASNSM_RP_MTI();
         	this.sM_RP_MTI.setType(sM_RP_MTI);
         }
         
         this.sM_RP_SMEA = sM_RP_SMEA;
         
-        if(this.smDeliveryNotIntended!=null) {
+        if(smDeliveryNotIntended!=null) {
         	this.smDeliveryNotIntended = new ASNSMDeliveryNotIntended();
         	this.smDeliveryNotIntended.setType(smDeliveryNotIntended);
         }
@@ -151,7 +152,10 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
     }
 
     public boolean getSm_RP_PRI() {
-        return this.sm_RP_PRI!=null;
+    	if(this.sm_RP_PRI==null)
+    		return false;
+    	
+        return this.sm_RP_PRI.getValue();
     }
 
     public AddressStringImpl getServiceCentreAddress() {
@@ -222,7 +226,7 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
             sb.append(this.msisdn.toString());
         }
         if (this.sm_RP_PRI!=null)
-            sb.append(", sm_RP_PRI");
+            sb.append(", sm_RP_PRI=" + this.sm_RP_PRI.getValue());
         
         if (this.serviceCentreAddress != null) {
             sb.append(", serviceCentreAddress=");

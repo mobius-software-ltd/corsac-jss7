@@ -25,13 +25,13 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -47,8 +47,8 @@ public class AbsoluteTimeStampTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        InputStream stm = new ByteArrayInputStream(this.getData());
-        AbsoluteTimeStampImpl impl = AbsoluteTimeStampImpl.createMessage(stm);
+        ByteBuf buffer=Unpooled.wrappedBuffer(this.getData());
+        AbsoluteTimeStampImpl impl = AbsoluteTimeStampImpl.createMessage(buffer);
         assertEquals(impl.getYear(), 7);
         assertEquals(impl.getMonth(), 5);
         assertEquals(impl.getDay(), 15);
@@ -62,8 +62,10 @@ public class AbsoluteTimeStampTest {
     public void testEncode() throws Exception {
 
         AbsoluteTimeStampImpl impl = new AbsoluteTimeStampImpl(7, 5, 15, 15, 0, 41, 12);
-        ByteArrayOutputStream stm = new ByteArrayOutputStream();
+        byte[] output=new byte[this.getData().length];
+        ByteBuf stm = Unpooled.wrappedBuffer(output);
+        stm.resetWriterIndex();
         impl.encodeData(stm);
-        assertTrue(Arrays.equals(stm.toByteArray(), this.getData()));
+        assertTrue(Arrays.equals(output, this.getData()));
     }
 }

@@ -47,25 +47,25 @@ public class MSCSInterfaceListImpl extends ASNBitString {
     public MSCSInterfaceListImpl(boolean a, boolean iu, boolean mc, boolean mapG, boolean mapB, boolean mapE, boolean mapF, boolean cap, boolean mapD,
             boolean mapC) {
         if (a)
-            this.isBitSet(_ID_a);
+            this.setBit(_ID_a);
         if (iu)
-            this.isBitSet(_ID_iu);
+            this.setBit(_ID_iu);
         if (mc)
-            this.isBitSet(_ID_mc);
+            this.setBit(_ID_mc);
         if (mapG)
-            this.isBitSet(_ID_mapG);
+            this.setBit(_ID_mapG);
         if (mapB)
-            this.isBitSet(_ID_mapB);
+            this.setBit(_ID_mapB);
         if (mapE)
-            this.isBitSet(_ID_mapE);
+            this.setBit(_ID_mapE);
         if (mapF)
-            this.isBitSet(_ID_mapF);
+            this.setBit(_ID_mapF);
         if (cap)
-            this.isBitSet(_ID_cap);
+            this.setBit(_ID_cap);
         if (mapD)
-            this.isBitSet(_ID_mapD);
+            this.setBit(_ID_mapD);
         if (mapC)
-            this.isBitSet(_ID_mapC);
+            this.setBit(_ID_mapC);
     }
 
     public boolean getA() {

@@ -27,24 +27,20 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
-
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.BitSetStrictLength;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptions;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptionsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GroupId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GroupIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallDataImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.AdditionalInfoImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -54,34 +50,28 @@ import org.testng.annotations.Test;
 public class VoiceGroupCallDataTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 60, 4, 3, -1, -1, -1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3,
-                42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128,
-                -127, 4, -11, -1, -1, -1 };
+        return new byte[] { 48, 66, 4, 3, -1, -1, -1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128, -127, 4, -11, -1, -1, -1 };
     };
 
     public byte[] getData2() {
-        return new byte[] { 48, 54, 4, 3, -12, -1, -1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
-                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128 };
+        return new byte[] { 48, 60, 4, 3, -12, -1, -1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128 };
     };
 
     public byte[] getData3() {
-        return new byte[] { 48, 60, 4, 3, -1, -1, -1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3,
-                42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128,
-                -127, 4, -11, -1, -1, -1 };
+        return new byte[] { 48, 66, 4, 3, -1, -1, -1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128, -127, 4, -11, -1, -1, -1 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        // Option 1
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(VoiceGroupCallDataImpl.class);
+    	// Option 1
         byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        VoiceGroupCallDataImpl prim = new VoiceGroupCallDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VoiceGroupCallDataImpl);
+        VoiceGroupCallDataImpl prim = (VoiceGroupCallDataImpl)result.getResult();
+        
         assertTrue(prim.getGroupId().getGroupId().equals(""));
         assertTrue(prim.getLongGroupId().getLongGroupId().equals("5"));
         assertNotNull(prim.getExtensionContainer());
@@ -90,17 +80,14 @@ public class VoiceGroupCallDataTest {
         assertFalse(prim.getAdditionalSubscriptions().getEmergencyUplinkRequest());
         assertTrue(prim.getAdditionalSubscriptions().getPrivilegedUplinkRequest());
         assertNotNull(prim.getAdditionalInfo());
-        assertTrue(prim.getAdditionalInfo().getData().get(0));
+        assertTrue(prim.getAdditionalInfo().isBitSet(0));
 
         // Option 2
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new VoiceGroupCallDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VoiceGroupCallDataImpl);
+        prim = (VoiceGroupCallDataImpl)result.getResult();
 
         assertTrue(prim.getGroupId().getGroupId().equals("4"));
         assertNull(prim.getLongGroupId());
@@ -110,17 +97,14 @@ public class VoiceGroupCallDataTest {
         assertFalse(prim.getAdditionalSubscriptions().getEmergencyUplinkRequest());
         assertTrue(prim.getAdditionalSubscriptions().getPrivilegedUplinkRequest());
         assertNotNull(prim.getAdditionalInfo());
-        assertTrue(prim.getAdditionalInfo().getData().get(0));
+        assertTrue(prim.getAdditionalInfo().isBitSet(0));
 
         // Option 3
         data = this.getData3();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new VoiceGroupCallDataImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VoiceGroupCallDataImpl);
+        prim = (VoiceGroupCallDataImpl)result.getResult();
 
         assertTrue(prim.getGroupId().getGroupId().equals(""));
         assertTrue(prim.getLongGroupId().getLongGroupId().equals("5"));
@@ -130,39 +114,45 @@ public class VoiceGroupCallDataTest {
         assertFalse(prim.getAdditionalSubscriptions().getEmergencyUplinkRequest());
         assertTrue(prim.getAdditionalSubscriptions().getPrivilegedUplinkRequest());
         assertNotNull(prim.getAdditionalInfo());
-        assertTrue(prim.getAdditionalInfo().getData().get(0));
+        assertTrue(prim.getAdditionalInfo().isBitSet(0));
 
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        // Option 1
-        GroupId groupId = new GroupIdImpl("4");
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(VoiceGroupCallDataImpl.class);
+    	// Option 1
+        GroupIdImpl groupId = new GroupIdImpl("4");
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        LongGroupId longGroupId = new LongGroupIdImpl("5");
-        AdditionalSubscriptions additionalSubscriptions = new AdditionalSubscriptionsImpl(true, false, true);
-        BitSetStrictLength b = new BitSetStrictLength(1);
-        b.set(0);
-        AdditionalInfoImpl additionalInfo = new AdditionalInfoImpl(b);
+        LongGroupIdImpl longGroupId = new LongGroupIdImpl("5");
+        AdditionalSubscriptionsImpl additionalSubscriptions = new AdditionalSubscriptionsImpl(true, false, true);
+        AdditionalInfoImpl additionalInfo = new AdditionalInfoImpl();
+        additionalInfo.setBit(0);
 
         VoiceGroupCallDataImpl prim = new VoiceGroupCallDataImpl(groupId, extensionContainer, additionalSubscriptions,
                 additionalInfo, longGroupId);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        byte[] rawData = this.getData();
+        assertEquals(encodedData, rawData);
 
         // Option 2
         prim = new VoiceGroupCallDataImpl(groupId, extensionContainer, additionalSubscriptions, additionalInfo, null);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData = this.getData2();
+        assertEquals(encodedData, rawData);
 
         // Option 3
         prim = new VoiceGroupCallDataImpl(null, extensionContainer, additionalSubscriptions, additionalInfo, longGroupId);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData3()));
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        rawData = this.getData3();
+        assertEquals(encodedData, rawData);
     }
-
 }

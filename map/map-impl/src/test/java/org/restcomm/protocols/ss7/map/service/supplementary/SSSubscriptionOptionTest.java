@@ -22,17 +22,21 @@
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.OverrideCategory;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOptionImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -42,37 +46,33 @@ import org.testng.annotations.Test;
 public class SSSubscriptionOptionTest {
 
     private byte[] getData1() {
-        return new byte[] { -126, 1, 0 };
+        return new byte[] { 48, 3, -126, 1, 0 };
     }
 
     private byte[] getData2() {
-        return new byte[] { -127, 1, 1 };
+        return new byte[] { 48, 3, -127, 1, 1 };
     }
 
     @Test(groups = { "functional.decode", "service.supplementary" })
     public void testDecode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SSSubscriptionOptionImpl.class);
+    	
         byte[] data = this.getData1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        SSSubscriptionOptionImpl prim = new SSSubscriptionOptionImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, SSSubscriptionOptionImpl._TAG_cliRestrictionOption);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SSSubscriptionOptionImpl);
+        SSSubscriptionOptionImpl prim = (SSSubscriptionOptionImpl)result.getResult();
 
         assertNotNull(prim.getCliRestrictionOption());
         assertNull(prim.getOverrideCategory());
         assertTrue(prim.getCliRestrictionOption().getCode() == CliRestrictionOption.permanent.getCode());
 
         data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new SSSubscriptionOptionImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, SSSubscriptionOptionImpl._TAG_overrideCategory);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SSSubscriptionOptionImpl);
+        prim = (SSSubscriptionOptionImpl)result.getResult();
 
         assertNull(prim.getCliRestrictionOption());
         assertNotNull(prim.getOverrideCategory());
@@ -82,18 +82,19 @@ public class SSSubscriptionOptionTest {
 
     @Test(groups = { "functional.encode", "service.supplementary" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(SSSubscriptionOptionImpl.class);
+    	        
         SSSubscriptionOptionImpl impl = new SSSubscriptionOptionImpl(CliRestrictionOption.permanent);
-        AsnOutputStream asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-        assertEquals(asnOS.toByteArray(), this.getData1());
+        ByteBuf buffer=parser.encode(impl);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertEquals(encodedData, this.getData1());
 
         impl = new SSSubscriptionOptionImpl(OverrideCategory.overrideDisabled);
-        asnOS = new AsnOutputStream();
-
-        impl.encodeAll(asnOS);
-        assertEquals(asnOS.toByteArray(), this.getData2());
-
+        buffer=parser.encode(impl);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertEquals(encodedData, this.getData2());
     }
 }

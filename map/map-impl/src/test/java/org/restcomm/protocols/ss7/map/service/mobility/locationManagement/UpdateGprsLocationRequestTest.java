@@ -22,34 +22,32 @@
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISRInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapabilityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UESRVCCCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UsedRATType;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateGprsLocationRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -59,12 +57,7 @@ import org.testng.annotations.Test;
 public class UpdateGprsLocationRequestTest {
 
     public byte[] getData() {
-        return new byte[] { 48, -127, -105, 4, 3, 17, 33, 34, 4, 4, -111, 34, 34, -8, 4, 6, 23, 5, 38, 48, 81, 5, 48, 39, -96,
-                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
-                25, 26, -95, 3, 31, 32, 33, -96, 43, 5, 0, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5,
-                6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 0, -126, 0, -125, 6,
-                23, 5, 38, 48, 81, 5, -92, 6, -128, 4, 33, 67, 33, 67, -91, 4, -127, 2, 5, -32, -122, 0, -121, 0, -120, 1, 2,
-                -119, 0, -118, 0, -117, 0, -116, 0, -115, 0, -114, 1, 1 };
+        return new byte[] { 48, -127, -93, 4, 3, 17, 33, 34, 4, 4, -111, 34, 34, -8, 4, 6, 23, 5, 38, 48, 81, 5, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -96, 49, 5, 0, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 0, -126, 0, -125, 6, 23, 5, 38, 48, 81, 5, -92, 6, -128, 4, 33, 67, 33, 67, -91, 4, -127, 2, 5, -32, -122, 0, -121, 0, -120, 1, 2, -119, 0, -118, 0, -117, 0, -116, 0, -115, 0, -114, 1, 1 };
     };
 
     public byte[] getGSNAddressData() {
@@ -73,16 +66,15 @@ public class UpdateGprsLocationRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-
-        UpdateGprsLocationRequestImpl prim = new UpdateGprsLocationRequestImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UpdateGprsLocationRequestImpl.class);
+    	
+    	byte[] data = this.getData();
+    	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof UpdateGprsLocationRequestImpl);
+        UpdateGprsLocationRequestImpl prim = (UpdateGprsLocationRequestImpl)result.getResult();
+        
         assertTrue(prim.getImsi().getData().equals("111222"));
         assertTrue(prim.getSgsnNumber().getAddress().equals("22228"));
         assertEquals(prim.getSgsnNumber().getAddressNature(), AddressNature.international_number);
@@ -109,18 +101,21 @@ public class UpdateGprsLocationRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testEncode() throws Exception {
-        IMSI imsi = new IMSIImpl("111222");
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(UpdateGprsLocationRequestImpl.class);
+    	
+    	IMSIImpl imsi = new IMSIImpl("111222");
         ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
-        GSNAddress sgsnAddress = new GSNAddressImpl(getGSNAddressData());
+        GSNAddressImpl sgsnAddress = new GSNAddressImpl(getGSNAddressData());
         MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        SGSNCapability sgsnCapability = new SGSNCapabilityImpl(true, extensionContainer, null, false, null, null, null, false,
+        SGSNCapabilityImpl sgsnCapability = new SGSNCapabilityImpl(true, extensionContainer, null, false, null, null, null, false,
                 null, null, false, null);
         boolean informPreviousNetworkEntity = true;
         boolean psLCSNotSupportedByUE = true;
-        GSNAddress vGmlcAddress = new GSNAddressImpl(getGSNAddressData());
-        ADDInfo addInfo = new ADDInfoImpl(new IMEIImpl("12341234"), false);
-        EPSInfo epsInfo = new EPSInfoImpl(new ISRInformationImpl(true, true, true));
+        GSNAddressImpl vGmlcAddress = new GSNAddressImpl(getGSNAddressData());
+        ADDInfoImpl addInfo = new ADDInfoImpl(new IMEIImpl("12341234"), false);
+        EPSInfoImpl epsInfo = new EPSInfoImpl(new ISRInformationImpl(true, true, true));
         boolean servingNodeTypeIndicator = true;
         boolean skipSubscriberDataUpdate = true;
         UsedRATType usedRATType = UsedRATType.gan;
@@ -136,11 +131,10 @@ public class UpdateGprsLocationRequestTest {
                 epsInfo, servingNodeTypeIndicator, skipSubscriberDataUpdate, usedRATType, gprsSubscriptionDataNotNeeded,
                 nodeTypeIndicator, areaRestricted, ueReachableIndicator, epsSubscriptionDataNotNeeded, uesrvccCapability, 3);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-
+        byte[] data=getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(data, encodedData));
     }
-
 }
