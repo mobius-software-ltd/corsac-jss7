@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.MessageImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CAPDialogCircuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CircuitSwitchedCallMessage;
-import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
 
 /**
  *
@@ -33,7 +32,7 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  * @author Amit Bhayani
  *
  */
-public abstract class CircuitSwitchedCallMessageImpl extends MessageImpl implements CircuitSwitchedCallMessage, CAPAsnPrimitive {
+public abstract class CircuitSwitchedCallMessageImpl extends MessageImpl implements CircuitSwitchedCallMessage {
 	private static final long serialVersionUID = 1L;
 
 	public CAPDialogCircuitSwitchedCall getCAPDialog() {

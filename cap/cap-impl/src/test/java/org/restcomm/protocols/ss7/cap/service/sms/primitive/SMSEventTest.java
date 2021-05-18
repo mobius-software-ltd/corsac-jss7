@@ -31,7 +31,7 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSEventImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
 import org.testng.annotations.Test;
 
 /**

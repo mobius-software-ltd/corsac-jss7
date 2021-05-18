@@ -27,7 +27,7 @@ import static org.testng.Assert.*;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.ChargeIndicatorImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicatorImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicatorValue;
 import org.testng.annotations.Test;
 

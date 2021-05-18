@@ -31,9 +31,9 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InbandInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
 import org.testng.annotations.Test;
 
 /**

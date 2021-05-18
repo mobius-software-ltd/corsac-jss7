@@ -33,10 +33,6 @@
 			<artifactId>sccp-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mobicents.protocols.asn</groupId>
-			<artifactId>asn</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
 			<artifactId>tcap-impl</artifactId>
 		</dependency>

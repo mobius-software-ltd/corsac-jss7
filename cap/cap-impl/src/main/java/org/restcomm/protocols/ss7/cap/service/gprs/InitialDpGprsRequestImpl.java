@@ -21,112 +21,116 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.InitialDpGprsRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddress;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ASNGPRSEventTypeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ASNPDPInitiationTypeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilities;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.EndUserAddressImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.QualityOfServiceImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.SGSNCapabilitiesImpl;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilitiesImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class InitialDpGprsRequestImpl extends GprsMessageImpl implements InitialDpGprsRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "InitialDpGprsRequest";
-
-    public static final int _ID_serviceKey = 0;
-    public static final int _ID_gprsEventType = 1;
-    public static final int _ID_msisdn = 2;
-    public static final int _ID_imsi = 3;
-    public static final int _ID_timeAndTimezone = 4;
-    public static final int _ID_gprsMSClass = 5;
-    public static final int _ID_endUserAddress = 6;
-    public static final int _ID_qualityOfService = 7;
-    public static final int _ID_accessPointName = 8;
-    public static final int _ID_routeingAreaIdentity = 9;
-    public static final int _ID_chargingID = 10;
-    public static final int _ID_sgsnCapabilities = 11;
-    public static final int _ID_locationInformationGPRS = 12;
-    public static final int _ID_pdpInitiationType = 13;
-    public static final int _ID_extensions = 14;
-    public static final int _ID_gsnAddress = 15;
-    public static final int _ID_secondaryPDPContext = 16;
-    public static final int _ID_imei = 17;
-
-    private int serviceKey;
-    private GPRSEventType gprsEventType;
-    private ISDNAddressString msisdn;
-    private IMSI imsi;
-    private TimeAndTimezone timeAndTimezone;
-    private GPRSMSClass gprsMSClass;
-    private EndUserAddress endUserAddress;
-    private QualityOfService qualityOfService;
-    private AccessPointName accessPointName;
-    private RAIdentity routeingAreaIdentity;
-    private GPRSChargingID chargingID;
-    private SGSNCapabilities sgsnCapabilities;
-    private LocationInformationGPRS locationInformationGPRS;
-    private PDPInitiationType pdpInitiationType;
-    private CAPExtensions extensions;
-    private GSNAddress gsnAddress;
-    private boolean secondaryPDPContext;
-    private IMEI imei;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+    private ASNInteger serviceKey;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
+    private ASNGPRSEventTypeImpl gprsEventType;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
+    private ISDNAddressStringImpl msisdn;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
+    private IMSIImpl imsi;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1)
+    private TimeAndTimezoneImpl timeAndTimezone;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
+    private GPRSMSClassImpl gprsMSClass;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1)
+    private EndUserAddressImpl endUserAddress;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1)
+    private QualityOfServiceImpl qualityOfService;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1)
+    private AccessPointNameImpl accessPointName;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false,index = -1)
+    private RAIdentityImpl routeingAreaIdentity;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1)
+    private GPRSChargingIDImpl chargingID;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false,index = -1)
+    private SGSNCapabilitiesImpl sgsnCapabilities;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = true,index = -1)
+    private LocationInformationGPRSImpl locationInformationGPRS;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 13,constructed = false,index = -1)
+    private ASNPDPInitiationTypeImpl pdpInitiationType;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = false,index = -1)
+    private GSNAddressImpl gsnAddress;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = false,index = -1)
+    private ASNNull secondaryPDPContext;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1)
+    private IMEIImpl imei;
 
     public InitialDpGprsRequestImpl() {
         super();
     }
 
-    public InitialDpGprsRequestImpl(int serviceKey, GPRSEventType gprsEventType, ISDNAddressString msisdn, IMSI imsi,
-            TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass, EndUserAddress endUserAddress,
-            QualityOfService qualityOfService, AccessPointName accessPointName, RAIdentity routeingAreaIdentity,
-            GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities, LocationInformationGPRS locationInformationGPRS,
-            PDPInitiationType pdpInitiationType, CAPExtensions extensions, GSNAddress gsnAddress, boolean secondaryPDPContext,
-            IMEI imei) {
+    public InitialDpGprsRequestImpl(int serviceKey, GPRSEventType gprsEventType, ISDNAddressStringImpl msisdn, IMSIImpl imsi,
+            TimeAndTimezoneImpl timeAndTimezone, GPRSMSClassImpl gprsMSClass, EndUserAddressImpl endUserAddress,
+            QualityOfServiceImpl qualityOfService, AccessPointNameImpl accessPointName, RAIdentityImpl routeingAreaIdentity,
+            GPRSChargingIDImpl chargingID, SGSNCapabilitiesImpl sgsnCapabilities, LocationInformationGPRSImpl locationInformationGPRS,
+            PDPInitiationType pdpInitiationType, CAPExtensionsImpl extensions, GSNAddressImpl gsnAddress, boolean secondaryPDPContext,
+            IMEIImpl imei) {
         super();
-        this.serviceKey = serviceKey;
-        this.gprsEventType = gprsEventType;
+        this.serviceKey = new ASNInteger();
+        this.serviceKey.setValue(Long.valueOf(serviceKey));
+        
+        if(gprsEventType!=null) {
+        	this.gprsEventType = new ASNGPRSEventTypeImpl();
+        	this.gprsEventType.setType(gprsEventType);
+        }
+        
         this.msisdn = msisdn;
         this.imsi = imsi;
         this.timeAndTimezone = timeAndTimezone;
@@ -138,100 +142,117 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
         this.chargingID = chargingID;
         this.sgsnCapabilities = sgsnCapabilities;
         this.locationInformationGPRS = locationInformationGPRS;
-        this.pdpInitiationType = pdpInitiationType;
+        
+        if(pdpInitiationType!=null) {
+        	this.pdpInitiationType = new ASNPDPInitiationTypeImpl();
+        	this.pdpInitiationType.setType(pdpInitiationType);
+        }
+        
         this.extensions = extensions;
         this.gsnAddress = gsnAddress;
-        this.secondaryPDPContext = secondaryPDPContext;
+        
+        if(secondaryPDPContext)
+        	this.secondaryPDPContext = new ASNNull();
+        
         this.imei = imei;
     }
 
     @Override
     public int getServiceKey() {
-        return this.serviceKey;
+    	if(this.serviceKey==null || this.serviceKey.getValue()==null)
+    		return 0;
+    	
+        return this.serviceKey.getValue().intValue();
     }
 
     @Override
     public GPRSEventType getGPRSEventType() {
-        return this.gprsEventType;
+    	if(this.gprsEventType==null)
+    		return null;
+    	
+        return this.gprsEventType.getType();
     }
 
     @Override
-    public ISDNAddressString getMsisdn() {
+    public ISDNAddressStringImpl getMsisdn() {
         return this.msisdn;
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return this.imsi;
     }
 
     @Override
-    public TimeAndTimezone getTimeAndTimezone() {
+    public TimeAndTimezoneImpl getTimeAndTimezone() {
         return this.timeAndTimezone;
     }
 
     @Override
-    public GPRSMSClass getGPRSMSClass() {
+    public GPRSMSClassImpl getGPRSMSClass() {
         return this.gprsMSClass;
     }
 
     @Override
-    public EndUserAddress getEndUserAddress() {
+    public EndUserAddressImpl getEndUserAddress() {
         return this.endUserAddress;
     }
 
     @Override
-    public QualityOfService getQualityOfService() {
+    public QualityOfServiceImpl getQualityOfService() {
         return this.qualityOfService;
     }
 
     @Override
-    public AccessPointName getAccessPointName() {
+    public AccessPointNameImpl getAccessPointName() {
         return this.accessPointName;
     }
 
     @Override
-    public RAIdentity getRouteingAreaIdentity() {
+    public RAIdentityImpl getRouteingAreaIdentity() {
         return this.routeingAreaIdentity;
     }
 
     @Override
-    public GPRSChargingID getChargingID() {
+    public GPRSChargingIDImpl getChargingID() {
         return this.chargingID;
     }
 
     @Override
-    public SGSNCapabilities getSGSNCapabilities() {
+    public SGSNCapabilitiesImpl getSGSNCapabilities() {
         return this.sgsnCapabilities;
     }
 
     @Override
-    public LocationInformationGPRS getLocationInformationGPRS() {
+    public LocationInformationGPRSImpl getLocationInformationGPRS() {
         return this.locationInformationGPRS;
     }
 
     @Override
     public PDPInitiationType getPDPInitiationType() {
-        return this.pdpInitiationType;
+    	if(this.pdpInitiationType==null)
+    		return null;
+    	
+        return this.pdpInitiationType.getType();
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return this.extensions;
     }
 
     @Override
-    public GSNAddress getGSNAddress() {
+    public GSNAddressImpl getGSNAddress() {
         return this.gsnAddress;
     }
 
     @Override
-    public boolean getSecondaryPDPContext() {
-        return this.secondaryPDPContext;
+    public boolean getSecondaryPDPContext() {    	
+        return this.secondaryPDPContext!=null;
     }
 
     @Override
-    public IMEI getImei() {
+    public IMEIImpl getImei() {
         return this.imei;
     }
 
@@ -246,370 +267,18 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
     }
 
     @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, IOException, AsnException,
-            MAPParsingComponentException {
-
-        this.serviceKey = -1;
-        this.gprsEventType = null;
-        this.msisdn = null;
-        this.imsi = null;
-        this.timeAndTimezone = null;
-        this.gprsMSClass = null;
-        this.endUserAddress = null;
-        this.qualityOfService = null;
-        this.accessPointName = null;
-        this.routeingAreaIdentity = null;
-        this.chargingID = null;
-        this.sgsnCapabilities = null;
-        this.locationInformationGPRS = null;
-        this.pdpInitiationType = null;
-        this.extensions = null;
-        this.gsnAddress = null;
-        this.secondaryPDPContext = false;
-        this.imei = null;
-        boolean isServiceKeyFound = false;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _ID_serviceKey:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".serviceKey: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.serviceKey = (int) ais.readInteger();
-                        isServiceKeyFound = true;
-                        break;
-                    case _ID_gprsEventType:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".gprsEventType: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        int i1 = (int) ais.readInteger();
-                        this.gprsEventType = GPRSEventType.getInstance(i1);
-                        break;
-                    case _ID_msisdn:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".msisdn: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.msisdn = new ISDNAddressStringImpl();
-                        ((ISDNAddressStringImpl) this.msisdn).decodeAll(ais);
-                        break;
-                    case _ID_imsi:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".imsi: Parameter is not primitive", CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.imsi = new IMSIImpl();
-                        ((IMSIImpl) this.imsi).decodeAll(ais);
-                        break;
-                    case _ID_timeAndTimezone:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".timeAndTimezone: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.timeAndTimezone = new TimeAndTimezoneImpl();
-                        ((TimeAndTimezoneImpl) this.timeAndTimezone).decodeAll(ais);
-                        break;
-                    case _ID_gprsMSClass:
-                        if (ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".gprsMSClass: Parameter is primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.gprsMSClass = new GPRSMSClassImpl();
-                        ((GPRSMSClassImpl) this.gprsMSClass).decodeAll(ais);
-                        break;
-                    case _ID_endUserAddress:
-                        if (ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".endUserAddress: Parameter is primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.endUserAddress = new EndUserAddressImpl();
-                        ((EndUserAddressImpl) this.endUserAddress).decodeAll(ais);
-                        break;
-                    case _ID_qualityOfService:
-                        if (ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".qualityOfService: Parameter is primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.qualityOfService = new QualityOfServiceImpl();
-                        ((QualityOfServiceImpl) this.qualityOfService).decodeAll(ais);
-                        break;
-                    case _ID_accessPointName:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".accessPointName: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.accessPointName = new AccessPointNameImpl();
-                        ((AccessPointNameImpl) this.accessPointName).decodeAll(ais);
-                        break;
-                    case _ID_routeingAreaIdentity:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".routeingAreaIdentity: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.routeingAreaIdentity = new RAIdentityImpl();
-                        ((RAIdentityImpl) this.routeingAreaIdentity).decodeAll(ais);
-                        break;
-                    case _ID_chargingID:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".chargingID: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.chargingID = new GPRSChargingIDImpl();
-                        ((GPRSChargingIDImpl) this.chargingID).decodeAll(ais);
-                        break;
-                    case _ID_sgsnCapabilities:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".sgsnCapabilities: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.sgsnCapabilities = new SGSNCapabilitiesImpl();
-                        ((SGSNCapabilitiesImpl) this.sgsnCapabilities).decodeAll(ais);
-                        break;
-
-                    case _ID_locationInformationGPRS:
-                        if (ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".locationInformationGPRS: Parameter is primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.locationInformationGPRS = new LocationInformationGPRSImpl();
-                        ((LocationInformationGPRSImpl) this.locationInformationGPRS).decodeAll(ais);
-                        break;
-                    case _ID_pdpInitiationType:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".pdpInitiationType: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        int i2 = (int) ais.readInteger();
-                        this.pdpInitiationType = PDPInitiationType.getInstance(i2);
-                        break;
-                    case _ID_extensions:
-                        if (ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".extensions: Parameter is primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.extensions = new CAPExtensionsImpl();
-                        ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                        break;
-                    case _ID_gsnAddress:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".gsnAddress: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.gsnAddress = new GSNAddressImpl();
-                        ((GSNAddressImpl) this.gsnAddress).decodeAll(ais);
-                        break;
-                    case _ID_secondaryPDPContext:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".secondaryPDPContext: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        ais.readNull();
-                        secondaryPDPContext = true;
-                        break;
-                    case _ID_imei:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".imei: Parameter is not primitive", CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.imei = new IMEIImpl();
-                        ((IMEIImpl) this.imei).decodeAll(ais);
-                        break;
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.gprsEventType == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter gprsEventType is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (this.msisdn == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter msisdn is mandatory but not found", CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (this.imsi == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter imsi is mandatory but not found", CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (this.timeAndTimezone == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter timeAndTimezone is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (!isServiceKeyFound)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter ServiceKey is mandatory but not found", CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws CAPException {
-
-        if (this.gprsEventType == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": gprsEventType must not be null");
-
-        if (this.msisdn == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": msisdn must not be null");
-
-        if (this.imsi == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": imsi must not be null");
-
-        if (this.timeAndTimezone == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": timeAndTimezone must not be null");
-
-        try {
-
-            asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_serviceKey, this.serviceKey);
-
-            asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_gprsEventType, this.gprsEventType.getCode());
-
-            ((ISDNAddressStringImpl) this.msisdn).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_msisdn);
-
-            ((IMSIImpl) this.imsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_imsi);
-
-            ((TimeAndTimezoneImpl) this.timeAndTimezone).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_timeAndTimezone);
-
-            if (this.gprsMSClass != null)
-                ((GPRSMSClassImpl) this.gprsMSClass).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_gprsMSClass);
-
-            if (this.endUserAddress != null)
-                ((EndUserAddressImpl) this.endUserAddress).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_endUserAddress);
-
-            if (this.qualityOfService != null)
-                ((QualityOfServiceImpl) this.qualityOfService).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_qualityOfService);
-
-            if (this.accessPointName != null)
-                ((AccessPointNameImpl) this.accessPointName).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_accessPointName);
-
-            if (this.routeingAreaIdentity != null)
-                ((RAIdentityImpl) this.routeingAreaIdentity).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_routeingAreaIdentity);
-
-            if (this.chargingID != null)
-                ((GPRSChargingIDImpl) this.chargingID).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_chargingID);
-
-            if (this.sgsnCapabilities != null)
-                ((SGSNCapabilitiesImpl) this.sgsnCapabilities).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_sgsnCapabilities);
-
-            if (this.locationInformationGPRS != null)
-                ((LocationInformationGPRSImpl) this.locationInformationGPRS).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_locationInformationGPRS);
-
-            if (this.pdpInitiationType != null)
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_pdpInitiationType, this.pdpInitiationType.getCode());
-
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-
-            if (this.gsnAddress != null)
-                ((GSNAddressImpl) this.gsnAddress).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_gsnAddress);
-
-            if (this.secondaryPDPContext)
-                asnOs.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _ID_secondaryPDPContext);
-
-            if (this.imei != null)
-                ((IMEIImpl) this.imei).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_imei);
-
-        } catch (IOException e) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (MAPException e) {
-            throw new CAPException("MAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName + " [");
+        sb.append("InitialDpGprsRequest [");
         this.addInvokeIdInfo(sb);
 
         sb.append(", serviceKey=");
-        sb.append(this.serviceKey);
+        sb.append(this.getServiceKey());
         sb.append(", ");
 
-        if (this.gprsEventType != null) {
+        if (this.gprsEventType != null && this.gprsEventType.getType()!=null) {
             sb.append("gprsEventType=");
-            sb.append(this.gprsEventType.toString());
+            sb.append(this.gprsEventType.getType());
             sb.append(", ");
         }
 
@@ -679,9 +348,9 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
             sb.append(", ");
         }
 
-        if (this.pdpInitiationType != null) {
+        if (this.pdpInitiationType != null && this.pdpInitiationType.getType()!=null) {
             sb.append("pdpInitiationType=");
-            sb.append(this.pdpInitiationType.toString());
+            sb.append(this.pdpInitiationType.getType());
             sb.append(", ");
         }
 
@@ -697,7 +366,7 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
             sb.append(", ");
         }
 
-        if (this.secondaryPDPContext) {
+        if (this.secondaryPDPContext!=null) {
             sb.append("secondaryPDPContext ");
             sb.append(", ");
         }

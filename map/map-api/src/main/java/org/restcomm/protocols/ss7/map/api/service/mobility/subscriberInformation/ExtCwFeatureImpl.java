@@ -52,7 +52,7 @@ public class ExtCwFeatureImpl {
     	if(this.basicService==null)
     		return null;
     	
-        return this.basicService.getExtBasicServiceCodeImpl();
+        return this.basicService.getExtBasicServiceCode();
     }
 
     public ExtSSStatusImpl getSsStatus() {
@@ -64,9 +64,9 @@ public class ExtCwFeatureImpl {
         StringBuilder sb = new StringBuilder();
         sb.append("ExtCwFeature [");
 
-        if (this.basicService != null && this.basicService.getExtBasicServiceCodeImpl()!=null) {
+        if (this.basicService != null && this.basicService.getExtBasicServiceCode()!=null) {
             sb.append("basicService=");
-            sb.append(this.basicService.getExtBasicServiceCodeImpl());
+            sb.append(this.basicService.getExtBasicServiceCode());
         }
         if (this.ssStatus != null) {
             sb.append(", ssStatus=");

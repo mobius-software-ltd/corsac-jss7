@@ -22,51 +22,63 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.SendingSideID;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallInformationRequestRequest;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ASNRequestedInformationTypeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationTypeWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDWrapperImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessageImpl implements CallInformationRequestRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_requestedInformationTypeList = 0;
-    public static final int _ID_extensions = 2;
-    public static final int _ID_legID = 3;
+	public static final String _PrimitiveName = "CallInformationRequestRequestIndication";
 
-    public static final String _PrimitiveName = "CallInformationRequestRequestIndication";
-
-    private ArrayList<RequestedInformationType> requestedInformationTypeList;
-    private CAPExtensions extensions;
-    private SendingSideID legID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private RequestedInformationTypeWrapperImpl requestedInformationTypeList;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
+    private SendingLegIDWrapperImpl legID;
 
     public CallInformationRequestRequestImpl() {
     }
 
-    public CallInformationRequestRequestImpl(ArrayList<RequestedInformationType> requestedInformationTypeList,
-            CAPExtensions extensions, SendingSideID legID) {
-        this.requestedInformationTypeList = requestedInformationTypeList;
+    public CallInformationRequestRequestImpl(List<RequestedInformationType> requestedInformationTypeList,
+            CAPExtensionsImpl extensions, SendingLegIDImpl legID) {
+    	
+    	if(requestedInformationTypeList!=null) {
+    		List<ASNRequestedInformationTypeImpl> typesList=new ArrayList<ASNRequestedInformationTypeImpl>();
+    		for(RequestedInformationType currType:requestedInformationTypeList) {
+    			ASNRequestedInformationTypeImpl currValue=new ASNRequestedInformationTypeImpl();
+    			currValue.setType(currType);
+    			typesList.add(currValue);
+    		}    		
+    		this.requestedInformationTypeList = new RequestedInformationTypeWrapperImpl(typesList);
+    	}
+    	
         this.extensions = extensions;
-        this.legID = legID;
+        
+        if(legID!=null)
+        	this.legID = new SendingLegIDWrapperImpl(legID);
     }
 
     @Override
@@ -80,195 +92,41 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
     }
 
     @Override
-    public ArrayList<RequestedInformationType> getRequestedInformationTypeList() {
-        return requestedInformationTypeList;
+    public List<RequestedInformationType> getRequestedInformationTypeList() {
+    	if(requestedInformationTypeList==null || requestedInformationTypeList.getRequestedInformationTypes()==null)
+    		return null;
+    	
+    	List<RequestedInformationType> result=new ArrayList<RequestedInformationType>();
+    	for(ASNRequestedInformationTypeImpl curr:requestedInformationTypeList.getRequestedInformationTypes())
+    		result.add(curr.getType());
+    	
+        return result;
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return extensions;
     }
 
     @Override
-    public SendingSideID getLegID() {
-        return legID;
-    }
-
-    @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, IOException, AsnException {
-
-        this.requestedInformationTypeList = null;
-        this.extensions = null;
-        this.legID = null;
-        // this.legID = new SendingSideIDImpl(LegType.leg2);
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _ID_requestedInformationTypeList:
-                        this.requestedInformationTypeList = new ArrayList<RequestedInformationType>();
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        while (true) {
-                            if (ais2.available() == 0)
-                                break;
-
-                            int tag2 = ais2.readTag();
-
-                            if (tag2 != Tag.ENUMERATED || ais2.getTagClass() != Tag.CLASS_UNIVERSAL || !ais2.isTagPrimitive())
-                                throw new CAPParsingComponentException(
-                                        "Error while decoding "
-                                                + _PrimitiveName
-                                                + ": bad RequestedInformationType tag or tagClass or RequestedInformationType is not primitive",
-                                        CAPParsingComponentExceptionReason.MistypedParameter);
-
-                            int i1 = (int) ais2.readInteger();
-                            RequestedInformationType el = RequestedInformationType.getInstance(i1);
-                            if (el == null)
-                                throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                        + ": bad RequestedInformationType value",
-                                        CAPParsingComponentExceptionReason.MistypedParameter);
-                            this.requestedInformationTypeList.add(el);
-                        }
-                        break;
-                    case _ID_extensions:
-                        this.extensions = new CAPExtensionsImpl();
-                        ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                        break;
-                    case _ID_legID:
-                        ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        this.legID = new SendingSideIDImpl();
-                        ((SendingSideIDImpl) this.legID).decodeAll(ais2);
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.requestedInformationTypeList == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": Parameter requestedInformationTypeList is mandatory parameters, but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        if (this.requestedInformationTypeList == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": requestedInformationTypeList must not be null");
-        if (this.requestedInformationTypeList.size() < 1 || this.requestedInformationTypeList.size() > 4)
-            throw new CAPException("Error while encoding " + _PrimitiveName
-                    + ": requestedInformationTypeList size must be from 1 to 4");
-
-        try {
-            aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_requestedInformationTypeList);
-            int pos = aos.StartContentDefiniteLength();
-            for (RequestedInformationType ri : this.requestedInformationTypeList) {
-                aos.writeInteger(Tag.CLASS_UNIVERSAL, Tag.ENUMERATED, ri.getCode());
-            }
-            aos.FinalizeContent(pos);
-
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-
-            if (this.legID != null) {
-                aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_legID);
-                pos = aos.StartContentDefiniteLength();
-                ((SendingSideIDImpl) this.legID).encodeAll(aos);
-                aos.FinalizeContent(pos);
-            }
-
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (IOException e) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+    public SendingLegIDImpl getLegID() {
+    	if(legID==null)
+    		return null;
+    	
+        return legID.getSendingLegID();
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("CallInformationRequestRequestIndication [");
         this.addInvokeIdInfo(sb);
 
-        if (this.requestedInformationTypeList != null) {
+        if (this.requestedInformationTypeList != null && this.requestedInformationTypeList.getRequestedInformationTypes()!=null) {
             sb.append(", requestedInformationTypeList=[");
             boolean firstItem = true;
-            for (RequestedInformationType ri : this.requestedInformationTypeList) {
+            for (ASNRequestedInformationTypeImpl ri : this.requestedInformationTypeList.getRequestedInformationTypes()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -281,9 +139,10 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
             sb.append(", extensions=");
             sb.append(extensions.toString());
         }
-        if (this.legID != null) {
+        
+        if (this.legID != null && this.legID.getSendingLegID()!=null) {
             sb.append(", legID=");
-            sb.append(legID.toString());
+            sb.append(legID.getSendingLegID());
         }
 
         sb.append("]");

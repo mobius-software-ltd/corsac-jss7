@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 
 /**
  *
@@ -38,6 +38,6 @@ ReceivedInformationArg {PARAMETERS-BOUND : bound}::= CHOICE {
  */
 public interface PromptAndCollectUserInformationResponse extends CircuitSwitchedCallMessage {
 
-    Digits getDigitsResponse();
+    DigitsImpl getDigitsResponse();
 
 }

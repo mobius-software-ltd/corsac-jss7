@@ -24,17 +24,17 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.inap.api.isup.CalledPartyNumberInap;
 import org.restcomm.protocols.ss7.inap.api.isup.CallingPartyNumberInap;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.CauseInap;
 import org.restcomm.protocols.ss7.inap.api.isup.Digits;
 import org.restcomm.protocols.ss7.inap.api.isup.ForwardCallIndicatorsInap;
 import org.restcomm.protocols.ss7.inap.api.isup.ForwardGVNSInap;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.ISDNAccessRelatedInformationInap;
 import org.restcomm.protocols.ss7.inap.api.isup.LocationNumberInap;
 import org.restcomm.protocols.ss7.inap.api.isup.OriginalCalledPartyIDInap;
 import org.restcomm.protocols.ss7.inap.api.isup.RedirectingPartyIDInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.BearerCapability;
 import org.restcomm.protocols.ss7.inap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
@@ -194,7 +194,7 @@ public interface InitialDPRequest {
 
     CallingPartyBusinessGroupID getCallingPartyBusinessGroupID();
 
-    CallingPartysCategoryInap getCallingPartysCategory();
+    CallingPartysCategoryInapImpl getCallingPartysCategory();
 
     CGEncountered getCGEncountered();
 
@@ -210,7 +210,7 @@ public interface InitialDPRequest {
 
     INAPExtensions getExtensions();
 
-    HighLayerCompatibilityInap getHighLayerCompatibility();
+    HighLayerCompatibilityInapImpl getHighLayerCompatibility();
 
     ServiceInteractionIndicators getServiceInteractionIndicators();
 
@@ -231,7 +231,7 @@ public interface InitialDPRequest {
 
     RedirectingPartyIDInap getRedirectingPartyID();
 
-    RedirectionInformationInap getRedirectionInformation();
+    RedirectionInformationInapImpl getRedirectionInformation();
 
     CauseInap getCause();
 

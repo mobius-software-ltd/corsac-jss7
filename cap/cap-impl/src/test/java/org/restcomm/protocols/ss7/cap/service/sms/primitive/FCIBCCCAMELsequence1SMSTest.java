@@ -30,9 +30,9 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.FCIBCCCAMELsequence1SMSImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.FreeFormatDataSMSImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMSImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -55,10 +55,10 @@ public class FCIBCCCAMELsequence1SMSTest {
 		byte[] data = this.getData();
 		AsnInputStream asn = new AsnInputStream(data);
 		int tag = asn.readTag();
-		FCIBCCCAMELsequence1SMSImpl prim = new FCIBCCCAMELsequence1SMSImpl();
+		FCIBCCCAMELSequence1SMSImpl prim = new FCIBCCCAMELSequence1SMSImpl();
 		prim.decodeAll(asn);
 		
-		assertEquals(tag, FCIBCCCAMELsequence1SMSImpl._ID_FCIBCCCAMELsequence1);
+		assertEquals(tag, FCIBCCCAMELSequence1SMSImpl._ID_FCIBCCCAMELsequence1);
 		assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
 		
 		assertTrue(Arrays.equals(prim.getFreeFormatData().getData(), this.getFreeFormatData()));
@@ -69,7 +69,7 @@ public class FCIBCCCAMELsequence1SMSTest {
 	@Test(groups = { "functional.encode", "primitives" })
 	public void testEncode() throws Exception {
 		FreeFormatDataSMS freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
-		FCIBCCCAMELsequence1SMSImpl prim = new FCIBCCCAMELsequence1SMSImpl(freeFormatData, AppendFreeFormatData.append);
+		FCIBCCCAMELSequence1SMSImpl prim = new FCIBCCCAMELSequence1SMSImpl(freeFormatData, AppendFreeFormatData.append);
 		AsnOutputStream asn = new AsnOutputStream();
 		prim.encodeAll(asn);
 		

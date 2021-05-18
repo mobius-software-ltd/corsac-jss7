@@ -22,126 +22,129 @@
 
 package org.restcomm.protocols.ss7.cap.service.sms;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.InitialDPSMSRequest;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.ASNEventTypeSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingScheme;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifier;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriod;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
-import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSAddressStringImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPShortMessageSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSClassmark2Impl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifierImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2Impl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDPSMSRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "InitialDPSMSRequest";
-
-    public static final int _ID_serviceKey = 0;
-    public static final int _ID_destinationSubscriberNumber = 1;
-    public static final int _ID_callingPartyNumber = 2;
-    public static final int _ID_eventTypeSMS = 3;
-    public static final int _ID_imsi = 4;
-    public static final int _ID_locationInformationMSC = 5;
-    public static final int _ID_locationInformationGPRS = 6;
-    public static final int _ID_smscCAddress = 7;
-    public static final int _ID_timeAndTimezone = 8;
-    public static final int _ID_tPShortMessageSpecificInfo = 9;
-    public static final int _ID_tPProtocolIdentifier = 10;
-    public static final int _ID_tPDataCodingScheme = 11;
-    public static final int _ID_tPValidityPeriod = 12;
-    public static final int _ID_extensions = 13;
-    public static final int _ID_smsReferenceNumber = 14;
-    public static final int _ID_mscAddress = 15;
-    public static final int _ID_sgsnNumber = 16;
-    public static final int _ID_mSClassmark2 = 17;
-    public static final int _ID_gprsMSClass = 18;
-    public static final int _ID_imei = 19;
-    public static final int _ID_calledPartyNumber = 20;
-
-    private int serviceKey;
-    private CalledPartyBCDNumber destinationSubscriberNumber;
-    private SMSAddressString callingPartyNumber;
-    private EventTypeSMS eventTypeSMS;
-    private IMSI imsi;
-    private LocationInformation locationInformationMSC;
-    private LocationInformationGPRS locationInformationGPRS;
-    private ISDNAddressString smscCAddress;
-    private TimeAndTimezone timeAndTimezone;
-    private TPShortMessageSpecificInfo tPShortMessageSpecificInfo;
-    private TPProtocolIdentifier tPProtocolIdentifier;
-    private TPDataCodingScheme tPDataCodingScheme;
-    private TPValidityPeriod tPValidityPeriod;
-    private CAPExtensions extensions;
-    private CallReferenceNumber smsReferenceNumber;
-    private ISDNAddressString mscAddress;
-    private ISDNAddressString sgsnNumber;
-    private MSClassmark2 mSClassmark2;
-    private GPRSMSClass gprsMSClass;
-    private IMEI imei;
-    private ISDNAddressString calledPartyNumber;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+    private ASNInteger serviceKey;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
+    private CalledPartyBCDNumberImpl destinationSubscriberNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
+    private SMSAddressStringImpl callingPartyNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
+    private ASNEventTypeSMSImpl eventTypeSMS;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1)
+    private IMSIImpl imsi;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
+    private LocationInformationImpl  locationInformationMSC;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1)
+    private LocationInformationGPRSImpl locationInformationGPRS;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1)
+    private ISDNAddressStringImpl smscCAddress;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1)
+    private TimeAndTimezoneImpl timeAndTimezone;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false,index = -1)
+    private TPShortMessageSpecificInfoImpl tPShortMessageSpecificInfo;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1)
+    private TPProtocolIdentifierImpl tPProtocolIdentifier;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false,index = -1)
+    private TPDataCodingSchemeImpl tPDataCodingScheme;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1)
+    private TPValidityPeriodImpl tPValidityPeriod;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 13,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = false,index = -1)
+    private CallReferenceNumberImpl smsReferenceNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = false,index = -1)
+    private ISDNAddressStringImpl mscAddress;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = false,index = -1)
+    private ISDNAddressStringImpl sgsnNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1)
+    private MSClassmark2Impl mSClassmark2;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 18,constructed = true,index = -1)
+    private GPRSMSClassImpl gprsMSClass;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 19,constructed = false,index = -1)
+    private IMEIImpl imei;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 20,constructed = false,index = -1)
+    private ISDNAddressStringImpl calledPartyNumber;
 
     public InitialDPSMSRequestImpl() {
         super();
-        this.serviceKey = -1;
     }
 
-    public InitialDPSMSRequestImpl(int serviceKey, CalledPartyBCDNumber destinationSubscriberNumber,
-            SMSAddressString callingPartyNumber, EventTypeSMS eventTypeSMS, IMSI imsi,
-            LocationInformation locationInformationMSC, LocationInformationGPRS locationInformationGPRS,
-            ISDNAddressString smscCAddress, TimeAndTimezone timeAndTimezone,
-            TPShortMessageSpecificInfo tPShortMessageSpecificInfo, TPProtocolIdentifier tPProtocolIdentifier,
-            TPDataCodingScheme tPDataCodingScheme, TPValidityPeriod tPValidityPeriod, CAPExtensions extensions,
-            CallReferenceNumber smsReferenceNumber, ISDNAddressString mscAddress, ISDNAddressString sgsnNumber,
-            MSClassmark2 mSClassmark2, GPRSMSClass gprsMSClass, IMEI imei, ISDNAddressString calledPartyNumber) {
+    public InitialDPSMSRequestImpl(int serviceKey, CalledPartyBCDNumberImpl destinationSubscriberNumber,
+            SMSAddressStringImpl callingPartyNumber, EventTypeSMS eventTypeSMS, IMSIImpl imsi,
+            LocationInformationImpl locationInformationMSC, LocationInformationGPRSImpl locationInformationGPRS,
+            ISDNAddressStringImpl smscCAddress, TimeAndTimezoneImpl timeAndTimezone,
+            TPShortMessageSpecificInfoImpl tPShortMessageSpecificInfo, TPProtocolIdentifierImpl tPProtocolIdentifier,
+            TPDataCodingSchemeImpl tPDataCodingScheme, TPValidityPeriodImpl tPValidityPeriod, CAPExtensionsImpl extensions,
+            CallReferenceNumberImpl smsReferenceNumber, ISDNAddressStringImpl mscAddress, ISDNAddressStringImpl sgsnNumber,
+            MSClassmark2Impl mSClassmark2, GPRSMSClassImpl gprsMSClass, IMEIImpl imei, ISDNAddressStringImpl calledPartyNumber) {
         super();
-        this.serviceKey = serviceKey;
+        this.serviceKey = new ASNInteger();
+        this.serviceKey.setValue(Long.valueOf(serviceKey));
+        
         this.destinationSubscriberNumber = destinationSubscriberNumber;
         this.callingPartyNumber = callingPartyNumber;
-        this.eventTypeSMS = eventTypeSMS;
+        
+        if(eventTypeSMS!=null) {
+        	this.eventTypeSMS = new ASNEventTypeSMSImpl();
+        	this.eventTypeSMS.setType(eventTypeSMS);
+        }
+        
         this.imsi = imsi;
         this.locationInformationMSC = locationInformationMSC;
         this.locationInformationGPRS = locationInformationGPRS;
@@ -163,106 +166,112 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
 
     @Override
     public int getServiceKey() {
-        return this.serviceKey;
+    	if(this.serviceKey==null || this.serviceKey.getValue()==null)
+    		return -1;
+    	
+        return this.serviceKey.getValue().intValue();
     }
 
     @Override
-    public CalledPartyBCDNumber getDestinationSubscriberNumber() {
+    public CalledPartyBCDNumberImpl getDestinationSubscriberNumber() {
         return this.destinationSubscriberNumber;
     }
 
     @Override
-    public SMSAddressString getCallingPartyNumber() {
+    public SMSAddressStringImpl getCallingPartyNumber() {
         return this.callingPartyNumber;
     }
 
     @Override
     public EventTypeSMS getEventTypeSMS() {
-        return this.eventTypeSMS;
+    	if(eventTypeSMS==null)
+    		return null;
+    	
+        return this.eventTypeSMS.getType();
     }
 
     @Override
-    public IMSI getImsi() {
+    public IMSIImpl getImsi() {
         return this.imsi;
     }
 
     @Override
-    public LocationInformation getLocationInformationMSC() {
+    public LocationInformationImpl getLocationInformationMSC() {
         return this.locationInformationMSC;
     }
 
     @Override
-    public LocationInformationGPRS getLocationInformationGPRS() {
+    public LocationInformationGPRSImpl getLocationInformationGPRS() {
         return this.locationInformationGPRS;
     }
 
     @Override
-    public ISDNAddressString getSMSCAddress() {
+    public ISDNAddressStringImpl getSMSCAddress() {
         return this.smscCAddress;
     }
 
     @Override
-    public TimeAndTimezone getTimeAndTimezone() {
+    public TimeAndTimezoneImpl getTimeAndTimezone() {
         return this.timeAndTimezone;
     }
 
     @Override
-    public TPShortMessageSpecificInfo getTPShortMessageSpecificInfo() {
+    public TPShortMessageSpecificInfoImpl getTPShortMessageSpecificInfo() {
         return this.tPShortMessageSpecificInfo;
     }
 
     @Override
-    public TPProtocolIdentifier getTPProtocolIdentifier() {
+    public TPProtocolIdentifierImpl getTPProtocolIdentifier() {
         return this.tPProtocolIdentifier;
     }
 
     @Override
-    public TPDataCodingScheme getTPDataCodingScheme() {
+    public TPDataCodingSchemeImpl getTPDataCodingScheme() {
         return this.tPDataCodingScheme;
     }
 
     @Override
-    public TPValidityPeriod getTPValidityPeriod() {
+    public TPValidityPeriodImpl getTPValidityPeriod() {
         return this.tPValidityPeriod;
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return this.extensions;
     }
 
     @Override
-    public CallReferenceNumber getSmsReferenceNumber() {
+    public CallReferenceNumberImpl getSmsReferenceNumber() {
         return this.smsReferenceNumber;
     }
 
     @Override
-    public ISDNAddressString getMscAddress() {
+    public ISDNAddressStringImpl getMscAddress() {
         return this.mscAddress;
     }
 
     @Override
-    public ISDNAddressString getSgsnNumber() {
+    public ISDNAddressStringImpl getSgsnNumber() {
         return this.sgsnNumber;
     }
 
     @Override
-    public MSClassmark2 getMSClassmark2() {
+    public MSClassmark2Impl getMSClassmark2() {
         return this.mSClassmark2;
     }
 
     @Override
-    public GPRSMSClass getGPRSMSClass() {
+    public GPRSMSClassImpl getGPRSMSClass() {
         return this.gprsMSClass;
     }
 
     @Override
-    public IMEI getImei() {
+    public IMEIImpl getImei() {
         return this.imei;
     }
 
     @Override
-    public ISDNAddressString getCalledPartyNumber() {
+    public ISDNAddressStringImpl getCalledPartyNumber() {
         return this.calledPartyNumber;
     }
 
@@ -275,395 +284,21 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
     public int getOperationCode() {
         return CAPOperationCode.initialDPSMS;
     }
-
-    @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, IOException,
-            AsnException, MAPParsingComponentException {
-
-        this.serviceKey = -1;
-        this.destinationSubscriberNumber = null;
-        this.callingPartyNumber = null;
-        this.eventTypeSMS = null;
-        this.imsi = null;
-        this.locationInformationMSC = null;
-        this.locationInformationGPRS = null;
-        this.smscCAddress = null;
-        this.timeAndTimezone = null;
-        this.tPShortMessageSpecificInfo = null;
-        this.tPProtocolIdentifier = null;
-        this.tPDataCodingScheme = null;
-        this.tPValidityPeriod = null;
-        this.extensions = null;
-        this.smsReferenceNumber = null;
-        this.mscAddress = null;
-        this.sgsnNumber = null;
-        this.mSClassmark2 = null;
-        this.gprsMSClass = null;
-        this.imei = null;
-        this.calledPartyNumber = null;
-        boolean isServiceKeyFound = false;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                case _ID_serviceKey:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".serviceKey: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.serviceKey = (int) ais.readInteger();
-                    isServiceKeyFound = true;
-                    break;
-
-                case _ID_destinationSubscriberNumber:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".destinationSubscriberNumber: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.destinationSubscriberNumber = new CalledPartyBCDNumberImpl();
-                    ((CalledPartyBCDNumberImpl) this.destinationSubscriberNumber).decodeAll(ais);
-                    break;
-                case _ID_callingPartyNumber:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".callingPartyNumber: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.callingPartyNumber = new SMSAddressStringImpl();
-                    ((SMSAddressStringImpl) this.callingPartyNumber).decodeAll(ais);
-                    break;
-                case _ID_eventTypeSMS:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".eventTypeSMS: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    int i1 = (int) ais.readInteger();
-                    this.eventTypeSMS = EventTypeSMS.getInstance(i1);
-                    break;
-                case _ID_imsi:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".imsi: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.imsi = new IMSIImpl();
-                    ((IMSIImpl) this.imsi).decodeAll(ais);
-                    break;
-                case _ID_locationInformationMSC:
-                    if (ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".locationInformationMSC: Parameter is primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.locationInformationMSC = new LocationInformationImpl();
-                    ((LocationInformationImpl) this.locationInformationMSC).decodeAll(ais);
-                    break;
-                case _ID_locationInformationGPRS:
-                    if (ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".locationInformationGPRS: Parameter is primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.locationInformationGPRS = new LocationInformationGPRSImpl();
-                    ((LocationInformationGPRSImpl) this.locationInformationGPRS).decodeAll(ais);
-                    break;
-                case _ID_smscCAddress:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".smscCAddress: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.smscCAddress = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.smscCAddress).decodeAll(ais);
-                    break;
-                case _ID_timeAndTimezone:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".timeAndTimezone: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.timeAndTimezone = new TimeAndTimezoneImpl();
-                    ((TimeAndTimezoneImpl) this.timeAndTimezone).decodeAll(ais);
-                    break;
-                case _ID_tPShortMessageSpecificInfo:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".tPShortMessageSpecificInfo: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.tPShortMessageSpecificInfo = new TPShortMessageSpecificInfoImpl();
-                    ((TPShortMessageSpecificInfoImpl) this.tPShortMessageSpecificInfo).decodeAll(ais);
-                    break;
-                case _ID_tPProtocolIdentifier:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".tPProtocolIdentifier: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.tPProtocolIdentifier = new TPProtocolIdentifierImpl();
-                    ((TPProtocolIdentifierImpl) this.tPProtocolIdentifier).decodeAll(ais);
-                    break;
-                case _ID_tPDataCodingScheme:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".tPDataCodingScheme: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.tPDataCodingScheme = new TPDataCodingSchemeImpl();
-                    ((TPDataCodingSchemeImpl) this.tPDataCodingScheme).decodeAll(ais);
-                    break;
-                case _ID_tPValidityPeriod:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".tPValidityPeriod: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.tPValidityPeriod = new TPValidityPeriodImpl();
-                    ((TPValidityPeriodImpl) this.tPValidityPeriod).decodeAll(ais);
-                    break;
-                case _ID_extensions:
-                    if (ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".extensions: Parameter is primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.extensions = new CAPExtensionsImpl();
-                    ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                    break;
-                case _ID_smsReferenceNumber:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".smsReferenceNumber: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.smsReferenceNumber = new CallReferenceNumberImpl();
-                    ((CallReferenceNumberImpl) this.smsReferenceNumber).decodeAll(ais);
-                    break;
-                case _ID_mscAddress:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".mscAddress: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.mscAddress = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.mscAddress).decodeAll(ais);
-                    break;
-                case _ID_sgsnNumber:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".sgsnNumber: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.sgsnNumber = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.sgsnNumber).decodeAll(ais);
-                    break;
-                case _ID_mSClassmark2:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".mSClassmark2: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.mSClassmark2 = new MSClassmark2Impl();
-                    ((MSClassmark2Impl) this.mSClassmark2).decodeAll(ais);
-                    break;
-                case _ID_gprsMSClass:
-                    if (ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".gprsMSClass: Parameter is primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.gprsMSClass = new GPRSMSClassImpl();
-                    ((GPRSMSClassImpl) this.gprsMSClass).decodeAll(ais);
-                    break;
-                case _ID_imei:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".imei: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.imei = new IMEIImpl();
-                    ((IMEIImpl) this.imei).decodeAll(ais);
-                    break;
-
-                case _ID_calledPartyNumber:
-                    if (!ais.isTagPrimitive())
-                        throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                + ".calledPartyNumber: Parameter is not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.calledPartyNumber = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.calledPartyNumber).decodeAll(ais);
-                    break;
-
-                default:
-                    ais.advanceElement();
-                    break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (!isServiceKeyFound)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter ServiceKey is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws CAPException {
-
-        try {
-
-            asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_serviceKey, this.serviceKey);
-
-            if (this.destinationSubscriberNumber != null)
-                ((CalledPartyBCDNumberImpl) this.destinationSubscriberNumber).encodeAll(asnOs,
-                        Tag.CLASS_CONTEXT_SPECIFIC, _ID_destinationSubscriberNumber);
-
-            if (this.callingPartyNumber != null)
-                ((SMSAddressStringImpl) this.callingPartyNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_callingPartyNumber);
-
-            if (this.eventTypeSMS != null)
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_eventTypeSMS, this.eventTypeSMS.getCode());
-
-            if (this.imsi != null)
-                ((IMSIImpl) this.imsi).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_imsi);
-
-            if (this.locationInformationMSC != null)
-                ((LocationInformationImpl) this.locationInformationMSC).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_locationInformationMSC);
-
-            if (this.locationInformationGPRS != null)
-                ((LocationInformationGPRSImpl) this.locationInformationGPRS).encodeAll(asnOs,
-                        Tag.CLASS_CONTEXT_SPECIFIC, _ID_locationInformationGPRS);
-
-            if (this.smscCAddress != null)
-                ((ISDNAddressStringImpl) this.smscCAddress).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_smscCAddress);
-
-            if (this.timeAndTimezone != null)
-                ((TimeAndTimezoneImpl) this.timeAndTimezone).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_timeAndTimezone);
-
-            if (this.tPShortMessageSpecificInfo != null)
-                ((TPShortMessageSpecificInfoImpl) this.tPShortMessageSpecificInfo).encodeAll(asnOs,
-                        Tag.CLASS_CONTEXT_SPECIFIC, _ID_tPShortMessageSpecificInfo);
-
-            if (this.tPProtocolIdentifier != null)
-                ((TPProtocolIdentifierImpl) this.tPProtocolIdentifier).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_tPProtocolIdentifier);
-
-            if (this.tPDataCodingScheme != null)
-                ((TPDataCodingSchemeImpl) this.tPDataCodingScheme).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_tPDataCodingScheme);
-
-            if (this.tPValidityPeriod != null)
-                ((TPValidityPeriodImpl) this.tPValidityPeriod).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_tPValidityPeriod);
-
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-
-            if (this.smsReferenceNumber != null)
-                ((CallReferenceNumberImpl) this.smsReferenceNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_smsReferenceNumber);
-
-            if (this.mscAddress != null)
-                ((ISDNAddressStringImpl) this.mscAddress).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_mscAddress);
-
-            if (this.sgsnNumber != null)
-                ((ISDNAddressStringImpl) this.sgsnNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_sgsnNumber);
-
-            if (this.mSClassmark2 != null)
-                ((MSClassmark2Impl) this.mSClassmark2).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_mSClassmark2);
-
-            if (this.locationInformationGPRS != null)
-                ((LocationInformationGPRSImpl) this.locationInformationGPRS).encodeAll(asnOs,
-                        Tag.CLASS_CONTEXT_SPECIFIC, _ID_locationInformationGPRS);
-
-            if (this.gprsMSClass != null)
-                ((GPRSMSClassImpl) this.gprsMSClass).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_gprsMSClass);
-
-            if (this.imei != null)
-                ((IMEIImpl) this.imei).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_imei);
-
-            if (this.calledPartyNumber != null)
-                ((ISDNAddressStringImpl) this.calledPartyNumber).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_calledPartyNumber);
-
-        } catch (IOException e) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (MAPException e) {
-            throw new CAPException("MAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
+    
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("InitialDPSMSRequest [");
         this.addInvokeIdInfo(sb);
 
-        sb.append(", serviceKey=");
-        sb.append(serviceKey);
+        if(serviceKey!=null && serviceKey.getValue()!=null) {
+        	sb.append(", serviceKey=");
+        	sb.append(serviceKey.getValue());
+        } else {
+        	sb.append(", serviceKey=-1");        	
+        }
+        
         if (this.destinationSubscriberNumber != null) {
             sb.append(", destinationSubscriberNumber=");
             sb.append(destinationSubscriberNumber.toString());
@@ -672,9 +307,9 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
             sb.append(", callingPartyNumber=");
             sb.append(callingPartyNumber.toString());
         }
-        if (this.eventTypeSMS != null) {
+        if (this.eventTypeSMS != null && this.eventTypeSMS.getType()!=null) {
             sb.append(", eventTypeSMS=");
-            sb.append(eventTypeSMS.toString());
+            sb.append(eventTypeSMS.getType());
         }
         if (this.imsi != null) {
             sb.append(", imsi=");

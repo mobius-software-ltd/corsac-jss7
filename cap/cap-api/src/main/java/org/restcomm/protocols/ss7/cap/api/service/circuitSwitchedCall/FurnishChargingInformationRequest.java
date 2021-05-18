@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELsequence1;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
 
 /**
  *
@@ -66,6 +66,6 @@ CAMEL-FCIBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= CHOICE{
  */
 public interface FurnishChargingInformationRequest extends CircuitSwitchedCallMessage {
 
-    FCIBCCCAMELsequence1 getFCIBCCCAMELsequence1();
+    FCIBCCCAMELSequence1Impl getFCIBCCCAMELsequence1();
 
 }

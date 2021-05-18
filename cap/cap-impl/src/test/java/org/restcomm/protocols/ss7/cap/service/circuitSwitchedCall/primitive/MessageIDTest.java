@@ -31,11 +31,11 @@ import java.util.Arrays;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariableMessageImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariableMessageImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartImpl;
 import org.testng.annotations.Test;
 
 /**

@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 *
@@ -41,6 +41,6 @@ MidCallControlInfo {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE (bound.&minMidCa
 */
 public interface MidCallControlInfo extends Serializable {
 
-    ArrayList<MidCallControlInfoItem> getMidCallControlInfoItems();
+    List<MidCallControlInfoItem> getMidCallControlInfoItems();
 
 }

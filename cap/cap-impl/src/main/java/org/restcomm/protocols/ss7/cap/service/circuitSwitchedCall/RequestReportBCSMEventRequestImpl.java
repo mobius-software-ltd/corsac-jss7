@@ -22,49 +22,41 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.RequestReportBCSMEventRequest;
-import org.restcomm.protocols.ss7.cap.primitives.BCSMEventImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.primitives.ArrayListSerializingBase;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessageImpl implements RequestReportBCSMEventRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_bcsmEvents = 0;
-    public static final int _ID_extensions = 2;
-
-    public static final String _PrimitiveName = "RequestReportBCSMEventRequest";
-
-    private static final String BCSM_EVENT = "bcsmEvent";
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private BCSMEventWrapperImpl bcsmEventList;
     
-    private ArrayList<BCSMEvent> bcsmEventList;
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
 
     public RequestReportBCSMEventRequestImpl() {
     }
 
-    public RequestReportBCSMEventRequestImpl(ArrayList<BCSMEvent> bcsmEventList, CAPExtensions extensions) {
-        this.bcsmEventList = bcsmEventList;
+    public RequestReportBCSMEventRequestImpl(List<BCSMEventImpl> bcsmEventList, CAPExtensionsImpl extensions) {
+    	if(bcsmEventList!=null)
+    		this.bcsmEventList = new BCSMEventWrapperImpl(bcsmEventList);
+    	
         this.extensions = extensions;
     }
 
@@ -79,175 +71,29 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
     }
 
     @Override
-    public ArrayList<BCSMEvent> getBCSMEventList() {
-        return bcsmEventList;
+    public List<BCSMEventImpl> getBCSMEventList() {
+    	if(bcsmEventList==null)
+    		return null;
+    	
+        return bcsmEventList.getBCSMEvents();
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return extensions;
-    }
-
-    @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, MAPParsingComponentException,
-            IOException, AsnException {
-
-        this.bcsmEventList = null;
-        this.extensions = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _ID_bcsmEvents:
-                        this.bcsmEventList = new ArrayList<BCSMEvent>();
-                        AsnInputStream ais2 = ais.readSequenceStream();
-
-                        while (true) {
-                            if (ais2.available() == 0)
-                                break;
-
-                            int tag2 = ais2.readTag();
-                            if (tag2 != Tag.SEQUENCE || ais2.getTagClass() != Tag.CLASS_UNIVERSAL || ais2.isTagPrimitive())
-                                throw new CAPParsingComponentException(
-                                        "Error when decoding RequestReportBCSMEventRequest: bad tag or tagClass or is primitive of BCSMEvent element",
-                                        CAPParsingComponentExceptionReason.MistypedParameter);
-
-                            BCSMEventImpl elem = new BCSMEventImpl();
-                            elem.decodeAll(ais2);
-                            this.bcsmEventList.add(elem);
-                        }
-
-                        break;
-                    case _ID_extensions:
-                        this.extensions = new CAPExtensionsImpl();
-                        ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.bcsmEventList == null)
-            throw new CAPParsingComponentException(
-                    "Error while decoding RequestReportBCSMEventRequest: bcsmEventList is mandatory but not found ",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        if (this.bcsmEventList == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": bcsmEventList must not be null");
-        if (this.bcsmEventList.size() < 1 || this.bcsmEventList.size() > 30)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": bcsmEventList length must be from 1 to 30");
-
-        try {
-            aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_bcsmEvents);
-            int pos = aos.StartContentDefiniteLength();
-            for (BCSMEvent be : this.bcsmEventList) {
-                BCSMEventImpl bee = (BCSMEventImpl) be;
-                bee.encodeAll(aos);
-            }
-            aos.FinalizeContent(pos);
-
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("RequestReportBCSMEventRequest [");
         this.addInvokeIdInfo(sb);
 
-        if (this.bcsmEventList != null) {
+        if (this.bcsmEventList != null && this.bcsmEventList.getBCSMEvents()!=null) {
             sb.append(", bcsmEventList=[");
             boolean firstItem = true;
-            for (BCSMEvent be : this.bcsmEventList) {
+            for (BCSMEventImpl be : this.bcsmEventList.getBCSMEvents()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -264,17 +110,5 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
         sb.append("]");
 
         return sb.toString();
-    }
-
-    public static class RequestReportBCSMEventRequest_BCSMEvent extends ArrayListSerializingBase<BCSMEvent> {
-
-        public RequestReportBCSMEventRequest_BCSMEvent() {
-            super(BCSM_EVENT, BCSMEventImpl.class);
-        }
-
-        public RequestReportBCSMEventRequest_BCSMEvent(ArrayList<BCSMEvent> data) {
-            super(BCSM_EVENT, BCSMEventImpl.class, data);
-        }
-
     }
 }

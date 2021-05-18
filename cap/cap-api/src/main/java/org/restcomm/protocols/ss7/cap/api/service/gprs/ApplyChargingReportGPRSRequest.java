@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResult;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOver;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOverImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
 
 /**
  *
@@ -44,14 +44,13 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServic
  */
 public interface ApplyChargingReportGPRSRequest extends GprsMessage {
 
-    ChargingResult getChargingResult();
+    ChargingResultImpl getChargingResult();
 
-    QualityOfService getQualityOfService();
+    QualityOfServiceImpl getQualityOfService();
 
     boolean getActive();
 
-    PDPID getPDPID();
+    PDPIDImpl getPDPID();
 
-    ChargingRollOver getChargingRollOver();
-
+    ChargingRollOverImpl getChargingRollOver();
 }

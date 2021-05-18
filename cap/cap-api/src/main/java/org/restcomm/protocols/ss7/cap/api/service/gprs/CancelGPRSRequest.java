@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 
 /**
  *
@@ -39,6 +39,6 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
  */
 public interface CancelGPRSRequest extends GprsMessage {
 
-    PDPID getPDPID();
+    PDPIDImpl getPDPID();
 
 }

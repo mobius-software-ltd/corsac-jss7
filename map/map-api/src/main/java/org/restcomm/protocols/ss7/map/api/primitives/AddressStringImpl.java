@@ -22,13 +22,16 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
-import io.netty.buffer.ByteBuf;
-
-import java.io.Serializable;
+import java.nio.charset.CharacterCodingException;
 
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
+import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharset;
+import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetDecoder;
+import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetDecodingData;
+import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetEncoder;
+import org.restcomm.protocols.ss7.map.api.datacoding.Gsm7EncodingStyle;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -37,6 +40,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author amit bhayani
@@ -44,9 +49,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class AddressStringImpl implements Serializable  {
-	private static final long serialVersionUID = 1L;
-	
+public class AddressStringImpl  {
 	protected int NO_EXTENSION_MASK = 0x80;
     protected int NATURE_OF_ADD_IND_MASK = 0x70;
     protected int NUMBERING_PLAN_IND_MASK = 0x0F;
@@ -132,7 +135,23 @@ public class AddressStringImpl implements Serializable  {
         nature = nature | (this.numberingPlan.getIndicator());
         buffer.writeByte(nature);
         
-		TbcdString.encodeString(buffer, address);		
+        if (numberingPlan == NumberingPlan.spare_5) {
+            // -- In the context of the DestinationSubscriberNumber field in ConnectSMSArg or
+            // -- InitialDPSMSArg, a CalledPartyBCDNumber may also contain an alphanumeric
+            // -- character string. In this case, type-of-number '101'B is used, in accordance
+            // -- with 3GPP TS 23.040 [6]. The address is coded in accordance with the
+            // -- GSM 7-bit default alphabet definition and the SMS packing rules
+            // -- as specified in 3GPP TS 23.038 [15] in this case.
+
+            GSMCharset cs = new GSMCharset();
+            GSMCharsetEncoder encoder = (GSMCharsetEncoder) cs.newEncoder();
+            try {
+                encoder.encode(address,buffer);                
+            } catch (CharacterCodingException e) {
+                throw new MAPException(e);
+            }
+        } else
+        	TbcdString.encodeString(buffer, address);		
 	}
     
     @ASNDecode
@@ -155,7 +174,32 @@ public class AddressStringImpl implements Serializable  {
         int numbPlanInd = (nature & NUMBERING_PLAN_IND_MASK);
         this.numberingPlan = NumberingPlan.getInstance(numbPlanInd);
         
-		this.address=TbcdString.decodeString(buffer);
+        if (this.getNumberingPlan() == NumberingPlan.spare_5) {
+            // -- In the context of the DestinationSubscriberNumber field in ConnectSMSArg or
+            // -- InitialDPSMSArg, a CalledPartyBCDNumber may also contain an alphanumeric
+            // -- character string. In this case, type-of-number '101'B is used, in accordance
+            // -- with 3GPP TS 23.040 [6]. The address is coded in accordance with the
+            // -- GSM 7-bit default alphabet definition and the SMS packing rules
+            // -- as specified in 3GPP TS 23.038 [15] in this case.
+
+            if (buffer.readableBytes()==0)
+            	this.address="";
+            else {
+	            GSMCharset cs = new GSMCharset();
+	            GSMCharsetDecoder decoder = (GSMCharsetDecoder) cs.newDecoder();
+	            int totalSeptetCount = buffer.readableBytes() + (buffer.readableBytes() / 8);
+	            GSMCharsetDecodingData encodingData = new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_sms_style,totalSeptetCount, 0);
+	            decoder.setGSMCharsetDecodingData(encodingData);	
+	            try {
+	            	this.address=decoder.decode(buffer);
+	            }
+	            catch(CharacterCodingException ex) {
+	            	throw new MAPParsingComponentException(ex,MAPParsingComponentExceptionReason.MistypedParameter);
+	            }
+            }
+        } else
+        	this.address=TbcdString.decodeString(buffer);
+		
 		return false;
 	}
 

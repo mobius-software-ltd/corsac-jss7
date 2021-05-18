@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.cap.dialog;
 
 import org.restcomm.protocols.ss7.cap.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.cap.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 
 /**
  *
@@ -34,13 +34,13 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 public class ServingCheckDataImpl implements ServingCheckData {
 
     private ServingCheckResult result;
-    private ApplicationContextName alternativeApplicationContext = null;
+    private ApplicationContextNameImpl alternativeApplicationContext = null;
 
     public ServingCheckDataImpl(ServingCheckResult result) {
         this.result = result;
     }
 
-    public ServingCheckDataImpl(ServingCheckResult result, ApplicationContextName alternativeApplicationContext) {
+    public ServingCheckDataImpl(ServingCheckResult result, ApplicationContextNameImpl alternativeApplicationContext) {
         this.result = result;
         this.alternativeApplicationContext = alternativeApplicationContext;
     }
@@ -49,7 +49,7 @@ public class ServingCheckDataImpl implements ServingCheckData {
         return this.result;
     }
 
-    public ApplicationContextName getAlternativeApplicationContext() {
+    public ApplicationContextNameImpl getAlternativeApplicationContext() {
         return this.alternativeApplicationContext;
     }
 }

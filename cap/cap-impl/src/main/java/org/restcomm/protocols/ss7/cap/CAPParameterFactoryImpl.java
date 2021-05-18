@@ -22,309 +22,177 @@
 
 package org.restcomm.protocols.ss7.cap;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.EsiBcsm.CallAcceptedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.ChargeIndicatorImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.CollectedInfoSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.DpSpecificInfoAltImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.MetDPCriterionAltImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.MetDPCriterionImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.MidCallEventsImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OAbandonSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OCalledPartyBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.ODisconnectSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OMidCallSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.ONoAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OServiceChangeSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OTermSeizedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TDisconnectSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TMidCallSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TNoAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TServiceChangeSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiGprs.DetachSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.EsiGprs.DisconnectSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.EsiGprs.PDPContextEstablishmentAcknowledgementSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.EsiGprs.PDPContextEstablishmentSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.EsiGprs.PdpContextchangeOfPositionSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.EsiSms.OSmsFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiSms.OSmsSubmissionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiSms.TSmsDeliverySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiSms.TSmsFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPParameterFactory;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.CallAcceptedSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicator;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.CallAcceptedSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicatorImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicatorValue;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.CollectedInfoSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.DpSpecificInfoAlt;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionAlt;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MidCallEvents;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAbandonSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OCalledPartyBusySpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OChangeOfPositionSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OMidCallSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ONoAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OServiceChangeSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OTermSeizedSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.RouteSelectFailureSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TBusySpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TChangeOfPositionSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TDisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TMidCallSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TNoAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TServiceChangeSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.DetachSpecificInformation;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.DisconnectSpecificInformation;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.PDPContextEstablishmentAcknowledgementSpecificInformation;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.PDPContextEstablishmentSpecificInformation;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.PdpContextchangeOfPositionSpecificInformation;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsSubmissionSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.CollectedInfoSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.DpSpecificInfoAltImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionAltImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MidCallEventsImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAbandonSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OCalledPartyBusySpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OChangeOfPositionSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OMidCallSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ONoAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OServiceChangeSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OTermSeizedSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TBusySpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TChangeOfPositionSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TDisconnectSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TMidCallSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TNoAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TServiceChangeSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiGprs.DetachSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiGprs.DisconnectSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiGprs.PDPContextEstablishmentAcknowledgementSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiGprs.PDPContextEstablishmentSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiGprs.PdpContextChangeOfPositionSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsSubmissionSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
-import org.restcomm.protocols.ss7.cap.api.isup.BearerCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
+import org.restcomm.protocols.ss7.cap.api.isup.BearerCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.cap.api.primitives.Burst;
-import org.restcomm.protocols.ss7.cap.api.primitives.BurstList;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BurstImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BurstListImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTime;
+import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.ErrorTreatment;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
+import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionFieldImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.cap.api.primitives.ReceivingSideID;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
-import org.restcomm.protocols.ss7.cap.api.primitives.SendingSideID;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswer;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequent;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AudibleIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BackwardServiceInteractionInd;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapability;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELSCIBillingChargingCharacteristicsAlt;
+import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswerImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AudibleIndicatorImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BackwardServiceInteractionIndImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELSCIBillingChargingCharacteristicsAltImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallCompletionTreatmentIndicator;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallDiversionTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancel;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancelImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallingPartyRestrictionIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocation;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationAlt;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigits;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationAltImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConferenceTreatmentIndicator;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConnectedNumberTreatmentInd;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CwTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteria;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaAlt;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaAltImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EctTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELsequence1;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ForwardServiceInteractionInd;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatData;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ForwardServiceInteractionIndImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.HoldTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LegOrCallSegment;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LowLayerCompatibility;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageID;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDText;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MidCallControlInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LegOrCallSegmentImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LowLayerCompatibilityImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NACarrierInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResult;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeIfTariffSwitch;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformation;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Tone;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariableMessage;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartDate;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartPrice;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTime;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRS;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResult;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOver;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTime;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeRollOver;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddress;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprs;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCause;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ToneImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariableMessageImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartDateImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartPriceImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRSImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOverImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeRollOverImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELSequence1GprsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCauseImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoS;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSExtension;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSExtensionImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.InitiatingEntity;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPAddress;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumber;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberValue;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganization;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganizationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganizationValue;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ROTimeGPRSIfTariffSwitch;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ROVolumeIfTariffSwitch;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilities;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TimeGPRSIfTariffSwitch;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolume;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeRollOver;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.VolumeIfTariffSwitch;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ROTimeGPRSIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ROVolumeIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TimeGPRSIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeRollOverImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.VolumeIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MTSMSCause;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCause;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingScheme;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifier;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriod;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MTSMSCauseImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCauseImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifierImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
 import org.restcomm.protocols.ss7.cap.dialog.CAPGprsReferenceNumberImpl;
-import org.restcomm.protocols.ss7.cap.isup.BearerCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.isup.GenericNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.RedirectingPartyIDCapImpl;
-import org.restcomm.protocols.ss7.cap.primitives.AChChargingAddressImpl;
-import org.restcomm.protocols.ss7.cap.primitives.BCSMEventImpl;
-import org.restcomm.protocols.ss7.cap.primitives.BurstImpl;
-import org.restcomm.protocols.ss7.cap.primitives.BurstListImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
-import org.restcomm.protocols.ss7.cap.primitives.DateAndTimeImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ExtensionFieldImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ReceivingSideIDImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
-import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
-import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AOCBeforeAnswerImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AudibleIndicatorImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.BackwardServiceInteractionIndImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAMELSCIBillingChargingCharacteristicsAltImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CallSegmentToCancelImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ChangeOfLocationAltImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ChangeOfLocationImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CollectedDigitsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CollectedInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DpSpecificCriteriaAltImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DpSpecificCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.FCIBCCCAMELsequence1Impl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ForwardServiceInteractionIndImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InbandInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InformationToSendImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.LegOrCallSegmentImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.LowLayerCompatibilityImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MidCallControlInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.RequestedInformationImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.TimeIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.TimeInformationImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ToneImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariableMessageImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartDateImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartPriceImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AOCGPRSImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingResultImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingRollOverImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ElapsedTimeImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ElapsedTimeRollOverImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.EndUserAddressImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.FreeFormatDataGprsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSCauseImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSQoSExtensionImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSQoSImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPAddressImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPTypeNumberImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPTypeOrganizationImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.QualityOfServiceImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ROTimeGPRSIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ROVolumeIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.SGSNCapabilitiesImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.TimeGPRSIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.TransferredVolumeImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.TransferredVolumeRollOverImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.VolumeIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.EventSpecificInformationSMSImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.FreeFormatDataSMSImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.MTSMSCauseImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.RPCauseImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSAddressStringImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSEventImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPShortMessageSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -335,31 +203,24 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4Functionalities;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.UUDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2Impl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 
 /**
  *
@@ -367,422 +228,399 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
  *
  */
 public class CAPParameterFactoryImpl implements CAPParameterFactory {
-
-    public Problem createProblemGeneral(GeneralProblemType prob) {
-        Problem pb = TcapFactory.createProblem(ProblemType.General);
-        pb.setGeneralProblemType(prob);
-        return pb;
-    }
-
-    public Problem createProblemInvoke(InvokeProblemType prob) {
-        Problem pb = TcapFactory.createProblem(ProblemType.Invoke);
-        pb.setInvokeProblemType(prob);
-        return pb;
-    }
-
-    public Problem createProblemResult(ReturnResultProblemType prob) {
-        Problem pb = TcapFactory.createProblem(ProblemType.ReturnResult);
-        pb.setReturnResultProblemType(prob);
-        return pb;
-    }
-
-    public Problem createProblemError(ReturnErrorProblemType prob) {
-        Problem pb = TcapFactory.createProblem(ProblemType.ReturnError);
-        pb.setReturnErrorProblemType(prob);
-        return pb;
-    }
-
     @Override
     public CAPGprsReferenceNumber createCAPGprsReferenceNumber(Integer destinationReference, Integer originationReference) {
         return new CAPGprsReferenceNumberImpl(destinationReference, originationReference);
     }
 
     @Override
-    public RouteSelectFailureSpecificInfo createRouteSelectFailureSpecificInfo(CauseCap failureCause) {
+    public RouteSelectFailureSpecificInfoImpl createRouteSelectFailureSpecificInfo(CauseCapImpl failureCause) {
         return new RouteSelectFailureSpecificInfoImpl(failureCause);
     }
 
     @Override
-    public CauseCap createCauseCap(byte[] data) {
+    public CauseCapImpl createCauseCap(byte[] data) {
         return new CauseCapImpl(data);
     }
 
     @Override
-    public CauseCap createCauseCap(CauseIndicators causeIndicators) throws CAPException {
+    public CauseCapImpl createCauseCap(CauseIndicators causeIndicators) throws CAPException {
         return new CauseCapImpl(causeIndicators);
     }
 
     @Override
-    public DpSpecificCriteria createDpSpecificCriteria(Integer applicationTimer) {
+    public DpSpecificCriteriaImpl createDpSpecificCriteria(Integer applicationTimer) {
         return new DpSpecificCriteriaImpl(applicationTimer);
     }
 
     @Override
-    public DpSpecificCriteria createDpSpecificCriteria(MidCallControlInfo midCallControlInfo) {
+    public DpSpecificCriteriaImpl createDpSpecificCriteria(MidCallControlInfoImpl midCallControlInfo) {
         return new DpSpecificCriteriaImpl(midCallControlInfo);
     }
 
     @Override
-    public DpSpecificCriteria createDpSpecificCriteria(DpSpecificCriteriaAlt dpSpecificCriteriaAlt) {
+    public DpSpecificCriteriaImpl createDpSpecificCriteria(DpSpecificCriteriaAltImpl dpSpecificCriteriaAlt) {
         return new DpSpecificCriteriaImpl(dpSpecificCriteriaAlt);
     }
 
     @Override
-    public BCSMEvent createBCSMEvent(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegID legID,
-            DpSpecificCriteria dpSpecificCriteria, boolean automaticRearm) {
+    public BCSMEventImpl createBCSMEvent(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegIDImpl legID,
+            DpSpecificCriteriaImpl dpSpecificCriteria, boolean automaticRearm) {
         return new BCSMEventImpl(eventTypeBCSM, monitorMode, legID, dpSpecificCriteria, automaticRearm);
     }
 
     @Override
-    public CalledPartyBCDNumber createCalledPartyBCDNumber(byte[] data) {
-        return new CalledPartyBCDNumberImpl(data);
-    }
-
-    @Override
-    public CalledPartyBCDNumber createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlan numberingPlan,
+    public CalledPartyBCDNumberImpl createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlan numberingPlan,
             String address) throws CAPException {
         return new CalledPartyBCDNumberImpl(addressNature, numberingPlan, address);
     }
 
     @Override
-    public ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data) {
+    public ExtensionFieldImpl createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data) {
         return new ExtensionFieldImpl(localCode, criticalityType, data);
     }
 
     @Override
-    public ExtensionField createExtensionField(long[] globalCode, CriticalityType criticalityType, byte[] data) {
+    public ExtensionFieldImpl createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data) {
         return new ExtensionFieldImpl(globalCode, criticalityType, data);
     }
 
     @Override
-    public CAPExtensions createCAPExtensions(ArrayList<ExtensionField> fieldsList) {
+    public CAPExtensionsImpl createCAPExtensions(List<ExtensionFieldImpl> fieldsList) {
         return new CAPExtensionsImpl(fieldsList);
     }
 
     @Override
-    public CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(byte[] data) {
-        return new CAMELAChBillingChargingCharacteristicsImpl(data);
+    public CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, CAPExtensionsImpl extensions,
+            Long tariffSwitchInterval) {
+        return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration,tone,extensions,tariffSwitchInterval);
     }
 
     @Override
-    public CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration,
-            boolean releaseIfdurationExceeded, Long tariffSwitchInterval, AudibleIndicator audibleIndicator,
-            CAPExtensions extensions, int capVersion) {
+    public CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
+            Long tariffSwitchInterval, Boolean tone, CAPExtensionsImpl extensions) {
+        return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration,releaseIfdurationExceeded,tariffSwitchInterval,tone,extensions);
+    }
+
+    @Override
+    public CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration,
+            boolean releaseIfdurationExceeded, Long tariffSwitchInterval, AudibleIndicatorImpl audibleIndicator,
+            CAPExtensionsImpl extensions) {
         return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration, releaseIfdurationExceeded,
-                tariffSwitchInterval, audibleIndicator, extensions, capVersion);
+                tariffSwitchInterval, audibleIndicator, extensions);
     }
 
     @Override
-    public DateAndTime createDateAndTime(int year, int month, int day, int hour, int minute, int second) {
+    public DateAndTimeImpl createDateAndTime(int year, int month, int day, int hour, int minute, int second) {
         return new DateAndTimeImpl(year, month, day, hour, minute, second);
     }
 
     @Override
-    public TimeAndTimezone createTimeAndTimezone(int year, int month, int day, int hour, int minute, int second, int timeZone) {
+    public TimeAndTimezoneImpl createTimeAndTimezone(int year, int month, int day, int hour, int minute, int second, int timeZone) {
         return new TimeAndTimezoneImpl(year, month, day, hour, minute, second, timeZone);
     }
 
     @Override
-    public SendingSideID createSendingSideID(LegType sendingSideID) {
-        return new SendingSideIDImpl(sendingSideID);
+    public SendingLegIDImpl createSendingLegIDImpl(LegType sendingSideID) {
+        return new SendingLegIDImpl(sendingSideID);
     }
 
     @Override
-    public ReceivingSideID createReceivingSideID(LegType receivingSideID) {
-        return new ReceivingSideIDImpl(receivingSideID);
+    public ReceivingLegIDImpl createReceivingLegIDImpl(LegType receivingSideID) {
+        return new ReceivingLegIDImpl(receivingSideID);
     }
 
     @Override
-    public BearerCap createBearerCap(byte[] data) {
+    public BearerCapImpl createBearerCap(byte[] data) {
         return new BearerCapImpl(data);
     }
 
     @Override
-    public BearerCap createBearerCap(UserServiceInformation userServiceInformation) throws CAPException {
+    public BearerCapImpl createBearerCap(UserServiceInformation userServiceInformation) throws CAPException {
         return new BearerCapImpl(userServiceInformation);
     }
 
     @Override
-    public BearerCapability createBearerCapability(BearerCap bearerCap) {
+    public BearerCapabilityImpl createBearerCapability(BearerCapImpl bearerCap) {
         return new BearerCapabilityImpl(bearerCap);
     }
 
     @Override
-    public Digits createDigits_GenericNumber(byte[] data) {
+    public DigitsImpl createDigits_GenericNumber(byte[] data) {
         DigitsImpl res = new DigitsImpl(data);
         res.setIsGenericNumber();
         return res;
     }
 
     @Override
-    public Digits createDigits_GenericDigits(byte[] data) {
+    public DigitsImpl createDigits_GenericDigits(byte[] data) {
         DigitsImpl res = new DigitsImpl(data);
         res.setIsGenericDigits();
         return res;
     }
 
     @Override
-    public Digits createDigits_GenericNumber(GenericNumber genericNumber) throws CAPException {
+    public DigitsImpl createDigits_GenericNumber(GenericNumber genericNumber) throws CAPException {
         return new DigitsImpl(genericNumber);
     }
 
     @Override
-    public Digits createDigits_GenericDigits(GenericDigits genericDigits) throws CAPException {
+    public DigitsImpl createDigits_GenericDigits(GenericDigits genericDigits) throws CAPException {
         return new DigitsImpl(genericDigits);
     }
 
     @Override
-    public CalledPartyNumberCap createCalledPartyNumberCap(byte[] data) {
+    public CalledPartyNumberCapImpl createCalledPartyNumberCap(byte[] data) {
         return new CalledPartyNumberCapImpl(data);
     }
 
     @Override
-    public CalledPartyNumberCap createCalledPartyNumberCap(CalledPartyNumber calledPartyNumber) throws CAPException {
+    public CalledPartyNumberCapImpl createCalledPartyNumberCap(CalledPartyNumber calledPartyNumber) throws CAPException {
         return new CalledPartyNumberCapImpl(calledPartyNumber);
     }
 
     @Override
-    public CallingPartyNumberCap createCallingPartyNumberCap(byte[] data) {
+    public CallingPartyNumberCapImpl createCallingPartyNumberCap(byte[] data) {
         return new CallingPartyNumberCapImpl(data);
     }
 
     @Override
-    public CallingPartyNumberCap createCallingPartyNumberCap(CallingPartyNumber callingPartyNumber) throws CAPException {
+    public CallingPartyNumberCapImpl createCallingPartyNumberCap(CallingPartyNumber callingPartyNumber) throws CAPException {
         return new CallingPartyNumberCapImpl(callingPartyNumber);
     }
 
     @Override
-    public GenericNumberCap createGenericNumberCap(byte[] data) {
+    public GenericNumberCapImpl createGenericNumberCap(byte[] data) {
         return new GenericNumberCapImpl(data);
     }
 
     @Override
-    public GenericNumberCap createGenericNumberCap(GenericNumber genericNumber) throws CAPException {
+    public GenericNumberCapImpl createGenericNumberCap(GenericNumber genericNumber) throws CAPException {
         return new GenericNumberCapImpl(genericNumber);
     }
 
     @Override
-    public LocationNumberCap createLocationNumberCap(byte[] data) {
+    public LocationNumberCapImpl createLocationNumberCap(byte[] data) {
         return new LocationNumberCapImpl(data);
     }
 
     @Override
-    public LocationNumberCap createLocationNumberCap(LocationNumber locationNumber) throws CAPException {
+    public LocationNumberCapImpl createLocationNumberCap(LocationNumber locationNumber) throws CAPException {
         return new LocationNumberCapImpl(locationNumber);
     }
 
     @Override
-    public OriginalCalledNumberCap createOriginalCalledNumberCap(byte[] data) {
+    public OriginalCalledNumberCapImpl createOriginalCalledNumberCap(byte[] data) {
         return new OriginalCalledNumberCapImpl(data);
     }
 
     @Override
-    public OriginalCalledNumberCap createOriginalCalledNumberCap(OriginalCalledNumber originalCalledNumber) throws CAPException {
+    public OriginalCalledNumberCapImpl createOriginalCalledNumberCap(OriginalCalledNumber originalCalledNumber) throws CAPException {
         return new OriginalCalledNumberCapImpl(originalCalledNumber);
     }
 
     @Override
-    public RedirectingPartyIDCap createRedirectingPartyIDCap(byte[] data) {
+    public RedirectingPartyIDCapImpl createRedirectingPartyIDCap(byte[] data) {
         return new RedirectingPartyIDCapImpl(data);
     }
 
     @Override
-    public RedirectingPartyIDCap createRedirectingPartyIDCap(RedirectingNumber redirectingNumber) throws CAPException {
+    public RedirectingPartyIDCapImpl createRedirectingPartyIDCap(RedirectingNumber redirectingNumber) throws CAPException {
         return new RedirectingPartyIDCapImpl(redirectingNumber);
     }
 
     @Override
-    public OCalledPartyBusySpecificInfo createOCalledPartyBusySpecificInfo(CauseCap busyCause) {
+    public OCalledPartyBusySpecificInfoImpl createOCalledPartyBusySpecificInfo(CauseCapImpl busyCause) {
         return new OCalledPartyBusySpecificInfoImpl(busyCause);
     }
 
     @Override
-    public OAbandonSpecificInfo createOAbandonSpecificInfo(boolean routeNotPermitted) {
+    public OAbandonSpecificInfoImpl createOAbandonSpecificInfo(boolean routeNotPermitted) {
         return new OAbandonSpecificInfoImpl(routeNotPermitted);
     }
 
     @Override
-    public ONoAnswerSpecificInfo createONoAnswerSpecificInfo() {
+    public ONoAnswerSpecificInfoImpl createONoAnswerSpecificInfo() {
         return new ONoAnswerSpecificInfoImpl();
     }
 
     @Override
-    public OAnswerSpecificInfo createOAnswerSpecificInfo(CalledPartyNumberCap destinationAddress, boolean orCall,
-            boolean forwardedCall, ChargeIndicator chargeIndicator, ExtBasicServiceCode extBasicServiceCode,
-            ExtBasicServiceCode extBasicServiceCode2) {
+    public OAnswerSpecificInfoImpl createOAnswerSpecificInfo(CalledPartyNumberCapImpl destinationAddress, boolean orCall,
+            boolean forwardedCall, ChargeIndicatorImpl chargeIndicator, ExtBasicServiceCodeImpl extBasicServiceCode,
+            ExtBasicServiceCodeImpl extBasicServiceCode2) {
         return new OAnswerSpecificInfoImpl(destinationAddress, orCall, forwardedCall, chargeIndicator, extBasicServiceCode,
                 extBasicServiceCode2);
     }
 
     @Override
-    public ODisconnectSpecificInfo createODisconnectSpecificInfo(CauseCap releaseCause) {
+    public ODisconnectSpecificInfoImpl createODisconnectSpecificInfo(CauseCapImpl releaseCause) {
         return new ODisconnectSpecificInfoImpl(releaseCause);
     }
 
     @Override
-    public TBusySpecificInfo createTBusySpecificInfo(CauseCap busyCause, boolean callForwarded, boolean routeNotPermitted,
-            CalledPartyNumberCap forwardingDestinationNumber) {
+    public TBusySpecificInfoImpl createTBusySpecificInfo(CauseCapImpl busyCause, boolean callForwarded, boolean routeNotPermitted,
+            CalledPartyNumberCapImpl forwardingDestinationNumber) {
         return new TBusySpecificInfoImpl(busyCause, callForwarded, routeNotPermitted, forwardingDestinationNumber);
     }
 
     @Override
-    public TNoAnswerSpecificInfo createTNoAnswerSpecificInfo(boolean callForwarded,
-            CalledPartyNumberCap forwardingDestinationNumber) {
+    public TNoAnswerSpecificInfoImpl createTNoAnswerSpecificInfo(boolean callForwarded,
+            CalledPartyNumberCapImpl forwardingDestinationNumber) {
         return new TNoAnswerSpecificInfoImpl(callForwarded, forwardingDestinationNumber);
     }
 
     @Override
-    public TAnswerSpecificInfo createTAnswerSpecificInfo(CalledPartyNumberCap destinationAddress, boolean orCall,
-            boolean forwardedCall, ChargeIndicator chargeIndicator, ExtBasicServiceCode extBasicServiceCode,
-            ExtBasicServiceCode extBasicServiceCode2) {
+    public TAnswerSpecificInfoImpl createTAnswerSpecificInfo(CalledPartyNumberCapImpl destinationAddress, boolean orCall,
+            boolean forwardedCall, ChargeIndicatorImpl chargeIndicator, ExtBasicServiceCodeImpl extBasicServiceCode,
+            ExtBasicServiceCodeImpl extBasicServiceCode2) {
         return new TAnswerSpecificInfoImpl(destinationAddress, orCall, forwardedCall, chargeIndicator, extBasicServiceCode,
                 extBasicServiceCode2);
     }
 
     @Override
-    public TDisconnectSpecificInfo createTDisconnectSpecificInfo(CauseCap releaseCause) {
+    public TDisconnectSpecificInfoImpl createTDisconnectSpecificInfo(CauseCapImpl releaseCause) {
         return new TDisconnectSpecificInfoImpl(releaseCause);
     }
 
     @Override
-    public DestinationRoutingAddress createDestinationRoutingAddress(ArrayList<CalledPartyNumberCap> calledPartyNumber) {
+    public DestinationRoutingAddressImpl createDestinationRoutingAddress(List<CalledPartyNumberCapImpl> calledPartyNumber) {
         return new DestinationRoutingAddressImpl(calledPartyNumber);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            RouteSelectFailureSpecificInfo routeSelectFailureSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(
+            RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(routeSelectFailureSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            OCalledPartyBusySpecificInfo oCalledPartyBusySpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(
+            OCalledPartyBusySpecificInfoImpl oCalledPartyBusySpecificInfo) {
         return new EventSpecificInformationBCSMImpl(oCalledPartyBusySpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(ONoAnswerSpecificInfo oNoAnswerSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(ONoAnswerSpecificInfoImpl oNoAnswerSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(oNoAnswerSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(OAnswerSpecificInfo oAnswerSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(OAnswerSpecificInfoImpl oAnswerSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(oAnswerSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(OMidCallSpecificInfo oMidCallSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(OMidCallSpecificInfoImpl oMidCallSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(oMidCallSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(ODisconnectSpecificInfo oDisconnectSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(ODisconnectSpecificInfoImpl oDisconnectSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(oDisconnectSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TBusySpecificInfo tBusySpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(TBusySpecificInfoImpl tBusySpecificInfo) {
         return new EventSpecificInformationBCSMImpl(tBusySpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TNoAnswerSpecificInfo tNoAnswerSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(TNoAnswerSpecificInfoImpl tNoAnswerSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(tNoAnswerSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TAnswerSpecificInfo tAnswerSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(TAnswerSpecificInfoImpl tAnswerSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(tAnswerSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TMidCallSpecificInfo tMidCallSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(TMidCallSpecificInfoImpl tMidCallSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(tMidCallSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TDisconnectSpecificInfo tDisconnectSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(TDisconnectSpecificInfoImpl tDisconnectSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(tDisconnectSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(OTermSeizedSpecificInfo oTermSeizedSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(OTermSeizedSpecificInfoImpl oTermSeizedSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(oTermSeizedSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(CallAcceptedSpecificInfo callAcceptedSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(CallAcceptedSpecificInfoImpl callAcceptedSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(callAcceptedSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(OAbandonSpecificInfo oAbandonSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(OAbandonSpecificInfoImpl oAbandonSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(oAbandonSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            OChangeOfPositionSpecificInfo oChangeOfPositionSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(
+            OChangeOfPositionSpecificInfoImpl oChangeOfPositionSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(oChangeOfPositionSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            TChangeOfPositionSpecificInfo tChangeOfPositionSpecificInfo) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(
+            TChangeOfPositionSpecificInfoImpl tChangeOfPositionSpecificInfo) {
         return new EventSpecificInformationBCSMImpl(tChangeOfPositionSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(DpSpecificInfoAlt dpSpecificInfoAlt) {
+    public EventSpecificInformationBCSMImpl createEventSpecificInformationBCSM(DpSpecificInfoAltImpl dpSpecificInfoAlt) {
         return new EventSpecificInformationBCSMImpl(dpSpecificInfoAlt);
     }
 
     @Override
-    public RequestedInformation createRequestedInformation_CallAttemptElapsedTime(int callAttemptElapsedTimeValue) {
+    public RequestedInformationImpl createRequestedInformation_CallAttemptElapsedTime(int callAttemptElapsedTimeValue) {
         return new RequestedInformationImpl(RequestedInformationType.callAttemptElapsedTime, callAttemptElapsedTimeValue);
     }
 
     @Override
-    public RequestedInformation createRequestedInformation_CallConnectedElapsedTime(int callConnectedElapsedTimeValue) {
+    public RequestedInformationImpl createRequestedInformation_CallConnectedElapsedTime(int callConnectedElapsedTimeValue) {
         return new RequestedInformationImpl(RequestedInformationType.callConnectedElapsedTime, callConnectedElapsedTimeValue);
     }
 
     @Override
-    public RequestedInformation createRequestedInformation_CallStopTime(DateAndTime callStopTimeValue) {
+    public RequestedInformationImpl createRequestedInformation_CallStopTime(DateAndTimeImpl callStopTimeValue) {
         return new RequestedInformationImpl(callStopTimeValue);
     }
 
     @Override
-    public RequestedInformation createRequestedInformation_ReleaseCause(CauseCap releaseCauseValue) {
+    public RequestedInformationImpl createRequestedInformation_ReleaseCause(CauseCapImpl releaseCauseValue) {
         return new RequestedInformationImpl(releaseCauseValue);
     }
 
     @Override
-    public TimeDurationChargingResult createTimeDurationChargingResult(ReceivingSideID partyToCharge,
-            TimeInformation timeInformation, boolean legActive, boolean callLegReleasedAtTcpExpiry, CAPExtensions extensions,
-            AChChargingAddress aChChargingAddress) {
+    public TimeDurationChargingResultImpl createTimeDurationChargingResult(ReceivingLegIDImpl partyToCharge,
+            TimeInformationImpl timeInformation, boolean legActive, boolean callLegReleasedAtTcpExpiry, CAPExtensionsImpl extensions,
+            AChChargingAddressImpl aChChargingAddress) {
         return new TimeDurationChargingResultImpl(partyToCharge, timeInformation, legActive, callLegReleasedAtTcpExpiry,
                 extensions, aChChargingAddress);
     }
 
     @Override
-    public TimeIfTariffSwitch createTimeIfTariffSwitch(int timeSinceTariffSwitch, Integer tariffSwitchInterval) {
+    public TimeIfTariffSwitchImpl createTimeIfTariffSwitch(int timeSinceTariffSwitch, Integer tariffSwitchInterval) {
         return new TimeIfTariffSwitchImpl(timeSinceTariffSwitch, tariffSwitchInterval);
     }
 
     @Override
-    public TimeInformation createTimeInformation(int timeIfNoTariffSwitch) {
+    public TimeInformationImpl createTimeInformation(int timeIfNoTariffSwitch) {
         return new TimeInformationImpl(timeIfNoTariffSwitch);
     }
 
     @Override
-    public TimeInformation createTimeInformation(TimeIfTariffSwitch timeIfTariffSwitch) {
+    public TimeInformationImpl createTimeInformation(TimeIfTariffSwitchImpl timeIfTariffSwitch) {
         return new TimeInformationImpl(timeIfTariffSwitch);
     }
 
     @Override
-    public IPSSPCapabilities createIPSSPCapabilities(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
+    public IPSSPCapabilitiesImpl createIPSSPCapabilities(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
             boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
             boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[] extraData) {
         return new IPSSPCapabilitiesImpl(IPRoutingAddressSupported, VoiceBackSupported,
@@ -791,43 +629,48 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public InitialDPArgExtension createInitialDPArgExtension(ISDNAddressString gmscAddress,
-            CalledPartyNumberCap forwardingDestinationNumber, MSClassmark2 msClassmark2, IMEI imei,
-            SupportedCamelPhases supportedCamelPhases, OfferedCamel4Functionalities offeredCamel4Functionalities,
-            BearerCapability bearerCapability2, ExtBasicServiceCode extBasicServiceCode2,
-            HighLayerCompatibilityInap highLayerCompatibility2, LowLayerCompatibility lowLayerCompatibility,
-            LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData,
-            boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed, boolean isCAPVersion3orLater) {
-        return new InitialDPArgExtensionImpl(gmscAddress, forwardingDestinationNumber, msClassmark2, imei,
-                supportedCamelPhases, offeredCamel4Functionalities, bearerCapability2, extBasicServiceCode2,
-                highLayerCompatibility2, lowLayerCompatibility, lowLayerCompatibility2, enhancedDialledServicesAllowed, uuData,
-                collectInformationAllowed, releaseCallArgExtensionAllowed, isCAPVersion3orLater);
+    public InitialDPArgExtensionImpl createInitialDPArgExtension(NACarrierInformationImpl naCarrierInformation, ISDNAddressStringImpl gmscAddress) {
+        return new InitialDPArgExtensionImpl(naCarrierInformation, gmscAddress);
     }
 
     @Override
-    public AlertingPatternCap createAlertingPatternCap(AlertingPattern alertingPattern) {
+    public InitialDPArgExtensionImpl createInitialDPArgExtension(ISDNAddressStringImpl gmscAddress,
+            CalledPartyNumberCapImpl forwardingDestinationNumber, MSClassmark2Impl msClassmark2, IMEIImpl imei,
+            SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities,
+            BearerCapabilityImpl bearerCapability2, ExtBasicServiceCodeImpl extBasicServiceCode2,
+            HighLayerCompatibilityInapImpl highLayerCompatibility2, LowLayerCompatibilityImpl lowLayerCompatibility,
+            LowLayerCompatibilityImpl lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUDataImpl uuData,
+            boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed) {
+        return new InitialDPArgExtensionImpl(gmscAddress, forwardingDestinationNumber, msClassmark2, imei,
+                supportedCamelPhases, offeredCamel4Functionalities, bearerCapability2, extBasicServiceCode2,
+                highLayerCompatibility2, lowLayerCompatibility, lowLayerCompatibility2, enhancedDialledServicesAllowed, uuData,
+                collectInformationAllowed, releaseCallArgExtensionAllowed);
+    }
+
+    @Override
+    public AlertingPatternCapImpl createAlertingPatternCap(AlertingPatternImpl alertingPattern) {
         return new AlertingPatternCapImpl(alertingPattern);
     }
 
     @Override
-    public AlertingPatternCap createAlertingPatternCap(byte[] data) {
+    public AlertingPatternCapImpl createAlertingPatternCap(byte[] data) {
         return new AlertingPatternCapImpl(data);
     }
 
     @Override
-    public NAOliInfo createNAOliInfo(int value) {
+    public NAOliInfoImpl createNAOliInfo(int value) {
         return new NAOliInfoImpl(value);
     }
 
     @Override
-    public ScfID createScfID(byte[] data) {
+    public ScfIDImpl createScfID(byte[] data) {
         return new ScfIDImpl(data);
     }
 
     @Override
-    public ServiceInteractionIndicatorsTwo createServiceInteractionIndicatorsTwo(
-            ForwardServiceInteractionInd forwardServiceInteractionInd,
-            BackwardServiceInteractionInd backwardServiceInteractionInd,
+    public ServiceInteractionIndicatorsTwoImpl createServiceInteractionIndicatorsTwo(
+            ForwardServiceInteractionIndImpl forwardServiceInteractionInd,
+            BackwardServiceInteractionIndImpl backwardServiceInteractionInd,
             BothwayThroughConnectionInd bothwayThroughConnectionInd, ConnectedNumberTreatmentInd connectedNumberTreatmentInd,
             boolean nonCUGCall, HoldTreatmentIndicator holdTreatmentIndicator, CwTreatmentIndicator cwTreatmentIndicator,
             EctTreatmentIndicator ectTreatmentIndicator) {
@@ -837,159 +680,159 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public FCIBCCCAMELsequence1 createFCIBCCCAMELsequence1(FreeFormatData freeFormatData, SendingSideID partyToCharge,
+    public FCIBCCCAMELSequence1Impl createFCIBCCCAMELsequence1(FreeFormatDataImpl freeFormatData, SendingLegIDImpl partyToCharge,
             AppendFreeFormatData appendFreeFormatData) {
-        return new FCIBCCCAMELsequence1Impl(freeFormatData, partyToCharge, appendFreeFormatData);
+        return new FCIBCCCAMELSequence1Impl(freeFormatData, partyToCharge, appendFreeFormatData);
     }
 
     @Override
-    public CAMELSCIBillingChargingCharacteristicsAlt createCAMELSCIBillingChargingCharacteristicsAlt() {
+    public CAMELSCIBillingChargingCharacteristicsAltImpl createCAMELSCIBillingChargingCharacteristicsAlt() {
         return new CAMELSCIBillingChargingCharacteristicsAltImpl();
     }
 
     @Override
-    public CAI_GSM0224 createCAI_GSM0224(Integer e1, Integer e2, Integer e3, Integer e4, Integer e5, Integer e6, Integer e7) {
+    public CAI_GSM0224Impl createCAI_GSM0224(Integer e1, Integer e2, Integer e3, Integer e4, Integer e5, Integer e6, Integer e7) {
         return new CAI_GSM0224Impl(e1, e2, e3, e4, e5, e6, e7);
     }
 
     @Override
-    public AOCSubsequent createAOCSubsequent(CAI_GSM0224 cai_GSM0224, Integer tariffSwitchInterval) {
+    public AOCSubsequentImpl createAOCSubsequent(CAI_GSM0224Impl cai_GSM0224, Integer tariffSwitchInterval) {
         return new AOCSubsequentImpl(cai_GSM0224, tariffSwitchInterval);
     }
 
     @Override
-    public AOCBeforeAnswer createAOCBeforeAnswer(CAI_GSM0224 aocInitial, AOCSubsequent aocSubsequent) {
+    public AOCBeforeAnswerImpl createAOCBeforeAnswer(CAI_GSM0224Impl aocInitial, AOCSubsequentImpl aocSubsequent) {
         return new AOCBeforeAnswerImpl(aocInitial, aocSubsequent);
     }
 
     @Override
-    public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(AOCBeforeAnswer aocBeforeAnswer) {
+    public SCIBillingChargingCharacteristicsImpl createSCIBillingChargingCharacteristics(AOCBeforeAnswerImpl aocBeforeAnswer) {
         return new SCIBillingChargingCharacteristicsImpl(aocBeforeAnswer);
     }
 
     @Override
-    public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(AOCSubsequent aocSubsequent) {
+    public SCIBillingChargingCharacteristicsImpl createSCIBillingChargingCharacteristics(AOCSubsequentImpl aocSubsequent) {
         return new SCIBillingChargingCharacteristicsImpl(aocSubsequent);
     }
 
     @Override
-    public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(
-            CAMELSCIBillingChargingCharacteristicsAlt aocExtension) {
+    public SCIBillingChargingCharacteristicsImpl createSCIBillingChargingCharacteristics(
+            CAMELSCIBillingChargingCharacteristicsAltImpl aocExtension) {
         return new SCIBillingChargingCharacteristicsImpl(aocExtension);
     }
 
     @Override
-    public VariablePartPrice createVariablePartPrice(byte[] data) {
+    public VariablePartPriceImpl createVariablePartPrice(byte[] data) {
         return new VariablePartPriceImpl(data);
     }
 
     @Override
-    public VariablePartPrice createVariablePartPrice(double price) {
+    public VariablePartPriceImpl createVariablePartPrice(double price) {
         return new VariablePartPriceImpl(price);
     }
 
     @Override
-    public VariablePartPrice createVariablePartPrice(int integerPart, int hundredthPart) {
+    public VariablePartPriceImpl createVariablePartPrice(int integerPart, int hundredthPart) {
         return new VariablePartPriceImpl(integerPart, hundredthPart);
     }
 
     @Override
-    public VariablePartDate createVariablePartDate(byte[] data) {
+    public VariablePartDateImpl createVariablePartDate(byte[] data) {
         return new VariablePartDateImpl(data);
     }
 
     @Override
-    public VariablePartDate createVariablePartDate(int year, int month, int day) {
+    public VariablePartDateImpl createVariablePartDate(int year, int month, int day) {
         return new VariablePartDateImpl(year, month, day);
     }
 
     @Override
-    public VariablePartTime createVariablePartTime(byte[] data) {
+    public VariablePartTimeImpl createVariablePartTime(byte[] data) {
         return new VariablePartTimeImpl(data);
     }
 
     @Override
-    public VariablePartTime createVariablePartTime(int hour, int minute) {
+    public VariablePartTimeImpl createVariablePartTime(int hour, int minute) {
         return new VariablePartTimeImpl(hour, minute);
     }
 
     @Override
-    public VariablePart createVariablePart(Integer integer) {
+    public VariablePartImpl createVariablePart(Integer integer) {
         return new VariablePartImpl(integer);
     }
 
     @Override
-    public VariablePart createVariablePart(Digits number) {
+    public VariablePartImpl createVariablePart(DigitsImpl number) {
         return new VariablePartImpl(number);
     }
 
     @Override
-    public VariablePart createVariablePart(VariablePartTime time) {
+    public VariablePartImpl createVariablePart(VariablePartTimeImpl time) {
         return new VariablePartImpl(time);
     }
 
     @Override
-    public VariablePart createVariablePart(VariablePartDate date) {
+    public VariablePartImpl createVariablePart(VariablePartDateImpl date) {
         return new VariablePartImpl(date);
     }
 
     @Override
-    public VariablePart createVariablePart(VariablePartPrice price) {
+    public VariablePartImpl createVariablePart(VariablePartPriceImpl price) {
         return new VariablePartImpl(price);
     }
 
     @Override
-    public MessageIDText createMessageIDText(String messageContent, byte[] attributes) {
+    public MessageIDTextImpl createMessageIDText(String messageContent, byte[] attributes) {
         return new MessageIDTextImpl(messageContent, attributes);
     }
 
     @Override
-    public VariableMessage createVariableMessage(int elementaryMessageID, ArrayList<VariablePart> variableParts) {
+    public VariableMessageImpl createVariableMessage(int elementaryMessageID, List<VariablePartImpl> variableParts) {
         return new VariableMessageImpl(elementaryMessageID, variableParts);
     }
 
     @Override
-    public MessageID createMessageID(Integer elementaryMessageID) {
+    public MessageIDImpl createMessageID(Integer elementaryMessageID) {
         return new MessageIDImpl(elementaryMessageID);
     }
 
     @Override
-    public MessageID createMessageID(MessageIDText text) {
+    public MessageIDImpl createMessageID(MessageIDTextImpl text) {
         return new MessageIDImpl(text);
     }
 
     @Override
-    public MessageID createMessageID(ArrayList<Integer> elementaryMessageIDs) {
+    public MessageIDImpl createMessageID(List<Integer> elementaryMessageIDs) {
         return new MessageIDImpl(elementaryMessageIDs);
     }
 
     @Override
-    public MessageID createMessageID(VariableMessage variableMessage) {
+    public MessageIDImpl createMessageID(VariableMessageImpl variableMessage) {
         return new MessageIDImpl(variableMessage);
     }
 
     @Override
-    public InbandInfo createInbandInfo(MessageID messageID, Integer numberOfRepetitions, Integer duration, Integer interval) {
+    public InbandInfoImpl createInbandInfo(MessageIDImpl messageID, Integer numberOfRepetitions, Integer duration, Integer interval) {
         return new InbandInfoImpl(messageID, numberOfRepetitions, duration, interval);
     }
 
     @Override
-    public Tone createTone(int toneID, Integer duration) {
+    public ToneImpl createTone(int toneID, Integer duration) {
         return new ToneImpl(toneID, duration);
     }
 
     @Override
-    public InformationToSend createInformationToSend(InbandInfo inbandInfo) {
+    public InformationToSendImpl createInformationToSend(InbandInfoImpl inbandInfo) {
         return new InformationToSendImpl(inbandInfo);
     }
 
     @Override
-    public InformationToSend createInformationToSend(Tone tone) {
+    public InformationToSendImpl createInformationToSend(ToneImpl tone) {
         return new InformationToSendImpl(tone);
     }
 
     @Override
-    public CollectedDigits createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits, byte[] endOfReplyDigit,
+    public CollectedDigitsImpl createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits, byte[] endOfReplyDigit,
             byte[] cancelDigit, byte[] startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut,
             ErrorTreatment errorTreatment, Boolean interruptableAnnInd, Boolean voiceInformation, Boolean voiceBack) {
         return new CollectedDigitsImpl(minimumNbOfDigits, maximumNbOfDigits, endOfReplyDigit, cancelDigit, startDigit,
@@ -997,641 +840,641 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public CollectedInfo createCollectedInfo(CollectedDigits collectedDigits) {
+    public CollectedInfoImpl createCollectedInfo(CollectedDigitsImpl collectedDigits) {
         return new CollectedInfoImpl(collectedDigits);
     }
 
     @Override
-    public CallSegmentToCancel createCallSegmentToCancel(Integer invokeID, Integer callSegmentID) {
+    public CallSegmentToCancelImpl createCallSegmentToCancel(Integer invokeID, Integer callSegmentID) {
         return new CallSegmentToCancelImpl(invokeID, callSegmentID);
     }
 
     @Override
-    public AccessPointName createAccessPointName(byte[] data) {
+    public AccessPointNameImpl createAccessPointName(byte[] data) {
         return new AccessPointNameImpl(data);
     }
 
     @Override
-    public AOCGPRS createAOCGPRS(CAI_GSM0224 aocInitial, AOCSubsequent aocSubsequent) {
+    public AOCGPRSImpl createAOCGPRS(CAI_GSM0224Impl aocInitial, AOCSubsequentImpl aocSubsequent) {
         return new AOCGPRSImpl(aocInitial, aocSubsequent);
     }
 
     @Override
-    public CAMELFCIGPRSBillingChargingCharacteristics createCAMELFCIGPRSBillingChargingCharacteristics(
-            org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELsequence1Gprs fcIBCCCAMELsequence1) {
+    public CAMELFCIGPRSBillingChargingCharacteristicsImpl createCAMELFCIGPRSBillingChargingCharacteristics(
+            FCIBCCCAMELSequence1GprsImpl fcIBCCCAMELsequence1) {
 
         return new CAMELFCIGPRSBillingChargingCharacteristicsImpl(fcIBCCCAMELsequence1);
     }
 
     @Override
-    public CAMELSCIGPRSBillingChargingCharacteristics createCAMELSCIGPRSBillingChargingCharacteristics(AOCGPRS aocGPRS,
-            PDPID pdpID) {
+    public CAMELSCIGPRSBillingChargingCharacteristicsImpl createCAMELSCIGPRSBillingChargingCharacteristics(AOCGPRSImpl aocGPRS,
+            PDPIDImpl pdpID) {
 
         return new CAMELSCIGPRSBillingChargingCharacteristicsImpl(aocGPRS, pdpID);
     }
 
     @Override
-    public ChargingCharacteristics createChargingCharacteristics(long maxTransferredVolume) {
+    public ChargingCharacteristicsImpl createChargingCharacteristics(long maxTransferredVolume) {
         return new ChargingCharacteristicsImpl(maxTransferredVolume);
     }
 
     @Override
-    public ChargingCharacteristics createChargingCharacteristics(int maxElapsedTime) {
+    public ChargingCharacteristicsImpl createChargingCharacteristics(int maxElapsedTime) {
         return new ChargingCharacteristicsImpl(maxElapsedTime);
     }
 
     @Override
-    public ChargingResult createChargingResult(TransferredVolume transferredVolume) {
+    public ChargingResultImpl createChargingResult(TransferredVolumeImpl transferredVolume) {
         return new ChargingResultImpl(transferredVolume);
     }
 
     @Override
-    public ChargingResult createChargingResult(ElapsedTime elapsedTime) {
+    public ChargingResultImpl createChargingResult(ElapsedTimeImpl elapsedTime) {
         return new ChargingResultImpl(elapsedTime);
     }
 
     @Override
-    public ChargingRollOver createChargingRollOver(ElapsedTimeRollOver elapsedTimeRollOver) {
+    public ChargingRollOverImpl createChargingRollOver(ElapsedTimeRollOverImpl elapsedTimeRollOver) {
         return new ChargingRollOverImpl(elapsedTimeRollOver);
     }
 
     @Override
-    public ChargingRollOver createChargingRollOver(TransferredVolumeRollOver transferredVolumeRollOver) {
+    public ChargingRollOverImpl createChargingRollOver(TransferredVolumeRollOverImpl transferredVolumeRollOver) {
         return new ChargingRollOverImpl(transferredVolumeRollOver);
     }
 
     @Override
-    public ElapsedTime createElapsedTime(Integer timeGPRSIfNoTariffSwitch) {
+    public ElapsedTimeImpl createElapsedTime(Integer timeGPRSIfNoTariffSwitch) {
         return new ElapsedTimeImpl(timeGPRSIfNoTariffSwitch);
     }
 
     @Override
-    public ElapsedTime createElapsedTime(TimeGPRSIfTariffSwitch timeGPRSIfTariffSwitch) {
+    public ElapsedTimeImpl createElapsedTime(TimeGPRSIfTariffSwitchImpl timeGPRSIfTariffSwitch) {
         return new ElapsedTimeImpl(timeGPRSIfTariffSwitch);
     }
 
     @Override
-    public ElapsedTimeRollOver createElapsedTimeRollOver(Integer roTimeGPRSIfNoTariffSwitch) {
+    public ElapsedTimeRollOverImpl createElapsedTimeRollOver(Integer roTimeGPRSIfNoTariffSwitch) {
         return new ElapsedTimeRollOverImpl(roTimeGPRSIfNoTariffSwitch);
     }
 
     @Override
-    public ElapsedTimeRollOver createElapsedTimeRollOver(ROTimeGPRSIfTariffSwitch roTimeGPRSIfTariffSwitch) {
+    public ElapsedTimeRollOverImpl createElapsedTimeRollOver(ROTimeGPRSIfTariffSwitchImpl roTimeGPRSIfTariffSwitch) {
         return new ElapsedTimeRollOverImpl(roTimeGPRSIfTariffSwitch);
     }
 
     @Override
-    public EndUserAddress createEndUserAddress(PDPTypeOrganization pdpTypeOrganization, PDPTypeNumber pdpTypeNumber,
-            PDPAddress pdpAddress) {
+    public EndUserAddressImpl createEndUserAddress(PDPTypeOrganizationImpl pdpTypeOrganization, PDPTypeNumberImpl pdpTypeNumber,
+            PDPAddressImpl pdpAddress) {
         return new EndUserAddressImpl(pdpTypeOrganization, pdpTypeNumber, pdpAddress);
     }
 
     @Override
-    public org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELsequence1Gprs createFCIBCCCAMELsequence1(
-            FreeFormatDataGprs freeFormatData, PDPID pdpID, AppendFreeFormatData appendFreeFormatData) {
-        return new org.restcomm.protocols.ss7.cap.service.gprs.primitive.FCIBCCCAMELsequence1GprsImpl(freeFormatData, pdpID,
+    public FCIBCCCAMELSequence1GprsImpl createFCIBCCCAMELsequence1(
+            FreeFormatDataGprsImpl freeFormatData, PDPIDImpl pdpID, AppendFreeFormatData appendFreeFormatData) {
+        return new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID,
                 appendFreeFormatData);
     }
 
     @Override
-    public FreeFormatDataGprs createFreeFormatDataGprs(byte[] data) {
+    public FreeFormatDataGprsImpl createFreeFormatDataGprs(byte[] data) {
         return new FreeFormatDataGprsImpl(data);
     }
 
     @Override
-    public GPRSCause createGPRSCause(int data) {
+    public GPRSCauseImpl createGPRSCause(int data) {
         return new GPRSCauseImpl(data);
     }
 
     @Override
-    public GPRSEvent createGPRSEvent(GPRSEventType gprsEventType, MonitorMode monitorMode) {
+    public GPRSEventImpl createGPRSEvent(GPRSEventType gprsEventType, MonitorMode monitorMode) {
         return new GPRSEventImpl(gprsEventType, monitorMode);
     }
 
     @Override
-    public GPRSEventSpecificInformation createGPRSEventSpecificInformation(LocationInformationGPRS locationInformationGPRS) {
+    public GPRSEventSpecificInformationImpl createGPRSEventSpecificInformation(LocationInformationGPRSImpl locationInformationGPRS) {
         return new GPRSEventSpecificInformationImpl(locationInformationGPRS);
     }
 
     @Override
-    public GPRSEventSpecificInformation createGPRSEventSpecificInformation(
-            PdpContextchangeOfPositionSpecificInformation pdpContextchangeOfPositionSpecificInformation) {
+    public GPRSEventSpecificInformationImpl createGPRSEventSpecificInformation(
+            PdpContextChangeOfPositionSpecificInformationImpl pdpContextchangeOfPositionSpecificInformation) {
         return new GPRSEventSpecificInformationImpl(pdpContextchangeOfPositionSpecificInformation);
     }
 
     @Override
-    public GPRSEventSpecificInformation createGPRSEventSpecificInformation(DetachSpecificInformation detachSpecificInformation) {
+    public GPRSEventSpecificInformationImpl createGPRSEventSpecificInformation(DetachSpecificInformationImpl detachSpecificInformation) {
         return new GPRSEventSpecificInformationImpl(detachSpecificInformation);
     }
 
     @Override
-    public GPRSEventSpecificInformation createGPRSEventSpecificInformation(
-            DisconnectSpecificInformation disconnectSpecificInformation) {
+    public GPRSEventSpecificInformationImpl createGPRSEventSpecificInformation(
+            DisconnectSpecificInformationImpl disconnectSpecificInformation) {
         return new GPRSEventSpecificInformationImpl(disconnectSpecificInformation);
     }
 
     @Override
-    public GPRSEventSpecificInformation createGPRSEventSpecificInformation(
-            PDPContextEstablishmentSpecificInformation pdpContextEstablishmentSpecificInformation) {
+    public GPRSEventSpecificInformationImpl createGPRSEventSpecificInformation(
+            PDPContextEstablishmentSpecificInformationImpl pdpContextEstablishmentSpecificInformation) {
         return new GPRSEventSpecificInformationImpl(pdpContextEstablishmentSpecificInformation);
     }
 
     @Override
-    public GPRSEventSpecificInformation createGPRSEventSpecificInformation(
-            PDPContextEstablishmentAcknowledgementSpecificInformation pdpContextEstablishmentAcknowledgementSpecificInformation) {
+    public GPRSEventSpecificInformationImpl createGPRSEventSpecificInformation(
+            PDPContextEstablishmentAcknowledgementSpecificInformationImpl pdpContextEstablishmentAcknowledgementSpecificInformation) {
         return new GPRSEventSpecificInformationImpl(pdpContextEstablishmentAcknowledgementSpecificInformation);
     }
 
     @Override
-    public GPRSQoSExtension createGPRSQoSExtension(Ext2QoSSubscribed supplementToLongQoSFormat) {
+    public GPRSQoSExtensionImpl createGPRSQoSExtension(Ext2QoSSubscribedImpl supplementToLongQoSFormat) {
         return new GPRSQoSExtensionImpl(supplementToLongQoSFormat);
     }
 
     @Override
-    public GPRSQoS createGPRSQoS(QoSSubscribed shortQoSFormat) {
+    public GPRSQoSImpl createGPRSQoS(QoSSubscribedImpl shortQoSFormat) {
         return new GPRSQoSImpl(shortQoSFormat);
     }
 
     @Override
-    public GPRSQoS createGPRSQoS(ExtQoSSubscribed longQoSFormat) {
+    public GPRSQoSImpl createGPRSQoS(ExtQoSSubscribedImpl longQoSFormat) {
         return new GPRSQoSImpl(longQoSFormat);
     }
 
     @Override
-    public PDPAddress createPDPAddress(byte[] data) {
+    public PDPAddressImpl createPDPAddress(byte[] data) {
         return new PDPAddressImpl(data);
     }
 
     @Override
-    public PDPID createPDPID(int data) {
+    public PDPIDImpl createPDPID(int data) {
         return new PDPIDImpl(data);
     }
 
     @Override
-    public PDPTypeNumber createPDPTypeNumber(int data) {
+    public PDPTypeNumberImpl createPDPTypeNumber(int data) {
         return new PDPTypeNumberImpl(data);
     }
 
     @Override
-    public PDPTypeNumber createPDPTypeNumber(PDPTypeNumberValue value) {
+    public PDPTypeNumberImpl createPDPTypeNumber(PDPTypeNumberValue value) {
         return new PDPTypeNumberImpl(value);
     }
 
     @Override
-    public PDPTypeOrganization createPDPTypeOrganization(int data) {
+    public PDPTypeOrganizationImpl createPDPTypeOrganization(int data) {
         return new PDPTypeOrganizationImpl(data);
     }
 
     @Override
-    public PDPTypeOrganization createPDPTypeOrganization(PDPTypeOrganizationValue value) {
+    public PDPTypeOrganizationImpl createPDPTypeOrganization(PDPTypeOrganizationValue value) {
         return new PDPTypeOrganizationImpl(value);
     }
 
     @Override
-    public QualityOfService createQualityOfService(GPRSQoS requestedQoS, GPRSQoS subscribedQoS, GPRSQoS negotiatedQoS,
-            GPRSQoSExtension requestedQoSExtension, GPRSQoSExtension subscribedQoSExtension,
-            GPRSQoSExtension negotiatedQoSExtension) {
+    public QualityOfServiceImpl createQualityOfService(GPRSQoSImpl requestedQoS, GPRSQoSImpl subscribedQoS, GPRSQoSImpl negotiatedQoS,
+            GPRSQoSExtensionImpl requestedQoSExtension, GPRSQoSExtensionImpl subscribedQoSExtension,
+            GPRSQoSExtensionImpl negotiatedQoSExtension) {
         return new QualityOfServiceImpl(requestedQoS, subscribedQoS, negotiatedQoS, requestedQoSExtension,
                 subscribedQoSExtension, negotiatedQoSExtension);
     }
 
     @Override
-    public ROTimeGPRSIfTariffSwitch createROTimeGPRSIfTariffSwitch(Integer roTimeGPRSSinceLastTariffSwitch,
+    public ROTimeGPRSIfTariffSwitchImpl createROTimeGPRSIfTariffSwitch(Integer roTimeGPRSSinceLastTariffSwitch,
             Integer roTimeGPRSTariffSwitchInterval) {
         return new ROTimeGPRSIfTariffSwitchImpl(roTimeGPRSSinceLastTariffSwitch, roTimeGPRSTariffSwitchInterval);
     }
 
     @Override
-    public ROVolumeIfTariffSwitch createROVolumeIfTariffSwitch(Integer roVolumeSinceLastTariffSwitch,
+    public ROVolumeIfTariffSwitchImpl createROVolumeIfTariffSwitch(Integer roVolumeSinceLastTariffSwitch,
             Integer roVolumeTariffSwitchInterval) {
         return new ROVolumeIfTariffSwitchImpl(roVolumeSinceLastTariffSwitch, roVolumeTariffSwitchInterval);
     }
 
     @Override
-    public SGSNCapabilities createSGSNCapabilities(int data) {
+    public SGSNCapabilitiesImpl createSGSNCapabilities(int data) {
         return new SGSNCapabilitiesImpl(data);
     }
 
     @Override
-    public SGSNCapabilities createSGSNCapabilities(boolean aoCSupportedBySGSN) {
+    public SGSNCapabilitiesImpl createSGSNCapabilities(boolean aoCSupportedBySGSN) {
         return new SGSNCapabilitiesImpl(aoCSupportedBySGSN);
     }
 
     @Override
-    public TimeGPRSIfTariffSwitch createTimeGPRSIfTariffSwitch(int timeGPRSSinceLastTariffSwitch,
+    public TimeGPRSIfTariffSwitchImpl createTimeGPRSIfTariffSwitch(int timeGPRSSinceLastTariffSwitch,
             Integer timeGPRSTariffSwitchInterval) {
         return new TimeGPRSIfTariffSwitchImpl(timeGPRSSinceLastTariffSwitch, timeGPRSTariffSwitchInterval);
     }
 
     @Override
-    public TransferredVolume createTransferredVolume(Long volumeIfNoTariffSwitch) {
+    public TransferredVolumeImpl createTransferredVolume(Long volumeIfNoTariffSwitch) {
         return new TransferredVolumeImpl(volumeIfNoTariffSwitch);
     }
 
     @Override
-    public TransferredVolume createTransferredVolume(VolumeIfTariffSwitch volumeIfTariffSwitch) {
+    public TransferredVolumeImpl createTransferredVolume(VolumeIfTariffSwitchImpl volumeIfTariffSwitch) {
         return new TransferredVolumeImpl(volumeIfTariffSwitch);
     }
 
     @Override
-    public TransferredVolumeRollOver createTransferredVolumeRollOver(Integer roVolumeIfNoTariffSwitch) {
+    public TransferredVolumeRollOverImpl createTransferredVolumeRollOver(Integer roVolumeIfNoTariffSwitch) {
         return new TransferredVolumeRollOverImpl(roVolumeIfNoTariffSwitch);
     }
 
     @Override
-    public TransferredVolumeRollOver createTransferredVolumeRollOver(ROVolumeIfTariffSwitch roVolumeIfTariffSwitch) {
+    public TransferredVolumeRollOverImpl createTransferredVolumeRollOver(ROVolumeIfTariffSwitchImpl roVolumeIfTariffSwitch) {
         return new TransferredVolumeRollOverImpl(roVolumeIfTariffSwitch);
     }
 
     @Override
-    public VolumeIfTariffSwitch createVolumeIfTariffSwitch(long volumeSinceLastTariffSwitch, Long volumeTariffSwitchInterval) {
+    public VolumeIfTariffSwitchImpl createVolumeIfTariffSwitch(long volumeSinceLastTariffSwitch, Long volumeTariffSwitchInterval) {
         return new VolumeIfTariffSwitchImpl(volumeSinceLastTariffSwitch, volumeTariffSwitchInterval);
     }
 
     @Override
-    public DetachSpecificInformation createDetachSpecificInformation(InitiatingEntity initiatingEntity,
+    public DetachSpecificInformationImpl createDetachSpecificInformation(InitiatingEntity initiatingEntity,
             boolean routeingAreaUpdate) {
         return new DetachSpecificInformationImpl(initiatingEntity, routeingAreaUpdate);
     }
 
     @Override
-    public DisconnectSpecificInformation createDisconnectSpecificInformation(InitiatingEntity initiatingEntity,
+    public DisconnectSpecificInformationImpl createDisconnectSpecificInformation(InitiatingEntity initiatingEntity,
             boolean routeingAreaUpdate) {
         return new DisconnectSpecificInformationImpl(initiatingEntity, routeingAreaUpdate);
     }
 
     @Override
-    public PdpContextchangeOfPositionSpecificInformation createPdpContextchangeOfPositionSpecificInformation(
-            AccessPointName accessPointName, GPRSChargingID chargingID, LocationInformationGPRS locationInformationGPRS,
-            EndUserAddress endUserAddress, QualityOfService qualityOfService, TimeAndTimezone timeAndTimezone,
-            GSNAddress gsnAddress) {
-        return new PdpContextchangeOfPositionSpecificInformationImpl(accessPointName, chargingID, locationInformationGPRS,
+    public PdpContextChangeOfPositionSpecificInformationImpl createPdpContextchangeOfPositionSpecificInformation(
+            AccessPointNameImpl accessPointName, GPRSChargingIDImpl chargingID, LocationInformationGPRSImpl locationInformationGPRS,
+            EndUserAddressImpl endUserAddress, QualityOfServiceImpl qualityOfService, TimeAndTimezoneImpl timeAndTimezone,
+            GSNAddressImpl gsnAddress) {
+        return new PdpContextChangeOfPositionSpecificInformationImpl(accessPointName, chargingID, locationInformationGPRS,
                 endUserAddress, qualityOfService, timeAndTimezone, gsnAddress);
     }
 
     @Override
-    public PDPContextEstablishmentAcknowledgementSpecificInformation createPDPContextEstablishmentAcknowledgementSpecificInformation(
-            AccessPointName accessPointName, GPRSChargingID chargingID, LocationInformationGPRS locationInformationGPRS,
-            EndUserAddress endUserAddress, QualityOfService qualityOfService, TimeAndTimezone timeAndTimezone,
-            GSNAddress gsnAddress) {
+    public PDPContextEstablishmentAcknowledgementSpecificInformationImpl createPDPContextEstablishmentAcknowledgementSpecificInformation(
+            AccessPointNameImpl accessPointName, GPRSChargingIDImpl chargingID, LocationInformationGPRSImpl locationInformationGPRS,
+            EndUserAddressImpl endUserAddress, QualityOfServiceImpl qualityOfService, TimeAndTimezoneImpl timeAndTimezone,
+            GSNAddressImpl gsnAddress) {
         return new PDPContextEstablishmentAcknowledgementSpecificInformationImpl(accessPointName, chargingID,
                 locationInformationGPRS, endUserAddress, qualityOfService, timeAndTimezone, gsnAddress);
     }
 
     @Override
-    public PDPContextEstablishmentSpecificInformation createPDPContextEstablishmentSpecificInformation(
-            AccessPointName accessPointName, EndUserAddress endUserAddress, QualityOfService qualityOfService,
-            LocationInformationGPRS locationInformationGPRS, TimeAndTimezone timeAndTimezone,
+    public PDPContextEstablishmentSpecificInformationImpl createPDPContextEstablishmentSpecificInformation(
+            AccessPointNameImpl accessPointName, EndUserAddressImpl endUserAddress, QualityOfServiceImpl qualityOfService,
+            LocationInformationGPRSImpl locationInformationGPRS, TimeAndTimezoneImpl timeAndTimezone,
             PDPInitiationType pdpInitiationType, boolean secondaryPDPContext) {
         return new PDPContextEstablishmentSpecificInformationImpl(accessPointName, endUserAddress, qualityOfService,
                 locationInformationGPRS, timeAndTimezone, pdpInitiationType, secondaryPDPContext);
     }
 
     @Override
-    public TPValidityPeriod createTPValidityPeriod(byte[] data) {
+    public TPValidityPeriodImpl createTPValidityPeriod(byte[] data) {
         return new TPValidityPeriodImpl(data);
     }
 
     @Override
-    public TPShortMessageSpecificInfo createTPShortMessageSpecificInfo(int data) {
+    public TPShortMessageSpecificInfoImpl createTPShortMessageSpecificInfo(int data) {
         return new TPShortMessageSpecificInfoImpl(data);
     }
 
     @Override
-    public TPProtocolIdentifier createTPProtocolIdentifier(int data) {
+    public TPProtocolIdentifierImpl createTPProtocolIdentifier(int data) {
         return new TPProtocolIdentifierImpl(data);
     }
 
     @Override
-    public TPDataCodingScheme createTPDataCodingScheme(int data) {
+    public TPDataCodingSchemeImpl createTPDataCodingScheme(int data) {
         return new TPDataCodingSchemeImpl(data);
     }
 
     @Override
-    public SMSEvent createSMSEvent(EventTypeSMS eventTypeSMS, MonitorMode monitorMode) {
+    public SMSEventImpl createSMSEvent(EventTypeSMS eventTypeSMS, MonitorMode monitorMode) {
         return new SMSEventImpl(eventTypeSMS, monitorMode);
     }
 
     @Override
-    public SMSAddressString createSMSAddressString(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+    public SMSAddressStringImpl createSMSAddressString(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
         return new SMSAddressStringImpl(addressNature, numberingPlan, address);
     }
 
     @Override
-    public RPCause createRPCause(int data) {
+    public RPCauseImpl createRPCause(int data) {
         return new RPCauseImpl(data);
     }
 
     @Override
-    public MTSMSCause createMTSMSCause(int data) {
+    public MTSMSCauseImpl createMTSMSCause(int data) {
         return new MTSMSCauseImpl(data);
     }
 
     @Override
-    public org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatData createFreeFormatData(byte[] data) {
-        return new org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.FreeFormatDataImpl(data);
+    public FreeFormatDataImpl createFreeFormatData(byte[] data) {
+        return new FreeFormatDataImpl(data);
     }
 
     @Override
-    public org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELsequence1SMS createFCIBCCCAMELsequence1(
-            org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS freeFormatData,
+    public FCIBCCCAMELSequence1SMSImpl createFCIBCCCAMELsequence1(
+            FreeFormatDataSMSImpl freeFormatData,
             AppendFreeFormatData appendFreeFormatData) {
-        return new org.restcomm.protocols.ss7.cap.service.sms.primitive.FCIBCCCAMELsequence1SMSImpl(freeFormatData,
+        return new FCIBCCCAMELSequence1SMSImpl(freeFormatData,
                 appendFreeFormatData);
     }
 
     @Override
-    public EventSpecificInformationSMS createEventSpecificInformationSMSImpl(
-            OSmsFailureSpecificInfo oSmsFailureSpecificInfo) {
+    public EventSpecificInformationSMSImpl createEventSpecificInformationSMSImpl(
+            OSmsFailureSpecificInfoImpl oSmsFailureSpecificInfo) {
         return new EventSpecificInformationSMSImpl(oSmsFailureSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationSMS createEventSpecificInformationSMSImpl(
-            OSmsSubmissionSpecificInfo oSmsSubmissionSpecificInfo) {
+    public EventSpecificInformationSMSImpl createEventSpecificInformationSMSImpl(
+            OSmsSubmissionSpecificInfoImpl oSmsSubmissionSpecificInfo) {
         return new EventSpecificInformationSMSImpl(oSmsSubmissionSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationSMS createEventSpecificInformationSMSImpl(
-            TSmsFailureSpecificInfo tSmsFailureSpecificInfo) {
+    public EventSpecificInformationSMSImpl createEventSpecificInformationSMSImpl(
+            TSmsFailureSpecificInfoImpl tSmsFailureSpecificInfo) {
         return new EventSpecificInformationSMSImpl(tSmsFailureSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationSMS createEventSpecificInformationSMSImpl(
-            TSmsDeliverySpecificInfo tSmsDeliverySpecificInfo) {
+    public EventSpecificInformationSMSImpl createEventSpecificInformationSMSImpl(
+            TSmsDeliverySpecificInfoImpl tSmsDeliverySpecificInfo) {
         return new EventSpecificInformationSMSImpl(tSmsDeliverySpecificInfo);
     }
 
     @Override
-    public FreeFormatDataSMS createFreeFormatDataSMS(byte[] data) {
+    public FreeFormatDataSMSImpl createFreeFormatDataSMS(byte[] data) {
         return new FreeFormatDataSMSImpl(data);
     }
 
     @Override
-    public OSmsFailureSpecificInfo createOSmsFailureSpecificInfo(MOSMSCause failureCause) {
+    public OSmsFailureSpecificInfoImpl createOSmsFailureSpecificInfo(MOSMSCause failureCause) {
         return new OSmsFailureSpecificInfoImpl(failureCause);
     }
 
     @Override
-    public OSmsSubmissionSpecificInfo createOSmsSubmissionSpecificInfo() {
+    public OSmsSubmissionSpecificInfoImpl createOSmsSubmissionSpecificInfo() {
         return new OSmsSubmissionSpecificInfoImpl();
     }
 
     @Override
-    public TSmsFailureSpecificInfo createTSmsFailureSpecificInfo(MTSMSCause failureCause) {
+    public TSmsFailureSpecificInfoImpl createTSmsFailureSpecificInfo(MTSMSCauseImpl failureCause) {
         return new TSmsFailureSpecificInfoImpl(failureCause);
     }
 
     @Override
-    public TSmsDeliverySpecificInfo createTSmsDeliverySpecificInfo() {
+    public TSmsDeliverySpecificInfoImpl createTSmsDeliverySpecificInfo() {
         return new TSmsDeliverySpecificInfoImpl();
     }
 
     @Override
-    public LegOrCallSegment createLegOrCallSegment(Integer callSegmentID) {
+    public LegOrCallSegmentImpl createLegOrCallSegment(Integer callSegmentID) {
         return new LegOrCallSegmentImpl(callSegmentID);
     }
 
     @Override
-    public LegOrCallSegment createLegOrCallSegment(LegID legID) {
+    public LegOrCallSegmentImpl createLegOrCallSegment(LegIDImpl legID) {
         return new LegOrCallSegmentImpl(legID);
     }
 
     @Override
-    public ChargeIndicator createChargeIndicator(int data) {
+    public ChargeIndicatorImpl createChargeIndicator(int data) {
         return new ChargeIndicatorImpl(data);
     }
 
     @Override
-    public ChargeIndicator createChargeIndicator(ChargeIndicatorValue value) {
+    public ChargeIndicatorImpl createChargeIndicator(ChargeIndicatorValue value) {
         return new ChargeIndicatorImpl(value);
     }
 
     @Override
-    public BackwardServiceInteractionInd createBackwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
+    public BackwardServiceInteractionIndImpl createBackwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallCompletionTreatmentIndicator callCompletionTreatmentIndicator) {
         return new BackwardServiceInteractionIndImpl(conferenceTreatmentIndicator, callCompletionTreatmentIndicator);
     }
 
     @Override
-    public Carrier createCarrier(byte[] data) {
+    public CarrierImpl createCarrier(byte[] data) {
         return new CarrierImpl(data);
     }
 
     @Override
-    public ForwardServiceInteractionInd createForwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
+    public ForwardServiceInteractionIndImpl createForwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallDiversionTreatmentIndicator callDiversionTreatmentIndicator, CallingPartyRestrictionIndicator callingPartyRestrictionIndicator) {
         return new ForwardServiceInteractionIndImpl(conferenceTreatmentIndicator, callDiversionTreatmentIndicator, callingPartyRestrictionIndicator);
     }
 
     @Override
-    public LowLayerCompatibility createLowLayerCompatibility(byte[] data) {
+    public LowLayerCompatibilityImpl createLowLayerCompatibility(byte[] data) {
         return new LowLayerCompatibilityImpl(data);
     }
 
     @Override
-    public MidCallEvents createMidCallEvents_Completed(Digits dtmfDigits) {
+    public MidCallEventsImpl createMidCallEvents_Completed(DigitsImpl dtmfDigits) {
         return new MidCallEventsImpl(dtmfDigits, true);
     }
 
     @Override
-    public MidCallEvents createMidCallEvents_TimeOut(Digits dtmfDigits) {
+    public MidCallEventsImpl createMidCallEvents_TimeOut(DigitsImpl dtmfDigits) {
         return new MidCallEventsImpl(dtmfDigits, false);
     }
 
     @Override
-    public OMidCallSpecificInfo createOMidCallSpecificInfo(MidCallEvents midCallEvents) {
+    public OMidCallSpecificInfoImpl createOMidCallSpecificInfo(MidCallEventsImpl midCallEvents) {
         return new OMidCallSpecificInfoImpl(midCallEvents);
     }
 
     @Override
-    public TMidCallSpecificInfo createTMidCallSpecificInfo(MidCallEvents midCallEvents) {
+    public TMidCallSpecificInfoImpl createTMidCallSpecificInfo(MidCallEventsImpl midCallEvents) {
         return new TMidCallSpecificInfoImpl(midCallEvents);
     }
 
     @Override
-    public OTermSeizedSpecificInfo createOTermSeizedSpecificInfo(LocationInformation locationInformation) {
+    public OTermSeizedSpecificInfoImpl createOTermSeizedSpecificInfo(LocationInformationImpl locationInformation) {
         return new OTermSeizedSpecificInfoImpl(locationInformation);
     }
 
     @Override
-    public CallAcceptedSpecificInfo createCallAcceptedSpecificInfo(LocationInformation locationInformation) {
+    public CallAcceptedSpecificInfoImpl createCallAcceptedSpecificInfo(LocationInformationImpl locationInformation) {
         return new CallAcceptedSpecificInfoImpl(locationInformation);
     }
 
     @Override
-    public MetDPCriterionAlt createMetDPCriterionAlt() {
+    public MetDPCriterionAltImpl createMetDPCriterionAlt() {
         return new MetDPCriterionAltImpl();
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_enteringCellGlobalId(CellGlobalIdOrServiceAreaIdFixedLength value) {
+    public MetDPCriterionImpl createMetDPCriterion_enteringCellGlobalId(CellGlobalIdOrServiceAreaIdFixedLengthImpl value) {
         return new MetDPCriterionImpl(value, MetDPCriterionImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.enteringCellGlobalId);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_leavingCellGlobalId(CellGlobalIdOrServiceAreaIdFixedLength value) {
+    public MetDPCriterionImpl createMetDPCriterion_leavingCellGlobalId(CellGlobalIdOrServiceAreaIdFixedLengthImpl value) {
         return new MetDPCriterionImpl(value, MetDPCriterionImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.leavingCellGlobalId);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_enteringServiceAreaId(CellGlobalIdOrServiceAreaIdFixedLength value) {
+    public MetDPCriterionImpl createMetDPCriterion_enteringServiceAreaId(CellGlobalIdOrServiceAreaIdFixedLengthImpl value) {
         return new MetDPCriterionImpl(value, MetDPCriterionImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.enteringServiceAreaId);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_leavingServiceAreaId(CellGlobalIdOrServiceAreaIdFixedLength value) {
+    public MetDPCriterionImpl createMetDPCriterion_leavingServiceAreaId(CellGlobalIdOrServiceAreaIdFixedLengthImpl value) {
         return new MetDPCriterionImpl(value, MetDPCriterionImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.leavingServiceAreaId);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_enteringLocationAreaId(LAIFixedLength value) {
+    public MetDPCriterionImpl createMetDPCriterion_enteringLocationAreaId(LAIFixedLengthImpl value) {
         return new MetDPCriterionImpl(value, MetDPCriterionImpl.LAIFixedLength_Option.enteringLocationAreaId);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_leavingLocationAreaId(LAIFixedLength value) {
+    public MetDPCriterionImpl createMetDPCriterion_leavingLocationAreaId(LAIFixedLengthImpl value) {
         return new MetDPCriterionImpl(value, MetDPCriterionImpl.LAIFixedLength_Option.leavingLocationAreaId);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_interSystemHandOverToUMTS() {
+    public MetDPCriterionImpl createMetDPCriterion_interSystemHandOverToUMTS() {
         return new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interSystemHandOverToUMTS);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_interSystemHandOverToGSM() {
+    public MetDPCriterionImpl createMetDPCriterion_interSystemHandOverToGSM() {
         return new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interSystemHandOverToGSM);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_interPLMNHandOver() {
+    public MetDPCriterionImpl createMetDPCriterion_interPLMNHandOver() {
         return new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interPLMNHandOver);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion_interMSCHandOver() {
+    public MetDPCriterionImpl createMetDPCriterion_interMSCHandOver() {
         return new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interMSCHandOver);
     }
 
     @Override
-    public MetDPCriterion createMetDPCriterion(MetDPCriterionAlt metDPCriterionAlt) {
+    public MetDPCriterionImpl createMetDPCriterion(MetDPCriterionAltImpl metDPCriterionAlt) {
         return new MetDPCriterionImpl(metDPCriterionAlt);
     }
 
     @Override
-    public OChangeOfPositionSpecificInfo createOChangeOfPositionSpecificInfo(LocationInformation locationInformation,
-            ArrayList<MetDPCriterion> metDPCriteriaList) {
+    public OChangeOfPositionSpecificInfoImpl createOChangeOfPositionSpecificInfo(LocationInformationImpl locationInformation,
+            List<MetDPCriterionImpl> metDPCriteriaList) {
         return new OChangeOfPositionSpecificInfoImpl(locationInformation, metDPCriteriaList);
     }
 
     @Override
-    public TChangeOfPositionSpecificInfo createTChangeOfPositionSpecificInfo(LocationInformation locationInformation,
-            ArrayList<MetDPCriterion> metDPCriteriaList) {
+    public TChangeOfPositionSpecificInfoImpl createTChangeOfPositionSpecificInfo(LocationInformationImpl locationInformation,
+            List<MetDPCriterionImpl> metDPCriteriaList) {
         return new TChangeOfPositionSpecificInfoImpl(locationInformation, metDPCriteriaList);
     }
 
     @Override
-    public OServiceChangeSpecificInfo createOServiceChangeSpecificInfo(ExtBasicServiceCode extBasicServiceCode) {
+    public OServiceChangeSpecificInfoImpl createOServiceChangeSpecificInfo(ExtBasicServiceCodeImpl extBasicServiceCode) {
         return new OServiceChangeSpecificInfoImpl(extBasicServiceCode);
     }
 
     @Override
-    public TServiceChangeSpecificInfo createTServiceChangeSpecificInfo(ExtBasicServiceCode extBasicServiceCode) {
+    public TServiceChangeSpecificInfoImpl createTServiceChangeSpecificInfo(ExtBasicServiceCodeImpl extBasicServiceCode) {
         return new TServiceChangeSpecificInfoImpl(extBasicServiceCode);
     }
 
     @Override
-    public CollectedInfoSpecificInfo createCollectedInfoSpecificInfo(CalledPartyNumberCap calledPartyNumber) {
+    public CollectedInfoSpecificInfoImpl createCollectedInfoSpecificInfo(CalledPartyNumberCapImpl calledPartyNumber) {
         return new CollectedInfoSpecificInfoImpl(calledPartyNumber);
     }
 
     @Override
-    public DpSpecificInfoAlt createDpSpecificInfoAlt(OServiceChangeSpecificInfo oServiceChangeSpecificInfo,
-            CollectedInfoSpecificInfo collectedInfoSpecificInfo, TServiceChangeSpecificInfo tServiceChangeSpecificInfo) {
+    public DpSpecificInfoAltImpl createDpSpecificInfoAlt(OServiceChangeSpecificInfoImpl oServiceChangeSpecificInfo,
+            CollectedInfoSpecificInfoImpl collectedInfoSpecificInfo, TServiceChangeSpecificInfoImpl tServiceChangeSpecificInfo) {
         return new DpSpecificInfoAltImpl(oServiceChangeSpecificInfo, collectedInfoSpecificInfo, tServiceChangeSpecificInfo);
     }
 
     @Override
-    public ChangeOfLocationAlt createChangeOfLocationAlt() {
+    public ChangeOfLocationAltImpl createChangeOfLocationAlt() {
         return new ChangeOfLocationAltImpl();
     }
 
     @Override
-    public ChangeOfLocation createChangeOfLocation_cellGlobalId(CellGlobalIdOrServiceAreaIdFixedLength value) {
+    public ChangeOfLocationImpl createChangeOfLocation_cellGlobalId(CellGlobalIdOrServiceAreaIdFixedLengthImpl value) {
         return new ChangeOfLocationImpl(value, ChangeOfLocationImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.cellGlobalId);
     }
 
     @Override
-    public ChangeOfLocation createChangeOfLocation_serviceAreaId(CellGlobalIdOrServiceAreaIdFixedLength value) {
+    public ChangeOfLocationImpl createChangeOfLocation_serviceAreaId(CellGlobalIdOrServiceAreaIdFixedLengthImpl value) {
         return new ChangeOfLocationImpl(value, ChangeOfLocationImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.serviceAreaId);
     }
 
     @Override
-    public ChangeOfLocation createChangeOfLocation(LAIFixedLength locationAreaId) {
+    public ChangeOfLocationImpl createChangeOfLocation(LAIFixedLengthImpl locationAreaId) {
         return new ChangeOfLocationImpl(locationAreaId);
     }
 
     @Override
-    public ChangeOfLocation createChangeOfLocation_interSystemHandOver() {
+    public ChangeOfLocationImpl createChangeOfLocation_interSystemHandOver() {
         return new ChangeOfLocationImpl(ChangeOfLocationImpl.Boolean_Option.interSystemHandOver);
     }
 
     @Override
-    public ChangeOfLocation createChangeOfLocation_interPLMNHandOver() {
+    public ChangeOfLocationImpl createChangeOfLocation_interPLMNHandOver() {
         return new ChangeOfLocationImpl(ChangeOfLocationImpl.Boolean_Option.interPLMNHandOver);
     }
 
     @Override
-    public ChangeOfLocation createChangeOfLocation_interMSCHandOver() {
+    public ChangeOfLocationImpl createChangeOfLocation_interMSCHandOver() {
         return new ChangeOfLocationImpl(ChangeOfLocationImpl.Boolean_Option.interMSCHandOver);
     }
 
     @Override
-    public ChangeOfLocation createChangeOfLocation(ChangeOfLocationAlt changeOfLocationAlt) {
+    public ChangeOfLocationImpl createChangeOfLocation(ChangeOfLocationAltImpl changeOfLocationAlt) {
         return new ChangeOfLocationImpl(changeOfLocationAlt);
     }
 
     @Override
-    public DpSpecificCriteriaAlt createDpSpecificCriteriaAlt(ArrayList<ChangeOfLocation> changeOfPositionControlInfo, Integer numberOfDigits) {
+    public DpSpecificCriteriaAltImpl createDpSpecificCriteriaAlt(List<ChangeOfLocationImpl> changeOfPositionControlInfo, Integer numberOfDigits) {
         return new DpSpecificCriteriaAltImpl(changeOfPositionControlInfo, numberOfDigits);
     }
 
     @Override
-    public MidCallControlInfo createMidCallControlInfo(Integer minimumNumberOfDigits, Integer maximumNumberOfDigits, String endOfReplyDigit,
+    public MidCallControlInfoImpl createMidCallControlInfo(Integer minimumNumberOfDigits, Integer maximumNumberOfDigits, String endOfReplyDigit,
             String cancelDigit, String startDigit, Integer interDigitTimeout) {
         return new MidCallControlInfoImpl(minimumNumberOfDigits, maximumNumberOfDigits, endOfReplyDigit, cancelDigit, startDigit, interDigitTimeout);
     }
 
     @Override
-    public Burst createBurst(Integer numberOfBursts, Integer burstInterval, Integer numberOfTonesInBurst, Integer toneDuration, Integer toneInterval) {
+    public BurstImpl createBurst(Integer numberOfBursts, Integer burstInterval, Integer numberOfTonesInBurst, Integer toneDuration, Integer toneInterval) {
         return new BurstImpl(numberOfBursts, burstInterval, numberOfTonesInBurst, toneDuration, toneInterval);
     }
 
     @Override
-    public BurstList createBurstList(Integer warningPeriod, Burst burst) {
+    public BurstListImpl createBurstList(Integer warningPeriod, BurstImpl burst) {
         return new BurstListImpl(warningPeriod, burst);
     }
 
     @Override
-    public AudibleIndicator createAudibleIndicator(Boolean tone) {
+    public AudibleIndicatorImpl createAudibleIndicator(Boolean tone) {
         return new AudibleIndicatorImpl(tone);
     }
 
     @Override
-    public AudibleIndicator createAudibleIndicator(BurstList burstList) {
+    public AudibleIndicatorImpl createAudibleIndicator(BurstListImpl burstList) {
         return new AudibleIndicatorImpl(burstList);
     }
 
     @Override
-    public AChChargingAddress createAChChargingAddress(LegID legID) {
+    public AChChargingAddressImpl createAChChargingAddress(LegIDImpl legID) {
         return new AChChargingAddressImpl(legID);
     }
 
     @Override
-    public AChChargingAddress createAChChargingAddress(int srfConnection) {
+    public AChChargingAddressImpl createAChChargingAddress(int srfConnection) {
         return new AChChargingAddressImpl(srfConnection);
     }
 }

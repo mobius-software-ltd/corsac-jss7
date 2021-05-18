@@ -22,13 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CollectInformationRequest;
 
 /**
@@ -39,9 +34,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CollectInf
 public class CollectInformationRequestImpl extends CircuitSwitchedCallMessageImpl implements CollectInformationRequest {
 	private static final long serialVersionUID = 1L;
 	
-	public static final String _PrimitiveName = "CollectInformationRequest";
-
-    @Override
+	@Override
     public CAPMessageType getMessageType() {
         return CAPMessageType.collectInformationRequest_Request;
     }
@@ -52,53 +45,10 @@ public class CollectInformationRequestImpl extends CircuitSwitchedCallMessageImp
     }
 
     @Override
-    public int getTag() throws CAPException {
-        throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
-    }
-
-    @Override
-    public int getTagClass() {
-        return 0;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-        throw new CAPParsingComponentException("Parameter " + _PrimitiveName + ": does not support encoding",
-                CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-        throw new CAPParsingComponentException("Parameter " + _PrimitiveName + ": does not support encoding",
-                CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-        throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws CAPException {
-        throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
-    }
-
-    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("CollectInformationRequest [");
         this.addInvokeIdInfo(sb);
 
         sb.append("]");

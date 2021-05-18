@@ -31,12 +31,12 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TimeGPRSIfTariffSwitch;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingResultImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ElapsedTimeImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.TimeGPRSIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.TransferredVolumeImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.VolumeIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TimeGPRSIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.VolumeIfTariffSwitchImpl;
 import org.testng.annotations.Test;
 
 /**

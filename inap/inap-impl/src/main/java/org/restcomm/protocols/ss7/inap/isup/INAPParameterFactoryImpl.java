@@ -24,18 +24,15 @@ package org.restcomm.protocols.ss7.inap.isup;
 
 import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegID;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegID;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoDpAssignment;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
-import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
@@ -48,35 +45,35 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformat
 public class INAPParameterFactoryImpl implements INAPParameterFactory {
 
     @Override
-    public CallingPartysCategoryInap createCallingPartysCategoryInap(CallingPartyCategory callingPartyCategory)
+    public CallingPartysCategoryInapImpl createCallingPartysCategoryInap(CallingPartyCategory callingPartyCategory)
             throws INAPException {
         return new CallingPartysCategoryInapImpl(callingPartyCategory);
     }
 
     @Override
-    public HighLayerCompatibilityInap createHighLayerCompatibilityInap(UserTeleserviceInformation highLayerCompatibility)
+    public HighLayerCompatibilityInapImpl createHighLayerCompatibilityInap(UserTeleserviceInformation highLayerCompatibility)
             throws INAPException {
         return new HighLayerCompatibilityInapImpl(highLayerCompatibility);
     }
 
     @Override
-    public RedirectionInformationInap createRedirectionInformationInap(RedirectionInformation redirectionInformation)
+    public RedirectionInformationInapImpl createRedirectionInformationInap(RedirectionInformation redirectionInformation)
             throws INAPException {
         return new RedirectionInformationInapImpl(redirectionInformation);
     }
 
     @Override
-    public SendingLegID createSendingLegID(LegType legID) {
+    public SendingLegIDImpl createSendingLegID(LegType legID) {
         return new SendingLegIDImpl(legID);
     }
 
     @Override
-    public ReceivingLegID createReceivingLegID(LegType legID) {
+    public ReceivingLegIDImpl createReceivingLegID(LegType legID) {
         return new ReceivingLegIDImpl(legID);
     }
 
     @Override
-    public MiscCallInfo createMiscCallInfo(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment) {
+    public MiscCallInfoImpl createMiscCallInfo(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment) {
         return new MiscCallInfoImpl(messageType, dpAssignment);
     }
 }

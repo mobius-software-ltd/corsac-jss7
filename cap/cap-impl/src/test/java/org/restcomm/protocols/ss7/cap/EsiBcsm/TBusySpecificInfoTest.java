@@ -29,12 +29,12 @@ import java.util.Arrays;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TBusySpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TBusySpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;

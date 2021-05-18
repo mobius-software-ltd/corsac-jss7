@@ -30,11 +30,11 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELSequence1GprsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprs;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.FCIBCCCAMELsequence1GprsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.FreeFormatDataGprsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.testng.annotations.Test;
 
 /**
@@ -57,10 +57,10 @@ public class FCIBCCCAMELsequence1GprsTest {
         byte[] data = this.getData();
         AsnInputStream asn = new AsnInputStream(data);
         int tag = asn.readTag();
-        FCIBCCCAMELsequence1GprsImpl prim = new FCIBCCCAMELsequence1GprsImpl();
+        FCIBCCCAMELSequence1GprsImpl prim = new FCIBCCCAMELSequence1GprsImpl();
         prim.decodeAll(asn);
 
-        assertEquals(tag, FCIBCCCAMELsequence1GprsImpl._ID_FCIBCCCAMELsequence1);
+        assertEquals(tag, FCIBCCCAMELSequence1GprsImpl._ID_FCIBCCCAMELsequence1);
         assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
 
         assertEquals(prim.getFreeFormatData().getData(), this.getFreeFormatData());
@@ -73,7 +73,7 @@ public class FCIBCCCAMELsequence1GprsTest {
 
         FreeFormatDataGprs freeFormatData = new FreeFormatDataGprsImpl(this.getFreeFormatData());
         PDPID pdpID = new PDPIDImpl(2);
-        FCIBCCCAMELsequence1GprsImpl prim = new FCIBCCCAMELsequence1GprsImpl(freeFormatData, pdpID, AppendFreeFormatData.append);
+        FCIBCCCAMELSequence1GprsImpl prim = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID, AppendFreeFormatData.append);
         AsnOutputStream asn = new AsnOutputStream();
         prim.encodeAll(asn);
         assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));

@@ -355,7 +355,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     	if(this.basicServiceGroup==null)
     		return null;
     	
-        return this.basicServiceGroup.getExtBasicServiceCodeImpl();
+        return this.basicServiceGroup.getExtBasicServiceCode();
     }
 
     @Override
@@ -444,7 +444,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     	if(this.basicServiceGroup2==null)
     		return null;
     	
-        return this.basicServiceGroup2.getExtBasicServiceCodeImpl();
+        return this.basicServiceGroup2.getExtBasicServiceCode();
     }
 
     @Override
@@ -530,9 +530,9 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
             sb.append(this.forwardingReason.getType());
         }
 
-        if (this.basicServiceGroup != null && this.basicServiceGroup.getExtBasicServiceCodeImpl()!=null) {
+        if (this.basicServiceGroup != null && this.basicServiceGroup.getExtBasicServiceCode()!=null) {
             sb.append(", basicServiceGroup=");
-            sb.append(this.basicServiceGroup.getExtBasicServiceCodeImpl());
+            sb.append(this.basicServiceGroup.getExtBasicServiceCode());
         }
 
         if (this.networkSignalInfo != null) {
@@ -596,9 +596,9 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
         if (this.gsmSCFInitiatedCall != null)
             sb.append(", gsmSCFInitiatedCall=TRUE");
 
-        if (this.basicServiceGroup2 != null && this.basicServiceGroup2.getExtBasicServiceCodeImpl()!=null) {
+        if (this.basicServiceGroup2 != null && this.basicServiceGroup2.getExtBasicServiceCode()!=null) {
             sb.append(", basicServiceGroup2=");
-            sb.append(this.basicServiceGroup2.getExtBasicServiceCodeImpl());
+            sb.append(this.basicServiceGroup2.getExtBasicServiceCode());
         }
 
         if (this.networkSignalInfo2 != null) {

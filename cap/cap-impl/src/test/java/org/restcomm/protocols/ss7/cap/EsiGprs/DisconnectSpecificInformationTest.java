@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.EsiGprs.DisconnectSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiGprs.DisconnectSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.InitiatingEntity;
 import org.testng.annotations.Test;
 

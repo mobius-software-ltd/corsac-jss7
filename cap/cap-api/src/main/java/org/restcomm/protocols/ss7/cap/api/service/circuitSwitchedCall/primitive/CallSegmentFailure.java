@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 
 /**
  *
@@ -41,6 +41,6 @@ public interface CallSegmentFailure extends Serializable {
 
     Integer getCallSegmentID();
 
-    CauseCap getCause();
+    CauseCapImpl getCause();
 
 }

@@ -31,10 +31,10 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
 import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ExtensionFieldImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionFieldImpl;
 import org.testng.annotations.Test;
 
 /**

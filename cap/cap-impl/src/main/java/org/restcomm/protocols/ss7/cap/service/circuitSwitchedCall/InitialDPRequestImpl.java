@@ -22,152 +22,150 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.ASNEventTypeBCSMImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitialDPRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapability;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ASNCGEncounteredImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CGEncountered;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.RedirectingPartyIDCapImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
-import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.INAPException;
-import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentException;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
-import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
-import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndex;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.SubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGIndexImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndexImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl implements InitialDPRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_serviceKey = 0;
-    public static final int _ID_calledPartyNumber = 2;
-    public static final int _ID_callingPartyNumber = 3;
-    public static final int _ID_callingPartysCategory = 5;
-    public static final int _ID_cGEncountered = 7;
-    public static final int _ID_iPSSPCapabilities = 8;
-    public static final int _ID_locationNumber = 10;
-    public static final int _ID_originalCalledPartyID = 12;
-    public static final int _ID_extensions = 15;
-    public static final int _ID_highLayerCompatibility = 23;
-    public static final int _ID_additionalCallingPartyNumber = 25;
-    public static final int _ID_bearerCapability = 27;
-    public static final int _ID_eventTypeBCSM = 28;
-    public static final int _ID_redirectingPartyID = 29;
-    public static final int _ID_redirectionInformation = 30;
-    public static final int _ID_cause = 17;
-    public static final int _ID_serviceInteractionIndicatorsTwo = 32;
-    public static final int _ID_carrier = 37;
-    public static final int _ID_cug_Index = 45;
-    public static final int _ID_cug_Interlock = 46;
-    public static final int _ID_cug_OutgoingAccess = 47;
-    public static final int _ID_iMSI = 50;
-    public static final int _ID_subscriberState = 51;
-    public static final int _ID_locationInformation = 52;
-    public static final int _ID_ext_basicServiceCode = 53;
-    public static final int _ID_callReferenceNumber = 54;
-    public static final int _ID_mscAddress = 55;
-    public static final int _ID_calledPartyBCDNumber = 56;
-    public static final int _ID_timeAndTimezone = 57;
-    public static final int _ID_callForwardingSS_Pending = 58;
-    public static final int _ID_initialDPArgExtension = 59;
-
-    public static final String _PrimitiveName = "InitialDPRequestIndication";
-
-    private int serviceKey;
-    private CalledPartyNumberCap calledPartyNumber;
-    private CallingPartyNumberCap callingPartyNumber;
-    private CallingPartysCategoryInap callingPartysCategory;
-    private CGEncountered cgEncountered;
-    private IPSSPCapabilities IPSSPCapabilities;
-    private LocationNumberCap locationNumber;
-    private OriginalCalledNumberCap originalCalledPartyID;
-    private CAPExtensions extensions;
-    private HighLayerCompatibilityInap highLayerCompatibility;
-    private Digits additionalCallingPartyNumber;
-    private BearerCapability bearerCapability;
-    private EventTypeBCSM eventTypeBCSM;
-    private RedirectingPartyIDCap redirectingPartyID;
-    private RedirectionInformationInap redirectionInformation;
-    private CauseCap cause;
-    private ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo;
-    private Carrier carrier;
-    private CUGIndex cugIndex;
-    private CUGInterlock cugInterlock;
-    private boolean cugOutgoingAccess;
-    private IMSI imsi;
-    private SubscriberState subscriberState;
-    private LocationInformation locationInformation;
-    private ExtBasicServiceCode extBasicServiceCode;
-    private CallReferenceNumber callReferenceNumber;
-    private ISDNAddressString mscAddress;
-    private CalledPartyBCDNumber calledPartyBCDNumber;
-    private TimeAndTimezone timeAndTimezone;
-    private boolean callForwardingSSPending;
-    private InitialDPArgExtension initialDPArgExtension;
-
-    private boolean isCAPVersion3orLater;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = 0)
+    private ASNInteger serviceKey;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
+    private CalledPartyNumberCapImpl calledPartyNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
+    private CallingPartyNumberCapImpl callingPartyNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1)
+    private CallingPartysCategoryInapImpl callingPartysCategory;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1)
+    private ASNCGEncounteredImpl cgEncountered;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1)
+    private IPSSPCapabilitiesImpl IPSSPCapabilities;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1)
+    private LocationNumberCapImpl locationNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1)
+    private OriginalCalledNumberCapImpl originalCalledPartyID;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 23,constructed = false,index = -1)
+    private HighLayerCompatibilityInapImpl highLayerCompatibility;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 25,constructed = false,index = -1)
+    private DigitsImpl additionalCallingPartyNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 27,constructed = true,index = -1)
+    private BearerCapabilityWrapperImpl bearerCapability;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 28,constructed = false,index = -1)
+    private ASNEventTypeBCSMImpl eventTypeBCSM;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 29,constructed = false,index = -1)
+    private RedirectingPartyIDCapImpl redirectingPartyID;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1)
+    private RedirectionInformationInapImpl redirectionInformation;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1)
+    private CauseCapImpl cause;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 32,constructed = true,index = -1)
+    private ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 37,constructed = false,index = -1)
+    private CarrierImpl carrier;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 45,constructed = false,index = -1)
+    private CUGIndexImpl cugIndex;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 46,constructed = false,index = -1)
+    private CUGInterlockImpl cugInterlock;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 47,constructed = false,index = -1)
+    private ASNNull cugOutgoingAccess;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = false,index = -1)
+    private IMSIImpl imsi;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = true,index = -1)
+    private SubscriberStateWrapperImpl subscriberState;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = true,index = -1)
+    private LocationInformationImpl locationInformation;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 53,constructed = true,index = -1)
+    private ExtBasicServiceCodeWrapperImpl extBasicServiceCode;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 54,constructed = false,index = -1)
+    private CallReferenceNumberImpl callReferenceNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 55,constructed = false,index = -1)
+    private ISDNAddressStringImpl mscAddress;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 56,constructed = false,index = -1)
+    private CalledPartyBCDNumberImpl calledPartyBCDNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 57,constructed = false,index = -1)
+    private TimeAndTimezoneImpl timeAndTimezone;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 58,constructed = false,index = -1)
+    private ASNNull callForwardingSSPending;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 59,constructed = true,index = -1)
+    private InitialDPArgExtensionImpl initialDPArgExtension;
 
     /**
      * This constructor is only for deserialisation purpose
@@ -175,36 +173,46 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     public InitialDPRequestImpl() {
     }
 
-    public InitialDPRequestImpl(boolean isCAPVersion3orLater) {
-        this.isCAPVersion3orLater = isCAPVersion3orLater;
-    }
-
-    public InitialDPRequestImpl(int serviceKey, CalledPartyNumberCap calledPartyNumber,
-            CallingPartyNumberCap callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
-            CGEncountered cgEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberCap locationNumber,
-            OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions,
-            HighLayerCompatibilityInap highLayerCompatibility, Digits additionalCallingPartyNumber,
-            BearerCapability bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCap redirectingPartyID,
-            RedirectionInformationInap redirectionInformation, CauseCap cause,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Carrier carrier, CUGIndex cugIndex,
-            CUGInterlock cugInterlock, boolean cugOutgoingAccess, IMSI imsi, SubscriberState subscriberState,
-            LocationInformation locationInformation, ExtBasicServiceCode extBasicServiceCode,
-            CallReferenceNumber callReferenceNumber, ISDNAddressString mscAddress, CalledPartyBCDNumber calledPartyBCDNumber,
-            TimeAndTimezone timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtension initialDPArgExtension,
-            boolean isCAPVersion3orLater) {
-        this.serviceKey = serviceKey;
+    public InitialDPRequestImpl(int serviceKey, CalledPartyNumberCapImpl calledPartyNumber,
+            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInapImpl callingPartysCategory,
+            CGEncountered cgEncountered, IPSSPCapabilitiesImpl IPSSPCapabilities, LocationNumberCapImpl locationNumber,
+            OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions,
+            HighLayerCompatibilityInapImpl highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
+            BearerCapabilityImpl bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCapImpl redirectingPartyID,
+            RedirectionInformationInapImpl redirectionInformation, CauseCapImpl cause,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, CarrierImpl carrier, CUGIndexImpl cugIndex,
+            CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, IMSIImpl imsi, SubscriberStateImpl subscriberState,
+            LocationInformationImpl locationInformation, ExtBasicServiceCodeImpl extBasicServiceCode,
+            CallReferenceNumberImpl callReferenceNumber, ISDNAddressStringImpl mscAddress, CalledPartyBCDNumberImpl calledPartyBCDNumber,
+            TimeAndTimezoneImpl timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtensionImpl initialDPArgExtension) {
+        
+    	this.serviceKey = new ASNInteger();
+    	this.serviceKey.setValue(Long.valueOf(serviceKey));
+    	
         this.calledPartyNumber = calledPartyNumber;
         this.callingPartyNumber = callingPartyNumber;
         this.callingPartysCategory = callingPartysCategory;
-        this.cgEncountered = cgEncountered;
+        
+        if(cgEncountered!=null) {
+        	this.cgEncountered = new ASNCGEncounteredImpl();
+        	this.cgEncountered.setType(cgEncountered);
+        }
+        
         this.IPSSPCapabilities = IPSSPCapabilities;
         this.locationNumber = locationNumber;
         this.originalCalledPartyID = originalCalledPartyID;
         this.extensions = extensions;
         this.highLayerCompatibility = highLayerCompatibility;
         this.additionalCallingPartyNumber = additionalCallingPartyNumber;
-        this.bearerCapability = bearerCapability;
-        this.eventTypeBCSM = eventTypeBCSM;
+        
+        if(bearerCapability!=null)
+        	this.bearerCapability = new BearerCapabilityWrapperImpl(bearerCapability);
+        
+        if(eventTypeBCSM!=null) {
+        	this.eventTypeBCSM = new ASNEventTypeBCSMImpl();
+        	this.eventTypeBCSM.setType(eventTypeBCSM);
+        }
+        
         this.redirectingPartyID = redirectingPartyID;
         this.redirectionInformation = redirectionInformation;
         this.cause = cause;
@@ -212,18 +220,29 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         this.carrier = carrier;
         this.cugIndex = cugIndex;
         this.cugInterlock = cugInterlock;
-        this.cugOutgoingAccess = cugOutgoingAccess;
+        
+        if(cugOutgoingAccess)
+        	this.cugOutgoingAccess = new ASNNull();
+        
         this.imsi = imsi;
-        this.subscriberState = subscriberState;
+        
+        if(subscriberState!=null)
+        	this.subscriberState = new SubscriberStateWrapperImpl(subscriberState);
+        
         this.locationInformation = locationInformation;
-        this.extBasicServiceCode = extBasicServiceCode;
+        
+        if(extBasicServiceCode!=null)
+        	this.extBasicServiceCode = new ExtBasicServiceCodeWrapperImpl(extBasicServiceCode);
+        
         this.callReferenceNumber = callReferenceNumber;
         this.mscAddress = mscAddress;
         this.calledPartyBCDNumber = calledPartyBCDNumber;
         this.timeAndTimezone = timeAndTimezone;
-        this.callForwardingSSPending = callForwardingSSPending;
+        
+        if(callForwardingSSPending)
+        	this.callForwardingSSPending = new ASNNull();
+        
         this.initialDPArgExtension = initialDPArgExtension;
-        this.isCAPVersion3orLater = isCAPVersion3orLater;
     }
 
     @Override
@@ -238,559 +257,182 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 
     @Override
     public int getServiceKey() {
-        return this.serviceKey;
+    	if(this.serviceKey==null || this.serviceKey.getValue()==null)
+    		return 0;
+    	
+        return this.serviceKey.getValue().intValue();
     }
 
     @Override
-    public CalledPartyNumberCap getCalledPartyNumber() {
+    public CalledPartyNumberCapImpl getCalledPartyNumber() {
         return this.calledPartyNumber;
     }
 
     @Override
-    public CallingPartyNumberCap getCallingPartyNumber() {
+    public CallingPartyNumberCapImpl getCallingPartyNumber() {
         return callingPartyNumber;
     }
 
     @Override
-    public CallingPartysCategoryInap getCallingPartysCategory() {
+    public CallingPartysCategoryInapImpl getCallingPartysCategory() {
         return callingPartysCategory;
     }
 
     @Override
     public CGEncountered getCGEncountered() {
-        return cgEncountered;
+    	if(cgEncountered==null)
+    		return null;
+    	
+        return cgEncountered.getType();
     }
 
     @Override
-    public IPSSPCapabilities getIPSSPCapabilities() {
+    public IPSSPCapabilitiesImpl getIPSSPCapabilities() {
         return IPSSPCapabilities;
     }
 
     @Override
-    public LocationNumberCap getLocationNumber() {
+    public LocationNumberCapImpl getLocationNumber() {
         return locationNumber;
     }
 
     @Override
-    public OriginalCalledNumberCap getOriginalCalledPartyID() {
+    public OriginalCalledNumberCapImpl getOriginalCalledPartyID() {
         return originalCalledPartyID;
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return extensions;
     }
 
     @Override
-    public HighLayerCompatibilityInap getHighLayerCompatibility() {
+    public HighLayerCompatibilityInapImpl getHighLayerCompatibility() {
         return highLayerCompatibility;
     }
 
     @Override
-    public Digits getAdditionalCallingPartyNumber() {
+    public DigitsImpl getAdditionalCallingPartyNumber() {
         return additionalCallingPartyNumber;
     }
 
     @Override
-    public BearerCapability getBearerCapability() {
-        return bearerCapability;
+    public BearerCapabilityImpl getBearerCapability() {
+    	if(bearerCapability==null)
+    		return null;
+    	
+        return bearerCapability.getBearerCapability();
     }
 
     @Override
     public EventTypeBCSM getEventTypeBCSM() {
-        return eventTypeBCSM;
+    	if(eventTypeBCSM==null)
+    		return null;
+    	
+        return eventTypeBCSM.getType();
     }
 
     @Override
-    public RedirectingPartyIDCap getRedirectingPartyID() {
+    public RedirectingPartyIDCapImpl getRedirectingPartyID() {
         return redirectingPartyID;
     }
 
     @Override
-    public RedirectionInformationInap getRedirectionInformation() {
+    public RedirectionInformationInapImpl getRedirectionInformation() {
         return redirectionInformation;
     }
 
     @Override
-    public CauseCap getCause() {
+    public CauseCapImpl getCause() {
         return cause;
     }
 
     @Override
-    public ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo() {
+    public ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo() {
         return serviceInteractionIndicatorsTwo;
     }
 
     @Override
-    public Carrier getCarrier() {
+    public CarrierImpl getCarrier() {
         return carrier;
     }
 
     @Override
-    public CUGIndex getCugIndex() {
+    public CUGIndexImpl getCugIndex() {
         return cugIndex;
     }
 
     @Override
-    public CUGInterlock getCugInterlock() {
+    public CUGInterlockImpl getCugInterlock() {
         return cugInterlock;
     }
 
     @Override
     public boolean getCugOutgoingAccess() {
-        return cugOutgoingAccess;
+        return cugOutgoingAccess!=null;
     }
 
     @Override
-    public IMSI getIMSI() {
+    public IMSIImpl getIMSI() {
         return imsi;
     }
 
     @Override
-    public SubscriberState getSubscriberState() {
-        return subscriberState;
+    public SubscriberStateImpl getSubscriberState() {
+    	if(subscriberState==null)
+    		return null;
+    	
+        return subscriberState.getSubscriberState();
     }
 
     @Override
-    public LocationInformation getLocationInformation() {
+    public LocationInformationImpl getLocationInformation() {
         return locationInformation;
     }
 
     @Override
-    public ExtBasicServiceCode getExtBasicServiceCode() {
-        return extBasicServiceCode;
+    public ExtBasicServiceCodeImpl getExtBasicServiceCode() {
+    	if(extBasicServiceCode==null)
+    		return null;
+    	
+        return extBasicServiceCode.getExtBasicServiceCode();
     }
 
     @Override
-    public CallReferenceNumber getCallReferenceNumber() {
+    public CallReferenceNumberImpl getCallReferenceNumber() {
         return callReferenceNumber;
     }
 
     @Override
-    public ISDNAddressString getMscAddress() {
+    public ISDNAddressStringImpl getMscAddress() {
         return mscAddress;
     }
 
     @Override
-    public CalledPartyBCDNumber getCalledPartyBCDNumber() {
+    public CalledPartyBCDNumberImpl getCalledPartyBCDNumber() {
         return calledPartyBCDNumber;
     }
 
     @Override
-    public TimeAndTimezone getTimeAndTimezone() {
+    public TimeAndTimezoneImpl getTimeAndTimezone() {
         return timeAndTimezone;
     }
 
     @Override
     public boolean getCallForwardingSSPending() {
-        return callForwardingSSPending;
+        return callForwardingSSPending!=null;
     }
 
     @Override
-    public InitialDPArgExtension getInitialDPArgExtension() {
+    public InitialDPArgExtensionImpl getInitialDPArgExtension() {
         return initialDPArgExtension;
-    }
-
-    @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (INAPParsingComponentException e) {
-            throw new CAPParsingComponentException("INAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (INAPParsingComponentException e) {
-            throw new CAPParsingComponentException("INAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws INAPParsingComponentException, CAPParsingComponentException,
-            MAPParsingComponentException, IOException, AsnException {
-
-        this.serviceKey = 0;
-        this.calledPartyNumber = null;
-        this.callingPartyNumber = null;
-        this.callingPartysCategory = null;
-        this.cgEncountered = null;
-        this.IPSSPCapabilities = null;
-        this.locationNumber = null;
-        this.originalCalledPartyID = null;
-        this.extensions = null;
-        this.highLayerCompatibility = null;
-        this.additionalCallingPartyNumber = null;
-        this.bearerCapability = null;
-        this.eventTypeBCSM = null;
-        this.redirectingPartyID = null;
-        this.redirectionInformation = null;
-        this.cause = null;
-        this.serviceInteractionIndicatorsTwo = null;
-        this.carrier = null;
-        this.cugIndex = null;
-        this.cugInterlock = null;
-        this.cugOutgoingAccess = false;
-        this.imsi = null;
-        this.subscriberState = null;
-        this.locationInformation = null;
-        this.extBasicServiceCode = null;
-        this.callReferenceNumber = null;
-        this.mscAddress = null;
-        this.calledPartyBCDNumber = null;
-        this.timeAndTimezone = null;
-        this.callForwardingSSPending = false;
-        this.initialDPArgExtension = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        int num = 0;
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-            int i1;
-
-            switch (num) {
-                case 0:
-                    // serviceKey
-                    if (ais.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || tag != _ID_serviceKey || !ais.isTagPrimitive())
-                        throw new CAPParsingComponentException(
-                                "Error while decoding InitialDPRequest: Parameter 0 bad tag or tag class or not primitive",
-                                CAPParsingComponentExceptionReason.MistypedParameter);
-                    this.serviceKey = (int) ais.readInteger();
-                    break;
-
-                default:
-                if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                    switch (tag) {
-                    case _ID_calledPartyNumber:
-                        this.calledPartyNumber = new CalledPartyNumberCapImpl();
-                        ((CalledPartyNumberCapImpl) this.calledPartyNumber).decodeAll(ais);
-                        break;
-                    case _ID_callingPartyNumber:
-                        this.callingPartyNumber = new CallingPartyNumberCapImpl();
-                        ((CallingPartyNumberCapImpl) this.callingPartyNumber).decodeAll(ais);
-                        break;
-                    case _ID_callingPartysCategory:
-                        this.callingPartysCategory = new CallingPartysCategoryInapImpl();
-                        ((CallingPartysCategoryInapImpl) this.callingPartysCategory).decodeAll(ais);
-                        break;
-                    case _ID_cGEncountered:
-                        i1 = (int) ais.readInteger();                        
-                        this.cgEncountered = CGEncountered.getInstance(i1);
-                        break;
-                    case _ID_iPSSPCapabilities:
-                        this.IPSSPCapabilities = new IPSSPCapabilitiesImpl();
-                        ((IPSSPCapabilitiesImpl) this.IPSSPCapabilities).decodeAll(ais);
-                        break;
-                    case _ID_locationNumber:
-                        this.locationNumber = new LocationNumberCapImpl();
-                        ((LocationNumberCapImpl) this.locationNumber).decodeAll(ais);
-                        break;
-                    case _ID_originalCalledPartyID:
-                        this.originalCalledPartyID = new OriginalCalledNumberCapImpl();
-                        ((OriginalCalledNumberCapImpl) this.originalCalledPartyID).decodeAll(ais);
-                        break;
-                    case _ID_extensions:
-                        this.extensions = new CAPExtensionsImpl();
-                        ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                        break;
-                    case _ID_highLayerCompatibility:
-                        this.highLayerCompatibility = new HighLayerCompatibilityInapImpl();
-                        ((HighLayerCompatibilityInapImpl) this.highLayerCompatibility).decodeAll(ais);
-                        break;
-                    case _ID_additionalCallingPartyNumber:
-                        this.additionalCallingPartyNumber = new DigitsImpl();
-                        ((DigitsImpl) this.additionalCallingPartyNumber).decodeAll(ais);
-                        this.additionalCallingPartyNumber.setIsGenericNumber();
-                        break;
-                    case _ID_bearerCapability:
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        this.bearerCapability = new BearerCapabilityImpl();
-                        ((BearerCapabilityImpl) this.bearerCapability).decodeAll(ais2);
-                        break;
-                    case _ID_eventTypeBCSM:
-                        i1 = (int) ais.readInteger();
-                        this.eventTypeBCSM = EventTypeBCSM.getInstance(i1);
-                        break;
-                    case _ID_redirectingPartyID:
-                        this.redirectingPartyID = new RedirectingPartyIDCapImpl();
-                        ((RedirectingPartyIDCapImpl) this.redirectingPartyID).decodeAll(ais);
-                        break;
-                    case _ID_redirectionInformation:
-                        this.redirectionInformation = new RedirectionInformationInapImpl();
-                        ((RedirectionInformationInapImpl) this.redirectionInformation).decodeAll(ais);
-                        break;
-                    case _ID_cause:
-                        this.cause = new CauseCapImpl();
-                        ((CauseCapImpl) this.cause).decodeAll(ais);
-                        break;
-                    case _ID_serviceInteractionIndicatorsTwo:
-                        this.serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl();
-                        ((ServiceInteractionIndicatorsTwoImpl) this.serviceInteractionIndicatorsTwo).decodeAll(ais);
-                        break;
-                    case _ID_carrier:
-                        this.carrier = new CarrierImpl();
-                        ((CarrierImpl) this.carrier).decodeAll(ais);
-                        break;
-                    case _ID_cug_Index:
-                        this.cugIndex = new CUGIndexImpl();
-                        ((CUGIndexImpl) this.cugIndex).decodeAll(ais);
-                        break;
-                    case _ID_cug_Interlock:
-                        this.cugInterlock = new CUGInterlockImpl();
-                        ((CUGInterlockImpl) this.cugInterlock).decodeAll(ais);
-                        break;
-                    case _ID_cug_OutgoingAccess:
-                        ais.readNull();
-                        this.cugOutgoingAccess = true;
-                        break;
-                    case _ID_iMSI:
-                        int len = ais.readLength();
-                        if (len == 0) {
-                            ais.advanceElementData(len);
-                        } else {
-                            this.imsi = new IMSIImpl();
-                            ((IMSIImpl) this.imsi).decodeData(ais, len);
-                        }
-                        break;
-                    case _ID_subscriberState:
-                        ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        this.subscriberState = new SubscriberStateImpl();
-                        ((SubscriberStateImpl) this.subscriberState).decodeAll(ais2);
-                        break;
-                    case _ID_locationInformation:
-                        this.locationInformation = new LocationInformationImpl();
-                        ((LocationInformationImpl) this.locationInformation).decodeAll(ais);
-                        break;
-                    case _ID_ext_basicServiceCode:
-                        ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        this.extBasicServiceCode = new ExtBasicServiceCodeImpl();
-                        ((ExtBasicServiceCodeImpl) this.extBasicServiceCode).decodeAll(ais2);
-                        break;
-                    case _ID_callReferenceNumber:
-                        this.callReferenceNumber = new CallReferenceNumberImpl();
-                        ((CallReferenceNumberImpl) this.callReferenceNumber).decodeAll(ais);
-                        break;
-                    case _ID_mscAddress:
-                        this.mscAddress = new ISDNAddressStringImpl();
-                        ((ISDNAddressStringImpl) this.mscAddress).decodeAll(ais);
-                        break;
-                    case _ID_calledPartyBCDNumber:
-                        this.calledPartyBCDNumber = new CalledPartyBCDNumberImpl();
-                        ((CalledPartyBCDNumberImpl) this.calledPartyBCDNumber).decodeAll(ais);
-                        break;
-                    case _ID_timeAndTimezone:
-                        this.timeAndTimezone = new TimeAndTimezoneImpl();
-                        ((TimeAndTimezoneImpl) this.timeAndTimezone).decodeAll(ais);
-                        break;
-                    case _ID_callForwardingSS_Pending:
-                        ais.readNull();
-                        this.callForwardingSSPending = true;
-                        break;
-                    case _ID_initialDPArgExtension:
-                        this.initialDPArgExtension = new InitialDPArgExtensionImpl(this.isCAPVersion3orLater);
-                        ((InitialDPArgExtensionImpl) this.initialDPArgExtension).decodeAll(ais);
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                    }
-                } else {
-                    ais.advanceElement();
-                }
-                break;
-            }
-
-            num++;
-        }
-
-        if (num < 1)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": Needs at least 1 mandatory parameters, found " + num,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        try {
-            aos.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_serviceKey, this.serviceKey);
-
-            if (this.calledPartyNumber != null)
-                ((CalledPartyNumberCapImpl) this.calledPartyNumber).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_calledPartyNumber);
-            if (this.callingPartyNumber != null)
-                ((CallingPartyNumberCapImpl) this.callingPartyNumber).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_callingPartyNumber);
-            if (this.callingPartysCategory != null)
-                ((CallingPartysCategoryInapImpl) this.callingPartysCategory).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_callingPartysCategory);
-            if (this.cgEncountered != null) {
-                aos.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_cGEncountered, this.cgEncountered.getCode());
-            }
-            if (this.IPSSPCapabilities != null)
-                ((IPSSPCapabilitiesImpl) this.IPSSPCapabilities).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_iPSSPCapabilities);
-            if (this.locationNumber != null)
-                ((LocationNumberCapImpl) this.locationNumber).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_locationNumber);
-            if (this.originalCalledPartyID != null)
-                ((OriginalCalledNumberCapImpl) this.originalCalledPartyID).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_originalCalledPartyID);
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-            if (this.highLayerCompatibility != null)
-                ((HighLayerCompatibilityInapImpl) this.highLayerCompatibility).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_highLayerCompatibility);
-            if (this.additionalCallingPartyNumber != null)
-                ((DigitsImpl) this.additionalCallingPartyNumber).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_additionalCallingPartyNumber);
-            if (this.bearerCapability != null) {
-                aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_bearerCapability);
-                int pos = aos.StartContentDefiniteLength();
-                ((BearerCapabilityImpl) this.bearerCapability).encodeAll(aos);
-                aos.FinalizeContent(pos);
-            }
-            if (this.eventTypeBCSM != null)
-                aos.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_eventTypeBCSM, this.eventTypeBCSM.getCode());
-            if (this.redirectingPartyID != null)
-                ((RedirectingPartyIDCapImpl) this.redirectingPartyID).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_redirectingPartyID);
-            if (this.redirectionInformation != null)
-                ((RedirectionInformationInapImpl) this.redirectionInformation).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_redirectionInformation);
-            if (this.cause != null) {
-                ((CauseCapImpl) this.cause).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_cause);
-            }
-            if (this.serviceInteractionIndicatorsTwo != null) {
-                ((ServiceInteractionIndicatorsTwoImpl) this.serviceInteractionIndicatorsTwo).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_serviceInteractionIndicatorsTwo);
-            }
-            if (this.carrier != null) {
-                ((CarrierImpl) this.carrier).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_carrier);
-            }
-            if (this.cugIndex != null) {
-                ((CUGIndexImpl) this.cugIndex).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_cug_Index);
-            }
-            if (this.cugInterlock != null) {
-                ((CUGInterlockImpl) this.cugInterlock).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_cug_Interlock);
-                this.cugInterlock = new CUGInterlockImpl();
-            }
-            if (this.cugOutgoingAccess) {
-                aos.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _ID_cug_OutgoingAccess);
-            }
-            if (this.imsi != null)
-                ((IMSIImpl) this.imsi).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_iMSI);
-            if (this.subscriberState != null) {
-                aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_subscriberState);
-                int pos = aos.StartContentDefiniteLength();
-                ((SubscriberStateImpl) this.subscriberState).encodeAll(aos);
-                aos.FinalizeContent(pos);
-            }
-            if (this.locationInformation != null)
-                ((LocationInformationImpl) this.locationInformation).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_locationInformation);
-            if (this.extBasicServiceCode != null) {
-                aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_ext_basicServiceCode);
-                int pos = aos.StartContentDefiniteLength();
-                ((ExtBasicServiceCodeImpl) this.extBasicServiceCode).encodeAll(aos);
-                aos.FinalizeContent(pos);
-            }
-            if (this.callReferenceNumber != null)
-                ((CallReferenceNumberImpl) this.callReferenceNumber).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_callReferenceNumber);
-            if (this.mscAddress != null)
-                ((ISDNAddressStringImpl) this.mscAddress).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_mscAddress);
-            if (this.calledPartyBCDNumber != null)
-                ((CalledPartyBCDNumberImpl) this.calledPartyBCDNumber).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_calledPartyBCDNumber);
-            if (this.timeAndTimezone != null)
-                ((TimeAndTimezoneImpl) this.timeAndTimezone).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_timeAndTimezone);
-            if (this.callForwardingSSPending)
-                aos.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _ID_callForwardingSS_Pending);
-            if (this.initialDPArgExtension != null)
-                ((InitialDPArgExtensionImpl) this.initialDPArgExtension).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_initialDPArgExtension);
-
-        } catch (IOException e) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (INAPException e) {
-            throw new CAPException("INAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (MAPException e) {
-            throw new CAPException("MAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("InitialDPRequestIndication [");
         this.addInvokeIdInfo(sb);
 
         sb.append(", serviceKey=");
@@ -807,9 +449,9 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             sb.append(", callingPartysCategory=");
             sb.append(callingPartysCategory.toString());
         }
-        if (this.cgEncountered != null) {
+        if (this.cgEncountered != null && this.cgEncountered.getType()!=null) {
             sb.append(", CGEncountered=");
-            sb.append(cgEncountered.toString());
+            sb.append(cgEncountered.getType());
         }
         if (this.IPSSPCapabilities != null) {
             sb.append(", IPSSPCapabilities=");
@@ -835,13 +477,13 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             sb.append(", additionalCallingPartyNumber=");
             sb.append(additionalCallingPartyNumber.toString());
         }
-        if (this.bearerCapability != null) {
+        if (this.bearerCapability != null && this.bearerCapability.getBearerCapability()!=null) {
             sb.append(", bearerCapability=");
-            sb.append(bearerCapability.toString());
+            sb.append(bearerCapability.getBearerCapability());
         }
-        if (this.eventTypeBCSM != null) {
+        if (this.eventTypeBCSM != null && this.eventTypeBCSM.getType()!=null) {
             sb.append(", eventTypeBCSM=");
-            sb.append(eventTypeBCSM.toString());
+            sb.append(eventTypeBCSM.getType());
         }
         if (this.redirectingPartyID != null) {
             sb.append(", redirectingPartyID=");
@@ -871,24 +513,24 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             sb.append(", cugInterlock=");
             sb.append(cugInterlock.toString());
         }
-        if (this.cugOutgoingAccess) {
+        if (this.cugOutgoingAccess!=null) {
             sb.append(", cugOutgoingAccess");
         }
         if (this.imsi != null) {
             sb.append(", imsi=");
             sb.append(imsi.toString());
         }
-        if (this.subscriberState != null) {
+        if (this.subscriberState != null && this.subscriberState.getSubscriberState()!=null) {
             sb.append(", subscriberState=");
-            sb.append(subscriberState.toString());
+            sb.append(subscriberState.getSubscriberState());
         }
         if (this.locationInformation != null) {
             sb.append(", locationInformation=");
             sb.append(locationInformation.toString());
         }
-        if (this.extBasicServiceCode != null) {
+        if (this.extBasicServiceCode != null && this.extBasicServiceCode.getExtBasicServiceCode()!=null) {
             sb.append(", extBasicServiceCode=");
-            sb.append(extBasicServiceCode.toString());
+            sb.append(extBasicServiceCode.getExtBasicServiceCode());
         }
         if (this.callReferenceNumber != null) {
             sb.append(", callReferenceNumber=");
@@ -906,7 +548,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             sb.append(", timeAndTimezone=");
             sb.append(timeAndTimezone.toString());
         }
-        if (this.callForwardingSSPending) {
+        if (this.callForwardingSSPending!=null) {
             sb.append(", callForwardingSSPending");
         }
         if (this.initialDPArgExtension != null) {

@@ -30,9 +30,8 @@ import org.restcomm.protocols.ss7.cap.api.dialog.CAPUserAbortReason;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  *
@@ -196,39 +195,31 @@ public interface CAPDialog extends Serializable {
      */
      void processInvokeWithoutAnswer(Long invokeId);
 
-    /**
-     * Sends the TC-INVOKE component
-     *
-     * @param invoke
-     * @throws CAPException
-     */
-     void sendInvokeComponent(Invoke invoke) throws CAPException;
+     /**
+      * Sends the TC-INVOKE,TC-RESULT or TC-RESULT-L component
+      *
+      * @param invoke
+      * @throws CAPException
+      */
+     public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException;
 
-    /**
-     * Sends the TC-RESULT-L component
-     *
-     * @param returnResultLast
-     * @throws CAPException
-     */
-     void sendReturnResultLastComponent(ReturnResultLast returnResultLast) throws CAPException;
+     /**
+      * Sends the TC-U-ERROR component
+      *
+      * @param invokeId
+      * @param mapErrorMessage
+      * @throws CAPException
+      */
+     public void sendErrorComponent(Long invokeId, CAPErrorMessage mem) throws CAPException;
 
-    /**
-     * Sends the TC-U-ERROR component
-     *
-     * @param invokeId
-     * @param capErrorMessage
-     * @throws CAPException
-     */
-     void sendErrorComponent(Long invokeId, CAPErrorMessage capErrorMessage) throws CAPException;
-
-    /**
-     * Sends the TC-U-REJECT component
-     *
-     * @param invokeId This parameter is optional and may be the null
-     * @param problem
-     * @throws CAPException
-     */
-     void sendRejectComponent(Long invokeId, Problem problem) throws CAPException;
+     /**
+      * Sends the TC-U-REJECT component
+      *
+      * @param invokeId This parameter is optional and may be the null
+      * @param problem
+      * @throws MAPException
+      */
+     public void sendRejectComponent(Long invokeId, ProblemImpl problem) throws CAPException;
 
     /**
      * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)

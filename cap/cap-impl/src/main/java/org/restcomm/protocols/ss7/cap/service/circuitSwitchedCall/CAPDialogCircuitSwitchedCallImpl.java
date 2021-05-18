@@ -22,80 +22,74 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.CAPDialogImpl;
 import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
-import org.restcomm.protocols.ss7.cap.api.gap.GapCriteria;
-import org.restcomm.protocols.ss7.cap.api.gap.GapIndicators;
-import org.restcomm.protocols.ss7.cap.api.gap.GapTreatment;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.ReceivingSideID;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
-import org.restcomm.protocols.ss7.cap.api.primitives.SendingSideID;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CAPDialogCircuitSwitchedCall;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapability;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CGEncountered;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancel;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtension;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancelImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ControlType;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELsequence1;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResult;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndex;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4Functionalities;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.tcap.api.TCAPException;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndexImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
 /**
  *
@@ -113,18 +107,18 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addInitialDPRequest(int serviceKey, CalledPartyNumberCap calledPartyNumber,
-            CallingPartyNumberCap callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
-            CGEncountered CGEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberCap locationNumber,
-            OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions,
-            HighLayerCompatibilityInap highLayerCompatibility, Digits additionalCallingPartyNumber,
-            BearerCapability bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCap redirectingPartyID,
-            RedirectionInformationInap redirectionInformation, CauseCap cause,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Carrier carrier, CUGIndex cugIndex,
-            CUGInterlock cugInterlock, boolean cugOutgoingAccess, IMSI imsi, SubscriberState subscriberState,
-            LocationInformation locationInformation, ExtBasicServiceCode extBasicServiceCode,
-            CallReferenceNumber callReferenceNumber, ISDNAddressString mscAddress, CalledPartyBCDNumber calledPartyBCDNumber,
-            TimeAndTimezone timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtension initialDPArgExtension)
+    public Long addInitialDPRequest(int serviceKey, CalledPartyNumberCapImpl calledPartyNumber,
+            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInapImpl callingPartysCategory,
+            CGEncountered CGEncountered, IPSSPCapabilitiesImpl IPSSPCapabilities, LocationNumberCapImpl locationNumber,
+            OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions,
+            HighLayerCompatibilityInapImpl highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
+            BearerCapabilityImpl bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCapImpl redirectingPartyID,
+            RedirectionInformationInapImpl redirectionInformation, CauseCapImpl cause,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, CarrierImpl carrier, CUGIndexImpl cugIndex,
+            CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, IMSIImpl imsi, SubscriberStateImpl subscriberState,
+            LocationInformationImpl locationInformation, ExtBasicServiceCodeImpl extBasicServiceCode,
+            CallReferenceNumberImpl callReferenceNumber, ISDNAddressStringImpl mscAddress, CalledPartyBCDNumberImpl calledPartyBCDNumber,
+            TimeAndTimezoneImpl timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtensionImpl initialDPArgExtension)
             throws CAPException {
 
         return addInitialDPRequest(_Timer_Default, serviceKey, calledPartyNumber, callingPartyNumber, callingPartysCategory,
@@ -136,18 +130,18 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addInitialDPRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberCap calledPartyNumber,
-            CallingPartyNumberCap callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
-            CGEncountered CGEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberCap locationNumber,
-            OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions,
-            HighLayerCompatibilityInap highLayerCompatibility, Digits additionalCallingPartyNumber,
-            BearerCapability bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCap redirectingPartyID,
-            RedirectionInformationInap redirectionInformation, CauseCap cause,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Carrier carrier, CUGIndex cugIndex,
-            CUGInterlock cugInterlock, boolean cugOutgoingAccess, IMSI imsi, SubscriberState subscriberState,
-            LocationInformation locationInformation, ExtBasicServiceCode extBasicServiceCode,
-            CallReferenceNumber callReferenceNumber, ISDNAddressString mscAddress, CalledPartyBCDNumber calledPartyBCDNumber,
-            TimeAndTimezone timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtension initialDPArgExtension)
+    public Long addInitialDPRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberCapImpl calledPartyNumber,
+            CallingPartyNumberCapImpl  callingPartyNumber, CallingPartysCategoryInapImpl callingPartysCategory,
+            CGEncountered CGEncountered, IPSSPCapabilitiesImpl IPSSPCapabilities, LocationNumberCapImpl locationNumber,
+            OriginalCalledNumberCapImpl  originalCalledPartyID, CAPExtensionsImpl extensions,
+            HighLayerCompatibilityInapImpl highLayerCompatibility, DigitsImpl  additionalCallingPartyNumber,
+            BearerCapabilityImpl  bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCapImpl redirectingPartyID,
+            RedirectionInformationInapImpl redirectionInformation, CauseCapImpl cause,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, CarrierImpl carrier, CUGIndexImpl cugIndex,
+            CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, IMSIImpl  imsi, SubscriberStateImpl subscriberState,
+            LocationInformationImpl locationInformation, ExtBasicServiceCodeImpl extBasicServiceCode,
+            CallReferenceNumberImpl  callReferenceNumber, ISDNAddressStringImpl    mscAddress, CalledPartyBCDNumberImpl  calledPartyBCDNumber,
+            TimeAndTimezoneImpl   timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtensionImpl initialDPArgExtension)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
@@ -157,54 +151,28 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addInitialDPRequest: must be CapV1_gsmSSF_to_gsmSCF, CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric or CapV4_gsmSSF_scfGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.initialDP);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         InitialDPRequestImpl req = new InitialDPRequestImpl(serviceKey, calledPartyNumber, callingPartyNumber,
                 callingPartysCategory, CGEncountered, IPSSPCapabilities, locationNumber, originalCalledPartyID, extensions,
                 highLayerCompatibility, additionalCallingPartyNumber, bearerCapability, eventTypeBCSM, redirectingPartyID,
                 redirectionInformation, cause, serviceInteractionIndicatorsTwo, carrier, cugIndex, cugInterlock,
                 cugOutgoingAccess, imsi, subscriberState, locationInformation, extBasicServiceCode, callReferenceNumber,
-                mscAddress, calledPartyBCDNumber, timeAndTimezone, callForwardingSSPending, initialDPArgExtension, this.appCntx
-                        .getVersion().getVersion() >= 3);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+                mscAddress, calledPartyBCDNumber, timeAndTimezone, callForwardingSSPending, initialDPArgExtension);
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.initialDP, req, true, false);        
     }
 
     @Override
-    public Long addApplyChargingReportRequest(TimeDurationChargingResult timeDurationChargingResult) throws CAPException {
+    public Long addApplyChargingReportRequest(TimeDurationChargingResultImpl timeDurationChargingResult) throws CAPException {
         return addApplyChargingReportRequest(_Timer_Default, timeDurationChargingResult);
     }
 
     @Override
-    public Long addApplyChargingReportRequest(int customInvokeTimeout, TimeDurationChargingResult timeDurationChargingResult)
+    public Long addApplyChargingReportRequest(int customInvokeTimeout, TimeDurationChargingResultImpl timeDurationChargingResult)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -214,44 +182,19 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addApplyChargingReportRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_gsmSSF_scfGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.applyChargingReport);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         ApplyChargingReportRequestImpl req = new ApplyChargingReportRequestImpl(timeDurationChargingResult);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.applyChargingReport, req, true, false);        
     }
 
     @Override
-    public Long addApplyChargingRequest(CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics,
-            SendingSideID partyToCharge, CAPExtensions extensions, AChChargingAddress aChChargingAddress) throws CAPException {
+    public Long addApplyChargingRequest(CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics,
+            SendingLegIDImpl partyToCharge, CAPExtensionsImpl extensions, AChChargingAddressImpl aChChargingAddress) throws CAPException {
 
         return addApplyChargingRequest(_Timer_Default, aChBillingChargingCharacteristics, partyToCharge, extensions,
                 aChChargingAddress);
@@ -259,8 +202,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
 
     @Override
     public Long addApplyChargingRequest(int customInvokeTimeout,
-            CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics, SendingSideID partyToCharge,
-            CAPExtensions extensions, AChChargingAddress aChChargingAddress) throws CAPException {
+            CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics, SendingLegIDImpl partyToCharge,
+            CAPExtensionsImpl extensions, AChChargingAddressImpl aChChargingAddress) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
@@ -269,52 +212,27 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addApplyChargingRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.applyCharging);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         ApplyChargingRequestImpl req = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, partyToCharge,
                 extensions, aChChargingAddress);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.applyCharging, req, true, false);        
     }
 
     @Override
-    public Long addCallInformationReportRequest(ArrayList<RequestedInformation> requestedInformationList,
-            CAPExtensions extensions, ReceivingSideID legID) throws CAPException {
+    public Long addCallInformationReportRequest(List<RequestedInformationImpl> requestedInformationList,
+            CAPExtensionsImpl extensions, ReceivingLegIDImpl legID) throws CAPException {
 
         return addCallInformationReportRequest(_Timer_Default, requestedInformationList, extensions, legID);
     }
 
     @Override
     public Long addCallInformationReportRequest(int customInvokeTimeout,
-            ArrayList<RequestedInformation> requestedInformationList, CAPExtensions extensions, ReceivingSideID legID)
+            List<RequestedInformationImpl> requestedInformationList, CAPExtensionsImpl extensions, ReceivingLegIDImpl legID)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -324,51 +242,26 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addCallInformationReportRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_gsmSSF_scfGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.callInformationReport);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         CallInformationReportRequestImpl req = new CallInformationReportRequestImpl(requestedInformationList, extensions, legID);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.callInformationReport, req, true, false);        
     }
 
     @Override
-    public Long addCallInformationRequestRequest(ArrayList<RequestedInformationType> requestedInformationTypeList,
-            CAPExtensions extensions, SendingSideID legID) throws CAPException {
+    public Long addCallInformationRequestRequest(List<RequestedInformationType> requestedInformationTypeList,
+            CAPExtensionsImpl extensions, SendingLegIDImpl legID) throws CAPException {
 
         return addCallInformationRequestRequest(_Timer_Default, requestedInformationTypeList, extensions, legID);
     }
 
     @Override
     public Long addCallInformationRequestRequest(int customInvokeTimeout,
-            ArrayList<RequestedInformationType> requestedInformationTypeList, CAPExtensions extensions, SendingSideID legID)
+            List<RequestedInformationType> requestedInformationTypeList, CAPExtensionsImpl extensions, SendingLegIDImpl legID)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -378,50 +271,25 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addCallInformationRequestRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_gsmSSF_scfGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.callInformationRequest);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         CallInformationRequestRequestImpl req = new CallInformationRequestRequestImpl(requestedInformationTypeList, extensions,
                 legID);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.callInformationRequest, req, true, false);        
     }
 
     @Override
-    public Long addConnectRequest(DestinationRoutingAddress destinationRoutingAddress, AlertingPatternCap alertingPattern,
-            OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions, Carrier carrier,
-            CallingPartysCategoryInap callingPartysCategory, RedirectingPartyIDCap redirectingPartyID,
-            RedirectionInformationInap redirectionInformation, ArrayList<GenericNumberCap> genericNumbers,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, LocationNumberCap chargeNumber,
-            LegID legToBeConnected, CUGInterlock cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
-            boolean ocsIApplicable, NAOliInfo naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) throws CAPException {
+    public Long addConnectRequest(DestinationRoutingAddressImpl   destinationRoutingAddress, AlertingPatternCapImpl alertingPattern,
+            OriginalCalledNumberCapImpl  originalCalledPartyID, CAPExtensionsImpl extensions, CarrierImpl carrier,
+            CallingPartysCategoryInapImpl callingPartysCategory, RedirectingPartyIDCapImpl redirectingPartyID,
+            RedirectionInformationInapImpl redirectionInformation, List<GenericNumberCapImpl> genericNumbers,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, LocationNumberCapImpl chargeNumber,
+            LegIDImpl legToBeConnected, CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
+            boolean ocsIApplicable, NAOliInfoImpl naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) throws CAPException {
 
         return addConnectRequest(_Timer_Default, destinationRoutingAddress, alertingPattern, originalCalledPartyID, extensions,
                 carrier, callingPartysCategory, redirectingPartyID, redirectionInformation, genericNumbers,
@@ -430,13 +298,13 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addConnectRequest(int customInvokeTimeout, DestinationRoutingAddress destinationRoutingAddress,
-            AlertingPatternCap alertingPattern, OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions,
-            Carrier carrier, CallingPartysCategoryInap callingPartysCategory, RedirectingPartyIDCap redirectingPartyID,
-            RedirectionInformationInap redirectionInformation, ArrayList<GenericNumberCap> genericNumbers,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, LocationNumberCap chargeNumber,
-            LegID legToBeConnected, CUGInterlock cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
-            boolean ocsIApplicable, NAOliInfo naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) throws CAPException {
+    public Long addConnectRequest(int customInvokeTimeout, DestinationRoutingAddressImpl   destinationRoutingAddress,
+            AlertingPatternCapImpl alertingPattern, OriginalCalledNumberCapImpl  originalCalledPartyID, CAPExtensionsImpl extensions,
+            CarrierImpl carrier, CallingPartysCategoryInapImpl callingPartysCategory, RedirectingPartyIDCapImpl redirectingPartyID,
+            RedirectionInformationInapImpl redirectionInformation, List<GenericNumberCapImpl> genericNumbers,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, LocationNumberCapImpl chargeNumber,
+            LegIDImpl legToBeConnected, CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
+            boolean ocsIApplicable, NAOliInfoImpl naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -446,42 +314,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addConnectRequest: must be CapV1_gsmSSF_to_gsmSCF, CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.connect);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         ConnectRequestImpl req = new ConnectRequestImpl(destinationRoutingAddress, alertingPattern, originalCalledPartyID,
                 extensions, carrier, callingPartysCategory, redirectingPartyID, redirectionInformation, genericNumbers,
                 serviceInteractionIndicatorsTwo, chargeNumber, legToBeConnected, cugInterlock, cugOutgoingAccess,
                 suppressionOfAnnouncement, ocsIApplicable, naoliInfo, borInterrogationRequested, suppressNCSI);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.connect, req, true, false);        
     }
 
     @Override
@@ -501,37 +344,22 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addContinueRequest: must be CapV1_gsmSSF_to_gsmSCF, CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.continueCode);
-        invoke.setOperationCode(oc);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        	customTimeout = customInvokeTimeout;
+        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.continueCode, null, true, false);        
     }
 
     @Override
-    public Long addContinueWithArgumentRequest(AlertingPatternCap alertingPattern, CAPExtensions extensions,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
-            CallingPartysCategoryInap callingPartysCategory, ArrayList<GenericNumberCap> genericNumbers,
-            CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberCap chargeNumber, Carrier carrier,
-            boolean suppressionOfAnnouncement, NAOliInfo naOliInfo, boolean borInterrogationRequested,
-            boolean suppressOCsi, ContinueWithArgumentArgExtension continueWithArgumentArgExtension)
+    public Long addContinueWithArgumentRequest(AlertingPatternCapImpl alertingPattern, CAPExtensionsImpl extensions,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
+            CallingPartysCategoryInapImpl callingPartysCategory, List<GenericNumberCapImpl> genericNumbers,
+            CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, LocationNumberCapImpl chargeNumber, CarrierImpl carrier,
+            boolean suppressionOfAnnouncement, NAOliInfoImpl naOliInfo, boolean borInterrogationRequested,
+            boolean suppressOCsi, ContinueWithArgumentArgExtensionImpl continueWithArgumentArgExtension)
             throws CAPException {
 
         return addContinueWithArgumentRequest(_Timer_Default, alertingPattern, extensions,
@@ -541,12 +369,12 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addContinueWithArgumentRequest(int customInvokeTimeout, AlertingPatternCap alertingPattern,
-            CAPExtensions extensions, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
-            CallingPartysCategoryInap callingPartysCategory, ArrayList<GenericNumberCap> genericNumbers,
-            CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberCap chargeNumber, Carrier carrier,
-            boolean suppressionOfAnnouncement, NAOliInfo naOliInfo, boolean borInterrogationRequested,
-            boolean suppressOCsi, ContinueWithArgumentArgExtension continueWithArgumentArgExtension)
+    public Long addContinueWithArgumentRequest(int customInvokeTimeout, AlertingPatternCapImpl alertingPattern,
+            CAPExtensionsImpl extensions, ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
+            CallingPartysCategoryInapImpl callingPartysCategory, List<GenericNumberCapImpl> genericNumbers,
+            CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, LocationNumberCapImpl chargeNumber, CarrierImpl carrier,
+            boolean suppressionOfAnnouncement, NAOliInfoImpl naOliInfo, boolean borInterrogationRequested,
+            boolean suppressOCsi, ContinueWithArgumentArgExtensionImpl continueWithArgumentArgExtension)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric && this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
@@ -554,48 +382,23 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addContinueWithArgumentRequest: must be CapV3_gsmSSF_scfGeneric or CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.continueWithArgument);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         ContinueWithArgumentRequestImpl req = new ContinueWithArgumentRequestImpl(alertingPattern, extensions,
                 serviceInteractionIndicatorsTwo, callingPartysCategory, genericNumbers, cugInterlock,
                 cugOutgoingAccess, chargeNumber, carrier, suppressionOfAnnouncement, naOliInfo,
                 borInterrogationRequested, suppressOCsi, continueWithArgumentArgExtension);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.continueWithArgument, req, true, false);        
     }
 
     @Override
     public Long addEventReportBCSMRequest(EventTypeBCSM eventTypeBCSM,
-            EventSpecificInformationBCSM eventSpecificInformationBCSM, ReceivingSideID legID, MiscCallInfo miscCallInfo,
-            CAPExtensions extensions) throws CAPException {
+            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM, ReceivingLegIDImpl legID, MiscCallInfoImpl miscCallInfo,
+            CAPExtensionsImpl extensions) throws CAPException {
 
         return addEventReportBCSMRequest(_Timer_Default, eventTypeBCSM, eventSpecificInformationBCSM, legID, miscCallInfo,
                 extensions);
@@ -603,8 +406,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
 
     @Override
     public Long addEventReportBCSMRequest(int customInvokeTimeout, EventTypeBCSM eventTypeBCSM,
-            EventSpecificInformationBCSM eventSpecificInformationBCSM, ReceivingSideID legID, MiscCallInfo miscCallInfo,
-            CAPExtensions extensions) throws CAPException {
+            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM, ReceivingLegIDImpl legID, MiscCallInfoImpl miscCallInfo,
+            CAPExtensionsImpl extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -614,52 +417,27 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addEventReportBCSMRequest: must be CapV1_gsmSSF_to_gsmSCF, CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.eventReportBCSM);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         EventReportBCSMRequestImpl req = new EventReportBCSMRequestImpl(eventTypeBCSM, eventSpecificInformationBCSM, legID,
                 miscCallInfo, extensions);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.eventReportBCSM, req, true, false);        
     }
 
     @Override
-    public Long addRequestReportBCSMEventRequest(ArrayList<BCSMEvent> bcsmEventList, CAPExtensions extensions)
+    public Long addRequestReportBCSMEventRequest(List<BCSMEventImpl> bcsmEventList, CAPExtensionsImpl extensions)
             throws CAPException {
 
         return addRequestReportBCSMEventRequest(_Timer_Default, bcsmEventList, extensions);
     }
 
     @Override
-    public Long addRequestReportBCSMEventRequest(int customInvokeTimeout, ArrayList<BCSMEvent> bcsmEventList,
-            CAPExtensions extensions) throws CAPException {
+    public Long addRequestReportBCSMEventRequest(int customInvokeTimeout, List<BCSMEventImpl> bcsmEventList,
+            CAPExtensionsImpl extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -669,49 +447,24 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addRequestReportBCSMEventRequest: must be CapV1_gsmSSF_to_gsmSCF, CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.requestReportBCSMEvent);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         RequestReportBCSMEventRequestImpl req = new RequestReportBCSMEventRequestImpl(bcsmEventList, extensions);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.requestReportBCSMEvent, req, true, false);        
     }
 
     @Override
-    public Long addReleaseCallRequest(CauseCap cause) throws CAPException {
+    public Long addReleaseCallRequest(CauseCapImpl cause) throws CAPException {
 
         return addReleaseCallRequest(_Timer_Default, cause);
     }
 
     @Override
-    public Long addReleaseCallRequest(int customInvokeTimeout, CauseCap cause) throws CAPException {
+    public Long addReleaseCallRequest(int customInvokeTimeout, CauseCapImpl cause) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -721,39 +474,14 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addReleaseCallRequest: must be CapV1_gsmSSF_to_gsmSCF, CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.releaseCall);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         ReleaseCallRequestImpl req = new ReleaseCallRequestImpl(cause);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.releaseCall, req, true, false);        
     }
 
     @Override
@@ -781,28 +509,13 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff, CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF, CapV4_gsmSRF_gsmSCF "
                             + "or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class3);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.activityTest);
-        invoke.setOperationCode(oc);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        	customTimeout = customInvokeTimeout;
+        
+        return this.sendDataComponent(null, null, InvokeClass.Class3, customTimeout.longValue(), (long) CAPOperationCode.activityTest, null, true, false);        
     }
 
     public void addActivityTestResponse(long invokeId) throws CAPException {
@@ -823,26 +536,19 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff, CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF, CapV4_gsmSRF_gsmSCF "
                             + "or CapV4_scf_gsmSSFGeneric");
 
-        ReturnResultLast resultLast = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // we need not Operation Code because no answer
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, null, null, false, true);
     }
 
     @Override
-    public Long addAssistRequestInstructionsRequest(Digits correlationID, IPSSPCapabilities ipSSPCapabilities,
-            CAPExtensions extensions) throws CAPException {
+    public Long addAssistRequestInstructionsRequest(DigitsImpl  correlationID, IPSSPCapabilitiesImpl ipSSPCapabilities,
+            CAPExtensionsImpl extensions) throws CAPException {
 
         return addAssistRequestInstructionsRequest(_Timer_Default, correlationID, ipSSPCapabilities, extensions);
     }
 
     @Override
-    public Long addAssistRequestInstructionsRequest(int customInvokeTimeout, Digits correlationID,
-            IPSSPCapabilities ipSSPCapabilities, CAPExtensions extensions) throws CAPException {
+    public Long addAssistRequestInstructionsRequest(int customInvokeTimeout, DigitsImpl  correlationID,
+            IPSSPCapabilitiesImpl ipSSPCapabilities, CAPExtensionsImpl extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
@@ -858,47 +564,22 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff, CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF  "
                             + "or CapV4_gsmSRF_gsmSCF");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.assistRequestInstructions);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         AssistRequestInstructionsRequestImpl req = new AssistRequestInstructionsRequestImpl(correlationID, ipSSPCapabilities,
                 extensions);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.assistRequestInstructions, req, true, false);        
     }
 
     @Override
-    public Long addEstablishTemporaryConnectionRequest(Digits assistingSSPIPRoutingAddress, Digits correlationID, ScfID scfID,
-            CAPExtensions extensions, Carrier carrier, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
-            Integer callSegmentID, NAOliInfo naOliInfo, LocationNumberCap chargeNumber,
-            OriginalCalledNumberCap originalCalledPartyID, CallingPartyNumberCap callingPartyNumber) throws CAPException {
+    public Long addEstablishTemporaryConnectionRequest(DigitsImpl  assistingSSPIPRoutingAddress, DigitsImpl  correlationID, ScfIDImpl scfID,
+            CAPExtensionsImpl extensions, CarrierImpl carrier, ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
+            Integer callSegmentID, NAOliInfoImpl naOliInfo, LocationNumberCapImpl chargeNumber,
+            OriginalCalledNumberCapImpl  originalCalledPartyID, CallingPartyNumberCapImpl  callingPartyNumber) throws CAPException {
 
         return addEstablishTemporaryConnectionRequest(_Timer_Default, assistingSSPIPRoutingAddress, correlationID, scfID,
                 extensions, carrier, serviceInteractionIndicatorsTwo, callSegmentID, naOliInfo, chargeNumber,
@@ -906,11 +587,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addEstablishTemporaryConnectionRequest(int customInvokeTimeout, Digits assistingSSPIPRoutingAddress,
-            Digits correlationID, ScfID scfID, CAPExtensions extensions, Carrier carrier,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID, NAOliInfo naOliInfo,
-            LocationNumberCap chargeNumber, OriginalCalledNumberCap originalCalledPartyID,
-            CallingPartyNumberCap callingPartyNumber) throws CAPException {
+    public Long addEstablishTemporaryConnectionRequest(int customInvokeTimeout, DigitsImpl  assistingSSPIPRoutingAddress,
+            DigitsImpl  correlationID, ScfIDImpl scfID, CAPExtensionsImpl extensions, CarrierImpl carrier,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, Integer callSegmentID, NAOliInfoImpl naOliInfo,
+            LocationNumberCapImpl chargeNumber, OriginalCalledNumberCapImpl  originalCalledPartyID,
+            CallingPartyNumberCapImpl  callingPartyNumber) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
@@ -919,41 +600,55 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addEstablishTemporaryConnectionRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlMedium());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.establishTemporaryConnection);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         EstablishTemporaryConnectionRequestImpl req = new EstablishTemporaryConnectionRequestImpl(assistingSSPIPRoutingAddress,
                 correlationID, scfID, extensions, carrier, serviceInteractionIndicatorsTwo, callSegmentID, naOliInfo,
-                chargeNumber, originalCalledPartyID, callingPartyNumber, this.appCntx.getVersion().getVersion() >= 3);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
+                chargeNumber, originalCalledPartyID, callingPartyNumber);
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.establishTemporaryConnection, req, true, false);        
+    }
+    
 
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
 
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
+    @Override
+    public Long addEstablishTemporaryConnectionRequest(DigitsImpl  assistingSSPIPRoutingAddress, DigitsImpl  correlationID, ScfIDImpl scfID,
+            CAPExtensionsImpl extensions, CarrierImpl carrier, ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
+            NAOliInfoImpl naOliInfo, LocationNumberCapImpl chargeNumber,
+            OriginalCalledNumberCapImpl  originalCalledPartyID, CallingPartyNumberCapImpl  callingPartyNumber) throws CAPException {
 
-        this.sendInvokeComponent(invoke);
+        return addEstablishTemporaryConnectionRequest(_Timer_Default, assistingSSPIPRoutingAddress, correlationID, scfID,
+                extensions, carrier, serviceInteractionIndicatorsTwo, naOliInfo, chargeNumber,
+                originalCalledPartyID, callingPartyNumber);
+    }
 
-        return invokeId;
+    @Override
+    public Long addEstablishTemporaryConnectionRequest(int customInvokeTimeout, DigitsImpl  assistingSSPIPRoutingAddress,
+            DigitsImpl  correlationID, ScfIDImpl scfID, CAPExtensionsImpl extensions, CarrierImpl carrier,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, NAOliInfoImpl naOliInfo,
+            LocationNumberCapImpl chargeNumber, OriginalCalledNumberCapImpl  originalCalledPartyID,
+            CallingPartyNumberCapImpl  callingPartyNumber) throws CAPException {
+
+        if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
+                && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
+                && this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
+                && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
+            throw new CAPException(
+                    "Bad application context name for addEstablishTemporaryConnectionRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
+
+        Integer customTimeout;
+        if (customInvokeTimeout == _Timer_Default)
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
+        else
+        	customTimeout = customInvokeTimeout;
+        
+        EstablishTemporaryConnectionRequestImpl req = new EstablishTemporaryConnectionRequestImpl(assistingSSPIPRoutingAddress,
+                correlationID, scfID, extensions, carrier, serviceInteractionIndicatorsTwo, naOliInfo,
+                chargeNumber, originalCalledPartyID, callingPartyNumber);
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.establishTemporaryConnection, req, true, false);        
     }
 
     @Override
@@ -976,39 +671,24 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                     "Bad application context name for addDisconnectForwardConnectionRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric, "
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.disconnectForwardConnection);
-        invoke.setOperationCode(oc);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        	customTimeout = customInvokeTimeout;
+        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.disconnectForwardConnection, null, true, false);        
     }
 
     @Override
-    public Long addDisconnectForwardConnectionWithArgumentRequest(Integer callSegmentID, CAPExtensions extensions)
+    public Long addDisconnectForwardConnectionWithArgumentRequest(Integer callSegmentID, CAPExtensionsImpl extensions)
             throws CAPException {
         return addDisconnectForwardConnectionWithArgumentRequest(_Timer_Default, callSegmentID, extensions);
     }
 
     @Override
     public Long addDisconnectForwardConnectionWithArgumentRequest(int customInvokeTimeout, Integer callSegmentID,
-            CAPExtensions extensions) throws CAPException {
+            CAPExtensionsImpl extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfAssistHandoff
@@ -1017,55 +697,30 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                     "Bad application context name for addDisconnectForwardConnectionWithArgumentRequest: must be CapV4_gsmSSF_scfGeneric, " +
                     "CapV4_gsmSSF_scfAssistHandoff or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.dFCWithArgument);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         DisconnectForwardConnectionWithArgumentRequestImpl req = new DisconnectForwardConnectionWithArgumentRequestImpl(
                 callSegmentID, extensions);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.dFCWithArgument, req, true, false);        
     }
 
     @Override
-    public Long addConnectToResourceRequest(CalledPartyNumberCap resourceAddress_IPRoutingAddress,
-            boolean resourceAddress_Null, CAPExtensions extensions,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID) throws CAPException {
+    public Long addConnectToResourceRequest(CalledPartyNumberCapImpl resourceAddress_IPRoutingAddress,
+            boolean resourceAddress_Null, CAPExtensionsImpl extensions,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, Integer callSegmentID) throws CAPException {
 
         return addConnectToResourceRequest(_Timer_Default, resourceAddress_IPRoutingAddress, resourceAddress_Null, extensions,
                 serviceInteractionIndicatorsTwo, callSegmentID);
     }
 
     @Override
-    public Long addConnectToResourceRequest(int customInvokeTimeout, CalledPartyNumberCap resourceAddress_IPRoutingAddress,
-            boolean resourceAddress_Null, CAPExtensions extensions,
-            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID) throws CAPException {
+    public Long addConnectToResourceRequest(int customInvokeTimeout, CalledPartyNumberCapImpl resourceAddress_IPRoutingAddress,
+            boolean resourceAddress_Null, CAPExtensionsImpl extensions,
+            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, Integer callSegmentID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
@@ -1078,51 +733,26 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                     "Bad application context name for addConnectToResourceRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric, "
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.connectToResource);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         ConnectToResourceRequestImpl req = new ConnectToResourceRequestImpl(resourceAddress_IPRoutingAddress,
                 resourceAddress_Null, extensions, serviceInteractionIndicatorsTwo, callSegmentID);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.connectToResource, req, true, false);        
     }
 
     @Override
-    public Long addResetTimerRequest(TimerID timerID, int timerValue, CAPExtensions extensions, Integer callSegmentID)
+    public Long addResetTimerRequest(TimerID timerID, int timerValue, CAPExtensionsImpl extensions, Integer callSegmentID)
             throws CAPException {
 
         return addResetTimerRequest(_Timer_Default, timerID, timerValue, extensions, callSegmentID);
     }
 
     @Override
-    public Long addResetTimerRequest(int customInvokeTimeout, TimerID timerID, int timerValue, CAPExtensions extensions,
+    public Long addResetTimerRequest(int customInvokeTimeout, TimerID timerID, int timerValue, CAPExtensionsImpl extensions,
             Integer callSegmentID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -1136,49 +766,24 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                     "Bad application context name for addResetTimerRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric, "
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.resetTimer);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         ResetTimerRequestImpl req = new ResetTimerRequestImpl(timerID, timerValue, extensions, callSegmentID);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.resetTimer, req, true, false);        
     }
 
     @Override
-    public Long addFurnishChargingInformationRequest(FCIBCCCAMELsequence1 FCIBCCCAMELsequence1) throws CAPException {
+    public Long addFurnishChargingInformationRequest(FCIBCCCAMELSequence1Impl FCIBCCCAMELsequence1) throws CAPException {
 
         return addFurnishChargingInformationRequest(_Timer_Default, FCIBCCCAMELsequence1);
     }
 
     @Override
-    public Long addFurnishChargingInformationRequest(int customInvokeTimeout, FCIBCCCAMELsequence1 FCIBCCCAMELsequence1)
+    public Long addFurnishChargingInformationRequest(int customInvokeTimeout, FCIBCCCAMELSequence1Impl FCIBCCCAMELsequence1)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -1188,52 +793,27 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addFurnishChargingInformationRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.furnishChargingInformation);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         FurnishChargingInformationRequestImpl req = new FurnishChargingInformationRequestImpl(FCIBCCCAMELsequence1);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.furnishChargingInformation, req, true, false);        
     }
 
     @Override
-    public Long addSendChargingInformationRequest(SCIBillingChargingCharacteristics sciBillingChargingCharacteristics,
-            SendingSideID partyToCharge, CAPExtensions extensions) throws CAPException {
+    public Long addSendChargingInformationRequest(SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics,
+            SendingLegIDImpl partyToCharge, CAPExtensionsImpl extensions) throws CAPException {
 
         return addSendChargingInformationRequest(_Timer_Default, sciBillingChargingCharacteristics, partyToCharge, extensions);
     }
 
     @Override
     public Long addSendChargingInformationRequest(int customInvokeTimeout,
-            SCIBillingChargingCharacteristics sciBillingChargingCharacteristics, SendingSideID partyToCharge,
-            CAPExtensions extensions) throws CAPException {
+            SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics, SendingLegIDImpl partyToCharge,
+            CAPExtensionsImpl extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
@@ -1241,40 +821,15 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addSendChargingInformationRequest: must be CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.sendChargingInformation);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         SendChargingInformationRequestImpl req = new SendChargingInformationRequestImpl(sciBillingChargingCharacteristics,
                 partyToCharge, extensions);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.sendChargingInformation, req, true, false);        
     }
 
     @Override
@@ -1304,41 +859,14 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                     "Bad application context name for addSpecializedResourceReportRequest_CapV23: must be "
                             + "CapV2_gsmSSF_to_gsmSCF, CapV3_gsmSSF_scfGeneric, CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV2_gsmSRF_to_gsmSCF or CapV3_gsmSRF_gsmSCF");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.specializedResourceReport);
-        invoke.setOperationCode(oc);
-
-        SpecializedResourceReportRequestImpl req = new SpecializedResourceReportRequestImpl(false);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        invoke.setLinkedId(linkedId);
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        	customTimeout = customInvokeTimeout;
+        
+        SpecializedResourceReportRequestImpl req = new SpecializedResourceReportRequestImpl(false,false);
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.specializedResourceReport, req, true, false);        
     }
 
     @Override
@@ -1353,47 +881,20 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                     "Bad application context name for addSpecializedResourceReportRequest_CapV4: "
                             + "must be CapV4_gsmSSF_scfGeneric, CapV4_gsmSSF_scfAssistHandoff, CapV4_scf_gsmSSFGeneric or CapV4_gsmSRF_gsmSCF");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.specializedResourceReport);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         SpecializedResourceReportRequestImpl req = new SpecializedResourceReportRequestImpl(isAllAnnouncementsComplete,
-                isFirstAnnouncementStarted, true);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        invoke.setLinkedId(linkedId);
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+                isFirstAnnouncementStarted);
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.specializedResourceReport, req, true, false);        
     }
 
     @Override
-    public Long addPlayAnnouncementRequest(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
-            Boolean requestAnnouncementCompleteNotification, CAPExtensions extensions, Integer callSegmentID,
+    public Long addPlayAnnouncementRequest(InformationToSendImpl informationToSend, Boolean disconnectFromIPForbidden,
+            Boolean requestAnnouncementCompleteNotification, CAPExtensionsImpl extensions, Integer callSegmentID,
             Boolean requestAnnouncementStartedNotification) throws CAPException {
 
         return addPlayAnnouncementRequest(_Timer_Default, informationToSend, disconnectFromIPForbidden,
@@ -1401,8 +902,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addPlayAnnouncementRequest(int customInvokeTimeout, InformationToSend informationToSend,
-            Boolean disconnectFromIPForbidden, Boolean requestAnnouncementCompleteNotification, CAPExtensions extensions,
+    public Long addPlayAnnouncementRequest(int customInvokeTimeout, InformationToSendImpl informationToSend,
+            Boolean disconnectFromIPForbidden, Boolean requestAnnouncementCompleteNotification, CAPExtensionsImpl extensions,
             Integer callSegmentID, Boolean requestAnnouncementStartedNotification) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -1421,45 +922,20 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff, CapV4_scf_gsmSSFGeneric"
                             + ", CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF or CapV4_gsmSRF_gsmSCF");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlLong());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.playAnnouncement);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         PlayAnnouncementRequestImpl req = new PlayAnnouncementRequestImpl(informationToSend, disconnectFromIPForbidden,
                 requestAnnouncementCompleteNotification, extensions, callSegmentID, requestAnnouncementStartedNotification);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.playAnnouncement, req, true, false);        
     }
 
     @Override
-    public Long addPromptAndCollectUserInformationRequest(CollectedInfo collectedInfo, Boolean disconnectFromIPForbidden,
-            InformationToSend informationToSend, CAPExtensions extensions, Integer callSegmentID,
+    public Long addPromptAndCollectUserInformationRequest(CollectedInfoImpl collectedInfo, Boolean disconnectFromIPForbidden,
+            InformationToSendImpl informationToSend, CAPExtensionsImpl extensions, Integer callSegmentID,
             Boolean requestAnnouncementStartedNotification) throws CAPException {
 
         return addPromptAndCollectUserInformationRequest(_Timer_Default, collectedInfo, disconnectFromIPForbidden,
@@ -1467,8 +943,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addPromptAndCollectUserInformationRequest(int customInvokeTimeout, CollectedInfo collectedInfo,
-            Boolean disconnectFromIPForbidden, InformationToSend informationToSend, CAPExtensions extensions,
+    public Long addPromptAndCollectUserInformationRequest(int customInvokeTimeout, CollectedInfoImpl collectedInfo,
+            Boolean disconnectFromIPForbidden, InformationToSendImpl informationToSend, CAPExtensionsImpl extensions,
             Integer callSegmentID, Boolean requestAnnouncementStartedNotification) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -1487,44 +963,19 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff, CapV4_scf_gsmSSFGeneric"
                             + ", CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF or CapV4_gsmSRF_gsmSCF");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class1);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlLong());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.promptAndCollectUserInformation);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         PromptAndCollectUserInformationRequestImpl req = new PromptAndCollectUserInformationRequestImpl(collectedInfo,
                 disconnectFromIPForbidden, informationToSend, extensions, callSegmentID, requestAnnouncementStartedNotification);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.promptAndCollectUserInformation, req, true, false);        
     }
 
     @Override
-    public void addPromptAndCollectUserInformationResponse_DigitsResponse(long invokeId, Digits digitsResponse)
+    public void addPromptAndCollectUserInformationResponse_DigitsResponse(long invokeId, DigitsImpl  digitsResponse)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -1543,28 +994,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff, CapV4_scf_gsmSSFGeneric"
                             + ", CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF or CapV4_gsmSRF_gsmSCF");
 
-        ReturnResultLast resultLast = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.promptAndCollectUserInformation);
-        resultLast.setOperationCode(oc);
-
-        PromptAndCollectUserInformationResponseImpl req = new PromptAndCollectUserInformationResponseImpl(digitsResponse);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        PromptAndCollectUserInformationResponseImpl res = new PromptAndCollectUserInformationResponseImpl(digitsResponse);
+        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.promptAndCollectUserInformation, res, false, true);        
     }
 
     @Override
@@ -1580,7 +1011,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addCancelRequest_CallSegmentToCancel(CallSegmentToCancel callSegmentToCancel) throws CAPException {
+    public Long addCancelRequest_CallSegmentToCancel(CallSegmentToCancelImpl callSegmentToCancel) throws CAPException {
 
         return addCancelRequest_CallSegmentToCancel(_Timer_Default, callSegmentToCancel);
     }
@@ -1600,7 +1031,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addCancelRequest_CallSegmentToCancel(int customInvokeTimeout, CallSegmentToCancel callSegmentToCancel)
+    public Long addCancelRequest_CallSegmentToCancel(int customInvokeTimeout, CallSegmentToCancelImpl callSegmentToCancel)
             throws CAPException {
 
         CancelRequestImpl req = new CancelRequestImpl(callSegmentToCancel);
@@ -1625,88 +1056,38 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff, CapV4_scf_gsmSSFGeneric"
                             + ", CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF or CapV4_gsmSRF_gsmSCF");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class2);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.cancelCode);
-        invoke.setOperationCode(oc);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        	customTimeout = customInvokeTimeout;
+        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.cancelCode, req, true, false);        
     }
 
     @Override
-    public Long addDisconnectLegRequest(LegID logToBeReleased, CauseCap releaseCause, CAPExtensions extensions)
+    public Long addDisconnectLegRequest(LegIDImpl logToBeReleased, CauseCapImpl releaseCause, CAPExtensionsImpl extensions)
             throws CAPException {
         return addDisconnectLegRequest(_Timer_Default, logToBeReleased, releaseCause, extensions);
     }
 
     @Override
-    public Long addDisconnectLegRequest(int customInvokeTimeout, LegID logToBeReleased, CauseCap releaseCause,
-            CAPExtensions extensions) throws CAPException {
+    public Long addDisconnectLegRequest(int customInvokeTimeout, LegIDImpl logToBeReleased, CauseCapImpl releaseCause,
+            CAPExtensionsImpl extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException(
                     "Bad application context name for addDisconnectLegRequest: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class1);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.disconnectLeg);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         DisconnectLegRequestImpl req = new DisconnectLegRequestImpl(logToBeReleased, releaseCause, extensions);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.disconnectLeg, req, true, false);        
     }
 
     @Override
@@ -1714,78 +1095,43 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException("Bad application context name for addDisconnectLegResponse: must be " + "CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        ReturnResultLast resultLast = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.disconnectLeg);
-        resultLast.setOperationCode(oc);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.disconnectLeg, null, false, true);        
     }
 
     @Override
-    public Long addInitiateCallAttemptRequest(DestinationRoutingAddress destinationRoutingAddress,
-            CAPExtensions extensions, LegID legToBeCreated, Integer newCallSegment,
-            CallingPartyNumberCap callingPartyNumber, CallReferenceNumber callReferenceNumber,
-            ISDNAddressString gsmSCFAddress, boolean suppressTCsi) throws CAPException {
+    public Long addInitiateCallAttemptRequest(DestinationRoutingAddressImpl   destinationRoutingAddress,
+            CAPExtensionsImpl extensions, LegIDImpl legToBeCreated, Integer newCallSegment,
+            CallingPartyNumberCapImpl  callingPartyNumber, CallReferenceNumberImpl  callReferenceNumber,
+            ISDNAddressStringImpl    gsmSCFAddress, boolean suppressTCsi) throws CAPException {
         return addInitiateCallAttemptRequest(_Timer_Default, destinationRoutingAddress, extensions, legToBeCreated,
                 newCallSegment, callingPartyNumber, callReferenceNumber, gsmSCFAddress, suppressTCsi);
     }
 
     @Override
     public Long addInitiateCallAttemptRequest(int customInvokeTimeout,
-            DestinationRoutingAddress destinationRoutingAddress, CAPExtensions extensions, LegID legToBeCreated,
-            Integer newCallSegment, CallingPartyNumberCap callingPartyNumber, CallReferenceNumber callReferenceNumber,
-            ISDNAddressString gsmSCFAddress, boolean suppressTCsi) throws CAPException {
+            DestinationRoutingAddressImpl   destinationRoutingAddress, CAPExtensionsImpl extensions, LegIDImpl legToBeCreated,
+            Integer newCallSegment, CallingPartyNumberCapImpl  callingPartyNumber, CallReferenceNumberImpl  callReferenceNumber,
+            ISDNAddressStringImpl    gsmSCFAddress, boolean suppressTCsi) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException(
                     "Bad application context name for addInitiateCallAttemptRequest: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class1);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.initiateCallAttempt);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         InitiateCallAttemptRequestImpl req = new InitiateCallAttemptRequestImpl(destinationRoutingAddress, extensions,
                 legToBeCreated, newCallSegment, callingPartyNumber, callReferenceNumber, gsmSCFAddress, suppressTCsi);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.initiateCallAttempt, req, true, false);        
     }
 
     @Override
-    public void addInitiateCallAttemptResponse(long invokeId, SupportedCamelPhases supportedCamelPhases,
-            OfferedCamel4Functionalities offeredCamel4Functionalities, CAPExtensions extensions,
+    public void addInitiateCallAttemptResponse(long invokeId, SupportedCamelPhasesImpl supportedCamelPhases,
+            OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities, CAPExtensionsImpl extensions,
             boolean releaseCallArgExtensionAllowed) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
@@ -1793,38 +1139,18 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addInitiateCallAttemptResponse: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        ReturnResultLast resultLast = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.initiateCallAttempt);
-        resultLast.setOperationCode(oc);
-
         InitiateCallAttemptResponseImpl res = new InitiateCallAttemptResponseImpl(supportedCamelPhases,
                 offeredCamel4Functionalities, extensions, releaseCallArgExtensionAllowed);
-        AsnOutputStream aos = new AsnOutputStream();
-        res.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(res.getTagClass());
-        p.setPrimitive(res.getIsPrimitive());
-        p.setTag(res.getTag());
-        p.setData(aos.toByteArray());
-        resultLast.setParameter(p);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.initiateCallAttempt, res, false, true);
     }
 
     @Override
-    public Long addMoveLegRequest(LegID logIDToMove, CAPExtensions extensions) throws CAPException {
+    public Long addMoveLegRequest(LegIDImpl logIDToMove, CAPExtensionsImpl extensions) throws CAPException {
         return addMoveLegRequest(_Timer_Default, logIDToMove, extensions);
     }
 
     @Override
-    public Long addMoveLegRequest(int customInvokeTimeout, LegID logIDToMove, CAPExtensions extensions)
+    public Long addMoveLegRequest(int customInvokeTimeout, LegIDImpl logIDToMove, CAPExtensionsImpl extensions)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
@@ -1832,39 +1158,14 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addMoveLegRequest: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class1);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.moveLeg);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         MoveLegRequestImpl req = new MoveLegRequestImpl(logIDToMove, extensions);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.moveLeg, req, true, false);        
     }
 
     @Override
@@ -1875,17 +1176,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addMoveLegResponse: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        ReturnResultLast resultLast = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.moveLeg);
-        resultLast.setOperationCode(oc);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.moveLeg, null, false, true);        
     }
 
     @Override
@@ -1901,75 +1192,35 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addContinueRequest: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class4);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.collectInformation);
-        invoke.setOperationCode(oc);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        	customTimeout = customInvokeTimeout;
+        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.collectInformation, null, true, false);        
     }
 
-    public Long addSplitLegRequest(LegID legIDToSplit, Integer newCallSegmentId, CAPExtensions extensions)
+    public Long addSplitLegRequest(LegIDImpl legIDToSplit, Integer newCallSegmentId, CAPExtensionsImpl extensions)
             throws CAPException {
         return addSplitLegRequest(_Timer_Default, legIDToSplit, newCallSegmentId, extensions);
     }
 
-    public Long addSplitLegRequest(int customInvokeTimeout, LegID legIDToSplit, Integer newCallSegmentId,
-            CAPExtensions extensions) throws CAPException {
+    public Long addSplitLegRequest(int customInvokeTimeout, LegIDImpl legIDToSplit, Integer newCallSegmentId,
+            CAPExtensionsImpl extensions) throws CAPException {
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException(
                     "Bad application context for addSplitLegRequest: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class1);
+        Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
         else
-            invoke.setTimeout(customInvokeTimeout);
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.splitLeg);
-        invoke.setOperationCode(oc);
-
+        	customTimeout = customInvokeTimeout;
+        
         SplitLegRequestImpl req = new SplitLegRequestImpl(legIDToSplit, newCallSegmentId, extensions);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.splitLeg, req, true, false);        
     }
 
     public void addSplitLegResponse(long invokeId) throws CAPException {
@@ -1979,26 +1230,16 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context for addSplitLegResponse: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        ReturnResultLast resultLast = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCResultLastRequest();
-
-        resultLast.setInvokeId(invokeId);
-
-        // Operation Code
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.splitLeg);
-        resultLast.setOperationCode(oc);
-
-        this.sendReturnResultLastComponent(resultLast);
+        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.splitLeg, null, false, true);        
     }
 
     @Override
-    public Long addCallGapRequest(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment, CAPExtensions capExtension) throws CAPException {
+    public Long addCallGapRequest(GapCriteriaImpl gapCriteria, GapIndicatorsImpl gapIndicators, ControlType controlType, GapTreatmentImpl gapTreatment, CAPExtensionsImpl capExtension) throws CAPException {
         return addCallGapRequest(_Timer_Default, gapCriteria, gapIndicators, controlType, gapTreatment, capExtension);
     }
 
     @Override
-    public Long addCallGapRequest(int customInvokeTimeout, GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment, CAPExtensions capExtension) throws CAPException {
+    public Long addCallGapRequest(int customInvokeTimeout, GapCriteriaImpl gapCriteria, GapIndicatorsImpl gapIndicators, ControlType controlType, GapTreatmentImpl gapTreatment, CAPExtensionsImpl capExtension) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric) {
@@ -2006,39 +1247,13 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                     "Bad application context name for addApplyChargingReportRequest: must be CapV3_gsmSSF_scfGeneric or CapV4_gsmSSF_scfGeneric");
         }
 
-        Invoke invoke = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCInvokeRequest(InvokeClass.Class4);
-        if (customInvokeTimeout == _Timer_Default) {
-            invoke.setTimeout(getTimerCircuitSwitchedCallControlShort());
-        } else {
-            invoke.setTimeout(customInvokeTimeout);
-        }
-
-        OperationCode oc = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
-        oc.setLocalOperationCode((long) CAPOperationCode.callGap);
-        invoke.setOperationCode(oc);
-
+        Integer customTimeout;
+        if (customInvokeTimeout == _Timer_Default)
+        	customTimeout = getTimerCircuitSwitchedCallControlShort();
+        else
+        	customTimeout = customInvokeTimeout;
+        
         CallGapRequestImpl req = new CallGapRequestImpl(gapCriteria, gapIndicators, controlType, gapTreatment, capExtension);
-        AsnOutputStream aos = new AsnOutputStream();
-        req.encodeData(aos);
-
-        Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-        p.setTagClass(req.getTagClass());
-        p.setPrimitive(req.getIsPrimitive());
-        p.setTag(req.getTag());
-        p.setData(aos.toByteArray());
-        invoke.setParameter(p);
-
-        Long invokeId;
-        try {
-            invokeId = this.tcapDialog.getNewInvokeId();
-            invoke.setInvokeId(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-
-        this.sendInvokeComponent(invoke);
-
-        return invokeId;
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.callGap, req, true, false);        
     }
 }

@@ -22,34 +22,29 @@
 
 package org.restcomm.protocols.ss7.cap;
 
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
+import org.restcomm.protocols.ss7.cap.api.CAPMessage;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPDialogState;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGeneralAbortReason;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPUserAbortReason;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
-import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageImpl;
+import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageParameterless;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  *
@@ -215,12 +210,9 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
     public void send() throws CAPException {
 
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
         switch (this.tcapDialog.getState()) {
 	        case Idle:
-	            ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	        	ApplicationContextNameImpl acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            this.setState(CAPDialogState.InitialSent);
@@ -239,7 +231,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	        case InitialReceived:
 	            // Its first Reply to TC-Begin
 	
-	            ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	            ApplicationContextNameImpl acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            this.capProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber,
@@ -258,9 +250,6 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
     public void sendDelayed() throws CAPException {
 
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
         if (this.delayedAreaState == null) {
             this.send();
         } else {
@@ -276,12 +265,9 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
     public void close(boolean prearrangedEnd) throws CAPException {
 
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
         switch (this.tcapDialog.getState()) {
 	        case InitialReceived:
-	            ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	            ApplicationContextNameImpl acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            if (prearrangedEnd) {
@@ -329,9 +315,6 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
     public void closeDelayed(boolean prearrangedEnd) throws CAPException {
 
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
         if (this.delayedAreaState == null) {
             this.close(prearrangedEnd);
         } else {
@@ -361,9 +344,6 @@ public abstract class CAPDialogImpl implements CAPDialog {
     @Override
     public void abort(CAPUserAbortReason abortReason) throws CAPException {
 
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
         // Dialog is not started or has expunged - we need not send
         // TC-U-ABORT,
         // only Dialog removing
@@ -381,99 +361,37 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
     @Override
     public void processInvokeWithoutAnswer(Long invokeId) {
-
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
         this.tcapDialog.processInvokeWithoutAnswer(invokeId);
     }
 
     @Override
-    public void sendInvokeComponent(Invoke invoke) throws CAPException {
-
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
+    public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException {
         try {
-            this.tcapDialog.sendComponent(invoke);
-        } catch (TCAPSendException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void sendReturnResultLastComponent(ReturnResultLast returnResultLast) throws CAPException {
-
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
-        // this.removeIncomingInvokeId(returnResultLast.getInvokeId());
-
-        try {
-            this.tcapDialog.sendComponent(returnResultLast);
-        } catch (TCAPSendException e) {
+        	if(operationCode!=null)
+        		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
+        	else
+        		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, null, param, isRequest, isLastResponse);
+        } catch (TCAPSendException | TCAPException e) {
             throw new CAPException(e.getMessage(), e);
         }
     }
 
     @Override
     public void sendErrorComponent(Long invokeId, CAPErrorMessage mem) throws CAPException {
-
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
-        CAPErrorMessageImpl capErrorMessage = (CAPErrorMessageImpl) mem;
-
-        // this.removeIncomingInvokeId(invokeId);
-
-        ReturnError returnError = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                .createTCReturnErrorRequest();
-
-        try {
-            returnError.setInvokeId(invokeId);
-
-            // Error Code
-            ErrorCode ec = TcapFactory.createErrorCode();
-            ec.setLocalErrorCode(capErrorMessage.getErrorCode());
-            returnError.setErrorCode(ec);
-
-            AsnOutputStream aos = new AsnOutputStream();
-            capErrorMessage.encodeData(aos);
-            byte[] buf = aos.toByteArray();
-            if (buf.length != 0) {
-                Parameter p = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
-                p.setTagClass(capErrorMessage.getTagClass());
-                p.setPrimitive(capErrorMessage.getIsPrimitive());
-                p.setTag(capErrorMessage.getTag());
-                p.setData(buf);
-                returnError.setParameter(p);
-            }
-
-            this.tcapDialog.sendComponent(returnError);
+    	try {
+        	if(mem instanceof CAPErrorMessageParameterless)
+        		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
+        	else
+        		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), mem);
 
         } catch (TCAPSendException e) {
             throw new CAPException(e.getMessage(), e);
         }
     }
 
-    @Override
-    public void sendRejectComponent(Long invokeId, Problem problem) throws CAPException {
-
-        if (this.tcapDialog.getPreviewMode())
-            return;
-
-        // if (invokeId != null && problem != null && problem.getInvokeProblemType() != null)
-        // this.removeIncomingInvokeId(invokeId);
-
-        Reject reject = this.capProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createTCRejectRequest();
-
+    public void sendRejectComponent(Long invokeId, ProblemImpl problem) throws CAPException {
         try {
-            reject.setInvokeId(invokeId);
-
-            // Error Code
-            reject.setProblem(problem);
-
-            this.tcapDialog.sendComponent(reject);
+            this.tcapDialog.sendReject(invokeId, problem);
 
         } catch (TCAPSendException e) {
             throw new CAPException(e.getMessage(), e);
@@ -482,9 +400,6 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
     @Override
     public void resetInvokeTimer(Long invokeId) throws CAPException {
-
-        if (this.tcapDialog.getPreviewMode())
-            return;
 
         try {
             this.getTcapDialog().resetTimer(invokeId);
@@ -526,7 +441,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         try {
             switch (this.tcapDialog.getState()) {
                 case Idle:
-                    ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                    ApplicationContextNameImpl acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     TCBeginRequest tb = this.capProviderImpl.encodeTCBegin(this.getTcapDialog(), acn, this.gprsReferenceNumber);
@@ -541,7 +456,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
                 case InitialReceived:
                     // Its first Reply to TC-Begin
 
-                    ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                    ApplicationContextNameImpl acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     tc = this.capProviderImpl.encodeTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber);
@@ -565,7 +480,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         try {
             switch (this.tcapDialog.getState()) {
                 case InitialReceived:
-                    ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                    ApplicationContextNameImpl acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     TCEndRequest te = this.capProviderImpl.encodeTCEnd(this.getTcapDialog(), prearrangedEnd, acn,

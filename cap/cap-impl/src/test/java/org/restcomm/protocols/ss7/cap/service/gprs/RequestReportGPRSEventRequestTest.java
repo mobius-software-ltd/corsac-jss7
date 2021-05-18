@@ -34,11 +34,11 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.RequestReportGPRSEventRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.testng.annotations.Test;
 
 /**

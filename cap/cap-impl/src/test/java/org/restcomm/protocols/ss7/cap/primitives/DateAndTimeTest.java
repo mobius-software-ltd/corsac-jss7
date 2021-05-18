@@ -30,7 +30,7 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.primitives.DateAndTimeImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTimeImpl;
 import org.testng.annotations.Test;
 
 /**

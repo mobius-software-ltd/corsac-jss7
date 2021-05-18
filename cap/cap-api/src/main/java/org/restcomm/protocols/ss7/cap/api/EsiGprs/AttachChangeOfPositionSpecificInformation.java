@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.cap.api.EsiGprs;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
 
 /**
  *
@@ -36,6 +36,6 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
  */
 public interface AttachChangeOfPositionSpecificInformation extends Serializable {
 
-    LocationInformationGPRS getLocationInformationGPRS();
+    LocationInformationGPRSImpl getLocationInformationGPRS();
 
 }

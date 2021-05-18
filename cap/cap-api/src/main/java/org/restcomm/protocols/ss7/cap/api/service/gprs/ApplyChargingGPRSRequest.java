@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 
 /**
  *
@@ -42,10 +42,10 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
  */
 public interface ApplyChargingGPRSRequest extends GprsMessage {
 
-    ChargingCharacteristics getChargingCharacteristics();
+    ChargingCharacteristicsImpl getChargingCharacteristics();
 
     Integer getTariffSwitchInterval();
 
-    PDPID getPDPID();
+    PDPIDImpl getPDPID();
 
 }

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.cap.gap;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.gap.GapOnServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapOnServiceImpl;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;

@@ -22,22 +22,22 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
+import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 
 /**
  *
@@ -90,31 +90,31 @@ OCSIApplicable ::= NULL
  */
 public interface ConnectRequest extends CircuitSwitchedCallMessage {
 
-    DestinationRoutingAddress getDestinationRoutingAddress();
+    DestinationRoutingAddressImpl getDestinationRoutingAddress();
 
-    AlertingPatternCap getAlertingPattern();
+    AlertingPatternCapImpl getAlertingPattern();
 
-    OriginalCalledNumberCap getOriginalCalledPartyID();
+    OriginalCalledNumberCapImpl getOriginalCalledPartyID();
 
-    CAPExtensions getExtensions();
+    CAPExtensionsImpl getExtensions();
 
-    Carrier getCarrier();
+    CarrierImpl getCarrier();
 
-    CallingPartysCategoryInap getCallingPartysCategory();
+    CallingPartysCategoryInapImpl getCallingPartysCategory();
 
-    RedirectingPartyIDCap getRedirectingPartyID();
+    RedirectingPartyIDCapImpl getRedirectingPartyID();
 
-    RedirectionInformationInap getRedirectionInformation();
+    RedirectionInformationInapImpl getRedirectionInformation();
 
-    ArrayList<GenericNumberCap> getGenericNumbers();
+    List<GenericNumberCapImpl> getGenericNumbers();
 
-    ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo();
+    ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo();
 
-    LocationNumberCap getChargeNumber();
+    LocationNumberCapImpl getChargeNumber();
 
-    LegID getLegToBeConnected();
+    LegIDImpl getLegToBeConnected();
 
-    CUGInterlock getCUGInterlock();
+    CUGInterlockImpl getCUGInterlock();
 
     boolean getCugOutgoingAccess();
 
@@ -122,7 +122,7 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
 
     boolean getOCSIApplicable();
 
-    NAOliInfo getNAOliInfo();
+    NAOliInfoImpl getNAOliInfo();
 
     boolean getBorInterrogationRequested();
 

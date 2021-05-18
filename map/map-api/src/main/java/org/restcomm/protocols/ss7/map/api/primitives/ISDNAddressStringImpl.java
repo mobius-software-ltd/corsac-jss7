@@ -34,8 +34,6 @@ ISDN-AddressString ::= AddressString (SIZE (1..maxISDN-AddressLength))
 *
 */
 public class ISDNAddressStringImpl extends AddressStringImpl {
-	private static final long serialVersionUID = 1L;
-
 	public ISDNAddressStringImpl() {
 		super(8);
     }

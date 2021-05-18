@@ -49,7 +49,7 @@ public interface BCSMEvent extends Serializable {
 
     MonitorMode getMonitorMode();
 
-    SendingLegID getLegID();
+    SendingLegIDImpl getLegID();
 
     DpSpecificCriteria getDpSpecificCriteria();
 

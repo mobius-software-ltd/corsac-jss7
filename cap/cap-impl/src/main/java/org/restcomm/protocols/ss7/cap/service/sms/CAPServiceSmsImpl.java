@@ -23,14 +23,13 @@
 package org.restcomm.protocols.ss7.cap.service.sms;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.CAPDialogImpl;
 import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
 import org.restcomm.protocols.ss7.cap.CAPServiceBaseImpl;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
+import org.restcomm.protocols.ss7.cap.api.CAPMessage;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
 import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
@@ -40,13 +39,19 @@ import org.restcomm.protocols.ss7.cap.api.dialog.ServingCheckResult;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPDialogSms;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPServiceSms;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPServiceSmsListener;
+import org.restcomm.protocols.ss7.cap.api.service.sms.ConnectSMSRequest;
+import org.restcomm.protocols.ss7.cap.api.service.sms.ContinueSMSRequest;
+import org.restcomm.protocols.ss7.cap.api.service.sms.EventReportSMSRequest;
+import org.restcomm.protocols.ss7.cap.api.service.sms.FurnishChargingInformationSMSRequest;
+import org.restcomm.protocols.ss7.cap.api.service.sms.InitialDPSMSRequest;
+import org.restcomm.protocols.ss7.cap.api.service.sms.ReleaseSMSRequest;
+import org.restcomm.protocols.ss7.cap.api.service.sms.RequestReportSMSEventRequest;
+import org.restcomm.protocols.ss7.cap.api.service.sms.ResetTimerSMSRequest;
 import org.restcomm.protocols.ss7.cap.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 
 /**
  *
@@ -112,319 +117,163 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
     }
 
     @Override
-    public void processComponent(ComponentType compType, OperationCode oc, Parameter parameter, CAPDialog capDialog,
-            Long invokeId, Long linkedId, Invoke linkedInvoke) throws CAPParsingComponentException {
-
-        CAPDialogSmsImpl capDialogSmsImpl = (CAPDialogSmsImpl) capDialog;
+    public void processComponent(ComponentType compType, OperationCodeImpl oc, CAPMessage parameter, CAPDialog capDialog,
+            Long invokeId, Long linkedId) throws CAPParsingComponentException {
 
         Long ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new CAPParsingComponentException("", CAPParsingComponentExceptionReason.UnrecognizedOperation);
+       
         CAPApplicationContext acn = capDialog.getApplicationContext();
         int ocValueInt = (int) (long) ocValue;
-
+        boolean processed = false;
+        
         switch (ocValueInt) {
-        case CAPOperationCode.connectSMS:
-            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
-                if (compType == ComponentType.Invoke) {
-                    this.connectSMSRequest(parameter, capDialogSmsImpl, invokeId);
-                }
-            }
-            break;
-        case CAPOperationCode.eventReportSMS:
-            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
-                if (compType == ComponentType.Invoke) {
-                    this.eventReportSMSRequest(parameter, capDialogSmsImpl, invokeId);
-                }
-            }
-            break;
-        case CAPOperationCode.furnishChargingInformationSMS:
-            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
-                if (compType == ComponentType.Invoke) {
-                    this.furnishChargingInformationSMSRequest(parameter, capDialogSmsImpl, invokeId);
-                }
-            }
-            break;
-        case CAPOperationCode.initialDPSMS:
-            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
-                if (compType == ComponentType.Invoke) {
-                    this.initialDPSMSRequest(parameter, capDialogSmsImpl, invokeId);
-                }
-            }
-            break;
-        case CAPOperationCode.releaseSMS:
-            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
-                if (compType == ComponentType.Invoke) {
-                    this.releaseSMSRequest(parameter, capDialogSmsImpl, invokeId);
-                }
-            }
-            break;
-        case CAPOperationCode.requestReportSMSEvent:
-            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
-                if (compType == ComponentType.Invoke) {
-                    this.requestReportSMSEventRequest(parameter, capDialogSmsImpl, invokeId);
-                }
-            }
-            break;
-        case CAPOperationCode.resetTimerSMS:
-            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
-                if (compType == ComponentType.Invoke) {
-                    this.resetTimerSMSRequest(parameter, capDialogSmsImpl, invokeId);
-                }
-            }
-            break;
-        case CAPOperationCode.continueSMS:
-            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
-                if (compType == ComponentType.Invoke) {
-                    this.continueSMSRequest(parameter, capDialogSmsImpl, invokeId);
-                }
-            }
+        	case CAPOperationCode.connectSMS:
+        		if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
+        			if(parameter instanceof ConnectSMSRequest) {
+        				processed = true;
+        				ConnectSMSRequest ind = (ConnectSMSRequest)parameter;
+        	        	
+	        	        for (CAPServiceListener serLis : this.serviceListeners) {
+	        	            try {
+	        	                serLis.onCAPMessage(ind);
+	        	                ((CAPServiceSmsListener) serLis).onConnectSMSRequest(ind);
+	        	            } catch (Exception e) {
+	        	                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
+	        	            }
+	        	        }
+        	        }
+        		}
+        		break;
+        	case CAPOperationCode.eventReportSMS:
+	            if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
+	            	if(parameter instanceof EventReportSMSRequest) {
+	    				processed = true;
+	    				EventReportSMSRequest ind = (EventReportSMSRequest)parameter;
+	    	        	
+	        	        for (CAPServiceListener serLis : this.serviceListeners) {
+	        	            try {
+	        	                serLis.onCAPMessage(ind);
+	        	                ((CAPServiceSmsListener) serLis).onEventReportSMSRequest(ind);
+	        	            } catch (Exception e) {
+	        	                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
+	        	            }
+	        	        }
+	    	        }
+	            }
+	            break;
+        	case CAPOperationCode.furnishChargingInformationSMS:
+        		if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
+        			if(parameter instanceof FurnishChargingInformationSMSRequest) {
+        				processed = true;
+        				FurnishChargingInformationSMSRequest ind = (FurnishChargingInformationSMSRequest)parameter;
+        	        	
+	        	        for (CAPServiceListener serLis : this.serviceListeners) {
+	        	            try {
+	        	                serLis.onCAPMessage(ind);
+	        	                ((CAPServiceSmsListener) serLis).onFurnishChargingInformationSMSRequest(ind);
+	        	            } catch (Exception e) {
+	        	                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
+	        	            }
+	        	        }
+        	        }
+        		}
+        		break;
+        	case CAPOperationCode.initialDPSMS:
+        		if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
+        			if(parameter instanceof InitialDPSMSRequest) {
+        				processed = true;
+        				InitialDPSMSRequest ind = (InitialDPSMSRequest)parameter;
+        	        	
+	        	        for (CAPServiceListener serLis : this.serviceListeners) {
+	        	            try {
+	        	                serLis.onCAPMessage(ind);
+	        	                ((CAPServiceSmsListener) serLis).onInitialDPSMSRequest(ind);
+	        	            } catch (Exception e) {
+	        	                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
+	        	            }
+	        	        }
+        	        }
+        		}
+        		break;
+        	case CAPOperationCode.releaseSMS:
+        		if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
+        			if(parameter instanceof ReleaseSMSRequest) {
+        				processed = true;
+        				ReleaseSMSRequest ind = (ReleaseSMSRequest)parameter;
+        	        	
+	        	        for (CAPServiceListener serLis : this.serviceListeners) {
+	        	            try {
+	        	                serLis.onCAPMessage(ind);
+	        	                ((CAPServiceSmsListener) serLis).onReleaseSMSRequest(ind);
+	        	            } catch (Exception e) {
+	        	                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
+	        	            }
+	        	        }
+        	        }
+        		}
+        		break;
+        	case CAPOperationCode.requestReportSMSEvent:
+        		if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
+        			if(parameter instanceof RequestReportSMSEventRequest) {
+        				processed = true;
+        				RequestReportSMSEventRequest ind = (RequestReportSMSEventRequest)parameter;
+        	        	
+	        	        for (CAPServiceListener serLis : this.serviceListeners) {
+	        	            try {
+	        	                serLis.onCAPMessage(ind);
+	        	                ((CAPServiceSmsListener) serLis).onRequestReportSMSEventRequest(ind);
+	        	            } catch (Exception e) {
+	        	                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
+	        	            }
+	        	        }
+        	        }
+        		}
+        		break;
+        	case CAPOperationCode.resetTimerSMS:
+        		if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
+        			if(parameter instanceof ResetTimerSMSRequest) {
+        				processed = true;
+        				ResetTimerSMSRequest ind = (ResetTimerSMSRequest)parameter;
+        	        	
+	        	        for (CAPServiceListener serLis : this.serviceListeners) {
+	        	            try {
+	        	                serLis.onCAPMessage(ind);
+	        	                ((CAPServiceSmsListener) serLis).onResetTimerSMSRequest(ind);
+	        	            } catch (Exception e) {
+	        	                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
+	        	            }
+	        	        }
+        	        }
+        		}
+        		break;
+        	case CAPOperationCode.continueSMS:
+        		if (acn == CAPApplicationContext.CapV3_cap3_sms || acn == CAPApplicationContext.CapV4_cap4_sms) {
+        			if (compType == ComponentType.Invoke && parameter == null) {
+        				processed = true;
+        				ContinueSMSRequest ind=new ContinueSMSRequestImpl();
+        				
+        				for (CAPServiceListener serLis : this.serviceListeners) {
+	        	            try {
+	        	                serLis.onCAPMessage(ind);
+	        	                ((CAPServiceSmsListener) serLis).onContinueSMSRequest(ind);
+	        	            } catch (Exception e) {
+	        	                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
+	        	            }
+	        	        }
+        			}
+        		}
             break;
         default:
             throw new CAPParsingComponentException("", CAPParsingComponentExceptionReason.UnrecognizedOperation);
         }
-    }
-
-    private void connectSMSRequest(Parameter parameter, CAPDialogSmsImpl capDialogImpl, Long invokeId)
-            throws CAPParsingComponentException {
-
-        if (parameter == null)
-            throw new CAPParsingComponentException(
-                    "Error while decoding connectSMSRequest: Parameter is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                || parameter.isPrimitive())
-            throw new CAPParsingComponentException(
-                    "Error while decoding connectSMSRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), CAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ConnectSMSRequestImpl ind = new ConnectSMSRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setCAPDialog(capDialogImpl);
-
-        for (CAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onCAPMessage(ind);
-                ((CAPServiceSmsListener) serLis).onConnectSMSRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing connectSMSRequest: " + e.getMessage(), e);
-            }
+        
+        if(!processed) {
+        	if(parameter == null)
+        		 throw new CAPParsingComponentException("Error while decoding , Parameter is mandatory but not found",CAPParsingComponentExceptionReason.MistypedParameter);
+        	
+        	throw new CAPParsingComponentException("", CAPParsingComponentExceptionReason.UnrecognizedOperation);
         }
     }
-
-    private void eventReportSMSRequest(Parameter parameter, CAPDialogSmsImpl capDialogImpl, Long invokeId)
-            throws CAPParsingComponentException {
-
-        if (parameter == null)
-            throw new CAPParsingComponentException(
-                    "Error while decoding EventReportSMSRequest: Parameter is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                || parameter.isPrimitive())
-            throw new CAPParsingComponentException(
-                    "Error while decoding EventReportSMSRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), CAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        EventReportSMSRequestImpl ind = new EventReportSMSRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setCAPDialog(capDialogImpl);
-
-        for (CAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onCAPMessage(ind);
-                ((CAPServiceSmsListener) serLis).onEventReportSMSRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing EventReportSMSRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void furnishChargingInformationSMSRequest(Parameter parameter, CAPDialogSmsImpl capDialogImpl, Long invokeId)
-            throws CAPParsingComponentException {
-
-        if (parameter == null)
-            throw new CAPParsingComponentException(
-                    "Error while decoding FurnishChargingInformationSMSRequest: Parameter is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.STRING_OCTET || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                || !parameter.isPrimitive())
-            throw new CAPParsingComponentException(
-                    "Error while decoding FurnishChargingInformationSMSRequest: Bad tag or tagClass or parameter is not a primitive, received tag="
-                            + parameter.getTag(), CAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        FurnishChargingInformationSMSRequestImpl ind = new FurnishChargingInformationSMSRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setCAPDialog(capDialogImpl);
-
-        for (CAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onCAPMessage(ind);
-                ((CAPServiceSmsListener) serLis).onFurnishChargingInformationSMSRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing FurnishChargingInformationSMSRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void initialDPSMSRequest(Parameter parameter, CAPDialogSmsImpl capDialogImpl, Long invokeId)
-            throws CAPParsingComponentException {
-
-        if (parameter == null)
-            throw new CAPParsingComponentException(
-                    "Error while decoding InitialDPSMSRequest: Parameter is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                || parameter.isPrimitive())
-            throw new CAPParsingComponentException(
-                    "Error while decoding InitialDPSMSRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), CAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        InitialDPSMSRequestImpl ind = new InitialDPSMSRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setCAPDialog(capDialogImpl);
-
-        for (CAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onCAPMessage(ind);
-                ((CAPServiceSmsListener) serLis).onInitialDPSMSRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing InitialDPSMSRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void releaseSMSRequest(Parameter parameter, CAPDialogSmsImpl capDialogImpl, Long invokeId)
-            throws CAPParsingComponentException {
-
-        if (parameter == null)
-            throw new CAPParsingComponentException(
-                    "Error while decoding ReleaseSMSRequest: Parameter is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.STRING_OCTET || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                || !parameter.isPrimitive())
-            throw new CAPParsingComponentException(
-                    "Error while decoding ReleaseSMSRequest: Bad tag or tagClass or parameter is not primitive, received tag="
-                            + parameter.getTag(), CAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ReleaseSMSRequestImpl ind = new ReleaseSMSRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setCAPDialog(capDialogImpl);
-
-        for (CAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onCAPMessage(ind);
-                ((CAPServiceSmsListener) serLis).onReleaseSMSRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing ReleaseSMSRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void requestReportSMSEventRequest(Parameter parameter, CAPDialogSmsImpl capDialogImpl, Long invokeId)
-            throws CAPParsingComponentException {
-
-        if (parameter == null)
-            throw new CAPParsingComponentException(
-                    "Error while decoding RequestReportSMSEventRequest: Parameter is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                || parameter.isPrimitive())
-            throw new CAPParsingComponentException(
-                    "Error while decoding RequestReportSMSEventRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), CAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        RequestReportSMSEventRequestImpl ind = new RequestReportSMSEventRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setCAPDialog(capDialogImpl);
-
-        for (CAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onCAPMessage(ind);
-                ((CAPServiceSmsListener) serLis).onRequestReportSMSEventRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing RequestReportSMSEventRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void resetTimerSMSRequest(Parameter parameter, CAPDialogSmsImpl capDialogImpl, Long invokeId)
-            throws CAPParsingComponentException {
-
-        if (parameter == null)
-            throw new CAPParsingComponentException(
-                    "Error while decoding ResetTimerSMSRequest: Parameter is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        if (parameter.getTag() != Tag.SEQUENCE || parameter.getTagClass() != Tag.CLASS_UNIVERSAL
-                || parameter.isPrimitive())
-            throw new CAPParsingComponentException(
-                    "Error while decoding ResetTimerSMSRequest: Bad tag or tagClass or parameter is primitive, received tag="
-                            + parameter.getTag(), CAPParsingComponentExceptionReason.MistypedParameter);
-
-        byte[] buf = parameter.getData();
-        AsnInputStream ais = new AsnInputStream(buf);
-        ResetTimerSMSRequestImpl ind = new ResetTimerSMSRequestImpl();
-        ind.decodeData(ais, buf.length);
-
-        ind.setInvokeId(invokeId);
-        ind.setCAPDialog(capDialogImpl);
-
-        for (CAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onCAPMessage(ind);
-                ((CAPServiceSmsListener) serLis).onResetTimerSMSRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing ResetTimerSMSRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    private void continueSMSRequest(Parameter parameter, CAPDialogSmsImpl capDialogImpl, Long invokeId)
-            throws CAPParsingComponentException {
-
-        ContinueSMSRequestImpl ind = new ContinueSMSRequestImpl();
-
-        ind.setInvokeId(invokeId);
-        ind.setCAPDialog(capDialogImpl);
-
-        for (CAPServiceListener serLis : this.serviceListeners) {
-            try {
-                serLis.onCAPMessage(ind);
-                ((CAPServiceSmsListener) serLis).onContinueSMSRequest(ind);
-            } catch (Exception e) {
-                loger.error("Error processing continueSMSRequest: " + e.getMessage(), e);
-            }
-        }
-    }
-
 }

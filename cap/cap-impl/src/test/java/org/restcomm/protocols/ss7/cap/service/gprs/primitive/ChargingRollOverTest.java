@@ -31,11 +31,11 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingRollOverImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ElapsedTimeRollOverImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ROTimeGPRSIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ROVolumeIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.TransferredVolumeRollOverImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOverImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeRollOverImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ROTimeGPRSIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ROVolumeIfTariffSwitchImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeRollOverImpl;
 import org.testng.annotations.Test;
 
 /**

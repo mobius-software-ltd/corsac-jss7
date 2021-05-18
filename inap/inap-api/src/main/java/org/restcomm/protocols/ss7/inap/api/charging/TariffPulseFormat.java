@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.charging;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 *
@@ -45,7 +45,7 @@ TariffPulseFormat ::= SEQUENCE {
 */
 public interface TariffPulseFormat extends Serializable {
 
-    ArrayList<CommunicationChargePulse> getCommunicationChargeSequencePulse();
+    List<CommunicationChargePulse> getCommunicationChargeSequencePulse();
 
     TariffControlIndicators getTariffControlIndicators();
 

@@ -265,7 +265,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     	if(this.basicService==null)
     		return null;
     	
-        return this.basicService.getExtBasicServiceCodeImpl();
+        return this.basicService.getExtBasicServiceCode();
     }
 
     @Override
@@ -345,7 +345,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     	if(this.basicService2==null)
     		return null;
     	
-        return this.basicService2.getExtBasicServiceCodeImpl();
+        return this.basicService2.getExtBasicServiceCode();
     }
 
     @Override
@@ -425,9 +425,9 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
             sb.append("]");
         }
 
-        if (this.basicService != null && this.basicService.getExtBasicServiceCodeImpl()!=null) {
+        if (this.basicService != null && this.basicService.getExtBasicServiceCode()!=null) {
             sb.append(", basicService=");
-            sb.append(this.basicService.getExtBasicServiceCodeImpl());
+            sb.append(this.basicService.getExtBasicServiceCode());
         }
 
         if (this.forwardingInterrogationRequired != null)
@@ -496,9 +496,9 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
             sb.append("]");
         }
 
-        if (this.basicService2 != null && this.basicService2.getExtBasicServiceCodeImpl()!=null) {
+        if (this.basicService2 != null && this.basicService2.getExtBasicServiceCode()!=null) {
             sb.append(", basicService2=");
-            sb.append(this.basicService2.getExtBasicServiceCodeImpl());
+            sb.append(this.basicService2.getExtBasicServiceCode());
         }
 
         if (this.allowedServices != null) {

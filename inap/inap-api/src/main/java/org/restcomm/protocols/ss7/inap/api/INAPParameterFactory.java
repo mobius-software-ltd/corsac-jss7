@@ -22,13 +22,13 @@
 
 package org.restcomm.protocols.ss7.inap.api;
 
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegID;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegID;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoDpAssignment;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
@@ -42,19 +42,19 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformat
  */
 public interface INAPParameterFactory {
 
-    CallingPartysCategoryInap createCallingPartysCategoryInap(CallingPartyCategory callingPartyCategory)
+    CallingPartysCategoryInapImpl createCallingPartysCategoryInap(CallingPartyCategory callingPartyCategory)
             throws INAPException;
 
-    HighLayerCompatibilityInap createHighLayerCompatibilityInap(UserTeleserviceInformation highLayerCompatibility)
+    HighLayerCompatibilityInapImpl createHighLayerCompatibilityInap(UserTeleserviceInformation highLayerCompatibility)
             throws INAPException;
 
-    RedirectionInformationInap createRedirectionInformationInap(RedirectionInformation redirectionInformation)
+    RedirectionInformationInapImpl createRedirectionInformationInap(RedirectionInformation redirectionInformation)
             throws INAPException;
 
-    SendingLegID createSendingLegID(LegType legID);
+    SendingLegIDImpl createSendingLegID(LegType legID);
 
-    ReceivingLegID createReceivingLegID(LegType legID);
+    ReceivingLegIDImpl createReceivingLegID(LegType legID);
 
-    MiscCallInfo createMiscCallInfo(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment);
+    MiscCallInfoImpl createMiscCallInfo(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment);
 
 }

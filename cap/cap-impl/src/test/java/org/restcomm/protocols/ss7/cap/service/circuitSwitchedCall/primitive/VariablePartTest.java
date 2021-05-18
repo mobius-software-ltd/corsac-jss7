@@ -30,11 +30,11 @@ import java.util.Arrays;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartDateImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartPriceImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartDateImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartPriceImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.testng.annotations.Test;
 

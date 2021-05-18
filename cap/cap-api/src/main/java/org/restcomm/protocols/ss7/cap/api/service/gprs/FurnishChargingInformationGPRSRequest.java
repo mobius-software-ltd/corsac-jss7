@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
 
 /**
  *
@@ -47,6 +47,6 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBil
  */
 public interface FurnishChargingInformationGPRSRequest extends GprsMessage {
 
-    CAMELFCIGPRSBillingChargingCharacteristics getFCIGPRSBillingChargingCharacteristics();
+    CAMELFCIGPRSBillingChargingCharacteristicsImpl getFCIGPRSBillingChargingCharacteristics();
 
 }

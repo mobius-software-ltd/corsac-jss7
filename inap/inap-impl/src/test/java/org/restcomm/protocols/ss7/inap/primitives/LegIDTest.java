@@ -31,7 +31,8 @@ import io.netty.buffer.Unpooled;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

@@ -30,8 +30,8 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.MoveLegRequestImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.testng.annotations.Test;
 
 /**

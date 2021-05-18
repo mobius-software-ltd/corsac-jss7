@@ -30,10 +30,10 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.Burst;
+import org.restcomm.protocols.ss7.cap.api.primitives.BurstImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.BurstList;
-import org.restcomm.protocols.ss7.cap.primitives.BurstImpl;
-import org.restcomm.protocols.ss7.cap.primitives.BurstListImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AudibleIndicatorImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BurstListImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AudibleIndicatorImpl;
 import org.testng.annotations.Test;
 
 /**

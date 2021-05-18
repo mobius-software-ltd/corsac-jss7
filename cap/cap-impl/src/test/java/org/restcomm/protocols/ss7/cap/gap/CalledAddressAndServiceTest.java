@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.cap.gap;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
+import org.restcomm.protocols.ss7.cap.api.gap.CalledAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.gap.CalledAddressAndServiceImpl;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;

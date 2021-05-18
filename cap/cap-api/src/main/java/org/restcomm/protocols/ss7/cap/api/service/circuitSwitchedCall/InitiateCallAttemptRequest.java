@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
 
 /**
  *
@@ -64,19 +64,19 @@ CallSegmentID {PARAMETERS-BOUND : bound} ::= INTEGER (1..127)
  */
 public interface InitiateCallAttemptRequest extends CircuitSwitchedCallMessage {
 
-    DestinationRoutingAddress getDestinationRoutingAddress();
+    DestinationRoutingAddressImpl getDestinationRoutingAddress();
 
-    CAPExtensions getExtensions();
+    CAPExtensionsImpl getExtensions();
 
-    LegID getLegToBeCreated();
+    LegIDImpl getLegToBeCreated();
 
     Integer getNewCallSegment();
 
-    CallingPartyNumberCap getCallingPartyNumber();
+    CallingPartyNumberCapImpl getCallingPartyNumber();
 
-    CallReferenceNumber getCallReferenceNumber();
+    CallReferenceNumberImpl getCallReferenceNumber();
 
-    ISDNAddressString getGsmSCFAddress();
+    ISDNAddressStringImpl getGsmSCFAddress();
 
     boolean getSuppressTCsi();
 

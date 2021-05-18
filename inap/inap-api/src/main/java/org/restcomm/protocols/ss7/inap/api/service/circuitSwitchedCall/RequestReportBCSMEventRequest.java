@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.inap.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
@@ -70,7 +70,7 @@ RequestReportBCSMEventArg {PARAMETERS-BOUND : bound} ::= SEQUENCE {
 */
 public interface RequestReportBCSMEventRequest {
 
-    ArrayList<BCSMEvent> getBCSMEvents();
+    List<BCSMEvent> getBCSMEvents();
 
     INAPExtensions getExtensions();
 

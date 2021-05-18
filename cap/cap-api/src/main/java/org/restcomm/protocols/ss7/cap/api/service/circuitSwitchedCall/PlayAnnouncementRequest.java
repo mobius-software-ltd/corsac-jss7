@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
 
 /**
  *
@@ -65,13 +65,13 @@ CallSegmentID {PARAMETERS-BOUND : bound} ::= INTEGER (1..bound.&numOfCSs) numOfC
  */
 public interface PlayAnnouncementRequest extends CircuitSwitchedCallMessage {
 
-    InformationToSend getInformationToSend();
+    InformationToSendImpl getInformationToSend();
 
     Boolean getDisconnectFromIPForbidden();
 
     Boolean getRequestAnnouncementCompleteNotification();
 
-    CAPExtensions getExtensions();
+    CAPExtensionsImpl getExtensions();
 
     Integer getCallSegmentID();
 

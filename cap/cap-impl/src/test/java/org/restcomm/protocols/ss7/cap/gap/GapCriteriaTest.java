@@ -27,13 +27,9 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.gap.*;
 import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
-import org.restcomm.protocols.ss7.cap.gap.BasicGapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.gap.CompoundCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapOnServiceImpl;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;

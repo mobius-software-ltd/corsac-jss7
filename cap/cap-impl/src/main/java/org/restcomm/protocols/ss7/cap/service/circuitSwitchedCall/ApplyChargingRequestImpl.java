@@ -22,26 +22,19 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.SendingSideID;
+import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ApplyChargingRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.primitives.AChChargingAddressImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDWrapperImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
@@ -49,30 +42,36 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAME
  * @author Amit Bhayani
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl implements ApplyChargingRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_aChBillingChargingCharacteristics = 0;
-    public static final int _ID_partyToCharge = 2;
-    public static final int _ID_extensions = 3;
-    public static final int _ID_aChChargingAddress = 50;
-
-    public static final String _PrimitiveName = "ApplyChargingRequestIndication";
-
-    private CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics;
-    private SendingSideID partyToCharge;
-    private CAPExtensions extensions;
-    private AChChargingAddress aChChargingAddress;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+    private CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
+    private SendingLegIDWrapperImpl partyToCharge;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = true,index = -1)
+    private AChChargingAddressWrapperImpl aChChargingAddress;
 
     public ApplyChargingRequestImpl() {
     }
 
-    public ApplyChargingRequestImpl(CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics,
-            SendingSideID partyToCharge, CAPExtensions extensions, AChChargingAddress aChChargingAddress) {
+    public ApplyChargingRequestImpl(CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics,
+            SendingLegIDImpl partyToCharge, CAPExtensionsImpl extensions, AChChargingAddressImpl aChChargingAddress) {
         this.aChBillingChargingCharacteristics = aChBillingChargingCharacteristics;
-        this.partyToCharge = partyToCharge;
+        
+        if(partyToCharge!=null)
+        	this.partyToCharge = new SendingLegIDWrapperImpl(partyToCharge);
+        
         this.extensions = extensions;
-        this.aChChargingAddress = aChChargingAddress;
+        
+        if(aChChargingAddress!=null)
+        	this.aChChargingAddress = new AChChargingAddressWrapperImpl(aChChargingAddress);
     }
 
     @Override
@@ -86,195 +85,53 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     }
 
     @Override
-    public CAMELAChBillingChargingCharacteristics getAChBillingChargingCharacteristics() {
+    public CAMELAChBillingChargingCharacteristicsImpl getAChBillingChargingCharacteristics() {
         return aChBillingChargingCharacteristics;
     }
 
     @Override
-    public SendingSideID getPartyToCharge() {
-        return partyToCharge;
+    public SendingLegIDImpl getPartyToCharge() {
+    	if(partyToCharge==null)
+    		return null;
+    	
+        return partyToCharge.getSendingLegID();
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return extensions;
     }
 
     @Override
-    public AChChargingAddress getAChChargingAddress() {
-        return aChChargingAddress;
-    }
-
-    @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, IOException, AsnException {
-
-        this.aChBillingChargingCharacteristics = null;
-        this.partyToCharge = null;
-        // this.partyToCharge = new SendingSideIDImpl(LegType.leg1);
-        this.extensions = null;
-        this.aChChargingAddress = null;
-        // TODO: DEFAULT legID:sendingSideID:leg1
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                case _ID_aChBillingChargingCharacteristics:
-                    this.aChBillingChargingCharacteristics = new CAMELAChBillingChargingCharacteristicsImpl();
-                    ((CAMELAChBillingChargingCharacteristicsImpl) this.aChBillingChargingCharacteristics).decodeAll(ais);
-                    break;
-                case _ID_partyToCharge:
-                    AsnInputStream ais2 = ais.readSequenceStream();
-                    ais2.readTag();
-                    this.partyToCharge = new SendingSideIDImpl();
-                    ((SendingSideIDImpl) this.partyToCharge).decodeAll(ais2);
-                    break;
-                case _ID_extensions:
-                    this.extensions = new CAPExtensionsImpl();
-                    ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                    break;
-                case _ID_aChChargingAddress:
-                    ais2 = ais.readSequenceStream();
-                    ais2.readTag();
-                    this.aChChargingAddress = new AChChargingAddressImpl();
-                    ((AChChargingAddressImpl) this.aChChargingAddress).decodeAll(ais2);
-                    break;
-
-                default:
-                    ais.advanceElement();
-                    break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.aChBillingChargingCharacteristics == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": aChBillingChargingCharacteristics is mandatory but not found ",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        if (this.aChBillingChargingCharacteristics == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName
-                    + ": aChBillingChargingCharacteristics must not be null");
-
-        try {
-            if (this.aChBillingChargingCharacteristics != null)
-                ((CAMELAChBillingChargingCharacteristicsImpl) this.aChBillingChargingCharacteristics).encodeAll(aos,
-                        Tag.CLASS_CONTEXT_SPECIFIC, _ID_aChBillingChargingCharacteristics);
-            if (this.partyToCharge != null) {
-                aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_partyToCharge);
-                int pos = aos.StartContentDefiniteLength();
-                ((SendingSideIDImpl) this.partyToCharge).encodeAll(aos);
-                aos.FinalizeContent(pos);
-            }
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-            if (this.aChChargingAddress != null) {
-                aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_aChChargingAddress);
-                int pos = aos.StartContentDefiniteLength();
-                ((AChChargingAddressImpl) this.aChChargingAddress).encodeAll(aos);
-                aos.FinalizeContent(pos);
-            }
-
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+    public AChChargingAddressImpl getAChChargingAddress() {
+    	if(aChChargingAddress==null)
+    		return null;
+    	
+        return aChChargingAddress.getAChChargingAddress();
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("ApplyChargingRequestIndication [");
         this.addInvokeIdInfo(sb);
 
         if (this.aChBillingChargingCharacteristics != null) {
             sb.append(", aChBillingChargingCharacteristics=");
             sb.append(aChBillingChargingCharacteristics.toString());
         }
-        if (this.partyToCharge != null) {
+        if (this.partyToCharge != null && this.partyToCharge.getSendingLegID()!=null) {
             sb.append(", partyToCharge=");
-            sb.append(partyToCharge.toString());
+            sb.append(partyToCharge.getSendingLegID());
         }
         if (this.extensions != null) {
             sb.append(", extensions=");
             sb.append(extensions.toString());
         }
-        if (this.aChChargingAddress != null) {
+        if (this.aChChargingAddress != null && this.aChChargingAddress.getAChChargingAddress()!=null) {
             sb.append(", aChChargingAddress=");
-            sb.append(aChChargingAddress.toString());
+            sb.append(aChChargingAddress.getAChChargingAddress());
         }
 
         sb.append("]");

@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 
 /**
  *
@@ -45,8 +45,8 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
  */
 public interface RequestReportGPRSEventRequest extends GprsMessage {
 
-    ArrayList<GPRSEvent> getGPRSEvent();
+    List<GPRSEventImpl> getGPRSEvent();
 
-    PDPID getPDPID();
+    PDPIDImpl getPDPID();
 
 }

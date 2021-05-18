@@ -22,34 +22,34 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapability;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CGEncountered;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndex;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndexImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
 
 /**
  *
@@ -107,68 +107,68 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
 
     int getServiceKey();
 
-    CalledPartyNumberCap getCalledPartyNumber();
+    CalledPartyNumberCapImpl getCalledPartyNumber();
 
-    CallingPartyNumberCap getCallingPartyNumber();
+    CallingPartyNumberCapImpl getCallingPartyNumber();
 
-    CallingPartysCategoryInap getCallingPartysCategory();
+    CallingPartysCategoryInapImpl getCallingPartysCategory();
 
     CGEncountered getCGEncountered();
 
-    IPSSPCapabilities getIPSSPCapabilities();
+    IPSSPCapabilitiesImpl getIPSSPCapabilities();
 
-    LocationNumberCap getLocationNumber();
+    LocationNumberCapImpl getLocationNumber();
 
-    OriginalCalledNumberCap getOriginalCalledPartyID();
+    OriginalCalledNumberCapImpl getOriginalCalledPartyID();
 
-    CAPExtensions getExtensions();
+    CAPExtensionsImpl getExtensions();
 
-    HighLayerCompatibilityInap getHighLayerCompatibility();
+    HighLayerCompatibilityInapImpl getHighLayerCompatibility();
 
     /**
      * Use Digits.getGenericNumber() for AdditionalCallingPartyNumber
      *
      * @return
      */
-    Digits getAdditionalCallingPartyNumber();
+    DigitsImpl getAdditionalCallingPartyNumber();
 
-    BearerCapability getBearerCapability();
+    BearerCapabilityImpl getBearerCapability();
 
     EventTypeBCSM getEventTypeBCSM();
 
-    RedirectingPartyIDCap getRedirectingPartyID();
+    RedirectingPartyIDCapImpl getRedirectingPartyID();
 
-    RedirectionInformationInap getRedirectionInformation();
+    RedirectionInformationInapImpl getRedirectionInformation();
 
-    CauseCap getCause();
+    CauseCapImpl getCause();
 
-    ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo();
+    ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo();
 
-    Carrier getCarrier();
+    CarrierImpl getCarrier();
 
-    CUGIndex getCugIndex();
+    CUGIndexImpl getCugIndex();
 
-    CUGInterlock getCugInterlock();
+    CUGInterlockImpl getCugInterlock();
 
     boolean getCugOutgoingAccess();
 
-    IMSI getIMSI();
+    IMSIImpl getIMSI();
 
-    SubscriberState getSubscriberState();
+    SubscriberStateImpl getSubscriberState();
 
-    LocationInformation getLocationInformation();
+    LocationInformationImpl getLocationInformation();
 
-    ExtBasicServiceCode getExtBasicServiceCode();
+    ExtBasicServiceCodeImpl getExtBasicServiceCode();
 
-    CallReferenceNumber getCallReferenceNumber();
+    CallReferenceNumberImpl getCallReferenceNumber();
 
-    ISDNAddressString getMscAddress();
+    ISDNAddressStringImpl getMscAddress();
 
-    CalledPartyBCDNumber getCalledPartyBCDNumber();
+    CalledPartyBCDNumberImpl getCalledPartyBCDNumber();
 
-    TimeAndTimezone getTimeAndTimezone();
+    TimeAndTimezoneImpl getTimeAndTimezone();
 
     boolean getCallForwardingSSPending();
 
-    InitialDPArgExtension getInitialDPArgExtension();
+    InitialDPArgExtensionImpl getInitialDPArgExtension();
 }

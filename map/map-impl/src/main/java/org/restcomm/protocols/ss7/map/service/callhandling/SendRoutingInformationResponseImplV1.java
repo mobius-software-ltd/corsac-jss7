@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
@@ -120,7 +120,7 @@ public class SendRoutingInformationResponseImplV1 extends CallHandlingMessageImp
     }
 
     @Override
-    public ArrayList<SSCodeImpl> getSSList() {
+    public List<SSCodeImpl> getSSList() {
         return null;
     }
 
@@ -185,7 +185,7 @@ public class SendRoutingInformationResponseImplV1 extends CallHandlingMessageImp
     }
 
     @Override
-    public ArrayList<SSCodeImpl> getSSList2() {
+    public List<SSCodeImpl> getSSList2() {
         return null;
     }
 

@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 *
@@ -38,6 +38,6 @@ INServiceCompatibilityIndication {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE
 */
 public interface INServiceCompatibilityIndication extends Serializable {
 
-    ArrayList<Entry> getEntries();
+    List<Entry> getEntries();
 
 }

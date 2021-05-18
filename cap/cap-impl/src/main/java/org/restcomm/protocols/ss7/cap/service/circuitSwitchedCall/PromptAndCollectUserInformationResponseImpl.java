@@ -22,40 +22,32 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationResponse;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
+@ASNWrappedTag
 public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitchedCallMessageImpl implements
         PromptAndCollectUserInformationResponse {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_digitsResponse = 0;
-
-    public static final String _PrimitiveName = "PromptAndCollectUserInformationResponseIndication";
-
-    public Digits digitsResponse;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0,constructed = false,index = -1)
+    public DigitsImpl digitsResponse;
 
     public PromptAndCollectUserInformationResponseImpl() {
     }
 
-    public PromptAndCollectUserInformationResponseImpl(Digits digitsResponse) {
+    public PromptAndCollectUserInformationResponseImpl(DigitsImpl digitsResponse) {
         this.digitsResponse = digitsResponse;
     }
 
@@ -70,113 +62,14 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
     }
 
     @Override
-    public Digits getDigitsResponse() {
+    public DigitsImpl getDigitsResponse() {
         return digitsResponse;
     }
-
-    @Override
-    public int getTag() throws CAPException {
-        return _ID_digitsResponse;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_CONTEXT_SPECIFIC;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return true;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ais, int length) throws CAPParsingComponentException, IOException, AsnException {
-
-        this.digitsResponse = null;
-
-        if (ais.getTagClass() != Tag.CLASS_CONTEXT_SPECIFIC || !ais.isTagPrimitive())
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": bad tagClass or is not primitive", CAPParsingComponentExceptionReason.MistypedParameter);
-
-        switch (ais.getTag()) {
-            case _ID_digitsResponse:
-                this.digitsResponse = new DigitsImpl();
-                ((DigitsImpl) this.digitsResponse).decodeData(ais, length);
-                this.digitsResponse.setIsGenericDigits();
-                break;
-            default:
-                throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName + ": bad tag: " + ais.getTag(),
-                        CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws CAPException {
-
-        int choiceCnt = 0;
-        if (this.digitsResponse != null)
-            choiceCnt++;
-
-        if (choiceCnt != 1)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": only one choice must be definite, found: "
-                    + choiceCnt);
-
-        if (this.digitsResponse != null)
-            ((DigitsImpl) this.digitsResponse).encodeData(asnOs);
-    }
-
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("PromptAndCollectUserInformationResponseIndication [");
         this.addInvokeIdInfo(sb);
 
         if (this.digitsResponse != null) {

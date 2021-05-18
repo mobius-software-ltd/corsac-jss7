@@ -27,6 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
+import org.restcomm.protocols.ss7.cap.api.CAPMessage;
 import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
@@ -36,10 +37,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  * This class must be the super class of all CAP services
@@ -87,8 +87,8 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
         }
     }
 
-    public abstract void processComponent(ComponentType compType, OperationCode oc, Parameter parameter, CAPDialog capDialog,
-            Long invokeId, Long linkedId, Invoke linkedInvoke) throws CAPParsingComponentException;
+    public abstract void processComponent(ComponentType compType, OperationCodeImpl oc, CAPMessage parameter, CAPDialog capDialog,
+            Long invokeId, Long linkedId) throws CAPParsingComponentException;
 
     /**
      * Returns a list of linked operations for operCode operation
@@ -126,7 +126,7 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
      * @param invoke
      * @return
      */
-    public boolean checkInvokeTimeOut(CAPDialog dialog, Invoke invoke) {
+    public boolean checkInvokeTimeOut(CAPDialog dialog, InvokeImpl invoke) {
         return false;
     }
 
@@ -159,13 +159,13 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
         }
     }
 
-    protected void deliverRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    protected void deliverRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
         for (CAPServiceListener serLis : this.serviceListeners) {
             serLis.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
         }
     }
 
-    protected void deliverInvokeTimeout(CAPDialog capDialog, Invoke invoke) {
+    protected void deliverInvokeTimeout(CAPDialog capDialog, InvokeImpl invoke) {
         for (CAPServiceListener serLis : this.serviceListeners) {
             serLis.onInvokeTimeout(capDialog, invoke.getInvokeId());
         }

@@ -21,62 +21,64 @@
  */
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.gap.GapCriteria;
-import org.restcomm.protocols.ss7.cap.api.gap.GapIndicators;
-import org.restcomm.protocols.ss7.cap.api.gap.GapTreatment;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallGapRequest;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ASNControlTypeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ControlType;
-import org.restcomm.protocols.ss7.cap.gap.GapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapIndicatorsImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapTreatmentImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author <a href="mailto:bartosz.krok@pro-ids.com"> Bartosz Krok (ProIDS sp. z o.o.)</a>
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implements CallGapRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_gapCriteria = 0;
-    public static final int _ID_gapIndicators = 1;
-    public static final int _ID_controlType = 2;
-    public static final int _ID_gapTreatment = 3;
-    public static final int _ID_capExtension = 4;
-
-    public static final String _PrimitiveName = "CallGapRequestIndication";
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private GapCriteriaWrapperImpl gapCriteria;
     
-    private GapCriteria gapCriteria;
-    private GapIndicators gapIndicators;
-    private ControlType controlType;
-    private GapTreatment gapTreatment;
-    private CAPExtensions capExtensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private GapIndicatorsImpl gapIndicators;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+    private ASNControlTypeImpl controlType;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
+    private GapTreatmentWrapperImpl gapTreatment;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
+    private CAPExtensionsImpl capExtensions;
 
     public CallGapRequestImpl() {
     }
 
-    public CallGapRequestImpl(boolean isCAPVersion3orLater) {
-        //this.isCAPVersion3orLater = isCAPVersion3orLater;
-    }
-
-    public CallGapRequestImpl(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment,
-            CAPExtensions capExtension) {
-        this.gapCriteria = gapCriteria;
+    public CallGapRequestImpl(GapCriteriaImpl gapCriteria, GapIndicatorsImpl gapIndicators, ControlType controlType, GapTreatmentImpl gapTreatment,
+            CAPExtensionsImpl capExtension) {
+    	
+    	if(gapCriteria!=null)
+    		this.gapCriteria = new GapCriteriaWrapperImpl(gapCriteria);
+    	
         this.gapIndicators = gapIndicators;
-        this.controlType = controlType;
-        this.gapTreatment = gapTreatment;
+        
+        if(controlType!=null) {
+        	this.controlType = new ASNControlTypeImpl();
+        	this.controlType.setType(controlType);
+        }
+        
+        if(gapTreatment!=null)
+        	this.gapTreatment = new GapTreatmentWrapperImpl(gapTreatment);
+        
         this.capExtensions = capExtension;
     }
 
@@ -90,190 +92,32 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
         return CAPOperationCode.callGap;
     }
 
-    @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
+    public GapCriteriaImpl getGapCriteria() {
+    	if(gapCriteria==null)
+    		return null;
+    	
+        return gapCriteria.getGapCriteria();
     }
 
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, IOException, AsnException {
-
-        this.gapCriteria = null;
-        this.gapIndicators = null;
-        this.controlType = null;
-        this.gapTreatment = null;
-        this.capExtensions = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-
-        while (true) {
-            if (ais.available() == 0) {
-                break;
-            }
-
-            int tag = ais.readTag();
-            int i1;
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-
-                switch (tag) {
-                    case _ID_gapCriteria: {
-                        this.gapCriteria = new GapCriteriaImpl();
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        ((GapCriteriaImpl) this.gapCriteria).decodeAll(ais2);
-                        break;
-                    }
-                    case _ID_gapIndicators: {
-                        this.gapIndicators = new GapIndicatorsImpl();
-                        ((GapIndicatorsImpl) this.gapIndicators).decodeAll(ais);
-                        break;
-                    }
-                    case _ID_controlType: {
-                        i1 = (int) ais.readInteger();
-                        this.controlType = ControlType.getInstance(i1);
-                        break;
-                    }
-                    case _ID_gapTreatment: {
-                        this.gapTreatment = new GapTreatmentImpl();
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        ((GapTreatmentImpl) this.gapTreatment).decodeAll(ais2);
-                        break;
-                    }
-                    case _ID_capExtension: {
-                        this.capExtensions = new CAPExtensionsImpl();
-                        ((CAPExtensionsImpl) this.capExtensions).decodeAll(ais);
-                        break;
-                    }
-                    default: {
-                        ais.advanceElement();
-                        break;
-                    }
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (gapCriteria == null) {
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter gapCriteria is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } else if (gapIndicators == null) {
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter gapIndicators is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream asnOs) throws CAPException {
-
-        if (this.gapCriteria == null) {
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": gapCriteria must not be null");
-        }
-        if (this.gapIndicators == null) {
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": gapIndicators must not be null");
-        }
-
-        try {
-
-            asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_gapCriteria);
-            int pos = asnOs.StartContentDefiniteLength();
-            ((GapCriteriaImpl) this.gapCriteria).encodeAll(asnOs);
-            asnOs.FinalizeContent(pos);
-
-            ((GapIndicatorsImpl) this.gapIndicators).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_gapIndicators);
-
-            if (this.controlType != null) {
-                asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_controlType, this.controlType.getCode());
-            }
-            if (this.gapTreatment != null) {
-                asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_gapTreatment);
-                int pos2 = asnOs.StartContentDefiniteLength();
-                ((GapTreatmentImpl) this.gapTreatment).encodeAll(asnOs);
-                asnOs.FinalizeContent(pos2);
-            }
-            if (this.capExtensions != null) {
-                ((CAPExtensionsImpl) this.capExtensions).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_capExtension);
-            }
-        } catch (IOException ex) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + ex.getMessage(), ex);
-        } catch (AsnException ex) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + ex.getMessage(), ex);
-        }
-
-    }
-
-    public GapCriteria getGapCriteria() {
-        return gapCriteria;
-    }
-
-    public GapIndicators getGapIndicators() {
+    public GapIndicatorsImpl getGapIndicators() {
         return gapIndicators;
     }
 
     public ControlType getControlType() {
-        return controlType;
+    	if(controlType==null)
+    		return null;
+    	
+        return controlType.getType();
     }
 
-    public GapTreatment getGapTreatment() {
-        return gapTreatment;
+    public GapTreatmentImpl getGapTreatment() {
+    	if(gapTreatment==null)
+    		return null;
+    	
+        return gapTreatment.getGapTreatment();
     }
 
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return capExtensions;
     }
 
@@ -281,24 +125,28 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("CallGapRequestIndication [");
         this.addInvokeIdInfo(sb);
 
-        sb.append(", gapCriteria=");
-        sb.append(gapCriteria);
-
-        sb.append(", gapIndicators=");
-        sb.append(gapIndicators);
-
-        if (this.controlType != null) {
+        if(gapCriteria!=null && gapCriteria.getGapCriteria()!=null) {
+        	sb.append(", gapCriteria=");
+        	sb.append(gapCriteria.getGapCriteria());
+        }
+        
+        if(gapIndicators!=null) {
+        	sb.append(", gapIndicators=");
+        	sb.append(gapIndicators);
+        }
+        
+        if (this.controlType != null && this.controlType.getType()!=null) {
             sb.append(", controlType");
-            sb.append(controlType.toString());
+            sb.append(controlType.getType());
         }
-        if (this.gapTreatment != null) {
+        if (this.gapTreatment != null && this.gapTreatment.getGapTreatment()!=null) {
             sb.append(", gapTreatment");
-            sb.append(gapTreatment.toString());
+            sb.append(gapTreatment.getGapTreatment());
         }
+        
         if (this.capExtensions != null) {
             sb.append(", capExtensions");
             sb.append(capExtensions.toString());

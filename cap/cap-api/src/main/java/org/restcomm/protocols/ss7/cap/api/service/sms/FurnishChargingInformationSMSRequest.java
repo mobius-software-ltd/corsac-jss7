@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms;
 
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELsequence1SMS;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
 
 /**
  *
@@ -51,7 +51,7 @@ FCISMSBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= OCTET STRING
  */
 public interface FurnishChargingInformationSMSRequest extends SmsMessage {
 
-    FCIBCCCAMELsequence1SMS getFCIBCCCAMELsequence1();
+    FCIBCCCAMELSequence1SMSImpl getFCIBCCCAMELsequence1();
 
 //    CAMELFCISMSBillingChargingCharacteristics getCAMELFCISMSBillingChargingCharacteristics();
 

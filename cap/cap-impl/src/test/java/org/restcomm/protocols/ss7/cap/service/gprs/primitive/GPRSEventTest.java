@@ -30,8 +30,8 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventImpl;
 import org.testng.annotations.Test;
 
 /**

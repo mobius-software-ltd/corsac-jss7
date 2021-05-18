@@ -31,10 +31,10 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCause;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCauseImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.EntityReleasedGPRSRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSCauseImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.testng.annotations.Test;
 
 /**

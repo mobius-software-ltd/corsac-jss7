@@ -29,7 +29,7 @@ import java.util.Arrays;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingLevel;
 import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;

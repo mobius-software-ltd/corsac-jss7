@@ -22,10 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.errors;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorCode;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageParameterless;
 
@@ -36,8 +32,6 @@ import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageParameterless;
  *
  */
 public class CAPErrorMessageParameterlessImpl extends CAPErrorMessageImpl implements CAPErrorMessageParameterless {
-	private static final long serialVersionUID = 1L;
-
 	public CAPErrorMessageParameterlessImpl(Long errorCode) {
         super(errorCode);
     }
@@ -54,41 +48,6 @@ public class CAPErrorMessageParameterlessImpl extends CAPErrorMessageImpl implem
     @Override
     public CAPErrorMessageParameterless getEmParameterless() {
         return this;
-    }
-
-    @Override
-    public int getTag() throws CAPException {
-        throw new CAPException("CAPErrorMessageParameterless does not support encoding");
-    }
-
-    @Override
-    public int getTagClass() {
-        return 0;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws CAPException {
     }
 
     @Override

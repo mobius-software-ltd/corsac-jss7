@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 *
@@ -39,6 +39,6 @@ SIZE (bound.&minRouteListLength..bound.&maxRouteListLength))
 */
 public interface RouteList extends Serializable {
 
-    ArrayList<byte[]> getDataList();
+    List<byte[]> getDataList();
 
 }

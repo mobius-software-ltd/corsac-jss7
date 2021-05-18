@@ -31,17 +31,17 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.EsiSms.OSmsFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiSms.OSmsSubmissionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiSms.TSmsDeliverySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiSms.TSmsFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsSubmissionSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsSubmissionSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.EventSpecificInformationSMSImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.MTSMSCauseImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MTSMSCauseImpl;
 import org.testng.annotations.Test;
 
 /**

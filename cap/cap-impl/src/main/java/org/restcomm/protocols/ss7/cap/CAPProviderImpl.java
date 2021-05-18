@@ -22,25 +22,23 @@
 
 package org.restcomm.protocols.ss7.cap;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPDialogListener;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
+import org.restcomm.protocols.ss7.cap.api.CAPMessage;
+import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.CAPParameterFactory;
 import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
+import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPDialogState;
@@ -57,18 +55,83 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.CAPServiceGprs;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPServiceSms;
 import org.restcomm.protocols.ss7.cap.dialog.CAPGprsReferenceNumberImpl;
 import org.restcomm.protocols.ss7.cap.dialog.CAPUserAbortPrimitiveImpl;
+import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageCancelFailedImpl;
 import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageFactoryImpl;
-import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageImpl;
+import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageParameterlessImpl;
+import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageRequestedInfoErrorImpl;
+import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageSystemFailureImpl;
+import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageTaskRefusedImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ActivityTestRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ActivityTestResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ApplyChargingReportRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ApplyChargingRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.AssistRequestInstructionsRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CAPServiceCircuitSwitchedCallImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CallGapRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CallInformationReportRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CallInformationRequestRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CancelRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CollectInformationRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ConnectRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ConnectToResourceRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ContinueRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ContinueWithArgumentRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.DisconnectForwardConnectionRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.DisconnectForwardConnectionWithArgumentRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.DisconnectLegRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.DisconnectLegResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.EstablishTemporaryConnectionRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.EventReportBCSMRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.FurnishChargingInformationRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitiateCallAttemptRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitiateCallAttemptResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.MoveLegRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.MoveLegResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.PlayAnnouncementRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.PromptAndCollectUserInformationRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.PromptAndCollectUserInformationResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ReleaseCallRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.RequestReportBCSMEventRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ResetTimerRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.SendChargingInformationRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.SpecializedResourceReportRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.SplitLegRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.SplitLegResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ActivityTestGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ActivityTestGPRSResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ApplyChargingGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ApplyChargingReportGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ApplyChargingReportGPRSResponseImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.CAPServiceGprsImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.CancelGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ConnectGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ContinueGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.EntityReleasedGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.EntityReleasedGPRSResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.EventReportGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.EventReportGPRSResponseImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.FurnishChargingInformationGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.InitialDpGprsRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ReleaseGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.RequestReportGPRSEventRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.ResetTimerGPRSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.SendChargingInformationGPRSRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.CAPServiceSmsImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.ConnectSMSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.ContinueSMSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.EventReportSMSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.FurnishChargingInformationSMSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.InitialDPSMSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.ReleaseSMSRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.RequestReportSMSEventRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.ResetTimerSMSRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
 import org.restcomm.protocols.ss7.inap.isup.INAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.tcap.DialogImpl;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
@@ -86,27 +149,29 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ASNUserInformationObjectImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
-import org.restcomm.protocols.ss7.tcap.asn.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
+import org.restcomm.protocols.ss7.tcap.asn.ParseException;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnosticImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Component;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationExternalImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Parameter;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
 /**
@@ -148,6 +213,288 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         this.capServices.add(this.capServiceCircuitSwitchedCall);
         this.capServices.add(this.capServiceGprs);
         this.capServices.add(this.capServiceSms);
+        
+        try {
+        	//registering user information options
+        	tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, CAPGprsReferenceNumberImpl.class);
+        	
+        	ErrorCodeImpl errorCode=new ErrorCodeImpl();
+        	errorCode.setLocalErrorCode((long)CAPErrorCode.cancelFailed);
+        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, CAPErrorMessageCancelFailedImpl.class);
+        	errorCode=new ErrorCodeImpl();
+        	errorCode.setLocalErrorCode((long)CAPErrorCode.requestedInfoError);
+        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, CAPErrorMessageRequestedInfoErrorImpl.class);
+        	errorCode=new ErrorCodeImpl();
+        	errorCode.setLocalErrorCode((long)CAPErrorCode.systemFailure);
+        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, CAPErrorMessageSystemFailureImpl.class);
+        	errorCode=new ErrorCodeImpl();
+        	errorCode.setLocalErrorCode((long)CAPErrorCode.taskRefused);
+        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, CAPErrorMessageTaskRefusedImpl.class);
+        	
+        	//registering error options
+        	tcapProvider.getParser().registerAlternativeClassMapping(CAPErrorMessageCancelFailedImpl.class, CAPErrorMessageCancelFailedImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CAPErrorMessageRequestedInfoErrorImpl.class, CAPErrorMessageRequestedInfoErrorImpl.class);        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(CAPErrorMessageSystemFailureImpl.class, CAPErrorMessageSystemFailureImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CAPErrorMessageTaskRefusedImpl.class, CAPErrorMessageTaskRefusedImpl.class);
+        	
+        	//register requests mappings
+        	OperationCodeImpl opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.activityTest);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivityTestRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.applyChargingReport);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingReportRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.applyCharging);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.assistRequestInstructions);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AssistRequestInstructionsRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.callGap);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallGapRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.callInformationReport);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallInformationReportRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.callInformationRequest);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallInformationRequestRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.cancelCode);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CancelRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.collectInformation);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CollectInformationRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.connect);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ConnectRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.connectToResource);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ConnectToResourceRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.continueCode);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ContinueRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.continueWithArgument);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ContinueWithArgumentRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.disconnectForwardConnection);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DisconnectForwardConnectionRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.dFCWithArgument);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DisconnectForwardConnectionWithArgumentRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.disconnectLeg);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DisconnectLegRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.establishTemporaryConnection);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EstablishTemporaryConnectionRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.eventReportBCSM);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EventReportBCSMRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.furnishChargingInformation);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, FurnishChargingInformationRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.initialDP);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitialDPRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.initiateCallAttempt);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitiateCallAttemptRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.moveLeg);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, MoveLegRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.playAnnouncement);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, PlayAnnouncementRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.promptAndCollectUserInformation);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, PromptAndCollectUserInformationRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.releaseCall);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReleaseCallRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.requestReportBCSMEvent);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestReportBCSMEventRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.resetTimer);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ResetTimerRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.sendChargingInformation);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendChargingInformationRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.specializedResourceReport);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SpecializedResourceReportRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.splitLeg);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SplitLegRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.activityTestGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivityTestGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.applyChargingGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.applyChargingReportGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingReportGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.cancelGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CancelGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.connectGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ConnectGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.continueGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ContinueGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.entityReleasedGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EntityReleasedGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.eventReportGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EventReportGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.furnishChargingInformationGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, FurnishChargingInformationGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.initialDPGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitialDpGprsRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.releaseGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReleaseGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.requestReportGPRSEvent);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestReportGPRSEventRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.resetTimerGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ResetTimerGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.sendChargingInformationGPRS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendChargingInformationGPRSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.connectSMS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ConnectSMSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.continueSMS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ContinueSMSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.eventReportSMS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EventReportSMSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.furnishChargingInformationSMS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, FurnishChargingInformationSMSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.initialDPSMS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitialDPSMSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.releaseSMS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReleaseSMSRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.requestReportSMSEvent);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestReportSMSEventRequestImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.resetTimerSMS);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ResetTimerSMSRequestImpl.class);
+        	
+        	//registering request options
+        	tcapProvider.getParser().registerAlternativeClassMapping(ActivityTestRequestImpl.class, ActivityTestRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportRequestImpl.class, ApplyChargingReportRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingRequestImpl.class, ApplyChargingRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(AssistRequestInstructionsRequestImpl.class, AssistRequestInstructionsRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CallGapRequestImpl.class, CallGapRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CallInformationReportRequestImpl.class, CallInformationReportRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CallInformationRequestRequestImpl.class, CallInformationRequestRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CancelRequestImpl.class, CancelRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CollectInformationRequestImpl.class, CollectInformationRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ConnectRequestImpl.class, ConnectRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ConnectToResourceRequestImpl.class, ConnectToResourceRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ContinueRequestImpl.class, ContinueRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ContinueWithArgumentRequestImpl.class, ContinueWithArgumentRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(DisconnectForwardConnectionRequestImpl.class, DisconnectForwardConnectionRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(DisconnectForwardConnectionWithArgumentRequestImpl.class, DisconnectForwardConnectionWithArgumentRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(DisconnectLegRequestImpl.class, DisconnectLegRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(EstablishTemporaryConnectionRequestImpl.class, EstablishTemporaryConnectionRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(EventReportBCSMRequestImpl.class, EventReportBCSMRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(FurnishChargingInformationRequestImpl.class, FurnishChargingInformationRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InitialDPRequestImpl.class, InitialDPRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InitiateCallAttemptRequestImpl.class, InitiateCallAttemptRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(MoveLegRequestImpl.class, MoveLegRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(PlayAnnouncementRequestImpl.class, PlayAnnouncementRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(PromptAndCollectUserInformationRequestImpl.class, PromptAndCollectUserInformationRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ReleaseCallRequestImpl.class, ReleaseCallRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(RequestReportBCSMEventRequestImpl.class, RequestReportBCSMEventRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ResetTimerRequestImpl.class, ResetTimerRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(SendChargingInformationRequestImpl.class, SendChargingInformationRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(SpecializedResourceReportRequestImpl.class, SpecializedResourceReportRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(SplitLegRequestImpl.class, SplitLegRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ActivityTestGPRSRequestImpl.class, ActivityTestGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingGPRSRequestImpl.class, ApplyChargingGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportGPRSRequestImpl.class, ApplyChargingReportGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CancelGPRSRequestImpl.class, CancelGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ConnectGPRSRequestImpl.class, ConnectGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ContinueGPRSRequestImpl.class, ContinueGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(EntityReleasedGPRSRequestImpl.class, EntityReleasedGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(EventReportGPRSRequestImpl.class, EventReportGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(FurnishChargingInformationGPRSRequestImpl.class, FurnishChargingInformationGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InitialDpGprsRequestImpl.class, InitialDpGprsRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ReleaseGPRSRequestImpl.class, ReleaseGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(RequestReportGPRSEventRequestImpl.class, RequestReportGPRSEventRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ResetTimerGPRSRequestImpl.class, ResetTimerGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(SendChargingInformationGPRSRequestImpl.class, SendChargingInformationGPRSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ConnectSMSRequestImpl.class, ConnectSMSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ContinueSMSRequestImpl.class, ContinueSMSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(EventReportSMSRequestImpl.class, EventReportSMSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(FurnishChargingInformationSMSRequestImpl.class, FurnishChargingInformationSMSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InitialDPSMSRequestImpl.class, InitialDPSMSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ReleaseSMSRequestImpl.class, ReleaseSMSRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(RequestReportSMSEventRequestImpl.class, RequestReportSMSEventRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ResetTimerSMSRequestImpl.class, ResetTimerSMSRequestImpl.class);
+        	
+        	//register responses mappings
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.activityTest);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ActivityTestResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.disconnectLeg);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, DisconnectLegResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.initiateCallAttempt);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, InitiateCallAttemptResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.moveLeg);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, MoveLegResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.promptAndCollectUserInformation);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, PromptAndCollectUserInformationResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.splitLeg);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SplitLegResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.activityTestGPRS);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ActivityTestGPRSResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.applyChargingReportGPRS);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ApplyChargingReportGPRSResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.entityReleasedGPRS);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, EntityReleasedGPRSResponseImpl.class);
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)CAPOperationCode.eventReportGPRS);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, EventReportGPRSResponseImpl.class);
+        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(ActivityTestResponseImpl.class, ActivityTestResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(DisconnectLegResponseImpl.class, DisconnectLegResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InitiateCallAttemptResponseImpl.class, InitiateCallAttemptResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(MoveLegResponseImpl.class, MoveLegResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(PromptAndCollectUserInformationResponseImpl.class, PromptAndCollectUserInformationResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(SplitLegResponseImpl.class, SplitLegResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ActivityTestGPRSResponseImpl.class, ActivityTestGPRSResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportGPRSResponseImpl.class, ApplyChargingReportGPRSResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(EntityReleasedGPRSResponseImpl.class, EntityReleasedGPRSResponseImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(EventReportGPRSResponseImpl.class, EventReportGPRSResponseImpl.class);
+
+        } catch(Exception ex) {
+        	//already registered11
+        }        	
     }
 
     public TCAPProvider getTCAPProvider() {
@@ -226,10 +573,10 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             return this.dialogs.remove(dialogId);        
     }
 
-    private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs) {
+    private void SendUnsupportedAcn(ApplicationContextNameImpl acn, Dialog dialog, String cs) {
         StringBuffer s = new StringBuffer();
         s.append(cs + " ApplicationContextName is received: ");
-        for (long l : acn.getOid()) {
+        for (long l : acn.getValue()) {
             s.append(l).append(", ");
         }
         loger.warn(s.toString());
@@ -241,60 +588,41 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    private CAPGprsReferenceNumberImpl ParseUserInfo(UserInformation userInfo, Dialog dialog) {
+    private CAPGprsReferenceNumberImpl ParseUserInfo(UserInformationImpl userInfo, Dialog dialog) {
 
         // Parsing userInfo
-        CAPGprsReferenceNumberImpl referenceNumber = null;
-
+        
         // Checking UserData ObjectIdentifier
-        if (!userInfo.isOid()) {
+        if (!userInfo.getExternal().isIDObjectIdentifier()) {
             loger.warn("onTCBegin: userInfo.isOid() is null");
             return null;
         }
 
-        if (!Arrays.equals(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId, userInfo.getOidValue())) {
+        List<Long> oid = userInfo.getExternal().getObjectIdentifier();
+
+        if (!CAPGprsReferenceNumberImpl.CAP_Dialogue_OId.equals(oid)) {
             loger.warn("onTCBegin: userInfo.isOid() has bad value");
             return null;
         }
 
-        if (!userInfo.isAsn()) {
+        if (!userInfo.getExternal().isValueObject()) {
             loger.warn("onTCBegin: userInfo.isAsn() is null");
             return null;
         }
 
-        try {
-            referenceNumber = new CAPGprsReferenceNumberImpl();
-            byte[] asnData = userInfo.getEncodeType();
-
-            AsnInputStream ais = new AsnInputStream(asnData);
-
-            int tag = ais.readTag();
-            // It should be SEQUENCE Tag
-            if (tag != Tag.SEQUENCE || ais.getTagClass() != Tag.CLASS_UNIVERSAL || ais.isTagPrimitive()) {
-                loger.warn("onTCBegin: Error parsing CAPGprsReferenceNumber: bad tag or tag class or is primitive");
-                ais.close();
-                return null;
-            }
-
-            referenceNumber.decodeAll(ais);
-        } catch (AsnException e) {
-            loger.error("AsnException when parsing CAP-OPEN Pdu: " + e.getMessage(), e);
-            return null;
-        } catch (IOException e) {
-            loger.error("IOException when parsing CAP-OPEN Pdu: " + e.getMessage(), e);
-            return null;
-        } catch (CAPParsingComponentException e) {
-            loger.error("CAPParsingComponentException when parsing CAP-OPEN Pdu: " + e.getMessage(), e);
+        Object userInfoObject=userInfo.getExternal().getChild().getValue();
+        if(!(userInfoObject instanceof CAPGprsReferenceNumberImpl)) {
+        	loger.warn("onTCBegin: Error parsing CAPGprsReferenceNumber: bad tag or tag class or is primitive");
             return null;
         }
 
-        return referenceNumber;
+        return (CAPGprsReferenceNumberImpl)userInfoObject;
     }
 
     public void onTCBegin(TCBeginIndication tcBeginIndication) {
 
-        ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
-        Component[] comps = tcBeginIndication.getComponents();
+        ApplicationContextNameImpl acn = tcBeginIndication.getApplicationContextName();
+        List<ComponentImpl> comps = tcBeginIndication.getComponents();
 
         // ACN must be present in CAMEL
         if (acn == null) {
@@ -309,7 +637,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             return;
         }
 
-        CAPApplicationContext capAppCtx = CAPApplicationContext.getInstance(acn.getOid());
+        CAPApplicationContext capAppCtx = CAPApplicationContext.getInstance(acn.getValue());
         // Check if ApplicationContext is recognizable for CAP
         // If no - TC-U-ABORT - ACN-Not-Supported
         if (capAppCtx == null) {
@@ -319,7 +647,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
         // Parsing CAPGprsReferenceNumber if exists
         CAPGprsReferenceNumberImpl referenceNumber = null;
-        UserInformation userInfo = tcBeginIndication.getUserInformation();
+        UserInformationImpl userInfo = tcBeginIndication.getUserInformation();
         if (userInfo != null) {
             referenceNumber = ParseUserInfo(userInfo, tcBeginIndication.getDialog());
             if (referenceNumber == null) {
@@ -391,11 +719,6 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         this.deliverDialogDelimiter(capDialogImpl);
 
         finishComponentProcessingState(capDialogImpl);
-
-        if (this.getTCAPProvider().getPreviewMode()) {
-            DialogImpl dimp = (DialogImpl) tcBeginIndication.getDialog();
-            dimp.getPrevewDialogData().setUpperDialog(capDialogImpl);
-        }
     }
 
     private void finishComponentProcessingState(CAPDialogImpl capDialogImpl) {
@@ -428,13 +751,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
         Dialog tcapDialog = tcContinueIndication.getDialog();
 
-        CAPDialogImpl capDialogImpl;
-        if (this.getTCAPProvider().getPreviewMode()) {
-            capDialogImpl = (CAPDialogImpl) (((DialogImpl) tcapDialog).getPrevewDialogData().getUpperDialog());
-        } else {
-            capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
-        }
-
+        CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
+        
         if (capDialogImpl == null) {
             loger.warn("CAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
             try {
@@ -446,209 +764,155 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             return;
         }
         capDialogImpl.tcapMessageType = MessageType.Continue;
+        if (capDialogImpl.getState() == CAPDialogState.InitialSent) {
+            ApplicationContextNameImpl acn = tcContinueIndication.getApplicationContextName();
 
-        if (this.getTCAPProvider().getPreviewMode()) {
+            if (acn == null) {
+                loger.warn("CAP Dialog is in InitialSent state but no application context name is received");
+                try {
+                    this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
+                            CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError());
+                } catch (CAPException e) {
+                    loger.error("Error while firing TC-U-ABORT. ", e);
+                }
+
+                this.deliverDialogNotice(capDialogImpl, CAPNoticeProblemDiagnostic.AbnormalDialogAction);
+                capDialogImpl.setState(CAPDialogState.Expunged);
+
+                return;
+            }
+
+            CAPApplicationContext capAcn = CAPApplicationContext.getInstance(acn.getValue());
+            if (capAcn == null || !capAcn.equals(capDialogImpl.getApplicationContext())) {
+                loger.warn(String
+                        .format("Received first TC-CONTINUE. But the received ACN is not the equal to the original ACN"));
+
+                try {
+                    this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
+                            CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError());
+                } catch (CAPException e) {
+                    loger.error("Error while firing TC-U-ABORT. ", e);
+                }
+
+                this.deliverDialogNotice(capDialogImpl, CAPNoticeProblemDiagnostic.AbnormalDialogAction);
+                capDialogImpl.setState(CAPDialogState.Expunged);
+
+                return;
+            }
+
+            // Parsing CAPGprsReferenceNumber if exists
+            // we ignore all errors this
             CAPGprsReferenceNumberImpl referenceNumber = null;
-            UserInformation userInfo = tcContinueIndication.getUserInformation();
+            UserInformationImpl userInfo = tcContinueIndication.getUserInformation();
             if (userInfo != null) {
                 referenceNumber = ParseUserInfo(userInfo, tcContinueIndication.getDialog());
             }
             capDialogImpl.receivedGprsReferenceNumber = referenceNumber;
 
-            if (tcContinueIndication.getApplicationContextName() != null)
-                this.deliverDialogAccept(capDialogImpl, referenceNumber);
+            capDialogImpl.delayedAreaState = CAPDialogImpl.DelayedAreaState.No;
 
-            Component[] comps = tcContinueIndication.getComponents();
+            capDialogImpl.setState(CAPDialogState.Active);
+            this.deliverDialogAccept(capDialogImpl, referenceNumber);
+
+            if (capDialogImpl.getState() == CAPDialogState.Expunged) {
+                // The Dialog was aborter
+                finishComponentProcessingState(capDialogImpl);
+                return;
+            }
+        } else {
+            capDialogImpl.delayedAreaState = CAPDialogImpl.DelayedAreaState.No;
+        }
+
+        // Now let us decode the Components
+        if (capDialogImpl.getState() == CAPDialogState.Active) {
+            List<ComponentImpl> comps = tcContinueIndication.getComponents();
             if (comps != null) {
                 processComponents(capDialogImpl, comps);
             }
-
-            this.deliverDialogDelimiter(capDialogImpl);
-
         } else {
-            if (capDialogImpl.getState() == CAPDialogState.InitialSent) {
-                ApplicationContextName acn = tcContinueIndication.getApplicationContextName();
-
-                if (acn == null) {
-                    loger.warn("CAP Dialog is in InitialSent state but no application context name is received");
-                    try {
-                        this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
-                                CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError());
-                    } catch (CAPException e) {
-                        loger.error("Error while firing TC-U-ABORT. ", e);
-                    }
-
-                    this.deliverDialogNotice(capDialogImpl, CAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                    capDialogImpl.setState(CAPDialogState.Expunged);
-
-                    return;
-                }
-
-                CAPApplicationContext capAcn = CAPApplicationContext.getInstance(acn.getOid());
-                if (capAcn == null || !capAcn.equals(capDialogImpl.getApplicationContext())) {
-                    loger.warn(String
-                            .format("Received first TC-CONTINUE. But the received ACN is not the equal to the original ACN"));
-
-                    try {
-                        this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
-                                CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError());
-                    } catch (CAPException e) {
-                        loger.error("Error while firing TC-U-ABORT. ", e);
-                    }
-
-                    this.deliverDialogNotice(capDialogImpl, CAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                    capDialogImpl.setState(CAPDialogState.Expunged);
-
-                    return;
-                }
-
-                // Parsing CAPGprsReferenceNumber if exists
-                // we ignore all errors this
-                CAPGprsReferenceNumberImpl referenceNumber = null;
-                UserInformation userInfo = tcContinueIndication.getUserInformation();
-                if (userInfo != null) {
-                    referenceNumber = ParseUserInfo(userInfo, tcContinueIndication.getDialog());
-                }
-                capDialogImpl.receivedGprsReferenceNumber = referenceNumber;
-
-                capDialogImpl.delayedAreaState = CAPDialogImpl.DelayedAreaState.No;
-
-                capDialogImpl.setState(CAPDialogState.Active);
-                this.deliverDialogAccept(capDialogImpl, referenceNumber);
-
-                if (capDialogImpl.getState() == CAPDialogState.Expunged) {
-                    // The Dialog was aborter
-                    finishComponentProcessingState(capDialogImpl);
-                    return;
-                }
-            } else {
-                capDialogImpl.delayedAreaState = CAPDialogImpl.DelayedAreaState.No;
-            }
-
-            // Now let us decode the Components
-            if (capDialogImpl.getState() == CAPDialogState.Active) {
-                Component[] comps = tcContinueIndication.getComponents();
-                if (comps != null) {
-                    processComponents(capDialogImpl, comps);
-                }
-            } else {
-                // This should never happen
-                loger.error(String.format("Received TC-CONTINUE. CAPDialog=%s. But state is not Active", capDialogImpl));
-            }
-
-            this.deliverDialogDelimiter(capDialogImpl);
-
-            finishComponentProcessingState(capDialogImpl);
+            // This should never happen
+            loger.error(String.format("Received TC-CONTINUE. CAPDialog=%s. But state is not Active", capDialogImpl));
         }
+
+        this.deliverDialogDelimiter(capDialogImpl);
+
+        finishComponentProcessingState(capDialogImpl);
     }
 
     public void onTCEnd(TCEndIndication tcEndIndication) {
 
         Dialog tcapDialog = tcEndIndication.getDialog();
 
-        CAPDialogImpl capDialogImpl;
-        if (this.getTCAPProvider().getPreviewMode()) {
-            capDialogImpl = (CAPDialogImpl) (((DialogImpl) tcapDialog).getPrevewDialogData().getUpperDialog());
-        } else {
-            capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
-        }
-
+        CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
+        
         if (capDialogImpl == null) {
             loger.warn("CAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
             return;
         }
         capDialogImpl.tcapMessageType = MessageType.End;
+        if (capDialogImpl.getState() == CAPDialogState.InitialSent) {
+            ApplicationContextNameImpl acn = tcEndIndication.getApplicationContextName();
 
-        if (this.getTCAPProvider().getPreviewMode()) {
+            if (acn == null) {
+                loger.warn("CAP Dialog is in InitialSent state but no application context name is received");
+
+                this.deliverDialogNotice(capDialogImpl, CAPNoticeProblemDiagnostic.AbnormalDialogAction);
+                capDialogImpl.setState(CAPDialogState.Expunged);
+
+                return;
+            }
+
+            CAPApplicationContext capAcn = CAPApplicationContext.getInstance(acn.getValue());
+
+            if (capAcn == null || !capAcn.equals(capDialogImpl.getApplicationContext())) {
+                loger.error(String.format("Received first TC-END. CAPDialog=%s. But CAPApplicationContext=%s",
+                        capDialogImpl, capAcn));
+
+                // capDialogImpl.setNormalDialogShutDown();
+
+                this.deliverDialogNotice(capDialogImpl, CAPNoticeProblemDiagnostic.AbnormalDialogAction);
+                capDialogImpl.setState(CAPDialogState.Expunged);
+
+                return;
+            }
 
             capDialogImpl.setState(CAPDialogState.Active);
 
             // Parsing CAPGprsReferenceNumber if exists
             // we ignore all errors this
             CAPGprsReferenceNumberImpl referenceNumber = null;
-            UserInformation userInfo = tcEndIndication.getUserInformation();
+            UserInformationImpl userInfo = tcEndIndication.getUserInformation();
             if (userInfo != null) {
                 referenceNumber = ParseUserInfo(userInfo, tcEndIndication.getDialog());
             }
             capDialogImpl.receivedGprsReferenceNumber = referenceNumber;
 
-            if (tcEndIndication.getApplicationContextName() != null)
-                this.deliverDialogAccept(capDialogImpl, referenceNumber);
-
-            // Now let us decode the Components
-            Component[] comps = tcEndIndication.getComponents();
-            if (comps != null) {
-                processComponents(capDialogImpl, comps);
+            this.deliverDialogAccept(capDialogImpl, referenceNumber);
+            if (capDialogImpl.getState() == CAPDialogState.Expunged) {
+                // The Dialog was aborter
+                return;
             }
-
-            // capDialogImpl.setNormalDialogShutDown();
-            this.deliverDialogClose(capDialogImpl);
-
-        } else {
-            if (capDialogImpl.getState() == CAPDialogState.InitialSent) {
-                ApplicationContextName acn = tcEndIndication.getApplicationContextName();
-
-                if (acn == null) {
-                    loger.warn("CAP Dialog is in InitialSent state but no application context name is received");
-
-                    this.deliverDialogNotice(capDialogImpl, CAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                    capDialogImpl.setState(CAPDialogState.Expunged);
-
-                    return;
-                }
-
-                CAPApplicationContext capAcn = CAPApplicationContext.getInstance(acn.getOid());
-
-                if (capAcn == null || !capAcn.equals(capDialogImpl.getApplicationContext())) {
-                    loger.error(String.format("Received first TC-END. CAPDialog=%s. But CAPApplicationContext=%s",
-                            capDialogImpl, capAcn));
-
-                    // capDialogImpl.setNormalDialogShutDown();
-
-                    this.deliverDialogNotice(capDialogImpl, CAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                    capDialogImpl.setState(CAPDialogState.Expunged);
-
-                    return;
-                }
-
-                capDialogImpl.setState(CAPDialogState.Active);
-
-                // Parsing CAPGprsReferenceNumber if exists
-                // we ignore all errors this
-                CAPGprsReferenceNumberImpl referenceNumber = null;
-                UserInformation userInfo = tcEndIndication.getUserInformation();
-                if (userInfo != null) {
-                    referenceNumber = ParseUserInfo(userInfo, tcEndIndication.getDialog());
-                }
-                capDialogImpl.receivedGprsReferenceNumber = referenceNumber;
-
-                this.deliverDialogAccept(capDialogImpl, referenceNumber);
-                if (capDialogImpl.getState() == CAPDialogState.Expunged) {
-                    // The Dialog was aborter
-                    return;
-                }
-            }
-
-            // Now let us decode the Components
-            Component[] comps = tcEndIndication.getComponents();
-            if (comps != null) {
-                processComponents(capDialogImpl, comps);
-            }
-
-            // capDialogImpl.setNormalDialogShutDown();
-            this.deliverDialogClose(capDialogImpl);
-
-            capDialogImpl.setState(CAPDialogState.Expunged);
         }
+
+        // Now let us decode the Components
+        List<ComponentImpl> comps = tcEndIndication.getComponents();
+        if (comps != null) {
+            processComponents(capDialogImpl, comps);
+        }
+
+        // capDialogImpl.setNormalDialogShutDown();
+        this.deliverDialogClose(capDialogImpl);
+
+        capDialogImpl.setState(CAPDialogState.Expunged);
     }
 
     public void onTCUni(TCUniIndication arg0) {
     }
 
     @Override
-    public void onInvokeTimeout(Invoke invoke) {
+    public void onInvokeTimeout(InvokeImpl invoke) {
 
-        CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(((InvokeImpl) invoke).getDialog().getLocalDialogId());
+        CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(invoke.getDialog().getLocalDialogId());
 
         if (capDialogImpl != null) {
         	if (capDialogImpl.getState() != CAPDialogState.Expunged) {
@@ -692,13 +956,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
     public void onTCPAbort(TCPAbortIndication tcPAbortIndication) {
         Dialog tcapDialog = tcPAbortIndication.getDialog();
 
-        CAPDialogImpl capDialogImpl;
-        if (this.getTCAPProvider().getPreviewMode()) {
-            capDialogImpl = (CAPDialogImpl) (((DialogImpl) tcapDialog).getPrevewDialogData().getUpperDialog());
-        } else {
-            capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
-        }
-
+        CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
+        
         if (capDialogImpl == null) {
             loger.warn("CAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
             return;
@@ -715,13 +974,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
     public void onTCUserAbort(TCUserAbortIndication tcUserAbortIndication) {
         Dialog tcapDialog = tcUserAbortIndication.getDialog();
 
-        CAPDialogImpl capDialogImpl;
-        if (this.getTCAPProvider().getPreviewMode()) {
-            capDialogImpl = (CAPDialogImpl) (((DialogImpl) tcapDialog).getPrevewDialogData().getUpperDialog());
-        } else {
-            capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
-        }
-
+        CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
+        
         if (capDialogImpl == null) {
             loger.error("CAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
             return;
@@ -735,50 +989,40 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         if (tcUserAbortIndication.IsAareApdu()) {
             if (capDialogImpl.getState() == CAPDialogState.InitialSent) {
                 generalReason = CAPGeneralAbortReason.DialogRefused;
-                ResultSourceDiagnostic resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
+                ResultSourceDiagnosticImpl resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
                 if (resultSourceDiagnostic != null) {
-                    if (resultSourceDiagnostic.getDialogServiceUserType() == DialogServiceUserType.AcnNotSupported) {
-                        generalReason = CAPGeneralAbortReason.ACNNotSupported;
-                    } else if (resultSourceDiagnostic.getDialogServiceProviderType() == DialogServiceProviderType.NoCommonDialogPortion) {
-                        generalReason = CAPGeneralAbortReason.NoCommonDialogPortionReceived;
-                    }
+                	try {
+	                    if (resultSourceDiagnostic.getDialogServiceUserType() == DialogServiceUserType.AcnNotSupported) {
+	                        generalReason = CAPGeneralAbortReason.ACNNotSupported;
+	                    } else if (resultSourceDiagnostic.getDialogServiceProviderType() == DialogServiceProviderType.NoCommonDialogPortion) {
+	                        generalReason = CAPGeneralAbortReason.NoCommonDialogPortionReceived;
+	                    }
+                	}
+                	catch(ParseException ex) {
+                		
+                	}
                 }
             }
         } else {
-            UserInformation userInfo = tcUserAbortIndication.getUserInformation();
+            UserInformationImpl userInfo = tcUserAbortIndication.getUserInformation();
 
             if (userInfo != null) {
                 // Checking userInfo.Oid==CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId
-                if (!userInfo.isOid()) {
+                if (!userInfo.getExternal().isIDObjectIdentifier()) {
                     loger.warn("When parsing TCUserAbortIndication indication: userInfo.isOid() is null");
                 } else {
-                    if (!Arrays.equals(userInfo.getOidValue(), CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId)) {
+                    if (!userInfo.getExternal().getObjectIdentifier().equals(CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId)) {
                         loger.warn("When parsing TCUserAbortIndication indication: userInfo.getOidValue() must be CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId");
-                    } else if (!userInfo.isAsn()) {
+                    } else if (!userInfo.getExternal().isValueObject()) {
                         loger.warn("When parsing TCUserAbortIndication indication: userInfo.isAsn() check failed");
                     } else {
-                        try {
-                            byte[] asnData = userInfo.getEncodeType();
-
-                            AsnInputStream ais = new AsnInputStream(asnData);
-
-                            int tag = ais.readTag();
-                            if (tag != Tag.ENUMERATED || ais.getTagClass() != Tag.CLASS_UNIVERSAL || !ais.isTagPrimitive()) {
-                                loger.warn("When parsing TCUserAbortIndication indication: userInfo has bad tag or tagClass or is not primitive");
-                            } else {
-                                CAPUserAbortPrimitiveImpl capUserAbortPrimitive = new CAPUserAbortPrimitiveImpl();
-                                capUserAbortPrimitive.decodeAll(ais);
-                                generalReason = CAPGeneralAbortReason.UserSpecific;
-                                userReason = capUserAbortPrimitive.getCAPUserAbortReason();
-                            }
-                        } catch (AsnException e) {
-                            loger.warn("When parsing TCUserAbortIndication indication: AsnException" + e.getMessage(), e);
-                        } catch (IOException e) {
-                            loger.warn("When parsing TCUserAbortIndication indication: IOException" + e.getMessage(), e);
-                        } catch (CAPParsingComponentException e) {
-                            loger.warn(
-                                    "When parsing TCUserAbortIndication indication: CAPParsingComponentException"
-                                            + e.getMessage(), e);
+                    	Object userInfoObject=userInfo.getExternal().getChild().getValue();
+                    	if(!(userInfoObject instanceof CAPUserAbortPrimitiveImpl))
+                    		loger.warn("When parsing TCUserAbortIndication indication: userInfo has bad tag or tagClass or is not primitive");
+                    	else {
+                    		CAPUserAbortPrimitiveImpl capUserAbortPrimitive = (CAPUserAbortPrimitiveImpl)userInfoObject;
+                            generalReason = CAPGeneralAbortReason.UserSpecific;
+                            userReason = capUserAbortPrimitive.getCAPUserAbortReason();
                         }
                     }
                 }
@@ -792,11 +1036,6 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
     @Override
     public void onTCNotice(TCNoticeIndication ind) {
-
-        if (this.getTCAPProvider().getPreviewMode()) {
-            return;
-        }
-
         Dialog tcapDialog = ind.getDialog();
 
         CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(tcapDialog.getLocalDialogId());
@@ -814,16 +1053,16 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    private void processComponents(CAPDialogImpl capDialogImpl, Component[] components) {
+    private void processComponents(CAPDialogImpl capDialogImpl, List<ComponentImpl> components) {
 
         // Now let us decode the Components
-        for (Component c : components) {
+        for (ComponentImpl c : components) {
 
             doProcessComponent(capDialogImpl, c);
         }
     }
 
-    private void doProcessComponent(CAPDialogImpl capDialogImpl, Component c) {
+    private void doProcessComponent(CAPDialogImpl capDialogImpl, ComponentImpl c) {
 
         // Getting the CAP Service that serves the CAP Dialog
         CAPServiceBaseImpl perfSer = (CAPServiceBaseImpl) capDialogImpl.getService();
@@ -831,16 +1070,16 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         try {
             ComponentType compType = c.getType();
 
-            Long invokeId = c.getInvokeId();
+            Long invokeId = c.getExistingComponent().getInvokeId();
 
-            Parameter parameter;
-            OperationCode oc;
+            Object parameter;
+            OperationCodeImpl oc;
             Long linkedId = 0L;
-            Invoke linkedInvoke = null;
+            InvokeImpl linkedInvoke = null;
 
             switch (compType) {
                 case Invoke: {
-                    Invoke comp = (Invoke) c;
+                    InvokeImpl comp = c.getInvoke();
                     oc = comp.getOperationCode();
                     parameter = comp.getParameter();
                     linkedId = comp.getLinkedId();
@@ -852,8 +1091,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
                         long[] lstInv = perfSer.getLinkedOperationList(linkedInvoke.getOperationCode().getLocalOperationCode());
                         if (lstInv == null) {
-                            Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                                    .createProblem(ProblemType.Invoke);
+                        	ProblemImpl problem = new ProblemImpl();
                             problem.setInvokeProblemType(InvokeProblemType.LinkedResponseUnexpected);
                             capDialogImpl.sendRejectComponent(invokeId, problem);
                             perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
@@ -871,8 +1109,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                             }
                         }
                         if (!found) {
-                            Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                                    .createProblem(ProblemType.Invoke);
+                        	ProblemImpl problem = new ProblemImpl();
                             problem.setInvokeProblemType(InvokeProblemType.UnexpectedLinkedOperation);
                             capDialogImpl.sendRejectComponent(invokeId, problem);
                             perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
@@ -885,8 +1122,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
                 case ReturnResult: {
                     // ReturnResult is not supported by CAMEL
-                    Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                            .createProblem(ProblemType.ReturnResult);
+                	ProblemImpl problem = new ProblemImpl();
                     problem.setReturnResultProblemType(ReturnResultProblemType.ReturnResultUnexpected);
                     capDialogImpl.sendRejectComponent(null, problem);
                     perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
@@ -895,22 +1131,21 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 }
 
                 case ReturnResultLast: {
-                    ReturnResultLast comp = (ReturnResultLast) c;
+                    ReturnResultLastImpl comp = c.getReturnResultLast();
                     oc = comp.getOperationCode();
                     parameter = comp.getParameter();
                 }
                     break;
 
                 case ReturnError: {
-                    ReturnError comp = (ReturnError) c;
+                    ReturnErrorImpl comp = c.getReturnError();
 
                     long errorCode = 0;
                     if (comp.getErrorCode() != null && comp.getErrorCode().getErrorType() == ErrorCodeType.Local)
                         errorCode = comp.getErrorCode().getLocalErrorCode();
                     if (errorCode < CAPErrorCode.minimalCodeValue || errorCode > CAPErrorCode.maximumCodeValue) {
                         // Not Local error code and not CAP error code received
-                        Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                                .createProblem(ProblemType.ReturnError);
+                    	ProblemImpl problem = new ProblemImpl();
                         problem.setReturnErrorProblemType(ReturnErrorProblemType.UnrecognizedError);
                         capDialogImpl.sendRejectComponent(invokeId, problem);
                         perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
@@ -918,31 +1153,25 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                         return;
                     }
 
-                    CAPErrorMessage msgErr = this.capErrorMessageFactory.createMessageFromErrorCode(errorCode);
-                    try {
-                        Parameter p = comp.getParameter();
-                        if (p != null && p.getData() != null) {
-                            byte[] data = p.getData();
-                            AsnInputStream ais = new AsnInputStream(data, p.getTagClass(), p.isPrimitive(), p.getTag());
-                            ((CAPErrorMessageImpl) msgErr).decodeData(ais, data.length);
-                        }
-                    } catch (CAPParsingComponentException e) {
-                        // Failed when parsing the component - send TC-U-REJECT
-                        Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                                .createProblem(ProblemType.ReturnError);
-                        problem.setReturnErrorProblemType(ReturnErrorProblemType.MistypedParameter);
-                        capDialogImpl.sendRejectComponent(invokeId, problem);
-                        perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
-
-                        return;
+                    CAPErrorMessage msgErr = new CAPErrorMessageParameterlessImpl();
+                    Object p = comp.getParameter();
+                    if (p != null && p instanceof CAPErrorMessage) {
+                        msgErr=(CAPErrorMessage)p;
                     }
+                    else if(p != null) {
+                    	ProblemImpl problem = new ProblemImpl();
+                         problem.setReturnErrorProblemType(ReturnErrorProblemType.MistypedParameter);
+                         capDialogImpl.sendRejectComponent(invokeId, problem);
+                         perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
+                         return;
+                    }
+                    
                     perfSer.deliverErrorComponent(capDialogImpl, comp.getInvokeId(), msgErr);
-
                     return;
                 }
 
                 case Reject: {
-                    Reject comp = (Reject) c;
+                    RejectImpl comp = c.getReject();
                     perfSer.deliverRejectComponent(capDialogImpl, comp.getInvokeId(), comp.getProblem(),
                             comp.isLocalOriginated());
 
@@ -954,8 +1183,18 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             }
 
             try {
-
-                perfSer.processComponent(compType, oc, parameter, capDialogImpl, invokeId, linkedId, linkedInvoke);
+            	if(parameter!=null && !(parameter instanceof CAPMessage)) {
+            		throw new CAPParsingComponentException("MAPServiceHandling: unknown incoming operation code: " + oc.getLocalOperationCode(),
+                            CAPParsingComponentExceptionReason.MistypedParameter);
+            	}
+            	
+            	CAPMessage realMessage=(CAPMessage)parameter;
+            	if(realMessage!=null) {
+	            	realMessage.setInvokeId(invokeId);
+	            	realMessage.setCAPDialog(capDialogImpl);
+            	}
+            	
+                perfSer.processComponent(compType, oc, realMessage, capDialogImpl, invokeId, linkedId);
 
             } catch (CAPParsingComponentException e) {
 
@@ -967,14 +1206,12 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                     case UnrecognizedOperation:
                         // Component does not supported - send TC-U-REJECT
                         if (compType == ComponentType.Invoke) {
-                            Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                                    .createProblem(ProblemType.Invoke);
+                        	ProblemImpl problem = new ProblemImpl();
                             problem.setInvokeProblemType(InvokeProblemType.UnrecognizedOperation);
                             capDialogImpl.sendRejectComponent(invokeId, problem);
                             perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
                         } else {
-                            Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                                    .createProblem(ProblemType.ReturnResult);
+                        	ProblemImpl problem = new ProblemImpl();
                             problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
                             capDialogImpl.sendRejectComponent(invokeId, problem);
                             perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
@@ -984,14 +1221,12 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                     case MistypedParameter:
                         // Failed when parsing the component - send TC-U-REJECT
                         if (compType == ComponentType.Invoke) {
-                            Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                                    .createProblem(ProblemType.Invoke);
+                        	ProblemImpl problem = new ProblemImpl();
                             problem.setInvokeProblemType(InvokeProblemType.MistypedParameter);
                             capDialogImpl.sendRejectComponent(invokeId, problem);
                             perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
                         } else {
-                            Problem problem = this.getTCAPProvider().getComponentPrimitiveFactory()
-                                    .createProblem(ProblemType.ReturnResult);
+                        	ProblemImpl problem = new ProblemImpl();
                             problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
                             capDialogImpl.sendRejectComponent(invokeId, problem);
                             perfSer.deliverRejectComponent(capDialogImpl, invokeId, problem, true);
@@ -1068,12 +1303,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, CAPGprsReferenceNumber gprsReferenceNumber,
+    protected void fireTCBegin(Dialog tcapDialog, ApplicationContextNameImpl acn, CAPGprsReferenceNumber gprsReferenceNumber,
             boolean returnMessageOnError) throws CAPException {
-
-        if (this.getTCAPProvider().getPreviewMode()) {
-            return;
-        }
 
         TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn, gprsReferenceNumber);
         if (returnMessageOnError)
@@ -1087,7 +1318,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
     }
 
-    protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn,
+    protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextNameImpl acn,
             CAPGprsReferenceNumber gprsReferenceNumber) throws CAPException {
 
         TCBeginRequest tcBeginReq = this.getTCAPProvider().getDialogPrimitiveFactory().createBegin(tcapDialog);
@@ -1095,29 +1326,20 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         tcBeginReq.setApplicationContextName(acn);
 
         if (gprsReferenceNumber != null) {
-            AsnOutputStream localasnOs = new AsnOutputStream();
-            ((CAPGprsReferenceNumberImpl) gprsReferenceNumber).encodeAll(localasnOs);
-
-            UserInformation userInformation = TcapFactory.createUserInformation();
-
-            userInformation.setOid(true);
-            userInformation.setOidValue(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
-
-            userInformation.setAsn(true);
-            userInformation.setEncodeType(localasnOs.toByteArray());
-
-            tcBeginReq.setUserInformation(userInformation);
+        	UserInformationImpl userInformation = TcapFactory.createUserInformation();
+            UserInformationExternalImpl external=new UserInformationExternalImpl();
+            external.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
+            ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
+            childObject.setValue(gprsReferenceNumber);
+            external.setChildAsObject(childObject);
+            userInformation.setExternal(external);
+            tcBeginReq.setUserInformation(userInformation);            
         }
         return tcBeginReq;
     }
 
-    protected void fireTCContinue(Dialog tcapDialog, ApplicationContextName acn, CAPGprsReferenceNumber gprsReferenceNumber,
+    protected void fireTCContinue(Dialog tcapDialog, ApplicationContextNameImpl acn, CAPGprsReferenceNumber gprsReferenceNumber,
             boolean returnMessageOnError) throws CAPException {
-
-        if (this.getTCAPProvider().getPreviewMode()) {
-            return;
-        }
-
         TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, acn, gprsReferenceNumber);
         if (returnMessageOnError)
             tcContinueReq.setReturnMessageOnError(true);
@@ -1129,7 +1351,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, ApplicationContextName acn,
+    protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, ApplicationContextNameImpl acn,
             CAPGprsReferenceNumber gprsReferenceNumber) throws CAPException {
         TCContinueRequest tcContinueReq = this.getTCAPProvider().getDialogPrimitiveFactory().createContinue(tcapDialog);
 
@@ -1137,29 +1359,20 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             tcContinueReq.setApplicationContextName(acn);
 
         if (gprsReferenceNumber != null) {
-
-            AsnOutputStream localasnOs = new AsnOutputStream();
-            ((CAPGprsReferenceNumberImpl) gprsReferenceNumber).encodeAll(localasnOs);
-
-            UserInformation userInformation = TcapFactory.createUserInformation();
-
-            userInformation.setOid(true);
-            userInformation.setOidValue(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
-
-            userInformation.setAsn(true);
-            userInformation.setEncodeType(localasnOs.toByteArray());
-
+        	UserInformationImpl userInformation = TcapFactory.createUserInformation();
+            UserInformationExternalImpl external=new UserInformationExternalImpl();
+            external.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
+            ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
+            childObject.setValue(gprsReferenceNumber);
+            external.setChildAsObject(childObject);
+            userInformation.setExternal(external);
             tcContinueReq.setUserInformation(userInformation);
         }
         return tcContinueReq;
     }
 
-    protected void fireTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn,
+    protected void fireTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextNameImpl acn,
             CAPGprsReferenceNumber gprsReferenceNumber, boolean returnMessageOnError) throws CAPException {
-
-        if (this.getTCAPProvider().getPreviewMode()) {
-            return;
-        }
 
         TCEndRequest endRequest = encodeTCEnd(tcapDialog, prearrangedEnd, acn, gprsReferenceNumber);
         if (returnMessageOnError)
@@ -1172,7 +1385,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    protected TCEndRequest encodeTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn,
+    protected TCEndRequest encodeTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextNameImpl acn,
             CAPGprsReferenceNumber gprsReferenceNumber) throws CAPException {
         TCEndRequest endRequest = this.getTCAPProvider().getDialogPrimitiveFactory().createEnd(tcapDialog);
 
@@ -1186,18 +1399,13 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             endRequest.setApplicationContextName(acn);
 
         if (gprsReferenceNumber != null) {
-
-            AsnOutputStream localasnOs = new AsnOutputStream();
-            ((CAPGprsReferenceNumberImpl) gprsReferenceNumber).encodeAll(localasnOs);
-
-            UserInformation userInformation = TcapFactory.createUserInformation();
-
-            userInformation.setOid(true);
-            userInformation.setOidValue(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
-
-            userInformation.setAsn(true);
-            userInformation.setEncodeType(localasnOs.toByteArray());
-
+        	UserInformationImpl userInformation = TcapFactory.createUserInformation();
+            UserInformationExternalImpl external=new UserInformationExternalImpl();
+            external.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
+            ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
+            childObject.setValue(gprsReferenceNumber);
+            external.setChildAsObject(childObject);
+            userInformation.setExternal(external);
             endRequest.setUserInformation(userInformation);
         }
         return endRequest;
@@ -1205,10 +1413,6 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
     protected void fireTCAbort(Dialog tcapDialog, CAPGeneralAbortReason generalAbortReason, CAPUserAbortReason userAbortReason,
             boolean returnMessageOnError) throws CAPException {
-
-        if (this.getTCAPProvider().getPreviewMode()) {
-            return;
-        }
 
         TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 
@@ -1222,15 +1426,13 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 if (userAbortReason == null)
                     userAbortReason = CAPUserAbortReason.no_reason_given;
                 CAPUserAbortPrimitiveImpl abortReasonPrimitive = new CAPUserAbortPrimitiveImpl(userAbortReason);
-                AsnOutputStream localasnOs = new AsnOutputStream();
-                abortReasonPrimitive.encodeAll(localasnOs);
-
-                UserInformation userInformation = TcapFactory.createUserInformation();
-                userInformation.setOid(true);
-                userInformation.setOidValue(CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId);
-                userInformation.setAsn(true);
-                userInformation.setEncodeType(localasnOs.toByteArray());
-
+                UserInformationImpl userInformation = TcapFactory.createUserInformation();
+                UserInformationExternalImpl external=new UserInformationExternalImpl();
+                external.setIdentifier(CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId);
+                ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
+                childObject.setValue(abortReasonPrimitive);
+                external.setChildAsObject(childObject);
+                userInformation.setExternal(external);
                 tcUserAbort.setUserInformation(userInformation);
                 break;
 

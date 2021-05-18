@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 
 /**
  *
@@ -54,12 +54,11 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
  */
 public interface ConnectSMSRequest extends SmsMessage {
 
-    SMSAddressString getCallingPartysNumber();
+    SMSAddressStringImpl getCallingPartysNumber();
 
-    CalledPartyBCDNumber getDestinationSubscriberNumber();
+    CalledPartyBCDNumberImpl getDestinationSubscriberNumber();
 
-    ISDNAddressString getSMSCAddress();
+    ISDNAddressStringImpl getSMSCAddress();
 
-    CAPExtensions getExtensions();
-
+    CAPExtensionsImpl getExtensions();
 }

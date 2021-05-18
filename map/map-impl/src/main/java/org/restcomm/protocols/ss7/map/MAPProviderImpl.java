@@ -665,7 +665,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSNotifyRequestImpl.class, UnstructuredSSNotifyRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSRequestImpl.class, UnstructuredSSRequestImpl.class);
         	
-        	//register requests mappings
+        	//register responses mappings
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.istCommand);
         	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, IstCommandResponseImpl.class);

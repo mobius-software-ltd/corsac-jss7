@@ -35,9 +35,9 @@ import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.cap.service.sms.RequestReportSMSEventRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSEventImpl;
 import org.testng.annotations.Test;
 
 /**

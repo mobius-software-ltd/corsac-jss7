@@ -98,8 +98,10 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRe
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswer;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequent;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigits;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
@@ -107,6 +109,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELsequence1;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatData;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
@@ -132,14 +135,25 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.RequestReportGPRSEventReq
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ResetTimerGPRSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.SendChargingInformationGPRSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRS;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResult;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELSequence1GprsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprs;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPDialogSms;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ConnectSMSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ContinueSMSRequest;
@@ -159,25 +173,11 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
 import org.restcomm.protocols.ss7.cap.gap.*;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CAPDialogCircuitSwitchedCallImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AOCGPRSImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingResultImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ElapsedTimeImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.FCIBCCCAMELsequence1GprsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.FreeFormatDataGprsImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -3512,7 +3512,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
                             FreeFormatDataGprs freeFormatData = new FreeFormatDataGprsImpl(bFreeFormatData);
                             PDPID pdpID = new PDPIDImpl(2);
-                            FCIBCCCAMELsequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELsequence1GprsImpl(freeFormatData, pdpID,
+                            FCIBCCCAMELSequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID,
                                     AppendFreeFormatData.append);
 
                             CAMELFCIGPRSBillingChargingCharacteristicsImpl fciGPRSBillingChargingCharacteristics = new CAMELFCIGPRSBillingChargingCharacteristicsImpl(
@@ -3729,7 +3729,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             byte[] bFreeFormatData = new byte[] { 48, 6, -128, 1, 5, -127, 1, 2 };
                             FreeFormatDataGprs freeFormatData = new FreeFormatDataGprsImpl(bFreeFormatData);
                             PDPID pdpID = new PDPIDImpl(2);
-                            FCIBCCCAMELsequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELsequence1GprsImpl(freeFormatData, pdpID,
+                            FCIBCCCAMELSequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID,
                                     AppendFreeFormatData.append);
                             CAMELFCIGPRSBillingChargingCharacteristicsImpl fciGPRSBillingChargingCharacteristics = new CAMELFCIGPRSBillingChargingCharacteristicsImpl(
                                     fcIBCCCAMELsequence1);

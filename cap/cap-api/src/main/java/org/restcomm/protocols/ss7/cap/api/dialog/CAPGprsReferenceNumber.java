@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.api.dialog;
 
-import java.io.Serializable;
-
 /**
  *
  * @author sergey vetyutnev
@@ -33,7 +31,7 @@ import java.io.Serializable;
  *
  *         Integer4::= INTEGER (0..2147483647)
  */
-public interface CAPGprsReferenceNumber extends Serializable {
+public interface CAPGprsReferenceNumber {
 
     Integer getDestinationReference();
 

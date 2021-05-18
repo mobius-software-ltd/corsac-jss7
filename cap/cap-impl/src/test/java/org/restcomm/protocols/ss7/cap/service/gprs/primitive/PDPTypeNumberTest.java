@@ -29,8 +29,8 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberValue;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPTypeNumberImpl;
 import org.testng.annotations.Test;
 
 /**

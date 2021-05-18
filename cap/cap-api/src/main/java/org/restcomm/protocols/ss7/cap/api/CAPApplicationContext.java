@@ -22,7 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -42,6 +44,9 @@ public enum CAPApplicationContext {
 
     private static long[] oidTemplate = new long[] { 0, 4, 0, 0, 1, 0, 0, 0 };
 
+    // Same as oidTemplate
+    private List<Long> res = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 0L, 0L });
+
     private int code;
     private CAPApplicationContextVersion applicationContextVersion;
 
@@ -59,62 +64,94 @@ public enum CAPApplicationContext {
         }
     }
 
-    public static CAPApplicationContext getInstance(long[] oid) {
+    public static CAPApplicationContext getInstance(List<Long> oid) {
 
-        if (oid == null || oid.length != oidTemplate.length)
+        if (oid == null || oid.size() != oidTemplate.length)
             return null;
         for (int i1 = 0; i1 < oidTemplate.length - 3; i1++) {
-            if (oid[i1] != oidTemplate[i1])
+            if (oid.get(i1) != oidTemplate[i1])
                 return null;
         }
 
-        if (oid[5] == 0 && oid[6] == 50 && oid[7] == 0) {
-            return CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF;
-
-        }
-        if (oid[5] == 0 && oid[6] == 50 && oid[7] == 1) {
-            return CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
-        }
-        if (oid[5] == 0 && oid[6] == 51 && oid[7] == 1) {
-            return CAPApplicationContext.CapV2_assistGsmSSF_to_gsmSCF;
-        }
-        if (oid[5] == 0 && oid[6] == 52 && oid[7] == 1) {
-            return CAPApplicationContext.CapV2_gsmSRF_to_gsmSCF;
-
-        }
-        if (oid[5] == 21 && oid[6] == 3 && oid[7] == 4) {
-            return CAPApplicationContext.CapV3_gsmSSF_scfGeneric;
-        }
-        if (oid[5] == 21 && oid[6] == 3 && oid[7] == 6) {
-            return CAPApplicationContext.CapV3_gsmSSF_scfAssistHandoff;
-        }
-        if (oid[5] == 20 && oid[6] == 3 && oid[7] == 14) {
-            return CAPApplicationContext.CapV3_gsmSRF_gsmSCF;
-        }
-        if (oid[5] == 21 && oid[6] == 3 && oid[7] == 50) {
-            return CAPApplicationContext.CapV3_gprsSSF_gsmSCF;
-        }
-        if (oid[5] == 21 && oid[6] == 3 && oid[7] == 51) {
-            return CAPApplicationContext.CapV3_gsmSCF_gprsSSF;
-        }
-        if (oid[5] == 21 && oid[6] == 3 && oid[7] == 61) {
-            return CAPApplicationContext.CapV3_cap3_sms;
-
-        }
-        if (oid[5] == 23 && oid[6] == 3 && oid[7] == 4) {
-            return CAPApplicationContext.CapV4_gsmSSF_scfGeneric;
-        }
-        if (oid[5] == 23 && oid[6] == 3 && oid[7] == 6) {
-            return CAPApplicationContext.CapV4_gsmSSF_scfAssistHandoff;
-        }
-        if (oid[5] == 23 && oid[6] == 3 && oid[7] == 8) {
-            return CAPApplicationContext.CapV4_scf_gsmSSFGeneric;
-        }
-        if (oid[5] == 22 && oid[6] == 3 && oid[7] == 14) {
-            return CAPApplicationContext.CapV4_gsmSRF_gsmSCF;
-        }
-        if (oid[5] == 23 && oid[6] == 3 && oid[7] == 61) {
-            return CAPApplicationContext.CapV4_cap4_sms;
+        switch(oid.get(5).intValue()) {
+        	case 0:
+                switch(oid.get(6).intValue()) {
+                	case 50:
+                		switch(oid.get(7).intValue()) {
+                			case 0:
+                				return CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF;
+                			case 1:
+                				return CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
+                		}
+                		break;
+                	case 51:
+                		switch(oid.get(7).intValue()) {
+            				case 1:
+            					return CAPApplicationContext.CapV2_assistGsmSSF_to_gsmSCF;
+                		}
+                		break;
+                	case 52:
+                		switch(oid.get(7).intValue()) {
+	        				case 1:
+	        					return CAPApplicationContext.CapV2_gsmSRF_to_gsmSCF;
+	            		}
+	            		break;
+                }
+        		break;
+        	case 20:
+        		switch(oid.get(6).intValue()) {
+        			case 3:
+	            		switch(oid.get(7).intValue()) {
+	        				case 14:
+	        					return CAPApplicationContext.CapV3_gsmSRF_gsmSCF;
+	            		}
+	            		break;
+        		}
+        		break;
+        	case 21:
+        		switch(oid.get(6).intValue()) {
+	    			case 3:
+	            		switch(oid.get(7).intValue()) {
+	        				case 4:
+	        					return CAPApplicationContext.CapV3_gsmSSF_scfGeneric;
+	        				case 6:
+	        					return CAPApplicationContext.CapV3_gsmSSF_scfAssistHandoff;
+	        				case 50:
+	        					return CAPApplicationContext.CapV3_gprsSSF_gsmSCF;
+	        				case 51:
+	        					return CAPApplicationContext.CapV3_gsmSCF_gprsSSF;
+	        				case 61:
+	        					return CAPApplicationContext.CapV3_cap3_sms;
+	            		}
+	            		break;
+	    		}
+        		break;
+        	case 22:
+        		switch(oid.get(6).intValue()) {
+        			case 3:
+	            		switch(oid.get(7).intValue()) {
+	        				case 14:
+	        					return CAPApplicationContext.CapV4_gsmSRF_gsmSCF;
+	            		}
+	            		break;
+        		}
+        		break;
+        	case 23:
+        		switch(oid.get(6).intValue()) {
+	    			case 3:
+	            		switch(oid.get(7).intValue()) {
+	        				case 4:
+	        					return CAPApplicationContext.CapV4_gsmSSF_scfGeneric;
+	        				case 6:
+	        					return CAPApplicationContext.CapV4_gsmSSF_scfAssistHandoff;
+	        				case 8:
+	        					return CAPApplicationContext.CapV4_scf_gsmSSFGeneric;
+	        				case 61:
+	        					return CAPApplicationContext.CapV4_cap4_sms;
+	            		}
+	            		break;
+	    		}
+        		break;
         }
 
         return null;
@@ -128,87 +165,87 @@ public enum CAPApplicationContext {
         return this.applicationContextVersion;
     }
 
-    public long[] getOID() {
-        long[] res = Arrays.copyOf(oidTemplate, oidTemplate.length);
-
+    public List<Long> getOID() {
+    	List<Long> result=new ArrayList<Long>(res);
+    	
         switch (this) {
             case CapV1_gsmSSF_to_gsmSCF:
-                res[5] = 0;
-                res[6] = 50;
-                res[7] = 0;
+                result.set(5,0L);
+                result.set(6,50L);
+                result.set(7,0L);
                 break;
 
             case CapV2_gsmSSF_to_gsmSCF:
-                res[5] = 0;
-                res[6] = 50;
-                res[7] = 1;
+            	result.set(5,0L);
+            	result.set(6,50L);
+            	result.set(7,1L);
                 break;
             case CapV2_assistGsmSSF_to_gsmSCF:
-                res[5] = 0;
-                res[6] = 51;
-                res[7] = 1;
+            	result.set(5,0L);
+            	result.set(6,51L);
+            	result.set(7,1L);
                 break;
             case CapV2_gsmSRF_to_gsmSCF:
-                res[5] = 0;
-                res[6] = 52;
-                res[7] = 1;
+            	result.set(5,0L);
+            	result.set(6,52L);
+            	result.set(7,1L);
                 break;
 
             case CapV3_gsmSSF_scfGeneric:
-                res[5] = 21;
-                res[6] = 3;
-                res[7] = 4;
+            	result.set(5,21L);
+            	result.set(6,3L);
+            	result.set(7,4L);
                 break;
             case CapV3_gsmSSF_scfAssistHandoff:
-                res[5] = 21;
-                res[6] = 3;
-                res[7] = 6;
+            	result.set(5,21L);
+            	result.set(6,3L);
+            	result.set(7,6L);
                 break;
             case CapV3_gsmSRF_gsmSCF:
-                res[5] = 20;
-                res[6] = 3;
-                res[7] = 14;
+            	result.set(5,20L);
+                result.set(6,3L);
+                result.set(7,14L);
                 break;
             case CapV3_gprsSSF_gsmSCF:
-                res[5] = 21;
-                res[6] = 3;
-                res[7] = 50;
+                result.set(5,21L);
+                result.set(6,3L);
+                result.set(7,50L);
                 break;
             case CapV3_gsmSCF_gprsSSF:
-                res[5] = 21;
-                res[6] = 3;
-                res[7] = 51;
+                result.set(5,21L);
+                result.set(6,3L);
+                result.set(7,51L);
                 break;
             case CapV3_cap3_sms:
-                res[5] = 21;
-                res[6] = 3;
-                res[7] = 61;
+                result.set(5,21L);
+                result.set(6,3L);
+                result.set(7,61L);
                 break;
 
             case CapV4_gsmSSF_scfGeneric:
-                res[5] = 23;
-                res[6] = 3;
-                res[7] = 4;
+                result.set(5,23L);
+                result.set(6,3L);
+                result.set(7,4L);
                 break;
             case CapV4_gsmSSF_scfAssistHandoff:
-                res[5] = 23;
-                res[6] = 3;
-                res[7] = 6;
+                result.set(5,23L);
+                result.set(6,3L);
+                result.set(7,6L);
                 break;
             case CapV4_scf_gsmSSFGeneric:
-                res[5] = 23;
-                res[6] = 3;
-                res[7] = 8;
+                result.set(5,23L);
+                result.set(6,3L);
+                result.set(7,8L);
                 break;
             case CapV4_gsmSRF_gsmSCF:
-                res[5] = 22;
-                res[6] = 3;
-                res[7] = 14;
+                result.set(5,22L);
+                result.set(6,3L);
+                result.set(7,14L);
                 break;
             case CapV4_cap4_sms:
-                res[5] = 23;
-                res[6] = 3;
-                res[7] = 61;
+                result.set(5,23L);
+                result.set(6,3L);
+                result.set(7,61L);
                 break;
         }
 

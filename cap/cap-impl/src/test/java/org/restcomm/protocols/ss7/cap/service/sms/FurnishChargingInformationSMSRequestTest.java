@@ -28,10 +28,10 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELsequence1SMS;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMSImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.FurnishChargingInformationSMSRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.FCIBCCCAMELsequence1SMSImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.primitive.FreeFormatDataSMSImpl;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
@@ -74,7 +74,7 @@ public class FurnishChargingInformationSMSRequestTest {
     public void testEncode() throws Exception {
 
         FreeFormatDataSMS freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
-        FCIBCCCAMELsequence1SMSImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELsequence1SMSImpl(freeFormatData,
+        FCIBCCCAMELSequence1SMSImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1SMSImpl(freeFormatData,
                 AppendFreeFormatData.append);
 
         FurnishChargingInformationSMSRequestImpl prim = new FurnishChargingInformationSMSRequestImpl(fcIBCCCAMELsequence1);

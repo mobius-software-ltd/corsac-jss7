@@ -21,13 +21,8 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.EntityReleasedGPRSResponse;
 
 /**
@@ -38,9 +33,7 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.EntityReleasedGPRSRespons
 public class EntityReleasedGPRSResponseImpl extends GprsMessageImpl implements EntityReleasedGPRSResponse {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "EntityReleasedGPRSResponse";
-
-    @Override
+	@Override
     public CAPMessageType getMessageType() {
         return CAPMessageType.entityReleasedGPRS_Response;
     }
@@ -51,53 +44,10 @@ public class EntityReleasedGPRSResponseImpl extends GprsMessageImpl implements E
     }
 
     @Override
-    public int getTag() throws CAPException {
-        throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
-    }
-
-    @Override
-    public int getTagClass() {
-        return 0;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-        throw new CAPParsingComponentException("Parameter " + _PrimitiveName + ": does not support encoding",
-                CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-        throw new CAPParsingComponentException("Parameter " + _PrimitiveName + ": does not support encoding",
-                CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-        throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws CAPException {
-        throw new CAPException("Parameter " + _PrimitiveName + ": does not support encoding");
-    }
-
-    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("EntityReleasedGPRSResponse [");
         this.addInvokeIdInfo(sb);
 
         sb.append("]");

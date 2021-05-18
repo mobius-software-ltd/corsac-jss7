@@ -409,7 +409,10 @@ public abstract class MAPDialogImpl implements MAPDialog {
 
     public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,MAPMessage param,Boolean isRequest,Boolean isLastResponse) throws MAPException {
         try {
-        	return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
+        	if(operationCode!=null)
+        		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
+        	else
+        		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, null, param, isRequest, isLastResponse);
         } catch (TCAPSendException | TCAPException e) {
             throw new MAPException(e.getMessage(), e);
         }

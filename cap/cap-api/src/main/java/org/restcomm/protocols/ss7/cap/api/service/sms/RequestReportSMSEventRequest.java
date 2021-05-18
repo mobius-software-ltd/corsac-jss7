@@ -22,10 +22,11 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms;
 
-import java.util.ArrayList;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
+import java.util.List;
+
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
 
 /**
  *
@@ -53,8 +54,8 @@ RequestReportSMSEventArg {PARAMETERS-BOUND : bound} ::= SEQUENCE {
  */
 public interface RequestReportSMSEventRequest extends SmsMessage {
 
-    ArrayList<SMSEvent> getSMSEvents();
+    List<SMSEventImpl> getSMSEvents();
 
-    CAPExtensions getExtensions();
+    CAPExtensionsImpl getExtensions();
 
 }

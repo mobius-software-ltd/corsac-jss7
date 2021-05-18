@@ -19,50 +19,48 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentException;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
  *
  * @author tamas gyorgyey
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class SplitLegRequestImpl extends CircuitSwitchedCallMessageImpl implements SplitLegRequest {
     private static final long serialVersionUID = 1L;
 
-    public static final int _ID_legToBeSplit = 0;
-    public static final int _ID_newCallSegment = 1;
-    public static final int _ID_extensions = 2;
-
-    public static final String _PrimitiveName = "SplitLegRequest";
-
-    private LegID legToBeSplit;
-    private Integer newCallSegment;
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private LegIDWrapperImpl legToBeSplit;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
+    private ASNInteger newCallSegment;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
 
     public SplitLegRequestImpl() {
     }
 
-    // TODO !
-
-    public SplitLegRequestImpl(LegID legIDToMove, Integer newCallSegment, CAPExtensions extensions) {
-        this.legToBeSplit = legIDToMove;
-        this.newCallSegment = newCallSegment;
+    public SplitLegRequestImpl(LegIDImpl legIDToMove, Integer newCallSegment, CAPExtensionsImpl extensions) {
+    	if(legIDToMove!=null)
+    		this.legToBeSplit =  new LegIDWrapperImpl(legIDToMove);
+    	
+    	if(newCallSegment!=null) {
+    		this.newCallSegment = new ASNInteger();
+    		this.newCallSegment.setValue(newCallSegment.longValue());
+    	}
+    	
         this.extensions = extensions;
     }
 
@@ -74,156 +72,37 @@ public class SplitLegRequestImpl extends CircuitSwitchedCallMessageImpl implemen
         return CAPOperationCode.splitLeg;
     }
 
-    public LegID getLegToBeSplit() {
-        return legToBeSplit;
+    public LegIDImpl getLegToBeSplit() {
+    	if(legToBeSplit==null)
+    		return null;
+    	
+        return legToBeSplit.getLegID();
     }
 
     public Integer getNewCallSegment() {
-        return newCallSegment;
+    	if(newCallSegment==null || newCallSegment.getValue()==null)
+    		return null;
+    	
+        return newCallSegment.getValue().intValue();
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return extensions;
-    }
-
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (Exception e) {
-            throw new CAPParsingComponentException(e.getClass().getSimpleName() + " when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (Exception e) {
-            throw new CAPParsingComponentException(e.getClass().getSimpleName() + " when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException,
-            INAPParsingComponentException, IOException, AsnException {
-
-        this.legToBeSplit = null;
-        this.newCallSegment = null;
-        this.extensions = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _ID_legToBeSplit:
-                        this.legToBeSplit = new LegIDImpl();
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        ((LegIDImpl) this.legToBeSplit).decodeAll(ais2);
-                        break;
-                    case _ID_newCallSegment:
-                        this.newCallSegment = (int) ais.readInteger();
-                        if (this.newCallSegment < 1 || this.newCallSegment > 127)
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ": newCallSegment value must be 1..127, found: " + newCallSegment,
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        break;
-                    case _ID_extensions:
-                        this.extensions = new CAPExtensionsImpl();
-                        ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                        break;
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.legToBeSplit == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": legToBeSplit is mandatory but not found ",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        if (this.legToBeSplit == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": legToBeSplit must not be null");
-
-        try {
-            aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, this.getIsPrimitive(), _ID_legToBeSplit);
-            int pos = aos.StartContentDefiniteLength();
-            ((LegIDImpl) this.legToBeSplit).encodeAll(aos);
-            aos.FinalizeContent(pos);
-
-            if (this.newCallSegment != null) {
-                if (this.newCallSegment < 1 || this.newCallSegment > 127)
-                    throw new CAPException("Error while encoding " + _PrimitiveName
-                            + ": newCallSegment value must be 1..127, found: " + newCallSegment);
-                aos.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_newCallSegment, this.newCallSegment);
-            }
-
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-
-        } catch (Exception e) {
-            throw new CAPException(e.getClass().getSimpleName() + " when encoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e);
-        }
     }
 
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("SplitLegRequest [");
 
-        if (this.legToBeSplit != null) {
+        if (this.legToBeSplit != null && this.legToBeSplit.getLegID()!=null) {
             sb.append("legToBeSplit=");
-            sb.append(legToBeSplit.toString());
+            sb.append(legToBeSplit.getLegID());
         }
-        if (this.newCallSegment != null) {
+        if (this.newCallSegment != null && this.newCallSegment.getValue()!=null) {
             sb.append(", newCallSegment=");
-            sb.append(newCallSegment.toString());
+            sb.append(newCallSegment.getValue());
         }
         if (this.extensions != null) {
             sb.append(", extensions=");

@@ -35,16 +35,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ExtBasicServiceCodeWrapperImpl {
 	
 	@ASNChoise
-    private ExtBasicServiceCodeImpl extBasicServiceCodeImpl;
+    private ExtBasicServiceCodeImpl extBasicServiceCode;
 
     public ExtBasicServiceCodeWrapperImpl() {
     }
 
-    public ExtBasicServiceCodeWrapperImpl(ExtBasicServiceCodeImpl extBasicServiceCodeImpl) {
-        this.extBasicServiceCodeImpl = extBasicServiceCodeImpl;
+    public ExtBasicServiceCodeWrapperImpl(ExtBasicServiceCodeImpl extBasicServiceCode) {
+        this.extBasicServiceCode = extBasicServiceCode;
     }
 
-    public ExtBasicServiceCodeImpl getExtBasicServiceCodeImpl() {
-    	return extBasicServiceCodeImpl;
+    public ExtBasicServiceCodeImpl getExtBasicServiceCode() {
+    	return extBasicServiceCode;
     }
 }

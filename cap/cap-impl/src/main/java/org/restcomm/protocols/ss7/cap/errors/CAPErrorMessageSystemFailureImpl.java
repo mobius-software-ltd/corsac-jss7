@@ -22,15 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.errors;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorCode;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.cap.api.errors.UnavailableNetworkResource;
@@ -40,17 +31,12 @@ import org.restcomm.protocols.ss7.cap.api.errors.UnavailableNetworkResource;
  * @author sergey vetyutnev
  *
  */
-public class CAPErrorMessageSystemFailureImpl extends CAPErrorMessageImpl implements CAPErrorMessageSystemFailure {
-	private static final long serialVersionUID = 1L;
-
-	public static final String _PrimitiveName = "CAPErrorMessageSystemFailure";
-
-    private UnavailableNetworkResource unavailableNetworkResource;
-
-    protected CAPErrorMessageSystemFailureImpl(UnavailableNetworkResource unavailableNetworkResource) {
+public class CAPErrorMessageSystemFailureImpl extends EnumeratedСAPErrorMessage1Impl implements CAPErrorMessageSystemFailure {
+	protected CAPErrorMessageSystemFailureImpl(UnavailableNetworkResource unavailableNetworkResource) {
         super((long) CAPErrorCode.systemFailure);
 
-        this.unavailableNetworkResource = unavailableNetworkResource;
+        if(unavailableNetworkResource!=null)
+        	setValue(Long.valueOf(unavailableNetworkResource.getCode()));        
     }
 
     public CAPErrorMessageSystemFailureImpl() {
@@ -67,104 +53,19 @@ public class CAPErrorMessageSystemFailureImpl extends CAPErrorMessageImpl implem
 
     @Override
     public UnavailableNetworkResource getUnavailableNetworkResource() {
-        return unavailableNetworkResource;
-    }
-
-    @Override
-    public int getTag() throws CAPException {
-        return Tag.ENUMERATED;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return true;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream localAis, int length) throws CAPParsingComponentException, IOException, AsnException {
-
-        this.unavailableNetworkResource = null;
-
-        if (localAis.getTagClass() != Tag.CLASS_UNIVERSAL || localAis.getTag() != Tag.ENUMERATED || !localAis.isTagPrimitive())
-            throw new CAPParsingComponentException("Error decoding " + _PrimitiveName
-                    + ": bad tag class or tag or parameter is not primitive",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-        int i1 = (int) localAis.readIntegerData(length);
-        this.unavailableNetworkResource = UnavailableNetworkResource.getInstance(i1);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        if (this.unavailableNetworkResource == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName
-                    + ": unavailableNetworkResource field must not be null");
-
-        try {
-            aos.writeIntegerData(this.unavailableNetworkResource.getCode());
-
-        } catch (IOException e) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+    	Long value=getValue();
+    	if(value==null)
+    		return null;
+    	
+    	return UnavailableNetworkResource.getInstance(value.intValue());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-
-        sb.append(_PrimitiveName);
-        sb.append(" [");
-        if (this.unavailableNetworkResource != null) {
+        sb.append("CAPErrorMessageSystemFailure [");
+        UnavailableNetworkResource unavailableNetworkResource=getUnavailableNetworkResource();
+        if (unavailableNetworkResource != null) {
             sb.append("unavailableNetworkResource=");
             sb.append(unavailableNetworkResource);
             sb.append(",");

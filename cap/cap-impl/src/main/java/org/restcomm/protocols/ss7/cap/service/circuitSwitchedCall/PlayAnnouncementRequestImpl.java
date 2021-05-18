@@ -22,22 +22,18 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.PlayAnnouncementRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendWrapperImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
  *
@@ -45,37 +41,59 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.Info
  * @author kiss.balazs@alerant.hu
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl implements PlayAnnouncementRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_informationToSend = 0;
-    public static final int _ID_disconnectFromIPForbidden = 1;
-    public static final int _ID_requestAnnouncementCompleteNotification = 2;
-    public static final int _ID_extensions = 3;
-    public static final int _ID_callSegmentID = 5;
-    public static final int _ID_requestAnnouncementStartedNotification = 51;
-
-    public static final String _PrimitiveName = "PlayAnnouncementRequestIndication";
-
-    private InformationToSend informationToSend;
-    private Boolean disconnectFromIPForbidden;
-    private Boolean requestAnnouncementCompleteNotification;
-    private CAPExtensions extensions;
-    private Integer callSegmentID;
-    private Boolean requestAnnouncementStartedNotification;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private InformationToSendWrapperImpl informationToSend;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
+    private ASNBoolean disconnectFromIPForbidden;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
+    private ASNBoolean requestAnnouncementCompleteNotification;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1)
+    private ASNInteger callSegmentID;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = false,index = -1)
+    private ASNBoolean requestAnnouncementStartedNotification;
 
     public PlayAnnouncementRequestImpl() {
     }
 
-    public PlayAnnouncementRequestImpl(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
-            Boolean requestAnnouncementCompleteNotification, CAPExtensions extensions, Integer callSegmentID,
+    public PlayAnnouncementRequestImpl(InformationToSendImpl informationToSend, Boolean disconnectFromIPForbidden,
+            Boolean requestAnnouncementCompleteNotification, CAPExtensionsImpl extensions, Integer callSegmentID,
             Boolean requestAnnouncementStartedNotification) {
-        this.informationToSend = informationToSend;
-        this.disconnectFromIPForbidden = disconnectFromIPForbidden;
-        this.requestAnnouncementCompleteNotification = requestAnnouncementCompleteNotification;
+    	
+    	if(informationToSend!=null)
+    		this.informationToSend = new InformationToSendWrapperImpl(informationToSend);
+    	
+    	if(disconnectFromIPForbidden!=null) {
+    		this.disconnectFromIPForbidden = new ASNBoolean();
+    		this.disconnectFromIPForbidden.setValue(disconnectFromIPForbidden);
+    	}
+    	
+    	if(requestAnnouncementCompleteNotification!=null) {
+    		this.requestAnnouncementCompleteNotification = new ASNBoolean();
+    		this.requestAnnouncementCompleteNotification.setValue(requestAnnouncementStartedNotification);
+    	}
+    	
         this.extensions = extensions;
-        this.callSegmentID = callSegmentID;
-        this.requestAnnouncementStartedNotification = requestAnnouncementStartedNotification;
+        
+        if(callSegmentID!=null) {
+        	this.callSegmentID = new ASNInteger(); 
+        	this.callSegmentID.setValue(callSegmentID.longValue());
+        }
+        
+        if(requestAnnouncementStartedNotification!=null) {
+        	this.requestAnnouncementStartedNotification = new ASNBoolean();
+        	this.requestAnnouncementStartedNotification.setValue(requestAnnouncementStartedNotification);
+        }
     }
 
     @Override
@@ -89,194 +107,55 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
     }
 
     @Override
-    public InformationToSend getInformationToSend() {
-        return informationToSend;
+    public InformationToSendImpl getInformationToSend() {
+    	if(informationToSend==null)
+    		return null;
+    	
+        return informationToSend.getInformationToSend();
     }
 
     @Override
     public Boolean getDisconnectFromIPForbidden() {
-        return disconnectFromIPForbidden;
+    	if(disconnectFromIPForbidden!=null)
+    		return null;
+    	
+        return disconnectFromIPForbidden.getValue();
     }
 
     @Override
     public Boolean getRequestAnnouncementCompleteNotification() {
-        return requestAnnouncementCompleteNotification;
+    	if(requestAnnouncementCompleteNotification==null)
+    		return null;
+    	
+        return requestAnnouncementCompleteNotification.getValue();
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return extensions;
     }
 
     @Override
     public Integer getCallSegmentID() {
-        return callSegmentID;
+    	if(callSegmentID==null || callSegmentID.getValue()==null)
+    		return null;
+    	
+        return callSegmentID.getValue().intValue();
     }
 
     @Override
     public Boolean getRequestAnnouncementStartedNotification() {
-        return requestAnnouncementStartedNotification;
-    }
-
-    @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, IOException, AsnException {
-
-        this.informationToSend = null;
-        this.disconnectFromIPForbidden = null;
-        this.requestAnnouncementCompleteNotification = null;
-        this.extensions = null;
-        this.callSegmentID = null;
-        this.requestAnnouncementStartedNotification = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _ID_informationToSend:
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        this.informationToSend = new InformationToSendImpl();
-                        ((InformationToSendImpl) this.informationToSend).decodeAll(ais2);
-                        break;
-                    case _ID_disconnectFromIPForbidden:
-                        this.disconnectFromIPForbidden = ais.readBoolean();
-                        break;
-                    case _ID_requestAnnouncementCompleteNotification:
-                        this.requestAnnouncementCompleteNotification = ais.readBoolean();
-                        break;
-                    case _ID_extensions:
-                        this.extensions = new CAPExtensionsImpl();
-                        ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                        break;
-                    case _ID_callSegmentID:
-                        this.callSegmentID = (int) ais.readInteger();
-                        break;
-                    case _ID_requestAnnouncementStartedNotification:
-                        this.requestAnnouncementStartedNotification = ais.readBoolean();
-                        break;
-
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.informationToSend == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": parameter informationToSend is mandatory but not found",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        if (this.informationToSend == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": informationToSend must not be null");
-
-        try {
-
-            aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_informationToSend);
-            int pos = aos.StartContentDefiniteLength();
-            ((InformationToSendImpl) this.informationToSend).encodeAll(aos);
-            aos.FinalizeContent(pos);
-
-            if (this.disconnectFromIPForbidden != null)
-                aos.writeBoolean(Tag.CLASS_CONTEXT_SPECIFIC, _ID_disconnectFromIPForbidden, this.disconnectFromIPForbidden);
-            if (this.requestAnnouncementCompleteNotification != null)
-                aos.writeBoolean(Tag.CLASS_CONTEXT_SPECIFIC, _ID_requestAnnouncementCompleteNotification,
-                        this.requestAnnouncementCompleteNotification);
-
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-
-            if (this.callSegmentID != null)
-                aos.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_callSegmentID, this.callSegmentID);
-            if (this.requestAnnouncementStartedNotification != null)
-                aos.writeBoolean(Tag.CLASS_CONTEXT_SPECIFIC, _ID_requestAnnouncementStartedNotification,
-                        this.requestAnnouncementStartedNotification);
-
-        } catch (IOException e) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
+    	if(requestAnnouncementStartedNotification==null)
+    		return null;
+    	
+        return requestAnnouncementStartedNotification.getValue();
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("PlayAnnouncementRequestIndication [");
         this.addInvokeIdInfo(sb);
 
         if (this.informationToSend != null) {

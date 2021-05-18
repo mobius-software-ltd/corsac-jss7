@@ -22,47 +22,40 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.MoveLegRequest;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.inap.api.INAPException;
-import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentException;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author Povilas Jurna
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class MoveLegRequestImpl extends CircuitSwitchedCallMessageImpl implements MoveLegRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_legIDToMove = 0;
-    public static final int _ID_extensions = 2;
-
-    public static final String _PrimitiveName = "MoveLegRequestIndication";
-
-    private LegID legIDToMove;
-    private CAPExtensions extensions;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private LegIDWrapperImpl legIDToMove;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
 
     public MoveLegRequestImpl() {
     }
 
-    public MoveLegRequestImpl(LegID legIDToMove, CAPExtensions extensions) {
-        this.legIDToMove = legIDToMove;
+    public MoveLegRequestImpl(LegIDImpl legIDToMove, CAPExtensionsImpl extensions) {
+    	
+    	if(legIDToMove!=null)
+    		this.legIDToMove = new LegIDWrapperImpl(legIDToMove);
+    	
         this.extensions = extensions;
     }
 
@@ -75,152 +68,27 @@ public class MoveLegRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public LegID getLegIDToMove() {
-        return legIDToMove;
+    public LegIDImpl getLegIDToMove() {
+    	if(legIDToMove==null)
+    		return null;
+    	
+        return legIDToMove.getLegID();
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return extensions;
-    }
-
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (INAPParsingComponentException e) {
-            throw new CAPParsingComponentException("INAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (INAPParsingComponentException e) {
-            throw new CAPParsingComponentException("INAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException,
-            MAPParsingComponentException, INAPParsingComponentException, IOException, AsnException {
-
-        this.legIDToMove = null;
-        this.extensions = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                case _ID_legIDToMove:
-                    this.legIDToMove = new LegIDImpl();
-                    AsnInputStream ais2 = ais.readSequenceStream();
-                    ais2.readTag();
-                    ((LegIDImpl) this.legIDToMove).decodeAll(ais2);
-                    break;
-                case _ID_extensions:
-                    this.extensions = new CAPExtensionsImpl();
-                    ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                    break;
-                default:
-                    ais.advanceElement();
-                    break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.legIDToMove == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": legIDToMove is mandatory but not found ", CAPParsingComponentExceptionReason.MistypedParameter);
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        if (this.legIDToMove == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": legIDToMove must not be null");
-
-        try {
-            aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, this.getIsPrimitive(), _ID_legIDToMove);
-            int pos = aos.StartContentDefiniteLength();
-            ((LegIDImpl) this.legIDToMove).encodeAll(aos);
-            aos.FinalizeContent(pos);
-
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-
-        } catch (INAPException e) {
-            throw new CAPException("INAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
     }
 
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("MoveLegRequestIndication [");
         this.addInvokeIdInfo(sb);
 
-        if (this.legIDToMove != null) {
+        if (this.legIDToMove != null && this.legIDToMove.getLegID()!=null) {
             sb.append(", legIDToMove=");
-            sb.append(legIDToMove.toString());
+            sb.append(legIDToMove.getLegID());
         }
         if (this.extensions != null) {
             sb.append(", extensions=");

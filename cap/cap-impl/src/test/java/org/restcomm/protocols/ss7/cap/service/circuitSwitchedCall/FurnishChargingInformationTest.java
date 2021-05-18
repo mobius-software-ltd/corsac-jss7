@@ -31,11 +31,11 @@ import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatData;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
 import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.FurnishChargingInformationRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.FCIBCCCAMELsequence1Impl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.testng.annotations.Test;
 
@@ -73,7 +73,7 @@ public class FurnishChargingInformationTest {
 
         SendingSideIDImpl partyToCharge = new SendingSideIDImpl(LegType.leg2);
         FreeFormatData ffd = new FreeFormatDataImpl(getDataFFD());
-        FCIBCCCAMELsequence1Impl fci = new FCIBCCCAMELsequence1Impl(ffd, partyToCharge, AppendFreeFormatData.append);
+        FCIBCCCAMELSequence1Impl fci = new FCIBCCCAMELSequence1Impl(ffd, partyToCharge, AppendFreeFormatData.append);
         FurnishChargingInformationRequestImpl elem = new FurnishChargingInformationRequestImpl(fci);
         AsnOutputStream aos = new AsnOutputStream();
         elem.encodeAll(aos);

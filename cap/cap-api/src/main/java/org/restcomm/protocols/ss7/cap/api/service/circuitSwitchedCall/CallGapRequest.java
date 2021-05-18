@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.gap.GapCriteria;
-import org.restcomm.protocols.ss7.cap.api.gap.GapIndicators;
-import org.restcomm.protocols.ss7.cap.api.gap.GapTreatment;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ControlType;
 
 /**
@@ -59,14 +59,14 @@ CallGapArg {PARAMETERS-BOUND : bound}::= SEQUENCE {
  */
 public interface CallGapRequest extends CircuitSwitchedCallMessage {
 
-    GapCriteria getGapCriteria();
+    GapCriteriaImpl getGapCriteria();
 
-    GapIndicators getGapIndicators();
+    GapIndicatorsImpl getGapIndicators();
 
     ControlType getControlType();
 
-    GapTreatment getGapTreatment();
+    GapTreatmentImpl getGapTreatment();
 
-    CAPExtensions getExtensions();
+    CAPExtensionsImpl getExtensions();
 
 }

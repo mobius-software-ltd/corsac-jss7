@@ -30,16 +30,16 @@ import java.util.Arrays;
 
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.cap.primitives.ReceivingSideIDImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.EventReportBCSMRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.testng.annotations.Test;
 
 /**

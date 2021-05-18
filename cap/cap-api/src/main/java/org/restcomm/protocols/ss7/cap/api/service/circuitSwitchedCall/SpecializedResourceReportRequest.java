@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-
 /**
  *
 <code>
@@ -53,13 +51,4 @@ public interface SpecializedResourceReportRequest extends CircuitSwitchedCallMes
     boolean getAllAnnouncementsComplete();
 
     boolean getFirstAnnouncementStarted();
-
-    Long getLinkedId();
-
-    void setLinkedId(Long val);
-
-    Invoke getLinkedInvoke();
-
-    void setLinkedInvoke(Invoke val);
-
 }

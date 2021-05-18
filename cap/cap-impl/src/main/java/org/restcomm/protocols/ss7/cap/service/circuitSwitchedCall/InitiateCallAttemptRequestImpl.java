@@ -22,79 +22,81 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitiateCallAttemptRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.inap.api.INAPException;
-import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentException;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
  * @author Povilas Jurna
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageImpl implements
         InitiateCallAttemptRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final int _ID_destinationRoutingAddress = 0;
-    public static final int _ID_extensions = 4;
-    public static final int _ID_legToBeCreated = 5;
-    public static final int _ID_newCallSegment = 6;
-    public static final int _ID_callingPartyNumber = 30;
-    public static final int _ID_callReferenceNumber = 51;
-    public static final int _ID_gsmSCFAddress = 52;
-    public static final int _ID_suppressTCsi = 53;
-
-    public static final String _PrimitiveName = "InitiateCallAttemptIndication";
-
-    private DestinationRoutingAddress destinationRoutingAddress;
-    private CAPExtensions extensions;
-    private LegID legToBeCreated;
-    private Integer newCallSegment;
-    private CallingPartyNumberCap callingPartyNumber;
-    private CallReferenceNumber callReferenceNumber;
-    private ISDNAddressString gsmSCFAddress;
-    private boolean suppressTCsi;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private DestinationRoutingAddressImpl destinationRoutingAddress;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
+    private LegIDWrapperImpl legToBeCreated;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = false,index = -1)
+    private ASNInteger newCallSegment;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1)
+    private CallingPartyNumberCapImpl callingPartyNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = false,index = -1)
+    private CallReferenceNumberImpl callReferenceNumber;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = false,index = -1)
+    private ISDNAddressStringImpl gsmSCFAddress;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 53,constructed = false,index = -1)
+    private ASNNull suppressTCsi;
 
     public InitiateCallAttemptRequestImpl() {
     }
 
-    public InitiateCallAttemptRequestImpl(DestinationRoutingAddress destinationRoutingAddress,
-            CAPExtensions extensions, LegID legToBeCreated, Integer newCallSegment,
-            CallingPartyNumberCap callingPartyNumber, CallReferenceNumber callReferenceNumber,
-            ISDNAddressString gsmSCFAddress, boolean suppressTCsi) {
+    public InitiateCallAttemptRequestImpl(DestinationRoutingAddressImpl destinationRoutingAddress,
+            CAPExtensionsImpl extensions, LegIDImpl legToBeCreated, Integer newCallSegment,
+            CallingPartyNumberCapImpl callingPartyNumber, CallReferenceNumberImpl callReferenceNumber,
+            ISDNAddressStringImpl gsmSCFAddress, boolean suppressTCsi) {
         this.destinationRoutingAddress = destinationRoutingAddress;
         this.extensions = extensions;
-        this.legToBeCreated = legToBeCreated;
-        this.newCallSegment = newCallSegment;
+        
+        if(legToBeCreated!=null)
+        	this.legToBeCreated = new LegIDWrapperImpl(legToBeCreated);
+        
+        if(newCallSegment!=null) {
+        	this.newCallSegment = new ASNInteger();
+        	this.newCallSegment.setValue(newCallSegment.longValue());
+        }
+        
         this.callingPartyNumber = callingPartyNumber;
         this.callReferenceNumber = callReferenceNumber;
         this.gsmSCFAddress = gsmSCFAddress;
-        this.suppressTCsi = suppressTCsi;
+        
+        if(suppressTCsi)
+        	this.suppressTCsi = new ASNNull();
     }
 
     public CAPMessageType getMessageType() {
@@ -105,191 +107,10 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
         return CAPOperationCode.initiateCallAttempt;
     }
 
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (INAPParsingComponentException e) {
-            throw new CAPParsingComponentException("INAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (INAPParsingComponentException e) {
-            throw new CAPParsingComponentException("INAPParsingComponentException when decoding " + _PrimitiveName
-                    + ": " + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException,
-            MAPParsingComponentException, INAPParsingComponentException, IOException, AsnException {
-
-        this.destinationRoutingAddress = null;
-        this.extensions = null;
-        this.legToBeCreated = null;
-        this.newCallSegment = null;
-        this.callingPartyNumber = null;
-        this.callReferenceNumber = null;
-        this.gsmSCFAddress = null;
-        this.suppressTCsi = false;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                case _ID_destinationRoutingAddress:
-                    this.destinationRoutingAddress = new DestinationRoutingAddressImpl();
-                    ((DestinationRoutingAddressImpl) this.destinationRoutingAddress).decodeAll(ais);
-                    break;
-                case _ID_extensions:
-                    this.extensions = new CAPExtensionsImpl();
-                    ((CAPExtensionsImpl) this.extensions).decodeAll(ais);
-                    break;
-                case _ID_legToBeCreated:
-                    this.legToBeCreated = new LegIDImpl();
-                    AsnInputStream ais2 = ais.readSequenceStream();
-                    ais2.readTag();
-                    ((LegIDImpl) this.legToBeCreated).decodeAll(ais2);
-                    break;
-                case _ID_newCallSegment:
-                    this.newCallSegment = (int) ais.readInteger();
-                    break;
-                case _ID_callingPartyNumber:
-                    this.callingPartyNumber = new CallingPartyNumberCapImpl();
-                    ((CallingPartyNumberCapImpl) this.callingPartyNumber).decodeAll(ais);
-                    break;
-                case _ID_callReferenceNumber:
-                    this.callReferenceNumber = new CallReferenceNumberImpl();
-                    ((CallReferenceNumberImpl) this.callReferenceNumber).decodeAll(ais);
-                    break;
-                case _ID_gsmSCFAddress:
-                    this.gsmSCFAddress = new ISDNAddressStringImpl();
-                    ((ISDNAddressStringImpl) this.gsmSCFAddress).decodeAll(ais);
-                    break;
-                case _ID_suppressTCsi:
-                    ais.readNull();
-                    this.suppressTCsi = true;
-                    break;
-                default:
-                    ais.advanceElement();
-                    break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-        if (this.destinationRoutingAddress == null)
-            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                    + ": destinationRoutingAddress is mandatory but not found ",
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-
-    }
-
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    public void encodeData(AsnOutputStream aos) throws CAPException {
-
-        if (this.destinationRoutingAddress == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName
-                    + ": destinationRoutingAddress must not be null");
-
-        try {
-            ((DestinationRoutingAddressImpl) this.destinationRoutingAddress).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_destinationRoutingAddress);
-
-            if (this.extensions != null)
-                ((CAPExtensionsImpl) this.extensions).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, _ID_extensions);
-            if (this.legToBeCreated != null) {
-                aos.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, this.getIsPrimitive(), _ID_legToBeCreated);
-                int pos = aos.StartContentDefiniteLength();
-                ((LegIDImpl) this.legToBeCreated).encodeAll(aos);
-                aos.FinalizeContent(pos);
-            }
-            if (this.newCallSegment != null)
-                aos.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_newCallSegment, this.newCallSegment);
-            if (this.callingPartyNumber != null)
-                ((CallingPartyNumberCapImpl) this.callingPartyNumber).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_callingPartyNumber);
-            if (this.callReferenceNumber != null)
-                ((CallReferenceNumberImpl) this.callReferenceNumber).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_callReferenceNumber);
-            if (this.gsmSCFAddress != null)
-                ((ISDNAddressStringImpl) this.gsmSCFAddress).encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC,
-                        _ID_gsmSCFAddress);
-            if (this.suppressTCsi)
-                aos.writeNull(Tag.CLASS_CONTEXT_SPECIFIC, _ID_suppressTCsi);
-
-        } catch (IOException e) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (INAPException e) {
-            throw new CAPException("INAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (MAPException e) {
-            throw new CAPException("MAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-
-    }
-
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("InitiateCallAttemptIndication [");
         this.addInvokeIdInfo(sb);
 
         if (this.destinationRoutingAddress != null) {
@@ -300,13 +121,13 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
             sb.append(", extensions=");
             sb.append(extensions.toString());
         }
-        if (this.legToBeCreated != null) {
+        if (this.legToBeCreated != null && this.legToBeCreated.getLegID()!=null) {
             sb.append("legToBeCreated=");
-            sb.append(legToBeCreated.toString());
+            sb.append(legToBeCreated.getLegID());
         }
-        if (this.newCallSegment != null) {
+        if (this.newCallSegment != null && this.newCallSegment.getValue()!=null) {
             sb.append(", newCallSegment=");
-            sb.append(newCallSegment);
+            sb.append(newCallSegment.getValue());
         }
         if (this.callingPartyNumber != null) {
             sb.append(", callingPartyNumber=");
@@ -320,7 +141,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
             sb.append(", gsmSCFAddress=");
             sb.append(gsmSCFAddress);
         }
-        if (this.suppressTCsi) {
+        if (this.suppressTCsi!=null) {
             sb.append(", suppressTCsi=");
             sb.append(suppressTCsi);
         }
@@ -331,43 +152,49 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     @Override
-    public DestinationRoutingAddress getDestinationRoutingAddress() {
+    public DestinationRoutingAddressImpl getDestinationRoutingAddress() {
         return destinationRoutingAddress;
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPExtensionsImpl getExtensions() {
         return extensions;
     }
 
     @Override
-    public LegID getLegToBeCreated() {
-        return legToBeCreated;
+    public LegIDImpl getLegToBeCreated() {    	
+    	if(legToBeCreated==null)
+    		return null;
+    	
+        return legToBeCreated.getLegID();
     }
 
     @Override
     public Integer getNewCallSegment() {
-        return newCallSegment;
+    	if(newCallSegment==null || newCallSegment.getValue()==null)
+    		return null;
+    	
+        return newCallSegment.getValue().intValue();
     }
 
     @Override
-    public CallingPartyNumberCap getCallingPartyNumber() {
+    public CallingPartyNumberCapImpl getCallingPartyNumber() {
         return callingPartyNumber;
     }
 
     @Override
-    public CallReferenceNumber getCallReferenceNumber() {
+    public CallReferenceNumberImpl getCallReferenceNumber() {
         return callReferenceNumber;
     }
 
     @Override
-    public ISDNAddressString getGsmSCFAddress() {
+    public ISDNAddressStringImpl getGsmSCFAddress() {
         return gsmSCFAddress;
     }
 
     @Override
     public boolean getSuppressTCsi() {
-        return suppressTCsi;
+        return suppressTCsi!=null;
     }
 
 }

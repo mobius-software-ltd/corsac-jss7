@@ -28,7 +28,6 @@ import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageParameterless;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageRequestedInfoError;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageTaskRefused;
-import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
 
 /**
  * Base class of CAP ReturnError messages
@@ -36,10 +35,8 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPAsnPrimitive;
  * @author sergey vetyutnev
  *
  */
-public abstract class CAPErrorMessageImpl implements CAPErrorMessage, CAPAsnPrimitive {
-    private static final long serialVersionUID = 1L;
-
-	protected Long errorCode;
+public abstract class CAPErrorMessageImpl implements CAPErrorMessage {
+    protected Long errorCode;
 
     protected CAPErrorMessageImpl(Long errorCode) {
         this.errorCode = errorCode;

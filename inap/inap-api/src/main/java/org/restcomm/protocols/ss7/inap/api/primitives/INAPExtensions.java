@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.primitives;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 *
@@ -37,8 +37,8 @@ extensions :==  SEQUENCE SIZE (1..bound.&numOfExtensions) OF ExtensionField {bou
 */
 public interface INAPExtensions extends Serializable {
 
-    ArrayList<ExtensionField> getExtensionFields();
+    List<ExtensionField> getExtensionFields();
 
-    void setExtensionFields(ArrayList<ExtensionField> fieldsList);
+    void setExtensionFields(List<ExtensionField> fieldsList);
 
 }

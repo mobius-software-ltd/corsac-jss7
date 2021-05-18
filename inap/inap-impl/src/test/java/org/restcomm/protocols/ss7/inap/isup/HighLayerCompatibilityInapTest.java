@@ -24,16 +24,17 @@ package org.restcomm.protocols.ss7.inap.isup;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *

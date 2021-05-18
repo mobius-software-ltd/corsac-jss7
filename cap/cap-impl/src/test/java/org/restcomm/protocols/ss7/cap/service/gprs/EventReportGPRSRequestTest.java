@@ -31,17 +31,17 @@ import java.util.Arrays;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.EsiGprs.PdpContextchangeOfPositionSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiGprs.PdpContextChangeOfPositionSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiGprs.PdpContextchangeOfPositionSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.EventReportGPRSRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
@@ -194,7 +194,7 @@ public class EventReportGPRSRequestTest {
         LocationInformationGPRS locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, null, sgsn, null, null,
                 false, null, false, null);
 
-        PdpContextchangeOfPositionSpecificInformation pdpContextchangeOfPositionSpecificInformation = new PdpContextchangeOfPositionSpecificInformationImpl(
+        PdpContextchangeOfPositionSpecificInformation pdpContextchangeOfPositionSpecificInformation = new PdpContextChangeOfPositionSpecificInformationImpl(
                 null, null, locationInformationGPRS, null, null, null, null);
         GPRSEventSpecificInformation gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
                 pdpContextchangeOfPositionSpecificInformation);

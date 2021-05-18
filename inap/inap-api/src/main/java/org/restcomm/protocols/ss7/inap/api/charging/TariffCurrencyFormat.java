@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.charging;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 *
@@ -58,7 +58,7 @@ maxCommunicationTariffNum INTEGER ::= 4
 */
 public interface TariffCurrencyFormat extends Serializable {
 
-    ArrayList<CommunicationChargeCurrency> getCommunicationChargeSequenceCurrency();
+    List<CommunicationChargeCurrency> getCommunicationChargeSequenceCurrency();
 
     TariffControlIndicators getTariffControlIndicators();
 

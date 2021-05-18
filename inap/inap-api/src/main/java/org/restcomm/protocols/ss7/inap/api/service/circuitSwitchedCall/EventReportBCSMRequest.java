@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.inap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegID;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
 
 /**
@@ -69,9 +69,9 @@ public interface EventReportBCSMRequest {
 
     EventSpecificInformationBCSM getEventSpecificInformationBCSM();
 
-    SendingLegID getLegID();
+    SendingLegIDImpl getLegID();
 
-    MiscCallInfo getMiscCallInfo();
+    MiscCallInfoImpl getMiscCallInfo();
 
     INAPExtensions getExtensions();
 

@@ -1,0 +1,203 @@
+/*
+ * TeleStax, Open Source Cloud Communications
+ * Copyright 2012, Telestax Inc and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
+package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
+
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+
+/**
+ *
+ * @author sergey vetyutnev
+ * @author Amit Bhayani
+ * @author alerant appngin
+ *
+ */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public class TimeDurationChargingImpl {
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+    private ASNInteger maxCallPeriodDuration;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
+    private ReleaseIfDurationExceededImpl releaseIfDurationExceeded;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
+    private ASNBoolean releaseIfdurationExceededB;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
+    private ASNInteger tariffSwitchInterval;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
+    private ASNBoolean tone;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
+    private AuditableIndicatorWrapperImpl audibleIndicator;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+
+    public TimeDurationChargingImpl() {
+    }
+
+    //V2
+    public TimeDurationChargingImpl(long maxCallPeriodDuration, Boolean tone, CAPExtensionsImpl extensions,
+            Long tariffSwitchInterval) {
+        this.maxCallPeriodDuration = new ASNInteger();
+        this.maxCallPeriodDuration.setValue(maxCallPeriodDuration);
+        
+        if(tone!=null || extensions!=null)
+        	this.releaseIfDurationExceeded = new ReleaseIfDurationExceededImpl(tone, extensions);
+        
+        if(tariffSwitchInterval!=null) {
+        	this.tariffSwitchInterval = new ASNInteger();
+        	this.tariffSwitchInterval.setValue(tariffSwitchInterval.longValue());
+        }
+    }
+    
+    //V3
+    public TimeDurationChargingImpl(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
+            Long tariffSwitchInterval, Boolean tone, CAPExtensionsImpl extensions) {
+    	this.maxCallPeriodDuration = new ASNInteger();
+        this.maxCallPeriodDuration.setValue(maxCallPeriodDuration);
+        
+        this.releaseIfdurationExceededB = new ASNBoolean();
+        this.releaseIfdurationExceededB.setValue(releaseIfdurationExceeded);
+        
+        if(tone!=null) {
+        	this.tone = new ASNBoolean();
+            this.tone.setValue(tone);            
+        }
+        
+        if(tariffSwitchInterval!=null) {
+        	this.tariffSwitchInterval = new ASNInteger();
+        	this.tariffSwitchInterval.setValue(tariffSwitchInterval.longValue());
+        }
+        
+        this.extensions = extensions;        
+    }
+    
+    //V4
+    public TimeDurationChargingImpl(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
+            Long tariffSwitchInterval, AudibleIndicatorImpl audibleIndicator, CAPExtensionsImpl extensions) {
+    	this.maxCallPeriodDuration = new ASNInteger();
+        this.maxCallPeriodDuration.setValue(maxCallPeriodDuration);
+        
+        this.releaseIfdurationExceededB = new ASNBoolean();
+        this.releaseIfdurationExceededB.setValue(releaseIfdurationExceeded);
+        
+        if(tariffSwitchInterval!=null) {
+        	this.tariffSwitchInterval = new ASNInteger();
+        	this.tariffSwitchInterval.setValue(tariffSwitchInterval.longValue());
+        }
+        
+        if(audibleIndicator!=null)
+        	this.audibleIndicator = new AuditableIndicatorWrapperImpl(audibleIndicator);
+        
+        this.extensions = extensions;
+    }
+
+    public long getMaxCallPeriodDuration() {
+    	if(maxCallPeriodDuration==null || maxCallPeriodDuration.getValue()==null)
+    		return 0;
+    	
+        return maxCallPeriodDuration.getValue();
+    }
+
+    public boolean getReleaseIfdurationExceeded() {
+    	if(releaseIfDurationExceeded!=null)
+    		return true;
+    	
+    	if(releaseIfdurationExceededB==null || releaseIfdurationExceededB.getValue()==null)
+    		return false;
+    	
+        return releaseIfdurationExceededB.getValue();
+    }
+
+    public Long getTariffSwitchInterval() {
+    	if(tariffSwitchInterval==null)
+    		return null;
+    	
+        return tariffSwitchInterval.getValue();
+    }
+
+    public AudibleIndicatorImpl getAudibleIndicator() {
+    	if(audibleIndicator!=null && audibleIndicator.getAudibleIndicator()!=null)
+    		return audibleIndicator.getAudibleIndicator();
+    	else if(tone!=null && tone.getValue()!=null)
+    		return new AudibleIndicatorImpl(tone.getValue());
+    	else if(releaseIfDurationExceeded!=null && releaseIfDurationExceeded.getTone()!=null)
+    		return new AudibleIndicatorImpl(releaseIfDurationExceeded.getTone());
+    	
+    	return null;
+    }
+
+    public CAPExtensionsImpl getExtensions() {
+    	if(releaseIfDurationExceeded!=null && releaseIfDurationExceeded.getExtensions()!=null)
+    		return releaseIfDurationExceeded.getExtensions();
+    	
+        return extensions;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("CAMELAChBillingChargingCharacteristics [");
+
+        if(this.maxCallPeriodDuration!=null && this.maxCallPeriodDuration.getValue()!=null) {
+        	sb.append(", maxCallPeriodDuration=");
+        	sb.append(this.maxCallPeriodDuration.getValue());
+        }
+        
+        if (this.releaseIfDurationExceeded != null) {
+            sb.append(", releaseIfDurationExceeded=");
+            sb.append(releaseIfDurationExceeded);
+        }
+        if (this.releaseIfdurationExceededB!=null && this.releaseIfdurationExceededB.getValue()!=null) {
+            sb.append(", releaseIfdurationExceeded = " + this.releaseIfdurationExceededB.getValue());
+        }
+        if (this.tariffSwitchInterval != null && this.tariffSwitchInterval.getValue()!=null) {
+            sb.append(", tariffSwitchInterval=");
+            sb.append(tariffSwitchInterval.getValue());
+        }
+        if (this.audibleIndicator != null && this.audibleIndicator.getAudibleIndicator()!=null) {
+            sb.append(", audibleIndicator=");
+            sb.append(audibleIndicator.getAudibleIndicator());
+        }
+        if (this.tone!=null && this.tone.getValue()!=null) {
+            sb.append(", tone = " + this.tone.getValue());
+        }
+        if (this.extensions != null) {
+            sb.append(", extensions=");
+            sb.append(extensions.toString());
+        }
+
+        sb.append("]]");
+
+        return sb.toString();
+    }
+}

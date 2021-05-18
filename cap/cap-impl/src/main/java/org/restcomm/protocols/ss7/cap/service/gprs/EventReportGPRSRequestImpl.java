@@ -21,78 +21,84 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
-import java.io.IOException;
-
-import org.mobicents.protocols.asn.AsnException;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.EventReportGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ASNGPRSEventTypeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.inap.api.INAPException;
-import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentException;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class EventReportGPRSRequestImpl extends GprsMessageImpl implements EventReportGPRSRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "EventReportGPRSRequest";
-
-    public static final int _ID_gprsEventType = 0;
-    public static final int _ID_miscGPRSInfo = 1;
-    public static final int _ID_gprsEventSpecificInformation = 2;
-    public static final int _ID_pdpID = 3;
-
-    private GPRSEventType gprsEventType;
-    private MiscCallInfo miscGPRSInfo;
-    private GPRSEventSpecificInformation gprsEventSpecificInformation;
-    private PDPID pdpID;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+    private ASNGPRSEventTypeImpl gprsEventType;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
+    private MiscCallInfoImpl miscGPRSInfo;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
+    private GPRSEventSpecificInformationWrapperImpl gprsEventSpecificInformation;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
+    private PDPIDImpl pdpID;
 
     public EventReportGPRSRequestImpl() {
     }
 
-    public EventReportGPRSRequestImpl(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
-            GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) {
+    public EventReportGPRSRequestImpl(GPRSEventType gprsEventType, MiscCallInfoImpl miscGPRSInfo,
+            GPRSEventSpecificInformationImpl gprsEventSpecificInformation, PDPIDImpl pdpID) {
         super();
-        this.gprsEventType = gprsEventType;
+        
+        if(gprsEventType!=null) {
+        	this.gprsEventType = new ASNGPRSEventTypeImpl();
+        	this.gprsEventType.setType(gprsEventType);
+        }
+        
         this.miscGPRSInfo = miscGPRSInfo;
-        this.gprsEventSpecificInformation = gprsEventSpecificInformation;
+        
+        if(gprsEventSpecificInformation!=null)
+        	this.gprsEventSpecificInformation = new GPRSEventSpecificInformationWrapperImpl(gprsEventSpecificInformation);
+        
         this.pdpID = pdpID;
     }
 
     @Override
     public GPRSEventType getGPRSEventType() {
-        return this.gprsEventType;
+    	if(this.gprsEventType==null)
+    		return null;
+    	
+        return this.gprsEventType.getType();
     }
 
     @Override
-    public MiscCallInfo getMiscGPRSInfo() {
+    public MiscCallInfoImpl getMiscGPRSInfo() {
         return this.miscGPRSInfo;
     }
 
     @Override
-    public GPRSEventSpecificInformation getGPRSEventSpecificInformation() {
-        return this.gprsEventSpecificInformation;
+    public GPRSEventSpecificInformationImpl getGPRSEventSpecificInformation() {
+    	if(this.gprsEventSpecificInformation==null)
+    		return null;
+    	
+        return this.gprsEventSpecificInformation.getGPRSEventSpecificInformation();
     }
 
     @Override
-    public PDPID getPDPID() {
+    public PDPIDImpl getPDPID() {
         return this.pdpID;
     }
 
@@ -107,187 +113,14 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
     }
 
     @Override
-    public int getTag() throws CAPException {
-        return Tag.SEQUENCE;
-    }
-
-    @Override
-    public int getTagClass() {
-        return Tag.CLASS_UNIVERSAL;
-    }
-
-    @Override
-    public boolean getIsPrimitive() {
-        return false;
-    }
-
-    @Override
-    public void decodeAll(AsnInputStream ansIS) throws CAPParsingComponentException {
-        try {
-            int length = ansIS.readLength();
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (INAPParsingComponentException e) {
-            throw new CAPParsingComponentException("INAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-    }
-
-    @Override
-    public void decodeData(AsnInputStream ansIS, int length) throws CAPParsingComponentException {
-        try {
-            this._decode(ansIS, length);
-        } catch (IOException e) {
-            throw new CAPParsingComponentException("IOException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (AsnException e) {
-            throw new CAPParsingComponentException("AsnException when decoding " + _PrimitiveName + ": " + e.getMessage(), e,
-                    CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (MAPParsingComponentException e) {
-            throw new CAPParsingComponentException("MAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        } catch (INAPParsingComponentException e) {
-            throw new CAPParsingComponentException("INAPParsingComponentException when decoding " + _PrimitiveName + ": "
-                    + e.getMessage(), e, CAPParsingComponentExceptionReason.MistypedParameter);
-        }
-
-    }
-
-    private void _decode(AsnInputStream ansIS, int length) throws CAPParsingComponentException, IOException, AsnException,
-            MAPParsingComponentException, INAPParsingComponentException {
-        this.gprsEventType = null;
-        this.miscGPRSInfo = null;
-        this.gprsEventSpecificInformation = null;
-        this.pdpID = null;
-
-        AsnInputStream ais = ansIS.readSequenceStreamData(length);
-        while (true) {
-            if (ais.available() == 0)
-                break;
-
-            int tag = ais.readTag();
-
-            if (ais.getTagClass() == Tag.CLASS_CONTEXT_SPECIFIC) {
-                switch (tag) {
-                    case _ID_gprsEventType:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".gprsEventType: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        int i1 = (int) ais.readInteger();
-                        this.gprsEventType = GPRSEventType.getInstance(i1);
-                        break;
-
-                    case _ID_miscGPRSInfo:
-                        if (ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".miscGPRSInfo: Parameter is primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.miscGPRSInfo = new MiscCallInfoImpl();
-                        ((MiscCallInfoImpl) this.miscGPRSInfo).decodeAll(ais);
-                        break;
-                    case _ID_gprsEventSpecificInformation:
-                        if (ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".gprsEventSpecificInformation: Parameter is primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl();
-                        AsnInputStream ais2 = ais.readSequenceStream();
-                        ais2.readTag();
-                        ((GPRSEventSpecificInformationImpl) this.gprsEventSpecificInformation).decodeAll(ais2);
-                        break;
-                    case _ID_pdpID:
-                        if (!ais.isTagPrimitive())
-                            throw new CAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                    + ".pdpID: Parameter is not primitive",
-                                    CAPParsingComponentExceptionReason.MistypedParameter);
-                        this.pdpID = new PDPIDImpl();
-                        ((PDPIDImpl) this.pdpID).decodeAll(ais);
-                        break;
-                    default:
-                        ais.advanceElement();
-                        break;
-                }
-            } else {
-                ais.advanceElement();
-            }
-        }
-
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs) throws CAPException {
-        this.encodeAll(asnOs, this.getTagClass(), this.getTag());
-    }
-
-    @Override
-    public void encodeAll(AsnOutputStream asnOs, int tagClass, int tag) throws CAPException {
-        try {
-            asnOs.writeTag(tagClass, this.getIsPrimitive(), tag);
-            int pos = asnOs.StartContentDefiniteLength();
-            this.encodeData(asnOs);
-            asnOs.FinalizeContent(pos);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void encodeData(AsnOutputStream asnOs) throws CAPException {
-
-        if (this.gprsEventType == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": gprsEventType must not be null");
-
-        if (this.miscGPRSInfo == null)
-            throw new CAPException("Error while encoding " + _PrimitiveName + ": miscGPRSInfo must not be null");
-
-        try {
-
-            asnOs.writeInteger(Tag.CLASS_CONTEXT_SPECIFIC, _ID_gprsEventType, this.gprsEventType.getCode());
-
-            ((MiscCallInfoImpl) this.miscGPRSInfo).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_miscGPRSInfo);
-
-            if (this.gprsEventSpecificInformation != null) {
-                try {
-                    asnOs.writeTag(Tag.CLASS_CONTEXT_SPECIFIC, false, _ID_gprsEventSpecificInformation);
-                    int pos = asnOs.StartContentDefiniteLength();
-                    ((GPRSEventSpecificInformationImpl) this.gprsEventSpecificInformation).encodeAll(asnOs);
-                    asnOs.FinalizeContent(pos);
-                } catch (AsnException e) {
-                    throw new CAPException("AsnException while encoding " + _PrimitiveName
-                            + " parameter gprsEventSpecificInformation");
-                }
-            }
-
-            if (this.pdpID != null)
-                ((PDPIDImpl) this.pdpID).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC, _ID_pdpID);
-
-        } catch (IOException e) {
-            throw new CAPException("IOException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (AsnException e) {
-            throw new CAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        } catch (INAPException e) {
-            throw new CAPException("INAPException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
-        }
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName + " [");
+        sb.append("EventReportGPRSRequest [");
         this.addInvokeIdInfo(sb);
 
-        if (this.gprsEventType != null) {
+        if (this.gprsEventType != null && this.gprsEventType.getType()!=null) {
             sb.append(", gprsEventType=");
-            sb.append(this.gprsEventType.toString());
+            sb.append(this.gprsEventType.getType());
         }
 
         if (this.miscGPRSInfo != null) {
@@ -295,9 +128,9 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
             sb.append(this.miscGPRSInfo.toString());
         }
 
-        if (this.gprsEventSpecificInformation != null) {
+        if (this.gprsEventSpecificInformation != null && this.gprsEventSpecificInformation.getGPRSEventSpecificInformation()!=null) {
             sb.append(", gprsEventSpecificInformation=");
-            sb.append(this.gprsEventSpecificInformation.toString());
+            sb.append(this.gprsEventSpecificInformation.getGPRSEventSpecificInformation());
         }
 
         if (this.pdpID != null) {
