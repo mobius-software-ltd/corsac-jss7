@@ -158,7 +158,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#addTCListener(org.mobicents .protocols.ss7.tcap.api.TCListener)
+     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#addTCListener(org.restcomm .protocols.ss7.tcap.api.TCListener)
      */
 
     public void addTCListener(TCListener lst) {
@@ -172,7 +172,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#removeTCListener(org.mobicents .protocols.ss7.tcap.api.TCListener)
+     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#removeTCListener(org.restcomm .protocols.ss7.tcap.api.TCListener)
      */
     public void removeTCListener(TCListener lst) {
         this.tcListeners.remove(lst);
@@ -261,7 +261,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPProvider#getNewDialog(org.mobicents
+     * @see org.restcomm.protocols.ss7.tcap.api.TCAPProvider#getNewDialog(org.restcomm
      * .protocols.ss7.sccp.parameter.SccpAddress, org.restcomm.protocols.ss7.sccp.parameter.SccpAddress)
      */
     public Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress) throws TCAPException {
@@ -273,7 +273,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPProvider#getNewDialog(org.mobicents
+     * @see org.restcomm.protocols.ss7.tcap.api.TCAPProvider#getNewDialog(org.restcomm
      * .protocols.ss7.sccp.parameter.SccpAddress, org.restcomm.protocols.ss7.sccp.parameter.SccpAddress, Long id)
      */
     public Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, Long id) throws TCAPException {

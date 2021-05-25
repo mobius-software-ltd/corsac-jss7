@@ -205,7 +205,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.ISUPMessage#decodeMandatoryParameters(byte[], int)
+     * @see org.restcomm.isup.messages.ISUPMessage#decodeMandatoryParameters(byte[], int)
      */
 
     protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
@@ -282,7 +282,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
@@ -568,7 +568,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
     /*
      * (non-Javadoc)
      *
-     * @seeorg.mobicents.isup.messages.ISUPMessage# getNumberOfMandatoryVariableLengthParameters()
+     * @seeorg.restcomm.isup.messages.ISUPMessage# getNumberOfMandatoryVariableLengthParameters()
      */
 
     protected int getNumberOfMandatoryVariableLengthParameters() {
@@ -579,7 +579,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.ISUPMessage#getMessageType()
+     * @see org.restcomm.isup.messages.ISUPMessage#getMessageType()
      */
 
     public MessageType getMessageType() {
@@ -589,7 +589,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.ISUPMessage#hasAllMandatoryParameters()
+     * @see org.restcomm.isup.messages.ISUPMessage#hasAllMandatoryParameters()
      */
 
     public boolean hasAllMandatoryParameters() {

@@ -64,7 +64,7 @@ public class RedirectionNumberImpl extends AbstractNAINumber implements Redirect
     /*
      * (non-Javadoc)
      *
-     * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
 
     public void decodeBody(ByteBuf buf) throws IllegalArgumentException, ParameterException {
@@ -81,7 +81,7 @@ public class RedirectionNumberImpl extends AbstractNAINumber implements Redirect
     /*
      * (non-Javadoc)
      *
-     * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
     public void encodeBody(ByteBuf bos) {

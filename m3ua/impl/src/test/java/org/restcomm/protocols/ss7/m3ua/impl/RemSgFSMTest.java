@@ -1577,7 +1577,7 @@ public class RemSgFSMTest {
         /*
          * (non-Javadoc)
          *
-         * @see org.mobicents.protocols.api.Association#getExtraHostAddresses()
+         * @see org.restcomm.protocols.api.Association#getExtraHostAddresses()
          */
         @Override
         public String[] getExtraHostAddresses() {
@@ -1588,7 +1588,7 @@ public class RemSgFSMTest {
         /*
          * (non-Javadoc)
          *
-         * @see org.mobicents.protocols.api.Association#isConnected()
+         * @see org.restcomm.protocols.api.Association#isConnected()
          */
         @Override
         public boolean isConnected() {
@@ -1791,7 +1791,7 @@ public class RemSgFSMTest {
         /*
          * (non-Javadoc)
          *
-         * @see org.mobicents.protocols.api.Management#isStarted()
+         * @see org.restcomm.protocols.api.Management#isStarted()
          */
         @Override
         public boolean isStarted() {

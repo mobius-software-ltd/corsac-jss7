@@ -119,7 +119,7 @@ public class CallTransferNumberImpl extends AbstractNAINumber implements CallTra
     /*
      * (non-Javadoc)
      *
-     * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
     public void encodeBody(ByteBuf buffer) {

@@ -75,7 +75,7 @@ class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompl
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.ISUPMessage#decodeMandatoryVariableBody(byte [], int)
+     * @see org.restcomm.isup.messages.ISUPMessage#decodeMandatoryVariableBody(byte [], int)
      */
 
     protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)
@@ -86,7 +86,7 @@ class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompl
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
@@ -115,7 +115,7 @@ class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompl
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.ISUPMessage#getMessageType()
+     * @see org.restcomm.isup.messages.ISUPMessage#getMessageType()
      */
 
     public MessageType getMessageType() {
@@ -125,7 +125,7 @@ class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompl
     /*
      * (non-Javadoc)
      *
-     * @seeorg.mobicents.isup.messages.ISUPMessage# getNumberOfMandatoryVariableLengthParameters()
+     * @seeorg.restcomm.isup.messages.ISUPMessage# getNumberOfMandatoryVariableLengthParameters()
      */
 
     protected int getNumberOfMandatoryVariableLengthParameters() {
@@ -136,7 +136,7 @@ class ReleaseCompleteMessageImpl extends ISUPMessageImpl implements ReleaseCompl
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.ISUPMessage#hasAllMandatoryParameters()
+     * @see org.restcomm.isup.messages.ISUPMessage#hasAllMandatoryParameters()
      */
 
     public boolean hasAllMandatoryParameters() {

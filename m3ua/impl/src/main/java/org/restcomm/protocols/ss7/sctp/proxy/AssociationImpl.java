@@ -157,7 +157,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getIpChannelType()
+     * @see org.restcomm.protocols.api.Association#getIpChannelType()
      */
     @Override
     public IpChannelType getIpChannelType() {
@@ -171,7 +171,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getAssociationType()
+     * @see org.restcomm.protocols.api.Association#getAssociationType()
      */
     @Override
     public AssociationType getAssociationType() {
@@ -181,7 +181,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getName()
+     * @see org.restcomm.protocols.api.Association#getName()
      */
     @Override
     public String getName() {
@@ -191,7 +191,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#isStarted()
+     * @see org.restcomm.protocols.api.Association#isStarted()
      */
     @Override
     public boolean isStarted() {
@@ -201,7 +201,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#isConnected()
+     * @see org.restcomm.protocols.api.Association#isConnected()
      */
     @Override
     public boolean isConnected() {
@@ -211,7 +211,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#isUp()
+     * @see org.restcomm.protocols.api.Association#isUp()
      */
     @Override
     public boolean isUp() {
@@ -221,7 +221,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getAssociationListener()
+     * @see org.restcomm.protocols.api.Association#getAssociationListener()
      */
     @Override
     public AssociationListener getAssociationListener() {
@@ -231,7 +231,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#setAssociationListener(org.mobicents.protocols.api.AssociationListener)
+     * @see org.restcomm.protocols.api.Association#setAssociationListener(org.restcomm.protocols.api.AssociationListener)
      */
     @Override
     public void setAssociationListener(AssociationListener associationListener) {
@@ -242,7 +242,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getHostAddress()
+     * @see org.restcomm.protocols.api.Association#getHostAddress()
      */
     @Override
     public String getHostAddress() {
@@ -256,7 +256,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getHostPort()
+     * @see org.restcomm.protocols.api.Association#getHostPort()
      */
     @Override
     public int getHostPort() {
@@ -270,7 +270,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getPeerAddress()
+     * @see org.restcomm.protocols.api.Association#getPeerAddress()
      */
     @Override
     public String getPeerAddress() {
@@ -284,7 +284,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getPeerPort()
+     * @see org.restcomm.protocols.api.Association#getPeerPort()
      */
     @Override
     public int getPeerPort() {
@@ -298,7 +298,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getServerName()
+     * @see org.restcomm.protocols.api.Association#getServerName()
      */
     @Override
     public String getServerName() {
@@ -312,7 +312,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#getExtraHostAddresses()
+     * @see org.restcomm.protocols.api.Association#getExtraHostAddresses()
      */
     @Override
     public String[] getExtraHostAddresses() {
@@ -326,7 +326,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#send(org.mobicents.protocols.api.PayloadData)
+     * @see org.restcomm.protocols.api.Association#send(org.restcomm.protocols.api.PayloadData)
      */
     @Override
     public void send(PayloadData payloadData) throws Exception {
@@ -365,7 +365,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#acceptAnonymousAssociation(org.mobicents.protocols.api.AssociationListener)
+     * @see org.restcomm.protocols.api.Association#acceptAnonymousAssociation(org.restcomm.protocols.api.AssociationListener)
      */
     @Override
     public void acceptAnonymousAssociation(AssociationListener associationListener) throws Exception {
@@ -382,7 +382,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#rejectAnonymousAssociation()
+     * @see org.restcomm.protocols.api.Association#rejectAnonymousAssociation()
      */
     @Override
     public void rejectAnonymousAssociation() {
@@ -391,7 +391,7 @@ public class AssociationImpl implements Association {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Association#stopAnonymousAssociation()
+     * @see org.restcomm.protocols.api.Association#stopAnonymousAssociation()
      */
     @Override
     public void stopAnonymousAssociation() throws Exception {

@@ -205,7 +205,7 @@ public class LocationNumberTest {
     // * (non-Javadoc)
     // *
     // * @see
-    // * org.mobicents.isup.messages.parameters.ParameterHarness#getTestedComponent
+    // * org.restcomm.isup.messages.parameters.ParameterHarness#getTestedComponent
     // * ()
     // */
     //

@@ -49,7 +49,7 @@ public class ResultImpl {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Result#setResultType(org.mobicents .protocols.ss7.tcap.asn.ResultType)
+     * @see org.restcomm.protocols.ss7.tcap.asn.Result#setResultType(org.restcomm .protocols.ss7.tcap.asn.ResultType)
      */
     public void setResultType(ResultType t) {
         this.resultType = new ASNResultType();

@@ -204,7 +204,7 @@ public class InvokeImpl implements BaseComponent {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setParameter(org.mobicents .protocols.ss7.tcap.asn.comp.Parameter)
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setParameter(org.restcomm .protocols.ss7.tcap.asn.comp.Parameter)
      */
     public void setParameter(Object p) {
     	this.parameter=new ASNInvokeParameterImpl();

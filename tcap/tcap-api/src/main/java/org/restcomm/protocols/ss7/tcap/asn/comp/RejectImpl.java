@@ -95,7 +95,7 @@ public class RejectImpl implements BaseComponent {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(org.mobicents .protocols.ss7.tcap.asn.comp.Problem)
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(org.restcomm .protocols.ss7.tcap.asn.comp.Problem)
      */
     public void setProblem(ProblemImpl p) {
         this.problem = p;

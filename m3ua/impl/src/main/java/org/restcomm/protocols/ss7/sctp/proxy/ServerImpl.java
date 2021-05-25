@@ -95,7 +95,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#getIpChannelType()
+     * @see org.restcomm.protocols.api.Server#getIpChannelType()
      */
     @Override
     public IpChannelType getIpChannelType() {
@@ -109,7 +109,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#isAcceptAnonymousConnections()
+     * @see org.restcomm.protocols.api.Server#isAcceptAnonymousConnections()
      */
     @Override
     public boolean isAcceptAnonymousConnections() {
@@ -123,7 +123,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#getMaxConcurrentConnectionsCount()
+     * @see org.restcomm.protocols.api.Server#getMaxConcurrentConnectionsCount()
      */
     @Override
     public int getMaxConcurrentConnectionsCount() {
@@ -133,7 +133,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#setMaxConcurrentConnectionsCount(int)
+     * @see org.restcomm.protocols.api.Server#setMaxConcurrentConnectionsCount(int)
      */
     @Override
     public void setMaxConcurrentConnectionsCount(int val) {
@@ -143,7 +143,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#getName()
+     * @see org.restcomm.protocols.api.Server#getName()
      */
     @Override
     public String getName() {
@@ -153,7 +153,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#getHostAddress()
+     * @see org.restcomm.protocols.api.Server#getHostAddress()
      */
     @Override
     public String getHostAddress() {
@@ -167,7 +167,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#getHostport()
+     * @see org.restcomm.protocols.api.Server#getHostport()
      */
     @Override
     public int getHostport() {
@@ -181,7 +181,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#getExtraHostAddresses()
+     * @see org.restcomm.protocols.api.Server#getExtraHostAddresses()
      */
     @Override
     public String[] getExtraHostAddresses() {
@@ -195,7 +195,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#isStarted()
+     * @see org.restcomm.protocols.api.Server#isStarted()
      */
     @Override
     public boolean isStarted() {
@@ -205,7 +205,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#getAssociations()
+     * @see org.restcomm.protocols.api.Server#getAssociations()
      */
     @Override
     public Collection<String> getAssociations() {
@@ -215,7 +215,7 @@ public class ServerImpl implements Server {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Server#getAnonymAssociations()
+     * @see org.restcomm.protocols.api.Server#getAnonymAssociations()
      */
     @Override
     public Collection<Association> getAnonymAssociations() {

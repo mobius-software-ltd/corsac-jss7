@@ -388,8 +388,8 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation. MAPDialogSubscriberInformation
-     * #addAnyTimeInterrogationRequest(org.mobicents .protocols.ss7.map.api.primitives.SubscriberIdentity,
-     * org.mobicents.protocols .ss7.map.api.service.subscriberInformation.RequestedInfo,
+     * #addAnyTimeInterrogationRequest(org.restcomm .protocols.ss7.map.api.primitives.SubscriberIdentity,
+     * org.restcomm.protocols .ss7.map.api.service.subscriberInformation.RequestedInfo,
      * org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString,
      * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl)
      */
@@ -405,7 +405,7 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
      *
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.
      * MAPDialogSubscriberInformation#addAnyTimeInterrogationRequest(long,
-     * org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity, org.mobicents
+     * org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity, org.restcomm
      * .protocols.ss7.map.api.service.subscriberInformation.RequestedInfo,
      * org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString,
      * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl)

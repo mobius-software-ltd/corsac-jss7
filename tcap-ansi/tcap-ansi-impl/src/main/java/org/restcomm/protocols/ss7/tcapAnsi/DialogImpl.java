@@ -406,7 +406,7 @@ public class DialogImpl implements Dialog {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#send(org.mobicents
+     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#send(org.restcomm
      * .protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest)
      */
     public void send(TCQueryRequest event) throws TCAPSendException {
@@ -473,7 +473,7 @@ public class DialogImpl implements Dialog {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#send(org.mobicents
+     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#send(org.restcomm
      * .protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest)
      */
     public void send(TCConversationRequest event) throws TCAPSendException {
@@ -564,7 +564,7 @@ public class DialogImpl implements Dialog {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#send(org.mobicents
+     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#send(org.restcomm
      * .protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest)
      */
     public void send(TCResponseRequest event) throws TCAPSendException {

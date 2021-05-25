@@ -118,7 +118,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#getName()
+     * @see org.restcomm.protocols.api.Management#getName()
      */
     @Override
     public String getName() {
@@ -128,7 +128,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#getServerListener()
+     * @see org.restcomm.protocols.api.Management#getServerListener()
      */
     @Override
     public ServerListener getServerListener() {
@@ -138,7 +138,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#setServerListener(org.mobicents .protocols.api.ServerListener)
+     * @see org.restcomm.protocols.api.Management#setServerListener(org.restcomm .protocols.api.ServerListener)
      */
     @Override
     public void setServerListener(ServerListener serverListener) {
@@ -160,7 +160,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#addManagementEventListener(org
+     * @see org.restcomm.protocols.api.Management#addManagementEventListener(org
      * .mobicents.protocols.api.ManagementEventListener)
      */
     @Override
@@ -171,8 +171,8 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#removeManagementEventListener(
-     * org.mobicents.protocols.api.ManagementEventListener)
+     * @see org.restcomm.protocols.api.Management#removeManagementEventListener(
+     * org.restcomm.protocols.api.ManagementEventListener)
      */
     @Override
     public void removeManagementEventListener(UUID key) {
@@ -182,7 +182,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#start()
+     * @see org.restcomm.protocols.api.Management#start()
      */
     @Override
     public void start() throws Exception {
@@ -215,7 +215,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#stop()
+     * @see org.restcomm.protocols.api.Management#stop()
      */
     @Override
     public void stop() throws Exception {
@@ -285,7 +285,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#isStarted()
+     * @see org.restcomm.protocols.api.Management#isStarted()
      */
     @Override
     public boolean isStarted() {
@@ -295,7 +295,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#removeAllResourses()
+     * @see org.restcomm.protocols.api.Management#removeAllResourses()
      */
     @Override
     public void removeAllResourses() throws Exception {
@@ -345,8 +345,8 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#addServer(java.lang.String, java.lang.String, int,
-     * org.mobicents.protocols.api.IpChannelType, boolean, int, java.lang.String[])
+     * @see org.restcomm.protocols.api.Management#addServer(java.lang.String, java.lang.String, int,
+     * org.restcomm.protocols.api.IpChannelType, boolean, int, java.lang.String[])
      */
     @Override
     public Server addServer(String serverName, String hostAddress, int port, IpChannelType ipChannelType,
@@ -407,8 +407,8 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#addServer(java.lang.String, java.lang.String, int,
-     * org.mobicents.protocols.api.IpChannelType, java.lang.String[])
+     * @see org.restcomm.protocols.api.Management#addServer(java.lang.String, java.lang.String, int,
+     * org.restcomm.protocols.api.IpChannelType, java.lang.String[])
      */
     @Override
     public Server addServer(String serverName, String hostAddress, int port, IpChannelType ipChannelType,
@@ -419,7 +419,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#addServer(java.lang.String, java.lang.String, int)
+     * @see org.restcomm.protocols.api.Management#addServer(java.lang.String, java.lang.String, int)
      */
     @Override
     public Server addServer(String serverName, String hostAddress, int port) throws Exception {
@@ -429,7 +429,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#removeServer(java.lang.String)
+     * @see org.restcomm.protocols.api.Management#removeServer(java.lang.String)
      */
     @Override
     public void removeServer(String serverName) throws Exception {
@@ -466,7 +466,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#startServer(java.lang.String)
+     * @see org.restcomm.protocols.api.Management#startServer(java.lang.String)
      */
     @Override
     public void startServer(String serverName) throws Exception {
@@ -491,7 +491,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#stopServer(java.lang.String)
+     * @see org.restcomm.protocols.api.Management#stopServer(java.lang.String)
      */
     @Override
     public void stopServer(String serverName) throws Exception {
@@ -513,7 +513,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#getServers()
+     * @see org.restcomm.protocols.api.Management#getServers()
      */
     @Override
     public Collection<Server> getServers() {
@@ -523,7 +523,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#addServerAssociation(java.lang .String, int, java.lang.String,
+     * @see org.restcomm.protocols.api.Management#addServerAssociation(java.lang .String, int, java.lang.String,
      * java.lang.String)
      */
     @Override
@@ -535,8 +535,8 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#addServerAssociation(java.lang .String, int, java.lang.String,
-     * java.lang.String, org.mobicents.protocols.api.IpChannelType)
+     * @see org.restcomm.protocols.api.Management#addServerAssociation(java.lang .String, int, java.lang.String,
+     * java.lang.String, org.restcomm.protocols.api.IpChannelType)
      */
     @Override
     public Association addServerAssociation(String peerAddress, int peerPort, String serverName, String assocName,
@@ -610,7 +610,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#addAssociation(java.lang.String, int, java.lang.String, int,
+     * @see org.restcomm.protocols.api.Management#addAssociation(java.lang.String, int, java.lang.String, int,
      * java.lang.String)
      */
     @Override
@@ -622,8 +622,8 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#addAssociation(java.lang.String, int, java.lang.String, int,
-     * java.lang.String, org.mobicents.protocols.api.IpChannelType, java.lang.String[])
+     * @see org.restcomm.protocols.api.Management#addAssociation(java.lang.String, int, java.lang.String, int,
+     * java.lang.String, org.restcomm.protocols.api.IpChannelType, java.lang.String[])
      */
     @Override
     public Association addAssociation(String hostAddress, int hostPort, String peerAddress, int peerPort, String assocName,
@@ -699,7 +699,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#removeAssociation(java.lang.String )
+     * @see org.restcomm.protocols.api.Management#removeAssociation(java.lang.String )
      */
     @Override
     public void removeAssociation(String assocName) throws Exception {
@@ -743,7 +743,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#getAssociation(java.lang.String)
+     * @see org.restcomm.protocols.api.Management#getAssociation(java.lang.String)
      */
     @Override
     public Association getAssociation(String assocName) throws Exception {
@@ -761,7 +761,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#getAssociations()
+     * @see org.restcomm.protocols.api.Management#getAssociations()
      */
     @Override
     public Map<String, Association> getAssociations() {
@@ -773,7 +773,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#startAssociation(java.lang.String)
+     * @see org.restcomm.protocols.api.Management#startAssociation(java.lang.String)
      */
     @Override
     public void startAssociation(String assocName) throws Exception {
@@ -802,7 +802,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#stopAssociation(java.lang.String)
+     * @see org.restcomm.protocols.api.Management#stopAssociation(java.lang.String)
      */
     @Override
     public void stopAssociation(String assocName) throws Exception {
@@ -826,7 +826,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#getConnectDelay()
+     * @see org.restcomm.protocols.api.Management#getConnectDelay()
      */
     @Override
     public int getConnectDelay() {
@@ -836,7 +836,7 @@ public class SctpManagementImpl implements Management {
     /*
      * (non-Javadoc)
      * 
-     * @see org.mobicents.protocols.api.Management#setConnectDelay(int)
+     * @see org.restcomm.protocols.api.Management#setConnectDelay(int)
      */
     @Override
     public void setConnectDelay(int connectDelay) throws Exception {

@@ -95,7 +95,7 @@ public class ISUPProviderImpl implements ISUPProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.ISUPProvider#addListener(org.mobicents.isup.ISUPListener )
+     * @see org.restcomm.isup.ISUPProvider#addListener(org.restcomm.isup.ISUPListener )
      */
     public void addListener(UUID key,ISUPListener listener) {
         if (listener == null) {
@@ -112,7 +112,7 @@ public class ISUPProviderImpl implements ISUPProvider {
     /*
      * (non-Javadoc)
      *
-     * @seeorg.mobicents.isup.ISUPProvider#removeListener(org.mobicents.isup. ISUPListener)
+     * @seeorg.restcomm.isup.ISUPProvider#removeListener(org.restcomm.isup.ISUPListener)
      */
     public void removeListener(UUID key) {
         if (key == null) {
@@ -143,7 +143,7 @@ public class ISUPProviderImpl implements ISUPProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPProvider#sendMessage(org.mobicents .protocols.ss7.isup.message.ISUPMessage)
+     * @see org.restcomm.protocols.ss7.isup.ISUPProvider#sendMessage(org.restcomm.protocols.ss7.isup.message.ISUPMessage)
      */
 
     public void sendMessage(ISUPMessage msg, int dpc) throws ParameterException, IOException {

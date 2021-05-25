@@ -48,7 +48,7 @@ public interface SccpStack {
      * Terminates SCCP stack.
      *
      * @throws java.lang.IllegalStateException
-     * @throws org.mobicents.protocols.StartFailedException
+     * @throws org.restcomm.protocols.StartFailedException
      */
     void stop();
 

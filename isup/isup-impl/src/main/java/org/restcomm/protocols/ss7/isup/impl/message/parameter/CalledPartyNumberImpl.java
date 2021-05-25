@@ -67,7 +67,7 @@ public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPa
     /*
      * (non-Javadoc)
      *
-     * @seeorg.mobicents.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
      */
 
     public void decodeBody(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
@@ -84,7 +84,7 @@ public class CalledPartyNumberImpl extends AbstractNAINumber implements CalledPa
     /*
      * (non-Javadoc)
      *
-     * @seeorg.mobicents.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
      */
 
     public void encodeBody(ByteBuf buffer) {

@@ -98,7 +98,7 @@ public class TerminatingNetworkRoutingNumberTest extends ParameterHarness {
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.messages.parameters.ParameterHarness#getTestedComponent ()
+     * @see org.restcomm.isup.messages.parameters.ParameterHarness#getTestedComponent ()
      */
 
     public AbstractISUPParameter getTestedComponent() {

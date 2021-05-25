@@ -151,7 +151,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.MAPDialogLsm# addProvideSubscriberLocationResponse(long, byte[],
      * byte[], byte[], java.lang.Integer, byte[], org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer,
      * java.lang.Boolean, org.restcomm.protocols.ss7.map.api.service.lsm. CellGlobalIdOrServiceAreaIdOrLAI, java.lang.Boolean,
-     * org.mobicents.protocols .ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
+     * org.restcomm.protocols .ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
      */
     public void addProvideSubscriberLocationResponse(long invokeId, ExtGeographicalInformationImpl locationEstimate,
             PositioningDataInformationImpl geranPositioningData, UtranPositioningDataInfoImpl utranPositioningData,
@@ -190,7 +190,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.dialog.AddressString, java.lang.String, java.lang.String, java.lang.String,
      * java.lang.String, int, java.lang.String, org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrData,
      * java.lang.String, org.restcomm.protocols.ss7.map.api.service.lsm. CellGlobalIdOrServiceAreaIdOrLAI, java.lang.String,
-     * int, boolean, org.mobicents .protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
+     * int, boolean, org.restcomm .protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
      */
     public Long addSubscriberLocationReportRequest(LCSEvent lcsEvent, LCSClientIDImpl lcsClientID, LCSLocationInfoImpl lcsLocationInfo,
             ISDNAddressStringImpl msisdn, IMSIImpl imsi, IMEIImpl imei, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk,

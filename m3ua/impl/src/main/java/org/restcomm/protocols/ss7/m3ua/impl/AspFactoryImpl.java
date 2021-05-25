@@ -760,7 +760,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.protocols.api.AssociationListener#inValidStreamId(org.mobicents .protocols.api.PayloadData)
+     * @see org.restcomm.protocols.api.AssociationListener#inValidStreamId(org.restcomm .protocols.api.PayloadData)
      */
     @Override
     public void inValidStreamId(org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData) {

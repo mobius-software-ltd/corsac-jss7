@@ -60,7 +60,7 @@ public class GenericReferenceImpl extends AbstractISUPParameter implements Gener
     /*
      * (non-Javadoc)
      *
-     * @see org.mobicents.isup.parameters.ISUPParameter#getCode()
+     * @see org.restcomm.isup.parameters.ISUPParameter#getCode()
      */
     public int getCode() {
         // TODO Auto-generated method stub
