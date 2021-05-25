@@ -23,14 +23,19 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,12 +51,16 @@ public class CAI_GSM0224Test {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CAI_GSM0224Impl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        CAI_GSM0224Impl elem = new CAI_GSM0224Impl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CAI_GSM0224Impl);
+        
+        CAI_GSM0224Impl elem = (CAI_GSM0224Impl)result.getResult();        
         assertEquals((int) elem.getE1(), 1);
         assertEquals((int) elem.getE2(), 2);
         assertEquals((int) elem.getE3(), 3);
@@ -63,10 +72,14 @@ public class CAI_GSM0224Test {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
-        CAI_GSM0224Impl elem = new CAI_GSM0224Impl(1, 2, 3, 4, 5, 6, 7);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CAI_GSM0224Impl.class);
+    	
+    	CAI_GSM0224Impl elem = new CAI_GSM0224Impl(1, 2, 3, 4, 5, 6, 7);
+    	byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 }

@@ -23,16 +23,20 @@
 package org.restcomm.protocols.ss7.cap.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.primitives.ReceivingSideIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -47,22 +51,30 @@ public class ReceivingSideIDTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ReceivingLegIDImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ReceivingSideIDImpl elem = new ReceivingSideIDImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReceivingLegIDImpl);
+        
+        ReceivingLegIDImpl elem = (ReceivingLegIDImpl)result.getResult();        
         assertEquals(elem.getReceivingSideID(), LegType.leg2);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        ReceivingSideIDImpl elem = new ReceivingSideIDImpl(LegType.leg2);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 1);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ReceivingLegIDImpl.class);
+    	
+        ReceivingLegIDImpl elem = new ReceivingLegIDImpl(LegType.leg2);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "primitives" })

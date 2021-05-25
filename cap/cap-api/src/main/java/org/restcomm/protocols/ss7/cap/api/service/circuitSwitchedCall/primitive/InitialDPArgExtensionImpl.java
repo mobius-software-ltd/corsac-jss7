@@ -22,8 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
 
+import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UUDataImpl;
@@ -104,12 +106,12 @@ public class InitialDPArgExtensionImpl {
      */
     public InitialDPArgExtensionImpl() {
     }
-
+    
     public InitialDPArgExtensionImpl(NACarrierInformationImpl naCarrierInformation, ISDNAddressStringImpl gmscAddress) {
     	this.naCarrierInformation = naCarrierInformation;
     	this.gmscAddress = gmscAddress;
     }
-    
+
     public InitialDPArgExtensionImpl(ISDNAddressStringImpl gmscAddress, CalledPartyNumberCapImpl forwardingDestinationNumber,
             MSClassmark2Impl msClassmark2, IMEIImpl imei, SupportedCamelPhasesImpl supportedCamelPhases,
             OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities, BearerCapabilityImpl bearerCapability2,
@@ -145,11 +147,27 @@ public class InitialDPArgExtensionImpl {
         	this.releaseCallArgExtensionAllowed = new ASNNull();        
     }
 
+    public void patchVersion(int version) throws CAPParsingComponentException {
+    	if(forwardingDestinationNumber==null)
+    		return;
+    	    	
+    	if(version<3) {
+    		try {
+	    		gmscAddress=new ISDNAddressStringImpl();
+	    		gmscAddress.decode(null, this, forwardingDestinationNumber.getValue(), null);
+	    		forwardingDestinationNumber = null;
+    		} 
+    		catch(MAPParsingComponentException ex) {
+    			throw new CAPParsingComponentException(ex.getMessage(), null);
+    		}
+    	}
+    }
+    
     public ISDNAddressStringImpl getGmscAddress() {
     	if(gmscAddress!=null)
     		return gmscAddress;
     	
-        return gmscAddress2;
+    	return gmscAddress2;
     }
 
     public NACarrierInformationImpl getNACarrierInformation() {
@@ -233,7 +251,7 @@ public class InitialDPArgExtensionImpl {
             sb.append(", gmscAddress=");
             sb.append(gmscAddress);
         }
-        
+
         if (this.gmscAddress2 != null) {
             sb.append(", gmscAddress=");
             sb.append(gmscAddress2);

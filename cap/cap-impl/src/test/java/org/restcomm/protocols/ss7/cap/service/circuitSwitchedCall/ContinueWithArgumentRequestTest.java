@@ -22,14 +22,15 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
@@ -38,7 +39,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ContinueWithArgumentRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
@@ -46,9 +46,15 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingLevel;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * 
@@ -79,19 +85,22 @@ public class ContinueWithArgumentRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ContinueWithArgumentRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ContinueWithArgumentRequestImpl elem = new ContinueWithArgumentRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ContinueWithArgumentRequestImpl);
+        
+        ContinueWithArgumentRequestImpl elem = (ContinueWithArgumentRequestImpl)result.getResult();        
         assertEquals(elem.getAlertingPattern().getAlertingPattern().getAlertingLevel(), AlertingLevel.Level2);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(), BothwayThroughConnectionInd.bothwayPathNotRequired);
         assertEquals(elem.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), CallingPartyCategory._CATEGORY_OL_RUSSIAN);
         assertEquals(elem.getGenericNumbers().size(), 1);
-        GenericNumberCap gn = elem.getGenericNumbers().get(0);
+        GenericNumberCapImpl gn = elem.getGenericNumbers().get(0);
         assertEquals(gn.getGenericNumber().getAddress(), "111222");
         assertEquals(elem.getCugInterlock().getData(), getCUGInterlock());
         assertFalse(elem.getCugOutgoingAccess());
@@ -103,12 +112,13 @@ public class ContinueWithArgumentRequestTest {
         assertFalse(elem.getSuppressOCsi());
         assertNull(elem.getContinueWithArgumentArgExtension());
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new ContinueWithArgumentRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ContinueWithArgumentRequestImpl);
+        
+        elem = (ContinueWithArgumentRequestImpl)result.getResult();  
         assertEquals(elem.getAlertingPattern().getAlertingPattern().getAlertingLevel(), AlertingLevel.Level2);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(), BothwayThroughConnectionInd.bothwayPathNotRequired);
@@ -130,7 +140,9 @@ public class ContinueWithArgumentRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ContinueWithArgumentRequestImpl.class);
+    	
         CallingPartyCategoryImpl callingPartyCategory = new CallingPartyCategoryImpl();
         callingPartyCategory.setCallingPartyCategory(CallingPartyCategory._CATEGORY_OL_RUSSIAN);
         CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(callingPartyCategory);
@@ -138,7 +150,7 @@ public class ContinueWithArgumentRequestTest {
                 BothwayThroughConnectionInd.bothwayPathNotRequired, null, false, null, null, null);
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingLevel.Level2);
         AlertingPatternCapImpl alertingPatternCap = new AlertingPatternCapImpl(alertingPattern);
-        ArrayList<GenericNumberCap> genericNumbers = new ArrayList<GenericNumberCap>();
+        List<GenericNumberCapImpl> genericNumbers = new ArrayList<GenericNumberCapImpl>();
         GenericNumberImpl genericNumber = new GenericNumberImpl();
         genericNumber.setAddress("111222");
         GenericNumberCapImpl gn = new GenericNumberCapImpl(genericNumber);
@@ -159,9 +171,11 @@ public class ContinueWithArgumentRequestTest {
         // boolean suppressOCsi, ContinueWithArgumentArgExtension
         // continueWithArgumentArgExtension
 
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         LocationNumberImpl locationNumber = new LocationNumberImpl();
         locationNumber.setAddress("222333");
@@ -172,9 +186,11 @@ public class ContinueWithArgumentRequestTest {
         elem = new ContinueWithArgumentRequestImpl(alertingPatternCap, CAPExtensionsTest.createTestCAPExtensions(), serviceInteractionIndicatorsTwo,
                 callingPartysCategory, genericNumbers, cugInterlock, true, chargeNumber, carrier, true, naOliInfo, true, true, continueWithArgumentArgExtension);
 
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

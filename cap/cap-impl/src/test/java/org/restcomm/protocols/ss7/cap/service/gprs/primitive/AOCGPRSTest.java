@@ -22,20 +22,22 @@
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequent;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRSImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -51,15 +53,16 @@ public class AOCGPRSTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        AOCGPRSImpl prim = new AOCGPRSImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AOCGPRSImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AOCGPRSImpl);
+        
+        AOCGPRSImpl prim = (AOCGPRSImpl)result.getResult();        
         assertEquals((int) prim.getAOCInitial().getE1(), 1);
         assertEquals((int) prim.getAOCInitial().getE2(), 2);
         assertEquals((int) prim.getAOCInitial().getE3(), 3);
@@ -81,16 +84,19 @@ public class AOCGPRSTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        CAI_GSM0224 aocInitial = new CAI_GSM0224Impl(1, 2, 3, 4, 5, 6, 7);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AOCGPRSImpl.class);
+    	
+        CAI_GSM0224Impl aocInitial = new CAI_GSM0224Impl(1, 2, 3, 4, 5, 6, 7);
         CAI_GSM0224Impl cai_GSM0224 = new CAI_GSM0224Impl(null, null, null, 4, 5, null, null);
-        AOCSubsequent aocSubsequent = new AOCSubsequentImpl(cai_GSM0224, 222);
+        AOCSubsequentImpl aocSubsequent = new AOCSubsequentImpl(cai_GSM0224, 222);
 
         AOCGPRSImpl prim = new AOCGPRSImpl(aocInitial, aocSubsequent);
-
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

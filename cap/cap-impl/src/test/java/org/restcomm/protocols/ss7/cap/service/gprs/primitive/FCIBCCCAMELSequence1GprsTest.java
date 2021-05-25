@@ -22,27 +22,29 @@
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELSequence1GprsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprs;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
-public class FCIBCCCAMELsequence1GprsTest {
+public class FCIBCCCAMELSequence1GprsTest {
 
     public byte[] getData() {
         return new byte[] { -96, 16, -128, 8, 48, 6, -128, 1, 5, -127, 1, 2, -127, 1, 2, -126, 1, 1 };
@@ -54,15 +56,16 @@ public class FCIBCCCAMELsequence1GprsTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        FCIBCCCAMELSequence1GprsImpl prim = new FCIBCCCAMELSequence1GprsImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FCIBCCCAMELSequence1GprsImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, FCIBCCCAMELSequence1GprsImpl._ID_FCIBCCCAMELsequence1);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof FCIBCCCAMELSequence1GprsImpl);
+        
+        FCIBCCCAMELSequence1GprsImpl prim = (FCIBCCCAMELSequence1GprsImpl)result.getResult();        
         assertEquals(prim.getFreeFormatData().getData(), this.getFreeFormatData());
         assertEquals(prim.getPDPID().getId(), 2);
         assertEquals(prim.getAppendFreeFormatData(), AppendFreeFormatData.append);
@@ -70,13 +73,16 @@ public class FCIBCCCAMELsequence1GprsTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        FreeFormatDataGprs freeFormatData = new FreeFormatDataGprsImpl(this.getFreeFormatData());
-        PDPID pdpID = new PDPIDImpl(2);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FCIBCCCAMELSequence1GprsImpl.class);
+    	
+        FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(this.getFreeFormatData());
+        PDPIDImpl pdpID = new PDPIDImpl(2);
         FCIBCCCAMELSequence1GprsImpl prim = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID, AppendFreeFormatData.append);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

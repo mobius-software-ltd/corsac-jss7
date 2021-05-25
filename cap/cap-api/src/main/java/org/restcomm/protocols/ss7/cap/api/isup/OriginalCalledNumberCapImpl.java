@@ -43,6 +43,7 @@ public class OriginalCalledNumberCapImpl extends ASNOctetString {
     }
 
     public OriginalCalledNumberCapImpl(byte[] data) {
+    	setValue(Unpooled.wrappedBuffer(data));
     }
 
     public OriginalCalledNumberCapImpl(OriginalCalledNumber originalCalledNumber) throws CAPException {

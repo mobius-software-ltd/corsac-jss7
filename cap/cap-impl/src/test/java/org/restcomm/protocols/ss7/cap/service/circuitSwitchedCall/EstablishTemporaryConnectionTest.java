@@ -23,27 +23,22 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.EstablishTemporaryConnectionRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
@@ -54,6 +49,12 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -93,13 +94,16 @@ public class EstablishTemporaryConnectionTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EstablishTemporaryConnectionRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        EstablishTemporaryConnectionRequestImpl elem = new EstablishTemporaryConnectionRequestImpl(false);
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EstablishTemporaryConnectionRequestImpl);
+        
+        EstablishTemporaryConnectionRequestImpl elem = (EstablishTemporaryConnectionRequestImpl)result.getResult();        
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNatureOfAddressIndicator(), 1);
         assertTrue(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getAddress().equals("1122"));
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNumberQualifierIndicator(), 1);
@@ -108,7 +112,12 @@ public class EstablishTemporaryConnectionTest {
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getScreeningIndicator(), 1);
         assertEquals(elem.getCorrelationID().getGenericDigits().getEncodingScheme(), 2);
         assertEquals(elem.getCorrelationID().getGenericDigits().getTypeOfDigits(), 0);
-        assertTrue(Arrays.equals(elem.getCorrelationID().getGenericDigits().getEncodedDigits(), getCorrelationIDDigits()));
+        
+        ByteBuf buffer=elem.getCorrelationID().getGenericDigits().getEncodedDigits();
+        assertNotNull(buffer);
+        byte[] data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, getCorrelationIDDigits()));
         assertTrue(Arrays.equals(elem.getScfID().getData(), getScfIDData()));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(),
                 BothwayThroughConnectionInd.bothwayPathNotRequired);
@@ -120,13 +129,13 @@ public class EstablishTemporaryConnectionTest {
         assertNull(elem.getOriginalCalledPartyID());
         assertNull(elem.getCallingPartyNumber());
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new EstablishTemporaryConnectionRequestImpl(true);
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EstablishTemporaryConnectionRequestImpl);
+        
+        elem = (EstablishTemporaryConnectionRequestImpl)result.getResult();  
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNatureOfAddressIndicator(), 1);
         assertTrue(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getAddress().equals("1122"));
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNumberQualifierIndicator(), 1);
@@ -135,7 +144,12 @@ public class EstablishTemporaryConnectionTest {
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getScreeningIndicator(), 1);
         assertEquals(elem.getCorrelationID().getGenericDigits().getEncodingScheme(), 2);
         assertEquals(elem.getCorrelationID().getGenericDigits().getTypeOfDigits(), 0);
-        assertTrue(Arrays.equals(elem.getCorrelationID().getGenericDigits().getEncodedDigits(), getCorrelationIDDigits()));
+        
+        buffer=elem.getCorrelationID().getGenericDigits().getEncodedDigits();
+        assertNotNull(buffer);
+        data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, getCorrelationIDDigits()));
         assertTrue(Arrays.equals(elem.getScfID().getData(), getScfIDData()));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(),
                 BothwayThroughConnectionInd.bothwayPathNotRequired);
@@ -147,13 +161,13 @@ public class EstablishTemporaryConnectionTest {
         assertNull(elem.getOriginalCalledPartyID());
         assertNull(elem.getCallingPartyNumber());
 
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new EstablishTemporaryConnectionRequestImpl(true);
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EstablishTemporaryConnectionRequestImpl);
+        
+        elem = (EstablishTemporaryConnectionRequestImpl)result.getResult();  
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNatureOfAddressIndicator(), 1);
         assertTrue(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getAddress().equals("1122"));
         assertEquals(elem.getAssistingSSPIPRoutingAddress().getGenericNumber().getNumberQualifierIndicator(), 1);
@@ -174,13 +188,15 @@ public class EstablishTemporaryConnectionTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EstablishTemporaryConnectionRequestImpl.class);
+    	
         GenericNumberImpl genericNumber = new GenericNumberImpl(1, "1122", 1, 0, 0, false, 1);
         // int natureOfAddresIndicator, String address, int numberQualifierIndicator, int numberingPlanIndicator, int
         // addressRepresentationREstrictedIndicator,
         // boolean numberIncomplete, int screeningIndicator
         DigitsImpl assistingSSPIPRoutingAddress = new DigitsImpl(genericNumber);
-        GenericDigitsImpl genericDigits = new GenericDigitsImpl(2, 0, getCorrelationIDDigits());
+        GenericDigitsImpl genericDigits = new GenericDigitsImpl(2, 0, Unpooled.wrappedBuffer(getCorrelationIDDigits()));
         // int encodingScheme, int typeOfDigits, int[] digits
         DigitsImpl correlationID = new DigitsImpl(genericDigits);
         ScfIDImpl scfID = new ScfIDImpl(getScfIDData());
@@ -195,10 +211,12 @@ public class EstablishTemporaryConnectionTest {
 
         EstablishTemporaryConnectionRequestImpl elem = new EstablishTemporaryConnectionRequestImpl(
                 assistingSSPIPRoutingAddress, correlationID, scfID, CAPExtensionsTest.createTestCAPExtensions(), null,
-                serviceInteractionIndicatorsTwo, null, naOliInfo, null, null, null, false);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+                serviceInteractionIndicatorsTwo, naOliInfo, null, null, null);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // Digits assistingSSPIPRoutingAddress, Digits correlationID, ScfID scfID, CAPExtensions extensions,
         // Carrier carrier, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID, NAOliInfo
@@ -209,27 +227,30 @@ public class EstablishTemporaryConnectionTest {
 
         elem = new EstablishTemporaryConnectionRequestImpl(assistingSSPIPRoutingAddress, correlationID, scfID,
                 CAPExtensionsTest.createTestCAPExtensions(), null, serviceInteractionIndicatorsTwo, 8, naOliInfo, null, null,
-                null, true);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+                null);
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        Carrier carrier = new CarrierImpl(getCarrierData());
+        CarrierImpl carrier = new CarrierImpl(getCarrierData());
         LocationNumber locationNumber = new LocationNumberImpl();
         locationNumber.setNatureOfAddresIndicator(LocationNumber._NAI_INTERNATIONAL_NUMBER);
         locationNumber.setAddress("0000077777");
-        LocationNumberCap chargeNumber = new LocationNumberCapImpl(locationNumber);
+        LocationNumberCapImpl chargeNumber = new LocationNumberCapImpl(locationNumber);
         OriginalCalledNumber originalCalledNumber = new OriginalCalledNumberImpl(LocationNumber._NAI_INTERNATIONAL_NUMBER, "1111188888", 0, 0);
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator,
         // int addressRepresentationRestrictedIndicator
-        OriginalCalledNumberCap originalCalledPartyID = new OriginalCalledNumberCapImpl(originalCalledNumber);
+        OriginalCalledNumberCapImpl originalCalledPartyID = new OriginalCalledNumberCapImpl(originalCalledNumber);
         CallingPartyNumber callingPartyNumber0 = new CallingPartyNumberImpl(LocationNumber._NAI_INTERNATIONAL_NUMBER, "2222288888", 0, 0, 0, 0);
-        CallingPartyNumberCap callingPartyNumber = new CallingPartyNumberCapImpl(callingPartyNumber0);
+        CallingPartyNumberCapImpl callingPartyNumber = new CallingPartyNumberCapImpl(callingPartyNumber0);
         elem = new EstablishTemporaryConnectionRequestImpl(assistingSSPIPRoutingAddress, null, null, null, carrier, null, null, null, chargeNumber,
-                originalCalledPartyID, callingPartyNumber, true);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+                originalCalledPartyID, callingPartyNumber);
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData)); 
     }
 }

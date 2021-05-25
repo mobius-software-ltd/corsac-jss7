@@ -28,12 +28,15 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.ErrorTreatment;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigitsImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -62,13 +65,16 @@ public class CollectedDigitsTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CollectedDigitsImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        CollectedDigitsImpl elem = new CollectedDigitsImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CollectedDigitsImpl);
+        
+        CollectedDigitsImpl elem = (CollectedDigitsImpl)result.getResult();        
         assertEquals((int) elem.getMinimumNbOfDigits(), 15);
         assertEquals((int) elem.getMaximumNbOfDigits(), 30);
         assertTrue(Arrays.equals(elem.getEndOfReplyDigit(), getEndOfReplyDigit()));
@@ -84,12 +90,16 @@ public class CollectedDigitsTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CollectedDigitsImpl.class);
+    	
         CollectedDigitsImpl elem = new CollectedDigitsImpl(15, 30, getEndOfReplyDigit(), getCancelDigit(), getStartDigit(),
                 100, 101, ErrorTreatment.repeatPrompt, false, true, false);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // Integer minimumNbOfDigits, int maximumNbOfDigits, byte[] endOfReplyDigit, byte[] cancelDigit, byte[] startDigit,
         // Integer firstDigitTimeOut, Integer interDigitTimeOut, ErrorTreatment errorTreatment, Boolean interruptableAnnInd,

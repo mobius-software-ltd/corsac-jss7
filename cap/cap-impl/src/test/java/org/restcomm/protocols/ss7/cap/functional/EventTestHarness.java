@@ -102,7 +102,7 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.ReleaseSMSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.RequestReportSMSEventRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ResetTimerSMSRequest;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 /**
  *
@@ -227,7 +227,7 @@ public class EventTestHarness implements CAPDialogListener, CAPServiceCircuitSwi
     }
 
     @Override
-    public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
         this.logger.debug("onRejectComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.RejectComponent, capDialog, sequence++);
         this.observerdEvents.add(te);

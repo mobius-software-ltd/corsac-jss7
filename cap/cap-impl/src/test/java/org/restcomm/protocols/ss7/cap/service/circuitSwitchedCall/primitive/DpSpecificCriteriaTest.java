@@ -23,22 +23,26 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocation;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaAlt;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaAltImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MidCallControlInfo;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,77 +52,93 @@ import org.testng.annotations.Test;
 public class DpSpecificCriteriaTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 129, 2, 3, (byte) 232 };
+        return new byte[] { 48, 4, (byte) 129, 2, 3, (byte) 232 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 162, 3, (byte) 128, 1, 10 };
+        return new byte[] { 48, 5, (byte) 162, 3, (byte) 128, 1, 10 };
     }
 
     public byte[] getData3() {
-        return new byte[] { (byte) 163, 4, (byte) 160, 2, (byte) 131, 0 };
+        return new byte[] { 48, 6, (byte) 163, 4, (byte) 160, 2, (byte) 131, 0 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(DpSpecificCriteriaWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        DpSpecificCriteriaImpl elem = new DpSpecificCriteriaImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, DpSpecificCriteriaImpl._ID_applicationTimer);
-        elem.decodeAll(ais);
-        assertEquals((int) elem.getApplicationTimer(), 1000);
-        assertNull(elem.getMidCallControlInfo());
-        assertNull(elem.getDpSpecificCriteriaAlt());
-
-
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new DpSpecificCriteriaImpl();
-        tag = ais.readTag();
-        assertEquals(tag, DpSpecificCriteriaImpl._ID_midCallControlInfo);
-        elem.decodeAll(ais);
-        assertNull(elem.getApplicationTimer());
-        assertEquals((int) elem.getMidCallControlInfo().getMinimumNumberOfDigits(), 10);
-        assertNull(elem.getDpSpecificCriteriaAlt());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DpSpecificCriteriaWrapperImpl);
+        
+        DpSpecificCriteriaWrapperImpl elem = (DpSpecificCriteriaWrapperImpl)result.getResult();                
+        assertEquals((int) elem.getDpSpecificCriteria().getApplicationTimer(), 1000);
+        assertNull(elem.getDpSpecificCriteria().getMidCallControlInfo());
+        assertNull(elem.getDpSpecificCriteria().getDpSpecificCriteriaAlt());
 
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new DpSpecificCriteriaImpl();
-        tag = ais.readTag();
-        assertEquals(tag, DpSpecificCriteriaImpl._ID_dpSpecificCriteriaAlt);
-        elem.decodeAll(ais);
-        assertNull(elem.getApplicationTimer());
-        assertNull(elem.getMidCallControlInfo());
-        assertTrue(elem.getDpSpecificCriteriaAlt().getChangeOfPositionControlInfo().get(0).isInterSystemHandOver());
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DpSpecificCriteriaWrapperImpl);
+        
+        elem = (DpSpecificCriteriaWrapperImpl)result.getResult(); 
+        assertNull(elem.getDpSpecificCriteria().getApplicationTimer());
+        assertEquals((int) elem.getDpSpecificCriteria().getMidCallControlInfo().getMinimumNumberOfDigits(), 10);
+        assertNull(elem.getDpSpecificCriteria().getDpSpecificCriteriaAlt());
+
+
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DpSpecificCriteriaWrapperImpl);
+        
+        elem = (DpSpecificCriteriaWrapperImpl)result.getResult(); 
+        assertNull(elem.getDpSpecificCriteria().getApplicationTimer());
+        assertNull(elem.getDpSpecificCriteria().getMidCallControlInfo());
+        assertTrue(elem.getDpSpecificCriteria().getDpSpecificCriteriaAlt().getChangeOfPositionControlInfo().get(0).isInterSystemHandOver());
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(DpSpecificCriteriaWrapperImpl.class);
+    	
         DpSpecificCriteriaImpl elem = new DpSpecificCriteriaImpl(1000);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        DpSpecificCriteriaWrapperImpl wrapper = new DpSpecificCriteriaWrapperImpl(elem);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        MidCallControlInfo midCallControlInfo = new MidCallControlInfoImpl(10, null, null, null, null, null);
+        MidCallControlInfoImpl midCallControlInfo = new MidCallControlInfoImpl(10, null, null, null, null, null);
         elem = new DpSpecificCriteriaImpl(midCallControlInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        wrapper = new DpSpecificCriteriaWrapperImpl(elem);
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<ChangeOfLocation> changeOfPositionControlInfo = new ArrayList<ChangeOfLocation>();
-        ChangeOfLocation changeOfLocation = new ChangeOfLocationImpl(ChangeOfLocationImpl.Boolean_Option.interSystemHandOver);
+        List<ChangeOfLocationImpl> changeOfPositionControlInfo = new ArrayList<ChangeOfLocationImpl>();
+        ChangeOfLocationImpl changeOfLocation = new ChangeOfLocationImpl(ChangeOfLocationImpl.Boolean_Option.interSystemHandOver);
         changeOfPositionControlInfo.add(changeOfLocation);
-        DpSpecificCriteriaAlt dpSpecificCriteriaAlt = new DpSpecificCriteriaAltImpl(changeOfPositionControlInfo, null);
+        DpSpecificCriteriaAltImpl dpSpecificCriteriaAlt = new DpSpecificCriteriaAltImpl(changeOfPositionControlInfo, null);
         elem = new DpSpecificCriteriaImpl(dpSpecificCriteriaAlt);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        wrapper = new DpSpecificCriteriaWrapperImpl(elem);
+        rawData = this.getData3();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

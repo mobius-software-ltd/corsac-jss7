@@ -22,20 +22,22 @@
 
 package org.restcomm.protocols.ss7.cap.primitives;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
 import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionFieldImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -50,61 +52,48 @@ public class CAPExtensionsTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CAPExtensionsImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        CAPExtensionsImpl elem = new CAPExtensionsImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CAPExtensionsImpl);
+        
+        CAPExtensionsImpl elem = (CAPExtensionsImpl)result.getResult();
         assertTrue(checkTestCAPExtensions(elem));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        CAPExtensionsImpl elem = createTestCAPExtensions();
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CAPExtensionsImpl.class);
+    	
+    	CAPExtensionsImpl elem = createTestCAPExtensions();
+    	byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     public static CAPExtensionsImpl createTestCAPExtensions() {
-        AsnOutputStream aos = new AsnOutputStream();
-        aos.writeNullData();
-        ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, aos.toByteArray());
-        try {
-        	aos.close();            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        aos = new AsnOutputStream();
-        try {
-            aos.writeBooleanData(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, aos.toByteArray());
-        ArrayList<ExtensionField> flds = new ArrayList<ExtensionField>();
+        ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {});
+        ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, new byte[] { -1 });
+        ArrayList<ExtensionFieldImpl> flds = new ArrayList<ExtensionFieldImpl>();
         flds.add(a1);
         flds.add(a2);
         CAPExtensionsImpl elem = new CAPExtensionsImpl(flds);
-        
-        try {
-        	aos.close();            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
         return elem;
     }
 
-    public static boolean checkTestCAPExtensions(CAPExtensions elem) {
+    public static boolean checkTestCAPExtensions(CAPExtensionsImpl elem) {
         if (elem.getExtensionFields() == null || elem.getExtensionFields().size() != 2)
             return false;
 
-        ExtensionField a1 = elem.getExtensionFields().get(0);
-        ExtensionField a2 = elem.getExtensionFields().get(1);
+        ExtensionFieldImpl a1 = elem.getExtensionFields().get(0);
+        ExtensionFieldImpl a2 = elem.getExtensionFields().get(1);
         if (a1.getLocalCode() != 2 || a2.getLocalCode() != 3)
             return false;
         if (a1.getCriticalityType() != CriticalityType.typeIgnore || a2.getCriticalityType() != CriticalityType.typeAbort)

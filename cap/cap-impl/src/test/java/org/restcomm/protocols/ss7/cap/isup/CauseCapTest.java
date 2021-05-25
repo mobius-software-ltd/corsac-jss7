@@ -23,15 +23,22 @@
 package org.restcomm.protocols.ss7.cap.isup;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -42,7 +49,7 @@ import org.testng.annotations.Test;
 public class CauseCapTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 128, 2, (byte) 132, (byte) 144 };
+        return new byte[] { 4, 2, (byte) 132, (byte) 144 };
     }
 
     public byte[] getIntData() {
@@ -51,12 +58,16 @@ public class CauseCapTest {
 
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CauseCapImpl.class);
+    	
+        byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        CauseCapImpl elem = new CauseCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CauseCapImpl);
+        
+        CauseCapImpl elem = (CauseCapImpl)result.getResult();        
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         CauseIndicators ci = elem.getCauseIndicators();
         assertEquals(ci.getCodingStandard(), 0);
@@ -94,7 +105,15 @@ public class CauseCapTest {
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CallingPartyNumberCapImpl.class);
+    	
+    	CauseCapImpl elem = new CauseCapImpl(this.getIntData());
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "isup" })

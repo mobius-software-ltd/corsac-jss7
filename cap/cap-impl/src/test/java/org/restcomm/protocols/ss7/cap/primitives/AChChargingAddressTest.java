@@ -23,17 +23,20 @@
 package org.restcomm.protocols.ss7.cap.primitives;
 
 import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.testng.annotations.Test;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -43,52 +46,60 @@ import org.testng.annotations.Test;
 public class AChChargingAddressTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 162, 3, (byte) 129, 1, 2 };
+        return new byte[] { 48, 5, (byte) 162, 3, (byte) 129, 1, 2 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 159, 50, 1, 5 };
+        return new byte[] { 48, 4, (byte) 159, 50, 1, 5 };
     }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AChChargingAddressImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        AChChargingAddressImpl elem = new AChChargingAddressImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, AChChargingAddressImpl._ID_legID);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
-        assertEquals(elem.getLegID().getReceivingSideID(), LegType.leg2);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AChChargingAddressImpl);
+        
+        AChChargingAddressImpl elem = (AChChargingAddressImpl)result.getResult();
+        assertEquals(elem.getLegID().getReceivingLegID().getReceivingSideID(), LegType.leg2);
         assertEquals(elem.getSrfConnection(), 0);
 
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new AChChargingAddressImpl();
-        tag = ais.readTag();
-        assertEquals(tag, AChChargingAddressImpl._ID_srfConnection);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AChChargingAddressImpl);
+        
+        elem = (AChChargingAddressImpl)result.getResult();
         assertNull(elem.getLegID());
         assertEquals(elem.getSrfConnection(), 5);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        LegID legID = new LegIDImpl(false, LegType.leg2);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AChChargingAddressImpl.class);
+    	
+        LegIDImpl legID = new LegIDImpl(new ReceivingLegIDImpl(LegType.leg2), null);
         AChChargingAddressImpl elem = new AChChargingAddressImpl(legID);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
 
-
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
+        
         elem = new AChChargingAddressImpl(5);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "primitives" })

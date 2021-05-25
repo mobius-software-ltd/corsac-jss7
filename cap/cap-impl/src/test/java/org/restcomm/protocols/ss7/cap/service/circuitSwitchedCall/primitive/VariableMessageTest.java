@@ -23,19 +23,22 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariableMessageImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -50,13 +53,16 @@ public class VariableMessageTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(VariableMessageImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        VariableMessageImpl elem = new VariableMessageImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VariableMessageImpl);
+        
+        VariableMessageImpl elem = (VariableMessageImpl)result.getResult();                
         assertEquals(elem.getElementaryMessageID(), 800);
         assertEquals(elem.getVariableParts().size(), 2);
         assertEquals((int) elem.getVariableParts().get(0).getInteger(), 111);
@@ -66,8 +72,10 @@ public class VariableMessageTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
-        ArrayList<VariablePart> variableParts = new ArrayList<VariablePart>();
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(VariableMessageImpl.class);
+    	
+        ArrayList<VariablePartImpl> variableParts = new ArrayList<VariablePartImpl>();
         VariablePartImpl vp = new VariablePartImpl(111);
         variableParts.add(vp);
         VariablePartTimeImpl time = new VariablePartTimeImpl(23, 59);
@@ -75,9 +83,11 @@ public class VariableMessageTest {
         variableParts.add(vp);
 
         VariableMessageImpl elem = new VariableMessageImpl(800, variableParts);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // int elementaryMessageID, ArrayList<VariablePart> variableParts
     }

@@ -50,8 +50,8 @@ public class CAMELAChBillingChargingCharacteristicsImpl {
     }
     
     //V3
-    public CAMELAChBillingChargingCharacteristicsImpl(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
-            Long tariffSwitchInterval, Boolean tone, CAPExtensionsImpl extensions) {
+    public CAMELAChBillingChargingCharacteristicsImpl(long maxCallPeriodDuration, Boolean tone, boolean releaseIfdurationExceeded,
+            Long tariffSwitchInterval, CAPExtensionsImpl extensions) {
     	this.timeDurationCharging = new TimeDurationChargingImpl(maxCallPeriodDuration,releaseIfdurationExceeded,tariffSwitchInterval,tone,extensions);
     }
     

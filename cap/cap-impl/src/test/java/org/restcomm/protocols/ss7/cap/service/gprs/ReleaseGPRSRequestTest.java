@@ -22,19 +22,20 @@
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCause;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCauseImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.ReleaseGPRSRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -53,54 +54,61 @@ public class ReleaseGPRSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ReleaseGPRSRequestImpl prim = new ReleaseGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ReleaseGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReleaseGPRSRequestImpl);
+        
+        ReleaseGPRSRequestImpl prim = (ReleaseGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getGPRSCause().getData(), 5);
         assertEquals(prim.getPDPID().getId(), 2);
     }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecodeLiveTrace() throws Exception {
-        byte[] data = this.getDataLiveTrace();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ReleaseGPRSRequestImpl prim = new ReleaseGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ReleaseGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getDataLiveTrace();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReleaseGPRSRequestImpl);
+        
+        ReleaseGPRSRequestImpl prim = (ReleaseGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getGPRSCause().getData(), 0);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        GPRSCause gprsCause = new GPRSCauseImpl(5);
-        PDPID pdpID = new PDPIDImpl(2);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ReleaseGPRSRequestImpl.class);
+    	
+        GPRSCauseImpl gprsCause = new GPRSCauseImpl(5);
+        PDPIDImpl pdpID = new PDPIDImpl(2);
         ReleaseGPRSRequestImpl prim = new ReleaseGPRSRequestImpl(gprsCause, pdpID);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncodeLiveTrace() throws Exception {
-
-        GPRSCause gprsCause = new GPRSCauseImpl(0);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ReleaseGPRSRequestImpl.class);
+    	
+        GPRSCauseImpl gprsCause = new GPRSCauseImpl(0);
         ReleaseGPRSRequestImpl prim = new ReleaseGPRSRequestImpl(gprsCause, null);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getDataLiveTrace()));
+        byte[] rawData = this.getDataLiveTrace();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

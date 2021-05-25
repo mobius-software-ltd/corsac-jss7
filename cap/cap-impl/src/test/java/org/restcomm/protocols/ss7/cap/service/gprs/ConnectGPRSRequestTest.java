@@ -22,19 +22,20 @@
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.ConnectGPRSRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -53,28 +54,33 @@ public class ConnectGPRSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ConnectGPRSRequestImpl prim = new ConnectGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ConnectGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ConnectGPRSRequestImpl);
+        
+        ConnectGPRSRequestImpl prim = (ConnectGPRSRequestImpl)result.getResult();        
         assertTrue(Arrays.equals(prim.getAccessPointName().getData(), this.getAccessPointNameData()));
         assertEquals(prim.getPDPID().getId(), 2);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        AccessPointName accessPointName = new AccessPointNameImpl(this.getAccessPointNameData());
-        PDPID pdpID = new PDPIDImpl(2);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ConnectGPRSRequestImpl.class);
+    	
+        AccessPointNameImpl accessPointName = new AccessPointNameImpl(this.getAccessPointNameData());
+        PDPIDImpl pdpID = new PDPIDImpl(2);
         ConnectGPRSRequestImpl prim = new ConnectGPRSRequestImpl(accessPointName, pdpID);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

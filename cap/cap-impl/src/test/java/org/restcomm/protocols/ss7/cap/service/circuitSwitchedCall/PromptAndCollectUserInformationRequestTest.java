@@ -29,16 +29,18 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigitsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ToneImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.PromptAndCollectUserInformationRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -55,13 +57,16 @@ public class PromptAndCollectUserInformationRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(PromptAndCollectUserInformationRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        PromptAndCollectUserInformationRequestImpl elem = new PromptAndCollectUserInformationRequestImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof PromptAndCollectUserInformationRequestImpl);
+        
+        PromptAndCollectUserInformationRequestImpl elem = (PromptAndCollectUserInformationRequestImpl)result.getResult();        
         assertEquals(elem.getCollectedInfo().getCollectedDigits().getMaximumNbOfDigits(), 10);
         assertNull(elem.getCollectedInfo().getCollectedDigits().getMinimumNbOfDigits());
         assertNull(elem.getCollectedInfo().getCollectedDigits().getEndOfReplyDigit());
@@ -84,7 +89,9 @@ public class PromptAndCollectUserInformationRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(PromptAndCollectUserInformationRequestImpl.class);
+    	
         CollectedDigitsImpl collectedDigits = new CollectedDigitsImpl(null, 10, null, null, null, null, null, null, null, null,
                 null);
         // Integer minimumNbOfDigits, int maximumNbOfDigits, byte[] endOfReplyDigit, byte[] cancelDigit, byte[] startDigit,
@@ -99,9 +106,11 @@ public class PromptAndCollectUserInformationRequestTest {
 
         PromptAndCollectUserInformationRequestImpl elem = new PromptAndCollectUserInformationRequestImpl(collectedInfo, false,
                 informationToSend, CAPExtensionsTest.createTestCAPExtensions(), 22, false);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // CollectedInfo collectedInfo, Boolean disconnectFromIPForbidden,
         // InformationToSend informationToSend, CAPExtensions extensions, Integer callSegmentID, Boolean

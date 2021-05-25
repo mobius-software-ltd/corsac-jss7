@@ -37,9 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class AChChargingAddressImpl {
-	public static final String _PrimitiveName = "AChChargingAddress";
-
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 2,constructed = true, index = -1)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 2,constructed = true, index = -1)
     private LegIDWrapperImpl legID;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 50,constructed = false, index = -1)

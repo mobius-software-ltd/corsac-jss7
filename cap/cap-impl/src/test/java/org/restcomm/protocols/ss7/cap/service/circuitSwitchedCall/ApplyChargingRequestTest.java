@@ -29,16 +29,18 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
 import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ApplyChargingRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -65,13 +67,16 @@ public class ApplyChargingRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ApplyChargingRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ApplyChargingRequestImpl elem = new ApplyChargingRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ApplyChargingRequestImpl);
+        
+        ApplyChargingRequestImpl elem = (ApplyChargingRequestImpl)result.getResult();
         assertEquals((long) elem.getAChBillingChargingCharacteristics().getMaxCallPeriodDuration(), 36000);
         assertNull(elem.getAChBillingChargingCharacteristics().getAudibleIndicator());
         assertNull(elem.getAChBillingChargingCharacteristics().getExtensions());
@@ -81,13 +86,13 @@ public class ApplyChargingRequestTest {
         assertNull(elem.getExtensions());
         assertNull(elem.getAChChargingAddress());
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new ApplyChargingRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ApplyChargingRequestImpl);
+        
+        elem = (ApplyChargingRequestImpl)result.getResult();
         assertEquals((long) elem.getAChBillingChargingCharacteristics().getMaxCallPeriodDuration(), 36000);
         assertNull(elem.getAChBillingChargingCharacteristics().getAudibleIndicator());
         assertNull(elem.getAChBillingChargingCharacteristics().getExtensions());
@@ -97,13 +102,13 @@ public class ApplyChargingRequestTest {
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         assertNull(elem.getAChChargingAddress());
 
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new ApplyChargingRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ApplyChargingRequestImpl);
+        
+        elem = (ApplyChargingRequestImpl)result.getResult();
         assertEquals((long) elem.getAChBillingChargingCharacteristics().getMaxCallPeriodDuration(), 36000);
         assertNull(elem.getAChBillingChargingCharacteristics().getAudibleIndicator());
         assertNull(elem.getAChBillingChargingCharacteristics().getExtensions());
@@ -116,20 +121,24 @@ public class ApplyChargingRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ApplyChargingRequestImpl.class);
+    	
         CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics = new CAMELAChBillingChargingCharacteristicsImpl(
-                36000, false, null, null, null, 2);
+                36000, false, null, null, null);
         // long maxCallPeriodDuration, boolean releaseIfdurationExceeded, Long
         // tariffSwitchInterval,
         // AudibleIndicator audibleIndicator, CAPExtensions extensions, boolean
         // isCAPVersion3orLater
-        SendingSideIDImpl partyToCharge = new SendingSideIDImpl(LegType.leg1);
+        SendingLegIDImpl partyToCharge = new SendingLegIDImpl(LegType.leg1);
 
         ApplyChargingRequestImpl elem = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, partyToCharge, null,
                 null);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
         // CAMELAChBillingChargingCharacteristics
         // aChBillingChargingCharacteristics, SendingSideID partyToCharge,
         // CAPExtensions extensions, AChChargingAddress aChChargingAddress
@@ -137,16 +146,19 @@ public class ApplyChargingRequestTest {
 
         elem = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, partyToCharge,
                 CAPExtensionsTest.createTestCAPExtensions(), null);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        AChChargingAddress aChChargingAddress = new AChChargingAddressImpl(10);
+        AChChargingAddressImpl aChChargingAddress = new AChChargingAddressImpl(10);
         elem = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, null, null, aChChargingAddress);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

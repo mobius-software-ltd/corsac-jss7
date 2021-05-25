@@ -206,7 +206,9 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 	else if(compType == ComponentType.ReturnResultLast && parameter == null) {
                 		processed = true;
         				EntityReleasedGPRSResponse ind = new EntityReleasedGPRSResponseImpl();
-        	        	
+        				ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		  
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -355,7 +357,9 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 	else if(compType == ComponentType.ReturnResultLast && parameter == null) {
                 		processed = true;
                 		ApplyChargingReportGPRSResponse ind = new ApplyChargingReportGPRSResponseImpl();
-        	        	
+                		ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -385,7 +389,9 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 	else if(compType == ComponentType.ReturnResultLast && parameter == null) {
                 		processed = true;
                 		EventReportGPRSResponse ind = new EventReportGPRSResponseImpl();
-        	        	
+                		ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -402,7 +408,9 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 	if(compType == ComponentType.Invoke && parameter == null) {
                 		processed = true;
                 		ActivityTestGPRSRequest ind = new ActivityTestGPRSRequestImpl();
-        	        	
+                		ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -415,7 +423,9 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 	else if(compType == ComponentType.ReturnResultLast && parameter == null) {
                 		processed = true;
                 		ActivityTestGPRSResponse ind = new ActivityTestGPRSResponseImpl();
-        	        	
+                		ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);

@@ -22,15 +22,21 @@
 
 package org.restcomm.protocols.ss7.cap.primitives;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.BurstImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -49,27 +55,29 @@ public class BurstTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BurstImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        BurstImpl elem = new BurstImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BurstImpl);
+        
+        BurstImpl elem = (BurstImpl)result.getResult();
         assertNull(elem.getNumberOfBursts());
         assertEquals((int) elem.getBurstInterval(), 10);
         assertNull(elem.getNumberOfTonesInBurst());
         assertNull(elem.getToneDuration());
         assertNull(elem.getToneInterval());
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new BurstImpl();
-        tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BurstImpl);
+        
+        elem = (BurstImpl)result.getResult();
         assertEquals((int) elem.getNumberOfBursts(), 1);
         assertEquals((int) elem.getBurstInterval(), 10);
         assertEquals((int) elem.getNumberOfTonesInBurst(), 2);
@@ -79,16 +87,22 @@ public class BurstTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BurstImpl.class);
+    	
         BurstImpl elem = new BurstImpl(null, 10, null, null, null);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new BurstImpl(1, 10, 2, 11, 12);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "primitives" })

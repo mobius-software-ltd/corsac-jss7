@@ -23,17 +23,21 @@
 package org.restcomm.protocols.ss7.cap.isup;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,7 +47,7 @@ import org.testng.annotations.Test;
 public class LocationNumberCapTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 138, 8, (byte) 132, (byte) 151, 8, 2, (byte) 151, 1, 32, 0 };
+        return new byte[] { 4, 8, (byte) 132, (byte) 151, 8, 2, (byte) 151, 1, 32, 0 };
     }
 
     public byte[] getIntData() {
@@ -52,12 +56,16 @@ public class LocationNumberCapTest {
 
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(LocationNumberCapImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        LocationNumberCapImpl elem = new LocationNumberCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LocationNumberCapImpl);
+        
+        LocationNumberCapImpl elem = (LocationNumberCapImpl)result.getResult();         
         LocationNumber ln = elem.getLocationNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(ln.getNatureOfAddressIndicator(), 4);
@@ -70,17 +78,23 @@ public class LocationNumberCapTest {
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(LocationNumberCapImpl.class);
+    	
         LocationNumberCapImpl elem = new LocationNumberCapImpl(this.getIntData());
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 10);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         LocationNumber cpn = new LocationNumberImpl(4, "80207910020", 1, 1, 1, 3);
         elem = new LocationNumberCapImpl(cpn);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 10);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        rawData = this.getData();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator, int
         // addressRepresentationREstrictedIndicator,

@@ -21,20 +21,23 @@
  */
 package org.restcomm.protocols.ss7.cap.service.sms;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELsequence1SMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMSImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.FurnishChargingInformationSMSRequestImpl;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * 
@@ -54,34 +57,37 @@ public class FurnishChargingInformationSMSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        FurnishChargingInformationSMSRequestImpl prim = new FurnishChargingInformationSMSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FurnishChargingInformationSMSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        FCIBCCCAMELsequence1SMS fcIBCCCAMELsequence1 = prim.getFCIBCCCAMELsequence1();
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof FurnishChargingInformationSMSRequestImpl);
+        
+        FurnishChargingInformationSMSRequestImpl prim = (FurnishChargingInformationSMSRequestImpl)result.getResult();        
+        FCIBCCCAMELSequence1SMSImpl fcIBCCCAMELsequence1 = prim.getFCIBCCCAMELsequence1();
         assertNotNull(fcIBCCCAMELsequence1);
         assertTrue(Arrays.equals(fcIBCCCAMELsequence1.getFreeFormatData().getData(), this.getFreeFormatData()));
         assertEquals(fcIBCCCAMELsequence1.getAppendFreeFormatData(), AppendFreeFormatData.append);
-
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        FreeFormatDataSMS freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FurnishChargingInformationSMSRequestImpl.class);
+    	    	
+        FreeFormatDataSMSImpl freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
         FCIBCCCAMELSequence1SMSImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1SMSImpl(freeFormatData,
                 AppendFreeFormatData.append);
 
         FurnishChargingInformationSMSRequestImpl prim = new FurnishChargingInformationSMSRequestImpl(fcIBCCCAMELsequence1);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
     
     /*@Test(groups = {"functional.xml.serialize", "primitives"})

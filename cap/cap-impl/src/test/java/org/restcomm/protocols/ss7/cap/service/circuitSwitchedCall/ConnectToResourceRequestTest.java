@@ -29,15 +29,18 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ConnectToResourceRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -58,12 +61,16 @@ public class ConnectToResourceRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ConnectToResourceRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ConnectToResourceRequestImpl elem = new ConnectToResourceRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ConnectToResourceRequestImpl);
+        
+        ConnectToResourceRequestImpl elem = (ConnectToResourceRequestImpl)result.getResult();        
         assertEquals(elem.getResourceAddress_IPRoutingAddress().getCalledPartyNumber().getNatureOfAddressIndicator(), 3);
         assertTrue(elem.getResourceAddress_IPRoutingAddress().getCalledPartyNumber().getAddress().endsWith("98765"));
         assertEquals(elem.getResourceAddress_IPRoutingAddress().getCalledPartyNumber().getNumberingPlanIndicator(), 2);
@@ -74,11 +81,13 @@ public class ConnectToResourceRequestTest {
                 BothwayThroughConnectionInd.bothwayPathRequired);
         assertEquals((int) elem.getCallSegmentID(), 21);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new ConnectToResourceRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ConnectToResourceRequestImpl);
+        
+        elem = (ConnectToResourceRequestImpl)result.getResult();  
         assertNull(elem.getResourceAddress_IPRoutingAddress());
         assertTrue(elem.getResourceAddress_Null());
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
@@ -89,7 +98,9 @@ public class ConnectToResourceRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ConnectToResourceRequestImpl.class);
+    	
         CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(3, "98765", 2, 1);
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
         CalledPartyNumberCapImpl resourceAddress_IPRoutingAddress = new CalledPartyNumberCapImpl(calledPartyNumber);
@@ -98,16 +109,19 @@ public class ConnectToResourceRequestTest {
 
         ConnectToResourceRequestImpl elem = new ConnectToResourceRequestImpl(resourceAddress_IPRoutingAddress, false, null,
                 serviceInteractionIndicatorsTwo, 21);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new ConnectToResourceRequestImpl(null, true, CAPExtensionsTest.createTestCAPExtensions(),
                 serviceInteractionIndicatorsTwo, 21);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
-
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
         // CalledPartyNumberCap resourceAddress_IPRoutingAddress, boolean resourceAddress_Null, CAPExtensions extensions,
         // ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID
 

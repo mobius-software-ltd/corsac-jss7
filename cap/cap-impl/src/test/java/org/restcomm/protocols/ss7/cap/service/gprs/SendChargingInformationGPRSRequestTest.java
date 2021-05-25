@@ -22,26 +22,24 @@
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequent;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRS;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.SendChargingInformationGPRSRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -57,15 +55,16 @@ public class SendChargingInformationGPRSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        SendChargingInformationGPRSRequestImpl prim = new SendChargingInformationGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SendChargingInformationGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SendChargingInformationGPRSRequestImpl);
+        
+        SendChargingInformationGPRSRequestImpl prim = (SendChargingInformationGPRSRequestImpl)result.getResult();        
         assertEquals((int) prim.getSCIGPRSBillingChargingCharacteristics().getAOCGPRS().getAOCInitial().getE1(), 1);
         assertEquals((int) prim.getSCIGPRSBillingChargingCharacteristics().getAOCGPRS().getAOCInitial().getE2(), 2);
         assertEquals((int) prim.getSCIGPRSBillingChargingCharacteristics().getAOCGPRS().getAOCInitial().getE3(), 3);
@@ -89,22 +88,25 @@ public class SendChargingInformationGPRSRequestTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        CAI_GSM0224 aocInitial = new CAI_GSM0224Impl(1, 2, 3, 4, 5, 6, 7);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SendChargingInformationGPRSRequestImpl.class);
+    	
+        CAI_GSM0224Impl aocInitial = new CAI_GSM0224Impl(1, 2, 3, 4, 5, 6, 7);
         CAI_GSM0224Impl cai_GSM0224 = new CAI_GSM0224Impl(null, null, null, 4, 5, null, null);
-        AOCSubsequent aocSubsequent = new AOCSubsequentImpl(cai_GSM0224, 222);
-        AOCGPRS aocGPRS = new AOCGPRSImpl(aocInitial, aocSubsequent);
-        PDPID pdpID = new PDPIDImpl(1);
-        CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics = new CAMELSCIGPRSBillingChargingCharacteristicsImpl(
+        AOCSubsequentImpl aocSubsequent = new AOCSubsequentImpl(cai_GSM0224, 222);
+        AOCGPRSImpl aocGPRS = new AOCGPRSImpl(aocInitial, aocSubsequent);
+        PDPIDImpl pdpID = new PDPIDImpl(1);
+        CAMELSCIGPRSBillingChargingCharacteristicsImpl sciGPRSBillingChargingCharacteristics = new CAMELSCIGPRSBillingChargingCharacteristicsImpl(
                 aocGPRS, pdpID);
 
         SendChargingInformationGPRSRequestImpl prim = new SendChargingInformationGPRSRequestImpl(
                 sciGPRSBillingChargingCharacteristics);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

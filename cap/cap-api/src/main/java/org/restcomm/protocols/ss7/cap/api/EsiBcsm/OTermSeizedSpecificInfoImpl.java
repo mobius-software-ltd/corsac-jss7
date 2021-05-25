@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.cap.api.EsiBcsm;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -34,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class OTermSeizedSpecificInfoImpl {
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = true,index = -1)
 	private LocationInformationImpl locationInformation;
 
     public OTermSeizedSpecificInfoImpl() {

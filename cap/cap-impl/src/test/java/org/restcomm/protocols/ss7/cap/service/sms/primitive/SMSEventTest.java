@@ -22,17 +22,21 @@
 package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -47,15 +51,16 @@ public class SMSEventTest {
 	
 	@Test(groups = { "functional.decode", "primitives" })
 	public void testDecode() throws Exception {
-		byte[] data = this.getData();
-		AsnInputStream asn = new AsnInputStream(data);
-		int tag = asn.readTag();
-		SMSEventImpl prim = new SMSEventImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, Tag.SEQUENCE);
-		assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-		
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SMSEventImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SMSEventImpl);
+        
+        SMSEventImpl prim = (SMSEventImpl)result.getResult();                
 		assertEquals(prim.getEventTypeSMS(), EventTypeSMS.oSmsSubmission);
 		assertEquals(prim.getMonitorMode(),  MonitorMode.notifyAndContinue);
 		
@@ -63,11 +68,15 @@ public class SMSEventTest {
 	
 	@Test(groups = { "functional.encode", "primitives" })
 	public void testEncode() throws Exception {
-		SMSEventImpl prim = new SMSEventImpl(EventTypeSMS.oSmsSubmission, MonitorMode.notifyAndContinue);
-		AsnOutputStream asn = new AsnOutputStream();
-		prim.encodeAll(asn);
-	
-		assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SMSEventImpl.class);
+    	
+    	SMSEventImpl prim = new SMSEventImpl(EventTypeSMS.oSmsSubmission, MonitorMode.notifyAndContinue);
+    	byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 	}
 	
 }

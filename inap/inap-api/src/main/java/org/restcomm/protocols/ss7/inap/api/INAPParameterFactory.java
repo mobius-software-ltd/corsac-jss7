@@ -27,6 +27,7 @@ import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoDpAssignment;
@@ -55,6 +56,8 @@ public interface INAPParameterFactory {
 
     ReceivingLegIDImpl createReceivingLegID(LegType legID);
 
+    LegIDImpl createLegID(ReceivingLegIDImpl receivingLeg,SendingLegIDImpl sendingLeg);
+    
     MiscCallInfoImpl createMiscCallInfo(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment);
 
 }

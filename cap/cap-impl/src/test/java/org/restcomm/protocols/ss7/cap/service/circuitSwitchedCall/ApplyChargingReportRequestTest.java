@@ -29,14 +29,17 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformationImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ReceivingSideIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ApplyChargingReportRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -53,13 +56,16 @@ public class ApplyChargingReportRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ApplyChargingReportRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ApplyChargingReportRequestImpl elem = new ApplyChargingReportRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ApplyChargingReportRequestImpl);
+        
+        ApplyChargingReportRequestImpl elem = (ApplyChargingReportRequestImpl)result.getResult();
         assertEquals(elem.getTimeDurationChargingResult().getPartyToCharge().getReceivingSideID(), LegType.leg1);
         assertEquals((int) elem.getTimeDurationChargingResult().getTimeInformation().getTimeIfNoTariffSwitch(), 26);
         assertFalse(elem.getTimeDurationChargingResult().getLegActive());
@@ -70,8 +76,10 @@ public class ApplyChargingReportRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
-        ReceivingSideIDImpl partyToCharge = new ReceivingSideIDImpl(LegType.leg1);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ApplyChargingReportRequestImpl.class);
+    	
+        ReceivingLegIDImpl partyToCharge = new ReceivingLegIDImpl(LegType.leg1);
         TimeInformationImpl timeInformation = new TimeInformationImpl(26);
         TimeDurationChargingResultImpl timeDurationChargingResult = new TimeDurationChargingResultImpl(partyToCharge,
                 timeInformation, false, false, null, null);
@@ -81,9 +89,11 @@ public class ApplyChargingReportRequestTest {
         // AChChargingAddress aChChargingAddress
 
         ApplyChargingReportRequestImpl elem = new ApplyChargingReportRequestImpl(timeDurationChargingResult);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

@@ -22,17 +22,20 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TDisconnectSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -42,7 +45,7 @@ import org.testng.annotations.Test;
 public class TDisconnectSpecificInfoTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 172, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
+        return new byte[] { 48 , 4, (byte) 128, 2, (byte) 132, (byte) 144 };
     }
 
     public byte[] getIntData() {
@@ -51,25 +54,31 @@ public class TDisconnectSpecificInfoTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TDisconnectSpecificInfoImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        TDisconnectSpecificInfoImpl elem = new TDisconnectSpecificInfoImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, EventSpecificInformationBCSMImpl._ID_tDisconnectSpecificInfo);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TDisconnectSpecificInfoImpl);
+        
+        TDisconnectSpecificInfoImpl elem = (TDisconnectSpecificInfoImpl)result.getResult();                
         assertTrue(Arrays.equals(elem.getReleaseCause().getData(), this.getIntData()));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
-        CauseCapImpl cause = new CauseCapImpl(this.getIntData());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TDisconnectSpecificInfoImpl.class);
+    	
+    	CauseCapImpl cause = new CauseCapImpl(this.getIntData());
         TDisconnectSpecificInfoImpl elem = new TDisconnectSpecificInfoImpl(cause);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, EventSpecificInformationBCSMImpl._ID_tDisconnectSpecificInfo);
-        assertEquals(aos.toByteArray(), this.getData());
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
     }
 

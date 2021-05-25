@@ -22,20 +22,27 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.gap.*;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Arrays;
+
+import org.restcomm.protocols.ss7.cap.api.gap.BasicGapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.BasicGapCriteriaWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.CalledAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.CallingAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapOnServiceImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,12 +55,12 @@ public class BasicGapCriteriaTest {
 
     // CalledAddressValue
     public byte[] getData() {
-        return new byte[] { (byte) 128, 5, 0, 1, 64, 66, (byte) 134};
+        return new byte[] { 48, 7, (byte) 128, 5, 0, 1, 64, 66, (byte) 134};
     }
 
     // CalledAddressAndService
     public byte[] getData1() {
-        return new byte[] {(byte) 189, 10, (byte) 128, 4, 48, 69, 91, 84, (byte) 129, 2, 3, 53};
+        return new byte[] { 48, 12, (byte) 189, 10, (byte) 128, 4, 48, 69, 91, 84, (byte) 129, 2, 3, 53};
     }
 
     public byte[] getDigitsData() {
@@ -61,123 +68,141 @@ public class BasicGapCriteriaTest {
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 162, 3, (byte) 128, 1, 18 };
+        return new byte[] { 48, 5, (byte) 162, 3, (byte) 128, 1, 18 };
     }
 
     public byte[] getData3() {
-        return new byte[] { (byte) 190, 10, (byte) 128, 4, 48, 69, 91, 84, (byte) 129, 2, 3, 53 };
+        return new byte[] { 48, 12, (byte) 190, 10, (byte) 128, 4, 48, 69, 91, 84, (byte) 129, 2, 3, 53 };
     }
 
     @Test(groups = { "functional.decode", "gap" })
     public void testDecode_CalledAddressValue() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl();
-
-        int tag = ais.readTag();
-        assertEquals(tag, BasicGapCriteriaImpl._ID_calledAddressValue);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
-
-        assertEquals(elem.getCalledAddressValue().getGenericNumber().getAddress(), "2468");
-        assertEquals(elem.getCalledAddressValue().getGenericNumber().getNumberingPlanIndicator(), 4);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BasicGapCriteriaWrapperImpl);
+        
+        BasicGapCriteriaWrapperImpl elem = (BasicGapCriteriaWrapperImpl)result.getResult();        
+        assertEquals(elem.getBasicGapCriteria().getCalledAddressValue().getGenericNumber().getAddress(), "2468");
+        assertEquals(elem.getBasicGapCriteria().getCalledAddressValue().getGenericNumber().getNumberingPlanIndicator(), 4);
     }
 
     @Test(groups = { "functional.encode", "gap" })
     public void testEncode_CalledAddressValue() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
+    	
         GenericNumber genericNumber = new GenericNumberImpl(1, "2468", 0, 4, 0, false, 0);
-        Digits digits = new DigitsImpl(genericNumber);
+        DigitsImpl digits = new DigitsImpl(genericNumber);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(digits);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);
+        
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     @Test(groups = { "functional.decode", "gap" })
     public void testDecode_GapOnService() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
+    	
+        byte[] rawData = this.getData2();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData2();
-        AsnInputStream ais = new AsnInputStream(data);
-        BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl();
-
-        int tag = ais.readTag();
-        assertEquals(tag, BasicGapCriteriaImpl._ID_gapOnService);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
-
-        assertEquals(elem.getGapOnService().getServiceKey(), 18);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BasicGapCriteriaWrapperImpl);
+        
+        BasicGapCriteriaWrapperImpl elem = (BasicGapCriteriaWrapperImpl)result.getResult();        
+        assertEquals(elem.getBasicGapCriteria().getGapOnService().getServiceKey(), 18);
     }
 
     @Test(groups = { "functional.encode", "gap" })
     public void testEncode_GapOnService() throws Exception {
-
-        GapOnService gapOnService = new GapOnServiceImpl(18);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
+    	
+        GapOnServiceImpl gapOnService = new GapOnServiceImpl(18);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(gapOnService);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);
+        
+        byte[] rawData = this.getData2();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     @Test(groups = { "functional.decode", "gap" })
     public void testDecode_CalledAddressAndService() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, BasicGapCriteriaImpl._ID_calledAddressAndService);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
-
-        assertEquals(elem.getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
-        assertEquals(elem.getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BasicGapCriteriaWrapperImpl);
+        
+        BasicGapCriteriaWrapperImpl elem = (BasicGapCriteriaWrapperImpl)result.getResult();        
+        assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
+        assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
     }
 
     @Test(groups = { "functional.encode", "gap" })
     public void testEncode_CalledAddressAndService() throws Exception {
-
-        Digits digits = new DigitsImpl(getDigitsData());
-        CalledAddressAndService calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
+    	
+        DigitsImpl digits = new DigitsImpl(getDigitsData());
+        CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(calledAddressAndService);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);
+        
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     @Test(groups = { "functional.decode", "gap" })
     public void testDecode_CallingAddressAndService() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData3();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData3();
-        AsnInputStream ais = new AsnInputStream(data);
-        BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, BasicGapCriteriaImpl._ID_callingAddressAndService);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
-
-        assertEquals(elem.getCallingAddressAndService().getServiceKey(), SERVICE_KEY);
-        assertEquals(elem.getCallingAddressAndService().getCallingAddressValue().getData(), getDigitsData());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BasicGapCriteriaWrapperImpl);
+        
+        BasicGapCriteriaWrapperImpl elem = (BasicGapCriteriaWrapperImpl)result.getResult();        
+        assertEquals(elem.getBasicGapCriteria().getCallingAddressAndService().getServiceKey(), SERVICE_KEY);
+        assertEquals(elem.getBasicGapCriteria().getCallingAddressAndService().getCallingAddressValue().getData(), getDigitsData());
     }
 
     @Test(groups = { "functional.encode", "gap" })
     public void testEncode_CallingAddressAndService() throws Exception {
-
-        Digits digits = new DigitsImpl(getDigitsData());
-        CallingAddressAndService callingAddressAndService = new CallingAddressAndServiceImpl(digits, SERVICE_KEY);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
+    	
+        DigitsImpl digits = new DigitsImpl(getDigitsData());
+        CallingAddressAndServiceImpl callingAddressAndService = new CallingAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(callingAddressAndService);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);
+        
+        byte[] rawData = this.getData3();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "gap" })

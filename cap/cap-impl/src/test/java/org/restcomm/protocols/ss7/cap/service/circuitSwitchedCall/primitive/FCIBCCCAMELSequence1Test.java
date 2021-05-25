@@ -23,26 +23,30 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
-import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class FCIBCCCAMELsequence1Test {
+public class FCIBCCCAMELSequence1Test {
 
     public byte[] getData1() {
         return new byte[] { 48, 14, (byte) 128, 4, 4, 5, 6, 7, (byte) 161, 3, (byte) 128, 1, 2, (byte) 130, 1, 1 };
@@ -54,12 +58,16 @@ public class FCIBCCCAMELsequence1Test {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FCIBCCCAMELSequence1Impl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        FCIBCCCAMELSequence1Impl elem = new FCIBCCCAMELSequence1Impl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof FCIBCCCAMELSequence1Impl);
+        
+        FCIBCCCAMELSequence1Impl elem = (FCIBCCCAMELSequence1Impl)result.getResult();        
         assertTrue(Arrays.equals(elem.getFreeFormatData().getData(), this.getDataFFD()));
         assertEquals(elem.getPartyToCharge().getSendingSideID(), LegType.leg2);
         assertEquals(elem.getAppendFreeFormatData(), AppendFreeFormatData.append);
@@ -67,13 +75,17 @@ public class FCIBCCCAMELsequence1Test {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
-        SendingSideIDImpl partyToCharge = new SendingSideIDImpl(LegType.leg2);
-        FreeFormatData ffd = new FreeFormatDataImpl(getDataFFD());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FCIBCCCAMELSequence1Impl.class);
+    	
+        SendingLegIDImpl partyToCharge = new SendingLegIDImpl(LegType.leg2);
+        FreeFormatDataImpl ffd = new FreeFormatDataImpl(getDataFFD());
         FCIBCCCAMELSequence1Impl elem = new FCIBCCCAMELSequence1Impl(ffd, partyToCharge, AppendFreeFormatData.append);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // byte[] freeFormatData, SendingSideID partyToCharge, AppendFreeFormatData appendFreeFormatData
     }

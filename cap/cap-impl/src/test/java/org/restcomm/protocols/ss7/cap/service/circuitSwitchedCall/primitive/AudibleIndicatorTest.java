@@ -22,19 +22,24 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.primitives.Burst;
 import org.restcomm.protocols.ss7.cap.api.primitives.BurstImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.BurstList;
 import org.restcomm.protocols.ss7.cap.api.primitives.BurstListImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AudibleIndicatorImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AudibleIndicatorWrapperImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -44,55 +49,66 @@ import org.testng.annotations.Test;
 public class AudibleIndicatorTest {
 
     public byte[] getData1() {
-        return new byte[] { 1, 1, 0 };
+        return new byte[] { 48, 3, 1, 1, 0 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 161, 8, (byte) 128, 1, 1, (byte) 161, 3, (byte) 128, 1, 2 };
+        return new byte[] { 48, 10, (byte) 161, 8, (byte) 128, 1, 1, (byte) 161, 3, (byte) 128, 1, 2 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AudibleIndicatorWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        AudibleIndicatorImpl elem = new AudibleIndicatorImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.BOOLEAN);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-        elem.decodeAll(ais);
-        assertFalse(elem.getTone());
-        assertNull(elem.getBurstList());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AudibleIndicatorWrapperImpl);
+        
+        AudibleIndicatorWrapperImpl elem = (AudibleIndicatorWrapperImpl)result.getResult();        
+        assertFalse(elem.getAudibleIndicator().getTone());
+        assertNull(elem.getAudibleIndicator().getBurstList());
 
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new AudibleIndicatorImpl();
-        tag = ais.readTag();
-        assertEquals(tag, AudibleIndicatorImpl._ID_burstList);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
-        assertNull(elem.getTone());
-        assertEquals((int) elem.getBurstList().getWarningPeriod(), 1);
-        assertEquals((int) elem.getBurstList().getBursts().getNumberOfBursts(), 2);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AudibleIndicatorWrapperImpl);
+        
+        elem = (AudibleIndicatorWrapperImpl)result.getResult();     
+        assertNull(elem.getAudibleIndicator().getTone());
+        assertEquals((int) elem.getAudibleIndicator().getBurstList().getWarningPeriod(), 1);
+        assertEquals((int) elem.getAudibleIndicator().getBurstList().getBursts().getNumberOfBursts(), 2);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AudibleIndicatorWrapperImpl.class);
+    	
         AudibleIndicatorImpl elem = new AudibleIndicatorImpl(false);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        AudibleIndicatorWrapperImpl wrapper = new AudibleIndicatorWrapperImpl(elem);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        Burst burst = new BurstImpl(2, null, null, null, null);
-        BurstList burstList = new BurstListImpl(1, burst);
+        BurstImpl burst = new BurstImpl(2, null, null, null, null);
+        BurstListImpl burstList = new BurstListImpl(1, burst);
         // Integer warningPeriod, Burst burst
         elem = new AudibleIndicatorImpl(burstList);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        wrapper = new AudibleIndicatorWrapperImpl(elem);
+        
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })

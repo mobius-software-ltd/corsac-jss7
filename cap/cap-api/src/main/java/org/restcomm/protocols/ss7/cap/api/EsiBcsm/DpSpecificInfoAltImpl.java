@@ -33,19 +33,15 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class DpSpecificInfoAltImpl {
-	public static final int _ID_oServiceChangeSpecificInfo = 0;
-    public static final int _ID_tServiceChangeSpecificInfo = 1;
-    public static final int _ID_collectedInfoSpecificInfo = 2;
-
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0, constructed = true,index = -1)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0, constructed = true,index = -1)
     private OServiceChangeSpecificInfoImpl oServiceChangeSpecificInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 1, constructed = true,index = -1)
-    private CollectedInfoSpecificInfoImpl collectedInfoSpecificInfo;
-    
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 2, constructed = true,index = -1)
     private TServiceChangeSpecificInfoImpl tServiceChangeSpecificInfo;
 
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 2, constructed = true,index = -1)
+    private CollectedInfoSpecificInfoImpl collectedInfoSpecificInfo;
+    
     public DpSpecificInfoAltImpl() {
     }
 

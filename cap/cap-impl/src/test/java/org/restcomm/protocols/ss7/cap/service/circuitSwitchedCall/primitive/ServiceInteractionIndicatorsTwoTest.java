@@ -22,23 +22,29 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BackwardServiceInteractionInd;
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BackwardServiceInteractionIndImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConferenceTreatmentIndicator;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConnectedNumberTreatmentInd;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CwTreatmentIndicator;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EctTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ForwardServiceInteractionInd;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ForwardServiceInteractionIndImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.HoldTreatmentIndicator;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -58,16 +64,16 @@ public class ServiceInteractionIndicatorsTwoTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ServiceInteractionIndicatorsTwoImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ServiceInteractionIndicatorsTwoImpl elem = new ServiceInteractionIndicatorsTwoImpl();
-
-        ais.readTag();
-        assertEquals(ais.getTag(), Tag.SEQUENCE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ServiceInteractionIndicatorsTwoImpl);
+        
+        ServiceInteractionIndicatorsTwoImpl elem = (ServiceInteractionIndicatorsTwoImpl)result.getResult();        
         assertEquals(elem.getBothwayThroughConnectionInd(), BothwayThroughConnectionInd.bothwayPathRequired);
 
         assertNull(elem.getForwardServiceInteractionInd());
@@ -78,17 +84,13 @@ public class ServiceInteractionIndicatorsTwoTest {
         assertNull(elem.getCwTreatmentIndicator());
         assertNull(elem.getEctTreatmentIndicator());
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new ServiceInteractionIndicatorsTwoImpl();
-
-        ais.readTag();
-        assertEquals(ais.getTag(), Tag.SEQUENCE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-        elem.decodeAll(ais);
-
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ServiceInteractionIndicatorsTwoImpl);
+        
+        elem = (ServiceInteractionIndicatorsTwoImpl)result.getResult(); 
         assertEquals(elem.getForwardServiceInteractionInd().getConferenceTreatmentIndicator(), ConferenceTreatmentIndicator.acceptConferenceRequest);
         assertEquals(elem.getBackwardServiceInteractionInd().getConferenceTreatmentIndicator(), ConferenceTreatmentIndicator.rejectConferenceRequest);
         assertEquals(elem.getBothwayThroughConnectionInd(), BothwayThroughConnectionInd.bothwayPathRequired);
@@ -101,24 +103,28 @@ public class ServiceInteractionIndicatorsTwoTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ServiceInteractionIndicatorsTwoImpl.class);
+    	
         ServiceInteractionIndicatorsTwoImpl elem = new ServiceInteractionIndicatorsTwoImpl(null, null, BothwayThroughConnectionInd.bothwayPathRequired, null,
                 false, null, null, null);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData1());
 
-
-        ForwardServiceInteractionInd forwardServiceInteractionInd = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.acceptConferenceRequest, null, null);
-        BackwardServiceInteractionInd backwardServiceInteractionInd = new BackwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.rejectConferenceRequest, null);
+        ForwardServiceInteractionIndImpl forwardServiceInteractionInd = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.acceptConferenceRequest, null, null);
+        BackwardServiceInteractionIndImpl backwardServiceInteractionInd = new BackwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.rejectConferenceRequest, null);
         elem = new ServiceInteractionIndicatorsTwoImpl(forwardServiceInteractionInd, backwardServiceInteractionInd,
                 BothwayThroughConnectionInd.bothwayPathRequired, ConnectedNumberTreatmentInd.presentCalledINNumber, true,
                 HoldTreatmentIndicator.acceptHoldRequest, CwTreatmentIndicator.rejectCw, EctTreatmentIndicator.acceptEctRequest);
-
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData2());
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // ForwardServiceInteractionInd forwardServiceInteractionInd,
         // BackwardServiceInteractionInd backwardServiceInteractionInd, BothwayThroughConnectionInd bothwayThroughConnectionInd,

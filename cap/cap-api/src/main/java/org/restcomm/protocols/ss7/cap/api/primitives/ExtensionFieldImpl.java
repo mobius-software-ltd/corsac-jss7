@@ -62,7 +62,7 @@ public class ExtensionFieldImpl {
     		this.localCode.setValue(localCode.longValue());
     	}
     	
-        if(criticalityType!=null) {
+        if(criticalityType!=null && criticalityType!=CriticalityType.typeIgnore) {
         	this.criticalityType = new ASNCriticalityTypeImpl();
         	this.criticalityType.setType(criticalityType);
         }
@@ -106,7 +106,7 @@ public class ExtensionFieldImpl {
 
     public CriticalityType getCriticalityType() {
     	if(criticalityType==null)
-    		return null;
+    		return CriticalityType.typeIgnore;
     	
         return criticalityType.getType();
     }

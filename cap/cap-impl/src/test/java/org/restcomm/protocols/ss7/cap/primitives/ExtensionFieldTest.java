@@ -23,15 +23,21 @@
 package org.restcomm.protocols.ss7.cap.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
 import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionFieldImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,85 +58,77 @@ public class ExtensionFieldTest {
         return new byte[] { 48, 11, 2, 2, 8, (byte) 174, 10, 1, 1, (byte) 129, 2, (byte) 253, (byte) 213 };
     }
 
-    public long[] getDataOid() {
-        return new long[] { 1, 0, 22 };
+    public List<Long> getDataOid() {
+        return Arrays.asList(new Long[] { 1L, 0L, 22L });
     }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ExtensionFieldImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ExtensionFieldImpl elem = new ExtensionFieldImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        ais.close();
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtensionFieldImpl);
         
+        ExtensionFieldImpl elem = (ExtensionFieldImpl)result.getResult();
         assertEquals((int) elem.getLocalCode(), 2);
         assertEquals(elem.getCriticalityType(), CriticalityType.typeIgnore);
-        ais = new AsnInputStream(elem.getData());
-        ais.readNullData(elem.getData().length);
-        ais.close();
+        assertEquals(elem.getData().length,0);
+       
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtensionFieldImpl);
         
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new ExtensionFieldImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertTrue(Arrays.equals(elem.getGlobalCode(), this.getDataOid()));
+        elem = (ExtensionFieldImpl)result.getResult();
+        assertEquals(elem.getGlobalCode(), this.getDataOid());
         assertEquals(elem.getCriticalityType(), CriticalityType.typeIgnore);
-        ais.close();
+        assertEquals(elem.getData().length,1);
+        assertEquals(elem.getData()[0],-1);
         
-        ais = new AsnInputStream(elem.getData());
-        boolean bool = ais.readBooleanData(elem.getData().length);
-        assertTrue(bool);
-        ais.close();
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ExtensionFieldImpl);
         
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new ExtensionFieldImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        ais.close();
-        
+        elem = (ExtensionFieldImpl)result.getResult();
         assertEquals((int) elem.getLocalCode(), 2222);
         assertEquals(elem.getCriticalityType(), CriticalityType.typeAbort);
-        ais = new AsnInputStream(elem.getData());
-        int i1 = (int) ais.readIntegerData(elem.getData().length);
-        ais.close();
-        
-        assertEquals(i1, -555);
+        assertEquals(elem.getData().length,2);
+        assertEquals(elem.getData()[0],-3);        
+        assertEquals(elem.getData()[1],-43);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ExtensionFieldImpl.class);
+    	
+        ExtensionFieldImpl elem = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {});
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        AsnOutputStream aos = new AsnOutputStream();
-        aos.writeNullData();
-        ExtensionFieldImpl elem = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, aos.toByteArray());
-        aos.close();
-        
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        elem = new ExtensionFieldImpl(this.getDataOid(), null, new byte[] { -1 });
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        aos = new AsnOutputStream();
-        aos.writeBooleanData(true);
-        elem = new ExtensionFieldImpl(this.getDataOid(), null, aos.toByteArray());
-        aos.close();
-        
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
-
-        aos = new AsnOutputStream();
-        aos.writeIntegerData(-555);
-        elem = new ExtensionFieldImpl(2222, CriticalityType.typeAbort, aos.toByteArray());
-        aos.close();
-        
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        elem = new ExtensionFieldImpl(2222, CriticalityType.typeAbort, new byte[] { -3, -43 });
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*private byte[] getDataSer() {

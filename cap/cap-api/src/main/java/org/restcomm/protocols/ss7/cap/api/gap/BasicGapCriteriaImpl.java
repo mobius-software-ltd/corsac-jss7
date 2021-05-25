@@ -65,6 +65,9 @@ public class BasicGapCriteriaImpl {
     }
 
     public DigitsImpl getCalledAddressValue() {
+    	if(calledAddressValue!=null)
+    		calledAddressValue.setIsGenericNumber();
+    	
         return calledAddressValue;
     }
 

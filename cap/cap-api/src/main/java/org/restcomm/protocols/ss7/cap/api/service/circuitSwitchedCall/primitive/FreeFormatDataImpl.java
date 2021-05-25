@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -37,6 +38,7 @@ public class FreeFormatDataImpl extends ASNOctetString {
     }
 
     public FreeFormatDataImpl(byte[] data) {
+    	setValue(Unpooled.wrappedBuffer(data));
     }
 
     public byte[] getData() {

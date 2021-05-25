@@ -22,17 +22,25 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LegOrCallSegmentImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LegOrCallSegmentWrapperImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -42,52 +50,61 @@ import org.testng.annotations.Test;
 public class LegOrCallSegmentTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 128, 1, 10 };
+        return new byte[] { 48, 3, (byte) 128, 1, 10 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 161, 3, (byte) 128, 1, 3 };
+        return new byte[] { 48, 5, (byte) 161, 3, (byte) 128, 1, 3 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(LegOrCallSegmentWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        LegOrCallSegmentImpl elem = new LegOrCallSegmentImpl();
-        int tag = ais.readTag();
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LegOrCallSegmentWrapperImpl);
+        
+        LegOrCallSegmentWrapperImpl elem = (LegOrCallSegmentWrapperImpl)result.getResult();        
+        assertEquals((int)elem.getLegOrCallSegment().getCallSegmentID(), 10);
+        assertNull(elem.getLegOrCallSegment().getLegID());
 
-        assertEquals(tag, LegOrCallSegmentImpl._ID_callSegmentID);
-        elem.decodeAll(ais);
-        assertEquals((int)elem.getCallSegmentID(), 10);
-        assertNull(elem.getLegID());
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new LegOrCallSegmentImpl();
-        tag = ais.readTag();
-
-        assertEquals(tag, LegOrCallSegmentImpl._ID_legID);
-        elem.decodeAll(ais);
-        assertNull(elem.getCallSegmentID());
-        assertNull(elem.getLegID().getReceivingSideID());
-        assertEquals(elem.getLegID().getSendingSideID(), LegType.leg3);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof LegOrCallSegmentWrapperImpl);
+        
+        elem = (LegOrCallSegmentWrapperImpl)result.getResult(); 
+        assertNull(elem.getLegOrCallSegment().getCallSegmentID());
+        assertNull(elem.getLegOrCallSegment().getLegID().getReceivingLegID());
+        assertEquals(elem.getLegOrCallSegment().getLegID().getSendingLegID().getSendingSideID(), LegType.leg3);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(LegOrCallSegmentWrapperImpl.class);
+    	
         LegOrCallSegmentImpl elem = new LegOrCallSegmentImpl(10);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        LegOrCallSegmentWrapperImpl wrapper = new LegOrCallSegmentWrapperImpl(elem);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        LegID legId = new LegIDImpl(true, LegType.leg3);
+        LegIDImpl legId = new LegIDImpl(null, new SendingLegIDImpl(LegType.leg3));
         elem = new LegOrCallSegmentImpl(legId);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        wrapper = new LegOrCallSegmentWrapperImpl(elem);
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })

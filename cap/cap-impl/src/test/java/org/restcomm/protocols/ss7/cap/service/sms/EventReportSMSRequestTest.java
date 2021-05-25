@@ -22,28 +22,28 @@
 package org.restcomm.protocols.ss7.cap.service.sms;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.sms.EventReportSMSRequestImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -59,19 +59,20 @@ public class EventReportSMSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        EventReportSMSRequestImpl prim = new EventReportSMSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventReportSMSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventReportSMSRequestImpl);
+        
+        EventReportSMSRequestImpl prim = (EventReportSMSRequestImpl)result.getResult();        
         assertEquals(prim.getEventTypeSMS(), EventTypeSMS.oSmsSubmission);
-        EventSpecificInformationSMS eventSpecificInformationSMS = prim.getEventSpecificInformationSMS();
+        EventSpecificInformationSMSImpl eventSpecificInformationSMS = prim.getEventSpecificInformationSMS();
         assertNotNull(eventSpecificInformationSMS.getOSmsFailureSpecificInfo());
-        OSmsFailureSpecificInfo oSmsFailureSpecificInfo = eventSpecificInformationSMS.getOSmsFailureSpecificInfo();
+        OSmsFailureSpecificInfoImpl oSmsFailureSpecificInfo = eventSpecificInformationSMS.getOSmsFailureSpecificInfo();
         assertEquals(oSmsFailureSpecificInfo.getFailureCause(), MOSMSCause.facilityNotSupported);
         assertNull(eventSpecificInformationSMS.getOSmsSubmissionSpecificInfo());
         assertNull(eventSpecificInformationSMS.getTSmsFailureSpecificInfo());
@@ -86,22 +87,25 @@ public class EventReportSMSRequestTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventReportSMSRequestImpl.class);
+    	
         EventTypeSMS eventTypeSMS = EventTypeSMS.oSmsSubmission;
-        OSmsFailureSpecificInfo oSmsFailureSpecificInfo = new OSmsFailureSpecificInfoImpl(
+        OSmsFailureSpecificInfoImpl oSmsFailureSpecificInfo = new OSmsFailureSpecificInfoImpl(
                 MOSMSCause.facilityNotSupported);
         EventSpecificInformationSMSImpl eventSpecificInformationSMS = new EventSpecificInformationSMSImpl(
                 oSmsFailureSpecificInfo);
-        MiscCallInfo miscCallInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
+        MiscCallInfoImpl miscCallInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
 
-        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
 
         EventReportSMSRequestImpl prim = new EventReportSMSRequestImpl(eventTypeSMS, eventSpecificInformationSMS,
                 miscCallInfo, extensions);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

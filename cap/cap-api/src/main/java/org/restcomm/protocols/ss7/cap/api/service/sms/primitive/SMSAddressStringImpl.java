@@ -36,10 +36,6 @@ import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
-
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -55,8 +51,21 @@ public class SMSAddressStringImpl extends AddressStringImpl {
         super(addressNature, numberingPlan, address);
     }
 
-    @ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws MAPParsingComponentException {
+    @Override
+    public Integer getLength() {
+    	if (addressNature == AddressNature.reserved) {
+    		int bits = address.length() * 7;
+    		if(bits%8 == 0)
+    			return bits/8 + 1;
+    		
+    		return bits/8 + 2;
+    	}
+    	else
+    		return super.getLength();
+	}
+    
+    @Override
+	public void decode(ByteBuf buffer) throws MAPParsingComponentException {
         buffer.markReaderIndex();
         int nature = buffer.readByte();        
         AddressNature an = AddressNature.getInstance((nature & NATURE_OF_ADD_IND_MASK) >> 4);
@@ -80,14 +89,12 @@ public class SMSAddressStringImpl extends AddressStringImpl {
             }
         } else {
         	buffer.resetReaderIndex();
-            super.decode(parser, parent, buffer, skipErrors);
-        }
-        
-        return false;
+            super.decode(buffer);
+        }        
     }
 
-    @ASNEncode
-	public void encode(ASNParser parser,ByteBuf buffer) throws MAPException {
+    @Override
+	public void encode(ByteBuf buffer) throws MAPException {
         if (this.addressNature == AddressNature.reserved) {
             int tpOfAddr = 0x80 + (this.addressNature.getIndicator() << 4) + this.numberingPlan.getIndicator();
             buffer.writeByte(tpOfAddr);
@@ -100,7 +107,7 @@ public class SMSAddressStringImpl extends AddressStringImpl {
                 throw new MAPException(e);
             }
         } else {
-            super.encode(parser,buffer);
+            super.encode(buffer);
         }
     }
 

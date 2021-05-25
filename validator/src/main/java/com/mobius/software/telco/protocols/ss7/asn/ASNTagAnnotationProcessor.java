@@ -81,7 +81,7 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 		for(Element annotatedElement:annotatedElements) {
 			final TypeElement typeElement = ( TypeElement )annotatedElement;
 			
-			String className=typeElement.getQualifiedName().toString();		
+			String className=typeElement.getQualifiedName().toString();				
 			List<? extends Element> innerElements=annotatedElement.getEnclosedElements();				
 			List<ExecutableElement> methods=ElementFilter.methodsIn(innerElements);
 			List<VariableElement> fields=ElementFilter.fieldsIn(innerElements);

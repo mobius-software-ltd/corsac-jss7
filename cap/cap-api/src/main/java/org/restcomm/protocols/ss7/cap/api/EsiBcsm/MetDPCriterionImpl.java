@@ -37,19 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 */
 @ASNTag(asnClass = ASNClass.CONTEXT_SPECIFIC, tag=16,constructed = false,lengthIndefinite = false)
 public class MetDPCriterionImpl {
-	public static final int _ID_enteringCellGlobalId = 0;
-    public static final int _ID_leavingCellGlobalId = 1;
-    public static final int _ID_enteringServiceAreaId = 2;
-    public static final int _ID_leavingServiceAreaId = 3;
-    public static final int _ID_enteringLocationAreaId = 4;
-    public static final int _ID_leavingLocationAreaId = 5;
-    public static final int _ID_interSystemHandOverToUMTS = 6;
-    public static final int _ID_interSystemHandOverToGSM = 7;
-    public static final int _ID_interPLMNHandOver = 8;
-    public static final int _ID_interMSCHandOver = 9;
-    public static final int _ID_metDPCriterionAlt = 10;
-
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
     private CellGlobalIdOrServiceAreaIdFixedLengthImpl enteringCellGlobalId;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)

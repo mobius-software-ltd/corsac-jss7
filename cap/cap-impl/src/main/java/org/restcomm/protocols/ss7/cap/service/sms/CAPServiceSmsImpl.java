@@ -120,7 +120,7 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
     public void processComponent(ComponentType compType, OperationCodeImpl oc, CAPMessage parameter, CAPDialog capDialog,
             Long invokeId, Long linkedId) throws CAPParsingComponentException {
 
-        Long ocValue = oc.getLocalOperationCode();
+    	Long ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new CAPParsingComponentException("", CAPParsingComponentExceptionReason.UnrecognizedOperation);
        

@@ -23,20 +23,27 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartDateImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartPriceImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartWrapperImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,11 +53,11 @@ import org.testng.annotations.Test;
 public class VariablePartTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 128, 1, 17 };
+        return new byte[] { 48, 3, (byte) 128, 1, 17 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 129, 4, 96, 18, 17, 16 };
+        return new byte[] { 48, 6, (byte) 129, 4, 96, 18, 17, 16 };
     }
 
     public byte[] getGenericDigitsData() {
@@ -58,120 +65,158 @@ public class VariablePartTest {
     }
 
     public byte[] getData3() {
-        return new byte[] { (byte) 130, 2, 0, 52 };
+        return new byte[] { 48, 4, (byte) 130, 2, 0, 52 };
     }
 
     public byte[] getData4() {
-        return new byte[] { (byte) 131, 4, 2, 33, 48, 18 };
+        return new byte[] { 48, 6, (byte) 131, 4, 2, 33, 48, 18 };
     }
 
     public byte[] getData5() {
-        return new byte[] { (byte) 132, 4, 0, 1, 0, 0 };
+        return new byte[] { 48, 6, (byte) 132, 4, 0, 1, 0, 0 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(VariablePartWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        VariablePartImpl elem = new VariablePartImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, 0);
-        elem.decodeAll(ais);
-        assertEquals((int) elem.getInteger(), 17);
-        assertNull(elem.getNumber());
-        assertNull(elem.getTime());
-        assertNull(elem.getDate());
-        assertNull(elem.getPrice());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VariablePartWrapperImpl);
+        
+        VariablePartWrapperImpl elem = (VariablePartWrapperImpl)result.getResult();    
+        assertNotNull(elem.getVariablePart());
+        assertEquals(elem.getVariablePart().size(), 1);
+        assertEquals((int) elem.getVariablePart().get(0).getInteger(), 17);
+        assertNull(elem.getVariablePart().get(0).getNumber());
+        assertNull(elem.getVariablePart().get(0).getTime());
+        assertNull(elem.getVariablePart().get(0).getDate());
+        assertNull(elem.getVariablePart().get(0).getPrice());
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new VariablePartImpl();
-        tag = ais.readTag();
-        assertEquals(tag, 1);
-        elem.decodeAll(ais);
-        assertNull(elem.getInteger());
-        assertEquals(elem.getNumber().getGenericDigits().getEncodingScheme(), 3);
-        assertEquals(elem.getNumber().getGenericDigits().getTypeOfDigits(), 0);
-        assertTrue(Arrays.equals(elem.getNumber().getGenericDigits().getEncodedDigits(), getGenericDigitsData()));
-        assertNull(elem.getTime());
-        assertNull(elem.getDate());
-        assertNull(elem.getPrice());
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new VariablePartImpl();
-        tag = ais.readTag();
-        assertEquals(tag, 2);
-        elem.decodeAll(ais);
-        assertNull(elem.getInteger());
-        assertNull(elem.getNumber());
-        assertEquals(elem.getTime().getHour(), 0);
-        assertEquals(elem.getTime().getMinute(), 43);
-        assertNull(elem.getDate());
-        assertNull(elem.getPrice());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VariablePartWrapperImpl);
+        
+        elem = (VariablePartWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getVariablePart());
+        assertEquals(elem.getVariablePart().size(), 1);
+        assertNull(elem.getVariablePart().get(0).getInteger());
+        assertEquals(elem.getVariablePart().get(0).getNumber().getGenericDigits().getEncodingScheme(), 3);
+        assertEquals(elem.getVariablePart().get(0).getNumber().getGenericDigits().getTypeOfDigits(), 0);
+        ByteBuf value=elem.getVariablePart().get(0).getNumber().getGenericDigits().getEncodedDigits();
+        assertNotNull(value);
+        byte[] data=new byte[value.readableBytes()];
+        value.readBytes(data);
+        assertTrue(Arrays.equals(data, getGenericDigitsData()));
+        assertNull(elem.getVariablePart().get(0).getTime());
+        assertNull(elem.getVariablePart().get(0).getDate());
+        assertNull(elem.getVariablePart().get(0).getPrice());
 
-        data = this.getData4();
-        ais = new AsnInputStream(data);
-        elem = new VariablePartImpl();
-        tag = ais.readTag();
-        assertEquals(tag, 3);
-        elem.decodeAll(ais);
-        assertNull(elem.getInteger());
-        assertNull(elem.getNumber());
-        assertNull(elem.getTime());
-        assertEquals(elem.getDate().getYear(), 2012);
-        assertEquals(elem.getDate().getMonth(), 3);
-        assertEquals(elem.getDate().getDay(), 21);
-        assertNull(elem.getPrice());
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData5();
-        ais = new AsnInputStream(data);
-        elem = new VariablePartImpl();
-        tag = ais.readTag();
-        assertEquals(tag, 4);
-        elem.decodeAll(ais);
-        assertNull(elem.getInteger());
-        assertNull(elem.getNumber());
-        assertNull(elem.getTime());
-        assertNull(elem.getDate());
-        assertEquals(elem.getPrice().getPriceIntegerPart(), 1000);
-        assertEquals(elem.getPrice().getPriceHundredthPart(), 0);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VariablePartWrapperImpl);
+        
+        elem = (VariablePartWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getVariablePart());
+        assertEquals(elem.getVariablePart().size(), 1);
+        assertNull(elem.getVariablePart().get(0).getInteger());
+        assertNull(elem.getVariablePart().get(0).getNumber());
+        assertEquals(elem.getVariablePart().get(0).getTime().getHour(), 0);
+        assertEquals(elem.getVariablePart().get(0).getTime().getMinute(), 43);
+        assertNull(elem.getVariablePart().get(0).getDate());
+        assertNull(elem.getVariablePart().get(0).getPrice());
+
+        rawData = this.getData4();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VariablePartWrapperImpl);
+        
+        elem = (VariablePartWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getVariablePart());
+        assertEquals(elem.getVariablePart().size(), 1);
+        assertNull(elem.getVariablePart().get(0).getInteger());
+        assertNull(elem.getVariablePart().get(0).getNumber());
+        assertNull(elem.getVariablePart().get(0).getTime());
+        assertEquals(elem.getVariablePart().get(0).getDate().getYear(), 2012);
+        assertEquals(elem.getVariablePart().get(0).getDate().getMonth(), 3);
+        assertEquals(elem.getVariablePart().get(0).getDate().getDay(), 21);
+        assertNull(elem.getVariablePart().get(0).getPrice());
+
+        rawData = this.getData5();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VariablePartWrapperImpl);
+        
+        elem = (VariablePartWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getVariablePart());
+        assertEquals(elem.getVariablePart().size(), 1);
+        assertNull(elem.getVariablePart().get(0).getInteger());
+        assertNull(elem.getVariablePart().get(0).getNumber());
+        assertNull(elem.getVariablePart().get(0).getTime());
+        assertNull(elem.getVariablePart().get(0).getDate());
+        assertEquals(elem.getVariablePart().get(0).getPrice().getPriceIntegerPart(), 1000);
+        assertEquals(elem.getVariablePart().get(0).getPrice().getPriceHundredthPart(), 0);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(VariablePartWrapperImpl.class);
+    	
         VariablePartImpl elem = new VariablePartImpl(17);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        VariablePartWrapperImpl wrapper = new VariablePartWrapperImpl(Arrays.asList(new VariablePartImpl[] { elem }));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        GenericDigitsImpl genericDigits = new GenericDigitsImpl(3, 0, getGenericDigitsData());
+        GenericDigitsImpl genericDigits = new GenericDigitsImpl(3, 0, Unpooled.wrappedBuffer(getGenericDigitsData()));
         // int encodingScheme, int typeOfDigits, int[] digits
         DigitsImpl digits = new DigitsImpl(genericDigits);
         elem = new VariablePartImpl(digits);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        wrapper = new VariablePartWrapperImpl(Arrays.asList(new VariablePartImpl[] { elem }));
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         VariablePartTimeImpl time = new VariablePartTimeImpl(0, 43);
         elem = new VariablePartImpl(time);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        wrapper = new VariablePartWrapperImpl(Arrays.asList(new VariablePartImpl[] { elem }));
+        rawData = this.getData3();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         VariablePartDateImpl date = new VariablePartDateImpl(2012, 3, 21);
         elem = new VariablePartImpl(date);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData4()));
+        wrapper = new VariablePartWrapperImpl(Arrays.asList(new VariablePartImpl[] { elem }));
+        rawData = this.getData4();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         VariablePartPriceImpl price = new VariablePartPriceImpl(1000, 0);
         elem = new VariablePartImpl(price);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData5()));
+        wrapper = new VariablePartWrapperImpl(Arrays.asList(new VariablePartImpl[] { elem }));
+        rawData = this.getData5();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

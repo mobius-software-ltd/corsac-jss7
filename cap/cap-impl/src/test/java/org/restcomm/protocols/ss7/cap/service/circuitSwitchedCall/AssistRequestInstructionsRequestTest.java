@@ -23,18 +23,22 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.AssistRequestInstructionsRequestImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class AssistRequestInstructionsRequestTest {
 
@@ -53,13 +57,16 @@ public class AssistRequestInstructionsRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AssistRequestInstructionsRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        AssistRequestInstructionsRequestImpl elem = new AssistRequestInstructionsRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AssistRequestInstructionsRequestImpl);
+        
+        AssistRequestInstructionsRequestImpl elem = (AssistRequestInstructionsRequestImpl)result.getResult();        
         assertEquals(elem.getCorrelationID().getGenericNumber().getNatureOfAddressIndicator(), 0);
         assertTrue(elem.getCorrelationID().getGenericNumber().getAddress().equals("111222333"));
         assertEquals(elem.getCorrelationID().getGenericNumber().getNumberQualifierIndicator(), 0);
@@ -72,7 +79,9 @@ public class AssistRequestInstructionsRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AssistRequestInstructionsRequestImpl.class);
+    	
         GenericNumberImpl genericNumber = new GenericNumberImpl(0, "111222333", 0, 1, 1, false, 0);
         // GenericNumberImpl genericNumber = new GenericNumberImpl(getGenericNumberInt());
         // int natureOfAddresIndicator, String address, int numberQualifierIndicator, int numberingPlanIndicator, int
@@ -83,9 +92,11 @@ public class AssistRequestInstructionsRequestTest {
 
         AssistRequestInstructionsRequestImpl elem = new AssistRequestInstructionsRequestImpl(correlationID, ipSSPCapabilities,
                 CAPExtensionsTest.createTestCAPExtensions());
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // Digits correlationID, IPSSPCapabilities ipSSPCapabilities, CAPExtensions extensions
     }

@@ -1,16 +1,16 @@
 package org.restcomm.protocols.ss7.cap;
 
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.ReceivingSideID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
@@ -18,9 +18,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
@@ -50,7 +50,7 @@ public class Example {
         calledPartyNumber.setNatureOfAddresIndicator(NAINumber._NAI_INTERNATIONAL_NUMBER);
         calledPartyNumber.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
         calledPartyNumber.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_ALLOWED);
-        CalledPartyNumberCap calledPartyNumberCap = client.getCAPProvider().getCAPParameterFactory()
+        CalledPartyNumberCapImpl calledPartyNumberCap = client.getCAPProvider().getCAPParameterFactory()
                 .createCalledPartyNumberCap(calledPartyNumber);
 
         CallingPartyNumber callingPartyNumber = client.getCAPProvider().getISUPParameterFactory().createCallingPartyNumber();
@@ -59,7 +59,7 @@ public class Example {
         callingPartyNumber.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
         callingPartyNumber.setAddressRepresentationREstrictedIndicator(CallingPartyNumber._APRI_ALLOWED);
         callingPartyNumber.setScreeningIndicator(CallingPartyNumber._SI_NETWORK_PROVIDED);
-        CallingPartyNumberCap callingPartyNumberCap = client.getCAPProvider().getCAPParameterFactory()
+        CallingPartyNumberCapImpl callingPartyNumberCap = client.getCAPProvider().getCAPParameterFactory()
                 .createCallingPartyNumberCap(callingPartyNumber);
 
         LocationNumber locationNumber = client.getCAPProvider().getISUPParameterFactory().createLocationNumber();
@@ -69,12 +69,12 @@ public class Example {
         locationNumber.setAddressRepresentationRestrictedIndicator(LocationNumber._APRI_ALLOWED);
         locationNumber.setScreeningIndicator(LocationNumber._SI_NETWORK_PROVIDED);
         locationNumber.setInternalNetworkNumberIndicator(LocationNumber._INN_ROUTING_ALLOWED);
-        LocationNumberCap locationNumberCap = client.getCAPProvider().getCAPParameterFactory()
+        LocationNumberCapImpl locationNumberCap = client.getCAPProvider().getCAPParameterFactory()
                 .createLocationNumberCap(locationNumber);
 
-        ISDNAddressString vlrNumber = client.getCAPProvider().getMAPParameterFactory()
+        ISDNAddressStringImpl vlrNumber = client.getCAPProvider().getMAPParameterFactory()
                 .createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "552000002");
-        LocationInformation locationInformation = client
+        LocationInformationImpl locationInformation = client
                 .getCAPProvider()
                 .getMAPParameterFactory()
                 .createLocationInformation(10, null, vlrNumber, null, null, null, null, vlrNumber, null, false, false, null,
@@ -85,10 +85,10 @@ public class Example {
 
         // sending oAnswer in 5 sec
         Thread.sleep(5000);
-        OAnswerSpecificInfo oAnswerSpecificInfo = client.getCAPProvider().getCAPParameterFactory()
+        OAnswerSpecificInfoImpl oAnswerSpecificInfo = client.getCAPProvider().getCAPParameterFactory()
                 .createOAnswerSpecificInfo(null, false, false, null, null, null);
-        ReceivingSideID legID = client.getCAPProvider().getCAPParameterFactory().createReceivingSideID(LegType.leg2);
-        MiscCallInfo miscCallInfo = client.getCAPProvider().getINAPParameterFactory()
+        ReceivingLegIDImpl legID = client.getCAPProvider().getCAPParameterFactory().createReceivingLegID(LegType.leg2);
+        MiscCallInfoImpl miscCallInfo = client.getCAPProvider().getINAPParameterFactory()
                 .createMiscCallInfo(MiscCallInfoMessageType.notification, null);
         client.sendEventReportBCSM_OAnswer(oAnswerSpecificInfo, legID, miscCallInfo);
 
@@ -98,10 +98,10 @@ public class Example {
         causeIndicators.setLocation(CauseIndicators._LOCATION_USER);
         causeIndicators.setCodingStandard(CauseIndicators._CODING_STANDARD_ITUT);
         causeIndicators.setCauseValue(CauseIndicators._CV_ALL_CLEAR);
-        CauseCap releaseCause = client.getCAPProvider().getCAPParameterFactory().createCauseCap(causeIndicators);
-        ODisconnectSpecificInfo oDisconnectSpecificInfo = client.getCAPProvider().getCAPParameterFactory()
+        CauseCapImpl releaseCause = client.getCAPProvider().getCAPParameterFactory().createCauseCap(causeIndicators);
+        ODisconnectSpecificInfoImpl oDisconnectSpecificInfo = client.getCAPProvider().getCAPParameterFactory()
                 .createODisconnectSpecificInfo(releaseCause);
-        legID = client.getCAPProvider().getCAPParameterFactory().createReceivingSideID(LegType.leg1);
+        legID = client.getCAPProvider().getCAPParameterFactory().createReceivingLegID(LegType.leg1);
         miscCallInfo = client.getCAPProvider().getINAPParameterFactory()
                 .createMiscCallInfo(MiscCallInfoMessageType.notification, null);
         client.sendEventReportBCSM_ODisconnect(oDisconnectSpecificInfo, legID, miscCallInfo);

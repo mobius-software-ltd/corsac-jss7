@@ -23,17 +23,22 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswerImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -49,12 +54,16 @@ public class AOCBeforeAnswerTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AOCBeforeAnswerImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        AOCBeforeAnswerImpl elem = new AOCBeforeAnswerImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AOCBeforeAnswerImpl);
+        
+        AOCBeforeAnswerImpl elem = (AOCBeforeAnswerImpl)result.getResult();                
         assertNull(elem.getAOCInitial().getE1());
         assertNull(elem.getAOCInitial().getE2());
         assertNull(elem.getAOCInitial().getE3());
@@ -74,14 +83,18 @@ public class AOCBeforeAnswerTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AOCBeforeAnswerImpl.class);
+    	
         CAI_GSM0224Impl aocInitial = new CAI_GSM0224Impl(null, null, null, 4, 5, null, null);
         CAI_GSM0224Impl cai_GSM0224 = new CAI_GSM0224Impl(1, null, null, null, null, null, 7);
         AOCSubsequentImpl aocSubsequent = new AOCSubsequentImpl(cai_GSM0224, 100);
         AOCBeforeAnswerImpl elem = new AOCBeforeAnswerImpl(aocInitial, aocSubsequent);
         // CAI_GSM0224 aocInitial, AOCSubsequent aocSubsequent
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 }

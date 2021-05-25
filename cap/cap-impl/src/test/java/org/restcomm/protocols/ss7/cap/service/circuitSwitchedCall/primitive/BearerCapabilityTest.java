@@ -22,15 +22,21 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.isup.BearerCapImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityWrapperImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -40,7 +46,7 @@ import org.testng.annotations.Test;
 public class BearerCapabilityTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 128, 3, (byte) 128, (byte) 144, (byte) 163 };
+        return new byte[] { 48, 5, (byte) 128, 3, (byte) 128, (byte) 144, (byte) 163 };
     }
 
     public byte[] getIntData1() {
@@ -49,23 +55,32 @@ public class BearerCapabilityTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BearerCapabilityWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        BearerCapabilityImpl elem = new BearerCapabilityImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertTrue(Arrays.equals(elem.getBearerCap().getData(), this.getIntData1()));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BearerCapabilityWrapperImpl);
+        
+        BearerCapabilityWrapperImpl elem = (BearerCapabilityWrapperImpl)result.getResult();        
+        assertTrue(Arrays.equals(elem.getBearerCapability().getBearerCap().getData(), this.getIntData1()));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BearerCapabilityWrapperImpl.class);
+    	
         BearerCapImpl bc = new BearerCapImpl(this.getIntData1());
         BearerCapabilityImpl elem = new BearerCapabilityImpl(bc);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        BearerCapabilityWrapperImpl wrapper = new BearerCapabilityWrapperImpl(elem);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })

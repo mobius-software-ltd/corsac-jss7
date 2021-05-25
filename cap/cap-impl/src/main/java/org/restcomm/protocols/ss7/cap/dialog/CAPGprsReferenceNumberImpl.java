@@ -30,7 +30,6 @@ import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
  *
@@ -41,25 +40,22 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 public class CAPGprsReferenceNumberImpl implements CAPGprsReferenceNumber {
 	public static final List<Long> CAP_Dialogue_OId = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 5L, 2L });
 
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0,constructed = false,index = -1)
-    private ASNInteger destinationReference;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0,constructed = true,index = -1)
+    private ReferenceNumberWrapperImpl destinationReference;
 
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 1,constructed = false,index = -1)
-    private ASNInteger originationReference;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 1,constructed = true,index = -1)
+    private ReferenceNumberWrapperImpl originationReference;
 
     public CAPGprsReferenceNumberImpl() {
     }
 
     public CAPGprsReferenceNumberImpl(Integer destinationReference, Integer originationReference) {
-    	if(destinationReference!=null) {
-    		this.destinationReference = new ASNInteger();
-    		this.destinationReference.setValue(destinationReference.longValue());
-    	}
+    	if(destinationReference!=null)
+    		this.destinationReference = new ReferenceNumberWrapperImpl(destinationReference);    		
     	
-    	if(originationReference!=null) {
-    		this.originationReference= new ASNInteger();
-    		this.originationReference.setValue(originationReference.longValue());
-    	}
+    	if(originationReference!=null)
+    		this.originationReference= new ReferenceNumberWrapperImpl(originationReference);
+    		
     }
 
     @Override
@@ -67,7 +63,7 @@ public class CAPGprsReferenceNumberImpl implements CAPGprsReferenceNumber {
     	if(this.destinationReference==null)
     		return null;
     	
-        return this.destinationReference.getValue().intValue();
+        return this.destinationReference.getReference();
     }
 
     @Override
@@ -75,7 +71,7 @@ public class CAPGprsReferenceNumberImpl implements CAPGprsReferenceNumber {
     	if(this.originationReference==null)
     		return null;
     	
-        return this.originationReference.getValue().intValue();
+        return this.originationReference.getReference();
     }
 
     @Override
@@ -85,10 +81,7 @@ public class CAPGprsReferenceNumberImpl implements CAPGprsReferenceNumber {
     		return;    	
     	}
     	
-    	if(this.destinationReference==null)
-    		this.destinationReference=new ASNInteger();
-    	
-        this.destinationReference.setValue(destinationReference.longValue());
+    	this.destinationReference=new ReferenceNumberWrapperImpl(destinationReference);    	
     }
 
     @Override
@@ -98,10 +91,7 @@ public class CAPGprsReferenceNumberImpl implements CAPGprsReferenceNumber {
     		return;    	
     	}
     	
-    	if(this.originationReference==null)
-    		this.originationReference=new ASNInteger();
-    	
-        this.originationReference.setValue(originationReference.longValue());
+    	this.originationReference = new ReferenceNumberWrapperImpl(originationReference); 
     }
 
     @Override

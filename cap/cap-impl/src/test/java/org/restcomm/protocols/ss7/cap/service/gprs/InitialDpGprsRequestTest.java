@@ -22,25 +22,18 @@
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddress;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoS;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSExtension;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPAddressImpl;
@@ -49,45 +42,37 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberIm
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberValue;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganizationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganizationValue;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilities;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilitiesImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.gprs.InitialDpGprsRequestImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribed;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSNetworkCapabilityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSRadioAccessCapabilityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSNetworkCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSRadioAccessCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribedImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -181,20 +166,21 @@ public class InitialDpGprsRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        InitialDpGprsRequestImpl prim = new InitialDpGprsRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InitialDpGprsRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InitialDpGprsRequestImpl);
+        
+        InitialDpGprsRequestImpl prim = (InitialDpGprsRequestImpl)result.getResult();        
         assertEquals(prim.getServiceKey(), 2);
         assertEquals(prim.getGPRSEventType(), GPRSEventType.attachChangeOfPosition);
 
         // msisdn
-        ISDNAddressString msisdn = prim.getMsisdn();
+        ISDNAddressStringImpl msisdn = prim.getMsisdn();
         assertTrue(msisdn.getAddress().equals("22234"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
@@ -212,7 +198,7 @@ public class InitialDpGprsRequestTest {
         assertEquals(prim.getTimeAndTimezone().getTimeZone(), 0);
 
         // gprsMSClass
-        GPRSMSClass gprsMSClass = prim.getGPRSMSClass();
+        GPRSMSClassImpl gprsMSClass = prim.getGPRSMSClass();
         assertTrue(Arrays.equals(gprsMSClass.getMSNetworkCapability().getData(), this.getEncodedDataNetworkCapability()));
         assertTrue(Arrays
                 .equals(gprsMSClass.getMSRadioAccessCapability().getData(), this.getEncodedDataRadioAccessCapability()));
@@ -278,20 +264,21 @@ public class InitialDpGprsRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecodeLiveTrace() throws Exception {
-        byte[] data = this.getDataLiveTrace();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        InitialDpGprsRequestImpl prim = new InitialDpGprsRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InitialDpGprsRequestImpl.class);
+    	
+    	byte[] rawData = this.getDataLiveTrace();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InitialDpGprsRequestImpl);
+        
+        InitialDpGprsRequestImpl prim = (InitialDpGprsRequestImpl)result.getResult();        
         assertEquals(prim.getServiceKey(), 23);
         assertEquals(prim.getGPRSEventType(), GPRSEventType.pdpContextEstablishmentAcknowledgement);
 
         // msisdn
-        ISDNAddressString msisdn = prim.getMsisdn();
+        ISDNAddressStringImpl msisdn = prim.getMsisdn();
         assertTrue(msisdn.getAddress().equals("553499739025"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
@@ -317,42 +304,44 @@ public class InitialDpGprsRequestTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InitialDpGprsRequestImpl.class);
+    	
         int serviceKey = 2;
         GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
-        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
-        IMSI imsi = new IMSIImpl("1111122222");
-        TimeAndTimezone timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
+        IMSIImpl imsi = new IMSIImpl("1111122222");
+        TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
 
         // gprsMSClass
         MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(this.getEncodedDataNetworkCapability());
         MSRadioAccessCapabilityImpl rac = new MSRadioAccessCapabilityImpl(this.getEncodedDataRadioAccessCapability());
-        GPRSMSClass gprsMSClass = new GPRSMSClassImpl(nc, rac);
+        GPRSMSClassImpl gprsMSClass = new GPRSMSClassImpl(nc, rac);
 
         // endUserAddress
         PDPAddressImpl pdpAddress = new PDPAddressImpl(getPDPAddressData());
         PDPTypeNumberImpl pdpTypeNumber = new PDPTypeNumberImpl(PDPTypeNumberValue.PPP);
         PDPTypeOrganizationImpl pdpTypeOrganization = new PDPTypeOrganizationImpl(PDPTypeOrganizationValue.ETSI);
-        EndUserAddress endUserAddress = new EndUserAddressImpl(pdpTypeOrganization, pdpTypeNumber, pdpAddress);
+        EndUserAddressImpl endUserAddress = new EndUserAddressImpl(pdpTypeOrganization, pdpTypeNumber, pdpAddress);
 
         // qualityOfService
-        QoSSubscribed qosSubscribed = new QoSSubscribedImpl(this.getQoSSubscribedData());
-        GPRSQoS requestedQoS = new GPRSQoSImpl(qosSubscribed);
+        QoSSubscribedImpl qosSubscribed = new QoSSubscribedImpl(this.getQoSSubscribedData());
+        GPRSQoSImpl requestedQoS = new GPRSQoSImpl(qosSubscribed);
         Ext2QoSSubscribedImpl qos2Subscribed1 = new Ext2QoSSubscribedImpl(this.getEncodedqos2Subscribed1());
-        GPRSQoSExtension requestedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed1);
-        QualityOfService qualityOfService = new QualityOfServiceImpl(requestedQoS, null, null, requestedQoSExtension, null,
+        GPRSQoSExtensionImpl requestedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed1);
+        QualityOfServiceImpl qualityOfService = new QualityOfServiceImpl(requestedQoS, null, null, requestedQoSExtension, null,
                 null);
 
         // accessPointName
-        AccessPointName accessPointName = new AccessPointNameImpl(this.getAccessPointNameData());
+        AccessPointNameImpl accessPointName = new AccessPointNameImpl(this.getAccessPointNameData());
 
         // routeingAreaIdentity
-        RAIdentity routeingAreaIdentity = new RAIdentityImpl(this.getRAIdentityData());
+        RAIdentityImpl routeingAreaIdentity = new RAIdentityImpl(this.getRAIdentityData());
 
-        GPRSChargingID chargingID = new GPRSChargingIDImpl(this.getGPRSChargingIDData());
+        GPRSChargingIDImpl chargingID = new GPRSChargingIDImpl(this.getGPRSChargingIDData());
 
         // sgsnCapabilities
-        SGSNCapabilities sgsnCapabilities = new SGSNCapabilitiesImpl(1);
+        SGSNCapabilitiesImpl sgsnCapabilities = new SGSNCapabilitiesImpl(1);
 
         // locationInformationGPRS
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl(250, 1, 4444);
@@ -362,44 +351,48 @@ public class InitialDpGprsRequestTest {
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "654321");
         LSAIdentityImpl lsa = new LSAIdentityImpl(this.getEncodedDataLSAIdentity());
         GeodeticInformationImpl gdi = new GeodeticInformationImpl(this.getGeodeticInformation());
-        LocationInformationGPRS locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true,
+        LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true,
                 gdi, true, 13);
 
         // pdpInitiationType
         PDPInitiationType pdpInitiationType = PDPInitiationType.networkInitiated;
 
         // extensions
-        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
 
         // GSNAddress
-        GSNAddress gsnAddress = new GSNAddressImpl(this.getGSNAddressData());
+        GSNAddressImpl gsnAddress = new GSNAddressImpl(this.getGSNAddressData());
 
         // secondaryPDPContext
         boolean secondaryPDPContext = true;
 
         // imei
-        IMEI imei = new IMEIImpl("1122334455667788");
+        IMEIImpl imei = new IMEIImpl("1122334455667788");
 
         InitialDpGprsRequestImpl prim = new InitialDpGprsRequestImpl(serviceKey, gprsEventType, msisdn, imsi, timeAndTimezone,
                 gprsMSClass, endUserAddress, qualityOfService, accessPointName, routeingAreaIdentity, chargingID,
                 sgsnCapabilities, locationInformationGPRS, pdpInitiationType, extensions, gsnAddress, secondaryPDPContext, imei);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncodeLiveTrace() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InitialDpGprsRequestImpl.class);
+    	
         int serviceKey = 23;
         GPRSEventType gprsEventType = GPRSEventType.pdpContextEstablishmentAcknowledgement;
-        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553499739025");
-        IMSI imsi = new IMSIImpl("724340100138600");
-        TimeAndTimezone timeAndTimezone = new TimeAndTimezoneImpl(new byte[] { 0x02, 0x31, 0x10, 0x40, 0x60, 0x13, 0x43,
-                (byte) 0x88 });
+        IMSIImpl imsi = new IMSIImpl("724340100138600");
+        TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl();
+        timeAndTimezone.setValue(Unpooled.wrappedBuffer(new byte[] { 0x02, 0x31, 0x10, 0x40, 0x60, 0x13, 0x43,
+                (byte) 0x88 }));
 
         // gprsMSClass
         MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(new byte[] { (byte) 0xe5, (byte) 0xe0 });
@@ -407,7 +400,7 @@ public class InitialDpGprsRequestTest {
                 (byte) 0x96, 0x62, 0x40, 0x18, (byte) 0x9a, 0x42, (byte) 0x86, 0x62, 0x40, 0x18, (byte) 0xa2, 0x42,
                 (byte) 0x86, 0x62, 0x40, 0x18, (byte) 0xba, 0x48, (byte) 0x86, 0x62, 0x40, 0x18, 0x00 });
 
-        GPRSMSClass gprsMSClass = new GPRSMSClassImpl(nc, rac);
+        GPRSMSClassImpl gprsMSClass = new GPRSMSClassImpl(nc, rac);
 
         // endUserAddress
         PDPAddressImpl pdpAddress = new PDPAddressImpl(new byte[] { (byte) 0xb1, (byte) 0xbf, (byte) 0x95, (byte) 0xb3 });
@@ -415,38 +408,38 @@ public class InitialDpGprsRequestTest {
         PDPTypeNumberImpl pdpTypeNumber = new PDPTypeNumberImpl(PDPTypeNumberValue.IPV4);
 
         PDPTypeOrganizationImpl pdpTypeOrganization = new PDPTypeOrganizationImpl((byte) 0xf1);
-        EndUserAddress endUserAddress = new EndUserAddressImpl(pdpTypeOrganization, pdpTypeNumber, pdpAddress);
+        EndUserAddressImpl endUserAddress = new EndUserAddressImpl(pdpTypeOrganization, pdpTypeNumber, pdpAddress);
 
         // qualityOfService
-        ExtQoSSubscribed longQos1 = new ExtQoSSubscribedImpl(new byte[] { 0x00, 0x10, (byte) 0x96, 0x00, 0x00, 0x00, 0x00,
+        ExtQoSSubscribedImpl longQos1 = new ExtQoSSubscribedImpl(new byte[] { 0x00, 0x10, (byte) 0x96, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00 });
-        GPRSQoS requestedQoS = new GPRSQoSImpl(longQos1);
+        GPRSQoSImpl requestedQoS = new GPRSQoSImpl(longQos1);
 
-        ExtQoSSubscribed longQos2 = new ExtQoSSubscribedImpl(new byte[] { 0x02, 0x6b, (byte) 0x96, 0x40, 0x40, 0x74, 0x06,
+        ExtQoSSubscribedImpl longQos2 = new ExtQoSSubscribedImpl(new byte[] { 0x02, 0x6b, (byte) 0x96, 0x40, 0x40, 0x74, 0x06,
                 (byte) 0xff, (byte) 0xff });
-        GPRSQoS subscribedQoS = new GPRSQoSImpl(longQos2);
+        GPRSQoSImpl subscribedQoS = new GPRSQoSImpl(longQos2);
 
-        ExtQoSSubscribed longQos3 = new ExtQoSSubscribedImpl(new byte[] { 0x02, 0x71, (byte) 0x96, 0x40, 0x40, 0x74, 0x02,
+        ExtQoSSubscribedImpl longQos3 = new ExtQoSSubscribedImpl(new byte[] { 0x02, 0x71, (byte) 0x96, 0x40, 0x40, 0x74, 0x02,
                 (byte) 0xff, (byte) 0xff });
-        GPRSQoS negotiatedQoS = new GPRSQoSImpl(longQos3);
+        GPRSQoSImpl negotiatedQoS = new GPRSQoSImpl(longQos3);
 
-        QualityOfService qualityOfService = new QualityOfServiceImpl(requestedQoS, subscribedQoS, negotiatedQoS, null, null,
+        QualityOfServiceImpl qualityOfService = new QualityOfServiceImpl(requestedQoS, subscribedQoS, negotiatedQoS, null, null,
                 null);
 
         // accessPointName
-        AccessPointName accessPointName = new AccessPointNameImpl(new byte[] { 0x04, 0x63, 0x74, 0x62, 0x63, 0x02, 0x62, 0x72,
+        AccessPointNameImpl accessPointName = new AccessPointNameImpl(new byte[] { 0x04, 0x63, 0x74, 0x62, 0x63, 0x02, 0x62, 0x72,
                 0x06, 0x4d, 0x4e, 0x43, 0x30, 0x33, 0x34, 0x06, 0x4d, 0x43, 0x43, 0x37, 0x32, 0x34, 0x04, 0x47, 0x50, 0x52,
                 0x53 });
 
         // routeingAreaIdentity
-        RAIdentity routeingAreaIdentity = new RAIdentityImpl(new byte[] { 0x27, (byte) 0xf4, 0x43, (byte) 0x81, 0x6e, 0x04 });
+        RAIdentityImpl routeingAreaIdentity = new RAIdentityImpl(new byte[] { 0x27, (byte) 0xf4, 0x43, (byte) 0x81, 0x6e, 0x04 });
 
-        GPRSChargingID chargingID = new GPRSChargingIDImpl(new byte[] { 0x14, (byte) 0xf8, 0x55, (byte) 0xd1 });
+        GPRSChargingIDImpl chargingID = new GPRSChargingIDImpl(new byte[] { 0x14, (byte) 0xf8, 0x55, (byte) 0xd1 });
 
         // sgsnCapabilities
-        SGSNCapabilities sgsnCapabilities = new SGSNCapabilitiesImpl(0x00);
+        SGSNCapabilitiesImpl sgsnCapabilities = new SGSNCapabilitiesImpl(0x00);
 
-        CellGlobalIdOrServiceAreaIdFixedLength cellGlobalIdOrServiceAreaIdFixedLength = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl cellGlobalIdOrServiceAreaIdFixedLength = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(
                 new byte[] { 0x27, (byte) 0xf4, 0x43, (byte) 0x81, 0x6e, 0x15, (byte) 0xa0 });
 
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(
@@ -457,14 +450,14 @@ public class InitialDpGprsRequestTest {
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553496629995");
 
-        LocationInformationGPRS locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, null, sgsn, null, null,
+        LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, null, sgsn, null, null,
                 false, null, false, null);
 
         // pdpInitiationType
         PDPInitiationType pdpInitiationType = PDPInitiationType.mSInitiated;
 
         // GSNAddress
-        GSNAddress gsnAddress = new GSNAddressImpl(new byte[] { 0x04, (byte) 0xc9, 0x30, (byte) 0xe2, 0x1b });
+        GSNAddressImpl gsnAddress = new GSNAddressImpl(new byte[] { 0x04, (byte) 0xc9, 0x30, (byte) 0xe2, 0x1b });
 
         // secondaryPDPContext
         boolean secondaryPDPContext = false;
@@ -473,11 +466,11 @@ public class InitialDpGprsRequestTest {
                 gprsMSClass, endUserAddress, qualityOfService, accessPointName, routeingAreaIdentity, chargingID,
                 sgsnCapabilities, locationInformationGPRS, pdpInitiationType, null, gsnAddress, secondaryPDPContext, null);
 
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getDataLiveTrace()));
-
+        byte[] rawData = this.getDataLiveTrace();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

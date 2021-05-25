@@ -22,18 +22,21 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.gap.*;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -59,34 +62,38 @@ public class CompoundCriteriaTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode_CalledAddressAndService() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CompoundCriteriaImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        CompoundCriteriaImpl elem = new CompoundCriteriaImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CompoundCriteriaImpl);
+        
+        CompoundCriteriaImpl elem = (CompoundCriteriaImpl)result.getResult();        
         assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
         assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
         assertEquals(elem.getScfID().getData(), getDigitsData1());
-
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode_CalledAddressAndService() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CompoundCriteriaImpl.class);
+    	
+    	DigitsImpl digits = new DigitsImpl(getDigitsData());
+        CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
+        BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
 
-        Digits digits = new DigitsImpl(getDigitsData());
-        CalledAddressAndService calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
-        BasicGapCriteria basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
-
-        ScfID scfId = new ScfIDImpl(getDigitsData1());
+        ScfIDImpl scfId = new ScfIDImpl(getDigitsData1());
 
         CompoundCriteriaImpl elem = new CompoundCriteriaImpl(basicGapCriteria, scfId);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "gap" })

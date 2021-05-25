@@ -28,12 +28,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferVolumeWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.VolumeIfTariffSwitchImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,57 +47,63 @@ import org.testng.annotations.Test;
 public class TransferredVolumeTest {
 
     public byte[] getData() {
-        return new byte[] { -128, 1, 25 };
+        return new byte[] { 48, 3, -128, 1, 25 };
     };
 
     public byte[] getData2() {
-        return new byte[] { -95, 6, -128, 1, 12, -127, 1, 24 };
+        return new byte[] { 48, 8, -95, 6, -128, 1, 12, -127, 1, 24 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        // Option 1
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        TransferredVolumeImpl prim = new TransferredVolumeImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TransferVolumeWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, TransferredVolumeImpl._ID_volumeIfNoTariffSwitch);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        assertTrue(prim.getIsPrimitive());
-        assertEquals(prim.getVolumeIfNoTariffSwitch().longValue(), 25);
-        assertNull(prim.getVolumeIfTariffSwitch());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TransferVolumeWrapperImpl);
+        
+        TransferVolumeWrapperImpl prim = (TransferVolumeWrapperImpl)result.getResult();        
+        assertEquals(prim.getTransferredVolume().getVolumeIfNoTariffSwitch().longValue(), 25);
+        assertNull(prim.getTransferredVolume().getVolumeIfTariffSwitch());
 
         // Option 2
-        data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new TransferredVolumeImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, TransferredVolumeImpl._ID_volumeIfTariffSwitch);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        assertFalse(prim.getIsPrimitive());
-        assertNull(prim.getVolumeIfNoTariffSwitch());
-        assertEquals(prim.getVolumeIfTariffSwitch().getVolumeSinceLastTariffSwitch(), 12);
-        assertEquals(prim.getVolumeIfTariffSwitch().getVolumeTariffSwitchInterval().longValue(), 24);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TransferVolumeWrapperImpl);
+        
+        prim = (TransferVolumeWrapperImpl)result.getResult(); 
+        assertNull(prim.getTransferredVolume().getVolumeIfNoTariffSwitch());
+        assertEquals(prim.getTransferredVolume().getVolumeIfTariffSwitch().getVolumeSinceLastTariffSwitch(), 12);
+        assertEquals(prim.getTransferredVolume().getVolumeIfTariffSwitch().getVolumeTariffSwitchInterval().longValue(), 24);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        // Option 1
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TransferVolumeWrapperImpl.class);
+    	
+    	// Option 1
         TransferredVolumeImpl prim = new TransferredVolumeImpl(new Long(25));
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        TransferVolumeWrapperImpl wrapper = new TransferVolumeWrapperImpl(prim);
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // Option 2
         VolumeIfTariffSwitchImpl volumeIfTariffSwitch = new VolumeIfTariffSwitchImpl(12, new Long(24));
         prim = new TransferredVolumeImpl(volumeIfTariffSwitch);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        wrapper = new TransferVolumeWrapperImpl(prim);
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

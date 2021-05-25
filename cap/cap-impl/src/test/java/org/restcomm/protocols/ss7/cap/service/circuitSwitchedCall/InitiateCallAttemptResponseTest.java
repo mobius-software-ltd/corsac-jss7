@@ -22,17 +22,21 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitiateCallAttemptResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * 
@@ -42,19 +46,21 @@ import org.testng.annotations.Test;
 public class InitiateCallAttemptResponseTest {
 
     public byte[] getData1() {
-        return new byte[] { 48, 32, (byte) 128, 2, 4, (byte) 224, (byte) 162, 18, 48, 5, 2, 1, 2, (byte) 129, 0, 48, 9, 2, 1, 3, 10, 1, 1, (byte) 129, 1,
-                (byte) 255, (byte) 129, 4, 4, (byte) 128, 0, 0, (byte) 131, 0 };
+        return new byte[] { 48, 30, -128, 2, 5, -32, -94, 18, 48, 5, 2, 1, 2, -127, 0, 48, 9, 2, 1, 3, 10, 1, 1, -127, 1, -1, -127, 2, 7, -128, -125, 0 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InitiateCallAttemptResponseImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        InitiateCallAttemptResponseImpl elem = new InitiateCallAttemptResponseImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InitiateCallAttemptResponseImpl);
+        
+        InitiateCallAttemptResponseImpl elem = (InitiateCallAttemptResponseImpl)result.getResult();         
         assertTrue(elem.getSupportedCamelPhases().getPhase1Supported());
         assertTrue(elem.getSupportedCamelPhases().getPhase2Supported());
         assertTrue(elem.getSupportedCamelPhases().getPhase3Supported());
@@ -67,7 +73,9 @@ public class InitiateCallAttemptResponseTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InitiateCallAttemptResponseImpl.class);
+    	
         SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, false);
         OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities = new OfferedCamel4FunctionalitiesImpl(true, false, false, false, false, false, false,
                 false, false, false, false, false, false, false, false, false, false, false, false, false);
@@ -77,9 +85,11 @@ public class InitiateCallAttemptResponseTest {
 //        OfferedCamel4Functionalities offeredCamel4Functionalities, CAPExtensions extensions,
 //        boolean releaseCallArgExtensionAllowed
 
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

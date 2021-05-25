@@ -63,6 +63,9 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
 
     @Override
     public DigitsImpl getDigitsResponse() {
+    	if(digitsResponse!=null)
+    		digitsResponse.setIsGenericDigits();
+    	
         return digitsResponse;
     }
     @Override

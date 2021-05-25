@@ -23,16 +23,22 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeIfTariffSwitchImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformationWrapperImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,45 +49,59 @@ import org.testng.annotations.Test;
 public class TimeInformationTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 128, 1, 26 };
+        return new byte[] { 48, 3, (byte) 128, 1, 26 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 161, 4, (byte) 128, 2, 3, (byte) 232 };
+        return new byte[] { 48, 6, (byte) 161, 4, (byte) 128, 2, 3, (byte) 232 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TimeInformationWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        TimeInformationImpl elem = new TimeInformationImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals((int) elem.getTimeIfNoTariffSwitch(), 26);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeInformationWrapperImpl);
+        
+        TimeInformationWrapperImpl elem = (TimeInformationWrapperImpl)result.getResult();                
+        assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 26);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new TimeInformationImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals(elem.getTimeIfTariffSwitch().getTimeSinceTariffSwitch(), 1000);
-        assertNull(elem.getTimeIfTariffSwitch().getTariffSwitchInterval());
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeInformationWrapperImpl);
+        
+        elem = (TimeInformationWrapperImpl)result.getResult(); 
+        assertEquals(elem.getTimeInformation().getTimeIfTariffSwitch().getTimeSinceTariffSwitch(), 1000);
+        assertNull(elem.getTimeInformation().getTimeIfTariffSwitch().getTariffSwitchInterval());
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TimeInformationWrapperImpl.class);
+    	
         TimeInformationImpl elem = new TimeInformationImpl(26);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        TimeInformationWrapperImpl wrapper = new TimeInformationWrapperImpl(elem);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         TimeIfTariffSwitchImpl tit = new TimeIfTariffSwitchImpl(1000, null);
         elem = new TimeInformationImpl(tit);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        wrapper = new TimeInformationWrapperImpl(elem);
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

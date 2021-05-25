@@ -252,8 +252,8 @@ public interface CAPParameterFactory {
     CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, CAPExtensionsImpl extensions,
             Long tariffSwitchInterval);
 
-    CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
-            Long tariffSwitchInterval, Boolean tone, CAPExtensionsImpl extensions);
+    CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, boolean releaseIfdurationExceeded,
+            Long tariffSwitchInterval, CAPExtensionsImpl extensions);
 
     CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
             Long tariffSwitchInterval, AudibleIndicatorImpl audibleIndicator, CAPExtensionsImpl extensions);
@@ -262,9 +262,9 @@ public interface CAPParameterFactory {
 
     TimeAndTimezoneImpl createTimeAndTimezone(int year, int month, int day, int hour, int minute, int second, int timeZone);
 
-    SendingLegIDImpl createSendingLegIDImpl(LegType sendingSideID);
+    SendingLegIDImpl createSendingLegID(LegType sendingSideID);
 
-    ReceivingLegIDImpl createReceivingLegIDImpl(LegType receivingSideID);
+    ReceivingLegIDImpl createReceivingLegID(LegType receivingSideID);
 
     BearerCapImpl createBearerCap(byte[] data);
 

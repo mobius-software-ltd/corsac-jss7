@@ -23,21 +23,23 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
-import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.FurnishChargingInformationRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -56,13 +58,16 @@ public class FurnishChargingInformationTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FurnishChargingInformationRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        FurnishChargingInformationRequestImpl elem = new FurnishChargingInformationRequestImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof FurnishChargingInformationRequestImpl);
+        
+        FurnishChargingInformationRequestImpl elem = (FurnishChargingInformationRequestImpl)result.getResult();        
         assertTrue(Arrays.equals(elem.getFCIBCCCAMELsequence1().getFreeFormatData().getData(), this.getDataFFD()));
         assertEquals(elem.getFCIBCCCAMELsequence1().getPartyToCharge().getSendingSideID(), LegType.leg2);
         assertEquals(elem.getFCIBCCCAMELsequence1().getAppendFreeFormatData(), AppendFreeFormatData.append);
@@ -70,14 +75,18 @@ public class FurnishChargingInformationTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
-        SendingSideIDImpl partyToCharge = new SendingSideIDImpl(LegType.leg2);
-        FreeFormatData ffd = new FreeFormatDataImpl(getDataFFD());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FurnishChargingInformationRequestImpl.class);
+    	
+        SendingLegIDImpl partyToCharge = new SendingLegIDImpl(LegType.leg2);
+        FreeFormatDataImpl ffd = new FreeFormatDataImpl(getDataFFD());
         FCIBCCCAMELSequence1Impl fci = new FCIBCCCAMELSequence1Impl(ffd, partyToCharge, AppendFreeFormatData.append);
         FurnishChargingInformationRequestImpl elem = new FurnishChargingInformationRequestImpl(fci);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

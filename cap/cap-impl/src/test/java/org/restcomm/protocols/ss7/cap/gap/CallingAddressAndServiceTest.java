@@ -22,17 +22,21 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.gap.CallingAddressAndServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import org.restcomm.protocols.ss7.cap.api.gap.CallingAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -53,27 +57,32 @@ public class CallingAddressAndServiceTest {
 
     @Test(groups = { "functional.decode", "gap" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CallingAddressAndServiceImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        CallingAddressAndServiceImpl elem = new CallingAddressAndServiceImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallingAddressAndServiceImpl);
+        
+        CallingAddressAndServiceImpl elem = (CallingAddressAndServiceImpl)result.getResult();        
         assertEquals(elem.getCallingAddressValue().getData(), getDigitsData());
         assertEquals(elem.getServiceKey(), SERVICE_KEY);
     }
 
     @Test(groups = { "functional.encode", "gap" })
     public void testEncode() throws Exception {
-
-        Digits callingAddressValue = new DigitsImpl(getDigitsData());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CallingAddressAndServiceImpl.class);
+    	
+        DigitsImpl callingAddressValue = new DigitsImpl(getDigitsData());
         CallingAddressAndServiceImpl elem = new CallingAddressAndServiceImpl(callingAddressValue, SERVICE_KEY);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "gap" })

@@ -297,9 +297,9 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
-            Long tariffSwitchInterval, Boolean tone, CAPExtensionsImpl extensions) {
-        return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration,releaseIfdurationExceeded,tariffSwitchInterval,tone,extensions);
+    public CAMELAChBillingChargingCharacteristicsImpl createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, boolean releaseIfdurationExceeded,
+            Long tariffSwitchInterval, CAPExtensionsImpl extensions) {
+        return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration,tone,releaseIfdurationExceeded,tariffSwitchInterval,extensions);
     }
 
     @Override
@@ -321,12 +321,12 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public SendingLegIDImpl createSendingLegIDImpl(LegType sendingSideID) {
+    public SendingLegIDImpl createSendingLegID(LegType sendingSideID) {
         return new SendingLegIDImpl(sendingSideID);
     }
 
     @Override
-    public ReceivingLegIDImpl createReceivingLegIDImpl(LegType receivingSideID) {
+    public ReceivingLegIDImpl createReceivingLegID(LegType receivingSideID) {
         return new ReceivingLegIDImpl(receivingSideID);
     }
 

@@ -33,6 +33,7 @@ public class GPRSCauseImpl extends ASNSingleByte {
     }
 
     public GPRSCauseImpl(int data) {
+    	setValue(data);
     }
 
     public int getData() {

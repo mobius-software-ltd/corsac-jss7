@@ -21,17 +21,19 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilitiesImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -50,48 +52,59 @@ public class SGSNCapabilitiesTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        SGSNCapabilitiesImpl prim = new SGSNCapabilitiesImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SGSNCapabilitiesImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SGSNCapabilitiesImpl);
+        
+        SGSNCapabilitiesImpl prim = (SGSNCapabilitiesImpl)result.getResult();        
         assertFalse(prim.getAoCSupportedBySGSN());
 
-        data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new SGSNCapabilitiesImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SGSNCapabilitiesImpl);
+        
+        prim = (SGSNCapabilitiesImpl)result.getResult();  
         assertTrue(prim.getAoCSupportedBySGSN());
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SGSNCapabilitiesImpl.class);
+    	
         SGSNCapabilitiesImpl prim = new SGSNCapabilitiesImpl(0);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         prim = new SGSNCapabilitiesImpl(1);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         prim = new SGSNCapabilitiesImpl(true);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         prim = new SGSNCapabilitiesImpl(false);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-
+        rawData = this.getData();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

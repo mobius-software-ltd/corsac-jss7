@@ -49,11 +49,16 @@ public class SingleTbcdString {
     protected String data;
     protected String _PrimitiveName;
     
+    public SingleTbcdString() {
+    	
+    }
+    
     public SingleTbcdString(String _PrimitiveName) {
         this._PrimitiveName = _PrimitiveName;
     }
 
     public SingleTbcdString(String _PrimitiveName, String data) {
+    	this._PrimitiveName = _PrimitiveName;
         this.data = data;
     }
 

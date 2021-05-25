@@ -54,7 +54,7 @@ public class CalledPartyBCDNumberImpl extends AddressStringImpl {
 
     @Override
     public String toString() {
-        return "FTNAddressString[AddressNature=" + this.addressNature.toString() + ", NumberingPlan="
+        return "CalledPartyBCDNumberImpl[AddressNature=" + this.addressNature.toString() + ", NumberingPlan="
                 + this.numberingPlan.toString() + ", Address=" + this.address + "]";
     }
 

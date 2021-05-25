@@ -30,58 +30,47 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.CallAcceptedSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.CallAcceptedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.DpSpecificInfoAlt;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.DpSpecificInfoAltImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MidCallEvents;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MidCallEventsImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAbandonSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAbandonSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OCalledPartyBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OChangeOfPositionSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OChangeOfPositionSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OMidCallSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ONoAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OServiceChangeSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OServiceChangeSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OTermSeizedSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OTermSeizedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.RouteSelectFailureSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TAnswerSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TChangeOfPositionSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TChangeOfPositionSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TDisconnectSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TMidCallSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TMidCallSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TNoAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMWrapperImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCode;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -91,71 +80,71 @@ import org.testng.annotations.Test;
 public class EventSpecificInformationBCSMTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 162, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
+        return new byte[] { 48, 6, (byte) 162, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 163, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
+        return new byte[] { 48, 6, (byte) 163, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
     }
 
     public byte[] getData3() {
-        return new byte[] { (byte) 164, 0 };
+        return new byte[] { 48, 2, (byte) 164, 0 };
     }
 
     public byte[] getData4() {
-        return new byte[] { (byte) 165, 0 };
+        return new byte[] { 48, 2, (byte) 165, 0 };
     }
 
     public byte[] getData5() {
-        return new byte[] { (byte) 167, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
+        return new byte[] { 48, 6, (byte) 167, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
     }
 
     public byte[] getData6() {
-        return new byte[] { (byte) 168, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
+        return new byte[] { 48, 6, (byte) 168, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
     }
 
     public byte[] getData7() {
-        return new byte[] { (byte) 169, 13, (byte) 159, 50, 0, (byte) 159, 52, 7, 3, (byte) 144, 33, 114, 16, (byte) 144, 0 };
+        return new byte[] { 48, 15, (byte) 169, 13, (byte) 159, 50, 0, (byte) 159, 52, 7, 3, (byte) 144, 33, 114, 16, (byte) 144, 0 };
     }
 
     public byte[] getData8() {
-        return new byte[] { (byte) 170, 0 };
+        return new byte[] { 48, 2, (byte) 170, 0 };
     }
 
     public byte[] getData9() {
-        return new byte[] { (byte) 172, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
+        return new byte[] { 48, 6, (byte) 172, 4, (byte) 128, 2, (byte) 132, (byte) 144 };
     }
 
     public byte[] getData10() {
-        return new byte[] { (byte) 181, 3, (byte) 159, 50, 0 };
+        return new byte[] { 48, 5, (byte) 181, 3, (byte) 159, 50, 0 };
     }
 
     public byte[] getData11() {
-        return new byte[] { (byte) 166, 9, (byte) 161, 7, (byte) 131, 5, 99, 1, 2, 3, 4 };
+        return new byte[] { 48, 11, (byte) 166, 9, (byte) 161, 7, (byte) 131, 5, 99, 1, 2, 3, 4 };
     }
 
     public byte[] getData12() {
-        return new byte[] { (byte) 171, 9, (byte) 161, 7, (byte) 131, 5, 99, 1, 2, 3, 4 };
+        return new byte[] { 48, 11, (byte) 171, 9, (byte) 161, 7, (byte) 131, 5, 99, 1, 2, 3, 4 };
     }
 
     public byte[] getData13() {
-        return new byte[] { (byte) 173, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 135 };
+        return new byte[] { 48, 9, (byte) 173, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 135 };
     }
 
     public byte[] getData14() {
-        return new byte[] { (byte) 180, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 135 };
+        return new byte[] { 48, 9, (byte) 180, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 135 };
     }
 
     public byte[] getData15() {
-        return new byte[] { (byte) 191, 50, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 135 };
+        return new byte[] { 48, 10, (byte) 191, 50, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 135 };
     }
 
     public byte[] getData16() {
-        return new byte[] { (byte) 191, 51, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 135 };
+        return new byte[] { 48, 10, (byte) 191, 51, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 135 };
     }
 
     public byte[] getData17() {
-        return new byte[] { (byte) 191, 52, 7, (byte) 160, 5, (byte) 160, 3, (byte) 130, 1, 38 };
+        return new byte[] { 48, 10, (byte) 191, 52, 7, (byte) 160, 5, (byte) 160, 3, (byte) 130, 1, 38 };
     }
 
     public byte[] getDigitsData() {
@@ -164,278 +153,374 @@ public class EventSpecificInformationBCSMTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventSpecificInformationBCSMWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        EventSpecificInformationBCSMImpl elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        CauseIndicators ci = elem.getRouteSelectFailureSpecificInfo().getFailureCause().getCauseIndicators();
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        EventSpecificInformationBCSMWrapperImpl elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult();        
+        CauseIndicators ci = elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getLocation(), 4);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        ci = elem.getOCalledPartyBusySpecificInfo().getBusyCause().getCauseIndicators();
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        ci = elem.getEventSpecificInformationBCSM().getOCalledPartyBusySpecificInfo().getBusyCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getLocation(), 4);
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertNotNull(elem.getONoAnswerSpecificInfo());
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData4();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertNotNull(elem.getOAnswerSpecificInfo());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getEventSpecificInformationBCSM().getONoAnswerSpecificInfo());
 
-        data = this.getData5();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        ci = elem.getODisconnectSpecificInfo().getReleaseCause().getCauseIndicators();
+        rawData = this.getData4();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getEventSpecificInformationBCSM().getOAnswerSpecificInfo());
+
+        rawData = this.getData5();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        ci = elem.getEventSpecificInformationBCSM().getODisconnectSpecificInfo().getReleaseCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getLocation(), 4);
 
-        data = this.getData6();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        ci = elem.getTBusySpecificInfo().getBusyCause().getCauseIndicators();
+        rawData = this.getData6();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        ci = elem.getEventSpecificInformationBCSM().getTBusySpecificInfo().getBusyCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getLocation(), 4);
-        assertFalse(elem.getTBusySpecificInfo().getCallForwarded());
-        assertFalse(elem.getTBusySpecificInfo().getRouteNotPermitted());
-        assertNull(elem.getTBusySpecificInfo().getForwardingDestinationNumber());
+        assertFalse(elem.getEventSpecificInformationBCSM().getTBusySpecificInfo().getCallForwarded());
+        assertFalse(elem.getEventSpecificInformationBCSM().getTBusySpecificInfo().getRouteNotPermitted());
+        assertNull(elem.getEventSpecificInformationBCSM().getTBusySpecificInfo().getForwardingDestinationNumber());
 
-        data = this.getData7();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertTrue(elem.getTNoAnswerSpecificInfo().getCallForwarded());
-        CalledPartyNumber cpn = elem.getTNoAnswerSpecificInfo().getForwardingDestinationNumber().getCalledPartyNumber();
+        rawData = this.getData7();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertTrue(elem.getEventSpecificInformationBCSM().getTNoAnswerSpecificInfo().getCallForwarded());
+        CalledPartyNumber cpn = elem.getEventSpecificInformationBCSM().getTNoAnswerSpecificInfo().getForwardingDestinationNumber().getCalledPartyNumber();
         assertFalse(cpn.isOddFlag());
         assertEquals(cpn.getNumberingPlanIndicator(), 1);
         assertEquals(cpn.getInternalNetworkNumberIndicator(), 1);
         assertEquals(cpn.getNatureOfAddressIndicator(), 3);
         assertTrue(cpn.getAddress().equals("1227010900"));
 
-        data = this.getData8();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertNotNull(elem.getTAnswerSpecificInfo());
+        rawData = this.getData8();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData9();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        ci = elem.getTDisconnectSpecificInfo().getReleaseCause().getCauseIndicators();
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getEventSpecificInformationBCSM().getTAnswerSpecificInfo());
+
+        rawData = this.getData9();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        ci = elem.getEventSpecificInformationBCSM().getTDisconnectSpecificInfo().getReleaseCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getLocation(), 4);
 
-        data = this.getData10();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertTrue(elem.getOAbandonSpecificInfo().getRouteNotPermitted());
+        rawData = this.getData10();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData11();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals(elem.getOMidCallSpecificInfo().getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits(), getDigitsData());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertTrue(elem.getEventSpecificInformationBCSM().getOAbandonSpecificInfo().getRouteNotPermitted());
 
-        data = this.getData12();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals(elem.getTMidCallSpecificInfo().getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits(), getDigitsData());
+        rawData = this.getData11();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData13();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals((int) elem.getOTermSeizedSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        ByteBuf value=elem.getEventSpecificInformationBCSM().getOMidCallSpecificInfo().getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits();
+        assertNotNull(value);
+        byte[] data=new byte[value.readableBytes()];
+        value.readBytes(data);
+        assertEquals(data, getDigitsData());
 
-        data = this.getData14();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals((int) elem.getCallAcceptedSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
+        rawData = this.getData12();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData15();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals((int) elem.getOChangeOfPositionSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        value=elem.getEventSpecificInformationBCSM().getTMidCallSpecificInfo().getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits();
+        assertNotNull(value);
+        data=new byte[value.readableBytes()];
+        value.readBytes(data);
+        assertEquals(data, getDigitsData());
 
-        data = this.getData16();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals((int) elem.getTChangeOfPositionSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
+        rawData = this.getData13();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData17();
-        ais = new AsnInputStream(data);
-        elem = new EventSpecificInformationBCSMImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals(elem.getDpSpecificInfoAlt().getOServiceChangeSpecificInfo().getExtBasicServiceCode().getExtBearerService().getBearerServiceCodeValue(),
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertEquals((int) elem.getEventSpecificInformationBCSM().getOTermSeizedSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
+
+        rawData = this.getData14();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertEquals((int) elem.getEventSpecificInformationBCSM().getCallAcceptedSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
+
+        rawData = this.getData15();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertEquals((int) elem.getEventSpecificInformationBCSM().getOChangeOfPositionSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
+
+        rawData = this.getData16();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertEquals((int) elem.getEventSpecificInformationBCSM().getTChangeOfPositionSpecificInfo().getLocationInformation().getAgeOfLocationInformation(), 135);
+
+        rawData = this.getData17();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
+        
+        elem = (EventSpecificInformationBCSMWrapperImpl)result.getResult(); 
+        assertEquals(elem.getEventSpecificInformationBCSM().getDpSpecificInfoAlt().getOServiceChangeSpecificInfo().getExtBasicServiceCode().getExtBearerService().getBearerServiceCodeValue(),
                 BearerServiceCodeValue.padAccessCA_9600bps);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventSpecificInformationBCSMWrapperImpl.class);
+    	
         CauseIndicators causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
-        CauseCap failureCause = new CauseCapImpl(causeIndicators);
-        RouteSelectFailureSpecificInfo routeSelectFailureSpecificInfo = new RouteSelectFailureSpecificInfoImpl(failureCause);
+        CauseCapImpl failureCause = new CauseCapImpl(causeIndicators);
+        RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo = new RouteSelectFailureSpecificInfoImpl(failureCause);
         EventSpecificInformationBCSMImpl elem = new EventSpecificInformationBCSMImpl(routeSelectFailureSpecificInfo);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        EventSpecificInformationBCSMWrapperImpl wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
-        CauseCap busyCause = new CauseCapImpl(causeIndicators);
+        CauseCapImpl busyCause = new CauseCapImpl(causeIndicators);
         OCalledPartyBusySpecificInfoImpl oCalledPartyBusySpecificInfoImpl = new OCalledPartyBusySpecificInfoImpl(busyCause);
         elem = new EventSpecificInformationBCSMImpl(oCalledPartyBusySpecificInfoImpl);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         ONoAnswerSpecificInfoImpl oNoAnswerSpecificInfo = new ONoAnswerSpecificInfoImpl();
         elem = new EventSpecificInformationBCSMImpl(oNoAnswerSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData3();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         OAnswerSpecificInfoImpl oAnswerSpecificInfo = new OAnswerSpecificInfoImpl();
         elem = new EventSpecificInformationBCSMImpl(oAnswerSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData4()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData4();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
-        CauseCap releaseCause = new CauseCapImpl(causeIndicators);
+        CauseCapImpl releaseCause = new CauseCapImpl(causeIndicators);
         ODisconnectSpecificInfoImpl oDisconnectSpecificInfo = new ODisconnectSpecificInfoImpl(releaseCause);
         elem = new EventSpecificInformationBCSMImpl(oDisconnectSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData5()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData5();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
         busyCause = new CauseCapImpl(causeIndicators);
         TBusySpecificInfoImpl tBusySpecificInfo = new TBusySpecificInfoImpl(busyCause, false, false, null);
         elem = new EventSpecificInformationBCSMImpl(tBusySpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData6()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData6();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         CalledPartyNumber cpn = new CalledPartyNumberImpl(3, "1227010900", 1, 1);
         // int natureOfAddresIndicator, String address, int
         // numberingPlanIndicator, int internalNetworkNumberIndicator
-        CalledPartyNumberCap cpnc = new CalledPartyNumberCapImpl(cpn);
+        CalledPartyNumberCapImpl cpnc = new CalledPartyNumberCapImpl(cpn);
         TNoAnswerSpecificInfoImpl tNoAnswerSpecificInfo = new TNoAnswerSpecificInfoImpl(true, cpnc);
         elem = new EventSpecificInformationBCSMImpl(tNoAnswerSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData7()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData7();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         TAnswerSpecificInfoImpl tAnswerSpecificInfo = new TAnswerSpecificInfoImpl();
         elem = new EventSpecificInformationBCSMImpl(tAnswerSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData8()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData8();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
         
         causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
         releaseCause = new CauseCapImpl(causeIndicators);
         TDisconnectSpecificInfoImpl tDisconnectSpecificInfo = new TDisconnectSpecificInfoImpl(releaseCause);
         elem = new EventSpecificInformationBCSMImpl(tDisconnectSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData9()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData9();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        OAbandonSpecificInfo oAbandonSpecificInfo = new OAbandonSpecificInfoImpl(true);
+        OAbandonSpecificInfoImpl oAbandonSpecificInfo = new OAbandonSpecificInfoImpl(true);
         elem = new EventSpecificInformationBCSMImpl(oAbandonSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData10()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData10();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        GenericDigits genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, getDigitsData());
-        Digits dtmfDigits = new DigitsImpl(genericDigits);
-        MidCallEvents midCallEvents = new MidCallEventsImpl(dtmfDigits, true);
+        GenericDigitsImpl genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, Unpooled.wrappedBuffer(getDigitsData()));
+        DigitsImpl dtmfDigits = new DigitsImpl(genericDigits);
+        MidCallEventsImpl midCallEvents = new MidCallEventsImpl(dtmfDigits, true);
         OMidCallSpecificInfoImpl oMidCallSpecificInfo = new OMidCallSpecificInfoImpl(midCallEvents);
         elem = new EventSpecificInformationBCSMImpl(oMidCallSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData11()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData11();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        TMidCallSpecificInfo tMidCallSpecificInfo = new TMidCallSpecificInfoImpl(midCallEvents);
+        TMidCallSpecificInfoImpl tMidCallSpecificInfo = new TMidCallSpecificInfoImpl(midCallEvents);
         elem = new EventSpecificInformationBCSMImpl(tMidCallSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData12()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData12();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        LocationInformation locationInformation = new LocationInformationImpl(135, null, null, null, null, null, null, null, null, false, false, null, null);
-        OTermSeizedSpecificInfo oTermSeizedSpecificInfo = new OTermSeizedSpecificInfoImpl(locationInformation);
+        LocationInformationImpl locationInformation = new LocationInformationImpl(135, null, null, null, null, null, null, null, null, false, false, null, null);
+        OTermSeizedSpecificInfoImpl oTermSeizedSpecificInfo = new OTermSeizedSpecificInfoImpl(locationInformation);
         elem = new EventSpecificInformationBCSMImpl(oTermSeizedSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData13()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData13();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        CallAcceptedSpecificInfo callAcceptedSpecificInfo = new CallAcceptedSpecificInfoImpl(locationInformation);
+        CallAcceptedSpecificInfoImpl callAcceptedSpecificInfo = new CallAcceptedSpecificInfoImpl(locationInformation);
         elem = new EventSpecificInformationBCSMImpl(callAcceptedSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData14()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData14();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        OChangeOfPositionSpecificInfo oChangeOfPositionSpecificInfo = new OChangeOfPositionSpecificInfoImpl(locationInformation, null);
+        OChangeOfPositionSpecificInfoImpl oChangeOfPositionSpecificInfo = new OChangeOfPositionSpecificInfoImpl(locationInformation, null);
         elem = new EventSpecificInformationBCSMImpl(oChangeOfPositionSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData15()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData15();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        TChangeOfPositionSpecificInfo tChangeOfPositionSpecificInfo = new TChangeOfPositionSpecificInfoImpl(locationInformation, null);
+        TChangeOfPositionSpecificInfoImpl tChangeOfPositionSpecificInfo = new TChangeOfPositionSpecificInfoImpl(locationInformation, null);
         elem = new EventSpecificInformationBCSMImpl(tChangeOfPositionSpecificInfo);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData16()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData16();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        ExtBearerServiceCode extBearerService = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
-        ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl(extBearerService);
-        OServiceChangeSpecificInfo oServiceChangeSpecificInfo = new OServiceChangeSpecificInfoImpl(extBasicServiceCode);
-        DpSpecificInfoAlt dpSpecificInfoAlt = new DpSpecificInfoAltImpl(oServiceChangeSpecificInfo, null, null);
+        ExtBearerServiceCodeImpl extBearerService = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
+        ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(extBearerService);
+        OServiceChangeSpecificInfoImpl oServiceChangeSpecificInfo = new OServiceChangeSpecificInfoImpl(extBasicServiceCode);
+        DpSpecificInfoAltImpl dpSpecificInfoAlt = new DpSpecificInfoAltImpl(oServiceChangeSpecificInfo, null, null);
         elem = new EventSpecificInformationBCSMImpl(dpSpecificInfoAlt);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData17()));
+        wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
+        rawData = this.getData17();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })

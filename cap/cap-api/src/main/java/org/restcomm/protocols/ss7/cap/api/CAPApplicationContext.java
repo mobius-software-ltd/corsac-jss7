@@ -168,7 +168,7 @@ public enum CAPApplicationContext {
     public List<Long> getOID() {
     	List<Long> result=new ArrayList<Long>(res);
     	
-        switch (this) {
+    	switch (this) {
             case CapV1_gsmSSF_to_gsmSCF:
                 result.set(5,0L);
                 result.set(6,50L);
@@ -249,7 +249,7 @@ public enum CAPApplicationContext {
                 break;
         }
 
-        return res;
+        return result;
     }
 
     @Override

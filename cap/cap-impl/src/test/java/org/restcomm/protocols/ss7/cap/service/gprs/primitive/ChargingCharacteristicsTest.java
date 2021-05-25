@@ -22,15 +22,20 @@
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristicsWrapperImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -40,51 +45,59 @@ import org.testng.annotations.Test;
 public class ChargingCharacteristicsTest {
 
     public byte[] getData() {
-        return new byte[] { -128, 2, 0, -56 };
+        return new byte[] { 48, 4, -128, 2, 0, -56 };
     };
 
     public byte[] getData2() {
-        return new byte[] { -127, 1, 20 };
+        return new byte[] { 48, 3, -127, 1, 20 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        // Option 1
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ChargingCharacteristicsImpl prim = new ChargingCharacteristicsImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, ChargingCharacteristicsImpl._ID_maxTransferredVolume);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        assertEquals(prim.getMaxTransferredVolume(), 200L);
-        assertEquals(prim.getMaxElapsedTime(), -1);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ChargingCharacteristicsWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChargingCharacteristicsWrapperImpl);
+        
+        ChargingCharacteristicsWrapperImpl prim = (ChargingCharacteristicsWrapperImpl)result.getResult();        
+        assertEquals(prim.getChargingCharacteristics().getMaxTransferredVolume(), 200L);
+        assertEquals(prim.getChargingCharacteristics().getMaxElapsedTime(), -1);
 
         // Option 2
-        data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new ChargingCharacteristicsImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, ChargingCharacteristicsImpl._ID_maxElapsedTime);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        assertEquals(prim.getMaxTransferredVolume(), -1L);
-        assertEquals(prim.getMaxElapsedTime(), 20);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChargingCharacteristicsWrapperImpl);
+        
+        prim = (ChargingCharacteristicsWrapperImpl)result.getResult();        
+        assertEquals(prim.getChargingCharacteristics().getMaxTransferredVolume(), -1L);
+        assertEquals(prim.getChargingCharacteristics().getMaxElapsedTime(), 20);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        // Option 1
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ChargingCharacteristicsWrapperImpl.class);
+    	
+    	// Option 1
         ChargingCharacteristicsImpl prim = new ChargingCharacteristicsImpl(200L);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // Option 2
         prim = new ChargingCharacteristicsImpl(20);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

@@ -87,6 +87,9 @@ public class VariablePartImpl {
     }
 
     public DigitsImpl getNumber() {
+    	if(number!=null)
+    		number.setIsGenericDigits();
+    	
         return number;
     }
 

@@ -22,28 +22,37 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.gap.*;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionFieldImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.*;
-import org.restcomm.protocols.ss7.cap.gap.*;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CallGapRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.*;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import static org.testng.Assert.*;
+import org.restcomm.protocols.ss7.cap.api.gap.BasicGapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.CalledAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.CompoundCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
+import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionFieldImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ControlType;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDImpl;
+import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -92,12 +101,16 @@ public class CallGapRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        CallGapRequestImpl elem = new CallGapRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CallGapRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallGapRequestImpl);
+        
+        CallGapRequestImpl elem = (CallGapRequestImpl)result.getResult();
         assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
         assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
         assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getScfID().getData(), getDigitsData1());
@@ -116,13 +129,13 @@ public class CallGapRequestTest {
         assertEquals(elem.getExtensions().getExtensionFields().get(0).getCriticalityType(), CriticalityType.typeIgnore);
         assertEquals(elem.getExtensions().getExtensionFields().get(0).getData(), getDigitsData2());
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new CallGapRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallGapRequestImpl);
+        
+        elem = (CallGapRequestImpl)result.getResult();
         assertEquals(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
         assertEquals(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
 
@@ -136,39 +149,42 @@ public class CallGapRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CallGapRequestImpl.class);
+    	
+        DigitsImpl digits = new DigitsImpl(getDigitsData());
+        CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
+        BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
+        ScfIDImpl scfId = new ScfIDImpl(getDigitsData1());
+        CompoundCriteriaImpl compoundCriteria = new CompoundCriteriaImpl(basicGapCriteria, scfId);
+        GapCriteriaImpl gapCriteria = new GapCriteriaImpl(compoundCriteria);
 
-        Digits digits = new DigitsImpl(getDigitsData());
-        CalledAddressAndService calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
-        BasicGapCriteria basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
-        ScfID scfId = new ScfIDImpl(getDigitsData1());
-        CompoundCriteria compoundCriteria = new CompoundCriteriaImpl(basicGapCriteria, scfId);
-        GapCriteria gapCriteria = new GapCriteriaImpl(compoundCriteria);
+        GapIndicatorsImpl gapIndicators = new GapIndicatorsImpl(DURATION, -GAP_INTERVAL);
 
-        GapIndicators gapIndicators = new GapIndicatorsImpl(DURATION, -GAP_INTERVAL);
+        MessageIDImpl messageID = new MessageIDImpl(ELEMENTARY_MESSAGE_ID);
+        InbandInfoImpl inbandInfo = new InbandInfoImpl(messageID, NUMBER_OF_REPETITIONS, DURATION_IF, INTERVAL);
+        InformationToSendImpl informationToSend = new InformationToSendImpl(inbandInfo);
+        GapTreatmentImpl gapTreatment = new GapTreatmentImpl(informationToSend);
 
-        MessageID messageID = new MessageIDImpl(ELEMENTARY_MESSAGE_ID);
-        InbandInfo inbandInfo = new InbandInfoImpl(messageID, NUMBER_OF_REPETITIONS, DURATION_IF, INTERVAL);
-        InformationToSend informationToSend = new InformationToSendImpl(inbandInfo);
-        GapTreatment gapTreatment = new GapTreatmentImpl(informationToSend);
-
-        ArrayList<ExtensionField> fieldsList = new ArrayList<>();
-        ExtensionField extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, getDigitsData2());
+        List<ExtensionFieldImpl> fieldsList = new ArrayList<>();
+        ExtensionFieldImpl extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, getDigitsData2());
         fieldsList.add(extensionField);
-        CAPExtensions cAPExtensions = new CAPExtensionsImpl(fieldsList);
+        CAPExtensionsImpl cAPExtensions = new CAPExtensionsImpl(fieldsList);
 
         CallGapRequestImpl elem = new CallGapRequestImpl(gapCriteria, gapIndicators, ControlType.sCPOverloaded, gapTreatment, cAPExtensions);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
-
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         gapCriteria = new GapCriteriaImpl(basicGapCriteria);
         elem = new CallGapRequestImpl(gapCriteria, gapIndicators, null, null, null);
-
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

@@ -44,7 +44,7 @@ public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessa
         SendChargingInformationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
     private SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)

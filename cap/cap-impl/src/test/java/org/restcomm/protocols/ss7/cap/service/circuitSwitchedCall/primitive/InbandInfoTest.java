@@ -23,18 +23,22 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -54,24 +58,28 @@ public class InbandInfoTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InbandInfoImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        InbandInfoImpl elem = new InbandInfoImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InbandInfoImpl);
+        
+        InbandInfoImpl elem = (InbandInfoImpl)result.getResult();                
         assertEquals((int) elem.getMessageID().getElementaryMessageID(), 11);
         assertNull(elem.getNumberOfRepetitions());
         assertNull(elem.getDuration());
         assertNull(elem.getInterval());
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new InbandInfoImpl();
-        tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InbandInfoImpl);
+        
+        elem = (InbandInfoImpl)result.getResult(); 
         assertTrue(elem.getMessageID().getText().getMessageContent().equals("Info"));
         assertEquals((int) elem.getNumberOfRepetitions(), 3);
         assertEquals((int) elem.getDuration(), 2);
@@ -80,19 +88,25 @@ public class InbandInfoTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InbandInfoImpl.class);
+    	
         MessageIDImpl messageID = new MessageIDImpl(11);
         InbandInfoImpl elem = new InbandInfoImpl(messageID, null, null, null);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         MessageIDTextImpl text = new MessageIDTextImpl("Info", null);
         messageID = new MessageIDImpl(text);
         elem = new InbandInfoImpl(messageID, 3, 2, 1);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // MessageID messageID, Integer numberOfRepetitions, Integer duration, Integer interval
     }

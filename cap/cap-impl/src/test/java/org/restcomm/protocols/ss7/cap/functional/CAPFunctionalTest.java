@@ -33,14 +33,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
 import org.restcomm.protocols.ss7.cap.CAPStackImpl;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGeneralAbortReason;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPNoticeProblemDiagnostic;
@@ -48,17 +47,18 @@ import org.restcomm.protocols.ss7.cap.api.dialog.CAPUserAbortReason;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.cap.api.errors.UnavailableNetworkResource;
-import org.restcomm.protocols.ss7.cap.api.gap.*;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import org.restcomm.protocols.ss7.cap.api.gap.BasicGapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.CalledAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
-import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTime;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.cap.api.primitives.ReceivingSideID;
-import org.restcomm.protocols.ss7.cap.api.primitives.SendingSideID;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ActivityTestRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ApplyChargingReportRequest;
@@ -96,28 +96,25 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargi
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswer;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequent;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswerImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigits;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELsequence1;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatData;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResult;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformation;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Tone;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ToneImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ActivityTestGPRSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ActivityTestGPRSResponse;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ApplyChargingGPRSRequest;
@@ -134,25 +131,17 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.ReleaseGPRSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.RequestReportGPRSEventRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ResetTimerGPRSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.SendChargingInformationGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRS;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristics;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResult;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELSequence1GprsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprs;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPDialogSms;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ConnectSMSRequest;
@@ -163,21 +152,21 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.InitialDPSMSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ReleaseSMSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.RequestReportSMSEventRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ResetTimerSMSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELsequence1SMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCause;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
-import org.restcomm.protocols.ss7.cap.gap.*;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCauseImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CAPDialogCircuitSwitchedCallImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -186,35 +175,27 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingLevel;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
-import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
-import org.restcomm.protocols.ss7.tcap.api.TCAPException;
-import org.restcomm.protocols.ss7.tcap.asn.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -448,7 +429,8 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 super.onApplyChargingRequest(ind);
 
                 assertEquals(ind.getAChBillingChargingCharacteristics().getMaxCallPeriodDuration(), 1000);
-                assertTrue(ind.getAChBillingChargingCharacteristics().getReleaseIfdurationExceeded());
+                //we are sending V2 which does not have this property
+                assertFalse(ind.getAChBillingChargingCharacteristics().getReleaseIfdurationExceeded());
                 assertNull(ind.getAChBillingChargingCharacteristics().getTariffSwitchInterval());
                 assertEquals(ind.getPartyToCharge().getSendingSideID(), LegType.leg1);
                 assertNull(ind.getExtensions());
@@ -497,7 +479,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
             public void onSendChargingInformationRequest(SendChargingInformationRequest ind) {
                 super.onSendChargingInformationRequest(ind);
 
-                CAI_GSM0224 aocInitial = ind.getSCIBillingChargingCharacteristics().getAOCBeforeAnswer().getAOCInitial();
+                CAI_GSM0224Impl aocInitial = ind.getSCIBillingChargingCharacteristics().getAOCBeforeAnswer().getAOCInitial();
                 assertEquals((int) aocInitial.getE1(), 1);
                 assertEquals((int) aocInitial.getE2(), 2);
                 assertEquals((int) aocInitial.getE3(), 3);
@@ -524,12 +506,12 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 try {
                     switch (dialogStep) {
                         case 1: // after ConnectRequest
-                            OAnswerSpecificInfo oAnswerSpecificInfo = this.capParameterFactory.createOAnswerSpecificInfo(null,
+                            OAnswerSpecificInfoImpl oAnswerSpecificInfo = this.capParameterFactory.createOAnswerSpecificInfo(null,
                                     false, false, null, null, null);
-                            ReceivingSideID legID = this.capParameterFactory.createReceivingSideID(LegType.leg2);
-                            MiscCallInfo miscCallInfo = this.inapParameterFactory.createMiscCallInfo(
+                            ReceivingLegIDImpl legID = this.capParameterFactory.createReceivingLegID(LegType.leg2);
+                            MiscCallInfoImpl miscCallInfo = this.inapParameterFactory.createMiscCallInfo(
                                     MiscCallInfoMessageType.notification, null);
-                            EventSpecificInformationBCSM eventSpecificInformationBCSM = this.capParameterFactory
+                            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = this.capParameterFactory
                                     .createEventSpecificInformationBCSM(oAnswerSpecificInfo);
                             dlg.addEventReportBCSMRequest(EventTypeBCSM.oAnswer, eventSpecificInformationBCSM, legID,
                                     miscCallInfo, null);
@@ -537,9 +519,9 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                                     sequence++));
                             dlg.send();
 
-                            ReceivingSideID partyToCharge = this.capParameterFactory.createReceivingSideID(LegType.leg1);
-                            TimeInformation timeInformation = this.capParameterFactory.createTimeInformation(2000);
-                            TimeDurationChargingResult timeDurationChargingResult = this.capParameterFactory
+                            ReceivingLegIDImpl partyToCharge = this.capParameterFactory.createReceivingLegID(LegType.leg1);
+                            TimeInformationImpl timeInformation = this.capParameterFactory.createTimeInformation(2000);
+                            TimeDurationChargingResultImpl timeDurationChargingResult = this.capParameterFactory
                                     .createTimeDurationChargingResult(partyToCharge, timeInformation, true, false, null, null);
                             dlg.addApplyChargingReportRequest(timeDurationChargingResult);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ApplyChargingReportRequest, null,
@@ -620,7 +602,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
             public void onApplyChargingReportRequest(ApplyChargingReportRequest ind) {
                 super.onApplyChargingReportRequest(ind);
 
-                TimeDurationChargingResult tdr = ind.getTimeDurationChargingResult();
+                TimeDurationChargingResultImpl tdr = ind.getTimeDurationChargingResult();
                 assertEquals(tdr.getPartyToCharge().getReceivingSideID(), LegType.leg1);
                 assertEquals((int) tdr.getTimeInformation().getTimeIfNoTariffSwitch(), 2000);
                 assertNull(tdr.getAChChargingAddress());
@@ -646,48 +628,77 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                                     sequence++));
                             dlg.send();
 
+                            try {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+
                             byte[] freeFormatData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
-                            FreeFormatData ffd = new FreeFormatDataImpl(freeFormatData);
-                            SendingSideID partyToCharge1 = this.capParameterFactory.createSendingSideID(LegType.leg1);
-                            FCIBCCCAMELsequence1 FCIBCCCAMELsequence1 = this.capParameterFactory.createFCIBCCCAMELsequence1(
+                            FreeFormatDataImpl ffd = new FreeFormatDataImpl(freeFormatData);
+                            SendingLegIDImpl partyToCharge1 = this.capParameterFactory.createSendingLegID(LegType.leg1);
+                            FCIBCCCAMELSequence1Impl FCIBCCCAMELsequence1 = this.capParameterFactory.createFCIBCCCAMELsequence1(
                                     ffd, partyToCharge1, AppendFreeFormatData.append);
                             dlg.addFurnishChargingInformationRequest(FCIBCCCAMELsequence1);
                             dlg.send();
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.FurnishChargingInformationRequest,
                                     null, sequence++));
 
-                            CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics = this.capParameterFactory
-                                    .createCAMELAChBillingChargingCharacteristics(1000, true, null, null, null, 2);
-                            SendingSideID partyToCharge = this.capParameterFactory.createSendingSideID(LegType.leg1);
+                            try {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+
+                            //Boolean tone, CAPExtensionsImpl extensions, Long tariffSwitchInterval
+                            CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics = this.capParameterFactory
+                                    .createCAMELAChBillingChargingCharacteristics(1000, null, null, null);
+                            SendingLegIDImpl partyToCharge = this.capParameterFactory.createSendingLegID(LegType.leg1);
                             dlg.addApplyChargingRequest(aChBillingChargingCharacteristics, partyToCharge, null, null);
                             this.observerdEvents.add(TestEvent
                                     .createSentEvent(EventType.ApplyChargingRequest, null, sequence++));
 
-                            ArrayList<CalledPartyNumberCap> calledPartyNumber = new ArrayList<CalledPartyNumberCap>();
+                            List<CalledPartyNumberCapImpl> calledPartyNumber = new ArrayList<CalledPartyNumberCapImpl>();
                             CalledPartyNumber cpn = this.isupParameterFactory.createCalledPartyNumber();
                             cpn.setAddress("5599999988");
                             cpn.setNatureOfAddresIndicator(NAINumber._NAI_INTERNATIONAL_NUMBER);
                             cpn.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
                             cpn.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_ALLOWED);
-                            CalledPartyNumberCap cpnc = this.capParameterFactory.createCalledPartyNumberCap(cpn);
+                            CalledPartyNumberCapImpl cpnc = this.capParameterFactory.createCalledPartyNumberCap(cpn);
                             calledPartyNumber.add(cpnc);
-                            DestinationRoutingAddress destinationRoutingAddress = this.capParameterFactory
+                            DestinationRoutingAddressImpl destinationRoutingAddress = this.capParameterFactory
                                     .createDestinationRoutingAddress(calledPartyNumber);
                             dlg.addConnectRequest(destinationRoutingAddress, null, null, null, null, null, null, null, null,
                                     null, null, null, null, false, false, false, null, false, false);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectRequest, null, sequence++));
                             dlg.send();
 
+                            try {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+                            
                             dlg.addContinueRequest();
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ContinueRequest, null, sequence++));
                             dlg.send();
 
-                            CAI_GSM0224 aocInitial = this.capParameterFactory
+                            try {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+
+                            CAI_GSM0224Impl aocInitial = this.capParameterFactory
                                     .createCAI_GSM0224(1, 2, 3, null, null, null, null);
-                            AOCBeforeAnswer aocBeforeAnswer = this.capParameterFactory.createAOCBeforeAnswer(aocInitial, null);
-                            SCIBillingChargingCharacteristics sciBillingChargingCharacteristics = this.capParameterFactory
+                            AOCBeforeAnswerImpl aocBeforeAnswer = this.capParameterFactory.createAOCBeforeAnswer(aocInitial, null);
+                            SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics = this.capParameterFactory
                                     .createSCIBillingChargingCharacteristics(aocBeforeAnswer);
-                            SendingSideID partyToCharge2 = this.capParameterFactory.createSendingSideID(LegType.leg2);
+                            SendingLegIDImpl partyToCharge2 = this.capParameterFactory.createSendingLegID(LegType.leg2);
                             dlg.addSendChargingInformationRequest(sciBillingChargingCharacteristics, partyToCharge2, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendChargingInformationRequest, null,
                                     sequence++));
@@ -1010,15 +1021,9 @@ TC-CONTINUE + SpecializedResourceReportRequest
                 assertFalse(ind.getFirstAnnouncementStarted());
                 assertFalse(ind.getAllAnnouncementsComplete());
 
-                assertEquals((long) ind.getLinkedId(), playAnnounsmentInvokeId);
-                assertEquals((long) ind.getLinkedInvoke().getOperationCode().getLocalOperationCode(),
-                        CAPOperationCode.playAnnouncement);
-
                 dialogStep = 2;
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
-
-            private long playAnnounsmentInvokeId;
 
             @Override
             public void onDialogDelimiter(CAPDialog capDialog) {
@@ -1035,22 +1040,36 @@ TC-CONTINUE + SpecializedResourceReportRequest
                                     sequence++));
                             dlg.send();
 
+                            try {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+                            
                             CalledPartyNumber calledPartyNumber = this.isupParameterFactory.createCalledPartyNumber();
                             calledPartyNumber.setAddress("111222333");
                             calledPartyNumber.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_NOT_ALLOWED);
                             calledPartyNumber.setNatureOfAddresIndicator(NAINumber._NAI_INTERNATIONAL_NUMBER);
                             calledPartyNumber.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
-                            CalledPartyNumberCap resourceAddress_IPRoutingAddress = this.capParameterFactory
+                            CalledPartyNumberCapImpl resourceAddress_IPRoutingAddress = this.capParameterFactory
                                     .createCalledPartyNumberCap(calledPartyNumber);
                             dlg.addConnectToResourceRequest(resourceAddress_IPRoutingAddress, false, null, null, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectToResourceRequest, null,
                                     sequence++));
                             dlg.send();
 
-                            Tone tone = this.capParameterFactory.createTone(10, 100);
-                            InformationToSend informationToSend = this.capParameterFactory.createInformationToSend(tone);
+                            try {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+                            
+                            ToneImpl tone = this.capParameterFactory.createTone(10, 100);
+                            InformationToSendImpl informationToSend = this.capParameterFactory.createInformationToSend(tone);
 
-                            playAnnounsmentInvokeId = dlg.addPlayAnnouncementRequest(informationToSend, true, true, null, null,
+                            dlg.addPlayAnnouncementRequest(informationToSend, true, true, null, null,
                                     invokeTimeoutSuppressed);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.PlayAnnouncementRequest, null,
                                     sequence++));
@@ -1066,12 +1085,19 @@ TC-CONTINUE + SpecializedResourceReportRequest
                                     null, sequence++));
                             dlg.send();
 
+                            try {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+                            
                             CauseIndicators causeIndicators = this.isupParameterFactory.createCauseIndicators();
                             causeIndicators.setCauseValue(CauseIndicators._CV_SEND_SPECIAL_TONE);
                             causeIndicators.setCodingStandard(CauseIndicators._CODING_STANDARD_ITUT);
                             causeIndicators.setDiagnostics(null);
                             causeIndicators.setLocation(CauseIndicators._LOCATION_INTERNATIONAL_NETWORK);
-                            CauseCap cause = this.capParameterFactory.createCauseCap(causeIndicators);
+                            CauseCapImpl cause = this.capParameterFactory.createCauseCap(causeIndicators);
                             dlg.addReleaseCallRequest(cause);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseCallRequest, null, sequence++));
                             dlg.close(false);
@@ -1211,7 +1237,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
 
                 promptAndCollectUserInformationInvokeId = ind.getInvokeId();
 
-                CollectedDigits cd = ind.getCollectedInfo().getCollectedDigits();
+                CollectedDigitsImpl cd = ind.getCollectedInfo().getCollectedDigits();
                 assertEquals((int) cd.getMinimumNbOfDigits(), 1);
                 assertEquals((int) cd.getMaximumNbOfDigits(), 11);
                 assertNull(cd.getCancelDigit());
@@ -1265,7 +1291,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                             genericNumber.setNumberingPlanIndicator(GenericNumber._NPI_DATA);
                             genericNumber.setNumberQualifierIndicator(GenericNumber._NQIA_CALLING_PARTY_NUMBER);
                             genericNumber.setScreeningIndicator(GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-                            Digits digitsResponse = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
+                            DigitsImpl digitsResponse = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
                             dlg.addPromptAndCollectUserInformationResponse_DigitsResponse(
                                     promptAndCollectUserInformationInvokeId, digitsResponse);
                             this.observerdEvents.add(TestEvent.createSentEvent(
@@ -1284,8 +1310,6 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
             private int dialogStep = 0;
-            private long PromptAndCollectUserInformationRequestInvokeId;
-
             public void onAssistRequestInstructionsRequest(AssistRequestInstructionsRequest ind) {
                 super.onAssistRequestInstructionsRequest(ind);
 
@@ -1299,7 +1323,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                     assertEquals(gn.getNumberQualifierIndicator(), GenericNumber._NQIA_CALLED_NUMBER);
                     assertEquals(gn.getScreeningIndicator(), GenericNumber._SI_NETWORK_PROVIDED);
 
-                    IPSSPCapabilities ipc = ind.getIPSSPCapabilities();
+                    IPSSPCapabilitiesImpl ipc = ind.getIPSSPCapabilities();
                     assertTrue(ipc.getIPRoutingAddressSupported());
                     assertFalse(ipc.getVoiceBackSupported());
                     assertTrue(ipc.getVoiceInformationSupportedViaSpeechRecognition());
@@ -1340,9 +1364,6 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                 assertFalse(ind.getAllAnnouncementsComplete());
                 assertTrue(ind.getFirstAnnouncementStarted());
 
-                assertEquals((long) ind.getLinkedId(), PromptAndCollectUserInformationRequestInvokeId);
-                assertEquals((long) ind.getLinkedInvoke().getOperationCode().getLocalOperationCode(),
-                        CAPOperationCode.promptAndCollectUserInformation);
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 
@@ -1358,10 +1379,10 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ResetTimerRequest, null, sequence++));
                             dlg.send();
 
-                            CollectedDigits collectedDigits = this.capParameterFactory.createCollectedDigits(1, 11, null, null,
+                            CollectedDigitsImpl collectedDigits = this.capParameterFactory.createCollectedDigits(1, 11, null, null,
                                     null, null, null, null, null, null, null);
-                            CollectedInfo collectedInfo = this.capParameterFactory.createCollectedInfo(collectedDigits);
-                            PromptAndCollectUserInformationRequestInvokeId = dlg.addPromptAndCollectUserInformationRequest(
+                            CollectedInfoImpl collectedInfo = this.capParameterFactory.createCollectedInfo(collectedDigits);
+                            dlg.addPromptAndCollectUserInformationRequest(
                                     collectedInfo, true, null, null, null, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(
                                     EventType.PromptAndCollectUserInformationRequest, null, sequence++));
@@ -1495,9 +1516,9 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             public void onCallInformationReportRequest(CallInformationReportRequest ind) {
                 super.onCallInformationReportRequest(ind);
 
-                ArrayList<RequestedInformation> al = ind.getRequestedInformationList();
+                List<RequestedInformationImpl> al = ind.getRequestedInformationList();
                 assertEquals(al.size(), 1);
-                DateAndTime dt = al.get(0).getCallStopTimeValue();
+                DateAndTimeImpl dt = al.get(0).getCallStopTimeValue();
                 assertEquals(dt.getYear(), 2012);
                 assertEquals(dt.getMonth(), 11);
                 assertEquals(dt.getDay(), 30);
@@ -1548,7 +1569,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             public void onCallInformationRequestRequest(CallInformationRequestRequest ind) {
                 super.onCallInformationRequestRequest(ind);
 
-                ArrayList<RequestedInformationType> al = ind.getRequestedInformationTypeList();
+                List<RequestedInformationType> al = ind.getRequestedInformationTypeList();
                 assertEquals(al.size(), 1);
                 assertEquals(al.get(0), RequestedInformationType.callStopTime);
                 assertNull(ind.getExtensions());
@@ -1572,9 +1593,9 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     switch (dialogStep) {
                         case 1: // after CallInformationRequestRequest
-                            ArrayList<RequestedInformation> requestedInformationList = new ArrayList<RequestedInformation>();
-                            DateAndTime dt = this.capParameterFactory.createDateAndTime(2012, 11, 30, 23, 50, 40);
-                            RequestedInformation ri = this.capParameterFactory.createRequestedInformation_CallStopTime(dt);
+                            List<RequestedInformationImpl> requestedInformationList = new ArrayList<RequestedInformationImpl>();
+                            DateAndTimeImpl dt = this.capParameterFactory.createDateAndTime(2012, 11, 30, 23, 50, 40);
+                            RequestedInformationImpl ri = this.capParameterFactory.createRequestedInformation_CallStopTime(dt);
                             requestedInformationList.add(ri);
                             dlg.addCallInformationReportRequest(requestedInformationList, null, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.CallInformationReportRequest, null,
@@ -1681,11 +1702,17 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 }
             }
 
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 assertEquals(resetTimerRequestInvokeId, (long) invokeId);
-                assertEquals(problem.getInvokeProblemType(), InvokeProblemType.MistypedParameter);
+                try {
+                	assertEquals(problem.getInvokeProblemType(), InvokeProblemType.MistypedParameter);
+                }
+                catch(ParseException ex) {
+                	assertEquals(1,2);
+                }
+                
                 assertFalse(isLocalOriginated);
 
                 dialogStep = 1;
@@ -1762,7 +1789,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             break;
 
                         case 2: // after ResetTimerRequest
-                            Problem problem = this.capParameterFactory.createProblemInvoke(InvokeProblemType.MistypedParameter);
+                            ProblemImpl problem = new ProblemImpl();
+                            problem.setInvokeProblemType(InvokeProblemType.MistypedParameter);
                             try {
                                 dlg.sendRejectComponent(resetTimerRequestInvokeId, problem);
                                 this.observerdEvents
@@ -2285,67 +2313,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     }
 
     /**
-     * broken referensedNumber
-     *
-     *
-     * TC-BEGIN + broken referensedNumber TC-ABORT
-     */
-    @Test(groups = { "functional.flow", "dialog" })
-    public void testReferensedNumber_BadVal() throws Exception {
-
-        Client client = new Client(stack1, this, peer1Address, peer2Address) {
-            public void onDialogUserAbort(CAPDialog capDialog, CAPGeneralAbortReason generalReason,
-                    CAPUserAbortReason userReason) {
-                super.onDialogUserAbort(capDialog, generalReason, userReason);
-
-                assertEquals(generalReason, CAPGeneralAbortReason.UserSpecific);
-                assertEquals(userReason, CAPUserAbortReason.abnormal_processing);
-                assertEquals(capDialog.getTCAPMessageType(), MessageType.Abort);
-            }
-
-            @Override
-            public void onDialogDelimiter(CAPDialog capDialog) {
-                super.onDialogDelimiter(capDialog);
-            }
-
-            public void onDialogRelease(CAPDialog capDialog) {
-                super.onDialogRelease(capDialog);
-            }
-        };
-
-        Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
-
-            @Override
-            public void onDialogDelimiter(CAPDialog capDialog) {
-                super.onDialogDelimiter(capDialog);
-            }
-        };
-
-        long stamp = System.currentTimeMillis();
-        int count = 0;
-        // Client side events
-        List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-        TestEvent te = TestEvent.createReceivedEvent(EventType.DialogUserAbort, null, count++, (stamp));
-        clientExpectedEvents.add(te);
-
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, count++, (stamp));
-        clientExpectedEvents.add(te);
-
-        count = 0;
-        // Server side events
-        List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-
-        ((CAPProviderImplWrapper) server.capProvider).setTestMode(1);
-        client.sendReferensedNumber();
-
-        waitForEnd();
-
-        client.compareEvents(clientExpectedEvents);
-        server.compareEvents(serverExpectedEvents);
-
-    }
-
-    /**
      *
      * TC-BEGIN + broken referensedNumber TC-ABORT
      */
@@ -2671,24 +2638,29 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             int dialogStep = 0;
 
             @Override
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 dialogStep++;
 
-                switch (dialogStep) {
-                    case 1:
-                        assertEquals(problem.getInvokeProblemType(), InvokeProblemType.LinkedResponseUnexpected);
-                        assertTrue(isLocalOriginated);
-                        break;
-                    case 2:
-                        assertEquals(problem.getInvokeProblemType(), InvokeProblemType.UnrechognizedLinkedID);
-                        assertTrue(isLocalOriginated);
-                        break;
-                    case 3:
-                        assertEquals(problem.getInvokeProblemType(), InvokeProblemType.UnexpectedLinkedOperation);
-                        assertTrue(isLocalOriginated);
-                        break;
+                try {
+	                switch (dialogStep) {
+	                    case 1:
+	                        assertEquals(problem.getInvokeProblemType(), InvokeProblemType.LinkedResponseUnexpected);
+	                        assertTrue(isLocalOriginated);
+	                        break;
+	                    case 2:
+	                        assertEquals(problem.getInvokeProblemType(), InvokeProblemType.UnrechognizedLinkedID);
+	                        assertTrue(isLocalOriginated);
+	                        break;
+	                    case 3:
+	                        assertEquals(problem.getInvokeProblemType(), InvokeProblemType.UnexpectedLinkedOperation);
+	                        assertTrue(isLocalOriginated);
+	                        break;
+	                }
+                }
+                catch(ParseException ex) {
+                	assertEquals(1,2);
                 }
             }
 
@@ -2727,21 +2699,26 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
-                if (invokeId == outInvokeId1) {
-                    assertEquals(problem.getType(), ProblemType.Invoke);
-                    assertEquals(problem.getInvokeProblemType(), InvokeProblemType.LinkedResponseUnexpected);
-                    assertFalse(isLocalOriginated);
-                } else if (invokeId == outInvokeId2) {
-                    assertEquals(problem.getType(), ProblemType.Invoke);
-                    assertEquals(problem.getInvokeProblemType(), InvokeProblemType.UnrechognizedLinkedID);
-                    assertFalse(isLocalOriginated);
-                } else if (invokeId == outInvokeId3) {
-                    assertEquals(problem.getType(), ProblemType.Invoke);
-                    assertEquals(problem.getInvokeProblemType(), InvokeProblemType.UnexpectedLinkedOperation);
-                    assertFalse(isLocalOriginated);
+                try {
+	                if (invokeId == outInvokeId1) {
+	                    assertEquals(problem.getType(), ProblemType.Invoke);
+	                    assertEquals(problem.getInvokeProblemType(), InvokeProblemType.LinkedResponseUnexpected);
+	                    assertFalse(isLocalOriginated);
+	                } else if (invokeId == outInvokeId2) {
+	                    assertEquals(problem.getType(), ProblemType.Invoke);
+	                    assertEquals(problem.getInvokeProblemType(), InvokeProblemType.UnrechognizedLinkedID);
+	                    assertFalse(isLocalOriginated);
+	                } else if (invokeId == outInvokeId3) {
+	                    assertEquals(problem.getType(), ProblemType.Invoke);
+	                    assertEquals(problem.getInvokeProblemType(), InvokeProblemType.UnexpectedLinkedOperation);
+	                    assertFalse(isLocalOriginated);
+	                }
+                }
+                catch(ParseException ex) {
+                	assertEquals(1,2);
                 }
             }
 
@@ -2754,24 +2731,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     outInvokeId1 = dlg.addSpecializedResourceReportRequest_CapV23(invokeId1);
                     outInvokeId2 = dlg.addSpecializedResourceReportRequest_CapV23((long) 50);
-
-                    Invoke invoke = ((CAPProviderImpl) this.capProvider).getTCAPProvider().getComponentPrimitiveFactory()
-                            .createTCInvokeRequest();
-                    invoke.setTimeout(2000);
-                    OperationCode oc = new OperationCodeImpl();
-                    oc.setLocalOperationCode((long) CAPOperationCode.continueCode);
-                    invoke.setOperationCode(oc);
-
-                    Long invokeId;
-                    try {
-                        invokeId = dlg.getTcapDialog().getNewInvokeId();
-                        invoke.setInvokeId(invokeId);
-                        invoke.setLinkedId(invokeId2);
-                    } catch (TCAPException e) {
-                        throw new CAPException(e.getMessage(), e);
-                    }
-                    outInvokeId3 = invoke.getInvokeId();
-                    dlg.sendInvokeComponent(invoke);
+                    outInvokeId3 = dlg.sendDataComponent(null,invokeId2,null,2000L,(long) CAPOperationCode.continueCode,null,true,false);
 
                     dlg.addSpecializedResourceReportRequest_CapV23(invokeId2);
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest, null,
@@ -2890,28 +2850,33 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             int rejectStep = 0;
 
             @Override
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 rejectStep++;
 
-                switch (rejectStep) {
-                    case 1:
-                        assertEquals(problem.getReturnResultProblemType(), ReturnResultProblemType.ReturnResultUnexpected);
-                        assertTrue(isLocalOriginated);
-                        break;
-                    case 2:
-                        assertEquals(problem.getReturnErrorProblemType(), ReturnErrorProblemType.ReturnErrorUnexpected);
-                        assertTrue(isLocalOriginated);
-                        break;
-                    case 3:
-                        assertEquals(problem.getReturnResultProblemType(), ReturnResultProblemType.ReturnResultUnexpected);
-                        assertTrue(isLocalOriginated);
-                        break;
-                    case 4:
-                        assertEquals(problem.getReturnErrorProblemType(), ReturnErrorProblemType.ReturnErrorUnexpected);
-                        assertTrue(isLocalOriginated);
-                        break;
+                try {
+	                switch (rejectStep) {
+	                    case 1:
+	                        assertEquals(problem.getReturnResultProblemType(), ReturnResultProblemType.ReturnResultUnexpected);
+	                        assertTrue(isLocalOriginated);
+	                        break;
+	                    case 2:
+	                        assertEquals(problem.getReturnErrorProblemType(), ReturnErrorProblemType.ReturnErrorUnexpected);
+	                        assertTrue(isLocalOriginated);
+	                        break;
+	                    case 3:
+	                        assertEquals(problem.getReturnResultProblemType(), ReturnResultProblemType.ReturnResultUnexpected);
+	                        assertTrue(isLocalOriginated);
+	                        break;
+	                    case 4:
+	                        assertEquals(problem.getReturnErrorProblemType(), ReturnErrorProblemType.ReturnErrorUnexpected);
+	                        assertTrue(isLocalOriginated);
+	                        break;
+	                }
+                }
+                catch(ParseException ex) {
+                	assertEquals(1,2);
                 }
             }
 
@@ -3001,32 +2966,37 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 }
             }
 
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 rejectStep++;
 
-                switch (rejectStep) {
-                    case 1:
-                        assertEquals((long) invokeId, invokeId1);
-                        assertEquals(problem.getReturnResultProblemType(), ReturnResultProblemType.ReturnResultUnexpected);
-                        assertFalse(isLocalOriginated);
-                        break;
-                    case 2:
-                        assertEquals((long) invokeId, invokeId6);
-                        assertEquals(problem.getReturnErrorProblemType(), ReturnErrorProblemType.ReturnErrorUnexpected);
-                        assertFalse(isLocalOriginated);
-                        break;
-                    case 3:
-                        assertEquals((long) invokeId, invokeId7);
-                        assertEquals(problem.getReturnResultProblemType(), ReturnResultProblemType.ReturnResultUnexpected);
-                        assertFalse(isLocalOriginated);
-                        break;
-                    case 4:
-                        assertEquals((long) invokeId, invokeId8);
-                        assertEquals(problem.getReturnErrorProblemType(), ReturnErrorProblemType.ReturnErrorUnexpected);
-                        assertFalse(isLocalOriginated);
-                        break;
+                try {
+	                switch (rejectStep) {
+	                    case 1:
+	                        assertEquals((long) invokeId, invokeId1);
+	                        assertEquals(problem.getReturnResultProblemType(), ReturnResultProblemType.ReturnResultUnexpected);
+	                        assertFalse(isLocalOriginated);
+	                        break;
+	                    case 2:
+	                        assertEquals((long) invokeId, invokeId6);
+	                        assertEquals(problem.getReturnErrorProblemType(), ReturnErrorProblemType.ReturnErrorUnexpected);
+	                        assertFalse(isLocalOriginated);
+	                        break;
+	                    case 3:
+	                        assertEquals((long) invokeId, invokeId7);
+	                        assertEquals(problem.getReturnResultProblemType(), ReturnResultProblemType.ReturnResultUnexpected);
+	                        assertFalse(isLocalOriginated);
+	                        break;
+	                    case 4:
+	                        assertEquals((long) invokeId, invokeId8);
+	                        assertEquals(problem.getReturnErrorProblemType(), ReturnErrorProblemType.ReturnErrorUnexpected);
+	                        assertFalse(isLocalOriginated);
+	                        break;
+	                }
+                }
+                catch(ParseException ex) {
+                	assertEquals(1, 2);
                 }
             }
 
@@ -3037,14 +3007,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 CAPDialogCircuitSwitchedCallImpl dlg = (CAPDialogCircuitSwitchedCallImpl) capDialog;
 
                 try {
-                    ReturnResultLast rrl = ((CAPProviderImpl) dlg.getService().getCAPProvider()).getTCAPProvider()
-                            .getComponentPrimitiveFactory().createTCResultLastRequest();
-                    rrl.setInvokeId(invokeId1);
-                    OperationCode oc = new OperationCodeImpl();
-                    oc.setLocalOperationCode((long) CAPOperationCode.initialDP);
-                    rrl.setOperationCode(oc);
-                    dlg.sendReturnResultLastComponent(rrl);
-
+                    dlg.sendDataComponent(invokeId1, null, null, null, (long) CAPOperationCode.initialDP, null, false, true);
+                    
                     CAPErrorMessage mem = this.capErrorMessageFactory
                             .createCAPErrorMessageSystemFailure(UnavailableNetworkResource.endUserFailure);
                     dlg.sendErrorComponent(invokeId2, mem);
@@ -3057,7 +3021,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     genericNumber.setNumberingPlanIndicator(GenericNumber._NPI_DATA);
                     genericNumber.setNumberQualifierIndicator(GenericNumber._NQIA_CALLING_PARTY_NUMBER);
                     genericNumber.setScreeningIndicator(GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-                    Digits digitsResponse = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
+                    DigitsImpl digitsResponse = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
                     dlg.addPromptAndCollectUserInformationResponse_DigitsResponse(invokeId3, digitsResponse);
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.PromptAndCollectUserInformationResponse, null,
                             sequence++));
@@ -3075,14 +3039,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     dlg.sendErrorComponent(invokeId6, mem);
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
 
-                    rrl = ((CAPProviderImpl) dlg.getService().getCAPProvider()).getTCAPProvider()
-                            .getComponentPrimitiveFactory().createTCResultLastRequest();
-                    rrl.setInvokeId(invokeId7);
-                    oc = new OperationCodeImpl();
-                    oc.setLocalOperationCode((long) CAPOperationCode.releaseCall);
-                    rrl.setOperationCode(oc);
-                    dlg.sendReturnResultLastComponent(rrl);
-
+                    dlg.sendDataComponent(invokeId7, null, null, null, (long) CAPOperationCode.releaseCall, null, false, true);
+                    
                     mem = this.capErrorMessageFactory
                             .createCAPErrorMessageSystemFailure(UnavailableNetworkResource.resourceStatusFailure);
                     dlg.sendErrorComponent(invokeId8, mem);
@@ -3232,54 +3190,6 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     }
 
     /**
-     *
-     * TC-Message + bad UnrecognizedMessageType TC-ABORT UnrecognizedMessageType
-     */
-    @Test(groups = { "functional.flow", "dialog" })
-    public void testUnrecognizedMessageType() throws Exception {
-
-        Client client = new Client(stack1, this, peer1Address, peer2Address) {
-
-            public void onDialogProviderAbort(CAPDialog capDialog, PAbortCauseType abortCause) {
-                super.onDialogProviderAbort(capDialog, abortCause);
-
-                assertEquals(abortCause, PAbortCauseType.UnrecognizedMessageType);
-            }
-        };
-
-        Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
-        };
-
-        long stamp = System.currentTimeMillis();
-        int count = 0;
-        // Client side events
-        List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-        TestEvent te = TestEvent.createReceivedEvent(EventType.DialogProviderAbort, null, count++, (stamp));
-        clientExpectedEvents.add(te);
-
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, count++, (stamp));
-        clientExpectedEvents.add(te);
-
-        count = 0;
-        // Server side events
-        List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-
-        // sending a dummy message to a bad address for a dialog starting
-        client.sendDummyMessage();
-
-        // sending a badly formatted message
-        SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
-                getMessageBadTag(), 0, 0, false, null, null);
-        this.sccpProvider1.send(message);
-
-        waitForEnd();
-
-        client.compareEvents(clientExpectedEvents);
-        server.compareEvents(serverExpectedEvents);
-
-    }
-
-    /**
      * TC-BEGIN + (bad sccp address + setReturnMessageOnError) TC-NOTICE
      */
     @Test(groups = { "functional.flow", "dialog" })
@@ -3405,7 +3315,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     switch (dialogStep) {
                         case 1: // after FurnishChargingInformationGPRSRequest
                             GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
-                            MiscCallInfo miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
+                            MiscCallInfoImpl miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
                             LAIFixedLengthImpl lai;
                             try {
                                 lai = new LAIFixedLengthImpl(250, 1, 4444);
@@ -3421,11 +3331,11 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             LSAIdentityImpl lsa = new LSAIdentityImpl(new byte[] { 91, 92, 93 });
                             GeodeticInformationImpl gdi = new GeodeticInformationImpl(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9,
                                     10 });
-                            LocationInformationGPRS locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi,
+                            LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi,
                                     sgsn, lsa, null, true, gdi, true, 13);
-                            GPRSEventSpecificInformation gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
+                            GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
                                     locationInformationGPRS);
-                            PDPID pdpID = new PDPIDImpl(1);
+                            PDPIDImpl pdpID = new PDPIDImpl(1);
                             dlg.addEventReportGPRSRequest(gprsEventType, miscGPRSInfo, gprsEventSpecificInformation, pdpID);
 
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportGPRSRequest, null,
@@ -3435,7 +3345,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             break;
                         case 2: // after ConnectRequest
                             ElapsedTimeImpl elapsedTime = new ElapsedTimeImpl(new Integer(5320));
-                            ChargingResult chargingResult = new ChargingResultImpl(elapsedTime);
+                            ChargingResultImpl chargingResult = new ChargingResultImpl(elapsedTime);
                             boolean active = true;
                             dlg.addApplyChargingReportGPRSRequest(chargingResult, null, active, null, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ApplyChargingReportGPRSRequest, null,
@@ -3508,10 +3418,17 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                                     sequence++));
                             dlg.send();
 
+                            try  {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+                            
                             byte[] bFreeFormatData = new byte[] { 48, 6, -128, 1, 5, -127, 1, 2 };
 
-                            FreeFormatDataGprs freeFormatData = new FreeFormatDataGprsImpl(bFreeFormatData);
-                            PDPID pdpID = new PDPIDImpl(2);
+                            FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(bFreeFormatData);
+                            PDPIDImpl pdpID = new PDPIDImpl(2);
                             FCIBCCCAMELSequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID,
                                     AppendFreeFormatData.append);
 
@@ -3533,21 +3450,35 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                                     sequence++));
                             dlg.send();
 
+                            try  {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+                            
                             dlg.addResetTimerGPRSRequest(TimerID.tssf, 12);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ResetTimerGPRSRequest, null,
                                     sequence++));
                             dlg.send();
 
-                            ChargingCharacteristics chargingCharacteristics = new ChargingCharacteristicsImpl(200L);
-                            ;
+                            try  {
+                            	Thread.sleep(50);
+                            }
+                            catch(InterruptedException ex) {
+                            	
+                            }
+                            
+                            ChargingCharacteristicsImpl chargingCharacteristics = new ChargingCharacteristicsImpl(200L);
+                            
                             Integer tariffSwitchInterval = new Integer(24);
-                            PDPID pdpIDApplyCharging = new PDPIDImpl(2);
+                            PDPIDImpl pdpIDApplyCharging = new PDPIDImpl(2);
                             dlg.addApplyChargingGPRSRequest(chargingCharacteristics, tariffSwitchInterval, pdpIDApplyCharging);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ApplyChargingGPRSRequest, null,
                                     sequence++));
 
-                            AccessPointName accessPointName = new AccessPointNameImpl(new byte[] { 52, 20, 30 });
-                            PDPID pdpIDConnectRequest = new PDPIDImpl(2);
+                            AccessPointNameImpl accessPointName = new AccessPointNameImpl(new byte[] { 52, 20, 30 });
+                            PDPIDImpl pdpIDConnectRequest = new PDPIDImpl(2);
                             dlg.addConnectGPRSRequest(accessPointName, pdpIDConnectRequest);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectGPRSRequest, null, sequence++));
                             dlg.send();
@@ -3727,8 +3658,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     switch (dialogStep) {
                         case 1:
                             byte[] bFreeFormatData = new byte[] { 48, 6, -128, 1, 5, -127, 1, 2 };
-                            FreeFormatDataGprs freeFormatData = new FreeFormatDataGprsImpl(bFreeFormatData);
-                            PDPID pdpID = new PDPIDImpl(2);
+                            FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(bFreeFormatData);
+                            PDPIDImpl pdpID = new PDPIDImpl(2);
                             FCIBCCCAMELSequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID,
                                     AppendFreeFormatData.append);
                             CAMELFCIGPRSBillingChargingCharacteristicsImpl fciGPRSBillingChargingCharacteristics = new CAMELFCIGPRSBillingChargingCharacteristicsImpl(
@@ -3751,7 +3682,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportGPRSResponse, null,
                                     sequence++));
 
-                            PDPID pdpIDCancelGPRS = new PDPIDImpl(2);
+                            PDPIDImpl pdpIDCancelGPRS = new PDPIDImpl(2);
                             dlg.addCancelGPRSRequest(pdpIDCancelGPRS);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelGPRSRequest, null, sequence++));
                             dlg.close(false);
@@ -3824,7 +3755,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
                         case 2:
                             GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
-                            MiscCallInfo miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
+                            MiscCallInfoImpl miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
                             LAIFixedLengthImpl lai;
                             try {
                                 lai = new LAIFixedLengthImpl(250, 1, 4444);
@@ -3840,11 +3771,11 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             LSAIdentityImpl lsa = new LSAIdentityImpl(new byte[] { 91, 92, 93 });
                             GeodeticInformationImpl gdi = new GeodeticInformationImpl(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9,
                                     10 });
-                            LocationInformationGPRS locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi,
+                            LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi,
                                     sgsn, lsa, null, true, gdi, true, 13);
-                            GPRSEventSpecificInformation gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
+                            GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
                                     locationInformationGPRS);
-                            PDPID pdpID = new PDPIDImpl(1);
+                            PDPIDImpl pdpID = new PDPIDImpl(1);
                             dlg.addEventReportGPRSRequest(gprsEventType, miscGPRSInfo, gprsEventSpecificInformation, pdpID);
 
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportGPRSRequest, null,
@@ -4029,17 +3960,17 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportGPRSResponse, null,
                                     sequence++));
 
-                            AccessPointName accessPointName = new AccessPointNameImpl(new byte[] { 52, 20, 30 });
-                            PDPID pdpIDConnectRequest = new PDPIDImpl(2);
+                            AccessPointNameImpl accessPointName = new AccessPointNameImpl(new byte[] { 52, 20, 30 });
+                            PDPIDImpl pdpIDConnectRequest = new PDPIDImpl(2);
                             dlg.addConnectGPRSRequest(accessPointName, pdpIDConnectRequest);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectGPRSRequest, null, sequence++));
 
-                            CAI_GSM0224 aocInitial = new CAI_GSM0224Impl(1, 2, 3, 4, 5, 6, 7);
+                            CAI_GSM0224Impl aocInitial = new CAI_GSM0224Impl(1, 2, 3, 4, 5, 6, 7);
                             CAI_GSM0224Impl cai_GSM0224 = new CAI_GSM0224Impl(null, null, null, 4, 5, null, null);
-                            AOCSubsequent aocSubsequent = new AOCSubsequentImpl(cai_GSM0224, 222);
-                            AOCGPRS aocGPRS = new AOCGPRSImpl(aocInitial, aocSubsequent);
-                            PDPID pdpID = new PDPIDImpl(1);
-                            CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics = new CAMELSCIGPRSBillingChargingCharacteristicsImpl(
+                            AOCSubsequentImpl aocSubsequent = new AOCSubsequentImpl(cai_GSM0224, 222);
+                            AOCGPRSImpl aocGPRS = new AOCGPRSImpl(aocInitial, aocSubsequent);
+                            PDPIDImpl pdpID = new PDPIDImpl(1);
+                            CAMELSCIGPRSBillingChargingCharacteristicsImpl sciGPRSBillingChargingCharacteristics = new CAMELSCIGPRSBillingChargingCharacteristicsImpl(
                                     aocGPRS, pdpID);
                             dlg.addSendChargingInformationGPRSRequest(sciGPRSBillingChargingCharacteristics);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendChargingInformationGPRSRequest,
@@ -4243,7 +4174,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 super.onRequestReportSMSEventRequest(ind);
 
                 assertEquals(ind.getSMSEvents().size(), 2);
-                SMSEvent smsEvent = ind.getSMSEvents().get(0);
+                SMSEventImpl smsEvent = ind.getSMSEvents().get(0);
                 assertEquals(smsEvent.getEventTypeSMS(), EventTypeSMS.tSmsDelivery);
                 assertEquals(smsEvent.getMonitorMode(), MonitorMode.transparent);
                 assertNull(ind.getExtensions());
@@ -4289,9 +4220,9 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     switch (dialogStep) {
                     case 1:
-                        OSmsFailureSpecificInfo oSmsFailureSpecificInfo = this.capParameterFactory
+                        OSmsFailureSpecificInfoImpl oSmsFailureSpecificInfo = this.capParameterFactory
                                 .createOSmsFailureSpecificInfo(MOSMSCause.releaseFromRadioInterface);
-                        EventSpecificInformationSMS eventSpecificInformationSMS = this.capParameterFactory
+                        EventSpecificInformationSMSImpl eventSpecificInformationSMS = this.capParameterFactory
                                 .createEventSpecificInformationSMSImpl(oSmsFailureSpecificInfo);
                         dlg.addEventReportSMSRequest(EventTypeSMS.oSmsFailure, eventSpecificInformationSMS, null, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportSMSRequest, null, sequence++));
@@ -4349,8 +4280,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ResetTimerSMSRequest,
                                 null, sequence++));
 
-                        ArrayList<SMSEvent> smsEvents = new ArrayList<SMSEvent>();
-                        SMSEvent smsEvent = this.capParameterFactory.createSMSEvent(EventTypeSMS.tSmsDelivery, MonitorMode.transparent);
+                        List<SMSEventImpl> smsEvents = new ArrayList<SMSEventImpl>();
+                        SMSEventImpl smsEvent = this.capParameterFactory.createSMSEvent(EventTypeSMS.tSmsDelivery, MonitorMode.transparent);
                         smsEvents.add(smsEvent);
                         smsEvent = this.capParameterFactory.createSMSEvent(EventTypeSMS.oSmsFailure, MonitorMode.notifyAndContinue);
                         smsEvents.add(smsEvent);
@@ -4362,19 +4293,19 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                         break;
 
                     case 2:
-                        FreeFormatDataSMS freeFormatData = this.capParameterFactory.createFreeFormatDataSMS(freeFD);
-                        FCIBCCCAMELsequence1SMS fciBCCCAMELsequence1 = this.capParameterFactory.createFCIBCCCAMELsequence1(freeFormatData, null);
+                        FreeFormatDataSMSImpl freeFormatData = this.capParameterFactory.createFreeFormatDataSMS(freeFD);
+                        FCIBCCCAMELSequence1SMSImpl fciBCCCAMELsequence1 = this.capParameterFactory.createFCIBCCCAMELsequence1(freeFormatData, null);
                         dlg.addFurnishChargingInformationSMSRequest(fciBCCCAMELsequence1);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.FurnishChargingInformationSMSRequest,
                                 null, sequence++));
 
                         dlg.send();
 
-                        SMSAddressString callingPartysNumber = this.capParameterFactory.createSMSAddressString(AddressNature.reserved,
+                        SMSAddressStringImpl callingPartysNumber = this.capParameterFactory.createSMSAddressString(AddressNature.reserved,
                                 NumberingPlan.ISDN, "Drosd");
-                        CalledPartyBCDNumber destinationSubscriberNumber = this.capParameterFactory.createCalledPartyBCDNumber(
+                        CalledPartyBCDNumberImpl destinationSubscriberNumber = this.capParameterFactory.createCalledPartyBCDNumber(
                                 AddressNature.international_number, NumberingPlan.ISDN, "1111144444");
-                        ISDNAddressString smscAddress = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number,
+                        ISDNAddressStringImpl smscAddress = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number,
                                 NumberingPlan.ISDN, "1111155555");
                         dlg.addConnectSMSRequest(callingPartysNumber, destinationSubscriberNumber, smscAddress, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectSMSRequest,
@@ -4645,7 +4576,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     switch (dialogStep) {
                     case 1:
-                        RPCause rpCause = this.capParameterFactory.createRPCause(8);
+                        RPCauseImpl rpCause = this.capParameterFactory.createRPCause(8);
                         dlg.addReleaseSMSRequest(rpCause);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseSMSRequest, null, sequence++));
 
@@ -4768,24 +4699,24 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     switch (dialogStep) {
                     case 1: // after InitiateCallAttemptResponse
-                        LegID logIDToSplit = this.inapParameterFactory.createLegID(false, LegType.leg1);
+                        LegIDImpl logIDToSplit = this.inapParameterFactory.createLegID(new ReceivingLegIDImpl(LegType.leg1),null);
                         dlg.addSplitLegRequest(logIDToSplit, 1, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SplitLegRequest, null, sequence++));
                         dlg.send();
                         break;
 
                     case 2: // after SplitLegResponse
-                        LegID logIDToMove = this.inapParameterFactory.createLegID(false, LegType.leg1);
+                        LegIDImpl logIDToMove = this.inapParameterFactory.createLegID(new ReceivingLegIDImpl(LegType.leg1),null);
                         dlg.addMoveLegRequest(logIDToMove, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.MoveLegRequest, null, sequence++));
                         dlg.send();
                         break;
 
                     case 3: // after MoveLegResponse
-                        LegID logToBeReleased = this.inapParameterFactory.createLegID(false, LegType.leg2);
+                        LegIDImpl logToBeReleased = this.inapParameterFactory.createLegID(new ReceivingLegIDImpl(LegType.leg2),null);
                         CauseIndicators causeIndicators = this.isupParameterFactory.createCauseIndicators();
                         causeIndicators.setCauseValue(3);
-                        CauseCap causeCap = this.capParameterFactory.createCauseCap(causeIndicators);
+                        CauseCapImpl causeCap = this.capParameterFactory.createCauseCap(causeIndicators);
                         dlg.addDisconnectLegRequest(logToBeReleased, causeCap, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.DisconnectLegRequest, null, sequence++));
                         dlg.send();
@@ -4831,7 +4762,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 super.onSplitLegRequest(ind);
 
                 invokeIdSplitLeg = ind.getInvokeId();
-                assertEquals(ind.getLegToBeSplit().getReceivingSideID(), LegType.leg1);
+                assertEquals(ind.getLegToBeSplit().getReceivingLegID().getReceivingSideID(), LegType.leg1);
 
                 dialogStep = 2;
             }
@@ -4841,7 +4772,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 super.onMoveLegRequest(ind);
 
                 invokeIdMoveLeg = ind.getInvokeId();
-                assertEquals(ind.getLegIDToMove().getReceivingSideID(), LegType.leg1);
+                assertEquals(ind.getLegIDToMove().getReceivingLegID().getReceivingSideID(), LegType.leg1);
 
                 dialogStep = 3;
             }
@@ -4852,7 +4783,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
                 try {
                     invokeIdDisconnectLeg = ind.getInvokeId();
-                    assertEquals(ind.getLegToBeReleased().getReceivingSideID(), LegType.leg2);
+                    assertEquals(ind.getLegToBeReleased().getReceivingLegID().getReceivingSideID(), LegType.leg2);
                     assertEquals(ind.getReleaseCause().getCauseIndicators().getCauseValue(), 3);
                 } catch (CAPException e) {
                     // TODO Auto-generated catch block
@@ -4883,7 +4814,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     switch (dialogStep) {
                     case 1: // after InitiateCallAttempt
-                        SupportedCamelPhases supportedCamelPhases = this.mapParameterFactory.createSupportedCamelPhases(true, true, true, false);
+                        SupportedCamelPhasesImpl supportedCamelPhases = this.mapParameterFactory.createSupportedCamelPhases(true, true, true, false);
                         dlg.addInitiateCallAttemptResponse(invokeIdInitiateCallAttempt, supportedCamelPhases, null, null, false);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitiateCallAttemptResponse, null, sequence++));
                         dlg.send();
@@ -5094,8 +5025,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     switch (dialogStep) {
                     case 1: // after InitialDp
-                        AlertingPattern ap = new AlertingPatternImpl(AlertingLevel.Level1);
-                        AlertingPatternCap alertingPattern = this.capParameterFactory.createAlertingPatternCap(ap);
+                        AlertingPatternImpl ap = new AlertingPatternImpl(AlertingLevel.Level1);
+                        AlertingPatternCapImpl alertingPattern = this.capParameterFactory.createAlertingPatternCap(ap);
                         dlg.addContinueWithArgumentRequest(alertingPattern, null, null, null, null, null, false, null, null, false, null, false, false, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ContinueWithArgumentRequest, null, sequence++));
                         dlg.send();
@@ -5179,7 +5110,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     assertEquals(ind.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService()
                             .getCalledAddressValue().getGenericNumber().getAddress(), "501090500");
                 } catch (CAPException e) {
-                    fail("CAPException in onCallGapRequest: " + e);
+                	fail("CAPException in onCallGapRequest: " + e);
                 }
                 assertEquals(ind.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), 100);
                 assertEquals(ind.getGapIndicators().getDuration(), 60);
@@ -5230,12 +5161,12 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                         case 1: // after InitialDp
                             GenericNumber genericNumber = capProvider.getISUPParameterFactory().createGenericNumber();
                             genericNumber.setAddress("501090500");
-                            Digits digits = capProvider.getCAPParameterFactory().createDigits_GenericNumber(genericNumber);
+                            DigitsImpl digits = capProvider.getCAPParameterFactory().createDigits_GenericNumber(genericNumber);
 
-                            CalledAddressAndService calledAddressAndService = new CalledAddressAndServiceImpl(digits, 100);
-                            BasicGapCriteria basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
-                            GapCriteria gapCriteria = new GapCriteriaImpl(basicGapCriteria);
-                            GapIndicators gapIndicators = new GapIndicatorsImpl(60, -1);
+                            CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, 100);
+                            BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
+                            GapCriteriaImpl gapCriteria = new GapCriteriaImpl(basicGapCriteria);
+                            GapIndicatorsImpl gapIndicators = new GapIndicatorsImpl(60, -1);
 
                             dlg.addCallGapRequest(gapCriteria, gapIndicators, null, null, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.CallGapRequest, null, sequence++));

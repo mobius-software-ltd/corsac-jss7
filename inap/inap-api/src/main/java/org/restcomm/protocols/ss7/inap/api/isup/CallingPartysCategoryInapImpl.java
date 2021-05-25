@@ -28,11 +28,11 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCatego
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -42,7 +42,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x05,constructed=false,lengthIndefinite=false)
-public class CallingPartysCategoryInapImpl extends ASNOctetString {
+public class CallingPartysCategoryInapImpl {
 	private CallingPartyCategoryImpl category;
 
     public CallingPartysCategoryInapImpl() {
@@ -68,24 +68,24 @@ public class CallingPartysCategoryInapImpl extends ASNOctetString {
     }
 
     @ASNLength
-	public Integer getLength() {
+    public Integer getLength(ASNParser parser) {
 		return 1;
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser, ByteBuf buffer) {
 		this.category.encode(buffer);
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		try {
 			this.category=new CallingPartyCategoryImpl(buffer);
 		} catch (ParameterException e) {
 			e.printStackTrace();
 		}
 		
-		return true;
+		return false;
 	}
 
     @Override

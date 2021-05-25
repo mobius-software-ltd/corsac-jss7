@@ -81,7 +81,7 @@ public class MessageIDImpl {
     }
 
     public Integer getElementaryMessageID() {
-    	if(elementaryMessageID==null && elementaryMessageID.getValue()!=null)
+    	if(elementaryMessageID==null || elementaryMessageID.getValue()==null)
     		return null;
     	
         return elementaryMessageID.getValue().intValue();

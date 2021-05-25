@@ -29,19 +29,19 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
 import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.ReceivingSideID;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformation;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformationImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.primitives.ReceivingSideIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,27 +52,31 @@ import org.testng.annotations.Test;
 public class TimeDurationChargingResultTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 160, 13, (byte) 160, 3, (byte) 129, 1, 1, (byte) 161, 3, (byte) 128, 1, 26, (byte) 130, 1, 0 };
+        return new byte[] { 48, 13, (byte) 160, 3, (byte) 129, 1, 1, (byte) 161, 3, (byte) 128, 1, 26, (byte) 130, 1, 0 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 160, 32, (byte) 160, 3, (byte) 129, 1, 2, (byte) 161, 3, (byte) 128, 1, 55, (byte) 131, 0,
+        return new byte[] { 48, 32, (byte) 160, 3, (byte) 129, 1, 2, (byte) 161, 3, (byte) 128, 1, 55, (byte) 131, 0,
                 (byte) 164, 18, 48, 5, 2, 1, 2, (byte) 129, 0, 48, 9, 2, 1, 3, 10, 1, 1, (byte) 129, 1, (byte) 255 };
     }
 
     public byte[] getData3() {
-        return new byte[] { (byte) 160, 19, (byte) 160, 3, (byte) 129, 1, 2, (byte) 161, 3, (byte) 128, 1, 55, (byte) 130, 1, 0, (byte) 165, 4, (byte) 159, 50,
+        return new byte[] { 48, 19, (byte) 160, 3, (byte) 129, 1, 2, (byte) 161, 3, (byte) 128, 1, 55, (byte) 130, 1, 0, (byte) 165, 4, (byte) 159, 50,
                 1, 13 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TimeDurationChargingResultImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        TimeDurationChargingResultImpl elem = new TimeDurationChargingResultImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeDurationChargingResultImpl);
+        
+        TimeDurationChargingResultImpl elem = (TimeDurationChargingResultImpl)result.getResult();         
         assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg1);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 26);
         assertFalse(elem.getLegActive());
@@ -80,12 +84,13 @@ public class TimeDurationChargingResultTest {
         assertNull(elem.getExtensions());
         assertNull(elem.getAChChargingAddress());
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new TimeDurationChargingResultImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeDurationChargingResultImpl);
+        
+        elem = (TimeDurationChargingResultImpl)result.getResult(); 
         assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg2);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 55);
         assertTrue(elem.getLegActive());
@@ -93,12 +98,13 @@ public class TimeDurationChargingResultTest {
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         assertNull(elem.getAChChargingAddress());
 
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new TimeDurationChargingResultImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeDurationChargingResultImpl);
+        
+        elem = (TimeDurationChargingResultImpl)result.getResult(); 
         assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg2);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 55);
         assertFalse(elem.getLegActive());
@@ -109,20 +115,24 @@ public class TimeDurationChargingResultTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
-        ReceivingSideID partyToCharge = new ReceivingSideIDImpl(LegType.leg1);
-        TimeInformation ti = new TimeInformationImpl(26);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TimeDurationChargingResultImpl.class);
+    	
+        ReceivingLegIDImpl partyToCharge = new ReceivingLegIDImpl(LegType.leg1);
+        TimeInformationImpl ti = new TimeInformationImpl(26);
         TimeDurationChargingResultImpl elem = new TimeDurationChargingResultImpl(partyToCharge, ti, false, false, null, null);
         // ReceivingSideID partyToCharge, TimeInformation timeInformation,
         // boolean legActive,
         // boolean callLegReleasedAtTcpExpiry, CAPExtensions extensions,
         // AChChargingAddress aChChargingAddress
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        partyToCharge = new ReceivingSideIDImpl(LegType.leg2);
+        partyToCharge = new ReceivingLegIDImpl(LegType.leg2);
         ti = new TimeInformationImpl(55);
         elem = new TimeDurationChargingResultImpl(partyToCharge, ti, true, true, CAPExtensionsTest.createTestCAPExtensions(),
                 null);
@@ -130,16 +140,19 @@ public class TimeDurationChargingResultTest {
         // boolean legActive,
         // boolean callLegReleasedAtTcpExpiry, CAPExtensions extensions,
         // AChChargingAddress aChChargingAddress
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        AChChargingAddress aChChargingAddress = new AChChargingAddressImpl(13);
+        AChChargingAddressImpl aChChargingAddress = new AChChargingAddressImpl(13);
         elem = new TimeDurationChargingResultImpl(partyToCharge, ti, false, false, null, aChChargingAddress);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

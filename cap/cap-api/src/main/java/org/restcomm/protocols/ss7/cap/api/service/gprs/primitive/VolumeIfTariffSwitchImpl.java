@@ -44,7 +44,7 @@ public class VolumeIfTariffSwitchImpl {
 
     public VolumeIfTariffSwitchImpl(long volumeSinceLastTariffSwitch, Long volumeTariffSwitchInterval) {
         this.volumeSinceLastTariffSwitch = new ASNInteger();
-        this.volumeSinceLastTariffSwitch.setValue(volumeTariffSwitchInterval);
+        this.volumeSinceLastTariffSwitch.setValue(volumeSinceLastTariffSwitch);
         
         if(volumeTariffSwitchInterval!=null) {
         	this.volumeTariffSwitchInterval = new ASNInteger();

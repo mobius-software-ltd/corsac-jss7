@@ -80,7 +80,7 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
     	
     	if(requestAnnouncementCompleteNotification!=null) {
     		this.requestAnnouncementCompleteNotification = new ASNBoolean();
-    		this.requestAnnouncementCompleteNotification.setValue(requestAnnouncementStartedNotification);
+    		this.requestAnnouncementCompleteNotification.setValue(requestAnnouncementCompleteNotification);
     	}
     	
         this.extensions = extensions;
@@ -116,7 +116,7 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
 
     @Override
     public Boolean getDisconnectFromIPForbidden() {
-    	if(disconnectFromIPForbidden!=null)
+    	if(disconnectFromIPForbidden==null)
     		return null;
     	
         return disconnectFromIPForbidden.getValue();

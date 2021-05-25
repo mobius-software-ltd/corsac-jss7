@@ -23,19 +23,23 @@
 package org.restcomm.protocols.ss7.cap.isup;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,11 +49,11 @@ import org.testng.annotations.Test;
 public class DigitsTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 157, 5, 65, 5, 6, 7, 8 };
+        return new byte[] { 4, 5, 65, 5, 6, 7, 8 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 157, 7, 3, (byte) 132, 33, 7, 1, 9, 0 };
+        return new byte[] { 4, 7, 3, (byte) 132, 33, 7, 1, 9, 0 };
     }
 
     public byte[] getGenericDigitsInt() {
@@ -58,25 +62,33 @@ public class DigitsTest {
 
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(DigitsImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        DigitsImpl elem = new DigitsImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, 29);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DigitsImpl);
+        
+        DigitsImpl elem = (DigitsImpl)result.getResult();                
         elem.setIsGenericDigits();
         GenericDigits gd = elem.getGenericDigits();
         assertEquals(gd.getEncodingScheme(), 2);
         assertEquals(gd.getTypeOfDigits(), 1);
-        assertTrue(Arrays.equals(gd.getEncodedDigits(), getGenericDigitsInt()));
+        
+        ByteBuf value=gd.getEncodedDigits();
+        byte[] data=new byte[value.readableBytes()];
+        value.readBytes(data);
+        assertTrue(Arrays.equals(data, getGenericDigitsInt()));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new DigitsImpl();
-        tag = ais.readTag();
-        assertEquals(tag, 29);
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DigitsImpl);
+        
+        elem = (DigitsImpl)result.getResult();                
         elem.setIsGenericNumber();
         GenericNumber gn = elem.getGenericNumber();
         assertEquals(gn.getNatureOfAddressIndicator(), 4);
@@ -89,19 +101,25 @@ public class DigitsTest {
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
-
-        GenericDigitsImpl genericDigits = new GenericDigitsImpl(2, 1, getGenericDigitsInt());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(DigitsImpl.class);
+    	
+        GenericDigitsImpl genericDigits = new GenericDigitsImpl(2, 1, Unpooled.wrappedBuffer(getGenericDigitsInt()));
         DigitsImpl elem = new DigitsImpl(genericDigits);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 29);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
         // int encodingScheme, int typeOfDigits, int[] digits
 
         GenericNumber rn = new GenericNumberImpl(4, "7010900", 3, 2, 0, false, 1);
         elem = new DigitsImpl(rn);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 29);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
         // int natureOfAddresIndicator, String address, int numberQualifierIndicator, int numberingPlanIndicator, int
         // addressRepresentationREstrictedIndicator,
         // boolean numberIncomplete, int screeningIndicator

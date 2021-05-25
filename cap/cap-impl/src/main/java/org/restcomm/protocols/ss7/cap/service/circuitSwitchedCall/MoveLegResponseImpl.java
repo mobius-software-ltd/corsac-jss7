@@ -34,9 +34,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.MoveLegRes
 public class MoveLegResponseImpl extends CircuitSwitchedCallMessageImpl implements MoveLegResponse {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "MoveLegResponse";
-
-    @Override
+	@Override
     public CAPMessageType getMessageType() {
         return CAPMessageType.moveLeg_Response;
     }

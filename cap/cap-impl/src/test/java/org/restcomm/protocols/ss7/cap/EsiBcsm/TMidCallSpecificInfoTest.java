@@ -22,20 +22,26 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MidCallEvents;
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MidCallEventsImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TMidCallSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -45,7 +51,7 @@ import org.testng.annotations.Test;
 public class TMidCallSpecificInfoTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 171, 9, (byte) 161, 7, (byte) 131, 5, 99, 1, 2, 3, 4 };
+        return new byte[] { 48, 9, (byte) 161, 7, (byte) 131, 5, 99, 1, 2, 3, 4 };
     }
 
     public byte[] getDigitsData() {
@@ -54,31 +60,40 @@ public class TMidCallSpecificInfoTest {
 
     @Test(groups = { "functional.decode", "EsiBcsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TMidCallSpecificInfoImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        TMidCallSpecificInfoImpl elem = new TMidCallSpecificInfoImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, EventSpecificInformationBCSMImpl._ID_tMidCallSpecificInfo);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TMidCallSpecificInfoImpl);
+        
+        TMidCallSpecificInfoImpl elem = (TMidCallSpecificInfoImpl)result.getResult();                
         assertEquals(elem.getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodingScheme(), GenericDigits._ENCODING_SCHEME_BINARY);
-        assertEquals(elem.getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits(), getDigitsData());
+        ByteBuf buffer=elem.getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits();
+        assertNotNull(buffer);
+        byte[] data=new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertEquals(data, getDigitsData());
         assertNull(elem.getMidCallEvents().getDTMFDigitsTimeOut());
     }
 
     @Test(groups = { "functional.encode", "EsiBcsm" })
     public void testEncode() throws Exception {
-
-        GenericDigits genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, getDigitsData());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TMidCallSpecificInfoImpl.class);
+    	
+    	GenericDigitsImpl genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, Unpooled.wrappedBuffer(getDigitsData()));
         // int encodingScheme, int typeOfDigits, byte[] digits
-        Digits dtmfDigits = new DigitsImpl(genericDigits);
-        MidCallEvents midCallEvents = new MidCallEventsImpl(dtmfDigits, true);
+        DigitsImpl dtmfDigits = new DigitsImpl(genericDigits);
+        MidCallEventsImpl midCallEvents = new MidCallEventsImpl(dtmfDigits, true);
         TMidCallSpecificInfoImpl elem = new TMidCallSpecificInfoImpl(midCallEvents);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, EventSpecificInformationBCSMImpl._ID_tMidCallSpecificInfo);
-        assertEquals(aos.toByteArray(), this.getData1());
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })

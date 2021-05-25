@@ -22,16 +22,22 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TNoAnswerSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author Amit Bhayani
@@ -41,35 +47,40 @@ import org.testng.annotations.Test;
 public class TNoAnswerSpecificInfoTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 169, 13, (byte) 159, 50, 0, (byte) 159, 52, 7, (byte) 128, (byte) 144, 17, 33, 34, 51, 3 };
+        return new byte[] { 48, 13, (byte) 159, 50, 0, (byte) 159, 52, 7, (byte) 128, (byte) 144, 17, 33, 34, 51, 3 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TNoAnswerSpecificInfoImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        TNoAnswerSpecificInfoImpl elem = new TNoAnswerSpecificInfoImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, EventSpecificInformationBCSMImpl._ID_tNoAnswerSpecificInfo);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TNoAnswerSpecificInfoImpl);
+        
+        TNoAnswerSpecificInfoImpl elem = (TNoAnswerSpecificInfoImpl)result.getResult();        
         assertTrue(elem.getCallForwarded());
         assertEquals(elem.getForwardingDestinationNumber().getCalledPartyNumber().getAddress(), "111222333");
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TNoAnswerSpecificInfoImpl.class);
+    	    	
         CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(0, "111222333", 1, 1);
         CalledPartyNumberCapImpl forwardingDestinationNumber = new CalledPartyNumberCapImpl(calledPartyNumber);
         TNoAnswerSpecificInfoImpl elem = new TNoAnswerSpecificInfoImpl(true, forwardingDestinationNumber);
         // boolean callForwarded, CalledPartyNumberCap forwardingDestinationNumber
 
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, EventSpecificInformationBCSMImpl._ID_tNoAnswerSpecificInfo);
-        assertEquals(aos.toByteArray(), this.getData1());
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })

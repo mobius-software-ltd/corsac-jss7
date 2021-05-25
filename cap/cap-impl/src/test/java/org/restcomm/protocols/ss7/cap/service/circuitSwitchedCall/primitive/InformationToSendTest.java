@@ -23,18 +23,24 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ToneImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,56 +50,68 @@ import org.testng.annotations.Test;
 public class InformationToSendTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 160, 8, (byte) 160, 3, (byte) 128, 1, 91, (byte) 129, 1, 1 };
+        return new byte[] { 48, 10, (byte) 160, 8, (byte) 160, 3, (byte) 128, 1, 91, (byte) 129, 1, 1 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 161, 6, (byte) 128, 1, 5, (byte) 129, 1, 100 };
+        return new byte[] { 48, 8, (byte) 161, 6, (byte) 128, 1, 5, (byte) 129, 1, 100 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InformationToSendWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        InformationToSendImpl elem = new InformationToSendImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, 0);
-        elem.decodeAll(ais);
-        assertEquals((int) elem.getInbandInfo().getMessageID().getElementaryMessageID(), 91);
-        assertEquals((int) elem.getInbandInfo().getNumberOfRepetitions(), 1);
-        assertNull(elem.getInbandInfo().getDuration());
-        assertNull(elem.getInbandInfo().getInterval());
-        assertNull(elem.getTone());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InformationToSendWrapperImpl);
+        
+        InformationToSendWrapperImpl elem = (InformationToSendWrapperImpl)result.getResult();                
+        assertEquals((int) elem.getInformationToSend().getInbandInfo().getMessageID().getElementaryMessageID(), 91);
+        assertEquals((int) elem.getInformationToSend().getInbandInfo().getNumberOfRepetitions(), 1);
+        assertNull(elem.getInformationToSend().getInbandInfo().getDuration());
+        assertNull(elem.getInformationToSend().getInbandInfo().getInterval());
+        assertNull(elem.getInformationToSend().getTone());
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new InformationToSendImpl();
-        tag = ais.readTag();
-        assertEquals(tag, 1);
-        elem.decodeAll(ais);
-        assertNull(elem.getInbandInfo());
-        assertEquals(elem.getTone().getToneID(), 5);
-        assertEquals((int) elem.getTone().getDuration(), 100);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InformationToSendWrapperImpl);
+        
+        elem = (InformationToSendWrapperImpl)result.getResult(); 
+        assertNull(elem.getInformationToSend().getInbandInfo());
+        assertEquals(elem.getInformationToSend().getTone().getToneID(), 5);
+        assertEquals((int) elem.getInformationToSend().getTone().getDuration(), 100);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InformationToSendWrapperImpl.class);
+    	
         MessageIDImpl messageID = new MessageIDImpl(91);
         InbandInfoImpl inbandInfo = new InbandInfoImpl(messageID, 1, null, null);
         // MessageID messageID, Integer numberOfRepetitions, Integer duration, Integer interval
         InformationToSendImpl elem = new InformationToSendImpl(inbandInfo);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        InformationToSendWrapperImpl wrapper = new InformationToSendWrapperImpl(elem);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         ToneImpl tone = new ToneImpl(5, 100);
         // int toneID, Integer duration
         elem = new InformationToSendImpl(tone);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        wrapper = new InformationToSendWrapperImpl(elem);
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

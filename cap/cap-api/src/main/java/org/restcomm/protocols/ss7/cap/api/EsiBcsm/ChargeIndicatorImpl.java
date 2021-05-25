@@ -30,6 +30,10 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.ASNSingleByte;
 *
 */
 public class ChargeIndicatorImpl extends ASNSingleByte {
+	public ChargeIndicatorImpl() {
+		
+	}
+	
 	public ChargeIndicatorImpl(int data) {
 		setValue(data);
     }

@@ -22,25 +22,28 @@
 package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMSImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
-public class FCIBCCCAMELsequence1SMSTest {
+public class FCIBCCCAMELSequence1SMSTest {
 	
 	public byte[] getData() {
 		return new byte[] { -96, 13, -128, 8, 48, 6, -128, 1, 3, -118, 1, 1, -127, 1, 1 };
@@ -52,28 +55,32 @@ public class FCIBCCCAMELsequence1SMSTest {
 	
 	@Test(groups = { "functional.decode", "primitives" })
 	public void testDecode() throws Exception {
-		byte[] data = this.getData();
-		AsnInputStream asn = new AsnInputStream(data);
-		int tag = asn.readTag();
-		FCIBCCCAMELSequence1SMSImpl prim = new FCIBCCCAMELSequence1SMSImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, FCIBCCCAMELSequence1SMSImpl._ID_FCIBCCCAMELsequence1);
-		assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-		
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FCIBCCCAMELSequence1SMSImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof FCIBCCCAMELSequence1SMSImpl);
+        
+        FCIBCCCAMELSequence1SMSImpl prim = (FCIBCCCAMELSequence1SMSImpl)result.getResult();                
 		assertTrue(Arrays.equals(prim.getFreeFormatData().getData(), this.getFreeFormatData()));
-		assertEquals(prim.getAppendFreeFormatData(), AppendFreeFormatData.append);
-		
+		assertEquals(prim.getAppendFreeFormatData(), AppendFreeFormatData.append);		
 	}
 	
 	@Test(groups = { "functional.encode", "primitives" })
 	public void testEncode() throws Exception {
-		FreeFormatDataSMS freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(FCIBCCCAMELSequence1SMSImpl.class);
+    	
+    	FreeFormatDataSMSImpl freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
 		FCIBCCCAMELSequence1SMSImpl prim = new FCIBCCCAMELSequence1SMSImpl(freeFormatData, AppendFreeFormatData.append);
-		AsnOutputStream asn = new AsnOutputStream();
-		prim.encodeAll(asn);
-		
-		assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+		byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 	}
 
 	/*@Test(groups = {"functional.xml.serialize", "primitives"})

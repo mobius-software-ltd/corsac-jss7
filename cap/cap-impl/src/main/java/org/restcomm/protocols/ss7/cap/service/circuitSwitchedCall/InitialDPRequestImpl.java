@@ -313,6 +313,9 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 
     @Override
     public DigitsImpl getAdditionalCallingPartyNumber() {
+    	if(additionalCallingPartyNumber!=null)
+    		additionalCallingPartyNumber.setIsGenericNumber();
+    	
         return additionalCallingPartyNumber;
     }
 

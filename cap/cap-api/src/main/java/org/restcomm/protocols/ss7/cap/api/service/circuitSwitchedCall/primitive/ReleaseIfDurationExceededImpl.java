@@ -41,7 +41,7 @@ public class ReleaseIfDurationExceededImpl {
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 1,constructed = false,index = 0)
     private ASNBoolean tone;
     
-    @ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 10,constructed = true,index = -1)
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1)
     private CAPExtensionsImpl extensions;
 
     public ReleaseIfDurationExceededImpl() {

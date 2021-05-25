@@ -23,15 +23,19 @@
 package org.restcomm.protocols.ss7.cap.primitives;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -41,21 +45,25 @@ import org.testng.annotations.Test;
 public class TimeAndTimezoneTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 159, 57, 8, 2, 17, 33, 3, 1, 112, (byte) 129, 35 };
+        return new byte[] { 4, 8, 2, 17, 33, 3, 1, 112, (byte) 129, 35 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 159, 57, 8, 2, 17, 33, 3, 1, 112, (byte) 129, 43 };
+        return new byte[] { 4, 8, 2, 17, 33, 3, 1, 112, (byte) 129, 43 };
     }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TimeAndTimezoneImpl.class);
+    	
+        byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        TimeAndTimezoneImpl elem = new TimeAndTimezoneImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeAndTimezoneImpl);
+        
+        TimeAndTimezoneImpl elem = (TimeAndTimezoneImpl)result.getResult();        
         assertEquals(elem.getYear(), 2011);
         assertEquals(elem.getMonth(), 12);
         assertEquals(elem.getDay(), 30);
@@ -64,11 +72,13 @@ public class TimeAndTimezoneTest {
         assertEquals(elem.getSecond(), 18);
         assertEquals(elem.getTimeZone(), 32);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new TimeAndTimezoneImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TimeAndTimezoneImpl);
+        
+        elem = (TimeAndTimezoneImpl)result.getResult();    
         assertEquals(elem.getYear(), 2011);
         assertEquals(elem.getMonth(), 12);
         assertEquals(elem.getDay(), 30);
@@ -80,16 +90,22 @@ public class TimeAndTimezoneTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TimeAndTimezoneImpl.class);
+    	
         TimeAndTimezoneImpl elem = new TimeAndTimezoneImpl(2011, 12, 30, 10, 7, 18, 32);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 57);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new TimeAndTimezoneImpl(2011, 12, 30, 10, 7, 18, -32);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 57);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "primitives" })

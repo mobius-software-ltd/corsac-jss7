@@ -22,38 +22,33 @@
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResult;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOver;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOverImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeRollOverImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoS;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSExtension;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeRollOverImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.ApplyChargingReportGPRSRequestImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribed;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribedImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -106,15 +101,16 @@ public class ApplyChargingReportGPRSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ApplyChargingReportGPRSRequestImpl prim = new ApplyChargingReportGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ApplyChargingReportGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ApplyChargingReportGPRSRequestImpl);
+        
+        ApplyChargingReportGPRSRequestImpl prim = (ApplyChargingReportGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getChargingResult().getElapsedTime().getTimeGPRSIfNoTariffSwitch().intValue(), 24);
         assertNull(prim.getChargingResult().getTransferredVolume());
         assertNotNull(prim.getQualityOfService());
@@ -123,15 +119,13 @@ public class ApplyChargingReportGPRSRequestTest {
         assertEquals(prim.getChargingRollOver().getTransferredVolumeRollOver().getROVolumeIfNoTariffSwitch().longValue(), 25);
         assertNull(prim.getChargingRollOver().getElapsedTimeRollOver());
 
-        data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new ApplyChargingReportGPRSRequestImpl();
-        prim.decodeAll(asn);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ApplyChargingReportGPRSRequestImpl);
+        
+        prim = (ApplyChargingReportGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getChargingResult().getTransferredVolume().getVolumeIfNoTariffSwitch().longValue(), 25);
         assertNull(prim.getChargingResult().getElapsedTime());
         assertNotNull(prim.getQualityOfService());
@@ -143,15 +137,16 @@ public class ApplyChargingReportGPRSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecodeLiveTrace() throws Exception {
-        byte[] data = this.getDataLiveTraceOption1();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ApplyChargingReportGPRSRequestImpl prim = new ApplyChargingReportGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ApplyChargingReportGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getDataLiveTraceOption1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ApplyChargingReportGPRSRequestImpl);
+        
+        ApplyChargingReportGPRSRequestImpl prim = (ApplyChargingReportGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getChargingResult().getElapsedTime().getTimeGPRSIfNoTariffSwitch().intValue(), 5320);
         assertNull(prim.getChargingResult().getTransferredVolume());
         assertNull(prim.getQualityOfService());
@@ -159,15 +154,13 @@ public class ApplyChargingReportGPRSRequestTest {
         assertNull(prim.getPDPID());
         assertNull(prim.getChargingRollOver());
 
-        data = this.getDataLiveTraceOption2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new ApplyChargingReportGPRSRequestImpl();
-        prim.decodeAll(asn);
+        rawData = this.getDataLiveTraceOption2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ApplyChargingReportGPRSRequestImpl);
+        
+        prim = (ApplyChargingReportGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getChargingResult().getTransferredVolume().getVolumeIfNoTariffSwitch().longValue(), 1783627776);
         assertNull(prim.getChargingResult().getElapsedTime());
         assertNull(prim.getQualityOfService());
@@ -178,36 +171,41 @@ public class ApplyChargingReportGPRSRequestTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        // =Option 1
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ApplyChargingGPRSRequestImpl.class);
+    	
+    	// =Option 1
         // chargingResult
         ElapsedTimeImpl elapsedTime = new ElapsedTimeImpl(new Integer(24));
-        ChargingResult chargingResult = new ChargingResultImpl(elapsedTime);
+        ChargingResultImpl chargingResult = new ChargingResultImpl(elapsedTime);
         // qualityOfService
-        QoSSubscribed qosSubscribed = new QoSSubscribedImpl(this.getQoSSubscribedData());
-        GPRSQoS requestedQoS = new GPRSQoSImpl(qosSubscribed);
-        ExtQoSSubscribed extQoSSubscribed = new ExtQoSSubscribedImpl(this.getExtQoSSubscribedData());
-        GPRSQoS subscribedQoS = new GPRSQoSImpl(extQoSSubscribed);
-        GPRSQoS negotiatedQoS = new GPRSQoSImpl(qosSubscribed);
+        QoSSubscribedImpl qosSubscribed = new QoSSubscribedImpl(this.getQoSSubscribedData());
+        GPRSQoSImpl requestedQoS = new GPRSQoSImpl(qosSubscribed);
+        ExtQoSSubscribedImpl extQoSSubscribed = new ExtQoSSubscribedImpl(this.getExtQoSSubscribedData());
+        GPRSQoSImpl subscribedQoS = new GPRSQoSImpl(extQoSSubscribed);
+        GPRSQoSImpl negotiatedQoS = new GPRSQoSImpl(qosSubscribed);
         Ext2QoSSubscribedImpl qos2Subscribed1 = new Ext2QoSSubscribedImpl(this.getEncodedqos2Subscribed1());
-        GPRSQoSExtension requestedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed1);
+        GPRSQoSExtensionImpl requestedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed1);
         Ext2QoSSubscribedImpl qos2Subscribed2 = new Ext2QoSSubscribedImpl(this.getEncodedqos2Subscribed2());
-        GPRSQoSExtension subscribedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed2);
+        GPRSQoSExtensionImpl subscribedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed2);
         Ext2QoSSubscribedImpl qos2Subscribed3 = new Ext2QoSSubscribedImpl(this.getEncodedqos2Subscribed3());
-        GPRSQoSExtension negotiatedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed3);
-        QualityOfService qualityOfService = new QualityOfServiceImpl(requestedQoS, subscribedQoS, negotiatedQoS,
+        GPRSQoSExtensionImpl negotiatedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed3);
+        QualityOfServiceImpl qualityOfService = new QualityOfServiceImpl(requestedQoS, subscribedQoS, negotiatedQoS,
                 requestedQoSExtension, subscribedQoSExtension, negotiatedQoSExtension);
         // active
         boolean active = true;
         // pdpID
-        PDPID pdpID = new PDPIDImpl(2);
+        PDPIDImpl pdpID = new PDPIDImpl(2);
         // chargingRollOver
         TransferredVolumeRollOverImpl transferredVolumeRollOver = new TransferredVolumeRollOverImpl(new Integer(25));
-        ChargingRollOver chargingRollOver = new ChargingRollOverImpl(transferredVolumeRollOver);
+        ChargingRollOverImpl chargingRollOver = new ChargingRollOverImpl(transferredVolumeRollOver);
         ApplyChargingReportGPRSRequestImpl prim = new ApplyChargingReportGPRSRequestImpl(chargingResult, qualityOfService,
                 active, pdpID, chargingRollOver);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // =Option 2
         // chargingResult
@@ -217,33 +215,40 @@ public class ApplyChargingReportGPRSRequestTest {
         ElapsedTimeRollOverImpl elapsedTimeRollOver = new ElapsedTimeRollOverImpl(new Integer(24));
         chargingRollOver = new ChargingRollOverImpl(elapsedTimeRollOver);
         prim = new ApplyChargingReportGPRSRequestImpl(chargingResult, qualityOfService, active, pdpID, chargingRollOver);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncodeLiveTrace() throws Exception {
-        // Option 1
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ApplyChargingGPRSRequestImpl.class);
+    	
+    	// Option 1
         ElapsedTimeImpl elapsedTime = new ElapsedTimeImpl(new Integer(5320));
-        ChargingResult chargingResult = new ChargingResultImpl(elapsedTime);
+        ChargingResultImpl chargingResult = new ChargingResultImpl(elapsedTime);
         boolean active = true;
         ApplyChargingReportGPRSRequestImpl prim = new ApplyChargingReportGPRSRequestImpl(chargingResult, null, active, null,
                 null);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getDataLiveTraceOption1()));
-
+        byte[] rawData = this.getDataLiveTraceOption1();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
+        
         // Option 2
         TransferredVolumeImpl transferredVolume = new TransferredVolumeImpl(new Long(1783627776));
         chargingResult = new ChargingResultImpl(transferredVolume);
         active = true;
         prim = new ApplyChargingReportGPRSRequestImpl(chargingResult, null, active, null, null);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getDataLiveTraceOption2()));
-
+        rawData = this.getDataLiveTraceOption2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

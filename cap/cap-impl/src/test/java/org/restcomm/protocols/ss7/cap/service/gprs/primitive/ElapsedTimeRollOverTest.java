@@ -28,13 +28,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeRollOverImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeRollOverWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ROTimeGPRSIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,59 +47,65 @@ import org.testng.annotations.Test;
 public class ElapsedTimeRollOverTest {
 
     public byte[] getData() {
-        return new byte[] { -128, 1, 24 };
+        return new byte[] { 48, 3, -128, 1, 24 };
     };
 
     public byte[] getData2() {
-        return new byte[] { -95, 6, -128, 1, 12, -127, 1, 24 };
+        return new byte[] { 48, 8, -95, 6, -128, 1, 12, -127, 1, 24 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        // Option 1
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ElapsedTimeRollOverImpl prim = new ElapsedTimeRollOverImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ElapsedTimeRollOverWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, TransferredVolumeImpl._ID_volumeIfNoTariffSwitch);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        assertTrue(prim.getIsPrimitive());
-        assertEquals(prim.getROTimeGPRSIfNoTariffSwitch().intValue(), 24);
-        assertNull(prim.getROTimeGPRSIfTariffSwitch());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ElapsedTimeRollOverWrapperImpl);
+        
+        ElapsedTimeRollOverWrapperImpl prim = (ElapsedTimeRollOverWrapperImpl)result.getResult();        
+        assertEquals(prim.getElapsedTimeRollOver().getROTimeGPRSIfNoTariffSwitch().intValue(), 24);
+        assertNull(prim.getElapsedTimeRollOver().getROTimeGPRSIfTariffSwitch());
 
         // Option 2
-        data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new ElapsedTimeRollOverImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, TransferredVolumeImpl._ID_volumeIfTariffSwitch);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        assertFalse(prim.getIsPrimitive());
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertNull(prim.getROTimeGPRSIfNoTariffSwitch());
-        assertEquals(prim.getROTimeGPRSIfTariffSwitch().getROTimeGPRSSinceLastTariffSwitch().intValue(), 12);
-        assertEquals(prim.getROTimeGPRSIfTariffSwitch().getROTimeGPRSTariffSwitchInterval().intValue(), 24);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ElapsedTimeRollOverWrapperImpl);
+        
+        prim = (ElapsedTimeRollOverWrapperImpl)result.getResult();  
+        assertNull(prim.getElapsedTimeRollOver().getROTimeGPRSIfNoTariffSwitch());
+        assertEquals(prim.getElapsedTimeRollOver().getROTimeGPRSIfTariffSwitch().getROTimeGPRSSinceLastTariffSwitch().intValue(), 12);
+        assertEquals(prim.getElapsedTimeRollOver().getROTimeGPRSIfTariffSwitch().getROTimeGPRSTariffSwitchInterval().intValue(), 24);
 
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        // Option 1
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ElapsedTimeRollOverWrapperImpl.class);
+    	
+    	// Option 1
         ElapsedTimeRollOverImpl prim = new ElapsedTimeRollOverImpl(new Integer(24));
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        ElapsedTimeRollOverWrapperImpl wrapper = new ElapsedTimeRollOverWrapperImpl(prim);
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // Option 2
         ROTimeGPRSIfTariffSwitchImpl roTimeGPRSIfTariffSwitch = new ROTimeGPRSIfTariffSwitchImpl(new Integer(12), new Integer(
                 24));
         prim = new ElapsedTimeRollOverImpl(roTimeGPRSIfTariffSwitch);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        wrapper = new ElapsedTimeRollOverWrapperImpl(prim);
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-}
+}	

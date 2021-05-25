@@ -23,21 +23,25 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswerImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELSCIBillingChargingCharacteristicsAltImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -62,57 +66,73 @@ public class SCIBillingChargingCharacteristicsTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SCIBillingChargingCharacteristicsImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        SCIBillingChargingCharacteristicsImpl elem = new SCIBillingChargingCharacteristicsImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SCIBillingChargingCharacteristicsImpl);
+        
+        SCIBillingChargingCharacteristicsImpl elem = (SCIBillingChargingCharacteristicsImpl)result.getResult();        
         this.testCAI_GSM0224(elem.getAOCBeforeAnswer().getAOCInitial());
         this.testCAI_GSM0224(elem.getAOCBeforeAnswer().getAOCSubsequent().getCAI_GSM0224());
         assertEquals((int) elem.getAOCBeforeAnswer().getAOCSubsequent().getTariffSwitchInterval(), 100);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new SCIBillingChargingCharacteristicsImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SCIBillingChargingCharacteristicsImpl);
+        
+        elem = (SCIBillingChargingCharacteristicsImpl)result.getResult(); 
         this.testCAI_GSM0224(elem.getAOCSubsequent().getCAI_GSM0224());
         assertEquals((int) elem.getAOCSubsequent().getTariffSwitchInterval(), 100);
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new SCIBillingChargingCharacteristicsImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SCIBillingChargingCharacteristicsImpl);
+        
+        elem = (SCIBillingChargingCharacteristicsImpl)result.getResult(); 
         assertNotNull(elem.getAOCExtension());
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SCIBillingChargingCharacteristicsImpl.class);
+    	
         CAI_GSM0224Impl gsm224 = new CAI_GSM0224Impl(1, 2, 3, null, null, null, null);
         AOCSubsequentImpl aocSubsequent = new AOCSubsequentImpl(gsm224, 100);
         AOCBeforeAnswerImpl aocBeforeAnswer = new AOCBeforeAnswerImpl(gsm224, aocSubsequent);
         // CAI_GSM0224 aocInitial, AOCSubsequent aocSubsequent
         SCIBillingChargingCharacteristicsImpl elem = new SCIBillingChargingCharacteristicsImpl(aocBeforeAnswer);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new SCIBillingChargingCharacteristicsImpl(aocSubsequent);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         CAMELSCIBillingChargingCharacteristicsAltImpl aocExtension = new CAMELSCIBillingChargingCharacteristicsAltImpl();
         elem = new SCIBillingChargingCharacteristicsImpl(aocExtension);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    private void testCAI_GSM0224(CAI_GSM0224 gsm224) {
+    private void testCAI_GSM0224(CAI_GSM0224Impl gsm224) {
         assertEquals((int) gsm224.getE1(), 1);
         assertEquals((int) gsm224.getE2(), 2);
         assertEquals((int) gsm224.getE3(), 3);

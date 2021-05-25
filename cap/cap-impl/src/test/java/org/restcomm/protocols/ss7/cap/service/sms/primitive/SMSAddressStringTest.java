@@ -22,17 +22,21 @@
 package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -51,29 +55,27 @@ public class SMSAddressStringTest {
 
 	@Test(groups = { "functional.decode", "primitives" })
 	public void testDecode() throws Exception {
-		byte[] data = this.getData();
-		AsnInputStream asn = new AsnInputStream(data);
-		int tag = asn.readTag();
-		SMSAddressStringImpl prim = new SMSAddressStringImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, Tag.STRING_OCTET);
-		assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-		
-		assertEquals(prim.getAddressNature(), AddressNature.international_number);
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SMSAddressStringImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SMSAddressStringImpl);
+        
+        SMSAddressStringImpl prim = (SMSAddressStringImpl)result.getResult();        
+        assertEquals(prim.getAddressNature(), AddressNature.international_number);
         assertEquals(prim.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(prim.getAddress(), "1234567891234567");
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-		data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new SMSAddressStringImpl();
-        prim.decodeAll(asn);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof SMSAddressStringImpl);
         
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-        
+        prim = (SMSAddressStringImpl)result.getResult(); 
         assertEquals(prim.getAddressNature(), AddressNature.reserved);
         assertEquals(prim.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(prim.getAddress(), "Perestroika");
@@ -81,18 +83,21 @@ public class SMSAddressStringTest {
 	
 	@Test(groups = { "functional.encode", "primitives" })
 	public void testEncode() throws Exception {
-        SMSAddressStringImpl prim = new SMSAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567891234567");
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(SMSAddressStringImpl.class);
+    	
+    	SMSAddressStringImpl prim = new SMSAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567891234567");
+    	byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         prim = new SMSAddressStringImpl(AddressNature.reserved, NumberingPlan.ISDN, "Perestroika");
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 	}
-	
 }

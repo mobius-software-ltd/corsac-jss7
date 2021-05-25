@@ -23,17 +23,21 @@
 package org.restcomm.protocols.ss7.cap.isup;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,7 +47,7 @@ import org.testng.annotations.Test;
 public class OriginalCalledNumberCapTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 140, 6, (byte) 131, 20, 7, 1, 9, 0 };
+        return new byte[] { 4, 6, (byte) 131, 20, 7, 1, 9, 0 };
     }
 
     public byte[] getIntData() {
@@ -51,17 +55,21 @@ public class OriginalCalledNumberCapTest {
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 140, 11, 4, 16, 76, (byte) 152, 8, (byte) 148, 113, 7, 41, (byte) 146, 115 };
+        return new byte[] { 4, 11, 4, 16, 76, (byte) 152, 8, (byte) 148, 113, 7, 41, (byte) 146, 115 };
     }
 
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(OriginalCalledNumberCapImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        OriginalCalledNumberCapImpl elem = new OriginalCalledNumberCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof OriginalCalledNumberCapImpl);
+        
+        OriginalCalledNumberCapImpl elem = (OriginalCalledNumberCapImpl)result.getResult();        
         OriginalCalledNumber ocn = elem.getOriginalCalledNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(ocn.getNatureOfAddressIndicator(), 3);
@@ -69,11 +77,13 @@ public class OriginalCalledNumberCapTest {
         assertEquals(ocn.getNumberingPlanIndicator(), 1);
         assertEquals(ocn.getAddressRepresentationRestrictedIndicator(), 1);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new OriginalCalledNumberCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof OriginalCalledNumberCapImpl);
+        
+        elem = (OriginalCalledNumberCapImpl)result.getResult();      
         ocn = elem.getOriginalCalledNumber();
         assertEquals(ocn.getNumberingPlanIndicator(), 1);
         assertEquals(ocn.getAddressRepresentationRestrictedIndicator(), 0);
@@ -83,23 +93,31 @@ public class OriginalCalledNumberCapTest {
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(OriginalCalledNumberCapImpl.class);
+    	
         OriginalCalledNumberCapImpl elem = new OriginalCalledNumberCapImpl(this.getIntData());
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 12);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         OriginalCalledNumber cpn = new OriginalCalledNumberImpl(3, "7010900", 1, 1);
         elem = new OriginalCalledNumberCapImpl(cpn);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 12);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        rawData = this.getData();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         cpn = new OriginalCalledNumberImpl(4, "c48980491770922937", 1, 0);
         elem = new OriginalCalledNumberCapImpl(cpn);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 12);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int addressRepresentationREstrictedIndicator
     }

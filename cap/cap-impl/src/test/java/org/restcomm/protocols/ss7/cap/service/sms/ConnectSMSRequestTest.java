@@ -21,27 +21,26 @@
  */
 package org.restcomm.protocols.ss7.cap.service.sms;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.sms.ConnectSMSRequestImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * 
@@ -58,17 +57,18 @@ public class ConnectSMSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ConnectSMSRequestImpl prim = new ConnectSMSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ConnectSMSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        CalledPartyBCDNumber destinationSubscriberNumber = prim.getDestinationSubscriberNumber();
-        SMSAddressString callingPartyNumber = prim.getCallingPartysNumber();
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ConnectSMSRequestImpl);
+        
+        ConnectSMSRequestImpl prim = (ConnectSMSRequestImpl)result.getResult();        
+        CalledPartyBCDNumberImpl destinationSubscriberNumber = prim.getDestinationSubscriberNumber();
+        SMSAddressStringImpl callingPartyNumber = prim.getCallingPartysNumber();
 
         assertNotNull(destinationSubscriberNumber);
         assertTrue(destinationSubscriberNumber.getAddress().equals("41788005047"));
@@ -76,7 +76,7 @@ public class ConnectSMSRequestTest {
         assertNotNull(callingPartyNumber);
         assertTrue(callingPartyNumber.getAddress().equals("1234567891234567"));
 
-        ISDNAddressString smscAddress = prim.getSMSCAddress();
+        ISDNAddressStringImpl smscAddress = prim.getSMSCAddress();
         assertNotNull(smscAddress);
         assertTrue(smscAddress.getAddress().equals("2207750008"));
 
@@ -87,21 +87,23 @@ public class ConnectSMSRequestTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        SMSAddressString callingPartysNumber = new SMSAddressStringImpl(AddressNature.international_number,
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ConnectSMSRequestImpl.class);
+    	
+        SMSAddressStringImpl callingPartysNumber = new SMSAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "1234567891234567");
-        CalledPartyBCDNumber destinationSubscriberNumber = new CalledPartyBCDNumberImpl(
+        CalledPartyBCDNumberImpl destinationSubscriberNumber = new CalledPartyBCDNumberImpl(
                 AddressNature.international_number, NumberingPlan.ISDN, "41788005047");
-        ISDNAddressString smscAddress = new ISDNAddressStringImpl(AddressNature.international_number,
+        ISDNAddressStringImpl smscAddress = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "2207750008");
-        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
 
         ConnectSMSRequestImpl prim = new ConnectSMSRequestImpl(callingPartysNumber, destinationSubscriberNumber,
                 smscAddress, extensions);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

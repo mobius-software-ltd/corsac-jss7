@@ -22,27 +22,28 @@
 package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsSubmissionSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsSubmissionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MTSMSCauseImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,122 +53,123 @@ import org.testng.annotations.Test;
 public class EventSpecificInformationSMSTest {
 
 	public byte[] getData1() {
-		return new byte[] { -96, 3, -128, 1, 2 };
+		return new byte[] { 48, 5, -96, 3, -128, 1, 2 };
 	};
 	
 	public byte[] getData2() {
-		return new byte[] {-95, 0};
+		return new byte[] { 48, 2, -95, 0};
 	};
 	
 	public byte[] getData3() {
-		return new byte[] { -94, 3, -128, 1, 6};
+		return new byte[] { 48, 5, -94, 3, -128, 1, 6};
 	};
 	
 	public byte[] getData4() {
-		return new byte[] {-93, 0};
+		return new byte[] {48, 2, -93, 0};
 	};
 	
 	@Test(groups = { "functional.decode", "primitives" })
 	public void testDecode() throws Exception {
-		//option 1
-		byte[] data = this.getData1();
-		AsnInputStream asn = new AsnInputStream(data);
-		int tag = asn.readTag();
-		EventSpecificInformationSMSImpl prim = new EventSpecificInformationSMSImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, EventSpecificInformationSMSImpl._ID_oSmsFailureSpecificInfo);
-		assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-		
-		assertNotNull(prim.getOSmsFailureSpecificInfo());
-		OSmsFailureSpecificInfo oSmsFailureSpecificInfo = prim.getOSmsFailureSpecificInfo();
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventSpecificInformationSMSWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationSMSWrapperImpl);
+        
+        EventSpecificInformationSMSWrapperImpl prim = (EventSpecificInformationSMSWrapperImpl)result.getResult();        
+        assertNotNull(prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo());
+		OSmsFailureSpecificInfoImpl oSmsFailureSpecificInfo = prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo();
 		assertEquals(oSmsFailureSpecificInfo.getFailureCause(), MOSMSCause.facilityNotSupported);
-		assertNull(prim.getOSmsSubmissionSpecificInfo());
-		assertNull(prim.getTSmsFailureSpecificInfo());
-		assertNull(prim.getTSmsDeliverySpecificInfo());
+		assertNull(prim.getEventSpecificInformationSMS().getOSmsSubmissionSpecificInfo());
+		assertNull(prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo());
+		assertNull(prim.getEventSpecificInformationSMS().getTSmsDeliverySpecificInfo());
 		
 		//option 2
-		data = this.getData2();
-		asn = new AsnInputStream(data);
-		tag = asn.readTag();
-		prim = new EventSpecificInformationSMSImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, EventSpecificInformationSMSImpl._ID_oSmsSubmissionSpecificInfo);
-		assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-		
-		assertNull(prim.getOSmsFailureSpecificInfo());
-		assertNotNull(prim.getOSmsSubmissionSpecificInfo());
-		assertNull(prim.getTSmsFailureSpecificInfo());
-		assertNull(prim.getTSmsDeliverySpecificInfo());
+		rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationSMSWrapperImpl);
+        
+        prim = (EventSpecificInformationSMSWrapperImpl)result.getResult();
+		assertNull(prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo());
+		assertNotNull(prim.getEventSpecificInformationSMS().getOSmsSubmissionSpecificInfo());
+		assertNull(prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo());
+		assertNull(prim.getEventSpecificInformationSMS().getTSmsDeliverySpecificInfo());
 		
 		//option 3
-		data = this.getData3();
-		asn = new AsnInputStream(data);
-		tag = asn.readTag();
-		prim = new EventSpecificInformationSMSImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, EventSpecificInformationSMSImpl._ID_tSmsFailureSpecificInfo);
-		assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-		
-		assertNull(prim.getOSmsFailureSpecificInfo());
-		assertNull(prim.getOSmsSubmissionSpecificInfo());
-		assertNotNull(prim.getTSmsFailureSpecificInfo());
-		TSmsFailureSpecificInfo tSmsFailureSpecificInfo = prim.getTSmsFailureSpecificInfo();
-		assertEquals(tSmsFailureSpecificInfo.GetFailureCause().getData(),6);
-		assertNull(prim.getTSmsDeliverySpecificInfo());
+		rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationSMSWrapperImpl);
+        
+        prim = (EventSpecificInformationSMSWrapperImpl)result.getResult();
+		assertNull(prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo());
+		assertNull(prim.getEventSpecificInformationSMS().getOSmsSubmissionSpecificInfo());
+		assertNotNull(prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo());
+		TSmsFailureSpecificInfoImpl tSmsFailureSpecificInfo = prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo();
+		assertEquals(tSmsFailureSpecificInfo.getFailureCause().getData(),6);
+		assertNull(prim.getEventSpecificInformationSMS().getTSmsDeliverySpecificInfo());
 		
 		//option 4
-		data = this.getData4();
-		asn = new AsnInputStream(data);
-		tag = asn.readTag();
-		prim = new EventSpecificInformationSMSImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, EventSpecificInformationSMSImpl._ID_tSmsDeliverySpecificInfo);
-		assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-		
-		assertNull(prim.getOSmsFailureSpecificInfo());
-		assertNull(prim.getOSmsSubmissionSpecificInfo());
-		assertNull(prim.getTSmsFailureSpecificInfo());
-		assertNotNull(prim.getTSmsDeliverySpecificInfo());
-		
-		
+		rawData = this.getData4();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventSpecificInformationSMSWrapperImpl);
+        
+        prim = (EventSpecificInformationSMSWrapperImpl)result.getResult();
+		assertNull(prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo());
+		assertNull(prim.getEventSpecificInformationSMS().getOSmsSubmissionSpecificInfo());
+		assertNull(prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo());
+		assertNotNull(prim.getEventSpecificInformationSMS().getTSmsDeliverySpecificInfo());		
 	}
 	
 	@Test(groups = { "functional.encode", "primitives" })
 	public void testEncode() throws Exception {
-		
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventSpecificInformationSMSWrapperImpl.class);
+    	
 		MTSMSCauseImpl failureCause = new MTSMSCauseImpl(6);
-		OSmsFailureSpecificInfo oSmsFailureSpecificInfo = new OSmsFailureSpecificInfoImpl(MOSMSCause.facilityNotSupported);
-		OSmsSubmissionSpecificInfo oSmsSubmissionSpecificInfo = new OSmsSubmissionSpecificInfoImpl();
-		TSmsFailureSpecificInfo tSmsFailureSpecificInfo = new TSmsFailureSpecificInfoImpl(failureCause);
-		TSmsDeliverySpecificInfo tSmsDeliverySpecificInfo = new TSmsDeliverySpecificInfoImpl();
+		OSmsFailureSpecificInfoImpl oSmsFailureSpecificInfo = new OSmsFailureSpecificInfoImpl(MOSMSCause.facilityNotSupported);
+		OSmsSubmissionSpecificInfoImpl oSmsSubmissionSpecificInfo = new OSmsSubmissionSpecificInfoImpl();
+		TSmsFailureSpecificInfoImpl tSmsFailureSpecificInfo = new TSmsFailureSpecificInfoImpl(failureCause);
+		TSmsDeliverySpecificInfoImpl tSmsDeliverySpecificInfo = new TSmsDeliverySpecificInfoImpl();
 	
 		//option 1
 		EventSpecificInformationSMSImpl prim = new EventSpecificInformationSMSImpl(oSmsFailureSpecificInfo);
-		AsnOutputStream asn = new AsnOutputStream();
-		prim.encodeAll(asn);
-		assertTrue(Arrays.equals(asn.toByteArray(), this.getData1()));
+		byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 		
 		//option 2
 		prim = new EventSpecificInformationSMSImpl(oSmsSubmissionSpecificInfo);
-		asn = new AsnOutputStream();
-		prim.encodeAll(asn);
-		assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+		rawData = this.getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 		
 		//option 3
 		prim = new EventSpecificInformationSMSImpl(tSmsFailureSpecificInfo);
-		asn = new AsnOutputStream();
-		prim.encodeAll(asn);
-		assertTrue(Arrays.equals(asn.toByteArray(), this.getData3()));
+		rawData = this.getData3();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 		
 		//option 4
 		prim = new EventSpecificInformationSMSImpl(tSmsDeliverySpecificInfo);
-		asn = new AsnOutputStream();
-		prim.encodeAll(asn);
-		assertTrue(Arrays.equals(asn.toByteArray(), this.getData4()));
-	}
-	
+		rawData = this.getData4();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
+	}	
 }

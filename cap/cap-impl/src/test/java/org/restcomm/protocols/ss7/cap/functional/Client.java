@@ -26,6 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -36,53 +37,46 @@ import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPParameterFactory;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.CAPStack;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.cap.api.primitives.ReceivingSideID;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CAPDialogCircuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitialDPRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.RequestReportBCSMEventRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigits;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Tone;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ToneImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.CAPDialogGprs;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.InitialDpGprsRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.RequestReportGPRSEventRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResult;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ElapsedTimeImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCause;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCauseImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPDialogSms;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.InitialDpGprsRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
@@ -92,19 +86,16 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
@@ -203,8 +194,8 @@ public class Client extends EventTestHarness {
         genericNumber.setNumberingPlanIndicator(GenericNumber._NPI_ISDN);
         genericNumber.setNumberQualifierIndicator(GenericNumber._NQIA_CALLED_NUMBER);
         genericNumber.setScreeningIndicator(GenericNumber._SI_NETWORK_PROVIDED);
-        Digits correlationID = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
-        IPSSPCapabilities ipSSPCapabilities = this.capParameterFactory.createIPSSPCapabilities(true, false, true, false, false,
+        DigitsImpl correlationID = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
+        IPSSPCapabilitiesImpl ipSSPCapabilities = this.capParameterFactory.createIPSSPCapabilities(true, false, true, false, false,
                 null);
         clientCscDialog.addAssistRequestInstructionsRequest(correlationID, ipSSPCapabilities, null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.AssistRequestInstructionsRequest, null, sequence++));
@@ -224,7 +215,7 @@ public class Client extends EventTestHarness {
         genericNumber.setNumberingPlanIndicator(GenericNumber._NPI_ISDN);
         genericNumber.setNumberQualifierIndicator(GenericNumber._NQIA_CALLED_NUMBER);
         genericNumber.setScreeningIndicator(GenericNumber._SI_NETWORK_PROVIDED);
-        Digits assistingSSPIPRoutingAddress = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
+        DigitsImpl assistingSSPIPRoutingAddress = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
         clientCscDialog.addEstablishTemporaryConnectionRequest(assistingSSPIPRoutingAddress, null, null, null, null, null,
                 null, null, null, null, null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.EstablishTemporaryConnectionRequest, null, sequence++));
@@ -256,11 +247,11 @@ public class Client extends EventTestHarness {
         causeIndicators.setLocation(CauseIndicators._LOCATION_USER);
         causeIndicators.setCodingStandard(CauseIndicators._CODING_STANDARD_ITUT);
         causeIndicators.setCauseValue(CauseIndicators._CV_ALL_CLEAR);
-        CauseCap releaseCause = this.capParameterFactory.createCauseCap(causeIndicators);
-        ODisconnectSpecificInfo oDisconnectSpecificInfo = this.capParameterFactory.createODisconnectSpecificInfo(releaseCause);
-        ReceivingSideID legID = this.capParameterFactory.createReceivingSideID(LegType.leg1);
-        MiscCallInfo miscCallInfo = this.inapParameterFactory.createMiscCallInfo(MiscCallInfoMessageType.notification, null);
-        EventSpecificInformationBCSM eventSpecificInformationBCSM = this.capParameterFactory
+        CauseCapImpl releaseCause = this.capParameterFactory.createCauseCap(causeIndicators);
+        ODisconnectSpecificInfoImpl oDisconnectSpecificInfo = this.capParameterFactory.createODisconnectSpecificInfo(releaseCause);
+        ReceivingLegIDImpl legID = this.capParameterFactory.createReceivingLegID(LegType.leg1);
+        MiscCallInfoImpl miscCallInfo = this.inapParameterFactory.createMiscCallInfo(MiscCallInfoMessageType.notification, null);
+        EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = this.capParameterFactory
                 .createEventSpecificInformationBCSM(oDisconnectSpecificInfo);
         clientCscDialog.addEventReportBCSMRequest(EventTypeBCSM.oDisconnect, eventSpecificInformationBCSM, legID, miscCallInfo,
                 null);
@@ -308,8 +299,8 @@ public class Client extends EventTestHarness {
         genericNumber.setNumberingPlanIndicator(GenericNumber._NPI_ISDN);
         genericNumber.setNumberQualifierIndicator(GenericNumber._NQIA_CALLED_NUMBER);
         genericNumber.setScreeningIndicator(GenericNumber._SI_NETWORK_PROVIDED);
-        Digits correlationID = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
-        IPSSPCapabilities ipSSPCapabilities = this.capParameterFactory.createIPSSPCapabilities(true, false, true, false, false,
+        DigitsImpl correlationID = this.capParameterFactory.createDigits_GenericNumber(genericNumber);
+        IPSSPCapabilitiesImpl ipSSPCapabilities = this.capParameterFactory.createIPSSPCapabilities(true, false, true, false, false,
                 null);
         clientCscDialog.addAssistRequestInstructionsRequest(correlationID, ipSSPCapabilities, null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.AssistRequestInstructionsRequest, null, sequence++));
@@ -407,12 +398,12 @@ public class Client extends EventTestHarness {
             calledPartyNumber.setAddress("11223344");
             calledPartyNumber.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
             calledPartyNumber.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_NOT_ALLOWED);
-            CalledPartyNumberCap calledPartyNumberCap = this.capParameterFactory.createCalledPartyNumberCap(calledPartyNumber);
+            CalledPartyNumberCapImpl calledPartyNumberCap = this.capParameterFactory.createCalledPartyNumberCap(calledPartyNumber);
             calledPartyNumberCap = new CalledPartyNumberCapImpl(calledPartyNumber);
 
             InitialDPRequestImpl res = new InitialDPRequestImpl(321, calledPartyNumberCap, null, null, null, null, null, null,
                     null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
-                    null, null, null, null, false, null, false);
+                    null, null, null, null, false, null);
 
             return res;
         } catch (CAPException e) {
@@ -439,7 +430,7 @@ public class Client extends EventTestHarness {
     public void checkRequestReportBCSMEventRequest(RequestReportBCSMEventRequest ind) {
         assertEquals(ind.getBCSMEventList().size(), 7);
 
-        BCSMEvent ev = ind.getBCSMEventList().get(0);
+        BCSMEventImpl ev = ind.getBCSMEventList().get(0);
         assertEquals(ev.getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
         assertEquals(ev.getMonitorMode(), MonitorMode.notifyAndContinue);
         assertNull(ev.getLegID());
@@ -458,11 +449,11 @@ public class Client extends EventTestHarness {
         ev = ind.getBCSMEventList().get(4);
         assertEquals(ev.getEventTypeBCSM(), EventTypeBCSM.oDisconnect);
         assertEquals(ev.getMonitorMode(), MonitorMode.notifyAndContinue);
-        assertEquals(ev.getLegID().getSendingSideID(), LegType.leg1);
+        assertEquals(ev.getLegID().getSendingLegID().getSendingSideID(), LegType.leg1);
         ev = ind.getBCSMEventList().get(5);
         assertEquals(ev.getEventTypeBCSM(), EventTypeBCSM.oDisconnect);
         assertEquals(ev.getMonitorMode(), MonitorMode.interrupted);
-        assertEquals(ev.getLegID().getSendingSideID(), LegType.leg2);
+        assertEquals(ev.getLegID().getSendingLegID().getSendingSideID(), LegType.leg2);
         ev = ind.getBCSMEventList().get(6);
         assertEquals(ev.getEventTypeBCSM(), EventTypeBCSM.oAbandon);
         assertEquals(ev.getMonitorMode(), MonitorMode.notifyAndContinue);
@@ -561,8 +552,8 @@ public class Client extends EventTestHarness {
                 initialDp.getCalledPartyBCDNumber(), initialDp.getTimeAndTimezone(), initialDp.getCallForwardingSSPending(),
                 initialDp.getInitialDPArgExtension());
 
-        Tone tone = this.capParameterFactory.createTone(10, null);
-        InformationToSend informationToSend = this.capParameterFactory.createInformationToSend(tone);
+        ToneImpl tone = this.capParameterFactory.createTone(10, null);
+        InformationToSendImpl informationToSend = this.capParameterFactory.createInformationToSend(tone);
         clientCscDialog.addPlayAnnouncementRequest(1000000, informationToSend, null, null, null, null, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
@@ -600,9 +591,9 @@ public class Client extends EventTestHarness {
                 initialDp.getCalledPartyBCDNumber(), initialDp.getTimeAndTimezone(), initialDp.getCallForwardingSSPending(),
                 initialDp.getInitialDPArgExtension());
 
-        CollectedDigits collectedDigits = this.capParameterFactory.createCollectedDigits(2, 3, null, null, null, null, null,
+        CollectedDigitsImpl collectedDigits = this.capParameterFactory.createCollectedDigits(2, 3, null, null, null, null, null,
                 null, null, null, null);
-        CollectedInfo collectedInfo = this.capParameterFactory.createCollectedInfo(collectedDigits);
+        CollectedInfoImpl collectedInfo = this.capParameterFactory.createCollectedInfo(collectedDigits);
         clientCscDialog.addPromptAndCollectUserInformationRequest(collectedInfo, null, null, null, null, null);
         clientCscDialog.addPromptAndCollectUserInformationRequest(collectedInfo, null, null, null, null, null);
 
@@ -613,7 +604,7 @@ public class Client extends EventTestHarness {
         causeIndicators.setLocation(CauseIndicators._LOCATION_USER);
         causeIndicators.setCodingStandard(CauseIndicators._CODING_STANDARD_ITUT);
         causeIndicators.setCauseValue(CauseIndicators._CV_ALL_CLEAR);
-        CauseCap releaseCause = this.capParameterFactory.createCauseCap(causeIndicators);
+        CauseCapImpl releaseCause = this.capParameterFactory.createCauseCap(causeIndicators);
         clientCscDialog.addReleaseCallRequest(releaseCause);
         clientCscDialog.addReleaseCallRequest(releaseCause);
 
@@ -682,9 +673,9 @@ public class Client extends EventTestHarness {
     public InitialDpGprsRequest getTestInitialDpGprsRequest() {
         int serviceKey = 2;
         GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
-        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
-        IMSI imsi = new IMSIImpl("1111122222");
-        TimeAndTimezone timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
+        IMSIImpl imsi = new IMSIImpl("1111122222");
+        TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
 
         InitialDpGprsRequestImpl res = new InitialDpGprsRequestImpl(serviceKey, gprsEventType, msisdn, imsi, timeAndTimezone,
                 null, null, null, null, null, null, null, null, null, null, null, false, null);
@@ -740,7 +731,7 @@ public class Client extends EventTestHarness {
 
     public void sendApplyChargingReportGPRSRequest() throws CAPException {
         ElapsedTimeImpl elapsedTime = new ElapsedTimeImpl(new Integer(5320));
-        ChargingResult chargingResult = new ChargingResultImpl(elapsedTime);
+        ChargingResultImpl chargingResult = new ChargingResultImpl(elapsedTime);
         boolean active = true;
         clientGprsDialog.addApplyChargingReportGPRSRequest(chargingResult, null, active, null, null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ApplyChargingReportGPRSRequest, null, sequence++));
@@ -760,7 +751,7 @@ public class Client extends EventTestHarness {
         clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress);
 
         GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
-        MiscCallInfo miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
+        MiscCallInfoImpl miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
         LAIFixedLengthImpl lai;
         try {
             lai = new LAIFixedLengthImpl(250, 1, 4444);
@@ -773,11 +764,11 @@ public class Client extends EventTestHarness {
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "654321");
         LSAIdentityImpl lsa = new LSAIdentityImpl(new byte[] { 91, 92, 93 });
         GeodeticInformationImpl gdi = new GeodeticInformationImpl(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-        LocationInformationGPRS locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true,
+        LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true,
                 gdi, true, 13);
-        GPRSEventSpecificInformation gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
+        GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
                 locationInformationGPRS);
-        PDPID pdpID = new PDPIDImpl(1);
+        PDPIDImpl pdpID = new PDPIDImpl(1);
         clientGprsDialog.addEventReportGPRSRequest(gprsEventType, miscGPRSInfo, gprsEventSpecificInformation, pdpID);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportGPRSRequest, null, sequence++));
@@ -787,8 +778,8 @@ public class Client extends EventTestHarness {
     public void sendReleaseGPRSRequest(CAPApplicationContext appCnt) throws CAPException {
 
         clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress);
-        GPRSCause gprsCause = new GPRSCauseImpl(5);
-        PDPID pdpID = new PDPIDImpl(2);
+        GPRSCauseImpl gprsCause = new GPRSCauseImpl(5);
+        PDPIDImpl pdpID = new PDPIDImpl(2);
         clientGprsDialog.addReleaseGPRSRequest(gprsCause, pdpID);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseGPRSRequest, null, sequence++));
         clientGprsDialog.send();
@@ -798,10 +789,10 @@ public class Client extends EventTestHarness {
 
         clientSmsDialog = this.capProvider.getCAPServiceSms().createNewDialog(appCnt, this.thisAddress, this.remoteAddress);
 
-        CalledPartyBCDNumber destinationSubscriberNumber = this.capParameterFactory.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlan.ISDN,
+        CalledPartyBCDNumberImpl destinationSubscriberNumber = this.capParameterFactory.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlan.ISDN,
                 "123678");
-        SMSAddressString callingPartyNumber = this.capParameterFactory.createSMSAddressString(AddressNature.international_number, NumberingPlan.ISDN, "123999");
-        IMSI imsi = this.mapParameterFactory.createIMSI("12345678901234");
+        SMSAddressStringImpl callingPartyNumber = this.capParameterFactory.createSMSAddressString(AddressNature.international_number, NumberingPlan.ISDN, "123999");
+        IMSIImpl imsi = this.mapParameterFactory.createIMSI("12345678901234");
         clientSmsDialog.addInitialDPSMSRequest(15, destinationSubscriberNumber, callingPartyNumber, EventTypeSMS.smsDeliveryRequested, imsi, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDPSMSRequest, null, sequence++));
@@ -814,13 +805,13 @@ public class Client extends EventTestHarness {
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(CAPApplicationContext.CapV4_scf_gsmSSFGeneric, this.thisAddress,
                 this.remoteAddress);
 
-        ArrayList<CalledPartyNumberCap> calledPartyNumberArr = new ArrayList<CalledPartyNumberCap>();
+        List<CalledPartyNumberCapImpl> calledPartyNumberArr = new ArrayList<CalledPartyNumberCapImpl>();
         CalledPartyNumber cpn = this.isupParameterFactory.createCalledPartyNumber();
         cpn.setNatureOfAddresIndicator(3);
         cpn.setAddress("1113330");
-        CalledPartyNumberCap cpnCap = this.capParameterFactory.createCalledPartyNumberCap(cpn);
+        CalledPartyNumberCapImpl cpnCap = this.capParameterFactory.createCalledPartyNumberCap(cpn);
         calledPartyNumberArr.add(cpnCap);
-        DestinationRoutingAddress destinationRoutingAddress = this.capParameterFactory.createDestinationRoutingAddress(calledPartyNumberArr);
+        DestinationRoutingAddressImpl destinationRoutingAddress = this.capParameterFactory.createDestinationRoutingAddress(calledPartyNumberArr);
         clientCscDialog.addInitiateCallAttemptRequest(destinationRoutingAddress, null, null, null, null, null, null, false);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitiateCallAttemptRequest, null, sequence++));

@@ -22,46 +22,49 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConferenceTreatmentIndicator;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ForwardServiceInteractionInd;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ForwardServiceInteractionIndImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.ConnectRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -121,12 +124,16 @@ public class ConnectRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ConnectRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ConnectRequestImpl elem = new ConnectRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ConnectRequestImpl);
+        
+        ConnectRequestImpl elem = (ConnectRequestImpl)result.getResult();        
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
                 .getInternalNetworkNumberIndicator(), 0);
@@ -145,12 +152,13 @@ public class ConnectRequestTest {
         assertFalse(elem.getBorInterrogationRequested());
         assertFalse(elem.getSuppressNCSI());
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new ConnectRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ConnectRequestImpl);
+        
+        elem = (ConnectRequestImpl)result.getResult();  
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
                 .getInternalNetworkNumberIndicator(), 0);
@@ -171,12 +179,13 @@ public class ConnectRequestTest {
         assertFalse(elem.getBorInterrogationRequested());
         assertFalse(elem.getSuppressNCSI());
 
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new ConnectRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ConnectRequestImpl);
+        
+        elem = (ConnectRequestImpl)result.getResult();  
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
                 .getInternalNetworkNumberIndicator(), 0);
@@ -191,9 +200,16 @@ public class ConnectRequestTest {
         assertEquals(elem.getAlertingPattern().getAlertingPattern().getAlertingCategory(), AlertingCategory.Category5);
         assertTrue(Arrays.equals(elem.getOriginalCalledPartyID().getData(), getOriginalCalledPartyID()));
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
-        assertTrue(Arrays.equals(elem.getCallingPartysCategory().getData(), getCallingPartysCategory()));
+        
+        assertEquals(elem.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), getCallingPartysCategory()[0]);
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
-        assertTrue(Arrays.equals(elem.getRedirectionInformation().getData(), getRedirectionInformation()));
+        
+        ByteBuf buffer=Unpooled.buffer();
+        elem.getRedirectionInformation().encode(parser,buffer);
+        assertNotNull(buffer);
+        byte[] data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, getRedirectionInformation()));
         assertTrue(elem.getSuppressionOfAnnouncement());
         assertTrue(elem.getOCSIApplicable());
         assertEquals((int) elem.getNAOliInfo().getData(), 40);
@@ -206,11 +222,13 @@ public class ConnectRequestTest {
         assertFalse(elem.getBorInterrogationRequested());
         assertFalse(elem.getSuppressNCSI());
 
-        data = this.getData4();
-        ais = new AsnInputStream(data);
-        elem = new ConnectRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData4();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ConnectRequestImpl);
+        
+        elem = (ConnectRequestImpl)result.getResult();  
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
                 .getInternalNetworkNumberIndicator(), 0);
@@ -235,7 +253,7 @@ public class ConnectRequestTest {
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getForwardServiceInteractionInd().getConferenceTreatmentIndicator(),
                 ConferenceTreatmentIndicator.rejectConferenceRequest);
         assertEquals(elem.getChargeNumber().getLocationNumber().getAddress(), "0000077777");
-        assertEquals(elem.getLegToBeConnected().getSendingSideID(), LegType.leg5);
+        assertEquals(elem.getLegToBeConnected().getSendingLegID().getSendingSideID(), LegType.leg5);
         assertEquals(elem.getCUGInterlock().getData(), getCUGInterlockData());
         assertTrue(elem.getCugOutgoingAccess());
         assertTrue(elem.getBorInterrogationRequested());
@@ -244,8 +262,10 @@ public class ConnectRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
-        ArrayList<CalledPartyNumberCap> calledPartyNumbers = new ArrayList<CalledPartyNumberCap>();
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ConnectRequestImpl.class);
+    	
+        List<CalledPartyNumberCapImpl> calledPartyNumbers = new ArrayList<CalledPartyNumberCapImpl>();
         CalledPartyNumberImpl cpn = new CalledPartyNumberImpl(2, "972201", 1, 2);
         CalledPartyNumberCapImpl calledPartyNumber = new CalledPartyNumberCapImpl(cpn);
         calledPartyNumbers.add(calledPartyNumber);
@@ -253,51 +273,58 @@ public class ConnectRequestTest {
 
         ConnectRequestImpl elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, null, null, null, null,
                 null, null, null, null, null, false, false, false, null, false, false);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        ArrayList<GenericNumberCap> genericNumbers = new ArrayList<GenericNumberCap>();
+        ArrayList<GenericNumberCapImpl> genericNumbers = new ArrayList<GenericNumberCapImpl>();
         GenericNumberCapImpl genericNumberCap = new GenericNumberCapImpl(getDataGenericNumber());
         genericNumbers.add(genericNumberCap);
         elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, null, null, null, null, genericNumbers,
                 null, null, null, null, false, false, false, null, false, false);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
         AlertingPatternCapImpl alertingPatternCap = new AlertingPatternCapImpl(alertingPattern);
         OriginalCalledNumberCapImpl originalCalledPartyID = new OriginalCalledNumberCapImpl(getOriginalCalledPartyID());
-        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(getCallingPartysCategory());
+        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(new CallingPartyCategoryImpl(getCallingPartysCategory()[0]));
         RedirectingPartyIDCapImpl redirectingPartyID = new RedirectingPartyIDCapImpl(getRedirectingPartyID());
-        RedirectionInformationInapImpl redirectionInformation = new RedirectionInformationInapImpl(getRedirectionInformation());
+        RedirectionInformationInapImpl redirectionInformation = new RedirectionInformationInapImpl(new RedirectionInformationImpl(Unpooled.wrappedBuffer(getRedirectionInformation())));
         NAOliInfoImpl naoliInfo = new NAOliInfoImpl(40);
 
 
         elem = new ConnectRequestImpl(destinationRoutingAddress, alertingPatternCap, originalCalledPartyID,
                 CAPExtensionsTest.createTestCAPExtensions(), null, callingPartysCategory, redirectingPartyID,
                 redirectionInformation, genericNumbers, null, null, null, null, false, true, true, naoliInfo, false, false);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));        
 
-
-        Carrier carrier = new CarrierImpl(getCarrierData());
-        ForwardServiceInteractionInd forwardServiceInteractionInd = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.rejectConferenceRequest, null, null);
-        ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(forwardServiceInteractionInd, null, null,
+        CarrierImpl carrier = new CarrierImpl(getCarrierData());
+        ForwardServiceInteractionIndImpl forwardServiceInteractionInd = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.rejectConferenceRequest, null, null);
+        ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(forwardServiceInteractionInd, null, null,
                 null, false, null, null, null);
         LocationNumber locationNumber = new LocationNumberImpl();
         locationNumber.setNatureOfAddresIndicator(LocationNumber._NAI_INTERNATIONAL_NUMBER);
         locationNumber.setAddress("0000077777");
-        LocationNumberCap chargeNumber = new LocationNumberCapImpl(locationNumber);
-        LegID legToBeConnected = new LegIDImpl(true, LegType.leg5);
-        CUGInterlock cugInterlock = new CUGInterlockImpl(getCUGInterlockData());
+        LocationNumberCapImpl chargeNumber = new LocationNumberCapImpl(locationNumber);
+        LegIDImpl legToBeConnected = new LegIDImpl(null,new SendingLegIDImpl(LegType.leg5));
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getCUGInterlockData());
         elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, carrier, null, null, null, null, serviceInteractionIndicatorsTwo,
                 chargeNumber, legToBeConnected, cugInterlock, true, false, false, null, true, true);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData4()));
+        rawData = this.getData4();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));        
 
         // DestinationRoutingAddressImpl destinationRoutingAddress, AlertingPatternCap alertingPattern,
         // OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions, Carrier carrier, CallingPartysCategoryInap

@@ -1055,7 +1055,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
     private void processComponents(CAPDialogImpl capDialogImpl, List<ComponentImpl> components) {
 
-        // Now let us decode the Components
+    	// Now let us decode the Components
         for (ComponentImpl c : components) {
 
             doProcessComponent(capDialogImpl, c);

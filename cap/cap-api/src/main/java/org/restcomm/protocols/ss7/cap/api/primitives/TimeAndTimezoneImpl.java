@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.cap.api.primitives;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,6 +49,8 @@ public class TimeAndTimezoneImpl extends ASNOctetString {
             data[7] = (byte) encodeByte(timeZone);
         else
             data[7] = (byte) (encodeByte(-timeZone) | 0x08);
+        
+        setValue(Unpooled.wrappedBuffer(data));
     }
 
     public int getYear() {

@@ -22,14 +22,21 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicatorImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicatorValue;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -44,25 +51,30 @@ public class ChargeIndicatorTest {
 
     @Test(groups = { "functional.decode", "EsiBcsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ChargeIndicatorImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ChargeIndicatorImpl elem = new ChargeIndicatorImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChargeIndicatorImpl);
+        
+        ChargeIndicatorImpl elem = (ChargeIndicatorImpl)result.getResult();        
         assertEquals(elem.getChargeIndicatorValue(), ChargeIndicatorValue.spare);
     }
 
     @Test(groups = { "functional.encode", "EsiBcsm" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ChargeIndicatorImpl.class);
+    	
         ChargeIndicatorImpl elem = new ChargeIndicatorImpl(ChargeIndicatorValue.spare);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData1());
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })

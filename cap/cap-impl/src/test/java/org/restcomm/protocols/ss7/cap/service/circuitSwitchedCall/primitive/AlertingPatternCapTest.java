@@ -23,17 +23,22 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingLevel;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,36 +57,48 @@ public class AlertingPatternCapTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AlertingPatternCapImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        AlertingPatternCapImpl elem = new AlertingPatternCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AlertingPatternCapImpl);
+        
+        AlertingPatternCapImpl elem = (AlertingPatternCapImpl)result.getResult();        
         assertEquals(elem.getAlertingPattern().getAlertingLevel(), AlertingLevel.Level1);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new AlertingPatternCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof AlertingPatternCapImpl);
+        
+        elem = (AlertingPatternCapImpl)result.getResult(); 
         assertEquals(elem.getAlertingPattern().getAlertingCategory(), AlertingCategory.Category2);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(AlertingPatternCapImpl.class);
+    	
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingLevel.Level1);
         AlertingPatternCapImpl elem = new AlertingPatternCapImpl(alertingPattern);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         alertingPattern = new AlertingPatternImpl(AlertingCategory.Category2);
         elem = new AlertingPatternCapImpl(alertingPattern);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })

@@ -23,23 +23,25 @@
 package org.restcomm.protocols.ss7.cap.gap;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
+import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Tone;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ToneImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -49,60 +51,65 @@ import org.testng.annotations.Test;
 public class GapTreatmentTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 160, 8, (byte) 161, 6, (byte) 128, 1, 10, (byte) 129, 1, 20 };
+        return new byte[] { 48, 10, (byte) 160, 8, (byte) 161, 6, (byte) 128, 1, 10, (byte) 129, 1, 20 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 129, 2, (byte) 192, (byte) 131 };
+        return new byte[] { 48, 4, (byte) 129, 2, (byte) 192, (byte) 131 };
     }
 
     @Test(groups = { "functional.decode", "gap" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GapTreatmentWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        GapTreatmentImpl elem = new GapTreatmentImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, GapTreatmentImpl._ID_InformationToSend);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
-
-        assertEquals(elem.getInformationToSend().getTone().getToneID(), 10);
-        assertEquals((int) (elem.getInformationToSend().getTone().getDuration()), 20);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GapTreatmentWrapperImpl);
+        
+        GapTreatmentWrapperImpl elem = (GapTreatmentWrapperImpl)result.getResult();        
+        assertEquals(elem.getGapTreatment().getInformationToSend().getTone().getToneID(), 10);
+        assertEquals((int) (elem.getGapTreatment().getInformationToSend().getTone().getDuration()), 20);
 
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new GapTreatmentImpl();
-        tag = ais.readTag();
-        assertEquals(tag, GapTreatmentImpl._ID_CauseCap);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(elem.getCause().getCauseIndicators().getCauseValue(), 3);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GapTreatmentWrapperImpl);
+        
+        elem = (GapTreatmentWrapperImpl)result.getResult();
+        assertEquals(elem.getGapTreatment().getCause().getCauseIndicators().getCauseValue(), 3);
     }
 
     @Test(groups = { "functional.encode", "gap" })
     public void testEncode() throws Exception {
-        Tone tone = new ToneImpl(10, 20);
-        InformationToSend informationToSend = new InformationToSendImpl(tone);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GapTreatmentWrapperImpl.class);
+    	
+    	ToneImpl tone = new ToneImpl(10, 20);
+        InformationToSendImpl informationToSend = new InformationToSendImpl(tone);
         GapTreatmentImpl elem = new GapTreatmentImpl(informationToSend);
-
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        GapTreatmentWrapperImpl param = new GapTreatmentWrapperImpl(elem);
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(param);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
 
         // int codingStandard, int location, int recommendation, int causeValue, byte[] diagnostics
         CauseIndicators causeIndicators = new CauseIndicatorsImpl(2, 0, 0, 3, null);
-        CauseCap releaseCause = new CauseCapImpl(causeIndicators);
+        CauseCapImpl releaseCause = new CauseCapImpl(causeIndicators);
         elem = new GapTreatmentImpl(releaseCause);
-
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        param = new GapTreatmentWrapperImpl(elem);
+        rawData = this.getData2();
+        buffer=parser.encode(param);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })

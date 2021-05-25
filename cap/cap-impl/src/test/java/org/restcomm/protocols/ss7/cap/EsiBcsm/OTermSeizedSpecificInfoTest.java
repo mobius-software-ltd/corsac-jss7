@@ -22,16 +22,21 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OTermSeizedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -41,31 +46,36 @@ import org.testng.annotations.Test;
 public class OTermSeizedSpecificInfoTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 173, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 200 };
+        return new byte[] { 48, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 200 };
     }
 
     @Test(groups = { "functional.decode", "EsiBcsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(OTermSeizedSpecificInfoImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        OTermSeizedSpecificInfoImpl elem = new OTermSeizedSpecificInfoImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, EventSpecificInformationBCSMImpl._ID_oTermSeizedSpecificInfo);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof OTermSeizedSpecificInfoImpl);
+        
+        OTermSeizedSpecificInfoImpl elem = (OTermSeizedSpecificInfoImpl)result.getResult();        
         assertEquals((int) elem.getLocationInformation().getAgeOfLocationInformation(), 200);
     }
 
     @Test(groups = { "functional.encode", "EsiBcsm" })
     public void testEncode() throws Exception {
-
-        LocationInformation locationInformation = new LocationInformationImpl(200, null, null, null, null, null, null, null, null, false, false, null, null);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(OTermSeizedSpecificInfoImpl.class);
+    	
+    	LocationInformationImpl locationInformation = new LocationInformationImpl(200, null, null, null, null, null, null, null, null, false, false, null, null);
         OTermSeizedSpecificInfoImpl elem = new OTermSeizedSpecificInfoImpl(locationInformation);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, EventSpecificInformationBCSMImpl._ID_oTermSeizedSpecificInfo);
-        assertEquals(aos.toByteArray(), this.getData1());
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })

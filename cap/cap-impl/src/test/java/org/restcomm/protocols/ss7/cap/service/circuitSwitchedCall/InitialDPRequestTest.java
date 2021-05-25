@@ -24,18 +24,15 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.isup.BearerCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
@@ -46,37 +43,40 @@ import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CGEncountered;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Carrier;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.HoldTreatmentIndicator;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndex;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.SubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGIndexImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndexImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -98,7 +98,7 @@ public class InitialDPRequestTest {
     public byte[] getData2() {
         return new byte[] { 48, -127, -90, -128, 1, 110, -126, 8, -125, -112, 33, 114, 16, -112, 0, 0, -125, 3, 3, -105, 87,
                 -123, 1, 10, -120, 1, 19, -118, 2, 22, 11, -116, 6, -125, 20, 7, 1, 9, 0, -81, 18, 48, 5, 2, 1, 2, -127, 0, 48,
-                9, 2, 1, 3, 10, 1, 1, -127, 1, -1, -105, 2, 8, 9, -103, 2, 20, 2, -69, 5, -128, 3, -128, -112, -93, -100, 1, 2,
+                9, 2, 1, 3, 10, 1, 1, -127, 1, -1, -105, 2, (byte)0x88, (byte) 0x89, -103, 2, 20, 2, -69, 5, -128, 3, -128, -112, -93, -100, 1, 2,
                 -99, 6, -125, 20, 7, 1, 9, 0, -98, 2, 3, 97, -97, 50, 8, 6, 7, -110, 9, 16, 4, -111, -7, -65, 51, 2, -126, 0,
                 -65, 52, 3, 2, 1, 111, -65, 53, 3, -125, 1, 17, -97, 54, 5, 19, -6, 61, 61, -22, -97, 55, 6, -111, 34, 112, 87,
                 0, 112, -97, 56, 7, -111, 20, -121, 8, 80, 64, -9, -97, 57, 8, 2, 80, 17, 66, 49, 1, 101, 0, -97, 58, 0, -65,
@@ -152,7 +152,7 @@ public class InitialDPRequestTest {
     }
 
     public byte[] getHighLayerCompatibility() {
-        return new byte[] { 8, 9 };
+        return new byte[] { (byte)0x88, (byte) 0x89 };
     }
 
     public byte[] getAdditionalCallingPartyNumberCap() {
@@ -173,21 +173,31 @@ public class InitialDPRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InitialDPRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        InitialDPRequestImpl elem = new InitialDPRequestImpl(false);
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InitialDPRequestImpl);
+        
+        InitialDPRequestImpl elem = (InitialDPRequestImpl)result.getResult();        
         assertEquals(elem.getServiceKey(), 110);
         assertTrue(Arrays.equals(elem.getCalledPartyNumber().getData(), getDataCalledPartyNumber()));
         assertTrue(Arrays.equals(elem.getCallingPartyNumber().getData(), getCallingPartyNumber()));
-        assertTrue(Arrays.equals(elem.getCallingPartysCategory().getData(), getCallingPartysCategory()));
+        assertEquals(elem.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), getCallingPartysCategory()[0]);
         assertTrue(Arrays.equals(elem.getOriginalCalledPartyID().getData(), getOriginalCalledPartyID()));
         assertTrue(Arrays.equals(elem.getBearerCapability().getBearerCap().getData(), getBearerCapability()));
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.collectedInfo);
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
-        assertTrue(Arrays.equals(elem.getRedirectionInformation().getData(), getRedirectionInformation()));
+        
+        ByteBuf value=Unpooled.buffer();
+        elem.getRedirectionInformation().encode(parser,value);
+        assertNotNull(value);
+        byte[] data = new byte[value.readableBytes()];
+        value.readBytes(data);
+        assertTrue(Arrays.equals(data, getRedirectionInformation()));
         assertTrue(elem.getIMSI().getData().equals("607029900140199"));
         assertTrue(Arrays.equals(elem.getExtBasicServiceCode().getExtTeleservice().getData(), getExtBasicServiceCode()));
         assertTrue(Arrays.equals(elem.getCallReferenceNumber().getData(), getCallReferenceNumber()));
@@ -201,6 +211,7 @@ public class InitialDPRequestTest {
         assertEquals(elem.getTimeAndTimezone().getMinute(), 10);
         assertEquals(elem.getTimeAndTimezone().getSecond(), 56);
         assertEquals(elem.getTimeAndTimezone().getTimeZone(), 0);
+        elem.getInitialDPArgExtension().patchVersion(2);
         assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getAddressNature(), AddressNature.international_number);
         assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(elem.getInitialDPArgExtension().getGmscAddress().getAddress().equals("2207750007"));
@@ -213,21 +224,27 @@ public class InitialDPRequestTest {
         assertNull(elem.getCugInterlock());
         assertFalse(elem.getCugOutgoingAccess());
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new InitialDPRequestImpl(false);
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InitialDPRequestImpl);
+        
+        elem = (InitialDPRequestImpl)result.getResult();  
         assertEquals(elem.getServiceKey(), 110);
         assertTrue(Arrays.equals(elem.getCalledPartyNumber().getData(), getDataCalledPartyNumber()));
         assertTrue(Arrays.equals(elem.getCallingPartyNumber().getData(), getCallingPartyNumber()));
-        assertTrue(Arrays.equals(elem.getCallingPartysCategory().getData(), getCallingPartysCategory()));
+        assertEquals(elem.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), getCallingPartysCategory()[0]);
         assertTrue(Arrays.equals(elem.getOriginalCalledPartyID().getData(), getOriginalCalledPartyID()));
         assertTrue(Arrays.equals(elem.getBearerCapability().getBearerCap().getData(), getBearerCapability()));
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.collectedInfo);
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
-        assertTrue(Arrays.equals(elem.getRedirectionInformation().getData(), getRedirectionInformation()));
+        
+        value=Unpooled.buffer();
+        elem.getRedirectionInformation().encode(parser,value);
+        data = new byte[value.readableBytes()];
+        value.readBytes(data);
+        assertTrue(Arrays.equals(data, getRedirectionInformation()));
         assertTrue(elem.getIMSI().getData().equals("607029900140199"));
         assertTrue(Arrays.equals(elem.getExtBasicServiceCode().getExtTeleservice().getData(), getExtBasicServiceCode()));
         assertTrue(Arrays.equals(elem.getCallReferenceNumber().getData(), getCallReferenceNumber()));
@@ -241,6 +258,7 @@ public class InitialDPRequestTest {
         assertEquals(elem.getTimeAndTimezone().getMinute(), 10);
         assertEquals(elem.getTimeAndTimezone().getSecond(), 56);
         assertEquals(elem.getTimeAndTimezone().getTimeZone(), 0);
+        elem.getInitialDPArgExtension().patchVersion(2);
         assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getAddressNature(), AddressNature.international_number);
         assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(elem.getInitialDPArgExtension().getGmscAddress().getAddress().equals("2207750007"));
@@ -253,12 +271,23 @@ public class InitialDPRequestTest {
         assertNull(elem.getIPSSPCapabilities().getExtraData());
         assertTrue(Arrays.equals(elem.getLocationNumber().getData(), getLocationNumber()));
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
-        assertTrue(Arrays.equals(elem.getHighLayerCompatibility().getData(), getHighLayerCompatibility()));
+        
+        value=Unpooled.buffer();
+        elem.getHighLayerCompatibility().encode(parser,value);
+        assertNotNull(value);
+        data = new byte[value.readableBytes()];
+        value.readBytes(data);
+        assertTrue(Arrays.equals(data, getHighLayerCompatibility()));
         assertTrue(Arrays.equals(elem.getAdditionalCallingPartyNumber().getData(), getAdditionalCallingPartyNumberCap()));
         assertEquals(elem.getSubscriberState().getSubscriberStateChoice(), SubscriberStateChoice.notProvidedFromVLR);
         assertNull(elem.getSubscriberState().getNotReachableReason());
         assertEquals((int) elem.getLocationInformation().getAgeOfLocationInformation(), 111);
-        assertTrue(Arrays.equals(elem.getCalledPartyBCDNumber().getData(), getCalledPartyBCDNumber()));
+        
+        ByteBuf buffer=Unpooled.buffer();
+        elem.getCalledPartyBCDNumber().encode(parser, buffer);
+        data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        assertTrue(Arrays.equals(data, getCalledPartyBCDNumber()));
         assertTrue(elem.getCallForwardingSSPending());
 
         assertNull(elem.getCGEncountered());
@@ -269,12 +298,13 @@ public class InitialDPRequestTest {
         assertNull(elem.getCugInterlock());
         assertFalse(elem.getCugOutgoingAccess());
 
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new InitialDPRequestImpl(false);
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof InitialDPRequestImpl);
+        
+        elem = (InitialDPRequestImpl)result.getResult();        
         assertEquals(elem.getServiceKey(), 110);
 
         assertEquals(elem.getCalledPartyNumber().getCalledPartyNumber().getAddress(), "1111222266");
@@ -318,15 +348,17 @@ public class InitialDPRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(InitialDPRequestImpl.class);
 
         CalledPartyNumberCapImpl calledPartyNumber = new CalledPartyNumberCapImpl(getDataCalledPartyNumber());
         CallingPartyNumberCapImpl callingPartyNumber = new CallingPartyNumberCapImpl(getCallingPartyNumber());
-        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(getCallingPartysCategory());
+        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(new CallingPartyCategoryImpl(getCallingPartysCategory()[0]));
         OriginalCalledNumberCapImpl originalCalledPartyID = new OriginalCalledNumberCapImpl(getOriginalCalledPartyID());
         BearerCapImpl bearerCap = new BearerCapImpl(getBearerCapability());
         BearerCapabilityImpl bearerCapability = new BearerCapabilityImpl(bearerCap);
         RedirectingPartyIDCapImpl redirectingPartyID = new RedirectingPartyIDCapImpl(getRedirectingPartyID());
-        RedirectionInformationInapImpl redirectionInformation = new RedirectionInformationInapImpl(getRedirectionInformation());
+        RedirectionInformationInapImpl redirectionInformation = new RedirectionInformationInapImpl(new RedirectionInformationImpl(Unpooled.wrappedBuffer(getRedirectionInformation())));
         IMSIImpl imsi = new IMSIImpl("607029900140199");
         ExtTeleserviceCodeImpl extTeleservice = new ExtTeleserviceCodeImpl(getExtBasicServiceCode());
         ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(extTeleservice);
@@ -336,66 +368,66 @@ public class InitialDPRequestTest {
         TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
         ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "2207750007");
-        InitialDPArgExtensionImpl initialDPArgExtension = new InitialDPArgExtensionImpl(gmscAddress, null, null, null, null,
-                null, null, null, null, null, null, false, null, false, false, false);
+        InitialDPArgExtensionImpl initialDPArgExtension = new InitialDPArgExtensionImpl(null, gmscAddress);
 
         InitialDPRequestImpl elem = new InitialDPRequestImpl(110, calledPartyNumber, callingPartyNumber, callingPartysCategory,
                 null, null, null, originalCalledPartyID, null, null, null, bearerCapability, EventTypeBCSM.collectedInfo,
                 redirectingPartyID, redirectionInformation, null, null, null, null, null, false, imsi, null, null,
-                extBasicServiceCode, callReferenceNumber, mscAddress, null, timeAndTimezone, false, initialDPArgExtension,
-                false);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData1());
-
+                extBasicServiceCode, callReferenceNumber, mscAddress, null, timeAndTimezone, false, initialDPArgExtension);
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         IPSSPCapabilitiesImpl IPSSPCapabilities = new IPSSPCapabilitiesImpl(true, true, false, false, true, null);
         LocationNumberCapImpl locationNumber = new LocationNumberCapImpl(getLocationNumber());
-        HighLayerCompatibilityInapImpl highLayerCompatibility = new HighLayerCompatibilityInapImpl(getHighLayerCompatibility());
+        HighLayerCompatibilityInapImpl highLayerCompatibility = new HighLayerCompatibilityInapImpl();
+        highLayerCompatibility.decode(parser,null,Unpooled.wrappedBuffer(getHighLayerCompatibility()),false);
         DigitsImpl additionalCallingPartyNumber = new DigitsImpl(getAdditionalCallingPartyNumberCap());
         SubscriberStateImpl subscriberState = new SubscriberStateImpl(SubscriberStateChoice.notProvidedFromVLR, null);
         LocationInformationImpl locationInformation = new LocationInformationImpl(111, null, null, null, null, null, null,
                 null, null, false, false, null, null);
-        CalledPartyBCDNumberImpl calledPartyBCDNumber = new CalledPartyBCDNumberImpl(getCalledPartyBCDNumber());
+        CalledPartyBCDNumberImpl calledPartyBCDNumber = new CalledPartyBCDNumberImpl();
+        calledPartyBCDNumber.decode(parser,null,Unpooled.wrappedBuffer(getCalledPartyBCDNumber()),false);
 
         elem = new InitialDPRequestImpl(110, calledPartyNumber, callingPartyNumber, callingPartysCategory, null,
                 IPSSPCapabilities, locationNumber, originalCalledPartyID, CAPExtensionsTest.createTestCAPExtensions(),
                 highLayerCompatibility, additionalCallingPartyNumber, bearerCapability, EventTypeBCSM.collectedInfo,
                 redirectingPartyID, redirectionInformation, null, null, null, null, null, false, imsi, subscriberState,
                 locationInformation, extBasicServiceCode, callReferenceNumber, mscAddress, calledPartyBCDNumber,
-                timeAndTimezone, true, initialDPArgExtension, false);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        byte[] a1 = this.getData2();
-        byte[] a2 = aos.toByteArray();
-        assertEquals(a1, a2);
-
-
+                timeAndTimezone, true, initialDPArgExtension);
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
+        
         CalledPartyNumber calledPartyNumber2 = new CalledPartyNumberImpl();
         calledPartyNumber2.setAddress("1111222266");
         calledPartyNumber2.setInternalNetworkNumberIndicator(0);
         calledPartyNumber2.setNatureOfAddresIndicator(CalledPartyNumber._NAI_INTERNATIONAL_NUMBER);
         calledPartyNumber2.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
-        CalledPartyNumberCap calledPartyNumberCap2 = new CalledPartyNumberCapImpl(calledPartyNumber2);
+        CalledPartyNumberCapImpl calledPartyNumberCap2 = new CalledPartyNumberCapImpl(calledPartyNumber2);
         CauseIndicators causeIndicators = new CauseIndicatorsImpl();
         causeIndicators.setCauseValue(CauseIndicators._CV_BEARER_CAPABILITY_NOT_AVAILABLE);
         causeIndicators.setCodingStandard(CauseIndicators._CODING_STANDARD_NATIONAL);
         causeIndicators.setLocation(CauseIndicators._LOCATION_PUBLIC_NSRU);
         causeIndicators.setRecommendation(0);
-        CauseCap cause = new CauseCapImpl(causeIndicators);
-        ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(null, null, null, null, false,
+        CauseCapImpl cause = new CauseCapImpl(causeIndicators);
+        ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(null, null, null, null, false,
                 HoldTreatmentIndicator.rejectHoldRequest, null, null);
-        Carrier carrier = new CarrierImpl(getCarrier());
-        CUGIndex cugIndex = new CUGIndexImpl(211);
-        CUGInterlock cugInterlock = new CUGInterlockImpl(getCUGInterlock());
+        CarrierImpl carrier = new CarrierImpl(getCarrier());
+        CUGIndexImpl cugIndex = new CUGIndexImpl(211);
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getCUGInterlock());
         elem = new InitialDPRequestImpl(110, calledPartyNumberCap2, null, null, CGEncountered.scpOverload, null, null, null, null, null, null, null, null,
                 null, null, cause, serviceInteractionIndicatorsTwo, carrier, cugIndex, cugInterlock, true, null, null, null, null, null, null, null, null,
-                false, null, false);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        a1 = this.getData3();
-        a2 = aos.toByteArray();
-        assertEquals(a1, a2);
+                false, null);
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
         // CGEncountered
         // Cause
         // serviceInteractionIndicatorsTwo

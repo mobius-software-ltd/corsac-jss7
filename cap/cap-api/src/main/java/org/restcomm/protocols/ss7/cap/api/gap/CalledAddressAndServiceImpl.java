@@ -50,6 +50,9 @@ public class CalledAddressAndServiceImpl {
     }
 
     public DigitsImpl getCalledAddressValue() {
+    	if(calledAddressValue!=null)
+    		calledAddressValue.setIsGenericNumber();
+    	
         return calledAddressValue;
     }
 

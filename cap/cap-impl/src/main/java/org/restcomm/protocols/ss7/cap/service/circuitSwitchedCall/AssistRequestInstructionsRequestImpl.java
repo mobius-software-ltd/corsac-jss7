@@ -30,6 +30,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.AssistRequ
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -42,9 +43,14 @@ public class AssistRequestInstructionsRequestImpl extends CircuitSwitchedCallMes
         AssistRequestInstructionsRequest {
 	private static final long serialVersionUID = 1L;
 
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
 	private DigitsImpl correlationID;
-    private IPSSPCapabilitiesImpl iPSSPCapabilities;
-    private CAPExtensionsImpl extensions;
+	
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
+	private IPSSPCapabilitiesImpl iPSSPCapabilities;
+    
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
+	private CAPExtensionsImpl extensions;
 
     public AssistRequestInstructionsRequestImpl() {
     }
@@ -68,6 +74,9 @@ public class AssistRequestInstructionsRequestImpl extends CircuitSwitchedCallMes
 
     @Override
     public DigitsImpl getCorrelationID() {
+    	if(correlationID!=null)
+    		correlationID.setIsGenericNumber();
+    	
         return correlationID;
     }
 

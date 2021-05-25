@@ -28,11 +28,11 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInf
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -43,10 +43,8 @@ import io.netty.buffer.ByteBuf;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x17,constructed=false,lengthIndefinite=false)
-public class HighLayerCompatibilityInapImpl extends ASNOctetString {
-	public static final String _PrimitiveName = "";
-
-    private UserTeleserviceInformationImpl teleserviceInformation;
+public class HighLayerCompatibilityInapImpl {
+	private UserTeleserviceInformationImpl teleserviceInformation;
 
     public HighLayerCompatibilityInapImpl() {
     }
@@ -67,24 +65,24 @@ public class HighLayerCompatibilityInapImpl extends ASNOctetString {
     }
     
     @ASNLength
-	public Integer getLength() {
+    public Integer getLength(ASNParser parser) {
 		return 2;
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser, ByteBuf buffer) {
 		this.teleserviceInformation.encode(buffer);
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		try {
 			this.teleserviceInformation=new UserTeleserviceInformationImpl(buffer);
 		} catch (ParameterException e) {
 			e.printStackTrace();
 		}
 		
-		return true;
+		return false;
 	}
 
     @Override

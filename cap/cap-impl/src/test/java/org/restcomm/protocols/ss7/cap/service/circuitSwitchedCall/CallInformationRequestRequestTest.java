@@ -23,20 +23,24 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.primitives.SendingSideIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CallInformationRequestRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -56,25 +60,29 @@ public class CallInformationRequestRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CallInformationRequestRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        CallInformationRequestRequestImpl elem = new CallInformationRequestRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallInformationRequestRequestImpl);
+        
+        CallInformationRequestRequestImpl elem = (CallInformationRequestRequestImpl)result.getResult();
         assertEquals(elem.getRequestedInformationTypeList().get(0), RequestedInformationType.callStopTime);
         assertEquals(elem.getRequestedInformationTypeList().get(1), RequestedInformationType.callConnectedElapsedTime);
         assertEquals(elem.getRequestedInformationTypeList().get(2), RequestedInformationType.releaseCause);
         assertEquals(elem.getLegID().getSendingSideID(), LegType.leg2);
         assertNull(elem.getExtensions());
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new CallInformationRequestRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CallInformationRequestRequestImpl);
+        
+        elem = (CallInformationRequestRequestImpl)result.getResult();
         assertEquals(elem.getRequestedInformationTypeList().get(0), RequestedInformationType.callStopTime);
         assertEquals(elem.getRequestedInformationTypeList().get(1), RequestedInformationType.callConnectedElapsedTime);
         assertEquals(elem.getRequestedInformationTypeList().get(2), RequestedInformationType.releaseCause);
@@ -84,24 +92,30 @@ public class CallInformationRequestRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CallInformationRequestRequestImpl.class);
+    	
         ArrayList<RequestedInformationType> requestedInformationTypeList = new ArrayList<RequestedInformationType>();
         requestedInformationTypeList.add(RequestedInformationType.callStopTime);
         requestedInformationTypeList.add(RequestedInformationType.callConnectedElapsedTime);
         requestedInformationTypeList.add(RequestedInformationType.releaseCause);
-        SendingSideIDImpl legID = new SendingSideIDImpl(LegType.leg2);
+        SendingLegIDImpl legID = new SendingLegIDImpl(LegType.leg2);
 
         CallInformationRequestRequestImpl elem = new CallInformationRequestRequestImpl(requestedInformationTypeList, null,
                 legID);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
         // ArrayList<RequestedInformationType> requestedInformationTypeList, CAPExtensions extensions, SendingSideID legID
 
         elem = new CallInformationRequestRequestImpl(requestedInformationTypeList, CAPExtensionsTest.createTestCAPExtensions(),
                 legID);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 }

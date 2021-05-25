@@ -22,41 +22,37 @@
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.EsiGprs.PdpContextChangeOfPositionSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.PdpContextchangeOfPositionSpecificInformation;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.EventReportGPRSRequestImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -96,15 +92,16 @@ public class EventReportGPRSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        EventReportGPRSRequestImpl prim = new EventReportGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventReportGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventReportGPRSRequestImpl);
+        
+        EventReportGPRSRequestImpl prim = (EventReportGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getGPRSEventType(), GPRSEventType.attachChangeOfPosition);
         assertNotNull(prim.getMiscGPRSInfo().getMessageType());
         assertNull(prim.getMiscGPRSInfo().getDpAssignment());
@@ -122,15 +119,16 @@ public class EventReportGPRSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecodeLiveTrace() throws Exception {
-        byte[] data = this.getDataLiveTrace();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        EventReportGPRSRequestImpl prim = new EventReportGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventReportGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getDataLiveTrace();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventReportGPRSRequestImpl);
+        
+        EventReportGPRSRequestImpl prim = (EventReportGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getGPRSEventType(), GPRSEventType.pdpContextChangeOfPosition);
         assertNotNull(prim.getMiscGPRSInfo().getMessageType());
         assertNull(prim.getMiscGPRSInfo().getDpAssignment());
@@ -138,7 +136,7 @@ public class EventReportGPRSRequestTest {
 
         assertNotNull(prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation()
                 .getLocationInformationGPRS());
-        ISDNAddressString sgsn = prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation()
+        ISDNAddressStringImpl sgsn = prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation()
                 .getLocationInformationGPRS().getSGSNNumber();
         assertTrue(sgsn.getAddress().equals("553496629995"));
 
@@ -149,9 +147,11 @@ public class EventReportGPRSRequestTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventReportGPRSRequestImpl.class);
+    	
         GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
-        MiscCallInfo miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
+        MiscCallInfoImpl miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
 
         // gprsEventSpecificInformation
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl(250, 1, 4444);
@@ -161,29 +161,33 @@ public class EventReportGPRSRequestTest {
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "654321");
         LSAIdentityImpl lsa = new LSAIdentityImpl(this.getEncodedDataLSAIdentity());
         GeodeticInformationImpl gdi = new GeodeticInformationImpl(this.getGeodeticInformation());
-        LocationInformationGPRS locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true,
+        LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true,
                 gdi, true, 13);
-        GPRSEventSpecificInformation gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
+        GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
                 locationInformationGPRS);
 
         // pdpID
-        PDPID pdpID = new PDPIDImpl(1);
+        PDPIDImpl pdpID = new PDPIDImpl(1);
 
         EventReportGPRSRequestImpl prim = new EventReportGPRSRequestImpl(gprsEventType, miscGPRSInfo,
                 gprsEventSpecificInformation, pdpID);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncodeLiveTrace() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventReportGPRSRequestImpl.class);
+    	
         GPRSEventType gprsEventType = GPRSEventType.pdpContextChangeOfPosition;
-        MiscCallInfo miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.request, null);
+        MiscCallInfoImpl miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.request, null);
 
         // gprsEventSpecificInformation
-        CellGlobalIdOrServiceAreaIdFixedLength cellGlobalIdOrServiceAreaIdFixedLength = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl cellGlobalIdOrServiceAreaIdFixedLength = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(
                 new byte[] { 0x27, (byte) 0xf4, 0x43, 0x08, (byte) 0xba, 0x16, 0x4e });
 
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(
@@ -191,19 +195,21 @@ public class EventReportGPRSRequestTest {
         RAIdentityImpl ra = new RAIdentityImpl(new byte[] { 0x27, (byte) 0xf4, 0x43, 0x08, (byte) 0xba, 0x00 });
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553496629995");
-        LocationInformationGPRS locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, null, sgsn, null, null,
+        LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, null, sgsn, null, null,
                 false, null, false, null);
 
-        PdpContextchangeOfPositionSpecificInformation pdpContextchangeOfPositionSpecificInformation = new PdpContextChangeOfPositionSpecificInformationImpl(
+        PdpContextChangeOfPositionSpecificInformationImpl pdpContextchangeOfPositionSpecificInformation = new PdpContextChangeOfPositionSpecificInformationImpl(
                 null, null, locationInformationGPRS, null, null, null, null);
-        GPRSEventSpecificInformation gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
+        GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
                 pdpContextchangeOfPositionSpecificInformation);
 
         EventReportGPRSRequestImpl prim = new EventReportGPRSRequestImpl(gprsEventType, miscGPRSInfo,
                 gprsEventSpecificInformation, null);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getDataLiveTrace()));
+        byte[] rawData = this.getDataLiveTrace();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

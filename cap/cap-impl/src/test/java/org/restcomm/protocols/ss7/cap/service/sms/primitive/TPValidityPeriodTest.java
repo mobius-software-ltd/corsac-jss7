@@ -22,19 +22,22 @@
 package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriod;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodFormat;
-import org.restcomm.protocols.ss7.map.smstpdu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -57,33 +60,31 @@ public class TPValidityPeriodTest {
 	
 	@Test(groups = { "functional.decode", "primitives" })
 	public void testDecode() throws Exception {
-		byte[] data = this.getData();
-		AsnInputStream asn = new AsnInputStream(data);
-		int tag = asn.readTag();
-		TPValidityPeriodImpl prim = new TPValidityPeriodImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, Tag.STRING_OCTET);
-		assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-		
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TPValidityPeriodImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TPValidityPeriodImpl);
+        
+        TPValidityPeriodImpl prim = (TPValidityPeriodImpl)result.getResult();        
         assertTrue(Arrays.equals(prim.getData(), getTPValidityPeriod()));
-        ValidityPeriod vp = prim.getValidityPeriod();
+        ValidityPeriodImpl vp = prim.getValidityPeriod();
         assertEquals(vp.getValidityPeriodFormat(), ValidityPeriodFormat.fieldPresentRelativeFormat);
         assertEquals((int)vp.getRelativeFormatValue(), 4);
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        asn = new AsnInputStream(data);
-        asn.readTag();
-        prim = new TPValidityPeriodImpl();
-        prim.decodeAll(asn);
-
-        assertEquals(tag, Tag.STRING_OCTET);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TPValidityPeriodImpl);
+        
+        prim = (TPValidityPeriodImpl)result.getResult(); 
         vp = prim.getValidityPeriod();
         assertEquals(vp.getValidityPeriodFormat(), ValidityPeriodFormat.fieldPresentAbsoluteFormat);
-        AbsoluteTimeStamp afv = vp.getAbsoluteFormatValue();
+        AbsoluteTimeStampImpl afv = vp.getAbsoluteFormatValue();
         assertEquals(afv.getYear(), 13);
         assertEquals(afv.getMonth(), 3);
         assertEquals(afv.getDay(), 1);
@@ -94,19 +95,21 @@ public class TPValidityPeriodTest {
 
 	@Test(groups = { "functional.encode", "primitives" })
 	public void testEncode() throws Exception {
-        TPValidityPeriodImpl prim = new TPValidityPeriodImpl(4);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
-
-
-        AbsoluteTimeStamp absoluteFormatValue = new AbsoluteTimeStampImpl(13, 3, 1, 11, 20, 54, 0);
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(TPValidityPeriodImpl.class);
+    	
+    	TPValidityPeriodImpl prim = new TPValidityPeriodImpl(4);
+    	byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
+        AbsoluteTimeStampImpl absoluteFormatValue = new AbsoluteTimeStampImpl(13, 3, 1, 11, 20, 54, 0);
         prim = new TPValidityPeriodImpl(absoluteFormatValue);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(prim);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 	}
-
 }

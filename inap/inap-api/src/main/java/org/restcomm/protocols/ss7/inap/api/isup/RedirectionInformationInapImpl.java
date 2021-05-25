@@ -28,11 +28,11 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInforma
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -42,7 +42,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x1E,constructed=false,lengthIndefinite=false)
-public class RedirectionInformationInapImpl extends ASNOctetString {
+public class RedirectionInformationInapImpl {
 	private RedirectionInformationImpl redirectionInformation;
 
     public RedirectionInformationInapImpl() {
@@ -64,24 +64,24 @@ public class RedirectionInformationInapImpl extends ASNOctetString {
     }
     
     @ASNLength
-	public Integer getLength() {
+	public Integer getLength(ASNParser parser) {
 		return 2;
 	}
 	
 	@ASNEncode
-	public void encode(ByteBuf buffer) {
+	public void encode(ASNParser parser, ByteBuf buffer) {
 		this.redirectionInformation.encode(buffer);
 	}
 	
 	@ASNDecode
-	public Boolean decode(ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		try {
 			this.redirectionInformation=new RedirectionInformationImpl(buffer);
 		} catch (ParameterException e) {
 			e.printStackTrace();
 		}
 		
-		return true;
+		return false;
 	}
 
     @Override

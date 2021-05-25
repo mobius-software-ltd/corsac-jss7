@@ -22,19 +22,25 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionAlt;
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionAltImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -44,245 +50,273 @@ import org.testng.annotations.Test;
 public class MetDPCriterionTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 128, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
+        return new byte[] { 48, 9, (byte) 128, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 129, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
+        return new byte[] { 48, 9, (byte) 129, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
     }
 
     public byte[] getData3() {
-        return new byte[] { (byte) 130, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
+        return new byte[] { 48, 9, (byte) 130, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
     }
 
     public byte[] getData4() {
-        return new byte[] { (byte) 131, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
+        return new byte[] { 48, 9, (byte) 131, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
     }
 
     public byte[] getData5() {
-        return new byte[] { (byte) 132, 5, (byte) 145, (byte) 240, 16, 85, (byte) 240 };
+        return new byte[] { 48, 7, (byte) 132, 5, (byte) 145, (byte) 240, 16, 85, (byte) 240 };
     }
 
     public byte[] getData6() {
-        return new byte[] { (byte) 133, 5, (byte) 145, (byte) 240, 16, 85, (byte) 240 };
+        return new byte[] { 48, 7, (byte) 133, 5, (byte) 145, (byte) 240, 16, 85, (byte) 240 };
     }
 
     public byte[] getData7() {
-        return new byte[] { (byte) 134, 0 };
+        return new byte[] { 48, 2, (byte) 134, 0 };
     }
 
     public byte[] getData8() {
-        return new byte[] { (byte) 135, 0 };
+        return new byte[] { 48, 2, (byte) 135, 0 };
     }
 
     public byte[] getData9() {
-        return new byte[] { (byte) 136, 0 };
+        return new byte[] { 48, 2, (byte) 136, 0 };
     }
 
     public byte[] getData10() {
-        return new byte[] { (byte) 137, 0 };
+        return new byte[] { 48, 2, (byte) 137, 0 };
     }
 
     public byte[] getData11() {
-        return new byte[] { (byte) 170, 0 };
+        return new byte[] { 48, 2, (byte) 170, 0 };
     }
 
     @Test(groups = { "functional.decode", "EsiBcsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(MetDPCriterionWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        MetDPCriterionImpl elem = new MetDPCriterionImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_enteringCellGlobalId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        MetDPCriterionWrapperImpl elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertEquals(elem.getMetDPCriterion().get(0).getEnteringCellGlobalId().getLac(), 22000);
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getEnteringCellGlobalId().getLac(), 22000);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertEquals(elem.getMetDPCriterion().get(0).getLeavingCellGlobalId().getLac(), 22000);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_leavingCellGlobalId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getLeavingCellGlobalId().getLac(), 22000);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertEquals(elem.getMetDPCriterion().get(0).getEnteringServiceAreaId().getLac(), 22000);
 
+        rawData = this.getData4();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_enteringServiceAreaId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertEquals(elem.getMetDPCriterion().get(0).getLeavingServiceAreaId().getLac(), 22000);
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getEnteringServiceAreaId().getLac(), 22000);
+        rawData = this.getData5();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertEquals(elem.getMetDPCriterion().get(0).getEnteringLocationAreaId().getLac(), 22000);
 
-        data = this.getData4();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_leavingServiceAreaId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        rawData = this.getData6();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getLeavingServiceAreaId().getLac(), 22000);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertEquals(elem.getMetDPCriterion().get(0).getLeavingLocationAreaId().getLac(), 22000);
 
+        rawData = this.getData7();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData5();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_enteringLocationAreaId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertTrue(elem.getMetDPCriterion().get(0).getInterSystemHandOverToUMTS());
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getEnteringLocationAreaId().getLac(), 22000);
+        rawData = this.getData8();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertTrue(elem.getMetDPCriterion().get(0).getInterSystemHandOverToGSM());
 
-        data = this.getData6();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_leavingLocationAreaId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        rawData = this.getData9();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getLeavingLocationAreaId().getLac(), 22000);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertTrue(elem.getMetDPCriterion().get(0).getInterPLMNHandOver());
 
+        rawData = this.getData10();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData7();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_interSystemHandOverToUMTS);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertTrue(elem.getMetDPCriterion().get(0).getInterMSCHandOver());
 
-        elem.decodeAll(ais);
-        assertTrue(elem.getInterSystemHandOverToUMTS());
+        rawData = this.getData11();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-
-        data = this.getData8();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_interSystemHandOverToGSM);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
-        assertTrue(elem.getInterSystemHandOverToGSM());
-
-
-        data = this.getData9();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_interPLMNHandOver);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
-        assertTrue(elem.getInterPLMNHandOver());
-
-
-        data = this.getData10();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_interMSCHandOver);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
-        assertTrue(elem.getInterMSCHandOver());
-
-
-        data = this.getData11();
-        ais = new AsnInputStream(data);
-        elem = new MetDPCriterionImpl();
-        tag = ais.readTag();
-        assertEquals(tag, MetDPCriterionImpl._ID_metDPCriterionAlt);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
-        assertNotNull(elem.getMetDPCriterionAlt());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof MetDPCriterionWrapperImpl);
+        
+        elem = (MetDPCriterionWrapperImpl)result.getResult();        
+        assertNotNull(elem.getMetDPCriterion());
+        assertEquals(elem.getMetDPCriterion().size(),1);
+        assertNotNull(elem.getMetDPCriterion().get(0).getMetDPCriterionAlt());
     }
 
     @Test(groups = { "functional.encode", "EsiBcsm" })
     public void testEncode() throws Exception {
-
-        CellGlobalIdOrServiceAreaIdFixedLength value = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(201, 1, 22000, 55);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(MetDPCriterionWrapperImpl.class);
+    	
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl value = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(201, 1, 22000, 55);
         // int mcc, int mnc, int lac, int cellIdOrServiceAreaCode
         MetDPCriterionImpl elem = new MetDPCriterionImpl(value, MetDPCriterionImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.enteringCellGlobalId);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData1());
-
+        MetDPCriterionWrapperImpl wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new MetDPCriterionImpl(value, MetDPCriterionImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.leavingCellGlobalId);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData2());
-
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new MetDPCriterionImpl(value, MetDPCriterionImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.enteringServiceAreaId);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData3());
-
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData3();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new MetDPCriterionImpl(value, MetDPCriterionImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.leavingServiceAreaId);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData4());
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData4();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        LAIFixedLength lai = new LAIFixedLengthImpl(190, 1, 22000);
+        LAIFixedLengthImpl lai = new LAIFixedLengthImpl(190, 1, 22000);
         // int mcc, int mnc, int lac
         elem = new MetDPCriterionImpl(lai, MetDPCriterionImpl.LAIFixedLength_Option.enteringLocationAreaId);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData5());
-
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData5();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new MetDPCriterionImpl(lai, MetDPCriterionImpl.LAIFixedLength_Option.leavingLocationAreaId);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData6());
-
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData6();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interSystemHandOverToUMTS);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData7());
-
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData7();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interSystemHandOverToGSM);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData8());
-
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData8();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interPLMNHandOver);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData9());
-
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData9();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interMSCHandOver);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData10());
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData10();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        MetDPCriterionAlt metDPCriterionAlt = new MetDPCriterionAltImpl();
+        MetDPCriterionAltImpl metDPCriterionAlt = new MetDPCriterionAltImpl();
         elem = new MetDPCriterionImpl(metDPCriterionAlt);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData11());
+        wrapper=new MetDPCriterionWrapperImpl(Arrays.asList(new MetDPCriterionImpl[] { elem}));
+        rawData = this.getData11();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })

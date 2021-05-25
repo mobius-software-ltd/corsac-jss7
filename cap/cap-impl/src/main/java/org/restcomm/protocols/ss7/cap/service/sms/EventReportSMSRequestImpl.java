@@ -60,7 +60,7 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
             EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfoImpl miscCallInfo, CAPExtensionsImpl extensions) {
         super();
         
-        if(eventTypeSMS==null) {
+        if(eventTypeSMS!=null) {
         	this.eventTypeSMS = new ASNEventTypeSMSImpl();
         	this.eventTypeSMS.setType(eventTypeSMS);
         }

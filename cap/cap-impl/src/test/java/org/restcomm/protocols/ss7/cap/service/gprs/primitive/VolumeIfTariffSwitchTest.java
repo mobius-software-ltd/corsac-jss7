@@ -22,15 +22,19 @@
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.VolumeIfTariffSwitchImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,15 +49,16 @@ public class VolumeIfTariffSwitchTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        VolumeIfTariffSwitchImpl prim = new VolumeIfTariffSwitchImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(VolumeIfTariffSwitchImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, VolumeIfTariffSwitchImpl._ID_VolumeIfTariffSwitch);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof VolumeIfTariffSwitchImpl);
+        
+        VolumeIfTariffSwitchImpl prim = (VolumeIfTariffSwitchImpl)result.getResult();        
         assertEquals(prim.getVolumeSinceLastTariffSwitch(), 12);
         assertEquals(prim.getVolumeTariffSwitchInterval().longValue(), 24);
 
@@ -61,11 +66,15 @@ public class VolumeIfTariffSwitchTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(VolumeIfTariffSwitchImpl.class);
+    	
         VolumeIfTariffSwitchImpl prim = new VolumeIfTariffSwitchImpl(12, new Long(24));
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

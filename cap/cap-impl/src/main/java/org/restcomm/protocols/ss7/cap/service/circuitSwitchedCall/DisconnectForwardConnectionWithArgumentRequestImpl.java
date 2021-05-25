@@ -29,6 +29,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.Disconnect
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -36,6 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  * @author Povilas Jurna
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true, lengthIndefinite = false)
 public class DisconnectForwardConnectionWithArgumentRequestImpl extends CircuitSwitchedCallMessageImpl implements
         DisconnectForwardConnectionWithArgumentRequest {
 	private static final long serialVersionUID = 1L;

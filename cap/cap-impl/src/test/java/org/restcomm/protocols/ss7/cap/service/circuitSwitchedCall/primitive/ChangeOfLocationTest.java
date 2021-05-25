@@ -22,19 +22,25 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationAlt;
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationAltImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -44,160 +50,181 @@ import org.testng.annotations.Test;
 public class ChangeOfLocationTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 128, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
+        return new byte[] { 48,9, (byte) 128, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
     }
 
     public byte[] getData2() {
-        return new byte[] { (byte) 129, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
+        return new byte[] { 48,9, (byte) 129, 7, 2, (byte) 241, 16, 85, (byte) 240, 0, 55 };
     }
 
     public byte[] getData3() {
-        return new byte[] { (byte) 130, 5, (byte) 145, (byte) 240, 16, 85, (byte) 240 };
+        return new byte[] { 48,7, (byte) 130, 5, (byte) 145, (byte) 240, 16, 85, (byte) 240 };
     }
 
     public byte[] getData4() {
-        return new byte[] { (byte) 131, 0 };
+        return new byte[] { 48, 2, (byte) 131, 0 };
     }
 
     public byte[] getData5() {
-        return new byte[] { (byte) 133, 0 };
+        return new byte[] { 48, 2, (byte) 133, 0 };
     }
 
     public byte[] getData6() {
-        return new byte[] { (byte) 132, 0 };
+        return new byte[] { 48, 2, (byte) 132, 0 };
     }
 
     public byte[] getData7() {
-        return new byte[] { (byte) 166, 0 };
+        return new byte[] { 48, 2, (byte) 166, 0 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ChangeOfLocationListWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        ChangeOfLocationImpl elem = new ChangeOfLocationImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, ChangeOfLocationImpl._ID_cellGlobalId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChangeOfLocationListWrapperImpl);
+        
+        ChangeOfLocationListWrapperImpl elem = (ChangeOfLocationListWrapperImpl)result.getResult();        
+        assertNotNull(elem.getChangeOfLocationList());
+        assertEquals(elem.getChangeOfLocationList().size(),1);
+        assertEquals(elem.getChangeOfLocationList().get(0).getCellGlobalId().getLac(), 22000);
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getCellGlobalId().getLac(), 22000);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChangeOfLocationListWrapperImpl);
+        
+        elem = (ChangeOfLocationListWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getChangeOfLocationList());
+        assertEquals(elem.getChangeOfLocationList().size(),1);
+        assertEquals(elem.getChangeOfLocationList().get(0).getServiceAreaId().getLac(), 22000);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new ChangeOfLocationImpl();
-        tag = ais.readTag();
-        assertEquals(tag, ChangeOfLocationImpl._ID_serviceAreaId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getServiceAreaId().getLac(), 22000);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChangeOfLocationListWrapperImpl);
+        
+        elem = (ChangeOfLocationListWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getChangeOfLocationList());
+        assertEquals(elem.getChangeOfLocationList().size(),1);
+        assertEquals(elem.getChangeOfLocationList().get(0).getLocationAreaId().getLac(), 22000);
 
+        rawData = this.getData4();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new ChangeOfLocationImpl();
-        tag = ais.readTag();
-        assertEquals(tag, ChangeOfLocationImpl._ID_locationAreaId);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChangeOfLocationListWrapperImpl);
+        
+        elem = (ChangeOfLocationListWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getChangeOfLocationList());
+        assertEquals(elem.getChangeOfLocationList().size(),1);
+        assertTrue(elem.getChangeOfLocationList().get(0).isInterSystemHandOver());
 
-        elem.decodeAll(ais);
-        assertEquals(elem.getLocationAreaId().getLac(), 22000);
+        rawData = this.getData5();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChangeOfLocationListWrapperImpl);
+        
+        elem = (ChangeOfLocationListWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getChangeOfLocationList());
+        assertEquals(elem.getChangeOfLocationList().size(),1);
+        assertTrue(elem.getChangeOfLocationList().get(0).isInterMSCHandOver());
 
-        data = this.getData4();
-        ais = new AsnInputStream(data);
-        elem = new ChangeOfLocationImpl();
-        tag = ais.readTag();
-        assertEquals(tag, ChangeOfLocationImpl._ID_interSystemHandOver);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
+        rawData = this.getData6();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        elem.decodeAll(ais);
-        assertTrue(elem.isInterSystemHandOver());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChangeOfLocationListWrapperImpl);
+        
+        elem = (ChangeOfLocationListWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getChangeOfLocationList());
+        assertEquals(elem.getChangeOfLocationList().size(),1);
+        assertTrue(elem.getChangeOfLocationList().get(0).isInterPLMNHandOver());
 
+        rawData = this.getData7();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData5();
-        ais = new AsnInputStream(data);
-        elem = new ChangeOfLocationImpl();
-        tag = ais.readTag();
-        assertEquals(tag, ChangeOfLocationImpl._ID_interMSCHandOver);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
-        assertTrue(elem.isInterMSCHandOver());
-
-
-        data = this.getData6();
-        ais = new AsnInputStream(data);
-        elem = new ChangeOfLocationImpl();
-        tag = ais.readTag();
-        assertEquals(tag, ChangeOfLocationImpl._ID_interPLMNHandOver);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
-        assertTrue(elem.isInterPLMNHandOver());
-
-
-        data = this.getData7();
-        ais = new AsnInputStream(data);
-        elem = new ChangeOfLocationImpl();
-        tag = ais.readTag();
-        assertEquals(tag, ChangeOfLocationImpl._ID_changeOfLocationAlt);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-
-        elem.decodeAll(ais);
-        assertNotNull(elem.getChangeOfLocationAlt());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ChangeOfLocationListWrapperImpl);
+        
+        elem = (ChangeOfLocationListWrapperImpl)result.getResult(); 
+        assertNotNull(elem.getChangeOfLocationList());
+        assertEquals(elem.getChangeOfLocationList().size(),1);
+        assertNotNull(elem.getChangeOfLocationList().get(0).getChangeOfLocationAlt());
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
-        CellGlobalIdOrServiceAreaIdFixedLength value = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(201, 1, 22000, 55);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ChangeOfLocationListWrapperImpl.class);
+    	
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl value = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(201, 1, 22000, 55);
         // int mcc, int mnc, int lac, int cellIdOrServiceAreaCode
         ChangeOfLocationImpl elem = new ChangeOfLocationImpl(value, ChangeOfLocationImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.cellGlobalId);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData1());
+        ChangeOfLocationListWrapperImpl wrapper=new ChangeOfLocationListWrapperImpl(Arrays.asList(new ChangeOfLocationImpl[] { elem }));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new ChangeOfLocationImpl(value, ChangeOfLocationImpl.CellGlobalIdOrServiceAreaIdFixedLength_Option.serviceAreaId);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData2());
+        wrapper=new ChangeOfLocationListWrapperImpl(Arrays.asList(new ChangeOfLocationImpl[] { elem }));
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        LAIFixedLength lai = new LAIFixedLengthImpl(190, 1, 22000);
+        LAIFixedLengthImpl lai = new LAIFixedLengthImpl(190, 1, 22000);
         // int mcc, int mnc, int lac
         elem = new ChangeOfLocationImpl(lai);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData3());
-
+        wrapper=new ChangeOfLocationListWrapperImpl(Arrays.asList(new ChangeOfLocationImpl[] { elem }));
+        rawData = this.getData3();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new ChangeOfLocationImpl(ChangeOfLocationImpl.Boolean_Option.interSystemHandOver);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData4());
-
+        wrapper=new ChangeOfLocationListWrapperImpl(Arrays.asList(new ChangeOfLocationImpl[] { elem }));
+        rawData = this.getData4();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new ChangeOfLocationImpl(ChangeOfLocationImpl.Boolean_Option.interMSCHandOver);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData5());
-
+        wrapper=new ChangeOfLocationListWrapperImpl(Arrays.asList(new ChangeOfLocationImpl[] { elem }));
+        rawData = this.getData5();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new ChangeOfLocationImpl(ChangeOfLocationImpl.Boolean_Option.interPLMNHandOver);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData6());
+        wrapper=new ChangeOfLocationListWrapperImpl(Arrays.asList(new ChangeOfLocationImpl[] { elem }));
+        rawData = this.getData6();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-
-        ChangeOfLocationAlt changeOfLocationAlt = new ChangeOfLocationAltImpl();
+        ChangeOfLocationAltImpl changeOfLocationAlt = new ChangeOfLocationAltImpl();
         elem = new ChangeOfLocationImpl(changeOfLocationAlt);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData7());
+        wrapper=new ChangeOfLocationListWrapperImpl(Arrays.asList(new ChangeOfLocationImpl[] { elem }));
+        rawData = this.getData7();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })

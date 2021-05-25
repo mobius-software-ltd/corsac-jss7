@@ -38,7 +38,7 @@ public class ISDNAddressStringImpl extends AddressStringImpl {
 		super(8);
     }
 
-    public ISDNAddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+	public ISDNAddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
         super(8,addressNature, numberingPlan, address);
     }
 

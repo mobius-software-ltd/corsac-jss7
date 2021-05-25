@@ -241,7 +241,6 @@ public class ASNParser
 			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,new ConcurrentHashMap<Integer,Object>());
 		}
 		catch(Exception ex) {
-			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());			
 		}
 	}

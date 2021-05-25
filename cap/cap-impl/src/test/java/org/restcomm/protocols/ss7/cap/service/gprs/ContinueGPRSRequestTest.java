@@ -22,18 +22,20 @@
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.ContinueGPRSRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,46 +54,59 @@ public class ContinueGPRSRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ContinueGPRSRequestImpl prim = new ContinueGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ContinueGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ContinueGPRSRequestImpl);
+        
+        ContinueGPRSRequestImpl prim = (ContinueGPRSRequestImpl)result.getResult();        
         assertEquals(prim.getPDPID().getId(), 2);
     }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecodeLiveTrace() throws Exception {
-        byte[] data = this.getDataLiveTrace();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        ContinueGPRSRequestImpl prim = new ContinueGPRSRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ContinueGPRSRequestImpl.class);
+    	
+    	byte[] rawData = this.getDataLiveTrace();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ContinueGPRSRequestImpl);
+        
+        ContinueGPRSRequestImpl prim = (ContinueGPRSRequestImpl)result.getResult();        
         assertNull(prim.getPDPID());
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        PDPID pdpID = new PDPIDImpl(2);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ContinueGPRSRequestImpl.class);
+    	
+        PDPIDImpl pdpID = new PDPIDImpl(2);
         ContinueGPRSRequestImpl prim = new ContinueGPRSRequestImpl(pdpID);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncodeLiveTrace() throws Exception {
-        ContinueGPRSRequestImpl prim = new ContinueGPRSRequestImpl(null);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getDataLiveTrace()));
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ContinueGPRSRequestImpl.class);
+    	
+    	ContinueGPRSRequestImpl prim = new ContinueGPRSRequestImpl(null);
+    	byte[] rawData = this.getDataLiveTrace();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

@@ -117,11 +117,27 @@ public class AddressStringImpl  {
 
     @ASNLength
 	public Integer getLength(ASNParser parser) {
-    	return TbcdString.getLength(false, null, address) + 1;
+    	return getLength();
+    }
+    
+    public Integer getLength() {
+    	if (this.getNumberingPlan() == NumberingPlan.spare_5) {
+    		int bits = address.length() * 7;
+    		if(bits%8 == 0)
+    			return bits/8 + 1;
+    		
+    		return bits/8 + 2;
+    	}
+    	else
+    		return TbcdString.getLength(false, null, address) + 1;
 	}
     
     @ASNEncode
 	public void encode(ASNParser parser,ByteBuf buffer) throws MAPException {
+    	encode(buffer);
+    }
+    
+    public void encode(ByteBuf buffer) throws MAPException {
     	if (this.address.length() > maxLength*2)
             throw new MAPException("Error when encoding AddressString: address length must not exceed 38 digits");
     	
@@ -156,6 +172,11 @@ public class AddressStringImpl  {
     
     @ASNDecode
 	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws MAPParsingComponentException {
+    	decode(buffer);
+    	return false;
+    }
+    
+    public void decode(ByteBuf buffer) throws MAPParsingComponentException {
     	if (buffer.readableBytes() > maxLength+1)
             throw new MAPParsingComponentException("Error when decoding AddressString: mesage length must not exceed 20",
                     MAPParsingComponentExceptionReason.MistypedParameter);
@@ -198,9 +219,7 @@ public class AddressStringImpl  {
 	            }
             }
         } else
-        	this.address=TbcdString.decodeString(buffer);
-		
-		return false;
+        	this.address=TbcdString.decodeString(buffer);		
 	}
 
     @Override

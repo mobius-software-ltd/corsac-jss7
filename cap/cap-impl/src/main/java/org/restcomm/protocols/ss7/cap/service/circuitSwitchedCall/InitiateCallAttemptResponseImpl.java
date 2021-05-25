@@ -47,11 +47,11 @@ public class InitiateCallAttemptResponseImpl extends CircuitSwitchedCallMessageI
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
     private SupportedCamelPhasesImpl supportedCamelPhases;
     
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
+    private CAPExtensionsImpl extensions;
+    
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     private OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities;
-    
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
     private ASNNull releaseCallArgExtensionAllowed;

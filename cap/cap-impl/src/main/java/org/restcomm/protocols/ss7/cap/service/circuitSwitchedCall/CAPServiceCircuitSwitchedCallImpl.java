@@ -63,7 +63,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitialDPR
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitiateCallAttemptRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitiateCallAttemptResponse;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.MoveLegRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.MoveLegResponse;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.PlayAnnouncementRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationResponse;
@@ -74,6 +73,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargi
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
 import org.restcomm.protocols.ss7.cap.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -166,7 +166,7 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
     public void processComponent(ComponentType compType, OperationCodeImpl oc, CAPMessage parameter, CAPDialog capDialog,
             Long invokeId, Long linkedId) throws CAPParsingComponentException {
 
-        Long ocValue = oc.getLocalOperationCode();
+    	Long ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new CAPParsingComponentException("", CAPParsingComponentExceptionReason.UnrecognizedOperation);
         CAPApplicationContext acn = capDialog.getApplicationContext();
@@ -181,7 +181,13 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 	if(parameter instanceof InitialDPRequest) {
         				processed = true;
         				InitialDPRequest ind = (InitialDPRequest)parameter;
-        	        	
+        	        	if(ind.getInitialDPArgExtension()!=null && ind.getInitialDPArgExtension() instanceof InitialDPArgExtensionImpl) {
+        	        		int version=2;
+        	        		if (acn == CAPApplicationContext.CapV3_gsmSSF_scfGeneric || acn == CAPApplicationContext.CapV4_gsmSSF_scfGeneric)
+        	        			version=4;
+        	        		
+        	        		((InitialDPArgExtensionImpl)ind.getInitialDPArgExtension()).patchVersion(version);
+        	        	}
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -264,7 +270,9 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                     if (compType == ComponentType.Invoke && parameter == null) {
                     	processed = true;
                     	ContinueRequestImpl ind = new ContinueRequestImpl();
-        	        	
+                    	ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -430,7 +438,9 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 	if(compType == ComponentType.Invoke && parameter == null) {
                 		processed = true;
                 		ActivityTestRequest ind = new ActivityTestRequestImpl();
-        	        	
+                		ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -443,7 +453,9 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 	else if(compType == ComponentType.ReturnResultLast && parameter == null) {
                 		processed = true;
                 		ActivityTestResponse ind = new ActivityTestResponseImpl();
-        	        	
+                		ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -510,7 +522,9 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 	if(compType == ComponentType.Invoke && parameter == null) {
                 		processed = true;
                 		DisconnectForwardConnectionRequest ind = new DisconnectForwardConnectionRequestImpl();
-        	        	
+                		ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -543,7 +557,9 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 	else if(parameter == null && compType == ComponentType.ReturnResultLast) {
         				processed = true;
         				DisconnectLegResponse ind = new DisconnectLegResponseImpl();
-        	        	
+        				ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -825,10 +841,12 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
 	        	            }
 	        	        }
         	        }
-                	else if(parameter instanceof MoveLegResponse) {
-        				processed = true;
-        				MoveLegResponse ind = (MoveLegResponse)parameter;
-        	        	
+                	else if(parameter == null && compType == ComponentType.ReturnResultLast) {
+                		processed = true;
+                		MoveLegResponseImpl ind = new MoveLegResponseImpl();
+        				ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -861,7 +879,9 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 	else if(parameter == null && compType == ComponentType.ReturnResultLast) {
         				processed = true;
         				SplitLegResponse ind = new SplitLegResponseImpl();
-        	        	
+        				ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -880,7 +900,9 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 	if(parameter == null && compType == ComponentType.Invoke) {
         				processed = true;
         				CollectInformationRequest ind = new CollectInformationRequestImpl();
-        	        	
+        				ind.setInvokeId(invokeId);
+                    	ind.setCAPDialog(capDialog);
+                		
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);

@@ -29,15 +29,21 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -57,45 +63,57 @@ public class BCSMEventTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BCSMEventImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        BCSMEventImpl elem = new BCSMEventImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BCSMEventImpl);
+        
+        BCSMEventImpl elem = (BCSMEventImpl)result.getResult();
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.oNoAnswer);
         assertEquals(elem.getMonitorMode(), MonitorMode.interrupted);
-        assertEquals(elem.getLegID().getSendingSideID(), LegType.leg2);
+        assertEquals(elem.getLegID().getSendingLegID().getSendingSideID(), LegType.leg2);
         assertNull(elem.getDpSpecificCriteria());
         assertFalse(elem.getAutomaticRearm());
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new BCSMEventImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof BCSMEventImpl);
+        
+        elem = (BCSMEventImpl)result.getResult();
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.oCalledPartyBusy);
         assertEquals(elem.getMonitorMode(), MonitorMode.notifyAndContinue);
-        assertEquals(elem.getLegID().getReceivingSideID(), LegType.leg1);
+        assertEquals(elem.getLegID().getReceivingLegID().getReceivingSideID(), LegType.leg1);
         assertEquals((int) elem.getDpSpecificCriteria().getApplicationTimer(), 111);
         assertTrue(elem.getAutomaticRearm());
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        LegIDImpl legID = new LegIDImpl(true, LegType.leg2);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(BCSMEventImpl.class);
+    	
+        LegIDImpl legID = new LegIDImpl(null, new SendingLegIDImpl(LegType.leg2));
         BCSMEventImpl elem = new BCSMEventImpl(EventTypeBCSM.oNoAnswer, MonitorMode.interrupted, legID, null, false);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
-        legID = new LegIDImpl(false, LegType.leg1);
+        legID = new LegIDImpl(new ReceivingLegIDImpl(LegType.leg1), null);
         DpSpecificCriteriaImpl dsc = new DpSpecificCriteriaImpl(111);
         elem = new BCSMEventImpl(EventTypeBCSM.oCalledPartyBusy, MonitorMode.notifyAndContinue, legID, dsc, true);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegID legID, DpSpecificCriteria dpSpecificCriteria, boolean
         // automaticRearm

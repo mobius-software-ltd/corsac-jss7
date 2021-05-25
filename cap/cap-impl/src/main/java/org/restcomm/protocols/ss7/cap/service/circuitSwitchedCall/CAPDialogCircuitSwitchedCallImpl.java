@@ -866,7 +866,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         SpecializedResourceReportRequestImpl req = new SpecializedResourceReportRequestImpl(false,false);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.specializedResourceReport, req, true, false);        
+        return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.specializedResourceReport, req, true, false);        
     }
 
     @Override
@@ -889,7 +889,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         SpecializedResourceReportRequestImpl req = new SpecializedResourceReportRequestImpl(isAllAnnouncementsComplete,
                 isFirstAnnouncementStarted);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.specializedResourceReport, req, true, false);        
+        return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.specializedResourceReport, req, true, false);        
     }
 
     @Override

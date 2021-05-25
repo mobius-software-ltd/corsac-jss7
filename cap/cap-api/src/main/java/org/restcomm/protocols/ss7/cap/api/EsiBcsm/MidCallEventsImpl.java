@@ -52,10 +52,16 @@ public class MidCallEventsImpl {
     }
 
     public DigitsImpl getDTMFDigitsCompleted() {
+    	if(dtmfDigitsCompleted!=null)
+    		dtmfDigitsCompleted.setIsGenericDigits();
+    	
         return dtmfDigitsCompleted;
     }
 
     public DigitsImpl getDTMFDigitsTimeOut() {
+    	if(dtmfDigitsTimeOut!=null)
+    		dtmfDigitsTimeOut.setIsGenericDigits();
+    	
         return dtmfDigitsTimeOut;
     }
 

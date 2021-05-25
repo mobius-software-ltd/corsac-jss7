@@ -23,12 +23,11 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationImpl;
@@ -36,6 +35,12 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -62,20 +67,26 @@ public class RequestedInformationTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RequestedInformationImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        RequestedInformationImpl elem = new RequestedInformationImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestedInformationImpl);
+        
+        RequestedInformationImpl elem = (RequestedInformationImpl)result.getResult();        
         assertEquals(elem.getRequestedInformationType(), RequestedInformationType.callConnectedElapsedTime);
         assertEquals((int) elem.getCallConnectedElapsedTimeValue(), 0);
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new RequestedInformationImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestedInformationImpl);
+        
+        elem = (RequestedInformationImpl)result.getResult(); 
         assertEquals(elem.getRequestedInformationType(), RequestedInformationType.callStopTime);
         assertEquals(elem.getCallStopTimeValue().getYear(), 2011);
         assertEquals(elem.getCallStopTimeValue().getMonth(), 12);
@@ -84,51 +95,65 @@ public class RequestedInformationTest {
         assertEquals(elem.getCallStopTimeValue().getMinute(), 7);
         assertEquals(elem.getCallStopTimeValue().getSecond(), 18);
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new RequestedInformationImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestedInformationImpl);
+        
+        elem = (RequestedInformationImpl)result.getResult(); 
         assertEquals(elem.getRequestedInformationType(), RequestedInformationType.releaseCause);
         CauseIndicators ci = elem.getReleaseCauseValue().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 17);
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getLocation(), 2);
 
-        data = this.getData4();
-        ais = new AsnInputStream(data);
-        elem = new RequestedInformationImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData4();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestedInformationImpl);
+        
+        elem = (RequestedInformationImpl)result.getResult(); 
         assertEquals(elem.getRequestedInformationType(), RequestedInformationType.callAttemptElapsedTime);
         assertEquals((int) elem.getCallAttemptElapsedTimeValue(), 11);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RequestedInformationImpl.class);
+    	
         RequestedInformationImpl elem = new RequestedInformationImpl(RequestedInformationType.callConnectedElapsedTime, 0);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         DateAndTimeImpl dt = new DateAndTimeImpl(2011, 12, 30, 10, 7, 18);
         elem = new RequestedInformationImpl(dt);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         CauseIndicatorsImpl ci = new CauseIndicatorsImpl(0, 2, 0, 17, null);
         // int codingStandard, int location, int recommendation, int causeValue, byte[] diagnostics
         CauseCapImpl cc = new CauseCapImpl(ci);
         elem = new RequestedInformationImpl(cc);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new RequestedInformationImpl(RequestedInformationType.callAttemptElapsedTime, 11);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData4()));
+        rawData = this.getData4();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 }

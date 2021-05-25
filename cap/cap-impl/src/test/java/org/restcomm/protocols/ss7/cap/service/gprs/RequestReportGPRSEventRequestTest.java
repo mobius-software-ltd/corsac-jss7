@@ -22,24 +22,26 @@
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.service.gprs.RequestReportGPRSEventRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -60,16 +62,17 @@ public class RequestReportGPRSEventRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        RequestReportGPRSEventRequestImpl prim = new RequestReportGPRSEventRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RequestReportGPRSEventRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ArrayList<GPRSEvent> gprsEvent = prim.getGPRSEvent();
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestReportGPRSEventRequestImpl);
+        
+        RequestReportGPRSEventRequestImpl prim = (RequestReportGPRSEventRequestImpl)result.getResult();        
+        List<GPRSEventImpl> gprsEvent = prim.getGPRSEvent();
         assertNotNull(gprsEvent);
         assertEquals(gprsEvent.size(), 1);
         assertEquals(gprsEvent.get(0).getGPRSEventType(), GPRSEventType.attachChangeOfPosition);
@@ -79,16 +82,17 @@ public class RequestReportGPRSEventRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecodeLiveTrace() throws Exception {
-        byte[] data = this.getDataLiveTrace();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        RequestReportGPRSEventRequestImpl prim = new RequestReportGPRSEventRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RequestReportGPRSEventRequestImpl.class);
+    	
+    	byte[] rawData = this.getDataLiveTrace();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        ArrayList<GPRSEvent> gprsEvent = prim.getGPRSEvent();
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestReportGPRSEventRequestImpl);
+        
+        RequestReportGPRSEventRequestImpl prim = (RequestReportGPRSEventRequestImpl)result.getResult();        
+        List<GPRSEventImpl> gprsEvent = prim.getGPRSEvent();
         assertNotNull(gprsEvent);
         assertEquals(gprsEvent.size(), 4);
 
@@ -109,37 +113,43 @@ public class RequestReportGPRSEventRequestTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        ArrayList<GPRSEvent> gprsEvent = new ArrayList<GPRSEvent>();
-        GPRSEvent event = new GPRSEventImpl(GPRSEventType.attachChangeOfPosition, MonitorMode.notifyAndContinue);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RequestReportGPRSEventRequestImpl.class);
+    	
+        List<GPRSEventImpl> gprsEvent = new ArrayList<GPRSEventImpl>();
+        GPRSEventImpl event = new GPRSEventImpl(GPRSEventType.attachChangeOfPosition, MonitorMode.notifyAndContinue);
         gprsEvent.add(event);
-        PDPID pdpID = new PDPIDImpl(2);
+        PDPIDImpl pdpID = new PDPIDImpl(2);
 
         RequestReportGPRSEventRequestImpl prim = new RequestReportGPRSEventRequestImpl(gprsEvent, pdpID);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncodeLiveTrace() throws Exception {
-
-        ArrayList<GPRSEvent> gprsEvent = new ArrayList<GPRSEvent>();
-        GPRSEvent event1 = new GPRSEventImpl(GPRSEventType.pdpContextEstablishment, MonitorMode.interrupted);
-        GPRSEvent event2 = new GPRSEventImpl(GPRSEventType.pdpContextEstablishmentAcknowledgement, MonitorMode.interrupted);
-        GPRSEvent event3 = new GPRSEventImpl(GPRSEventType.disonnect, MonitorMode.interrupted);
-        GPRSEvent event4 = new GPRSEventImpl(GPRSEventType.pdpContextChangeOfPosition, MonitorMode.interrupted);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RequestReportGPRSEventRequestImpl.class);
+    	
+        List<GPRSEventImpl> gprsEvent = new ArrayList<GPRSEventImpl>();
+        GPRSEventImpl event1 = new GPRSEventImpl(GPRSEventType.pdpContextEstablishment, MonitorMode.interrupted);
+        GPRSEventImpl event2 = new GPRSEventImpl(GPRSEventType.pdpContextEstablishmentAcknowledgement, MonitorMode.interrupted);
+        GPRSEventImpl event3 = new GPRSEventImpl(GPRSEventType.disonnect, MonitorMode.interrupted);
+        GPRSEventImpl event4 = new GPRSEventImpl(GPRSEventType.pdpContextChangeOfPosition, MonitorMode.interrupted);
         gprsEvent.add(event1);
         gprsEvent.add(event2);
         gprsEvent.add(event3);
         gprsEvent.add(event4);
 
         RequestReportGPRSEventRequestImpl prim = new RequestReportGPRSEventRequestImpl(gprsEvent, null);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getDataLiveTrace()));
+        byte[] rawData = this.getDataLiveTrace();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

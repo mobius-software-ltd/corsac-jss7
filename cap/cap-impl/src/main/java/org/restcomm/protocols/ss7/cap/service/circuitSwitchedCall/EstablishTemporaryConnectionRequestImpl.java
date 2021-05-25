@@ -139,11 +139,17 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
 
     @Override
     public DigitsImpl getAssistingSSPIPRoutingAddress() {
+    	if(assistingSSPIPRoutingAddress!=null)
+    		assistingSSPIPRoutingAddress.setIsGenericNumber();
+    	
         return assistingSSPIPRoutingAddress;
     }
 
     @Override
     public DigitsImpl getCorrelationID() {
+    	if(correlationID!=null)
+    		correlationID.setIsGenericDigits();
+    	
         return correlationID;
     }
 

@@ -22,17 +22,19 @@
 package org.restcomm.protocols.ss7.cap.service.sms;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCause;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCauseImpl;
-import org.restcomm.protocols.ss7.cap.service.sms.ReleaseSMSRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -47,28 +49,30 @@ public class ReleaseSMSRequestTest {
 	
 	@Test(groups = { "functional.decode", "primitives" })
 	public void testDecode() throws Exception {
-		byte[] data = this.getData();
-		AsnInputStream asn = new AsnInputStream(data);
-		int tag = asn.readTag();
-		ReleaseSMSRequestImpl prim = new ReleaseSMSRequestImpl();
-		prim.decodeAll(asn);
-		
-		assertEquals(tag, Tag.STRING_OCTET);
-		assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-		
-		assertEquals(prim.getRPCause().getData(), 3);
-		
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ReleaseSMSRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ReleaseSMSRequestImpl);
+        
+        ReleaseSMSRequestImpl prim = (ReleaseSMSRequestImpl)result.getResult();        
+        assertEquals(prim.getRPCause().getData(), 3);		
 	}
 	
 	@Test(groups = { "functional.encode", "primitives" })
 	public void testEncode() throws Exception {
-		
-		RPCause rpCause = new RPCauseImpl(3);
+		ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(ReleaseSMSRequestImpl.class);
+    	    	
+		RPCauseImpl rpCause = new RPCauseImpl(3);
 		ReleaseSMSRequestImpl prim = new ReleaseSMSRequestImpl(rpCause);
-		AsnOutputStream asn = new AsnOutputStream();
-		prim.encodeAll(asn);
-		
-		assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+		byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 	}
-	
 }

@@ -23,19 +23,23 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,7 +49,7 @@ import org.testng.annotations.Test;
 public class DestinationRoutingAddressTest {
 
     public byte[] getData1() {
-        return new byte[] { (byte) 160, 7, 4, 5, 2, 16, 121, 34, 16 };
+        return new byte[] { 48, 7, 4, 5, 2, 16, 121, 34, 16 };
     }
 
     public byte[] getIntData1() {
@@ -54,12 +58,16 @@ public class DestinationRoutingAddressTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(DestinationRoutingAddressImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        DestinationRoutingAddressImpl elem = new DestinationRoutingAddressImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof DestinationRoutingAddressImpl);
+        
+        DestinationRoutingAddressImpl elem = (DestinationRoutingAddressImpl)result.getResult();                
         assertNotNull(elem.getCalledPartyNumber());
         assertEquals(elem.getCalledPartyNumber().size(), 1);
         assertTrue(Arrays.equals(elem.getCalledPartyNumber().get(0).getData(), this.getIntData1()));
@@ -67,14 +75,18 @@ public class DestinationRoutingAddressTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
-        ArrayList<CalledPartyNumberCap> cpnl = new ArrayList<CalledPartyNumberCap>();
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(DestinationRoutingAddressImpl.class);
+    	
+    	List<CalledPartyNumberCapImpl> cpnl = new ArrayList<CalledPartyNumberCapImpl>();
         CalledPartyNumberCapImpl cpn = new CalledPartyNumberCapImpl(getIntData1());
         cpnl.add(cpn);
         DestinationRoutingAddressImpl elem = new DestinationRoutingAddressImpl(cpnl);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 0);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
     }

@@ -28,13 +28,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,7 +47,7 @@ import org.testng.annotations.Test;
 public class CalledPartyNumberCapTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 130, 7, 3, (byte) 144, 33, 114, 16, (byte) 144, 0 };
+        return new byte[] { 4, 7, 3, (byte) 144, 33, 114, 16, (byte) 144, 0 };
     }
 
     public byte[] getIntData() {
@@ -53,12 +56,16 @@ public class CalledPartyNumberCapTest {
 
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CalledPartyNumberCapImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        CalledPartyNumberCapImpl elem = new CalledPartyNumberCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CalledPartyNumberCapImpl);
+        
+        CalledPartyNumberCapImpl elem = (CalledPartyNumberCapImpl)result.getResult();        
         CalledPartyNumber cpn = elem.getCalledPartyNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertFalse(cpn.isOddFlag());
@@ -70,17 +77,22 @@ public class CalledPartyNumberCapTest {
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CalledPartyNumberCapImpl.class);
+    	
         CalledPartyNumberCapImpl elem = new CalledPartyNumberCapImpl(this.getIntData());
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 2);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         CalledPartyNumber cpn = new CalledPartyNumberImpl(3, "1227010900", 1, 1);
         elem = new CalledPartyNumberCapImpl(cpn);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 2);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
     }

@@ -23,6 +23,7 @@ package org.restcomm.protocols.ss7.cap.api.EsiSms;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  *
@@ -30,7 +31,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class OSmsSubmissionSpecificInfoImpl {
+public class OSmsSubmissionSpecificInfoImpl extends ASNOctetString {
 	public OSmsSubmissionSpecificInfoImpl() {
     }
 }

@@ -55,7 +55,7 @@ public class TimeDurationChargingImpl {
     private ASNBoolean tone;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
-    private AuditableIndicatorWrapperImpl audibleIndicator;
+    private AudibleIndicatorWrapperImpl audibleIndicator;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
     private CAPExtensionsImpl extensions;
@@ -84,8 +84,10 @@ public class TimeDurationChargingImpl {
     	this.maxCallPeriodDuration = new ASNInteger();
         this.maxCallPeriodDuration.setValue(maxCallPeriodDuration);
         
-        this.releaseIfdurationExceededB = new ASNBoolean();
-        this.releaseIfdurationExceededB.setValue(releaseIfdurationExceeded);
+        if(releaseIfdurationExceeded) {
+        	this.releaseIfdurationExceededB = new ASNBoolean();
+        	this.releaseIfdurationExceededB.setValue(releaseIfdurationExceeded);
+        }
         
         if(tone!=null) {
         	this.tone = new ASNBoolean();
@@ -106,8 +108,10 @@ public class TimeDurationChargingImpl {
     	this.maxCallPeriodDuration = new ASNInteger();
         this.maxCallPeriodDuration.setValue(maxCallPeriodDuration);
         
-        this.releaseIfdurationExceededB = new ASNBoolean();
-        this.releaseIfdurationExceededB.setValue(releaseIfdurationExceeded);
+        if(releaseIfdurationExceeded) {
+        	this.releaseIfdurationExceededB = new ASNBoolean();
+        	this.releaseIfdurationExceededB.setValue(releaseIfdurationExceeded);
+        }
         
         if(tariffSwitchInterval!=null) {
         	this.tariffSwitchInterval = new ASNInteger();
@@ -115,7 +119,7 @@ public class TimeDurationChargingImpl {
         }
         
         if(audibleIndicator!=null)
-        	this.audibleIndicator = new AuditableIndicatorWrapperImpl(audibleIndicator);
+        	this.audibleIndicator = new AudibleIndicatorWrapperImpl(audibleIndicator);
         
         this.extensions = extensions;
     }

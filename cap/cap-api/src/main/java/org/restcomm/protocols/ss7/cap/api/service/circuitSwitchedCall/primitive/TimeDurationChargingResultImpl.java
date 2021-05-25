@@ -71,8 +71,10 @@ public class TimeDurationChargingResultImpl {
         if(timeInformation!=null)
         	this.timeInformation = new TimeInformationWrapperImpl(timeInformation);
         
-        this.legActive = new ASNBoolean();
-        this.legActive.setValue(legActive);
+        if(!legActive) {
+        	this.legActive = new ASNBoolean();
+        	this.legActive.setValue(legActive);
+        }
         
         if(callLegReleasedAtTcpExpiry)
         	this.callLegReleasedAtTcpExpiry = new ASNNull();

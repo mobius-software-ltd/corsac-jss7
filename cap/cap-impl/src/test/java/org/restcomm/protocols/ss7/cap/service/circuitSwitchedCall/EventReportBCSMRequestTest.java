@@ -23,24 +23,28 @@
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.primitives.ReceivingSideIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.EventReportBCSMRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -71,23 +75,29 @@ public class EventReportBCSMRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventReportBCSMRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        EventReportBCSMRequestImpl elem = new EventReportBCSMRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventReportBCSMRequestImpl);
+        
+        EventReportBCSMRequestImpl elem = (EventReportBCSMRequestImpl)result.getResult();                
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.oDisconnect);
         assertEquals(elem.getLegID().getReceivingSideID(), LegType.leg1);
         assertEquals(elem.getMiscCallInfo().getMessageType(), MiscCallInfoMessageType.request);
         assertNull(elem.getEventSpecificInformationBCSM());
         assertNull(elem.getExtensions());
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new EventReportBCSMRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventReportBCSMRequestImpl);
+        
+        elem = (EventReportBCSMRequestImpl)result.getResult();  
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
         assertTrue(Arrays.equals(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
                 .getData(), getDataFailureCause()));
@@ -95,11 +105,13 @@ public class EventReportBCSMRequestTest {
         assertNull(elem.getMiscCallInfo());
         assertNull(elem.getExtensions());
 
-        data = this.getData3();
-        ais = new AsnInputStream(data);
-        elem = new EventReportBCSMRequestImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        rawData = this.getData3();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof EventReportBCSMRequestImpl);
+        
+        elem = (EventReportBCSMRequestImpl)result.getResult();  
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
         assertTrue(Arrays.equals(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
                 .getData(), getDataFailureCause()));
@@ -110,32 +122,40 @@ public class EventReportBCSMRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
-        ReceivingSideIDImpl legID = new ReceivingSideIDImpl(LegType.leg1);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(EventReportBCSMRequestImpl.class);
+    	
+        ReceivingLegIDImpl legID = new ReceivingLegIDImpl(LegType.leg1);
         MiscCallInfoImpl miscCallInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.request, null);
 
         EventReportBCSMRequestImpl elem = new EventReportBCSMRequestImpl(EventTypeBCSM.oDisconnect, null, legID, miscCallInfo,
                 null);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         CauseCapImpl failureCause = new CauseCapImpl(getDataFailureCause());
         RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo = new RouteSelectFailureSpecificInfoImpl(failureCause);
         EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(
                 routeSelectFailureSpecificInfo);
-        legID = new ReceivingSideIDImpl(LegType.leg2);
+        legID = new ReceivingLegIDImpl(LegType.leg2);
 
         elem = new EventReportBCSMRequestImpl(EventTypeBCSM.routeSelectFailure, eventSpecificInformationBCSM, legID, null, null);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData2()));
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new EventReportBCSMRequestImpl(EventTypeBCSM.routeSelectFailure, eventSpecificInformationBCSM, legID,
                 miscCallInfo, CAPExtensionsTest.createTestCAPExtensions());
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData3()));
+        rawData = this.getData3();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // EventTypeBCSM eventTypeBCSM, EventSpecificInformationBCSM
         // eventSpecificInformationBCSM, ReceivingSideID legID,

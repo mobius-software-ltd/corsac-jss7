@@ -23,17 +23,21 @@
 package org.restcomm.protocols.ss7.cap.isup;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectingNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,7 +47,7 @@ import org.testng.annotations.Test;
 public class RedirectingPartyIDCapTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 157, 6, (byte) 131, 20, 7, 1, 9, 0 };
+        return new byte[] { 4, 6, (byte) 131, 20, 7, 1, 9, 0 };
     }
 
     public byte[] getIntData() {
@@ -52,12 +56,16 @@ public class RedirectingPartyIDCapTest {
 
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RedirectingPartyIDCapImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        RedirectingPartyIDCapImpl elem = new RedirectingPartyIDCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RedirectingPartyIDCapImpl);
+        
+        RedirectingPartyIDCapImpl elem = (RedirectingPartyIDCapImpl)result.getResult();                
         RedirectingNumber rn = elem.getRedirectingNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(rn.getNatureOfAddressIndicator(), 3);
@@ -68,17 +76,23 @@ public class RedirectingPartyIDCapTest {
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RedirectingPartyIDCapImpl.class);
+    	
         RedirectingPartyIDCapImpl elem = new RedirectingPartyIDCapImpl(this.getIntData());
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 29);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         RedirectingNumber rn = new RedirectingNumberImpl(3, "7010900", 1, 1);
         elem = new RedirectingPartyIDCapImpl(rn);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 29);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        rawData = this.getData();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int addressRepresentationRestrictedIndicator
     }

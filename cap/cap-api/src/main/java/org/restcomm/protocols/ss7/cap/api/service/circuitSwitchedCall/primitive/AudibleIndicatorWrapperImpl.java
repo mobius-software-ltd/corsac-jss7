@@ -19,19 +19,31 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.restcomm.protocols.ss7.cap.api.EsiSms;
+
+package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  *
- * @author Lasith Waruna Perera
+ * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class TSmsDeliverySpecificInfoImpl extends ASNOctetString {
-	public TSmsDeliverySpecificInfoImpl() {
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
+public class AudibleIndicatorWrapperImpl {
+	@ASNChoise
+	private AudibleIndicatorImpl audibleIndicator;
+
+    public AudibleIndicatorWrapperImpl() {
+    }
+
+    public AudibleIndicatorWrapperImpl(AudibleIndicatorImpl audibleIndicator) {
+        this.audibleIndicator = audibleIndicator;
+    }
+
+    public AudibleIndicatorImpl getAudibleIndicator() {
+    	return audibleIndicator;
     }
 }

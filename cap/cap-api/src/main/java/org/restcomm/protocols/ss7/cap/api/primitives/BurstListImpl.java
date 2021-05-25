@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.cap.api.primitives;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
@@ -31,12 +32,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 * @author sergey vetyutnev
 *
 */
-@ASNTag(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = true,lengthIndefinite = false)
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class BurstListImpl {
-	public static final int _ID_warningPeriod = 0;
-    public static final int _ID_bursts = 1;
-
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
     private ASNInteger warningPeriod;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
     private BurstImpl bursts;
 
     public BurstListImpl() {

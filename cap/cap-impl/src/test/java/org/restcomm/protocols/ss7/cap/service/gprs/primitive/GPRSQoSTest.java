@@ -21,21 +21,23 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribed;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribedImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,11 +47,11 @@ import org.testng.annotations.Test;
 public class GPRSQoSTest {
 
     public byte[] getData() {
-        return new byte[] { -128, 3, 4, 7, 7 };
+        return new byte[] { 48, 5, -128, 3, 4, 7, 7 };
     };
 
     public byte[] getData2() {
-        return new byte[] { -127, 2, 1, 7 };
+        return new byte[] { 48, 4, -127, 2, 1, 7 };
     };
 
     public byte[] getQoSSubscribedData() {
@@ -62,45 +64,55 @@ public class GPRSQoSTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        // Option 1
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        GPRSQoSImpl prim = new GPRSQoSImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, GPRSQoSImpl._ID_shortQoSFormat);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        assertTrue(Arrays.equals(prim.getShortQoSFormat().getData(), this.getQoSSubscribedData()));
-        assertNull(prim.getLongQoSFormat());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GPRSQoSWrapperImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GPRSQoSWrapperImpl);
+        
+        GPRSQoSWrapperImpl prim = (GPRSQoSWrapperImpl)result.getResult();        
+        assertTrue(Arrays.equals(prim.getGPRSQoS().getShortQoSFormat().getData(), this.getQoSSubscribedData()));
+        assertNull(prim.getGPRSQoS().getLongQoSFormat());
 
         // Option 2
-        data = this.getData2();
-        asn = new AsnInputStream(data);
-        tag = asn.readTag();
-        prim = new GPRSQoSImpl();
-        prim.decodeAll(asn);
-        assertEquals(tag, GPRSQoSImpl._ID_longQoSFormat);
-        assertEquals(asn.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        assertTrue(Arrays.equals(prim.getLongQoSFormat().getData(), this.getExtQoSSubscribedData()));
-        assertNull(prim.getShortQoSFormat());
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GPRSQoSWrapperImpl);
+        
+        prim = (GPRSQoSWrapperImpl)result.getResult();  
+        assertTrue(Arrays.equals(prim.getGPRSQoS().getLongQoSFormat().getData(), this.getExtQoSSubscribedData()));
+        assertNull(prim.getGPRSQoS().getShortQoSFormat());
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-        // Option 1
-        QoSSubscribed qosSubscribed = new QoSSubscribedImpl(this.getQoSSubscribedData());
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GPRSQoSWrapperImpl.class);
+    	
+    	// Option 1
+        QoSSubscribedImpl qosSubscribed = new QoSSubscribedImpl(this.getQoSSubscribedData());
         GPRSQoSImpl prim = new GPRSQoSImpl(qosSubscribed);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        GPRSQoSWrapperImpl wrapper = new GPRSQoSWrapperImpl(prim);
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(wrapper);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // Option 2
-        ExtQoSSubscribed extQoSSubscribed = new ExtQoSSubscribedImpl(this.getExtQoSSubscribedData());
+        ExtQoSSubscribedImpl extQoSSubscribed = new ExtQoSSubscribedImpl(this.getExtQoSSubscribedData());
         prim = new GPRSQoSImpl(extQoSSubscribed);
-        asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData2()));
+        wrapper = new GPRSQoSWrapperImpl(prim);
+        rawData = this.getData2();
+        buffer=parser.encode(wrapper);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
 }

@@ -23,22 +23,22 @@
 package org.restcomm.protocols.ss7.cap.errors;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.errors.CancelProblem;
 import org.restcomm.protocols.ss7.cap.api.errors.RequestedInfoErrorParameter;
 import org.restcomm.protocols.ss7.cap.api.errors.TaskRefusedParameter;
 import org.restcomm.protocols.ss7.cap.api.errors.UnavailableNetworkResource;
-import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageCancelFailedImpl;
-import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageRequestedInfoErrorImpl;
-import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageSystemFailureImpl;
-import org.restcomm.protocols.ss7.cap.errors.CAPErrorMessageTaskRefusedImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -65,64 +65,82 @@ public class ErrorMessageEncodingTest {
 
     @Test(groups = { "functional.decode", "errors.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(CAPErrorMessageTaskRefusedImpl.class);
+    	
+    	byte[] rawData = this.getDataTaskRefused();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getDataTaskRefused();
-        AsnInputStream ais = new AsnInputStream(data);
-        CAPErrorMessageTaskRefusedImpl elem = new CAPErrorMessageTaskRefusedImpl();
-        int tag = ais.readTag();
-        elem.decodeAll(ais);
-        assertEquals(tag, Tag.ENUMERATED);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CAPErrorMessageTaskRefusedImpl);
+        
+        CAPErrorMessageTaskRefusedImpl elem = (CAPErrorMessageTaskRefusedImpl)result.getResult();        
         assertEquals(elem.getTaskRefusedParameter(), TaskRefusedParameter.congestion);
 
-        data = this.getDataSystemFailure();
-        ais = new AsnInputStream(data);
-        CAPErrorMessageSystemFailureImpl elem2 = new CAPErrorMessageSystemFailureImpl();
-        tag = ais.readTag();
-        elem2.decodeAll(ais);
-        assertEquals(tag, Tag.ENUMERATED);
-        assertEquals(elem2.getUnavailableNetworkResource(), UnavailableNetworkResource.resourceStatusFailure);
+        parser.replaceClass(CAPErrorMessageSystemFailureImpl.class);
+    	rawData = this.getDataSystemFailure();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getDataRequestedInfoError();
-        ais = new AsnInputStream(data);
-        CAPErrorMessageRequestedInfoErrorImpl elem3 = new CAPErrorMessageRequestedInfoErrorImpl();
-        tag = ais.readTag();
-        elem3.decodeAll(ais);
-        assertEquals(tag, Tag.ENUMERATED);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CAPErrorMessageSystemFailureImpl);
+        
+        CAPErrorMessageSystemFailureImpl elem2 = (CAPErrorMessageSystemFailureImpl)result.getResult();    
+        assertEquals(elem2.getUnavailableNetworkResource(), UnavailableNetworkResource.resourceStatusFailure);
+        
+        parser.replaceClass(CAPErrorMessageRequestedInfoErrorImpl.class);
+    	rawData = this.getDataRequestedInfoError();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CAPErrorMessageRequestedInfoErrorImpl);
+        
+        CAPErrorMessageRequestedInfoErrorImpl elem3 = (CAPErrorMessageRequestedInfoErrorImpl)result.getResult();    
         assertEquals(elem3.getRequestedInfoErrorParameter(), RequestedInfoErrorParameter.unknownRequestedInfo);
 
-        data = this.getDataCancelFailed();
-        ais = new AsnInputStream(data);
-        CAPErrorMessageCancelFailedImpl elem4 = new CAPErrorMessageCancelFailedImpl();
-        tag = ais.readTag();
-        elem4.decodeAll(ais);
-        assertEquals(tag, Tag.ENUMERATED);
+        parser.replaceClass(CAPErrorMessageCancelFailedImpl.class);
+    	rawData = this.getDataCancelFailed();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
+
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof CAPErrorMessageCancelFailedImpl);
+        
+        CAPErrorMessageCancelFailedImpl elem4 = (CAPErrorMessageCancelFailedImpl)result.getResult();    
         assertEquals(elem4.getCancelProblem(), CancelProblem.tooLate);
     }
 
     @Test(groups = { "functional.encode", "errors.primitive" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	
         CAPErrorMessageTaskRefusedImpl elem = new CAPErrorMessageTaskRefusedImpl(TaskRefusedParameter.congestion);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getDataTaskRefused()));
+        byte[] rawData = this.getDataTaskRefused();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         CAPErrorMessageSystemFailureImpl elem2 = new CAPErrorMessageSystemFailureImpl(
                 UnavailableNetworkResource.resourceStatusFailure);
-        aos = new AsnOutputStream();
-        elem2.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getDataSystemFailure()));
-
+        rawData = this.getDataSystemFailure();
+        buffer=parser.encode(elem2);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
+        
         CAPErrorMessageRequestedInfoErrorImpl elem3 = new CAPErrorMessageRequestedInfoErrorImpl(
                 RequestedInfoErrorParameter.unknownRequestedInfo);
-        aos = new AsnOutputStream();
-        elem3.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getDataRequestedInfoError()));
+        rawData = this.getDataRequestedInfoError();
+        buffer=parser.encode(elem3);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         CAPErrorMessageCancelFailedImpl elem4 = new CAPErrorMessageCancelFailedImpl(CancelProblem.tooLate);
-        aos = new AsnOutputStream();
-        elem4.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getDataCancelFailed()));
+        rawData = this.getDataCancelFailed();
+        buffer=parser.encode(elem4);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "errors.primitive" })

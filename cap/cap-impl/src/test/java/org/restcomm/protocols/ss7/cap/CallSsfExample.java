@@ -11,18 +11,17 @@ import org.restcomm.protocols.ss7.cap.api.CAPDialogListener;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessage;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGeneralAbortReason;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPUserAbortReason;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.ReceivingSideID;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ActivityTestRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ActivityTestResponse;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ApplyChargingReportRequest;
@@ -60,12 +59,13 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargi
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 
 public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitchedCallListener {
 
@@ -102,8 +102,8 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     }
 
     public void sendInitialDP(SccpAddress origAddress, SccpAddress remoteAddress, int serviceKey,
-            CalledPartyNumberCap calledPartyNumber, CallingPartyNumberCap callingPartyNumber, LocationNumberCap locationNumber,
-            EventTypeBCSM eventTypeBCSM, LocationInformation locationInformation) throws CAPException {
+            CalledPartyNumberCapImpl calledPartyNumber, CallingPartyNumberCapImpl callingPartyNumber, LocationNumberCapImpl locationNumber,
+            EventTypeBCSM eventTypeBCSM, LocationInformationImpl locationInformation) throws CAPException {
         // First create Dialog
         CAPApplicationContext acn = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
         currentCapDialog = capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(acn, origAddress, remoteAddress);
@@ -117,10 +117,10 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
         this.cc.step = Step.initialDPSent;
     }
 
-    public void sendEventReportBCSM_OAnswer(OAnswerSpecificInfo oAnswerSpecificInfo, ReceivingSideID legID,
-            MiscCallInfo miscCallInfo) throws CAPException {
+    public void sendEventReportBCSM_OAnswer(OAnswerSpecificInfoImpl oAnswerSpecificInfo, ReceivingLegIDImpl legID,
+            MiscCallInfoImpl miscCallInfo) throws CAPException {
         if (currentCapDialog != null && this.cc != null) {
-            EventSpecificInformationBCSM eventSpecificInformationBCSM = this.capProvider.getCAPParameterFactory()
+            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = this.capProvider.getCAPParameterFactory()
                     .createEventSpecificInformationBCSM(oAnswerSpecificInfo);
             currentCapDialog.addEventReportBCSMRequest(EventTypeBCSM.oAnswer, eventSpecificInformationBCSM, legID,
                     miscCallInfo, null);
@@ -129,10 +129,10 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
         }
     }
 
-    public void sendEventReportBCSM_ODisconnect(ODisconnectSpecificInfo oDisconnectSpecificInfo, ReceivingSideID legID,
-            MiscCallInfo miscCallInfo) throws CAPException {
+    public void sendEventReportBCSM_ODisconnect(ODisconnectSpecificInfoImpl oDisconnectSpecificInfo, ReceivingLegIDImpl legID,
+            MiscCallInfoImpl miscCallInfo) throws CAPException {
         if (currentCapDialog != null && this.cc != null) {
-            EventSpecificInformationBCSM eventSpecificInformationBCSM = this.capProvider.getCAPParameterFactory()
+            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = this.capProvider.getCAPParameterFactory()
                     .createEventSpecificInformationBCSM(oDisconnectSpecificInfo);
             currentCapDialog.addEventReportBCSMRequest(EventTypeBCSM.oDisconnect, eventSpecificInformationBCSM, legID,
                     miscCallInfo, null);
@@ -207,7 +207,7 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     }
 
     @Override
-    public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
         // TODO Auto-generated method stub
 
     }

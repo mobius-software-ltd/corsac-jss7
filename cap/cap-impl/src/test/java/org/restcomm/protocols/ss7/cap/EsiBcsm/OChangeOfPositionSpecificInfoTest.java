@@ -22,21 +22,26 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -56,27 +61,26 @@ public class OChangeOfPositionSpecificInfoTest {
 
     @Test(groups = { "functional.decode", "EsiBcsm" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(OChangeOfPositionSpecificInfoImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        OChangeOfPositionSpecificInfoImpl elem = new OChangeOfPositionSpecificInfoImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof OChangeOfPositionSpecificInfoImpl);
+        
+        OChangeOfPositionSpecificInfoImpl elem = (OChangeOfPositionSpecificInfoImpl)result.getResult();        
         assertEquals((int) elem.getLocationInformation().getAgeOfLocationInformation(), 200);
         assertNull(elem.getMetDPCriteriaList());
 
+        rawData = this.getData2();
+        result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        data = this.getData2();
-        ais = new AsnInputStream(data);
-        elem = new OChangeOfPositionSpecificInfoImpl();
-        tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(ais.getTagClass(), Tag.CLASS_UNIVERSAL);
-
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof OChangeOfPositionSpecificInfoImpl);
+        
+        elem = (OChangeOfPositionSpecificInfoImpl)result.getResult();  
         assertEquals((int) elem.getLocationInformation().getAgeOfLocationInformation(), 200);
 
         assertEquals(elem.getMetDPCriteriaList().size(), 2);
@@ -86,24 +90,30 @@ public class OChangeOfPositionSpecificInfoTest {
 
     @Test(groups = { "functional.encode", "EsiBcsm" })
     public void testEncode() throws Exception {
-
-        LocationInformation locationInformation = new LocationInformationImpl(200, null, null, null, null, null, null, null, null, false, false, null, null);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(OChangeOfPositionSpecificInfoImpl.class);
+    	
+        LocationInformationImpl locationInformation = new LocationInformationImpl(200, null, null, null, null, null, null, null, null, false, false, null, null);
         OChangeOfPositionSpecificInfoImpl elem = new OChangeOfPositionSpecificInfoImpl(locationInformation, null);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData1());
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<MetDPCriterion> metDPCriteriaList = new ArrayList<MetDPCriterion>();
-        LAIFixedLength value = new LAIFixedLengthImpl(250, 1, 33000);
-        MetDPCriterion met1 = new MetDPCriterionImpl(value, MetDPCriterionImpl.LAIFixedLength_Option.leavingLocationAreaId);
+        List<MetDPCriterionImpl> metDPCriteriaList = new ArrayList<MetDPCriterionImpl>();
+        LAIFixedLengthImpl value = new LAIFixedLengthImpl(250, 1, 33000);
+        MetDPCriterionImpl met1 = new MetDPCriterionImpl(value, MetDPCriterionImpl.LAIFixedLength_Option.leavingLocationAreaId);
         metDPCriteriaList.add(met1);
-        MetDPCriterion met2 = new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interSystemHandOverToGSM);
+        MetDPCriterionImpl met2 = new MetDPCriterionImpl(MetDPCriterionImpl.Boolean_Option.interSystemHandOverToGSM);
         metDPCriteriaList.add(met2);
         elem = new OChangeOfPositionSpecificInfoImpl(locationInformation, metDPCriteriaList);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertEquals(aos.toByteArray(), this.getData2());
+        rawData = this.getData2();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
 
     /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })

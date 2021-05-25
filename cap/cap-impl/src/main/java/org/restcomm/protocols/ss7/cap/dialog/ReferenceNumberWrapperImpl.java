@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications  Copyright 2012.
- * and individual contributors
+ * JBoss, Home of Professional Open Source
+ * Copyright 2011, Red Hat, Inc. and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,30 +20,49 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
+package org.restcomm.protocols.ss7.cap.dialog;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class AuditableIndicatorWrapperImpl {
-	@ASNChoise
-	private AudibleIndicatorImpl audibleIndicator;
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public class ReferenceNumberWrapperImpl {
+	private ASNInteger reference;
 
-    public AuditableIndicatorWrapperImpl() {
+    public ReferenceNumberWrapperImpl() {
     }
 
-    public AuditableIndicatorWrapperImpl(AudibleIndicatorImpl audibleIndicator) {
-        this.audibleIndicator = audibleIndicator;
+    public ReferenceNumberWrapperImpl(Integer reference) {
+    	if(reference!=null) {
+    		this.reference = new ASNInteger();
+    		this.reference.setValue(reference.longValue());
+    	}
     }
 
-    public AudibleIndicatorImpl getAudibleIndicator() {
-    	return audibleIndicator;
+    public Integer getReference() {
+    	if(this.reference==null)
+    		return null;
+    	
+        return this.reference.getValue().intValue();
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("ReferenceNumber [");
+        if (this.reference != null) {
+            sb.append("reference=");
+            sb.append(reference);
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

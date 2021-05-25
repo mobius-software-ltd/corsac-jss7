@@ -28,14 +28,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ToneImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.PlayAnnouncementRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,13 +54,16 @@ public class PlayAnnouncementRequestTest {
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(PlayAnnouncementRequestImpl.class);
+    	
+    	byte[] rawData = this.getData1();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData1();
-        AsnInputStream ais = new AsnInputStream(data);
-        PlayAnnouncementRequestImpl elem = new PlayAnnouncementRequestImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, Tag.SEQUENCE);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof PlayAnnouncementRequestImpl);
+        
+        PlayAnnouncementRequestImpl elem = (PlayAnnouncementRequestImpl)result.getResult();        
         assertEquals(elem.getInformationToSend().getTone().getToneID(), 10);
         assertEquals((int) elem.getInformationToSend().getTone().getDuration(), 100);
         assertTrue(elem.getDisconnectFromIPForbidden());
@@ -70,16 +75,20 @@ public class PlayAnnouncementRequestTest {
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(PlayAnnouncementRequestImpl.class);
+    	
         ToneImpl tone = new ToneImpl(10, 100);
         // int toneID, Integer duration
         InformationToSendImpl informationToSend = new InformationToSendImpl(tone);
 
         PlayAnnouncementRequestImpl elem = new PlayAnnouncementRequestImpl(informationToSend, true, false,
                 CAPExtensionsTest.createTestCAPExtensions(), 22, true);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData1()));
+        byte[] rawData = this.getData1();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // InformationToSend informationToSend, boolean disconnectFromIPForbidden,
         // boolean requestAnnouncementCompleteNotification, CAPExtensions extensions, Integer callSegmentID, boolean

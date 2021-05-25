@@ -22,23 +22,26 @@
 package org.restcomm.protocols.ss7.cap.service.sms;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.sms.RequestReportSMSEventRequestImpl;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * 
@@ -54,15 +57,16 @@ public class RequestReportSMSEventRequestTest {
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
-        byte[] data = this.getData();
-        AsnInputStream asn = new AsnInputStream(data);
-        int tag = asn.readTag();
-        RequestReportSMSEventRequestImpl prim = new RequestReportSMSEventRequestImpl();
-        prim.decodeAll(asn);
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RequestReportSMSEventRequestImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        assertEquals(tag, Tag.SEQUENCE);
-        assertEquals(asn.getTagClass(), Tag.CLASS_UNIVERSAL);
-
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof RequestReportSMSEventRequestImpl);
+        
+        RequestReportSMSEventRequestImpl prim = (RequestReportSMSEventRequestImpl)result.getResult();        
         assertNotNull(prim.getSMSEvents());
         assertEquals(prim.getSMSEvents().size(), 1);
         assertEquals(prim.getSMSEvents().get(0).getEventTypeSMS(), EventTypeSMS.oSmsSubmission);
@@ -73,18 +77,19 @@ public class RequestReportSMSEventRequestTest {
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
-
-        SMSEventImpl smsEvent = new SMSEventImpl(EventTypeSMS.oSmsSubmission, MonitorMode.notifyAndContinue);
-        ArrayList<SMSEvent> smsEvents = new ArrayList<SMSEvent>();
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(RequestReportSMSEventRequestImpl.class);
+    	
+    	SMSEventImpl smsEvent = new SMSEventImpl(EventTypeSMS.oSmsSubmission, MonitorMode.notifyAndContinue);
+        List<SMSEventImpl> smsEvents = new ArrayList<SMSEventImpl>();
         smsEvents.add(smsEvent);
-        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
-        ;
-
+        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
+        
         RequestReportSMSEventRequestImpl prim = new RequestReportSMSEventRequestImpl(smsEvents, extensions);
-        AsnOutputStream asn = new AsnOutputStream();
-        prim.encodeAll(asn);
-
-        assertTrue(Arrays.equals(asn.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(prim);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
     }
-
 }

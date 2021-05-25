@@ -22,17 +22,23 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
+import java.util.Arrays;
+
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OCalledPartyBusySpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author Amit Bhayani
@@ -41,34 +47,40 @@ import org.testng.annotations.Test;
 public class OCalledPartyBusySpecificInfoTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 163, 4, (byte) 128, 2, (byte) 195, (byte) 128 };
+        return new byte[] { 48, 4, (byte) 128, 2, (byte) 195, (byte) 128 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(OCalledPartyBusySpecificInfoImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        OCalledPartyBusySpecificInfoImpl elem = new OCalledPartyBusySpecificInfoImpl();
-        int tag = ais.readTag();
-        assertEquals(tag, EventSpecificInformationBCSMImpl._ID_oCalledPartyBusySpecificInfo);
-        assertEquals(ais.getTagClass(), Tag.CLASS_CONTEXT_SPECIFIC);
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof OCalledPartyBusySpecificInfoImpl);
+        
+        OCalledPartyBusySpecificInfoImpl elem = (OCalledPartyBusySpecificInfoImpl)result.getResult();        
         assertEquals(elem.getBusyCause().getCauseIndicators().getCodingStandard(), CauseIndicators._CODING_STANDARD_NATIONAL);
         assertEquals(elem.getBusyCause().getCauseIndicators().getLocation(), CauseIndicators._LOCATION_TRANSIT_NETWORK);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
-
-        CauseIndicators causeIndicators = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_NATIONAL, CauseIndicators._LOCATION_TRANSIT_NETWORK, 0, 0,
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(OCalledPartyBusySpecificInfoImpl.class);
+    	
+    	CauseIndicators causeIndicators = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_NATIONAL, CauseIndicators._LOCATION_TRANSIT_NETWORK, 0, 0,
                 null);
 //        int codingStandard, int location, int recommendation, int causeValue, byte[] diagnostics
         CauseCapImpl cause = new CauseCapImpl(causeIndicators);
         OCalledPartyBusySpecificInfoImpl elem = new OCalledPartyBusySpecificInfoImpl(cause);
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, EventSpecificInformationBCSMImpl._ID_oCalledPartyBusySpecificInfo);
-        assertEquals(aos.toByteArray(), this.getData());
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
     }
 

@@ -23,17 +23,21 @@
 package org.restcomm.protocols.ss7.cap.isup;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.asn.Tag;
 import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -43,7 +47,7 @@ import org.testng.annotations.Test;
 public class GenericNumberCapTest {
 
     public byte[] getData() {
-        return new byte[] { (byte) 157, 7, 1, (byte) 131, 20, 7, 1, 9, 0 };
+        return new byte[] { 4, 7, 1, (byte) 131, 20, 7, 1, 9, 0 };
     }
 
     public byte[] getIntData() {
@@ -52,12 +56,16 @@ public class GenericNumberCapTest {
 
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GenericNumberCapImpl.class);
+    	
+    	byte[] rawData = this.getData();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
-        byte[] data = this.getData();
-        AsnInputStream ais = new AsnInputStream(data);
-        GenericNumberCapImpl elem = new GenericNumberCapImpl();
-        ais.readTag();
-        elem.decodeAll(ais);
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof GenericNumberCapImpl);
+        
+        GenericNumberCapImpl elem = (GenericNumberCapImpl)result.getResult();        
         GenericNumber gn = elem.getGenericNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(gn.getNatureOfAddressIndicator(), 3);
@@ -70,17 +78,23 @@ public class GenericNumberCapTest {
 
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
-
+    	ASNParser parser=new ASNParser(true);
+    	parser.replaceClass(GenericNumberCapImpl.class);
+    	
         GenericNumberCapImpl elem = new GenericNumberCapImpl(this.getIntData());
-        AsnOutputStream aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 29);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        byte[] rawData = this.getData();
+        ByteBuf buffer=parser.encode(elem);
+        byte[] encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         GenericNumber rn = new GenericNumberImpl(3, "7010900", 1, 1, 1, false, 0);
         elem = new GenericNumberCapImpl(rn);
-        aos = new AsnOutputStream();
-        elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 29);
-        assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
+        rawData = this.getData();
+        buffer=parser.encode(elem);
+        encodedData = new byte[buffer.readableBytes()];
+        buffer.readBytes(encodedData);
+        assertTrue(Arrays.equals(rawData, encodedData));
 
         // int natureOfAddresIndicator, String address, int numberQualifierIndicator, int numberingPlanIndicator, int
         // addressRepresentationREstrictedIndicator,
