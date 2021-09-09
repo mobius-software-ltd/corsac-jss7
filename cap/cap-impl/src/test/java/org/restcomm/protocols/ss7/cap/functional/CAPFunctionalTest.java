@@ -1284,6 +1284,13 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                                     null, sequence++));
                             dlg.send();
 
+                            try {
+                            	Thread.sleep(100);
+                            }
+                            catch(Exception ex) {
+                            	
+                            }
+                            
                             GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
                             genericNumber.setAddress("444422220000");
                             genericNumber.setAddressRepresentationRestrictedIndicator(GenericNumber._APRI_ALLOWED);
@@ -1379,6 +1386,13 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ResetTimerRequest, null, sequence++));
                             dlg.send();
 
+                            try {
+                            	Thread.sleep(100);
+                            }
+                            catch(Exception ex) {
+                            	
+                            }
+                            
                             CollectedDigitsImpl collectedDigits = this.capParameterFactory.createCollectedDigits(1, 11, null, null,
                                     null, null, null, null, null, null, null);
                             CollectedInfoImpl collectedInfo = this.capParameterFactory.createCollectedInfo(collectedDigits);
@@ -1397,6 +1411,13 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
                             dlg.send();
 
+                            try {
+                            	Thread.sleep(100);
+                            }
+                            catch(Exception ex) {
+                            	
+                            }
+                            
                             dlg.addCancelRequest_InvokeId(10);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
                             dlg.close(false);
@@ -4300,7 +4321,14 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                                 null, sequence++));
 
                         dlg.send();
-
+                        
+                        try {
+                        	Thread.sleep(100);
+                        }
+                        catch(Exception ex) {
+                        	
+                        }
+                        
                         SMSAddressStringImpl callingPartysNumber = this.capParameterFactory.createSMSAddressString(AddressNature.reserved,
                                 NumberingPlan.ISDN, "Drosd");
                         CalledPartyBCDNumberImpl destinationSubscriberNumber = this.capParameterFactory.createCalledPartyBCDNumber(
