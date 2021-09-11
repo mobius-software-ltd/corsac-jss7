@@ -85,10 +85,10 @@ public class PDPTypeImpl extends ASNOctetString {
     public PDPTypeValue getPDPTypeValue() {
     	byte[] data=getData();
         if (data != null && data.length == 2) {
-            if ((data[0] & 0xFF) == _VALUE_ETSI) {
+            if ((data[0] & 0x0F) == (_VALUE_ETSI & 0x0F)) {
                 if (data[1] == _VALUE_PPP)
                     return PDPTypeValue.PPP;
-            } else if ((data[0] & 0xFF) == _VALUE_IETF) {
+            } else if ((data[0] & 0x0F) == (_VALUE_IETF & 0x0F)) {
                 if (data[1] == _VALUE_IPv4)
                     return PDPTypeValue.IPv4;
                 if (data[1] == _VALUE_IPv6)
