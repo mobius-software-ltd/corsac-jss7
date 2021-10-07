@@ -30,8 +30,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  *
@@ -52,7 +52,7 @@ public interface DialogPrimitiveFactory {
 
     TCUniRequest createUni(Dialog d);
 
-    ApplicationContextNameImpl createApplicationContextName(List<Long> oid);
+    ApplicationContextName createApplicationContextName(List<Long> oid);
 
-    UserInformationImpl createUserInformation();
+    UserInformation createUserInformation();
 }

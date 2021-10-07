@@ -42,49 +42,48 @@ import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.OperationState;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.TRPseudoState;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.ASNAbortSource;
 import org.restcomm.protocols.ss7.tcap.asn.AbortSourceType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDUImpl;
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
-import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDU;
+import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
+import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
+import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
-import org.restcomm.protocols.ss7.tcap.asn.ResultImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnosticImpl;
+import org.restcomm.protocols.ss7.tcap.asn.Result;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.ResultType;
-import org.restcomm.protocols.ss7.tcap.asn.TCAbortMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCBeginMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCContinueMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCEndMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCUniMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.Utils;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
@@ -92,12 +91,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DialogPrimitiveFactoryImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCBeginIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCContinueIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCEndIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCPAbortIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCUniIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCUserAbortIndicationImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
@@ -125,8 +118,8 @@ public class DialogImpl implements Dialog {
     private long idleTaskTimeout;
 
     // sent/received acn, holds last acn/ui.
-    private ApplicationContextNameImpl lastACN;
-    private UserInformationImpl lastUI; // optional
+    private ApplicationContextName lastACN;
+    private UserInformation lastUI; // optional
 
     private Long localTransactionIdObject;
     private long localTransactionId;
@@ -153,13 +146,13 @@ public class DialogImpl implements Dialog {
     private int lastInvokeIdIndex = _INVOKE_TABLE_SHIFT - 1;
 
     // only originating side keeps FSM, see: Q.771 - 3.1.5
-    protected InvokeImpl[] operationsSent = new InvokeImpl[invokeIDTable.length];
-    protected InvokeImpl[] operationsSentA = new InvokeImpl[invokeIDTable.length];
+    protected Invoke[] operationsSent = new Invoke[invokeIDTable.length];
+    protected Invoke[] operationsSentA = new Invoke[invokeIDTable.length];
     private ConcurrentHashMap<Long,Long> incomingInvokeList = new ConcurrentHashMap<Long,Long>();
     private ScheduledExecutorService executor;
 
     // scheduled components list
-    private List<ComponentImpl> scheduledComponentList = new ArrayList<ComponentImpl>();
+    private List<BaseComponent> scheduledComponentList = new ArrayList<BaseComponent>();
     private TCAPProviderImpl provider;
 
     private int seqControl;
@@ -248,7 +241,7 @@ public class DialogImpl implements Dialog {
 
     public void release() {
     	for (int i = 0; i < this.operationsSent.length; i++) {
-            InvokeImpl invokeImpl = this.operationsSent[i];
+            Invoke invokeImpl = this.operationsSent[i];
             if (invokeImpl != null) {
                 invokeImpl.setState(OperationState.Idle);
                 // TODO whether to call operationTimedOut or not is still not clear
@@ -325,14 +318,14 @@ public class DialogImpl implements Dialog {
 
         // lookup through send buffer.
         for (index = 0; index < this.scheduledComponentList.size(); index++) {
-        	ComponentImpl cr = this.scheduledComponentList.get(index);
-            if (cr.getType() == ComponentType.Invoke && cr.getInvoke().getInvokeId().equals(invokeId)) {
+        	BaseComponent cr = this.scheduledComponentList.get(index);        	
+            if ((cr instanceof Invoke) && cr.getInvokeId().equals(invokeId)) {
                 // lucky
                 // TCInvokeRequestImpl invoke = (TCInvokeRequestImpl) cr;
                 // there is no notification on cancel?
                 this.scheduledComponentList.remove(index);
-                cr.getInvoke().stopTimer();
-                cr.getInvoke().setState(OperationState.Idle);
+                ((Invoke)cr).stopTimer();
+                ((Invoke)cr).setState(OperationState.Idle);
                 return true;
             }
         }
@@ -409,14 +402,14 @@ public class DialogImpl implements Dialog {
     /**
      * @return the acn
      */
-    public ApplicationContextNameImpl getApplicationContextName() {
+    public ApplicationContextName getApplicationContextName() {
         return lastACN;
     }
 
     /**
      * @return the ui
      */
-    public UserInformationImpl getUserInformation() {
+    public UserInformation getUserInformation() {
         return lastUI;
     }
 
@@ -453,15 +446,15 @@ public class DialogImpl implements Dialog {
         
         this.idleTimerActionTaken.set(true);
         restartIdleTimer();
-        TCBeginMessageImpl tcbm = (TCBeginMessageImpl) TcapFactory.createTCBeginMessage();
+        TCBeginMessage tcbm = TcapFactory.createTCBeginMessage();
 
         // build DP
 
         if (event.getApplicationContextName() != null) {
             this.dpSentInBegin = true;
-            DialogPortionImpl dp = TcapFactory.createDialogPortion();
+            DialogPortion dp = TcapFactory.createDialogPortion();
             dp.setUnidirectional(false);
-            DialogRequestAPDUImpl apdu = TcapFactory.createDialogAPDURequest();
+            DialogRequestAPDU apdu = TcapFactory.createDialogAPDURequest();
             apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
             dp.setDialogAPDU(apdu);
             apdu.setApplicationContextName(event.getApplicationContextName());
@@ -476,12 +469,9 @@ public class DialogImpl implements Dialog {
         // now comps
         tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
         if (this.scheduledComponentList.size() > 0) {
-        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
         	this.prepareComponents(componentsToSend);
-            
-            ComponentPortionImpl cPortion=new ComponentPortionImpl();
-            cPortion.setComponents(componentsToSend);
-            tcbm.setComponent(cPortion);
+            tcbm.setComponents(componentsToSend);
         }
 
         try {
@@ -514,14 +504,14 @@ public class DialogImpl implements Dialog {
         if (this.state.get() == TRPseudoState.InitialReceived) {
             this.idleTimerActionTaken.set(true);
             restartIdleTimer();
-            TCContinueMessageImpl tcbm = (TCContinueMessageImpl) TcapFactory.createTCContinueMessage();
+            TCContinueMessage tcbm = TcapFactory.createTCContinueMessage();
 
             if (event.getApplicationContextName() != null) {
 
                 // set dialog portion
-                DialogPortionImpl dp = TcapFactory.createDialogPortion();
+                DialogPortion dp = TcapFactory.createDialogPortion();
                 dp.setUnidirectional(false);
-                DialogResponseAPDUImpl apdu = TcapFactory.createDialogAPDUResponse();
+                DialogResponseAPDU apdu = TcapFactory.createDialogAPDUResponse();
                 apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
                 dp.setDialogAPDU(apdu);
                 apdu.setApplicationContextName(event.getApplicationContextName());
@@ -530,9 +520,9 @@ public class DialogImpl implements Dialog {
                 }
                 // WHERE THE HELL THIS COMES FROM!!!!
                 // WHEN REJECTED IS USED !!!!!
-                ResultImpl res = TcapFactory.createResult();
+                Result res = TcapFactory.createResult();
                 res.setResultType(ResultType.Accepted);
-                ResultSourceDiagnosticImpl rsd = TcapFactory.createResultSourceDiagnostic();
+                ResultSourceDiagnostic rsd = TcapFactory.createResultSourceDiagnostic();
                 rsd.setDialogServiceUserType(DialogServiceUserType.Null);
                 apdu.setResultSourceDiagnostic(rsd);
                 apdu.setResult(res);
@@ -543,11 +533,9 @@ public class DialogImpl implements Dialog {
             tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
             tcbm.setDestinationTransactionId(this.remoteTransactionId);
             if (this.scheduledComponentList.size() > 0) {
-                List<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+                List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
-                ComponentPortionImpl cPortion=new ComponentPortionImpl();
-                cPortion.setComponents(componentsToSend);
-                tcbm.setComponent(cPortion);
+                tcbm.setComponents(componentsToSend);
             }
             
             // local address may change, lets check it;
@@ -572,17 +560,14 @@ public class DialogImpl implements Dialog {
             this.idleTimerActionTaken.set(true);
             restartIdleTimer();
             // in this we ignore acn and passed args(except qos)
-            TCContinueMessageImpl tcbm = (TCContinueMessageImpl) TcapFactory.createTCContinueMessage();
+            TCContinueMessage tcbm = TcapFactory.createTCContinueMessage();
 
             tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
             tcbm.setDestinationTransactionId(this.remoteTransactionId);
             if (this.scheduledComponentList.size() > 0) {
-                List<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+                List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
-                ComponentPortionImpl cPortion=new ComponentPortionImpl();
-                cPortion.setComponents(componentsToSend);
-                tcbm.setComponent(cPortion);
-
+                tcbm.setComponents(componentsToSend);
             }
 
             try {
@@ -613,7 +598,7 @@ public class DialogImpl implements Dialog {
             throw new TCAPSendException("Unstructured dialogs do not use End");
         }
 
-        TCEndMessageImpl tcbm = null;
+        TCEndMessage tcbm = null;
         if (state.get() == TRPseudoState.InitialReceived) {
             // TC-END request primitive issued in response to a TC-BEGIN
             // indication primitive
@@ -624,26 +609,24 @@ public class DialogImpl implements Dialog {
                 // we do not send TC-END in PreArranged closing case
                 return;
 
-            tcbm = (TCEndMessageImpl) TcapFactory.createTCEndMessage();
+            tcbm = TcapFactory.createTCEndMessage();
             tcbm.setDestinationTransactionId(this.remoteTransactionId);
 
             if (this.scheduledComponentList.size() > 0) {
-                List<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+                List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
                 componentsToSend.addAll(this.scheduledComponentList);
                 this.scheduledComponentList.clear();
                 this.prepareComponents(componentsToSend);
-                ComponentPortionImpl cPortion=new ComponentPortionImpl();
-                cPortion.setComponents(componentsToSend);
-                tcbm.setComponent(cPortion);
+                tcbm.setComponents(componentsToSend);
             }
 
-            ApplicationContextNameImpl acn = event.getApplicationContextName();
+            ApplicationContextName acn = event.getApplicationContextName();
             if (acn != null) { // acn & DialogPortion is absent in TCAP V1
 
                 // set dialog portion
-                DialogPortionImpl dp = TcapFactory.createDialogPortion();
+                DialogPortion dp = TcapFactory.createDialogPortion();
                 dp.setUnidirectional(false);
-                DialogResponseAPDUImpl apdu = TcapFactory.createDialogAPDUResponse();
+                DialogResponseAPDU apdu = TcapFactory.createDialogAPDUResponse();
                 apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
                 dp.setDialogAPDU(apdu);
 
@@ -654,9 +637,9 @@ public class DialogImpl implements Dialog {
 
                 // WHERE THE HELL THIS COMES FROM!!!!
                 // WHEN REJECTED IS USED !!!!!
-                ResultImpl res = TcapFactory.createResult();
+                Result res = TcapFactory.createResult();
                 res.setResultType(ResultType.Accepted);
-                ResultSourceDiagnosticImpl rsd = TcapFactory.createResultSourceDiagnostic();
+                ResultSourceDiagnostic rsd = TcapFactory.createResultSourceDiagnostic();
                 rsd.setDialogServiceUserType(DialogServiceUserType.Null);
                 apdu.setResultSourceDiagnostic(rsd);
                 apdu.setResult(res);
@@ -674,15 +657,13 @@ public class DialogImpl implements Dialog {
                 // we do not send TC-END in PreArranged closing case
                 return;
 
-            tcbm = (TCEndMessageImpl) TcapFactory.createTCEndMessage();
+            tcbm = TcapFactory.createTCEndMessage();
 
             tcbm.setDestinationTransactionId(this.remoteTransactionId);
             if (this.scheduledComponentList.size() > 0) {
-                List<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+                List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
-                ComponentPortionImpl cPortion=new ComponentPortionImpl();
-                cPortion.setComponents(componentsToSend);
-                tcbm.setComponent(cPortion);
+                tcbm.setComponents(componentsToSend);
             }
 
             // ITU - T Q774 Section 3.2.2.1 Dialogue Control
@@ -728,11 +709,11 @@ public class DialogImpl implements Dialog {
             throw new TCAPSendException("Structured dialogs do not use Uni");
         }
 
-        TCUniMessageImpl msg = (TCUniMessageImpl) TcapFactory.createTCUniMessage();
+        TCUniMessage msg = TcapFactory.createTCUniMessage();
 
         if (event.getApplicationContextName() != null) {
-            DialogPortionImpl dp = TcapFactory.createDialogPortion();
-            DialogRequestAPDUImpl apdu = TcapFactory.createDialogAPDURequest();
+            DialogPortion dp = TcapFactory.createDialogPortion();
+            DialogRequestAPDU apdu = TcapFactory.createDialogAPDURequest();
             apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
             apdu.setApplicationContextName(event.getApplicationContextName());
             if (event.getUserInformation() != null) {
@@ -745,13 +726,11 @@ public class DialogImpl implements Dialog {
         }
 
         if (this.scheduledComponentList.size() > 0) {
-            List<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+            List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
             componentsToSend.addAll(this.scheduledComponentList);
             this.scheduledComponentList.clear();
             this.prepareComponents(componentsToSend);
-            ComponentPortionImpl cPortion=new ComponentPortionImpl();
-            cPortion.setComponents(componentsToSend);
-            msg.setComponent(cPortion);
+            msg.setComponents(componentsToSend);
         }
 
         try {
@@ -777,7 +756,7 @@ public class DialogImpl implements Dialog {
 
         if (this.state.get() == TRPseudoState.InitialReceived || this.state.get() == TRPseudoState.Active) {
             // allowed
-            DialogPortionImpl dp = null;
+            DialogPortion dp = null;
             if (event.getUserInformation() != null || event.getDialogServiceUserType() != null) {
                 // User information can be absent in TCAP V1
 
@@ -788,14 +767,14 @@ public class DialogImpl implements Dialog {
                     // ITU T Q.774 Read Dialogue end on page 12 and 3.2.2
                     // Abnormal
                     // procedures on page 13 and 14
-                    DialogResponseAPDUImpl apdu = TcapFactory.createDialogAPDUResponse();
+                    DialogResponseAPDU apdu = TcapFactory.createDialogAPDUResponse();
                     apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
                     apdu.setApplicationContextName(event.getApplicationContextName());
                     apdu.setUserInformation(event.getUserInformation());
 
-                    ResultImpl res = TcapFactory.createResult();
+                    Result res = TcapFactory.createResult();
                     res.setResultType(ResultType.RejectedPermanent);
-                    ResultSourceDiagnosticImpl rsd = TcapFactory.createResultSourceDiagnostic();
+                    ResultSourceDiagnostic rsd = TcapFactory.createResultSourceDiagnostic();
                     rsd.setDialogServiceUserType(event.getDialogServiceUserType());
                     apdu.setResultSourceDiagnostic(rsd);
                     apdu.setResult(res);
@@ -824,17 +803,15 @@ public class DialogImpl implements Dialog {
                     // TC-U-ABORT request primitive is coded in the
                     // user-information
                     // field of the ABRT APDU.
-                    DialogAbortAPDUImpl dapdu = TcapFactory.createDialogAPDUAbort();
+                    DialogAbortAPDU dapdu = TcapFactory.createDialogAPDUAbort();
 
-                    ASNAbortSource as = (ASNAbortSource)TcapFactory.createAbortSource();
-                    as.setAbortSourceType(AbortSourceType.User);
-                    dapdu.setAbortSource(as);
+                    dapdu.setAbortSource(AbortSourceType.User);
                     dapdu.setUserInformation(event.getUserInformation());
                     dp.setDialogAPDU(dapdu);
                 }
             }
 
-            TCAbortMessageImpl msg = (TCAbortMessageImpl) TcapFactory.createTCAbortMessage();
+            TCAbortMessage msg = TcapFactory.createTCAbortMessage();
             msg.setDestinationTransactionId(this.remoteTransactionId);
             msg.setDialogPortion(dp);
 
@@ -869,12 +846,12 @@ public class DialogImpl implements Dialog {
 
     public int getDataLength(TCBeginRequest event) throws TCAPSendException {
 
-        TCBeginMessageImpl tcbm = (TCBeginMessageImpl) TcapFactory.createTCBeginMessage();
+        TCBeginMessage tcbm = TcapFactory.createTCBeginMessage();
 
         if (event.getApplicationContextName() != null) {
-            DialogPortionImpl dp = TcapFactory.createDialogPortion();
+            DialogPortion dp = TcapFactory.createDialogPortion();
             dp.setUnidirectional(false);
-            DialogRequestAPDUImpl apdu = TcapFactory.createDialogAPDURequest();
+            DialogRequestAPDU apdu = TcapFactory.createDialogAPDURequest();
             apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
             dp.setDialogAPDU(apdu);
             apdu.setApplicationContextName(event.getApplicationContextName());
@@ -887,15 +864,13 @@ public class DialogImpl implements Dialog {
         // now comps
         tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
         if (this.scheduledComponentList.size() > 0) {
-        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	ArrayList<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
         	
         	for (int index = 0; index < this.scheduledComponentList.size(); index++) {
                 componentsToSend.add(this.scheduledComponentList.get(index));
             }
         	
-            ComponentPortionImpl cPortion=new ComponentPortionImpl();
-            cPortion.setComponents(componentsToSend);
-            tcbm.setComponent(cPortion);
+            tcbm.setComponents(componentsToSend);
         }
 
         try {
@@ -913,14 +888,14 @@ public class DialogImpl implements Dialog {
 
     public int getDataLength(TCContinueRequest event) throws TCAPSendException {
 
-        TCContinueMessageImpl tcbm = (TCContinueMessageImpl) TcapFactory.createTCContinueMessage();
+        TCContinueMessage tcbm = TcapFactory.createTCContinueMessage();
 
         if (event.getApplicationContextName() != null) {
 
             // set dialog portion
-            DialogPortionImpl dp = TcapFactory.createDialogPortion();
+            DialogPortion dp = TcapFactory.createDialogPortion();
             dp.setUnidirectional(false);
-            DialogResponseAPDUImpl apdu = TcapFactory.createDialogAPDUResponse();
+            DialogResponseAPDU apdu = TcapFactory.createDialogAPDUResponse();
             apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
             dp.setDialogAPDU(apdu);
             apdu.setApplicationContextName(event.getApplicationContextName());
@@ -929,9 +904,9 @@ public class DialogImpl implements Dialog {
             }
             // WHERE THE HELL THIS COMES FROM!!!!
             // WHEN REJECTED IS USED !!!!!
-            ResultImpl res = TcapFactory.createResult();
+            Result res = TcapFactory.createResult();
             res.setResultType(ResultType.Accepted);
-            ResultSourceDiagnosticImpl rsd = TcapFactory.createResultSourceDiagnostic();
+            ResultSourceDiagnostic rsd = TcapFactory.createResultSourceDiagnostic();
             rsd.setDialogServiceUserType(DialogServiceUserType.Null);
             apdu.setResultSourceDiagnostic(rsd);
             apdu.setResult(res);
@@ -942,15 +917,12 @@ public class DialogImpl implements Dialog {
         tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
         tcbm.setDestinationTransactionId(this.remoteTransactionId);
         if (this.scheduledComponentList.size() > 0) {
-        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	ArrayList<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
         	
         	for (int index = 0; index < this.scheduledComponentList.size(); index++) {
                 componentsToSend.add(this.scheduledComponentList.get(index));
             }
-        	
-            ComponentPortionImpl cPortion=new ComponentPortionImpl();
-            cPortion.setComponents(componentsToSend);
-            tcbm.setComponent(cPortion);
+        	tcbm.setComponents(componentsToSend);
         }
 
         try {
@@ -970,29 +942,26 @@ public class DialogImpl implements Dialog {
 
         // TC-END request primitive issued in response to a TC-BEGIN
         // indication primitive
-        TCEndMessageImpl tcbm = (TCEndMessageImpl) TcapFactory.createTCEndMessage();
+        TCEndMessage tcbm = TcapFactory.createTCEndMessage();
         tcbm.setDestinationTransactionId(this.remoteTransactionId);
 
         if (this.scheduledComponentList.size() > 0) {
-        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	ArrayList<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
         	
         	for (int index = 0; index < this.scheduledComponentList.size(); index++) {
                 componentsToSend.add(this.scheduledComponentList.get(index));
             }
-        	
-            ComponentPortionImpl cPortion=new ComponentPortionImpl();
-            cPortion.setComponents(componentsToSend);
-            tcbm.setComponent(cPortion);
+        	tcbm.setComponents(componentsToSend);
         }
 
         if (state.get() == TRPseudoState.InitialReceived) {
-            ApplicationContextNameImpl acn = event.getApplicationContextName();
+            ApplicationContextName acn = event.getApplicationContextName();
             if (acn != null) { // acn & DialogPortion is absent in TCAP V1
 
                 // set dialog portion
-                DialogPortionImpl dp = TcapFactory.createDialogPortion();
+                DialogPortion dp = TcapFactory.createDialogPortion();
                 dp.setUnidirectional(false);
-                DialogResponseAPDUImpl apdu = TcapFactory.createDialogAPDUResponse();
+                DialogResponseAPDU apdu = TcapFactory.createDialogAPDUResponse();
                 apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
                 dp.setDialogAPDU(apdu);
 
@@ -1003,9 +972,9 @@ public class DialogImpl implements Dialog {
 
                 // WHERE THE HELL THIS COMES FROM!!!!
                 // WHEN REJECTED IS USED !!!!!
-                ResultImpl res = TcapFactory.createResult();
+                Result res = TcapFactory.createResult();
                 res.setResultType(ResultType.Accepted);
-                ResultSourceDiagnosticImpl rsd = TcapFactory.createResultSourceDiagnostic();
+                ResultSourceDiagnostic rsd = TcapFactory.createResultSourceDiagnostic();
                 rsd.setDialogServiceUserType(DialogServiceUserType.Null);
                 apdu.setResultSourceDiagnostic(rsd);
                 apdu.setResult(res);
@@ -1028,11 +997,11 @@ public class DialogImpl implements Dialog {
 
     public int getDataLength(TCUniRequest event) throws TCAPSendException {
 
-        TCUniMessageImpl msg = (TCUniMessageImpl) TcapFactory.createTCUniMessage();
+        TCUniMessage msg = TcapFactory.createTCUniMessage();
 
         if (event.getApplicationContextName() != null) {
-            DialogPortionImpl dp = TcapFactory.createDialogPortion();
-            DialogRequestAPDUImpl apdu = TcapFactory.createDialogAPDURequest();
+            DialogPortion dp = TcapFactory.createDialogPortion();
+            DialogRequestAPDU apdu = TcapFactory.createDialogAPDURequest();
             apdu.setDoNotSendProtocolVersion(doNotSendProtocolVersion());
             apdu.setApplicationContextName(event.getApplicationContextName());
             if (event.getUserInformation() != null) {
@@ -1045,15 +1014,12 @@ public class DialogImpl implements Dialog {
         }
 
         if (this.scheduledComponentList.size() > 0) {
-        	ArrayList<ComponentImpl> componentsToSend = new ArrayList<ComponentImpl>(this.scheduledComponentList.size());
+        	ArrayList<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
         	
         	for (int index = 0; index < this.scheduledComponentList.size(); index++) {
                 componentsToSend.add(this.scheduledComponentList.get(index));
             }
-        	
-            ComponentPortionImpl cPortion=new ComponentPortionImpl();
-            cPortion.setComponents(componentsToSend);
-            msg.setComponent(cPortion);
+        	msg.setComponents(componentsToSend);
 
         }
 
@@ -1070,19 +1036,21 @@ public class DialogImpl implements Dialog {
         }
     }
     
-    public Long sendData(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,OperationCodeImpl operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException, TCAPException {
-    	ComponentImpl componentRequest=new ComponentImpl();
+    public Long sendData(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,OperationCode operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException, TCAPException {
     	if(isRequest!=null && isRequest) {
-    		InvokeImpl invoke;
+    		Invoke invoke;
     		if(invokeClass==null)
-    			invoke=new InvokeImpl();
+    			invoke=TcapFactory.createComponentInvoke();
     		else
-    			invoke=new InvokeImpl(invokeClass);
+    			invoke=TcapFactory.createComponentInvoke(invokeClass);
     		
     		if(customTimeout!=null)
     			invoke.setTimeout(customTimeout);
     		
-    		invoke.setOperationCode(operationCode);
+    		if(operationCode!=null && operationCode.getLocalOperationCode()!=null)
+    			invoke.setOperationCode(operationCode.getLocalOperationCode());
+    		else if(operationCode!=null && operationCode.getGlobalOperationCode()!=null)
+    			invoke.setOperationCode(operationCode.getGlobalOperationCode());
     		
     		if(param!=null)
     			invoke.setParameter(param);
@@ -1095,7 +1063,7 @@ public class DialogImpl implements Dialog {
     		if(linkedId!=null)
     			invoke.setLinkedId(linkedId);
     		
-    		componentRequest.setInvoke(invoke);
+    		this.scheduledComponentList.add(invoke);
     		
     		// check if its taken!
             int invokeIndex = DialogImpl.getIndexFromInvokeId(invoke.getInvokeId());
@@ -1113,68 +1081,90 @@ public class DialogImpl implements Dialog {
             if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
                 invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
     	} else if(isLastResponse!=null && isLastResponse) {
-    		ReturnResultLastImpl returnResultLast=new ReturnResultLastImpl();
+    		ReturnResultLast returnResultLast=TcapFactory.createComponentReturnResultLast();
     		returnResultLast.setInvokeId(invokeId);
-    		returnResultLast.setOperationCode(operationCode);
+    		
+    		if(operationCode!=null && operationCode.getLocalOperationCode()!=null)
+    			returnResultLast.setOperationCode(operationCode.getLocalOperationCode());
+    		else if(operationCode!=null && operationCode.getGlobalOperationCode()!=null)
+    			returnResultLast.setOperationCode(operationCode.getGlobalOperationCode());
+    		
     		if(param!=null)
     			returnResultLast.setParameter(param);
-    		componentRequest.setReturnResultLast(returnResultLast);
+    		this.scheduledComponentList.add(returnResultLast);
     		
-    		if(componentRequest.getExistingComponent()!=null && componentRequest.getExistingComponent().getInvokeId()!=null)
-        		this.removeIncomingInvokeId(componentRequest.getExistingComponent().getInvokeId());
+    		if(returnResultLast.getInvokeId()!=null)
+        		this.removeIncomingInvokeId(returnResultLast.getInvokeId());
     	} else {
-    		ReturnResultImpl returnResult=new ReturnResultImpl();
+    		ReturnResult returnResult=TcapFactory.createComponentReturnResult();
     		returnResult.setInvokeId(invokeId);
-    		returnResult.setOperationCode(operationCode);
+    		
+    		if(operationCode!=null && operationCode.getLocalOperationCode()!=null)
+    			returnResult.setOperationCode(operationCode.getLocalOperationCode());
+    		else if(operationCode!=null && operationCode.getGlobalOperationCode()!=null)
+    			returnResult.setOperationCode(operationCode.getGlobalOperationCode());
+    		
     		if(param!=null)
     			returnResult.setParameter(param);    		
-    		componentRequest.setReturnResult(returnResult);
+    		this.scheduledComponentList.add(returnResult);
     	}
     	
-        this.scheduledComponentList.add(componentRequest);
         return invokeId;
     }
     
-    public void sendReject(Long invokeId,ProblemImpl project) throws TCAPSendException {
-    	RejectImpl reject=new RejectImpl();
+    public void sendReject(Long invokeId,Problem problem) throws TCAPSendException {
+    	Reject reject=TcapFactory.createComponentReject();
     	reject.setInvokeId(invokeId);
-    	reject.setProblem(project);
+    	
+    	try {
+	    	if(problem!=null && problem.getGeneralProblemType()!=null)
+	    		reject.setProblem(problem.getGeneralProblemType());
+	    	else if(problem!=null && problem.getInvokeProblemType()!=null)
+	    		reject.setProblem(problem.getInvokeProblemType());
+	    	else if(problem!=null && problem.getReturnErrorProblemType()!=null)
+	    		reject.setProblem(problem.getReturnErrorProblemType());
+	    	else if(problem!=null && problem.getReturnResultProblemType()!=null)
+	    		reject.setProblem(problem.getReturnResultProblemType());
+    	}
+    	catch(ParseException ex) {
+    		throw new TCAPSendException("problem can not be parsed");
+    	}
+    	
     	reject.setLocalOriginated(true);
     	
-    	ComponentImpl componentRequest=new ComponentImpl();
-    	componentRequest.setReject(reject);
-    	
-    	if(componentRequest.getExistingComponent()!=null && componentRequest.getExistingComponent().getInvokeId()!=null)
-    		this.removeIncomingInvokeId(componentRequest.getExistingComponent().getInvokeId());            
+    	if(reject.getInvokeId()!=null)
+    		this.removeIncomingInvokeId(reject.getInvokeId());            
             
-        this.scheduledComponentList.add(componentRequest);
+        this.scheduledComponentList.add(reject);
     }
     
-    public void sendError(Long invokeId,ErrorCodeImpl errorCode,Object param) throws TCAPSendException {
-    	ReturnErrorImpl error=new ReturnErrorImpl();
-    	error.setErrorCode(errorCode);
+    public void sendError(Long invokeId,ErrorCode errorCode,Object param) throws TCAPSendException {
+    	ReturnError error=TcapFactory.createComponentReturnError();
+    	
+    	if(errorCode!=null && errorCode.getLocalErrorCode()!=null)
+    		error.setErrorCode(errorCode.getLocalErrorCode());
+    	else if(errorCode!=null && errorCode.getGlobalErrorCode()!=null)
+    		error.setErrorCode(errorCode.getGlobalErrorCode());
+    	
     	error.setInvokeId(invokeId);
     	error.setParameter(param);
     	
-    	ComponentImpl componentRequest=new ComponentImpl();
-    	componentRequest.setReturnError(error);
-    	
-    	if(componentRequest.getExistingComponent()!=null && componentRequest.getExistingComponent().getInvokeId()!=null)
-    		this.removeIncomingInvokeId(componentRequest.getExistingComponent().getInvokeId());            
+    	if(error.getInvokeId()!=null)
+    		this.removeIncomingInvokeId(error.getInvokeId());            
             
-        this.scheduledComponentList.add(componentRequest);
+        this.scheduledComponentList.add(error);
     }
 
     public void processInvokeWithoutAnswer(Long invokeId) {
         this.removeIncomingInvokeId(invokeId);
     }
 
-    private void prepareComponents(List<ComponentImpl> res) {
+    private void prepareComponents(List<BaseComponent> res) {
     	int index = 0;
         while (this.scheduledComponentList.size() > index) {
-        	ComponentImpl cr = this.scheduledComponentList.get(index);
-            if (cr.getType() == ComponentType.Invoke) {
-                InvokeImpl in = cr.getInvoke();
+        	BaseComponent cr = this.scheduledComponentList.get(index);
+            if (cr instanceof Invoke) {
+                Invoke in = (Invoke)cr;
                 // FIXME: check not null?
                 this.operationsSent[getIndexFromInvokeId(in.getInvokeId())] = in;
                 in.setState(OperationState.Sent);
@@ -1222,19 +1212,19 @@ public class DialogImpl implements Dialog {
 
             // no dialog portion!
             // convert to indications
-            TCUniIndicationImpl tcUniIndication = (TCUniIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+            TCUniIndication tcUniIndication = ((DialogPrimitiveFactoryImpl) this.provider
                     .getDialogPrimitiveFactory()).createUniIndication(this);
 
             tcUniIndication.setDestinationAddress(localAddress);
             tcUniIndication.setOriginatingAddress(remoteAddress);
             // now comps
-            List<ComponentImpl> comps = msg.getComponent().getComponents();
+            List<BaseComponent> comps = msg.getComponents();
             tcUniIndication.setComponents(comps);
 
             if (msg.getDialogPortion() != null) {
                 // it should be dialog req?
-                DialogPortionImpl dp = msg.getDialogPortion();
-                DialogRequestAPDUImpl apdu = (DialogRequestAPDUImpl) dp.getDialogAPDU();
+                DialogPortion dp = msg.getDialogPortion();
+                DialogRequestAPDU apdu = (DialogRequestAPDU) dp.getDialogAPDU();
                 this.lastACN = apdu.getApplicationContextName();
                 this.lastUI = apdu.getUserInformation();
                 tcUniIndication.setApplicationContextName(this.lastACN);
@@ -1251,7 +1241,7 @@ public class DialogImpl implements Dialog {
 
     protected void processBegin(TCBeginMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
 
-        TCBeginIndicationImpl tcBeginIndication = null;
+        TCBeginIndication tcBeginIndication = null;
         // this is invoked ONLY for server.
         if (state.get() != TRPseudoState.Idle) {
             // should we terminate dialog here?
@@ -1268,14 +1258,14 @@ public class DialogImpl implements Dialog {
         this.setLocalAddress(localAddress);
         this.setRemoteTransactionId(msg.getOriginatingTransactionId());
         // convert to indications
-        tcBeginIndication = (TCBeginIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider.getDialogPrimitiveFactory())
+        tcBeginIndication = ((DialogPrimitiveFactoryImpl) this.provider.getDialogPrimitiveFactory())
                 .createBeginIndication(this);
 
         tcBeginIndication.setDestinationAddress(localAddress);
         tcBeginIndication.setOriginatingAddress(remoteAddress);
 
         // if APDU and context data present, lets store it
-        DialogPortionImpl dialogPortion = msg.getDialogPortion();
+        DialogPortion dialogPortion = msg.getDialogPortion();
 
         if (dialogPortion != null && dialogPortion.getDialogAPDU()!=null) {
             // this should not be null....
@@ -1287,14 +1277,14 @@ public class DialogImpl implements Dialog {
                 this.sendAbnormalDialog();
                 return;
             }
-            DialogRequestAPDUImpl requestAPDU = (DialogRequestAPDUImpl) apdu;
+            DialogRequestAPDU requestAPDU = (DialogRequestAPDU) apdu;
             this.lastACN = requestAPDU.getApplicationContextName();
             this.lastUI = requestAPDU.getUserInformation();
             tcBeginIndication.setApplicationContextName(this.lastACN);
             tcBeginIndication.setUserInformation(this.lastUI);
         }
         
-        tcBeginIndication.setComponents(processOperationsState(msg.getComponent()));
+        tcBeginIndication.setComponents(processOperationsState(msg.getComponents()));
      // change state - before we deliver
         this.setState(TRPseudoState.InitialReceived);
 
@@ -1304,10 +1294,10 @@ public class DialogImpl implements Dialog {
 
     protected void processContinue(TCContinueMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
 
-        TCContinueIndicationImpl tcContinueIndication = null;
+        TCContinueIndication tcContinueIndication = null;
         if (state.get() == TRPseudoState.InitialSent) {
             restartIdleTimer();
-            tcContinueIndication = (TCContinueIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+            tcContinueIndication = ((DialogPrimitiveFactoryImpl) this.provider
                     .getDialogPrimitiveFactory()).createContinueIndication(this);
 
             // in continue remote address MAY change be changed, so lets
@@ -1318,7 +1308,7 @@ public class DialogImpl implements Dialog {
 
             // here we will receive DialogResponse APDU - if request was
             // present!
-            DialogPortionImpl dialogPortion = msg.getDialogPortion();
+            DialogPortion dialogPortion = msg.getDialogPortion();
             if (dialogPortion != null) {
                 // this should not be null....
                 DialogAPDU apdu = dialogPortion.getDialogAPDU();
@@ -1329,7 +1319,7 @@ public class DialogImpl implements Dialog {
                     this.sendAbnormalDialog();
                     return;
                 }
-                DialogResponseAPDUImpl responseAPDU = (DialogResponseAPDUImpl) apdu;
+                DialogResponseAPDU responseAPDU = (DialogResponseAPDU) apdu;
                 // this will be present if APDU is present.
                 if (!responseAPDU.getApplicationContextName().equals(this.lastACN)) {
                     this.lastACN = responseAPDU.getApplicationContextName();
@@ -1378,7 +1368,7 @@ public class DialogImpl implements Dialog {
             }
             tcContinueIndication.setOriginatingAddress(remoteAddress);
             // now comps
-            tcContinueIndication.setComponents(processOperationsState(msg.getComponent()));
+            tcContinueIndication.setComponents(processOperationsState(msg.getComponents()));
             // change state
             this.setState(TRPseudoState.Active);
 
@@ -1388,13 +1378,13 @@ public class DialogImpl implements Dialog {
         } else if (state.get() == TRPseudoState.Active) {
             restartIdleTimer();
             // XXX: here NO APDU will be present, hence, no ACN/UI change
-            tcContinueIndication = (TCContinueIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+            tcContinueIndication = ((DialogPrimitiveFactoryImpl) this.provider
                     .getDialogPrimitiveFactory()).createContinueIndication(this);
 
             tcContinueIndication.setOriginatingAddress(remoteAddress);
 
             // now comps
-            tcContinueIndication.setComponents(processOperationsState(msg.getComponent()));
+            tcContinueIndication.setComponents(processOperationsState(msg.getComponents()));
 
             // lets deliver to provider
             this.provider.deliver(this, tcContinueIndication);
@@ -1410,10 +1400,10 @@ public class DialogImpl implements Dialog {
     }
 
     protected void processEnd(TCEndMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
-        TCEndIndicationImpl tcEndIndication = null;
+        TCEndIndication tcEndIndication = null;
         try {
         	restartIdleTimer();
-            tcEndIndication = (TCEndIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+            tcEndIndication = ((DialogPrimitiveFactoryImpl) this.provider
                     .getDialogPrimitiveFactory()).createEndIndication(this);
 
             if (state.get() == TRPseudoState.InitialSent) {
@@ -1423,7 +1413,7 @@ public class DialogImpl implements Dialog {
                 tcEndIndication.setOriginatingAddress(remoteAddress);
             }
 
-            DialogPortionImpl dialogPortion = msg.getDialogPortion();
+            DialogPortion dialogPortion = msg.getDialogPortion();
             if (dialogPortion != null) {
                 DialogAPDU apdu = dialogPortion.getDialogAPDU();
                 if (apdu.getType() != DialogAPDUType.Response) {
@@ -1434,7 +1424,7 @@ public class DialogImpl implements Dialog {
                     // because no sense to send an answer to TC-END
                     return;
                 }
-                DialogResponseAPDUImpl responseAPDU = (DialogResponseAPDUImpl) apdu;
+                DialogResponseAPDU responseAPDU = (DialogResponseAPDU) apdu;
                 // this will be present if APDU is present.
                 if (!responseAPDU.getApplicationContextName().equals(this.lastACN)) {
                     this.lastACN = responseAPDU.getApplicationContextName();
@@ -1447,7 +1437,7 @@ public class DialogImpl implements Dialog {
 
             }
             // now comps
-            tcEndIndication.setComponents(processOperationsState(msg.getComponent()));
+            tcEndIndication.setComponents(processOperationsState(msg.getComponents()));
 
             this.provider.deliver(this, tcEndIndication);
         } finally {
@@ -1459,22 +1449,28 @@ public class DialogImpl implements Dialog {
     	try {
             Boolean IsAareApdu = false;
             Boolean IsAbrtApdu = false;
-            ApplicationContextNameImpl acn = null;
-            ResultSourceDiagnosticImpl resultSourceDiagnostic = null;
-            ASNAbortSource abrtSrc = null;
-            UserInformationImpl userInfo = null;
-            DialogPortionImpl dp = msg.getDialogPortion();
+            ApplicationContextName acn = null;
+            ResultSourceDiagnostic resultSourceDiagnostic = null;
+            AbortSourceType abrtSrc = null;
+            UserInformation userInfo = null;
+            DialogPortion dp = msg.getDialogPortion();
             if (dp != null) {
                 DialogAPDU apdu = dp.getDialogAPDU();
                 if (apdu != null && apdu.getType() == DialogAPDUType.Abort) {
                     IsAbrtApdu = true;
-                    DialogAbortAPDUImpl abortApdu = (DialogAbortAPDUImpl) apdu;
-                    abrtSrc = abortApdu.getAbortSource();
+                    DialogAbortAPDU abortApdu = (DialogAbortAPDU) apdu;
+                    try {
+                    	abrtSrc = abortApdu.getAbortSource();
+                    }
+                    catch(ParseException ex) {
+                    	
+                    }
+                    
                     userInfo = abortApdu.getUserInformation();
                 }
                 if (apdu != null && apdu.getType() == DialogAPDUType.Response) {
                     IsAareApdu = true;
-                    DialogResponseAPDUImpl resptApdu = (DialogResponseAPDUImpl) apdu;
+                    DialogResponseAPDU resptApdu = (DialogResponseAPDU) apdu;
                     acn = resptApdu.getApplicationContextName();
                     resptApdu.getResult();
                     resultSourceDiagnostic = resptApdu.getResultSourceDiagnostic();
@@ -1491,17 +1487,7 @@ public class DialogImpl implements Dialog {
             }
             
             if (type == null) {
-            	AbortSourceType asType=null;  
-            	if(abrtSrc!=null) {
-	            	try {
-	            		asType=abrtSrc.getAbortSourceType();
-	            	}
-	            	catch(ParseException ex) {
-	            		
-	            	}
-            	}
-            	
-                if ((asType != null && asType == AbortSourceType.Provider)) {
+            	if ((abrtSrc != null && abrtSrc == AbortSourceType.Provider)) {
                     type = PAbortCauseType.AbnormalDialogue;
                 }
                 
@@ -1526,7 +1512,7 @@ public class DialogImpl implements Dialog {
             if (type != null) {
 
                 // its TC-P-Abort
-                TCPAbortIndicationImpl tcAbortIndication = (TCPAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                TCPAbortIndication tcAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
                         .getDialogPrimitiveFactory()).createPAbortIndication(this);
                 tcAbortIndication.setPAbortCause(type);
 
@@ -1534,12 +1520,12 @@ public class DialogImpl implements Dialog {
 
             } else {
                 // its TC-U-Abort
-                TCUserAbortIndicationImpl tcUAbortIndication = (TCUserAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+                TCUserAbortIndication tcUAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
                         .getDialogPrimitiveFactory()).createUAbortIndication(this);
                 if (IsAareApdu)
-                    tcUAbortIndication.SetAareApdu();
+                    tcUAbortIndication.setAareApdu();
                 if (IsAbrtApdu)
-                    tcUAbortIndication.SetAbrtApdu();
+                    tcUAbortIndication.setAbrtApdu();
                 tcUAbortIndication.setUserInformation(userInfo);
                 tcUAbortIndication.setAbortSource(abrtSrc);
                 tcUAbortIndication.setApplicationContextName(acn);
@@ -1560,7 +1546,7 @@ public class DialogImpl implements Dialog {
     }
 
     protected void sendAbnormalDialog() {
-        TCPAbortIndicationImpl tcAbortIndication = null;
+        TCPAbortIndication tcAbortIndication = null;
         try {
             if (this.remoteTransactionId == null) {
                 // no remoteTransactionId - we can not send back TC-ABORT
@@ -1568,18 +1554,15 @@ public class DialogImpl implements Dialog {
             }
 
             // sending to the remote side
-            DialogPortionImpl dp = TcapFactory.createDialogPortion();
+            DialogPortion dp = TcapFactory.createDialogPortion();
             dp.setUnidirectional(false);
 
-            DialogAbortAPDUImpl dapdu = TcapFactory.createDialogAPDUAbort();
+            DialogAbortAPDU dapdu = TcapFactory.createDialogAPDUAbort();
 
-            ASNAbortSource as = TcapFactory.createAbortSource();
-            as.setAbortSourceType(AbortSourceType.Provider);
-
-            dapdu.setAbortSource((ASNAbortSource)as);
+            dapdu.setAbortSource(AbortSourceType.Provider);
             dp.setDialogAPDU(dapdu);
 
-            TCAbortMessageImpl msg = (TCAbortMessageImpl) TcapFactory.createTCAbortMessage();
+            TCAbortMessage msg = TcapFactory.createTCAbortMessage();
             msg.setDestinationTransactionId(this.remoteTransactionId);
             msg.setDialogPortion(dp);
 
@@ -1594,7 +1577,7 @@ public class DialogImpl implements Dialog {
             }
 
             // sending to the local side
-            tcAbortIndication = (TCPAbortIndicationImpl) ((DialogPrimitiveFactoryImpl) this.provider
+            tcAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
                     .getDialogPrimitiveFactory()).createPAbortIndication(this);
             tcAbortIndication.setPAbortCause(PAbortCauseType.AbnormalDialogue);
             // tcAbortIndication.setLocalProviderOriginated(true);
@@ -1606,8 +1589,8 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    public OperationCodeImpl getOperationCodeFromInvoke(Long invokeId) {
-    	InvokeImpl invoke = null;
+    public OperationCode getOperationCodeFromInvoke(Long invokeId) {
+    	Invoke invoke = null;
         if (invokeId != null) {
         	int index = getIndexFromInvokeId(invokeId);
             invoke = this.operationsSent[index];            
@@ -1619,51 +1602,56 @@ public class DialogImpl implements Dialog {
         return null;
     }
     
-    protected List<ComponentImpl> processOperationsState(ComponentPortionImpl componentsPortion) {
-        if(componentsPortion==null) {
+    protected List<BaseComponent> processOperationsState(List<BaseComponent> components) {
+        if(components==null) {
         	return null;
         }
-        
-        List<ComponentImpl> components=componentsPortion.getComponents();
-    	if (components == null) {
-            return null;
-        }
 
-        List<ComponentImpl> resultingIndications = new ArrayList<ComponentImpl>();
-        for (ComponentImpl ci : components) {
+        List<BaseComponent> resultingIndications = new ArrayList<BaseComponent>();
+        for (BaseComponent ci : components) {
             Long invokeId;
-            if (ci.getType() == ComponentType.Invoke)
-                invokeId = ci.getInvoke().getLinkedId();
+            if (ci instanceof Invoke)
+                invokeId = ((Invoke)ci).getLinkedId();
             else
-                invokeId = ci.getExistingComponent().getInvokeId();
+                invokeId = ci.getInvokeId();
             
-            InvokeImpl invoke = null;
+            Invoke invoke = null;
             int index = 0;
             if (invokeId != null) {
                 index = getIndexFromInvokeId(invokeId);
                 invoke = this.operationsSent[index];                
             }
 
-            switch (ci.getType()) {
+            ComponentType ct=ComponentType.Invoke;
+            if(ci instanceof ReturnError)
+            	ct=ComponentType.ReturnError;
+            else if(ci instanceof ReturnResult)
+            	ct=ComponentType.ReturnResult;
+            else if(ci instanceof ReturnResultLast)
+            	ct=ComponentType.ReturnResultLast;
+            else if(ci instanceof Reject)
+            	ct=ComponentType.Reject;
+            
+            switch (ct) {
 
                 case Invoke:
                     if (invokeId != null && invoke == null) {
                         logger.error(String.format("Rx : %s but no sent Invoke for linkedId exists", ci));
 
-                        ProblemImpl p = new ProblemImpl();
+                        Problem p = TcapFactory.createProblem();
                         p.setInvokeProblemType(InvokeProblemType.UnrechognizedLinkedID);
-                        this.addReject(resultingIndications, ci.getInvoke().getInvokeId(), p);
+                        this.addReject(resultingIndications, ((Invoke)ci).getInvokeId(), p);
                     } else {
                         if (invoke != null) {
-                        	ci.getInvoke().setLinkedInvoke(invoke);
+                        	((Invoke)ci).setLinkedInvoke(invoke);
                         }
 
-                        if (!this.addIncomingInvokeId(ci.getInvoke().getInvokeId())) {
+                        if (!this.addIncomingInvokeId(((Invoke)ci).getInvokeId())) {
                             logger.error(String.format("Rx : %s but there is already Invoke with this invokeId", ci));
 
-                            ProblemImpl p = new ProblemImpl();
+                            Problem p = TcapFactory.createProblem();
                             p.setInvokeProblemType(InvokeProblemType.DuplicateInvokeID);
-                            this.addReject(resultingIndications, ci.getInvoke().getInvokeId(), p);
+                            this.addReject(resultingIndications, ((Invoke)ci).getInvokeId(), p);
                         } else {
                             resultingIndications.add(ci);
                         }
@@ -1675,20 +1663,24 @@ public class DialogImpl implements Dialog {
                     if (invoke == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
 
-                        ProblemImpl p = new ProblemImpl();
+                        Problem p = TcapFactory.createProblem();
                         p.setReturnResultProblemType(ReturnResultProblemType.UnrecognizedInvokeID);
-                        this.addReject(resultingIndications, ci.getReturnResult().getInvokeId(), p);
+                        this.addReject(resultingIndications, ((ReturnResult)ci).getInvokeId(), p);
                     } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class3) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 3", ci));
 
-                        ProblemImpl p = new ProblemImpl();
+                        Problem p = TcapFactory.createProblem();
                         p.setReturnResultProblemType(ReturnResultProblemType.ReturnResultUnexpected);
-                        this.addReject(resultingIndications, ci.getReturnResult().getInvokeId(), p);
+                        this.addReject(resultingIndications, ((ReturnResult)ci).getInvokeId(), p);
                     } else {
                         resultingIndications.add(ci);
-                        ReturnResultImpl rri = (ReturnResultImpl) ci.getReturnResult();
-                        if (rri.getOperationCode() == null)
-                            rri.setOperationCode(invoke.getOperationCode());
+                        ReturnResult rri = ((ReturnResult)ci);
+                        if (rri.getOperationCode() == null) {
+                        	if(invoke.getOperationCode()!=null && invoke.getOperationCode().getLocalOperationCode()!=null)
+                        		rri.setOperationCode(invoke.getOperationCode().getLocalOperationCode());
+                        	else if(invoke.getOperationCode()!=null && invoke.getOperationCode().getGlobalOperationCode()!=null)
+                        		rri.setOperationCode(invoke.getOperationCode().getGlobalOperationCode());
+                        }
                     }
                     break;
 
@@ -1697,23 +1689,25 @@ public class DialogImpl implements Dialog {
                     if (invoke == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
 
-                        ProblemImpl p = new ProblemImpl();
+                        Problem p = TcapFactory.createProblem();
                         p.setReturnResultProblemType(ReturnResultProblemType.UnrecognizedInvokeID);
-                        this.addReject(resultingIndications, ci.getExistingComponent().getInvokeId(), p);
+                        this.addReject(resultingIndications, ((ReturnResultLast)ci).getInvokeId(), p);
                     } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class3) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 3", ci));
 
-                        ProblemImpl p = new ProblemImpl();
+                        Problem p = TcapFactory.createProblem();
                         p.setReturnResultProblemType(ReturnResultProblemType.ReturnResultUnexpected);
-                        this.addReject(resultingIndications, ci.getExistingComponent().getInvokeId(), p);
+                        this.addReject(resultingIndications, ((ReturnResultLast)ci).getInvokeId(), p);
                     } else {
                         invoke.onReturnResultLast();
                         if (invoke.isSuccessReported()) {
                             resultingIndications.add(ci);
                         }
-                        ReturnResultLastImpl rri = (ReturnResultLastImpl) ci.getReturnResultLast();
-                        if (rri.getOperationCode() == null)
-                            rri.setOperationCode(invoke.getOperationCode());
+                        ReturnResultLast rri = ((ReturnResultLast)ci);
+                        if(invoke.getOperationCode()!=null && invoke.getOperationCode().getLocalOperationCode()!=null)
+                    		rri.setOperationCode(invoke.getOperationCode().getLocalOperationCode());
+                    	else if(invoke.getOperationCode()!=null && invoke.getOperationCode().getGlobalOperationCode()!=null)
+                    		rri.setOperationCode(invoke.getOperationCode().getGlobalOperationCode());                        
                     }
                     break;
 
@@ -1721,15 +1715,15 @@ public class DialogImpl implements Dialog {
                     if (invoke == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
 
-                        ProblemImpl p = new ProblemImpl();
+                        Problem p = TcapFactory.createProblem();
                         p.setReturnErrorProblemType(ReturnErrorProblemType.UnrecognizedInvokeID);
-                        this.addReject(resultingIndications, ci.getExistingComponent().getInvokeId(), p);
+                        this.addReject(resultingIndications, ((ReturnError)ci).getInvokeId(), p);
                     } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class2) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 2", ci));
 
-                        ProblemImpl p = new ProblemImpl();
+                        Problem p = TcapFactory.createProblem();
                         p.setReturnErrorProblemType(ReturnErrorProblemType.ReturnErrorUnexpected);
-                        this.addReject(resultingIndications, ci.getExistingComponent().getInvokeId(), p);
+                        this.addReject(resultingIndications, ((ReturnError)ci).getInvokeId(), p);
                     } else {
                         invoke.onError();
                         if (invoke.isErrorReported()) {
@@ -1739,11 +1733,11 @@ public class DialogImpl implements Dialog {
                     break;
 
                 case Reject:
-                    RejectImpl rej = ci.getReject();
+                    Reject rej = ((Reject)ci);
                     if (invoke != null) {
                         // If the Reject Problem is the InvokeProblemType we
                         // should move the invoke to the idle state
-                        ProblemImpl problem = rej.getProblem();
+                        Problem problem = rej.getProblem();
                         InvokeProblemType ipt=null;
                         try {
                         	ipt=problem.getInvokeProblemType();
@@ -1776,13 +1770,27 @@ public class DialogImpl implements Dialog {
         return resultingIndications;
     }
 
-    private void addReject(List<ComponentImpl> resultingIndications, Long invokeId, ProblemImpl p) {
+    private void addReject(List<BaseComponent> resultingIndications, Long invokeId, Problem p) {
         try {
-        	ComponentImpl component=TcapFactory.createComponentReject();
-        	component.getReject().setLocalOriginated(true);
-        	component.getReject().setInvokeId(invokeId);
-        	component.getReject().setProblem(p);
-            resultingIndications.add(component);
+        	Reject reject=TcapFactory.createComponentReject();
+        	reject.setLocalOriginated(true);
+        	reject.setInvokeId(invokeId);
+        	
+        	try {
+	        	if(p!=null && p.getGeneralProblemType()!=null)
+	        		reject.setProblem(p.getGeneralProblemType());
+	        	else if(p!=null && p.getInvokeProblemType()!=null)
+	        		reject.setProblem(p.getInvokeProblemType());
+	        	else if(p!=null && p.getReturnErrorProblemType()!=null)
+	        		reject.setProblem(p.getReturnErrorProblemType());
+	        	else if(p!=null && p.getReturnResultProblemType()!=null)
+	        		reject.setProblem(p.getReturnResultProblemType());
+        	}
+        	catch(ParseException ex) {
+        		//should not happen
+        	}
+        	
+        	resultingIndications.add(reject);
 
             if (this.isStructured())
                 this.sendReject(invokeId, p);
@@ -1860,7 +1868,7 @@ public class DialogImpl implements Dialog {
     // ////////////////////
     // IND like methods //
     // ///////////////////
-    public void operationEnded(InvokeImpl tcInvokeRequestImpl) {
+    public void operationEnded(Invoke tcInvokeRequestImpl) {
     	// this op died cause of timeout, TC-L-CANCEL!
         int index = getIndexFromInvokeId(tcInvokeRequestImpl.getInvokeId());
         freeInvokeId(tcInvokeRequestImpl.getInvokeId());
@@ -1875,7 +1883,7 @@ public class DialogImpl implements Dialog {
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#operationEnded(
      * org.restcomm.protocols.ss7.tcap.tc.component.TCInvokeRequestImpl)
      */
-    public void operationTimedOut(InvokeImpl invoke) {
+    public void operationTimedOut(Invoke invoke) {
         // this op died cause of timeout, TC-L-CANCEL!
     	int index = getIndexFromInvokeId(invoke.getInvokeId());
         freeInvokeId(invoke.getInvokeId());
@@ -1887,7 +1895,7 @@ public class DialogImpl implements Dialog {
     // TC-TIMER-RESET
     public void resetTimer(Long invokeId) throws TCAPException {
     	int index = getIndexFromInvokeId(invokeId);
-        InvokeImpl invoke = operationsSent[index];
+        Invoke invoke = operationsSent[index];
         if (invoke == null) {
             throw new TCAPException("No operation with this ID");
         }

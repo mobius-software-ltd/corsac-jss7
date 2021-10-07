@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 
 /**
  *
@@ -67,7 +67,7 @@ public interface MAPDialogListener {
      *
      */
     void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextNameImpl alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer);
+            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer);
 
     // void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason, MAPProviderError providerError,
     // ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer);

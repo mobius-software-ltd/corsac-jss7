@@ -20,17 +20,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcap.asn.comp;
+package org.restcomm.protocols.ss7.tcap.asn;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
-/**
- * @author baranowb
- * @author amit bhayani
- * @author sergey vetyutnev
- *
- */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,lengthIndefinite=false)
-public class ReturnResultLastImpl extends ReturnResultImpl {
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=true,lengthIndefinite=false)
+public interface Result {
+
+    void setResultType(ResultType t);
+
+    ResultType getResultType() throws ParseException;
+
 }

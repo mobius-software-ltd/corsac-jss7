@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  *
@@ -288,7 +288,7 @@ public interface MAPDialog extends Serializable {
      * @param problem
      * @throws MAPException
      */
-    public void sendRejectComponent(Long invokeId, ProblemImpl problem) throws MAPException;
+    public void sendRejectComponent(Long invokeId, Problem problem) throws MAPException;
 
     /**
      * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)

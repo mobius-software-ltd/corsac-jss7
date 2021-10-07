@@ -28,8 +28,8 @@ package org.restcomm.protocols.ss7.tcap.tc.dialog.events;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  * @author baranowb
@@ -41,8 +41,8 @@ public class TCUniRequestImpl extends DialogRequestImpl implements TCUniRequest 
     private SccpAddress originatingAddress, destinationAddress;
 
     // fields
-    private ApplicationContextNameImpl applicationContextName;
-    private UserInformationImpl userInformation;
+    private ApplicationContextName applicationContextName;
+    private UserInformation userInformation;
 
     TCUniRequestImpl() {
         super(EventType.Uni);
@@ -54,7 +54,7 @@ public class TCUniRequestImpl extends DialogRequestImpl implements TCUniRequest 
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getApplicationContextName()
      */
-    public ApplicationContextNameImpl getApplicationContextName() {
+    public ApplicationContextName getApplicationContextName() {
         return applicationContextName;
     }
 
@@ -83,7 +83,7 @@ public class TCUniRequestImpl extends DialogRequestImpl implements TCUniRequest 
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getUserInformation()
      */
-    public UserInformationImpl getUserInformation() {
+    public UserInformation getUserInformation() {
 
         return this.userInformation;
     }
@@ -94,7 +94,7 @@ public class TCUniRequestImpl extends DialogRequestImpl implements TCUniRequest 
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# setApplicationContextName
      * (org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName)
      */
-    public void setApplicationContextName(ApplicationContextNameImpl acn) {
+    public void setApplicationContextName(ApplicationContextName acn) {
         this.applicationContextName = acn;
 
     }
@@ -127,7 +127,7 @@ public class TCUniRequestImpl extends DialogRequestImpl implements TCUniRequest 
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest#
      * setUserInformation(org.restcomm.protocols.ss7.tcap.asn.UserInformation)
      */
-    public void setUserInformation(UserInformationImpl acn) {
+    public void setUserInformation(UserInformation acn) {
         this.userInformation = acn;
 
     }

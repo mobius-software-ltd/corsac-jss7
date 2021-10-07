@@ -30,10 +30,12 @@ public class FieldData
 {
 	private FieldType fieldType;
 	private Field field;
+	private Class<?> defaultClass;
 	
-	public FieldData(FieldType fieldType, Field field) {
+	public FieldData(FieldType fieldType, Field field,Class<?> defaultClass) {
 		this.field = field;
 		this.fieldType = fieldType;
+		this.defaultClass=defaultClass;
 	}
 	
 	public FieldType getFieldType() {
@@ -51,7 +53,15 @@ public class FieldData
 	public void setField(Field field) {
 		this.field = field;
 	}
+	
+	public Class<?> getDefaultClass() {
+		return defaultClass;
+	}
 
+	public void setDefaultClass(Class<?> defaultClass) {
+		this.defaultClass=defaultClass;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

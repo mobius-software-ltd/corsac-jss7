@@ -102,25 +102,25 @@ public class DialogPortionTest {
 
         DialogRequestAPDUImpl dialogRequestAPDU = (DialogRequestAPDUImpl) dialogAPDU;
 
-        ApplicationContextNameImpl acn = dialogRequestAPDU.getApplicationContextName();
+        ApplicationContextName acn = dialogRequestAPDU.getApplicationContextName();
 
         assertNotNull(acn);
 
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L }), acn.getValue());
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L }), acn.getOid());
 
-        UserInformationImpl userInfos = dialogRequestAPDU.getUserInformation();
+        UserInformation userInfos = dialogRequestAPDU.getUserInformation();
 
         assertNotNull(userInfos);
 
-        assertTrue(userInfos.getExternal().isIDObjectIdentifier());
+        assertTrue(userInfos.isIDObjectIdentifier());
 
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), userInfos.getExternal().getObjectIdentifier());
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), userInfos.getObjectIdentifier());
 
-        assertFalse(userInfos.getExternal().isIDIndirect());
+        assertFalse(userInfos.isIDIndirect());
 
-        assertTrue(userInfos.getExternal().isValueObject());
+        assertTrue(userInfos.isValueObject());
         
-        ByteBuf innerBuffer=parser.encode(userInfos.getExternal().getChild().getValue());
+        ByteBuf innerBuffer=parser.encode(userInfos.getChild());
         byte[] outputData=innerBuffer.array();
         
         assertTrue(Arrays.equals(new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
@@ -150,7 +150,7 @@ public class DialogPortionTest {
         assertNotNull(d);
         assertEquals(DialogAPDUType.Request, d.getType());
         DialogRequestAPDUImpl dr = (DialogRequestAPDUImpl) d;
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 1L, 1L, 1L, 3L, 0L }), dr.getApplicationContextName().getValue());
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 1L, 1L, 1L, 3L, 0L }), dr.getApplicationContextName().getOid());
         assertNull(dr.getUserInformation());
 
         ByteBuf buffer=parser.encode(dpi);

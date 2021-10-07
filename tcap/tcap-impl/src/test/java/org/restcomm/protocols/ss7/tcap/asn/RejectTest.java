@@ -25,8 +25,6 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
@@ -34,13 +32,16 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -69,9 +70,9 @@ public class RejectTest {
         ComponentImpl comp = (ComponentImpl)output;
 
         assertEquals(ComponentType.Reject, comp.getType(), "Wrong component Type");
-        RejectImpl rej = comp.getReject();
+        Reject rej = comp.getReject();
         assertEquals(new Long(1), rej.getInvokeId(), "Wrong invoke ID");
-        ProblemImpl prb = rej.getProblem();
+        Problem prb = rej.getProblem();
         assertEquals(ProblemType.Invoke, prb.getType());
         assertEquals(InvokeProblemType.MistypedParameter, prb.getInvokeProblemType());
 
@@ -94,23 +95,23 @@ public class RejectTest {
     	parser.loadClass(ComponentImpl.class);
     	
         byte[] expected = this.getData();
-        ComponentImpl rej = TcapFactory.createComponentReject();
-        rej.getReject().setInvokeId(1L);
-        ProblemImpl prb = TcapFactory.createProblem();
-        prb.setInvokeProblemType(InvokeProblemType.MistypedParameter);
-        rej.getReject().setProblem(prb);
-
-        ByteBuf buffer=parser.encode(rej);
+        Reject rej = TcapFactory.createComponentReject();
+        rej.setInvokeId(1L);
+        rej.setProblem(InvokeProblemType.MistypedParameter);
+        ComponentImpl comp=new ComponentImpl();
+        comp.setReject(rej);
+        
+        ByteBuf buffer=parser.encode(comp);
         byte[] encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getDataNullInvokeId();
         rej = TcapFactory.createComponentReject();
-        prb = TcapFactory.createProblem();
-        prb.setGeneralProblemType(GeneralProblemType.UnrecognizedComponent);
-        rej.getReject().setProblem(prb);
-
-        buffer=parser.encode(rej);
+        rej.setProblem(GeneralProblemType.UnrecognizedComponent);
+        comp=new ComponentImpl();
+        comp.setReject(rej);
+        
+        buffer=parser.encode(comp);
         encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
     }

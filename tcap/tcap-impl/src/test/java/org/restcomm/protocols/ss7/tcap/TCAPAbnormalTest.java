@@ -34,8 +34,7 @@ import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -356,11 +355,9 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.sendBegin();
         Thread.sleep(WAIT_TIME);
 
-        UserInformationImpl userInformation = TcapFactory.createUserInformation();
-        UserInformationExternalImpl external=new UserInformationExternalImpl();
-        external.setIdentifier(Arrays.asList(new Long[] { 1L, 2L, 3L }));
-        external.setChild(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
-        userInformation.setExternal(external);
+        UserInformation userInformation = TcapFactory.createUserInformation();
+        userInformation.setIdentifier(Arrays.asList(new Long[] { 1L, 2L, 3L }));
+        userInformation.setChild(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
         server.sendAbort(null, userInformation, null);
         Thread.sleep(WAIT_TIME);
 

@@ -38,9 +38,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  * This class must be the super class of all MAP services
@@ -87,7 +88,7 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
         }
     }
 
-    public abstract void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+    public abstract void processComponent(ComponentType compType, OperationCode oc, MAPMessage parameter, MAPDialog mapDialog,
             Long invokeId, Long linkedId) throws MAPParsingComponentException;
 
     /**
@@ -167,7 +168,7 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
         }
     }
 
-    protected void deliverRejectComponent(MAPDialog mapDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+    protected void deliverRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
         }
@@ -179,7 +180,7 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
     // }
     // }
 
-    protected void deliverInvokeTimeout(MAPDialog mapDialog, InvokeImpl invoke) {
+    protected void deliverInvokeTimeout(MAPDialog mapDialog, Invoke invoke) {
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onInvokeTimeout(mapDialog, invoke.getInvokeId());
         }

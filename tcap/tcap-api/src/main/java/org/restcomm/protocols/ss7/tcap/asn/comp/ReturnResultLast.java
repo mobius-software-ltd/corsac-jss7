@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications  Copyright 2012.
- * and individual contributors
+ * JBoss, Home of Professional Open Source
+ * Copyright 2011, Red Hat, Inc. and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,36 +20,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcap.asn;
+/**
+ *
+ */
+package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
- * <p>
- * According to ITU-T Rec Q.773 the UserInformation is defined as
- * </p>
- * <br/>
- * <p>
- * user-information [30] IMPLICIT SEQUENCE OF EXTERNAL
- * </p>
- * <br/>
- * <p>
- * </p>
+ * Super interface for Returns.
  *
  * @author baranowb
  * @author amit bhayani
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x1E,constructed=true,lengthIndefinite=false)
-public class UserInformationImpl {	
-	private UserInformationExternalImpl ext;
-
-	public UserInformationExternalImpl getExternal() {
-		return ext;
-	}
-
-	public void setExternal(UserInformationExternalImpl ext) {
-		this.ext = ext;
-	}
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,lengthIndefinite=false)
+public interface ReturnResultLast extends Return {
 }

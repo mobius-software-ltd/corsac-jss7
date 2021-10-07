@@ -45,4 +45,6 @@ public @interface ASNProperty
 	public ASNClass asnClass();	
 	
 	public int index();
+	
+	public Class<?> defaultImplementation() default Void.class;
 }

@@ -193,6 +193,7 @@ import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
@@ -1723,7 +1724,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 }
             }
 
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 assertEquals(resetTimerRequestInvokeId, (long) invokeId);
@@ -2659,7 +2660,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             int dialogStep = 0;
 
             @Override
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 dialogStep++;
@@ -2720,7 +2721,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 try {
@@ -2871,7 +2872,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             int rejectStep = 0;
 
             @Override
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 rejectStep++;
@@ -2987,7 +2988,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 }
             }
 
-            public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+            public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
 
                 rejectStep++;

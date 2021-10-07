@@ -26,8 +26,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  * @author baranowb
@@ -40,8 +40,8 @@ public class TCEndRequestImpl extends DialogRequestImpl implements TCEndRequest 
     private TerminationType terminationType;
 
     // fields
-    private ApplicationContextNameImpl applicationContextName;
-    private UserInformationImpl userInformation;
+    private ApplicationContextName applicationContextName;
+    private UserInformation userInformation;
 
     TCEndRequestImpl() {
         super(EventType.End);
@@ -53,7 +53,7 @@ public class TCEndRequestImpl extends DialogRequestImpl implements TCEndRequest 
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getApplicationContextName()
      */
-    public ApplicationContextNameImpl getApplicationContextName() {
+    public ApplicationContextName getApplicationContextName() {
         return applicationContextName;
     }
 
@@ -72,7 +72,7 @@ public class TCEndRequestImpl extends DialogRequestImpl implements TCEndRequest 
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getUserInformation()
      */
-    public UserInformationImpl getUserInformation() {
+    public UserInformation getUserInformation() {
 
         return this.userInformation;
     }
@@ -83,7 +83,7 @@ public class TCEndRequestImpl extends DialogRequestImpl implements TCEndRequest 
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# setApplicationContextName
      * (org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName)
      */
-    public void setApplicationContextName(ApplicationContextNameImpl acn) {
+    public void setApplicationContextName(ApplicationContextName acn) {
         this.applicationContextName = acn;
 
     }
@@ -105,7 +105,7 @@ public class TCEndRequestImpl extends DialogRequestImpl implements TCEndRequest 
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest#
      * setUserInformation(org.restcomm.protocols.ss7.tcap.asn.UserInformation)
      */
-    public void setUserInformation(UserInformationImpl acn) {
+    public void setUserInformation(UserInformation acn) {
         this.userInformation = acn;
 
     }

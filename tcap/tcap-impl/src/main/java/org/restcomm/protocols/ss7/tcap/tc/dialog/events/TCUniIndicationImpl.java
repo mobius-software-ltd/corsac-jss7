@@ -28,8 +28,8 @@ package org.restcomm.protocols.ss7.tcap.tc.dialog.events;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  * @author baranowb
@@ -40,8 +40,8 @@ public class TCUniIndicationImpl extends DialogIndicationImpl implements TCUniIn
     private SccpAddress originatingAddress, destinationAddress;
 
     // fields
-    private ApplicationContextNameImpl applicationContextName;
-    private UserInformationImpl userInformation;
+    private ApplicationContextName applicationContextName;
+    private UserInformation userInformation;
 
     TCUniIndicationImpl() {
         super(EventType.Uni);
@@ -53,7 +53,7 @@ public class TCUniIndicationImpl extends DialogIndicationImpl implements TCUniIn
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getApplicationContextName()
      */
-    public ApplicationContextNameImpl getApplicationContextName() {
+    public ApplicationContextName getApplicationContextName() {
         return applicationContextName;
     }
 
@@ -94,7 +94,7 @@ public class TCUniIndicationImpl extends DialogIndicationImpl implements TCUniIn
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getUserInformation()
      */
-    public UserInformationImpl getUserInformation() {
+    public UserInformation getUserInformation() {
 
         return this.userInformation;
     }
@@ -105,7 +105,7 @@ public class TCUniIndicationImpl extends DialogIndicationImpl implements TCUniIn
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# setApplicationContextName
      * (org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName)
      */
-    public void setApplicationContextName(ApplicationContextNameImpl acn) {
+    public void setApplicationContextName(ApplicationContextName acn) {
         this.applicationContextName = acn;
 
     }
@@ -150,7 +150,7 @@ public class TCUniIndicationImpl extends DialogIndicationImpl implements TCUniIn
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest#
      * setUserInformation(org.restcomm.protocols.ss7.tcap.asn.UserInformation)
      */
-    public void setUserInformation(UserInformationImpl acn) {
+    public void setUserInformation(UserInformation acn) {
         this.userInformation = acn;
 
     }

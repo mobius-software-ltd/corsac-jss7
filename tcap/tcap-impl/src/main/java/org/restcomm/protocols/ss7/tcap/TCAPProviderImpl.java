@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -62,16 +59,25 @@ import org.restcomm.protocols.ss7.tcap.api.TCListener;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.DraftParsedMessage;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndIndication;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCNoticeIndication;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
+import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.asn.ASNDialogPortionObjectImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDUImpl;
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
+import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
-import org.restcomm.protocols.ss7.tcap.asn.ResultImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnosticImpl;
+import org.restcomm.protocols.ss7.tcap.asn.Result;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.ResultType;
 import org.restcomm.protocols.ss7.tcap.asn.TCAbortMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TCBeginMessageImpl;
@@ -79,28 +85,30 @@ import org.restcomm.protocols.ss7.tcap.asn.TCContinueMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TCEndMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TCNoticeIndicationImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TCUniMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCUnifiedMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.Utils;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 import org.restcomm.protocols.ss7.tcap.tc.component.ComponentPrimitiveFactoryImpl;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DialogPrimitiveFactoryImpl;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DraftParsedMessageImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCBeginIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCContinueIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCEndIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCPAbortIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCUniIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.tc.dialog.events.TCUserAbortIndicationImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeHandler;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -357,7 +365,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         return this.sccpProvider.getMaxUserDataLength(calledPartyAddress, callingPartyAddress, msgNetworkId);
     }
 
-    public void deliver(DialogImpl dialogImpl, TCBeginIndicationImpl msg) {
+    public void deliver(DialogImpl dialogImpl, TCBeginIndication msg) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onTCBegin(msg);
@@ -370,7 +378,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
     }
 
-    public void deliver(DialogImpl dialogImpl, TCContinueIndicationImpl tcContinueIndication) {
+    public void deliver(DialogImpl dialogImpl, TCContinueIndication tcContinueIndication) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onTCContinue(tcContinueIndication);
@@ -383,7 +391,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
     }
 
-    public void deliver(DialogImpl dialogImpl, TCEndIndicationImpl tcEndIndication) {
+    public void deliver(DialogImpl dialogImpl, TCEndIndication tcEndIndication) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onTCEnd(tcEndIndication);
@@ -395,7 +403,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
 
-    public void deliver(DialogImpl dialogImpl, TCPAbortIndicationImpl tcAbortIndication) {
+    public void deliver(DialogImpl dialogImpl, TCPAbortIndication tcAbortIndication) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onTCPAbort(tcAbortIndication);
@@ -408,7 +416,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
     }
 
-    public void deliver(DialogImpl dialogImpl, TCUserAbortIndicationImpl tcAbortIndication) {
+    public void deliver(DialogImpl dialogImpl, TCUserAbortIndication tcAbortIndication) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onTCUserAbort(tcAbortIndication);
@@ -421,7 +429,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
     }
 
-    public void deliver(DialogImpl dialogImpl, TCUniIndicationImpl tcUniIndication) {
+    public void deliver(DialogImpl dialogImpl, TCUniIndication tcUniIndication) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onTCUni(tcUniIndication);
@@ -433,7 +441,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
 
-    public void deliver(DialogImpl dialogImpl, TCNoticeIndicationImpl tcNoticeIndication) {
+    public void deliver(DialogImpl dialogImpl, TCNoticeIndication tcNoticeIndication) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onTCNotice(tcNoticeIndication);
@@ -492,7 +500,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         return this.service.schedule(operationTimerTask, invokeTimeout, TimeUnit.MILLISECONDS);
     }
 
-    public void operationTimedOut(InvokeImpl tcInvokeRequestImpl) {
+    public void operationTimedOut(Invoke tcInvokeRequestImpl) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onInvokeTimeout(tcInvokeRequestImpl);
@@ -539,14 +547,14 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         this.dialogs.clear();        
     }
 
-    protected ByteBuf encodeAbortMessage(TCAbortMessageImpl msg) throws ASNException {
+    protected ByteBuf encodeAbortMessage(TCAbortMessage msg) throws ASNException {
     	return messageParser.encode(msg);
     }
     
     protected void sendProviderAbort(PAbortCauseType pAbortCause, ByteBuf remoteTransactionId, SccpAddress remoteAddress,
             SccpAddress localAddress, int seqControl, int networkId, int remotePc) {
         
-    	TCAbortMessageImpl msg = (TCAbortMessageImpl) TcapFactory.createTCAbortMessage();
+    	TCAbortMessage msg = TcapFactory.createTCAbortMessage();
         msg.setDestinationTransactionId(remoteTransactionId);
         msg.setPAbortCause(pAbortCause);
 
@@ -561,24 +569,24 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     }
 
     protected void sendProviderAbort(DialogServiceProviderType pt, ByteBuf remoteTransactionId, SccpAddress remoteAddress,
-            SccpAddress localAddress, int seqControl, ApplicationContextNameImpl acn, int networkId, int remotePc) {
+            SccpAddress localAddress, int seqControl, ApplicationContextName acn, int networkId, int remotePc) {
         
-    	DialogPortionImpl dp = TcapFactory.createDialogPortion();
+    	DialogPortion dp = TcapFactory.createDialogPortion();
         dp.setUnidirectional(false);
 
-        DialogResponseAPDUImpl apdu = TcapFactory.createDialogAPDUResponse();
+        DialogResponseAPDU apdu = TcapFactory.createDialogAPDUResponse();
         apdu.setDoNotSendProtocolVersion(this.getStack().getDoNotSendProtocolVersion());
 
-        ResultImpl res = TcapFactory.createResult();
+        Result res = TcapFactory.createResult();
         res.setResultType(ResultType.RejectedPermanent);
-        ResultSourceDiagnosticImpl rsd = TcapFactory.createResultSourceDiagnostic();
+        ResultSourceDiagnostic rsd = TcapFactory.createResultSourceDiagnostic();
         rsd.setDialogServiceProviderType(pt);
         apdu.setResultSourceDiagnostic(rsd);
         apdu.setResult(res);
         apdu.setApplicationContextName(acn);
         dp.setDialogAPDU(apdu);
 
-        TCAbortMessageImpl msg = (TCAbortMessageImpl) TcapFactory.createTCAbortMessage();
+        TCAbortMessage msg = TcapFactory.createTCAbortMessage();
         msg.setDestinationTransactionId(remoteTransactionId);
         msg.setDialogPortion(dp);
 
@@ -593,26 +601,26 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     }
     
     public void postProcessElement(Object element,ConcurrentHashMap<Integer,Object> data) {
-    	if(element instanceof TCContinueMessageImpl) {
-    		TCContinueMessageImpl tcm=(TCContinueMessageImpl)element;
+    	if(element instanceof TCContinueMessage) {
+    		TCContinueMessage tcm=(TCContinueMessage)element;
     		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
    			DialogImpl di = this.dialogs.get(dialogId);
    			if(di!=null)
    				data.put(TCAP_DIALOG, di);
 		}    		
-		else if(element instanceof TCEndMessageImpl) {
-    		TCEndMessageImpl teb=(TCEndMessageImpl)element;	                    
+		else if(element instanceof TCEndMessage) {
+			TCEndMessage teb=(TCEndMessage)element;	                    
    			long dialogId = Utils.decodeTransactionId(teb.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
    			DialogImpl di = this.dialogs.get(dialogId);
    			if(di!=null)
    				data.put(TCAP_DIALOG, di);
 		}
-		else if(element instanceof ReturnResultImpl) {
-			ReturnResultImpl rri=(ReturnResultImpl)element;
+		else if(element instanceof ReturnResult) {
+			ReturnResult rri=(ReturnResult)element;
 			if(data.containsKey(TCAP_DIALOG)) {
 				DialogImpl di = (DialogImpl)data.remove(TCAP_DIALOG);
 				if(rri.getInvokeId()!=null) {
-					OperationCodeImpl oc=di.getOperationCodeFromInvoke(rri.getInvokeId());
+					OperationCode oc=di.getOperationCodeFromInvoke(rri.getInvokeId());
 					if(oc!=null)
 						data.put(TCAP_OPERATION_CODE, oc);
     			}
@@ -623,10 +631,13 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     public void preProcessElement(Object element,ConcurrentHashMap<Integer,Object> data) {
     	if(element instanceof ReturnResultInnerImpl) {
     		if(data.containsKey(TCAP_OPERATION_CODE)) {
-    			OperationCodeImpl oc = (OperationCodeImpl) data.remove(TCAP_OPERATION_CODE);
+    			OperationCode oc = (OperationCode) data.remove(TCAP_OPERATION_CODE);
     			if(oc!=null) {
     				ReturnResultInnerImpl rri=(ReturnResultInnerImpl)element;
-    				rri.setOperationCode(oc);
+    				if(oc!=null && oc.getLocalOperationCode()!=null)
+    					rri.setOperationCode(oc.getLocalOperationCode());
+    				else if(oc!=null && oc.getGlobalOperationCode()!=null)
+    					rri.setOperationCode(oc.getGlobalOperationCode());
     			}
     		}
     	}
@@ -649,11 +660,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
                 return;           	
             }
             
-            if(output.getResult() instanceof TCUnifiedMessageImpl) {
-            	TCUnifiedMessageImpl realMessage=(TCUnifiedMessageImpl)output.getResult();
+            if(output.getResult() instanceof TCUnifiedMessage) {
+            	TCUnifiedMessage realMessage=(TCUnifiedMessage)output.getResult();
             	if(!output.getHadErrors() && realMessage.validate()) {
-	            	if(realMessage instanceof TCContinueMessageImpl) {
-	            		TCContinueMessageImpl tcm=(TCContinueMessageImpl)realMessage;
+	            	if(realMessage instanceof TCContinueMessage) {
+	            		TCContinueMessage tcm=(TCContinueMessage)realMessage;
 	            		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
 	                    DialogImpl di = this.dialogs.get(dialogId);
 	                    
@@ -664,11 +675,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                    } else {
 	                        di.processContinue(tcm, localAddress, remoteAddress);
 	                    }
-	            	} else if(realMessage instanceof TCBeginMessageImpl) {
-	            		TCBeginMessageImpl tcb=(TCBeginMessageImpl)realMessage;
+	            	} else if(realMessage instanceof TCBeginMessage) {
+	            		TCBeginMessage tcb=(TCBeginMessage)realMessage;
 	            		if (tcb.getDialogPortion() != null && tcb.getDialogPortion().getDialogAPDU() != null
-	                            && tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDUImpl) {
-	                        DialogRequestAPDUImpl dlg = (DialogRequestAPDUImpl) tcb.getDialogPortion().getDialogAPDU();
+	                            && tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU) {
+	                        DialogRequestAPDU dlg = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
 	                        if (dlg.getProtocolVersion() != null && !dlg.getProtocolVersion().isSupportedVersion()) {
 	                            logger.error("Unsupported protocol version of  has been received when parsing TCBeginMessage");
 	                            this.sendProviderAbort(DialogServiceProviderType.NoCommonDialogPortion,
@@ -694,8 +705,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                    di.setNetworkId(message.getNetworkId());
 	                    di.processBegin(tcb, localAddress, remoteAddress);
 	            	}
-	            	else if(realMessage instanceof TCEndMessageImpl) {
-	            		TCEndMessageImpl teb=(TCEndMessageImpl)realMessage;
+	            	else if(realMessage instanceof TCEndMessage) {
+	            		TCEndMessage teb=(TCEndMessage)realMessage;
 	            		long dialogId = Utils.decodeTransactionId(teb.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
 	                    DialogImpl di = this.dialogs.get(dialogId);
 	                    if (di == null) {
@@ -704,8 +715,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                        di.processEnd(teb, localAddress, remoteAddress);
 	                    }		
 	            	}
-	            	else if(realMessage instanceof TCAbortMessageImpl) {
-	            		TCAbortMessageImpl tub=(TCAbortMessageImpl)realMessage;
+	            	else if(realMessage instanceof TCAbortMessage) {
+	            		TCAbortMessage tub=(TCAbortMessage)realMessage;
 	            		DialogImpl di=null;
 	            		Long dialogId=null;
 	            		if(tub.getDestinationTransactionId()!=null) {
@@ -719,18 +730,19 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                        di.processAbort(tub, localAddress, remoteAddress);
 	                    }			            		
 	            	}
-	            	else if(realMessage instanceof TCUniMessageImpl) {
-	            		TCUniMessageImpl tcuni=(TCUniMessageImpl)realMessage;
+	            	else if(realMessage instanceof TCUniMessage) {
+	            		TCUniMessage tcuni=(TCUniMessage)realMessage;
 	            		int remotePc = message.getIncomingOpc();
 	                    DialogImpl uniDialog = (DialogImpl) this.getNewUnstructuredDialog(localAddress, remoteAddress);
 	                    uniDialog.setRemotePc(remotePc);
 	                    setSsnToDialog(uniDialog, message.getCalledPartyAddress().getSubsystemNumber());
 	                    uniDialog.processUni(tcuni, localAddress, remoteAddress);	
-	            	} else {	            		
+	            	} else {	
 	            		unrecognizedPackageType(message, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());                    
 	            	}
             	}
             	else {
+            		System.out.println("HERE 2,HAD ERRORS:" + output.getHadErrors() + "," + output.getResult());            		
             		unrecognizedPackageType(message,  realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
             	}
             }
@@ -759,8 +771,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             if(output.getHadErrors()) {
             	logger.error(String.format("Error while decoding Rx SccpNoticeMessage=%s", msg));
             }
-            else if(output.getResult() instanceof TCUnifiedMessageImpl) {
-	            TCUnifiedMessageImpl tcUnidentified = (TCUnifiedMessageImpl)output.getResult();
+            else if(output.getResult() instanceof TCUnifiedMessage) {
+            	TCUnifiedMessage tcUnidentified = (TCUnifiedMessage)output.getResult();
 	            if (tcUnidentified.getOriginatingTransactionId() != null) {
 	                long otid = Utils.decodeTransactionId(tcUnidentified.getOriginatingTransactionId(), this.stack.getSwapTcapIdBytes());
 	                dialog = this.dialogs.get(otid);
@@ -771,7 +783,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             logger.error(String.format("Error while decoding Rx SccpNoticeMessage=%s", msg), e);
         }
 
-        TCNoticeIndicationImpl ind = new TCNoticeIndicationImpl();
+        TCNoticeIndication ind = new TCNoticeIndicationImpl();
         ind.setRemoteAddress(msg.getCallingPartyAddress());
         ind.setLocalAddress(msg.getCalledPartyAddress());
         ind.setDialog(dialog);
@@ -793,12 +805,12 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         try {
             DraftParsedMessageImpl res = new DraftParsedMessageImpl();
             ASNDecodeResult output=messageParser.decode(data);
-            if (!(output.getResult() instanceof TCUnifiedMessageImpl)) {
+            if (!(output.getResult() instanceof TCUnifiedMessage)) {
                 res.setParsingErrorReason("Invalid message found");
                 return res;
             }
 
-            res.setMessage((TCUnifiedMessageImpl)output.getResult());
+            res.setMessage((TCUnifiedMessage)output.getResult());
             return res;
         }
         catch (Exception e) {

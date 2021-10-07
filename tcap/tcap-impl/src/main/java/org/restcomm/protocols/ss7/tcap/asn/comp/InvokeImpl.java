@@ -22,6 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -48,7 +49,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,lengthIndefinite=false)
-public class InvokeImpl implements BaseComponent {
+public class InvokeImpl implements Invoke {
 	// mandatory
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x02,constructed=false,index=0)
     private ASNInteger invokeId;
@@ -58,7 +59,7 @@ public class InvokeImpl implements BaseComponent {
     private ASNInteger linkedId;
 	
 	@ASNExclude
-    private InvokeImpl linkedInvoke;
+    private Invoke linkedInvoke;
 
     // mandatory
 	@ASNChoise
@@ -135,7 +136,7 @@ public class InvokeImpl implements BaseComponent {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getLinkedInvoke()
      */
-    public InvokeImpl getLinkedInvoke() {
+    public Invoke getLinkedInvoke() {
         return linkedInvoke;
     }
 
@@ -144,7 +145,7 @@ public class InvokeImpl implements BaseComponent {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCodeImpl getOperationCode() {
+    public OperationCode getOperationCode() {
     	return operationCode;
     }
 
@@ -187,20 +188,38 @@ public class InvokeImpl implements BaseComponent {
         this.linkedId.setValue(i);
     }
 
-    public void setLinkedInvoke(InvokeImpl val) {
+    public void setLinkedInvoke(Invoke val) {
         this.linkedInvoke = val;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.OperationCode)
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(OperationCodeImpl i) {
-    	this.operationCode=i;
+    public void setOperationCode(Long i) {    
+    	if(i==null)
+    		this.operationCode=null;
+    	else {
+    		this.operationCode=new OperationCodeImpl();
+    		this.operationCode.setLocalOperationCode(i);
+    	}
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(List<Long>)
+     */
+    public void setOperationCode(List<Long> i) {
+    	if(i==null)
+    		this.operationCode=null;
+    	else {
+    		this.operationCode=new OperationCodeImpl();
+    		this.operationCode.setGlobalOperationCode(i);
+    	}
+    }
+    
     /*
      * (non-Javadoc)
      *

@@ -69,8 +69,8 @@ public class DialogRequestAPDUTest {
         assertTrue(output instanceof DialogRequestAPDUImpl);
         DialogRequestAPDUImpl d = (DialogRequestAPDUImpl)output;
         
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 21L, 2L }), d.getApplicationContextName().getValue());
-        UserInformationImpl ui = d.getUserInformation();
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 21L, 2L }), d.getApplicationContextName().getOid());
+        UserInformation ui = d.getUserInformation();
         assertNull(ui);
 
         ByteBuf buffer=parser.encode(d);
@@ -80,13 +80,13 @@ public class DialogRequestAPDUTest {
         assertTrue(output instanceof DialogRequestAPDUImpl);
         d = (DialogRequestAPDUImpl)output;
         
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 25L, 2L }), d.getApplicationContextName().getValue());
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 25L, 2L }), d.getApplicationContextName().getOid());
         ui = d.getUserInformation();
         assertNotNull(ui);
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), ui.getExternal().getObjectIdentifier());
-        assertTrue(ui.getExternal().isValueObject());
-        assertTrue(ui.getExternal().getChild().getValue() instanceof TCBeginTestASN3);
-        assertTrue(((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getLength(parser)==0);
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), ui.getObjectIdentifier());
+        assertTrue(ui.isValueObject());
+        assertTrue(ui.getChild() instanceof TCBeginTestASN3);
+        assertTrue(((TCBeginTestASN3)ui.getChild()).getLength(parser)==0);
         
         buffer=parser.encode(d);
         assertTrue(Arrays.equals(getData2(), buffer.array()));

@@ -52,7 +52,7 @@ import org.restcomm.protocols.ss7.map.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 /*
  *
@@ -155,7 +155,7 @@ public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MA
     }
 
     @Override
-    public void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+    public void processComponent(ComponentType compType, OperationCode oc, MAPMessage parameter, MAPDialog mapDialog,
             Long invokeId, Long linkedId) throws MAPParsingComponentException {
 
     	Long ocValue = oc.getLocalOperationCode();

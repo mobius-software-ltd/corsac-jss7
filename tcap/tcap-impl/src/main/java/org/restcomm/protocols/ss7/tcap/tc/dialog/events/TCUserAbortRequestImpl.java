@@ -25,9 +25,9 @@ package org.restcomm.protocols.ss7.tcap.tc.dialog.events;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  *
@@ -40,8 +40,8 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
     private SccpAddress originatingAddress;
 
     // fields
-    private ApplicationContextNameImpl applicationContextName;
-    private UserInformationImpl userInformation;
+    private ApplicationContextName applicationContextName;
+    private UserInformation userInformation;
 
     private DialogServiceUserType dialogServiceUserType;
 
@@ -53,11 +53,11 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
     // return this.abortReason;
     // }
 
-    public ApplicationContextNameImpl getApplicationContextName() {
+    public ApplicationContextName getApplicationContextName() {
         return this.applicationContextName;
     }
 
-    public UserInformationImpl getUserInformation() {
+    public UserInformation getUserInformation() {
         return this.userInformation;
     }
 
@@ -65,11 +65,11 @@ public class TCUserAbortRequestImpl extends DialogRequestImpl implements TCUserA
     // this.abortReason = abortReason;
     // }
 
-    public void setApplicationContextName(ApplicationContextNameImpl acn) {
+    public void setApplicationContextName(ApplicationContextName acn) {
         this.applicationContextName = acn;
     }
 
-    public void setUserInformation(UserInformationImpl userInformation) {
+    public void setUserInformation(UserInformation userInformation) {
         this.userInformation = userInformation;
 
     }

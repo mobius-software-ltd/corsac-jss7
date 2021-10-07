@@ -33,12 +33,12 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  * Interface for class representing Dialog/Transaction.
@@ -103,14 +103,14 @@ public interface Dialog extends Serializable {
      *
      * @return the acn
      */
-    ApplicationContextNameImpl getApplicationContextName();
+    ApplicationContextName getApplicationContextName();
 
     /**
      * Last sent/received UI
      *
      * @return the ui
      */
-    UserInformationImpl getUserInformation();
+    UserInformation getUserInformation();
 
     /**
      * returns new, unique for this dialog, invocation id to be used in TC_INVOKE. If there is no free invoke id, it returns
@@ -190,7 +190,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    Long sendData(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,OperationCodeImpl operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException,TCAPException;
+    Long sendData(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,OperationCode operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException,TCAPException;
 
     /**
      * Schedules component for sending. All components on list are queued. Components are sent once message primitive is issued.
@@ -198,7 +198,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendReject(Long invokeId,ProblemImpl project) throws TCAPSendException;
+    void sendReject(Long invokeId,Problem project) throws TCAPSendException;
 
     /**
      * Schedules component for sending. All components on list are queued. Components are sent once message primitive is issued.
@@ -206,7 +206,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendError(Long invokeId,ErrorCodeImpl errorCode,Object param) throws TCAPSendException;
+    void sendError(Long invokeId,ErrorCode errorCode,Object param) throws TCAPSendException;
 
     /**
      * If a TCAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this
@@ -221,7 +221,7 @@ public interface Dialog extends Serializable {
      *
      * @param invokeId
      */
-    OperationCodeImpl getOperationCodeFromInvoke(Long invokeId);
+    OperationCode getOperationCodeFromInvoke(Long invokeId);
         
     /**
      * Send initial primitive for Structured dialog.
@@ -365,7 +365,7 @@ public interface Dialog extends Serializable {
      */
     long getStartTimeDialog();
 
-    public void operationEnded(InvokeImpl tcInvokeRequestImpl);
+    public void operationEnded(Invoke tcInvokeRequestImpl);
 
-    public void operationTimedOut(InvokeImpl invoke);    
+    public void operationTimedOut(Invoke invoke);    
 }

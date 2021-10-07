@@ -30,6 +30,7 @@ import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
 import org.restcomm.protocols.ss7.map.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.MAPServiceSupplementaryImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 
 public class MAPServiceSupplementaryImplWrapper extends MAPServiceSupplementaryImpl {
@@ -44,8 +45,8 @@ public class MAPServiceSupplementaryImplWrapper extends MAPServiceSupplementaryI
         if (this.testMode == 1) {
             // For reproducing FunctionalTestScenario.actionC MAPFunctionalTest
             // - remove temporally this comment comment
-            ApplicationContextNameImpl ac = new ApplicationContextNameImpl();
-            ac.setValue(Arrays.asList(new Long[] { 1L, 2L, 3L }));
+            ApplicationContextName ac = new ApplicationContextNameImpl();
+            ac.setOid(Arrays.asList(new Long[] { 1L, 2L, 3L }));
             ServingCheckDataImpl i1 = new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, ac);
             return i1;
         }

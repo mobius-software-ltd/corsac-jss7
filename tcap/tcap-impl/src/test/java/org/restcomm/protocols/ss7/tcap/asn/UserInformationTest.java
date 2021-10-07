@@ -73,16 +73,16 @@ public class UserInformationTest {
         Object output=parser.decode(buffer).getResult();
         UserInformationImpl userInformation = (UserInformationImpl)output;
         
-        assertTrue(userInformation.getExternal().isIDObjectIdentifier());
+        assertTrue(userInformation.isIDObjectIdentifier());
 
         List<Long> ids=Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L });
-        assertEquals(ids, userInformation.getExternal().getObjectIdentifier());
+        assertEquals(ids, userInformation.getObjectIdentifier());
 
-        assertFalse(userInformation.getExternal().isIDIndirect());
+        assertFalse(userInformation.isIDIndirect());
 
-        assertTrue(userInformation.getExternal().isValueObject());
+        assertTrue(userInformation.isValueObject());
         
-        ByteBuf innerBuffer=parser.encode(userInformation.getExternal().getChild().getValue());
+        ByteBuf innerBuffer=parser.encode(userInformation.getChild());
         byte[] outputData=innerBuffer.array();
         byte[] expectedData=new byte[] { (byte) 0xa0, (byte) 0x80, (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
                 (byte) 0x80, 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26,
@@ -100,19 +100,14 @@ public class UserInformationTest {
                 0x03, (byte) 0xf0, 0x00, 0x00 };
 
         UserInformationImpl userInformation = new UserInformationImpl();
-        UserInformationExternalImpl external=new UserInformationExternalImpl();
-        external.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
+        userInformation.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
         UserInformationTestASN demo=new UserInformationTestASN();
         demo.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
                 (byte) 0x80, 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26,
                 (byte) 0x98, (byte) 0x86, 0x03, (byte) 0xf0 }));
                
-        ASNUserInformationObjectImpl child=new ASNUserInformationObjectImpl();
-        child.setValue(demo);
-        external.setChildAsObject(child);
-
-        userInformation.setExternal(external);
+        userInformation.setChildAsObject(demo);
         ByteBuf data=null;
         try {
         	data=parser.encode(userInformation);
@@ -137,23 +132,21 @@ public class UserInformationTest {
     	byte[] encoded = new byte[] { -66, 15, 40, 13, 6, 7, 4, 0, 0, 1, 0, 19, 2, -126, 2, 4, -112 };
 
         UserInformationImpl _ui = new UserInformationImpl();
-        UserInformationExternalImpl external=new UserInformationExternalImpl();
         ASNBitString bitString=new ASNBitString();
         bitString.setBit(0);
         bitString.setBit(3);
-        external.setChild(bitString);
-        external.setIdentifier(_ACN_);
-        _ui.setExternal(external);
+        _ui.setChild(bitString);
+        _ui.setIdentifier(_ACN_);
         ByteBuf data=parser.encode(_ui);
         byte[] buf = data.array();
         assertTrue(Arrays.equals(encoded, buf));
 
         Object value=parser.decode(Unpooled.wrappedBuffer(buf)).getResult();
         UserInformationImpl _ui2 = (UserInformationImpl)value;
-        assertTrue(_ui2.getExternal().isIDObjectIdentifier());
-        assertTrue(_ui2.getExternal().isValueBitString());
-        assertEquals(_ACN_, _ui2.getExternal().getObjectIdentifier());
-        ASNBitString bs2 = _ui2.getExternal().getBitString();
+        assertTrue(_ui2.isIDObjectIdentifier());
+        assertTrue(_ui2.isValueBitString());
+        assertEquals(_ACN_, _ui2.getObjectIdentifier());
+        ASNBitString bs2 = _ui2.getBitString();
         assertTrue(bs2.isBitSet(0));
         assertFalse(bs2.isBitSet(1));
         assertFalse(bs2.isBitSet(2));

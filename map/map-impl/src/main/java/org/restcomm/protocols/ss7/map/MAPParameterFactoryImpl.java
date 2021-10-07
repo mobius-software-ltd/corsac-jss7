@@ -280,7 +280,7 @@ import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSRespon
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
@@ -459,26 +459,26 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new LocationInfoWithLMSIImpl(networkNodeNumber, lmsi, extensionContainer, gprsNodeIndicator, additionalNumber);
     }
 
-    public ProblemImpl createProblemGeneral(GeneralProblemType prob) {
-        ProblemImpl pb = TcapFactory.createProblem();
+    public Problem createProblemGeneral(GeneralProblemType prob) {
+        Problem pb = TcapFactory.createProblem();
         pb.setGeneralProblemType(prob);
         return pb;
     }
 
-    public ProblemImpl createProblemInvoke(InvokeProblemType prob) {
-    	ProblemImpl pb = TcapFactory.createProblem();
+    public Problem createProblemInvoke(InvokeProblemType prob) {
+    	Problem pb = TcapFactory.createProblem();
     	pb.setInvokeProblemType(prob);
         return pb;
     }
 
-    public ProblemImpl createProblemResult(ReturnResultProblemType prob) {
-        ProblemImpl pb = TcapFactory.createProblem();
+    public Problem createProblemResult(ReturnResultProblemType prob) {
+        Problem pb = TcapFactory.createProblem();
         pb.setReturnResultProblemType(prob);
         return pb;
     }
 
-    public ProblemImpl createProblemError(ReturnErrorProblemType prob) {
-        ProblemImpl pb = TcapFactory.createProblem();
+    public Problem createProblemError(ReturnErrorProblemType prob) {
+        Problem pb = TcapFactory.createProblem();
         pb.setReturnErrorProblemType(prob);
         return pb;
     }

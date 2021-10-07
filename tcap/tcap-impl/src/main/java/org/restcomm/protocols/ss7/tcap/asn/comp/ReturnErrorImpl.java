@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
+import java.util.List;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -37,7 +39,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x03,constructed=true,lengthIndefinite=false)
-public class ReturnErrorImpl implements BaseComponent {
+public class ReturnErrorImpl implements ReturnError {
 	// mandatory
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x02,constructed=false,index=0)
 	private ASNInteger invokeId;
@@ -68,7 +70,7 @@ public class ReturnErrorImpl implements BaseComponent {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#getErrorCode()
      */
-    public ErrorCodeImpl getErrorCode() {
+    public ErrorCode getErrorCode() {
     	return this.errorCode;
     }
 
@@ -99,11 +101,29 @@ public class ReturnErrorImpl implements BaseComponent {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setErrorCode(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.ErrorCode)
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setErrorCode(Long)
      */
-    public void setErrorCode(ErrorCodeImpl ec) {
-    	this.errorCode=ec;
+    public void setErrorCode(Long ec) {
+    	if(ec==null)
+    		this.errorCode=null;
+    	else {
+    		this.errorCode=new ErrorCodeImpl();
+    		this.errorCode.setLocalErrorCode(ec);
+    	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setErrorCode(Long)
+     */
+    public void setErrorCode(List<Long> ec) {
+    	if(ec==null)
+    		this.errorCode=null;
+    	else {
+    		this.errorCode=new ErrorCodeImpl();
+    		this.errorCode.setGlobalErrorCode(ec);
+    	}
     }
 
     /*

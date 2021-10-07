@@ -42,9 +42,9 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  *
@@ -212,7 +212,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
         switch (this.tcapDialog.getState()) {
 	        case Idle:
-	        	ApplicationContextNameImpl acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	        	ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            this.setState(CAPDialogState.InitialSent);
@@ -231,7 +231,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	        case InitialReceived:
 	            // Its first Reply to TC-Begin
 	
-	            ApplicationContextNameImpl acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	            ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            this.capProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber,
@@ -267,7 +267,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
         switch (this.tcapDialog.getState()) {
 	        case InitialReceived:
-	            ApplicationContextNameImpl acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	            ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            if (prearrangedEnd) {
@@ -389,7 +389,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         }
     }
 
-    public void sendRejectComponent(Long invokeId, ProblemImpl problem) throws CAPException {
+    public void sendRejectComponent(Long invokeId, Problem problem) throws CAPException {
         try {
             this.tcapDialog.sendReject(invokeId, problem);
 
@@ -441,7 +441,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         try {
             switch (this.tcapDialog.getState()) {
                 case Idle:
-                    ApplicationContextNameImpl acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                    ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     TCBeginRequest tb = this.capProviderImpl.encodeTCBegin(this.getTcapDialog(), acn, this.gprsReferenceNumber);
@@ -456,7 +456,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
                 case InitialReceived:
                     // Its first Reply to TC-Begin
 
-                    ApplicationContextNameImpl acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                    ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     tc = this.capProviderImpl.encodeTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber);
@@ -480,7 +480,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         try {
             switch (this.tcapDialog.getState()) {
                 case InitialReceived:
-                    ApplicationContextNameImpl acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                    ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     TCEndRequest te = this.capProviderImpl.encodeTCEnd(this.getTcapDialog(), prearrangedEnd, acn,

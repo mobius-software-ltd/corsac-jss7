@@ -20,52 +20,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcap.asn;
+package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  * @author baranowb
+ * @author amit bhayani
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=true,lengthIndefinite=false)
-public class ResultImpl {
-	private ASNResultType resultType;
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Result#getResultType()
-     */
-    public ResultType getResultType() throws ParseException {
-    	if(resultType==null)
-    		return null;
-    	
-        return resultType.getType();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.asn.Result#setResultType(org.restcomm .protocols.ss7.tcap.asn.ResultType)
-     */
-    public void setResultType(ResultType t) {
-        this.resultType = new ASNResultType();
-        this.resultType.setType(t);
-
-    }
-
-    public String toString() {
-    	ResultType realType=null;
-    	try {
-    		realType=getResultType();
-    	}
-    	catch(ParseException ex) {
-    		
-    	}
-    	
-        return "Result[resultType=" + realType + "]";
-    }
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,lengthIndefinite=false)
+public class ReturnResultLastImpl extends ReturnImpl implements ReturnResultLast {
 }

@@ -42,8 +42,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -222,8 +222,8 @@ public class TCAPFunctionalTest extends SccpHarness {
         @Override
         public void onTCContinue(TCContinueIndication ind) {
             assertEquals(ind.getComponents().size(), 2);
-            ReturnResultLastImpl rrl = ind.getComponents().get(0).getReturnResultLast();
-            InvokeImpl inv = ind.getComponents().get(1).getInvoke();
+            ReturnResultLast rrl = (ReturnResultLast)ind.getComponents().get(0);
+            Invoke inv = (Invoke)ind.getComponents().get(1);
 
             // operationCode is not sent via ReturnResultLast because it does not contain a Parameter
             // so operationCode is taken from a sent Invoke
@@ -236,7 +236,7 @@ public class TCAPFunctionalTest extends SccpHarness {
             assertEquals((long) inv.getLinkedId(), 1);
 
             // we should see operationCode of the second sent Invoke
-            InvokeImpl linkedInv = inv.getLinkedInvoke();
+            Invoke linkedInv = inv.getLinkedInvoke();
             assertEquals((long) linkedInv.getOperationCode().getLocalOperationCode(), 13);
         }
 
@@ -271,7 +271,7 @@ public class TCAPFunctionalTest extends SccpHarness {
         }
 
         @Override
-        public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
+        public void onInvokeTimeout(Invoke tcInvokeRequest) {
             // TODO Auto-generated method stub
 
         }

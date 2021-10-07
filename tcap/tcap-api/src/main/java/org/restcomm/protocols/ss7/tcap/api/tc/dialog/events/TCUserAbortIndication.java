@@ -23,10 +23,10 @@
 package org.restcomm.protocols.ss7.tcap.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.asn.ASNAbortSource;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnosticImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.AbortSourceType;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  * <pre>
@@ -60,14 +60,27 @@ public interface TCUserAbortIndication extends DialogIndication {
      */
     Boolean IsAbrtApdu();
 
-    UserInformationImpl getUserInformation();
+    UserInformation getUserInformation();
 
-    ASNAbortSource getAbortSource();
+    AbortSourceType getAbortSource();
 
-    ApplicationContextNameImpl getApplicationContextName();
+    ApplicationContextName getApplicationContextName();
 
-    ResultSourceDiagnosticImpl getResultSourceDiagnostic();
+    ResultSourceDiagnostic getResultSourceDiagnostic();
 
     SccpAddress getOriginatingAddress();
+    
+    void setAareApdu();
+    
+    void setAbrtApdu();
+    
+    void setUserInformation(UserInformation userInformation);
 
+    void setAbortSource(AbortSourceType abortSource);
+    
+    void setApplicationContextName(ApplicationContextName acn);
+    
+    void setResultSourceDiagnostic(ResultSourceDiagnostic resultSourceDiagnostic);
+    
+    void setOriginatingAddress(SccpAddress dest);
 }

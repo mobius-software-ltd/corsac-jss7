@@ -23,8 +23,12 @@
 package org.restcomm.protocols.ss7.tcap.api;
 
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
 /**
  *
@@ -33,9 +37,17 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
  */
 public interface ComponentPrimitiveFactory {
 
-	ComponentImpl createTCInvokeRequest();
+	Invoke createTCInvokeRequest();
 	
-	ComponentImpl createTCInvokeRequest(InvokeClass invokeClass);
+	Invoke createTCInvokeRequest(InvokeClass invokeClass);
 	
-    ProblemImpl createProblem();
+    Problem createProblem();
+    
+    ReturnResultLast createTCResultLastRequest();
+    
+    ReturnResult createTCResultRequest();
+    
+    ReturnError createTCReturnErrorRequest();
+    
+    Reject createTCRejectRequest();
 }

@@ -891,9 +891,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ErrorCodeImpl ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.unexpectedDataValue);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.unexpectedDataValue);
         
         ByteBuf buffer=parser.encode(re);
         byte[] data=new byte[buffer.readableBytes()];
@@ -906,9 +904,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.smDeliveryFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -926,9 +922,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.smDeliveryFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -940,9 +934,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.smDeliveryFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -954,9 +946,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.absentSubscriberSM);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -968,9 +958,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.absentSubscriberSM);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -982,9 +970,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.systemFailure);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.systemFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -996,9 +982,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.systemFailure);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.systemFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1009,9 +993,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.callBarred);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.callBarred);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1023,9 +1005,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.callBarred);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.callBarred);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1036,9 +1016,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.facilityNotSupported);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.facilityNotSupported);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1049,9 +1027,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.unknownSubscriber);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.unknownSubscriber);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1062,9 +1038,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.subscriberBusyForMTSMS);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.subscriberBusyForMTSMS);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1075,9 +1049,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.absentSubscriber);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.absentSubscriber);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1088,9 +1060,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.absentSubscriber);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.absentSubscriber);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1101,9 +1071,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.unauthorizedLCSClient);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.unauthorizedLCSClient);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1114,9 +1082,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.positionMethodFailure);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.positionMethodFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1127,9 +1093,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.busySubscriber);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.busySubscriber);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1140,9 +1104,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.cugReject);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.cugReject);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1153,9 +1115,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.roamingNotAllowed);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.roamingNotAllowed);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1166,9 +1126,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
         
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.ssErrorStatus);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.ssErrorStatus);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1183,9 +1141,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
                 
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.ssIncompatibility);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.ssIncompatibility);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1196,9 +1152,7 @@ public class MAPErrorMessageTest {
         re.setParameter(em);
         re.setInvokeId(1L);
                 
-        ec=new ErrorCodeImpl();
-        ec.setLocalErrorCode((long)MAPErrorCode.pwRegistrationFailure);
-        re.setErrorCode(ec);
+        re.setErrorCode((long)MAPErrorCode.pwRegistrationFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);

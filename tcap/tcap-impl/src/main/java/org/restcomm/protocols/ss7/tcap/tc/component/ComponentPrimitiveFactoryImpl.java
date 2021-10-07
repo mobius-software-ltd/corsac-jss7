@@ -29,8 +29,12 @@ import org.restcomm.protocols.ss7.tcap.TCAPProviderImpl;
 import org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
 /**
  * @author baranowb
@@ -49,11 +53,11 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory#createTCInvokeRequest()
      */
-    public ComponentImpl createTCInvokeRequest() {
+    public Invoke createTCInvokeRequest() {
 
-    	ComponentImpl t = TcapFactory.createComponentInvoke();
-        t.getInvoke().setProvider(provider);
-        return t;
+    	Invoke result = TcapFactory.createComponentInvoke();
+    	result.setProvider(provider);
+        return result;
     }
 
     /*
@@ -61,11 +65,11 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCInvokeRequest()
      */
-    public ComponentImpl createTCInvokeRequest(InvokeClass invokeClass) {
+    public Invoke createTCInvokeRequest(InvokeClass invokeClass) {
 
-    	ComponentImpl t = TcapFactory.createComponentInvoke(invokeClass);
-        t.getInvoke().setProvider(provider);
-        return t;
+    	Invoke result = TcapFactory.createComponentInvoke(invokeClass);
+    	result.setProvider(provider);
+        return result;
     }
 
     /*
@@ -73,12 +77,12 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCRejectRequest()
      */
-    public ComponentImpl createTCRejectRequest() {
+    public Reject createTCRejectRequest() {
 
         return TcapFactory.createComponentReject();
     }
 
-    public ComponentImpl createTCReturnErrorRequest() {
+    public ReturnError createTCReturnErrorRequest() {
 
         return TcapFactory.createComponentReturnError();
     }
@@ -88,18 +92,18 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCResultRequest(boolean)
      */
-    public ComponentImpl createTCResultLastRequest() {
+    public ReturnResultLast createTCResultLastRequest() {
 
         return TcapFactory.createComponentReturnResultLast();
 
     }
 
-    public ComponentImpl createTCResultRequest() {
+    public ReturnResult createTCResultRequest() {
 
         return TcapFactory.createComponentReturnResult();
     }
 
-    public ProblemImpl createProblem() {
+    public Problem createProblem() {
         return TcapFactory.createProblem();
     }
 }

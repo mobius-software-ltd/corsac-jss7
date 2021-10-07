@@ -44,8 +44,8 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNo
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  * A simple example show-casing how to use MAP stack. Demonstrates how to listen to incoming Dialog from peer and process the
@@ -123,7 +123,7 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
 
     }
 
-    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
         // TODO Auto-generated method stub
 
     }
@@ -181,7 +181,7 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
     }
 
     public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextNameImpl alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
+            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
         // TODO Auto-generated method stub
 
     }

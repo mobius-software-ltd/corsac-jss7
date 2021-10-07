@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
+import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
+
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -27,7 +29,6 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import io.netty.buffer.ByteBuf;
 
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortionImpl;
 
 public interface TCUnifiedMessage {
 	// mandatory
@@ -39,9 +40,9 @@ public interface TCUnifiedMessage {
 
     void setDestinationTransactionId(ByteBuf t);
 
-    DialogPortionImpl getDialogPortion();
+    DialogPortion getDialogPortion();
 
-    void setDialogPortion(DialogPortionImpl dp);
+    void setDialogPortion(DialogPortion dp);
     
     boolean validate();
 }

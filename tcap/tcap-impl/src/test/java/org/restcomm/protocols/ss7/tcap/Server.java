@@ -32,10 +32,9 @@ import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 /**
  * @author baranowb
@@ -43,7 +42,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
  */
 public class Server extends EventTestHarness {
 
-    protected List<ComponentImpl> components;
+    protected List<BaseComponent> components;
 
     /**
      * @param stack
@@ -64,26 +63,26 @@ public class Server extends EventTestHarness {
     @Override
     public void sendContinue() throws TCAPSendException, TCAPException {
 
-        List<ComponentImpl> comps = components;
+        List<BaseComponent> comps = components;
         if (comps == null || comps.size() != 2) {
             throw new TCAPSendException("Bad comps!");
         }
-        ComponentImpl c = comps.get(0);
-        if (c.getType() != ComponentType.Invoke) {
-            throw new TCAPSendException("Bad type: " + c.getType());
+        BaseComponent c = comps.get(0);
+        if (!(c instanceof Invoke)) {
+            throw new TCAPSendException("Bad type: " + c.getClass().getName());
         }
         // lets kill this Invoke - sending ReturnResultLast
-        InvokeImpl invoke = c.getInvoke();
+        Invoke invoke = (Invoke)c;
         super.dialog.sendData(invoke.getInvokeId(), null, null, null, null, null, false, true);
 
         c = comps.get(1);
-        if (c.getType() != ComponentType.Invoke) {
-            throw new TCAPSendException("Bad type: " + c.getType());
+        if (!(c instanceof Invoke)) {
+                throw new TCAPSendException("Bad type: " + c.getClass().getName());
         }
 
         // lets kill this Invoke - sending Invoke with linkedId
-        invoke = c.getInvoke();
-        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(14L);
+        invoke = (Invoke)c;
+        OperationCode oc = TcapFactory.createLocalOperationCode(14L);
         // no parameter        
         this.dialog.sendData(null, invoke.getInvokeId(), InvokeClass.Class1, null, oc, null, true, false);
 

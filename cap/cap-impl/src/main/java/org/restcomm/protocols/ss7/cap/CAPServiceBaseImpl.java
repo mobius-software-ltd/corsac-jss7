@@ -37,9 +37,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  * This class must be the super class of all CAP services
@@ -87,7 +88,7 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
         }
     }
 
-    public abstract void processComponent(ComponentType compType, OperationCodeImpl oc, CAPMessage parameter, CAPDialog capDialog,
+    public abstract void processComponent(ComponentType compType, OperationCode oc, CAPMessage parameter, CAPDialog capDialog,
             Long invokeId, Long linkedId) throws CAPParsingComponentException;
 
     /**
@@ -159,13 +160,13 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
         }
     }
 
-    protected void deliverRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+    protected void deliverRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
         for (CAPServiceListener serLis : this.serviceListeners) {
             serLis.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
         }
     }
 
-    protected void deliverInvokeTimeout(CAPDialog capDialog, InvokeImpl invoke) {
+    protected void deliverInvokeTimeout(CAPDialog capDialog, Invoke invoke) {
         for (CAPServiceListener serLis : this.serviceListeners) {
             serLis.onInvokeTimeout(capDialog, invoke.getInvokeId());
         }

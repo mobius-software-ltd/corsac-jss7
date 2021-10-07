@@ -25,15 +25,14 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -41,6 +40,9 @@ import org.testng.annotations.Test;
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * The trace is from nad1053.pcap wirehsark trace
@@ -90,11 +92,10 @@ public class InvokeTest {
 
     	byte[] expected = this.getData();
 
-        ComponentImpl invoke = TcapFactory.createComponentInvoke();
-        invoke.getInvoke().setInvokeId(12l);
+        Invoke invoke = TcapFactory.createComponentInvoke();
+        invoke.setInvokeId(12l);
 
-        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(59L);
-        invoke.getInvoke().setOperationCode(oc);
+        invoke.setOperationCode(59L);
 
         InvokeTestASN invokeParameter=new InvokeTestASN();
         
@@ -107,25 +108,28 @@ public class InvokeTest {
         
         invokeParameter.setO1(Arrays.asList(new ASNOctetString[] { o1 }));
         invokeParameter.setO2(o2);
-        invoke.getInvoke().setParameter(invokeParameter);
+        invoke.setParameter(invokeParameter);
 
-        ByteBuf buffer=parser.encode(invoke);
+        ComponentImpl comp=new ComponentImpl();
+        comp.setInvoke(invoke);
+        ByteBuf buffer=parser.encode(comp);
         byte[] encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getDataFull();
 
         invoke = TcapFactory.createComponentInvoke();
-        invoke.getInvoke().setInvokeId(-5L);
-        invoke.getInvoke().setLinkedId(2L);
-        oc = TcapFactory.createGlobalOperationCode(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }));
-        invoke.getInvoke().setOperationCode(oc);
+        invoke.setInvokeId(-5L);
+        invoke.setLinkedId(2L);
+        invoke.setOperationCode(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }));
 
         ASNOctetString pm=new ASNOctetString();
         pm.setValue(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
-        invoke.getInvoke().setParameter(pm);
+        invoke.setParameter(pm);
         
-        buffer=parser.encode(invoke);
+        comp=new ComponentImpl();
+        comp.setInvoke(invoke);
+        buffer=parser.encode(comp);
         encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
     }
@@ -141,7 +145,7 @@ public class InvokeTest {
         assertEquals(ComponentType.Invoke, invokeComp.getType());
 
         assertTrue(12L == invokeComp.getInvoke().getInvokeId());
-        OperationCodeImpl oc = invokeComp.getInvoke().getOperationCode();
+        OperationCode oc = invokeComp.getInvoke().getOperationCode();
         assertNotNull(oc);
         assertEquals(OperationCodeType.Local, oc.getOperationType());
         assertTrue(59 == oc.getLocalOperationCode());

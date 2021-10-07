@@ -51,12 +51,12 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 
 /**
@@ -79,8 +79,8 @@ public abstract class EventTestHarness implements TCListener {
     protected ParameterFactory parameterFactory;
     protected int sequence = 0;
 
-    protected ApplicationContextNameImpl acn;
-    protected UserInformationImpl ui;
+    protected ApplicationContextName acn;
+    protected UserInformation ui;
 
     protected PAbortCauseType pAbortCauseType;
 
@@ -122,7 +122,7 @@ public abstract class EventTestHarness implements TCListener {
 
     public void sendBegin() throws TCAPException, TCAPSendException {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send BEGIN");
-        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+        ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         // UI is optional!
         TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
         tcbr.setApplicationContextName(acn);
@@ -165,7 +165,7 @@ public abstract class EventTestHarness implements TCListener {
 
     }
 
-    public void sendAbort(ApplicationContextNameImpl acn, UserInformationImpl ui, DialogServiceUserType type) throws TCAPSendException {
+    public void sendAbort(ApplicationContextName acn, UserInformation ui, DialogServiceUserType type) throws TCAPSendException {
 
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send ABORT");
         TCUserAbortRequest abort = this.tcapProvider.getDialogPrimitiveFactory().createUAbort(dialog);
@@ -183,12 +183,12 @@ public abstract class EventTestHarness implements TCListener {
 
     public void sendUni() throws TCAPException, TCAPSendException {
         // create some INVOKE
-        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(12L);
+        OperationCode oc = TcapFactory.createLocalOperationCode(12L);
         // no parameter
         this.dialog.sendData(null, null, InvokeClass.Class4, null, oc, null, true, false);
 
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send UNI");
-        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+        ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         TCUniRequest tcur = this.tcapProvider.getDialogPrimitiveFactory().createUni(this.dialog);
         tcur.setApplicationContextName(acn);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.Uni, tcur, sequence++));
@@ -258,7 +258,7 @@ public abstract class EventTestHarness implements TCListener {
 
     }
 
-    public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
+    public void onInvokeTimeout(Invoke tcInvokeRequest) {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]onInvokeTimeout");
         TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, tcInvokeRequest, sequence++);
         this.observerdEvents.add(te);

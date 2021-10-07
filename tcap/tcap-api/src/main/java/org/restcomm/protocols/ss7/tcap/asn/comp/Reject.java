@@ -20,27 +20,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcap.asn;
+package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 
 /**
  * @author baranowb
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
-public class ProtocolVersionImpl extends ASNBitString {
-	private boolean supportedVersion = true;
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
+public interface Reject extends BaseComponent {
 
-	public ProtocolVersionImpl() {
-		this.setBit(0);
-	}
-	
-    public boolean isSupportedVersion() {
+    Problem getProblem();
 
-        return supportedVersion;
-    }
+    void setProblem(GeneralProblemType generalProblemType);
+    
+    void setProblem(InvokeProblemType invokeProblemType);
+    
+    void setProblem(ReturnErrorProblemType returnErrorProblemType);
+    
+    void setProblem(ReturnResultProblemType returnResultProblemType);
+
+    /**
+     * @return true: local originated Reject (rejecting a bad incoming primitive by a local side) false: remote originated
+     *         Reject (rejecting a bad outgoing primitive by a peer)
+     */
+    boolean isLocalOriginated();
+
+    void setLocalOriginated(boolean p);
+
 }

@@ -267,7 +267,7 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
@@ -883,13 +883,13 @@ public interface MAPParameterFactory {
 
     BasicServiceCodeImpl createBasicServiceCode(BearerServiceCodeImpl bearerService);
 
-    ProblemImpl createProblemGeneral(GeneralProblemType prob);
+    Problem createProblemGeneral(GeneralProblemType prob);
 
-    ProblemImpl createProblemInvoke(InvokeProblemType prob);
+    Problem createProblemInvoke(InvokeProblemType prob);
 
-    ProblemImpl createProblemResult(ReturnResultProblemType prob);
+    Problem createProblemResult(ReturnResultProblemType prob);
 
-    ProblemImpl createProblemError(ReturnErrorProblemType prob);
+    Problem createProblemError(ReturnErrorProblemType prob);
 
     RequestedEquipmentInfoImpl createRequestedEquipmentInfo(boolean equipmentStatus, boolean bmuef);
 

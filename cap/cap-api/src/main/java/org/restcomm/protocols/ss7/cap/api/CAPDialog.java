@@ -28,10 +28,11 @@ import org.restcomm.protocols.ss7.cap.api.dialog.CAPDialogState;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPUserAbortReason;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
+import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  *
@@ -219,7 +220,7 @@ public interface CAPDialog extends Serializable {
       * @param problem
       * @throws MAPException
       */
-     public void sendRejectComponent(Long invokeId, ProblemImpl problem) throws CAPException;
+     public void sendRejectComponent(Long invokeId, Problem problem) throws CAPException;
 
     /**
      * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)

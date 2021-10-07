@@ -24,10 +24,10 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 /**
  * Simple example demonstrates how to use TCAP Stack
@@ -61,10 +61,10 @@ public class ClientTest implements TCListener {
         clientDialog = this.tcapProvider.getNewDialog(localAddress, remoteAddress);
         
         // create some INVOKE
-        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(12L);
+        OperationCode oc = TcapFactory.createLocalOperationCode(12L);
         // no parameter
         this.clientDialog.sendData(null, null, null, null, oc, null, true, false);
-        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+        ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         // UI is optional!
         TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.clientDialog);
         tcbr.setApplicationContextName(acn);
@@ -74,7 +74,7 @@ public class ClientTest implements TCListener {
     public void onDialogReleased(Dialog d) {
     }
 
-    public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
+    public void onInvokeTimeout(Invoke tcInvokeRequest) {
     }
 
     public void onDialogTimeout(Dialog d) {

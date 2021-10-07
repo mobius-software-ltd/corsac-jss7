@@ -241,7 +241,8 @@ public class ASNParser
 			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,new ConcurrentHashMap<Integer,Object>());
 		}
 		catch(Exception ex) {
-			throw new ASNException(ex.getMessage());			
+			ex.printStackTrace();
+			throw new ASNException(ex.getMessage());
 		}
 	}
 	
@@ -312,10 +313,10 @@ public class ASNParser
 				
 				if(fieldData.getField().getType().isAssignableFrom(List.class) && !fieldData.getField().getType().equals(Object.class)) {
 					Type[] innerTypes = ((ParameterizedType) fieldData.getField().getGenericType()).getActualTypeArguments();
-					effectiveClass=(Class<?>)innerTypes[0];
+					effectiveClass=(Class<?>)innerTypes[0];					
 				}
 				else
-					effectiveClass=fieldData.getField().getType();
+					effectiveClass=fieldData.getDefaultClass();
 			}
 		}
 		
@@ -922,15 +923,17 @@ public class ASNParser
 						ASNWildcard wildcardTag=fields[i].getAnnotation(ASNWildcard.class);
 						ASNChoise choiseTag=fields[i].getAnnotation(ASNChoise.class);
 						if(wildcardTag!=null) {
-							annotatedFields.add(new FieldData(FieldType.WILDCARD, fields[i]));
+							annotatedFields.add(new FieldData(FieldType.WILDCARD, fields[i], fields[i].getType()));
 						} else if(choiseTag!=null) {
-							annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i]));
+							annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i], fields[i].getType()));
 						}
 						else {
 							ASNTag innerTag = null;
+							Class<?> realType=fields[i].getType();
 							if(fields[i].getType().isAssignableFrom(List.class) && !fields[i].getType().equals(Object.class)) {
 								Type[] innerTypes = ((ParameterizedType) fields[i].getGenericType()).getActualTypeArguments();
 								if(innerTypes.length==1) {
+									realType=(Class<?>)innerTypes[0];
 									innerTag=((Class<?>)innerTypes[0]).getAnnotation(ASNTag.class);
 								}
 							}
@@ -941,7 +944,7 @@ public class ASNParser
 								innerTag=fields[i].getType().getAnnotation(ASNTag.class);		
 							
 							if(innerTag!=null) {
-								annotatedFields.add(new FieldData(FieldType.STANDARD,fields[i]));
+								annotatedFields.add(new FieldData(FieldType.STANDARD,fields[i],realType));
 							}
 						}
 					}
@@ -975,16 +978,17 @@ public class ASNParser
 					ASNWildcard wildcardTag=fields[i].getAnnotation(ASNWildcard.class);
 					ASNChoise choiseTag=fields[i].getAnnotation(ASNChoise.class);
 					if(wildcardTag!=null) {
-						annotatedFields.add(new FieldData(FieldType.WILDCARD, fields[i]));
+						annotatedFields.add(new FieldData(FieldType.WILDCARD, fields[i], fields[i].getType()));
 					} else if(choiseTag!=null) {
-						annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i]));
+						annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i], fields[i].getType()));
 					} 
 					else {
 						ASNTag innerTag = null;
-
+						Class<?> realType=fields[i].getType();
 						if(fields[i].getType().isAssignableFrom(List.class) && !fields[i].getType().equals(Object.class)) {
 							Type[] innerTypes = ((ParameterizedType) fields[i].getGenericType()).getActualTypeArguments();
 							if(innerTypes.length==1) {
+								realType=(Class<?>)innerTypes[0];
 								innerTag=((Class<?>)innerTypes[0]).getAnnotation(ASNTag.class);
 							}
 						}
@@ -996,7 +1000,7 @@ public class ASNParser
 						}
 						
 						if(innerTag!=null) {
-							annotatedFields.add(new FieldData(FieldType.STANDARD,fields[i]));
+							annotatedFields.add(new FieldData(FieldType.STANDARD,fields[i],realType));
 						}
 					}
 				}
@@ -1043,11 +1047,15 @@ public class ASNParser
 						
 					ASNHeader asnHeader=new ASNHeader(innerTag, realClass, realInnerTag,realConstructed,index);
 					if(parentField==null || parentType==null) {
-						cachedData.addInnerMapElement(asnHeader, realType);
-						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.STANDARD,fields.get(i).getField()));
+						Class<?> defaultClass=realType;						
+						if(fields.get(i).getField().getType().isInterface() && property!=null && !property.defaultImplementation().getCanonicalName().equals(Void.class.getCanonicalName()))
+							defaultClass = property.defaultImplementation();
+						
+						cachedData.addInnerMapElement(asnHeader, defaultClass);
+						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.STANDARD,fields.get(i).getField(), defaultClass));
 					} else {
 						cachedData.addInnerMapElement(asnHeader, parentType);
-						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.CHOISE,parentField));						
+						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.CHOISE,parentField, parentField.getType()));						
 					}
 					break;
 				case CHOISE:

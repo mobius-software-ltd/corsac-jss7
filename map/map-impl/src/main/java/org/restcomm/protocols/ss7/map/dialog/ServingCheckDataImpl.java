@@ -24,19 +24,19 @@ package org.restcomm.protocols.ss7.map.dialog;
 
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 
 public class ServingCheckDataImpl implements ServingCheckData {
 	private static final long serialVersionUID = 1L;
 
 	private ServingCheckResult result;
-    private ApplicationContextNameImpl alternativeApplicationContext = null;
+    private ApplicationContextName alternativeApplicationContext = null;
 
     public ServingCheckDataImpl(ServingCheckResult result) {
         this.result = result;
     }
 
-    public ServingCheckDataImpl(ServingCheckResult result, ApplicationContextNameImpl alternativeApplicationContext) {
+    public ServingCheckDataImpl(ServingCheckResult result, ApplicationContextName alternativeApplicationContext) {
         this.result = result;
         this.alternativeApplicationContext = alternativeApplicationContext;
     }
@@ -45,7 +45,7 @@ public class ServingCheckDataImpl implements ServingCheckData {
         return this.result;
     }
 
-    public ApplicationContextNameImpl getAlternativeApplicationContext() {
+    public ApplicationContextName getAlternativeApplicationContext() {
         return this.alternativeApplicationContext;
     }
 }

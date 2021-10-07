@@ -48,10 +48,10 @@ import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.SendRouti
 import org.restcomm.protocols.ss7.map.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 /**
  *
@@ -114,7 +114,7 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
             } else if (vers > 4) {
                 List<Long> altOid = dialogApplicationContext.getOID();
                 altOid.set(7,2L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -127,7 +127,7 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
 
     }
 
-    public void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+    public void processComponent(ComponentType compType, OperationCode oc, MAPMessage parameter, MAPDialog mapDialog,
             Long invokeId, Long linkedId) throws MAPParsingComponentException {
 
     	Long ocValue = oc.getLocalOperationCode();

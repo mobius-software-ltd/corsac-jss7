@@ -22,13 +22,13 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author amit bhayani
@@ -42,7 +42,8 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
     @ASNProperty(asnClass=ASNClass.APPLICATION,tag=0x09,constructed=false,index=-1)
     private ASNOctetString destinationTransactionId;
 
-    private DialogPortionImpl dialogPortion;
+    @ASNProperty(asnClass=ASNClass.APPLICATION,tag=0x0B,constructed=true,index=-1,defaultImplementation = DialogPortionImpl.class)
+    private DialogPortion dialogPortion;
     /**
      *
      */
@@ -82,12 +83,12 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 	}
 
 	@Override
-	public DialogPortionImpl getDialogPortion() {
+	public DialogPortion getDialogPortion() {
 		return dialogPortion;
 	}
 
 	@Override
-	public void setDialogPortion(DialogPortionImpl dp) {
+	public void setDialogPortion(DialogPortion dp) {
 		this.dialogPortion=dp;
 	}
 

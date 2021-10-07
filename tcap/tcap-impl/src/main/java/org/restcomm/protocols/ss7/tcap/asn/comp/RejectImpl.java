@@ -35,7 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
-public class RejectImpl implements BaseComponent {
+public class RejectImpl implements Reject {
 
     // this can actaully be null in this case.
     private ASNInteger invokeId;
@@ -67,7 +67,7 @@ public class RejectImpl implements BaseComponent {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#getProblem()
      */
-    public ProblemImpl getProblem() {
+    public Problem getProblem() {
 
         return this.problem;
     }
@@ -95,10 +95,57 @@ public class RejectImpl implements BaseComponent {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(org.restcomm .protocols.ss7.tcap.asn.comp.Problem)
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(GeneralProblemType)
      */
-    public void setProblem(ProblemImpl p) {
-        this.problem = p;
+    public void setProblem(GeneralProblemType generalProblemType) {
+    	if(generalProblemType==null)
+    		this.problem=null;
+    	else {
+    		this.problem=new ProblemImpl();
+    		this.problem.setGeneralProblemType(generalProblemType);
+    	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(InvokeProblemType)
+     */
+    public void setProblem(InvokeProblemType invokeProblemType) {
+    	if(invokeProblemType==null)
+    		this.problem=null;
+    	else {
+    		this.problem=new ProblemImpl();
+    		this.problem.setInvokeProblemType(invokeProblemType);
+    	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(ReturnErrorProblemType)
+     */
+    public void setProblem(ReturnErrorProblemType returnErrorProblemType) {
+    	if(returnErrorProblemType==null)
+    		this.problem=null;
+    	else {
+    		this.problem=new ProblemImpl();
+    		this.problem.setReturnErrorProblemType(returnErrorProblemType);
+    	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(ReturnResultProblemType)
+     */
+    public void setProblem(ReturnResultProblemType returnResultProblemType) {
+    	if(returnResultProblemType==null)
+    		this.problem=null;
+    	else {
+    		this.problem=new ProblemImpl();
+    		this.problem.setReturnResultProblemType(returnResultProblemType);
+    	}
     }
 
     public ComponentType getType() {

@@ -25,13 +25,15 @@
  */
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
+import java.util.List;
+
 /**
  * @author baranowb
  *
  */
 public interface TCUniMessage extends TCUnifiedMessage {
     // mandatory
-	ComponentPortionImpl getComponent();
+	List<BaseComponent> getComponents();
 
-    void setComponent(ComponentPortionImpl c);
+    void setComponents(List<BaseComponent> c);
 }

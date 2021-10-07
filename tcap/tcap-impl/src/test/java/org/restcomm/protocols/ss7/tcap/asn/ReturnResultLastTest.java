@@ -26,22 +26,23 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -89,9 +90,9 @@ public class ReturnResultLastTest {
         ComponentImpl comp = (ComponentImpl)output;
         assertEquals(ComponentType.ReturnResultLast, comp.getType());
 
-        ReturnResultLastImpl rrl = comp.getReturnResultLast();
+        ReturnResultLast rrl = comp.getReturnResultLast();
         assertTrue(0L == rrl.getInvokeId());
-        OperationCodeImpl oc = rrl.getOperationCode();
+        OperationCode oc = rrl.getOperationCode();
         assertNull(oc);
         assertNull(rrl.getParameter());
 
@@ -100,7 +101,7 @@ public class ReturnResultLastTest {
         comp = (ComponentImpl)output;
         assertEquals(ComponentType.ReturnResult, comp.getType());
 
-        ReturnResultImpl rr = comp.getReturnResult();
+        ReturnResult rr = comp.getReturnResult();
         assertTrue(0L == rr.getInvokeId());
         oc = rr.getOperationCode();
         assertNull(oc);
@@ -140,44 +141,50 @@ public class ReturnResultLastTest {
     @Test(groups = { "functional.decode" })
     public void testEncode() throws ASNException {
     	byte[] expected = this.getLDataEmpty();
-        ComponentImpl rrl = TcapFactory.createComponentReturnResultLast();
-        rrl.getReturnResultLast().setInvokeId(0l);
+        ReturnResultLast rrl = TcapFactory.createComponentReturnResultLast();
+        rrl.setInvokeId(0l);
 
-        ByteBuf buffer=parser.encode(rrl);
+        ComponentImpl comp=new ComponentImpl();
+        comp.setReturnResultLast(rrl);
+        ByteBuf buffer=parser.encode(comp);
         byte[] encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getNLDataEmpty();
-        ComponentImpl rr = TcapFactory.createComponentReturnResult();
-        rr.getReturnResult().setInvokeId(0l);
-
-        buffer=parser.encode(rr);
+        ReturnResult rr = TcapFactory.createComponentReturnResult();
+        rr.setInvokeId(0l);
+        comp=new ComponentImpl();
+        comp.setReturnResult(rr);
+        
+        buffer=parser.encode(comp);
         encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getLDataCommon();
         rrl = TcapFactory.createComponentReturnResultLast();
-        rrl.getReturnResultLast().setInvokeId(1l);
-        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(45L);
-        rrl.getReturnResultLast().setOperationCode(oc);
+        rrl.setInvokeId(1l);
+        rrl.setOperationCode(45L);
         TCEndTestASN parameter=new TCEndTestASN();
         parameter.setValue(Unpooled.wrappedBuffer(getParameterData()));
-        rrl.getReturnResultLast().setParameter(parameter);
-
-        buffer=parser.encode(rrl);
+        rrl.setParameter(parameter);
+        comp=new ComponentImpl();
+        comp.setReturnResultLast(rrl);
+        
+        buffer=parser.encode(comp);
         encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getNLDataCommon();
         rr = TcapFactory.createComponentReturnResult();
-        rr.getReturnResult().setInvokeId(1l);
-        oc = TcapFactory.createLocalOperationCode(45L);
-        rr.getReturnResult().setOperationCode(oc);
+        rr.setInvokeId(1l);
+        rr.setOperationCode(45L);
         parameter=new TCEndTestASN();
         parameter.setValue(Unpooled.wrappedBuffer(getParameterData()));
-        rr.getReturnResult().setParameter(parameter);
-
-        buffer=parser.encode(rr);
+        rr.setParameter(parameter);
+        comp=new ComponentImpl();
+        comp.setReturnResult(rr);
+        
+        buffer=parser.encode(comp);
         encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
     }

@@ -24,17 +24,14 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -42,6 +39,9 @@ import org.testng.annotations.Test;
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -77,26 +77,24 @@ public class TcUnidirectionalTest {
 
         TCUniMessageImpl tcUniMessage = new TCUniMessageImpl();
 
-        DialogPortionImpl dp = TcapFactory.createDialogPortion();
+        DialogPortion dp = TcapFactory.createDialogPortion();
         dp.setUnidirectional(true);
-        DialogRequestAPDUImpl dapdu = TcapFactory.createDialogAPDURequest();
+        DialogRequestAPDU dapdu = TcapFactory.createDialogAPDURequest();
         ApplicationContextNameImpl acn = new ApplicationContextNameImpl();
-        acn.setValue(Arrays.asList(new Long[] { 1L, 0L, 2L, 3L, 4L }));
+        acn.setOid(Arrays.asList(new Long[] { 1L, 0L, 2L, 3L, 4L }));
         dapdu.setApplicationContextName(acn);
         dp.setDialogAPDU(dapdu);
         tcUniMessage.setDialogPortion(dp);
 
-        ComponentImpl invComp = TcapFactory.createComponentInvoke();
-        invComp.getInvoke().setInvokeId(-128l);
-        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(591L);
-        invComp.getInvoke().setOperationCode(oc);
+        Invoke invComp = TcapFactory.createComponentInvoke();
+        invComp.setInvokeId(-128l);
+        invComp.setOperationCode(591L);
         ASNOctetString p=new ASNOctetString();
         p.setValue(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }));
-        invComp.getInvoke().setParameter(p);
+        invComp.setParameter(p);
         
-        ComponentPortionImpl componentPortion=new ComponentPortionImpl();
-        componentPortion.setComponents(Arrays.asList(new ComponentImpl[] { invComp }));
-        tcUniMessage.setComponent(componentPortion);
+        List<BaseComponent> components=Arrays.asList(new BaseComponent[] { invComp });
+        tcUniMessage.setComponents(components);
 
         ByteBuf buffer=parser.encode(tcUniMessage);
         byte[] data = buffer.array();
@@ -109,8 +107,8 @@ public class TcUnidirectionalTest {
     	ByteBuf buffer=Unpooled.wrappedBuffer(this.getData());
         TCUniMessage tcm = (TCUniMessage)parser.decode(buffer).getResult();
 
-        DialogPortionImpl dp = tcm.getDialogPortion();
-        List<ComponentImpl> comp = tcm.getComponent().getComponents();
+        DialogPortion dp = tcm.getDialogPortion();
+        List<BaseComponent> comp = tcm.getComponents();
 
         assertNotNull(dp);
         assertNotNull(dp.getDialogAPDU());

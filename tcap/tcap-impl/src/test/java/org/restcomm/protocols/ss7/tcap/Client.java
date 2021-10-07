@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
-import io.netty.buffer.Unpooled;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,14 +36,16 @@ import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.Unpooled;
 
 /**
  * @author baranowb
@@ -66,7 +66,7 @@ public class Client extends EventTestHarness {
     @Override
     public void sendBegin() throws TCAPException, TCAPSendException {
         // create some INVOKE
-        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(12L);
+        OperationCode oc = TcapFactory.createLocalOperationCode(12L);
         // no parameter
         this.dialog.sendData(null, null, InvokeClass.Class1, null, oc, null, true, false);
 
@@ -84,7 +84,7 @@ public class Client extends EventTestHarness {
 
     public void sendBeginUnreachableAddress(boolean returnMessageOnError) throws TCAPException, TCAPSendException {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send BEGIN");
-        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+        ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         // UI is optional!
         TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
         tcbr.setApplicationContextName(acn);
@@ -107,13 +107,12 @@ public class Client extends EventTestHarness {
         return (DialogImpl) this.dialog;
     }
 
-    public ComponentImpl createNewInvoke() {
+    public Invoke createNewInvoke() {
 
-        ComponentImpl invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequest();
-        invoke.getInvoke().setInvokeId(12l);
+        Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequest();
+        invoke.setInvokeId(12l);
 
-        OperationCodeImpl oc = TcapFactory.createLocalOperationCode(59L);
-        invoke.getInvoke().setOperationCode(oc);
+        invoke.setOperationCode(59L);
 
         ASNOctetString p1=new ASNOctetString();
         p1.setValue(Unpooled.wrappedBuffer(new byte[] { 0x0F }));
@@ -124,7 +123,7 @@ public class Client extends EventTestHarness {
 
         CompoundParameter c1=new CompoundParameter();
         c1.setO1(Arrays.asList(new ASNOctetString[] { p1,p2}));
-        invoke.getInvoke().setParameter(c1);
+        invoke.setParameter(c1);
 
         return invoke;
     }

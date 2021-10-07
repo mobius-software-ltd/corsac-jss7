@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
+import java.util.List;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -34,9 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,lengthIndefinite=false)
-@ASNPostprocess
-public class ReturnResultImpl implements BaseComponent {
+public class ReturnImpl implements Return {
 	// mandatory
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x02,constructed=false,index=0)
 	private ASNInteger invokeId;
@@ -61,7 +59,7 @@ public class ReturnResultImpl implements BaseComponent {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCodeImpl getOperationCode() {
+    public OperationCode getOperationCode() {
     	if(inner==null)
     		return null;
     	
@@ -97,10 +95,21 @@ public class ReturnResultImpl implements BaseComponent {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.OperationCode)
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(OperationCodeImpl i) {
+    public void setOperationCode(Long i) {
+    	if(inner==null)
+    		inner=new ReturnResultInnerImpl();
+    	
+    	inner.setOperationCode(i);
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
+     */
+    public void setOperationCode(List<Long> i) {
     	if(inner==null)
     		inner=new ReturnResultInnerImpl();
     	

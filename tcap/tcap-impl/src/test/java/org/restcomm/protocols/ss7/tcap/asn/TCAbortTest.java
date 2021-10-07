@@ -89,26 +89,20 @@ public class TCAbortTest {
         TCAbortMessageImpl tcAbortMessage = new TCAbortMessageImpl();
         tcAbortMessage.setDestinationTransactionId(getDestTrId());
 
-        DialogPortionImpl dp = TcapFactory.createDialogPortion();
+        DialogPortion dp = TcapFactory.createDialogPortion();
         dp.setUnidirectional(false);
-        DialogAbortAPDUImpl dapdu = TcapFactory.createDialogAPDUAbort();
-        ASNAbortSource as = TcapFactory.createAbortSource();
-        as.setAbortSourceType(AbortSourceType.User);
-        dapdu.setAbortSource(as);
+        DialogAbortAPDU dapdu = TcapFactory.createDialogAPDUAbort();
+        dapdu.setAbortSource(AbortSourceType.User);
 
         UserInformationImpl userInformation = new UserInformationImpl();
         
-        UserInformationExternalImpl userInfo=new UserInformationExternalImpl();
-        userInfo.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
+        userInformation.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
         TCAbortTestASN innerASN=new TCAbortTestASN();
         innerASN.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0x0A, 0x01, 0x00 }));
         
-        ASNUserInformationObjectImpl userObject=new ASNUserInformationObjectImpl();
-        userObject.setValue(innerASN);
-        userInfo.setChildAsObject(userObject);
+        userInformation.setChildAsObject(innerASN);
 
-        userInformation.setExternal(userInfo);
         dapdu.setUserInformation(userInformation);
 
         dp.setDialogAPDU(dapdu);
@@ -146,7 +140,7 @@ public class TCAbortTest {
         TCAbortMessageImpl impl = (TCAbortMessageImpl)output;
         assertTrue(InvokeTest.byteBufEquals(impl.getDestinationTransactionId(), getDestTrId()));
 
-        DialogPortionImpl dp = impl.getDialogPortion();
+        DialogPortion dp = impl.getDialogPortion();
 
         assertNotNull(dp);
         assertFalse(dp.isUnidirectional());

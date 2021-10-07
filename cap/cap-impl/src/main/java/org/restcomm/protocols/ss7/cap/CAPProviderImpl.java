@@ -150,28 +150,31 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndicatio
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.ASNUserInformationObjectImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnosticImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
 /**
@@ -573,10 +576,10 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             return this.dialogs.remove(dialogId);        
     }
 
-    private void SendUnsupportedAcn(ApplicationContextNameImpl acn, Dialog dialog, String cs) {
+    private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs) {
         StringBuffer s = new StringBuffer();
         s.append(cs + " ApplicationContextName is received: ");
-        for (long l : acn.getValue()) {
+        for (long l : acn.getOid()) {
             s.append(l).append(", ");
         }
         loger.warn(s.toString());
@@ -588,29 +591,29 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    private CAPGprsReferenceNumberImpl ParseUserInfo(UserInformationImpl userInfo, Dialog dialog) {
+    private CAPGprsReferenceNumberImpl ParseUserInfo(UserInformation userInfo, Dialog dialog) {
 
         // Parsing userInfo
         
         // Checking UserData ObjectIdentifier
-        if (!userInfo.getExternal().isIDObjectIdentifier()) {
+        if (!userInfo.isIDObjectIdentifier()) {
             loger.warn("onTCBegin: userInfo.isOid() is null");
             return null;
         }
 
-        List<Long> oid = userInfo.getExternal().getObjectIdentifier();
+        List<Long> oid = userInfo.getObjectIdentifier();
 
         if (!CAPGprsReferenceNumberImpl.CAP_Dialogue_OId.equals(oid)) {
             loger.warn("onTCBegin: userInfo.isOid() has bad value");
             return null;
         }
 
-        if (!userInfo.getExternal().isValueObject()) {
+        if (!userInfo.isValueObject()) {
             loger.warn("onTCBegin: userInfo.isAsn() is null");
             return null;
         }
 
-        Object userInfoObject=userInfo.getExternal().getChild().getValue();
+        Object userInfoObject=userInfo.getChild();
         if(!(userInfoObject instanceof CAPGprsReferenceNumberImpl)) {
         	loger.warn("onTCBegin: Error parsing CAPGprsReferenceNumber: bad tag or tag class or is primitive");
             return null;
@@ -621,8 +624,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
     public void onTCBegin(TCBeginIndication tcBeginIndication) {
 
-        ApplicationContextNameImpl acn = tcBeginIndication.getApplicationContextName();
-        List<ComponentImpl> comps = tcBeginIndication.getComponents();
+        ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
+        List<BaseComponent> comps = tcBeginIndication.getComponents();
 
         // ACN must be present in CAMEL
         if (acn == null) {
@@ -637,7 +640,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             return;
         }
 
-        CAPApplicationContext capAppCtx = CAPApplicationContext.getInstance(acn.getValue());
+        CAPApplicationContext capAppCtx = CAPApplicationContext.getInstance(acn.getOid());
         // Check if ApplicationContext is recognizable for CAP
         // If no - TC-U-ABORT - ACN-Not-Supported
         if (capAppCtx == null) {
@@ -647,7 +650,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
         // Parsing CAPGprsReferenceNumber if exists
         CAPGprsReferenceNumberImpl referenceNumber = null;
-        UserInformationImpl userInfo = tcBeginIndication.getUserInformation();
+        UserInformation userInfo = tcBeginIndication.getUserInformation();
         if (userInfo != null) {
             referenceNumber = ParseUserInfo(userInfo, tcBeginIndication.getDialog());
             if (referenceNumber == null) {
@@ -765,7 +768,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
         capDialogImpl.tcapMessageType = MessageType.Continue;
         if (capDialogImpl.getState() == CAPDialogState.InitialSent) {
-            ApplicationContextNameImpl acn = tcContinueIndication.getApplicationContextName();
+            ApplicationContextName acn = tcContinueIndication.getApplicationContextName();
 
             if (acn == null) {
                 loger.warn("CAP Dialog is in InitialSent state but no application context name is received");
@@ -782,7 +785,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 return;
             }
 
-            CAPApplicationContext capAcn = CAPApplicationContext.getInstance(acn.getValue());
+            CAPApplicationContext capAcn = CAPApplicationContext.getInstance(acn.getOid());
             if (capAcn == null || !capAcn.equals(capDialogImpl.getApplicationContext())) {
                 loger.warn(String
                         .format("Received first TC-CONTINUE. But the received ACN is not the equal to the original ACN"));
@@ -803,7 +806,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             // Parsing CAPGprsReferenceNumber if exists
             // we ignore all errors this
             CAPGprsReferenceNumberImpl referenceNumber = null;
-            UserInformationImpl userInfo = tcContinueIndication.getUserInformation();
+            UserInformation userInfo = tcContinueIndication.getUserInformation();
             if (userInfo != null) {
                 referenceNumber = ParseUserInfo(userInfo, tcContinueIndication.getDialog());
             }
@@ -825,7 +828,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
         // Now let us decode the Components
         if (capDialogImpl.getState() == CAPDialogState.Active) {
-            List<ComponentImpl> comps = tcContinueIndication.getComponents();
+            List<BaseComponent> comps = tcContinueIndication.getComponents();
             if (comps != null) {
                 processComponents(capDialogImpl, comps);
             }
@@ -851,7 +854,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
         capDialogImpl.tcapMessageType = MessageType.End;
         if (capDialogImpl.getState() == CAPDialogState.InitialSent) {
-            ApplicationContextNameImpl acn = tcEndIndication.getApplicationContextName();
+            ApplicationContextName acn = tcEndIndication.getApplicationContextName();
 
             if (acn == null) {
                 loger.warn("CAP Dialog is in InitialSent state but no application context name is received");
@@ -862,7 +865,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 return;
             }
 
-            CAPApplicationContext capAcn = CAPApplicationContext.getInstance(acn.getValue());
+            CAPApplicationContext capAcn = CAPApplicationContext.getInstance(acn.getOid());
 
             if (capAcn == null || !capAcn.equals(capDialogImpl.getApplicationContext())) {
                 loger.error(String.format("Received first TC-END. CAPDialog=%s. But CAPApplicationContext=%s",
@@ -881,7 +884,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             // Parsing CAPGprsReferenceNumber if exists
             // we ignore all errors this
             CAPGprsReferenceNumberImpl referenceNumber = null;
-            UserInformationImpl userInfo = tcEndIndication.getUserInformation();
+            UserInformation userInfo = tcEndIndication.getUserInformation();
             if (userInfo != null) {
                 referenceNumber = ParseUserInfo(userInfo, tcEndIndication.getDialog());
             }
@@ -895,7 +898,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
 
         // Now let us decode the Components
-        List<ComponentImpl> comps = tcEndIndication.getComponents();
+        List<BaseComponent> comps = tcEndIndication.getComponents();
         if (comps != null) {
             processComponents(capDialogImpl, comps);
         }
@@ -910,7 +913,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
     }
 
     @Override
-    public void onInvokeTimeout(InvokeImpl invoke) {
+    public void onInvokeTimeout(Invoke invoke) {
 
         CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(invoke.getDialog().getLocalDialogId());
 
@@ -989,7 +992,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         if (tcUserAbortIndication.IsAareApdu()) {
             if (capDialogImpl.getState() == CAPDialogState.InitialSent) {
                 generalReason = CAPGeneralAbortReason.DialogRefused;
-                ResultSourceDiagnosticImpl resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
+                ResultSourceDiagnostic resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
                 if (resultSourceDiagnostic != null) {
                 	try {
 	                    if (resultSourceDiagnostic.getDialogServiceUserType() == DialogServiceUserType.AcnNotSupported) {
@@ -1004,19 +1007,19 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 }
             }
         } else {
-            UserInformationImpl userInfo = tcUserAbortIndication.getUserInformation();
+            UserInformation userInfo = tcUserAbortIndication.getUserInformation();
 
             if (userInfo != null) {
                 // Checking userInfo.Oid==CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId
-                if (!userInfo.getExternal().isIDObjectIdentifier()) {
+                if (!userInfo.isIDObjectIdentifier()) {
                     loger.warn("When parsing TCUserAbortIndication indication: userInfo.isOid() is null");
                 } else {
-                    if (!userInfo.getExternal().getObjectIdentifier().equals(CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId)) {
+                    if (!userInfo.getObjectIdentifier().equals(CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId)) {
                         loger.warn("When parsing TCUserAbortIndication indication: userInfo.getOidValue() must be CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId");
-                    } else if (!userInfo.getExternal().isValueObject()) {
+                    } else if (!userInfo.isValueObject()) {
                         loger.warn("When parsing TCUserAbortIndication indication: userInfo.isAsn() check failed");
                     } else {
-                    	Object userInfoObject=userInfo.getExternal().getChild().getValue();
+                    	Object userInfoObject=userInfo.getChild();
                     	if(!(userInfoObject instanceof CAPUserAbortPrimitiveImpl))
                     		loger.warn("When parsing TCUserAbortIndication indication: userInfo has bad tag or tagClass or is not primitive");
                     	else {
@@ -1053,33 +1056,43 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    private void processComponents(CAPDialogImpl capDialogImpl, List<ComponentImpl> components) {
+    private void processComponents(CAPDialogImpl capDialogImpl, List<BaseComponent> components) {
 
     	// Now let us decode the Components
-        for (ComponentImpl c : components) {
+        for (BaseComponent c : components) {
 
             doProcessComponent(capDialogImpl, c);
         }
     }
 
-    private void doProcessComponent(CAPDialogImpl capDialogImpl, ComponentImpl c) {
+    private void doProcessComponent(CAPDialogImpl capDialogImpl, BaseComponent c) {
 
         // Getting the CAP Service that serves the CAP Dialog
         CAPServiceBaseImpl perfSer = (CAPServiceBaseImpl) capDialogImpl.getService();
 
         try {
-            ComponentType compType = c.getType();
-
-            Long invokeId = c.getExistingComponent().getInvokeId();
+            ComponentType compType = ComponentType.Invoke;
+            if(c instanceof Invoke)
+            	compType=ComponentType.Invoke;
+            else if(c instanceof Reject)
+            	compType=ComponentType.Reject;
+            else if(c instanceof ReturnError)
+            	compType=ComponentType.ReturnError;
+            else if(c instanceof ReturnResult)
+            	compType=ComponentType.ReturnResult;
+            else if(c instanceof ReturnResultLast)
+            	compType=ComponentType.ReturnResultLast;
+            
+            Long invokeId = c.getInvokeId();
 
             Object parameter;
-            OperationCodeImpl oc;
+            OperationCode oc;
             Long linkedId = 0L;
-            InvokeImpl linkedInvoke = null;
+            Invoke linkedInvoke = null;
 
             switch (compType) {
                 case Invoke: {
-                    InvokeImpl comp = c.getInvoke();
+                    Invoke comp = (Invoke)c;
                     oc = comp.getOperationCode();
                     parameter = comp.getParameter();
                     linkedId = comp.getLinkedId();
@@ -1131,14 +1144,14 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 }
 
                 case ReturnResultLast: {
-                    ReturnResultLastImpl comp = c.getReturnResultLast();
+                    ReturnResultLast comp = (ReturnResultLast)c;
                     oc = comp.getOperationCode();
                     parameter = comp.getParameter();
                 }
                     break;
 
                 case ReturnError: {
-                    ReturnErrorImpl comp = c.getReturnError();
+                    ReturnError comp = (ReturnError)c;
 
                     long errorCode = 0;
                     if (comp.getErrorCode() != null && comp.getErrorCode().getErrorType() == ErrorCodeType.Local)
@@ -1171,7 +1184,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 }
 
                 case Reject: {
-                    RejectImpl comp = c.getReject();
+                    Reject comp = (Reject)c;
                     perfSer.deliverRejectComponent(capDialogImpl, comp.getInvokeId(), comp.getProblem(),
                             comp.isLocalOriginated());
 
@@ -1303,7 +1316,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    protected void fireTCBegin(Dialog tcapDialog, ApplicationContextNameImpl acn, CAPGprsReferenceNumber gprsReferenceNumber,
+    protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, CAPGprsReferenceNumber gprsReferenceNumber,
             boolean returnMessageOnError) throws CAPException {
 
         TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn, gprsReferenceNumber);
@@ -1318,7 +1331,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
     }
 
-    protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextNameImpl acn,
+    protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn,
             CAPGprsReferenceNumber gprsReferenceNumber) throws CAPException {
 
         TCBeginRequest tcBeginReq = this.getTCAPProvider().getDialogPrimitiveFactory().createBegin(tcapDialog);
@@ -1326,19 +1339,15 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         tcBeginReq.setApplicationContextName(acn);
 
         if (gprsReferenceNumber != null) {
-        	UserInformationImpl userInformation = TcapFactory.createUserInformation();
-            UserInformationExternalImpl external=new UserInformationExternalImpl();
-            external.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
-            ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
-            childObject.setValue(gprsReferenceNumber);
-            external.setChildAsObject(childObject);
-            userInformation.setExternal(external);
+        	UserInformation userInformation = TcapFactory.createUserInformation();
+            userInformation.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
+            userInformation.setChildAsObject(gprsReferenceNumber);
             tcBeginReq.setUserInformation(userInformation);            
         }
         return tcBeginReq;
     }
 
-    protected void fireTCContinue(Dialog tcapDialog, ApplicationContextNameImpl acn, CAPGprsReferenceNumber gprsReferenceNumber,
+    protected void fireTCContinue(Dialog tcapDialog, ApplicationContextName acn, CAPGprsReferenceNumber gprsReferenceNumber,
             boolean returnMessageOnError) throws CAPException {
         TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, acn, gprsReferenceNumber);
         if (returnMessageOnError)
@@ -1351,7 +1360,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, ApplicationContextNameImpl acn,
+    protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, ApplicationContextName acn,
             CAPGprsReferenceNumber gprsReferenceNumber) throws CAPException {
         TCContinueRequest tcContinueReq = this.getTCAPProvider().getDialogPrimitiveFactory().createContinue(tcapDialog);
 
@@ -1359,19 +1368,15 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             tcContinueReq.setApplicationContextName(acn);
 
         if (gprsReferenceNumber != null) {
-        	UserInformationImpl userInformation = TcapFactory.createUserInformation();
-            UserInformationExternalImpl external=new UserInformationExternalImpl();
-            external.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
-            ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
-            childObject.setValue(gprsReferenceNumber);
-            external.setChildAsObject(childObject);
-            userInformation.setExternal(external);
+        	UserInformation userInformation = TcapFactory.createUserInformation();
+            userInformation.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
+            userInformation.setChildAsObject(gprsReferenceNumber);
             tcContinueReq.setUserInformation(userInformation);
         }
         return tcContinueReq;
     }
 
-    protected void fireTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextNameImpl acn,
+    protected void fireTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn,
             CAPGprsReferenceNumber gprsReferenceNumber, boolean returnMessageOnError) throws CAPException {
 
         TCEndRequest endRequest = encodeTCEnd(tcapDialog, prearrangedEnd, acn, gprsReferenceNumber);
@@ -1385,7 +1390,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    protected TCEndRequest encodeTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextNameImpl acn,
+    protected TCEndRequest encodeTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn,
             CAPGprsReferenceNumber gprsReferenceNumber) throws CAPException {
         TCEndRequest endRequest = this.getTCAPProvider().getDialogPrimitiveFactory().createEnd(tcapDialog);
 
@@ -1399,13 +1404,9 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             endRequest.setApplicationContextName(acn);
 
         if (gprsReferenceNumber != null) {
-        	UserInformationImpl userInformation = TcapFactory.createUserInformation();
-            UserInformationExternalImpl external=new UserInformationExternalImpl();
-            external.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
-            ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
-            childObject.setValue(gprsReferenceNumber);
-            external.setChildAsObject(childObject);
-            userInformation.setExternal(external);
+        	UserInformation userInformation = TcapFactory.createUserInformation();
+            userInformation.setIdentifier(CAPGprsReferenceNumberImpl.CAP_Dialogue_OId);
+            userInformation.setChildAsObject(gprsReferenceNumber);
             endRequest.setUserInformation(userInformation);
         }
         return endRequest;
@@ -1426,13 +1427,9 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 if (userAbortReason == null)
                     userAbortReason = CAPUserAbortReason.no_reason_given;
                 CAPUserAbortPrimitiveImpl abortReasonPrimitive = new CAPUserAbortPrimitiveImpl(userAbortReason);
-                UserInformationImpl userInformation = TcapFactory.createUserInformation();
-                UserInformationExternalImpl external=new UserInformationExternalImpl();
-                external.setIdentifier(CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId);
-                ASNUserInformationObjectImpl childObject=new ASNUserInformationObjectImpl();
-                childObject.setValue(abortReasonPrimitive);
-                external.setChildAsObject(childObject);
-                userInformation.setExternal(external);
+                UserInformation userInformation = TcapFactory.createUserInformation();
+                userInformation.setIdentifier(CAPUserAbortPrimitiveImpl.CAP_AbortReason_OId);
+                userInformation.setChildAsObject(abortReasonPrimitive);
                 tcUserAbort.setUserInformation(userInformation);
                 break;
 

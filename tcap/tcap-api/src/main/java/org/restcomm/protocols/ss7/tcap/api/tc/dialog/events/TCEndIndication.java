@@ -26,8 +26,8 @@
 package org.restcomm.protocols.ss7.tcap.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  * @author baranowb
@@ -38,10 +38,15 @@ public interface TCEndIndication extends DialogIndication {
     // public Byte getQOS();
 
     // parts from DialogPortion, if present
-    ApplicationContextNameImpl getApplicationContextName();
+    ApplicationContextName getApplicationContextName();
 
-    UserInformationImpl getUserInformation();
+    UserInformation getUserInformation();
 
     SccpAddress getOriginatingAddress();
 
+    void setUserInformation(UserInformation acn);
+    
+    void setOriginatingAddress(SccpAddress dest);
+    
+    void setApplicationContextName(ApplicationContextName acn);
 }

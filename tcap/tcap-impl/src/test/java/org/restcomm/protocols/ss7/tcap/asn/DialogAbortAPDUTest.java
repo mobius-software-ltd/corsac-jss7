@@ -69,9 +69,9 @@ public class DialogAbortAPDUTest {
         assertTrue(output instanceof DialogAbortAPDUImpl);
         DialogAbortAPDUImpl d = (DialogAbortAPDUImpl)output;
                 
-        ASNAbortSource as = d.getAbortSource();
-        assertEquals(AbortSourceType.User, as.getAbortSourceType());
-        UserInformationImpl ui = d.getUserInformation();
+        AbortSourceType as = d.getAbortSource();
+        assertEquals(AbortSourceType.User, as);
+        UserInformation ui = d.getUserInformation();
         assertNull(ui);
 
         ByteBuf buffer=parser.encode(d);
@@ -82,11 +82,11 @@ public class DialogAbortAPDUTest {
         d = (DialogAbortAPDUImpl)output;
         
         as = d.getAbortSource();
-        assertEquals(AbortSourceType.Provider, as.getAbortSourceType());
+        assertEquals(AbortSourceType.Provider, as);
         ui = d.getUserInformation();
         assertNotNull(ui);
-        assertTrue(ui.getExternal().getChild().getValue() instanceof TCBeginTestASN3);
-        assertTrue(InvokeTest.byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }), ((TCBeginTestASN3)ui.getExternal().getChild().getValue()).getValue()));
+        assertTrue(ui.getChild() instanceof TCBeginTestASN3);
+        assertTrue(InvokeTest.byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }), ((TCBeginTestASN3)ui.getChild()).getValue()));
 
         buffer=parser.encode(d);
         assertTrue(Arrays.equals(getData2(), buffer.array()));

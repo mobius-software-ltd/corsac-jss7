@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.tcap.api.tc.dialog.events;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
 
 public interface DialogIndication {
 
@@ -41,7 +41,9 @@ public interface DialogIndication {
      *
      * @return
      */
-    List<ComponentImpl> getComponents();
+    List<BaseComponent> getComponents();
+    
+    void setComponents(List<BaseComponent> components);
 
     EventType getType();
 

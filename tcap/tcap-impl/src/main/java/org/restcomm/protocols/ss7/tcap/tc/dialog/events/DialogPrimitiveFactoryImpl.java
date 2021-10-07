@@ -41,9 +41,9 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  * @author baranowb
@@ -203,7 +203,7 @@ public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.DialogPrimitiveFactory #createApplicationContextName()
      */
-    public ApplicationContextNameImpl createApplicationContextName(List<Long> oid) {
+    public ApplicationContextName createApplicationContextName(List<Long> oid) {
         return TcapFactory.createApplicationContextName(oid);
     }
 
@@ -212,7 +212,7 @@ public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.DialogPrimitiveFactory #createUserInformation()
      */
-    public UserInformationImpl createUserInformation() {
+    public UserInformation createUserInformation() {
         return TcapFactory.createUserInformation();
     }
 

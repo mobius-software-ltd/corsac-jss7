@@ -78,7 +78,7 @@ import org.restcomm.protocols.ss7.cap.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 /**
  *
@@ -163,7 +163,7 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
     }
 
     @Override
-    public void processComponent(ComponentType compType, OperationCodeImpl oc, CAPMessage parameter, CAPDialog capDialog,
+    public void processComponent(ComponentType compType, OperationCode oc, CAPMessage parameter, CAPDialog capDialog,
             Long invokeId, Long linkedId) throws CAPParsingComponentException {
 
     	Long ocValue = oc.getLocalOperationCode();

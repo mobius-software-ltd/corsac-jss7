@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications  Copyright 2012.
- * and individual contributors
+ * JBoss, Home of Professional Open Source
+ * Copyright 2011, Red Hat, Inc. and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,47 +20,41 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+/**
+ *
+ */
 package org.restcomm.protocols.ss7.tcap.asn;
-
-import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
 
 /**
  * @author baranowb
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=true,lengthIndefinite=false)
-public class ApplicationContextNameImpl {
-	ASNObjectIdentifier realValue;
-	
-    public String getStringValue() {
-    	if(realValue==null || realValue.getValue()==null)
-    		return null;
-    	
-        return realValue.getValue().toString();
-    }
+@ASNTag(asnClass=ASNClass.APPLICATION,tag=0x01,constructed=true,lengthIndefinite=false)
+public interface DialogResponseAPDU extends DialogAPDU {
 
-    public List<Long> getValue() {
-    	if(realValue==null)
-    		return null;
-    	
-    	return realValue.getValue();
-    }
-    
-    public void setValue(List<Long> value) {
-    	realValue=new ASNObjectIdentifier();
-    	realValue.setValue(value);;
-    }
-    
-    public String toString() {
-    	List<Long> values=null;
-    	if(realValue!=null)
-    		values=realValue.getValue();
-    	
-        return "ApplicationContextName[oid=" + values + "]";
-    }
+    void setDoNotSendProtocolVersion(boolean val);
+
+    ProtocolVersion getProtocolVersion();
+
+    // mandatory
+    ApplicationContextName getApplicationContextName();
+
+    void setApplicationContextName(ApplicationContextName acn);
+
+    Result getResult();
+
+    void setResult(Result acn);
+
+    ResultSourceDiagnostic getResultSourceDiagnostic();
+
+    void setResultSourceDiagnostic(ResultSourceDiagnostic acn);
+
+    // opt
+    UserInformation getUserInformation();
+
+    void setUserInformation(UserInformation ui);
 
 }

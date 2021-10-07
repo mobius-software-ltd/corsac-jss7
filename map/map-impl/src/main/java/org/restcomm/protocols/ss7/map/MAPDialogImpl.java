@@ -44,9 +44,9 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  *
@@ -255,7 +255,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 
         switch (this.tcapDialog.getState()) {
 	        case InitialReceived:
-	            ApplicationContextNameImpl acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	            ApplicationContextName acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            if (prearrangedEnd) {
@@ -335,7 +335,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 
         switch (this.tcapDialog.getState()) {
 	        case Idle:
-	            ApplicationContextNameImpl acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	            ApplicationContextName acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            this.setState(MAPDialogState.INITIAL_SENT);
@@ -355,7 +355,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	        case InitialReceived:
 	            // Its first Reply to TC-Begin
 	
-	            ApplicationContextNameImpl acn1 = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+	            ApplicationContextName acn1 = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
 	            this.mapProviderImpl.fireTCContinue(this.getTcapDialog(), true, acn1, this.extContainer,
@@ -430,7 +430,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         }
     }
 
-    public void sendRejectComponent(Long invokeId, ProblemImpl problem) throws MAPException {
+    public void sendRejectComponent(Long invokeId, Problem problem) throws MAPException {
         try {
             this.tcapDialog.sendReject(invokeId, problem);
 
@@ -480,7 +480,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         try {
             switch (this.tcapDialog.getState()) {
                 case Idle:
-                    ApplicationContextNameImpl acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                    ApplicationContextName acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     TCBeginRequest tb = this.mapProviderImpl.encodeTCBegin(this.getTcapDialog(), acn, destReference,
@@ -496,7 +496,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
                 case InitialReceived:
                     // Its first Reply to TC-Begin
 
-                	ApplicationContextNameImpl acn1 = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                	ApplicationContextName acn1 = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     tc = this.mapProviderImpl.encodeTCContinue(this.getTcapDialog(), true, acn1, this.extContainer);
@@ -527,7 +527,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         try {
             switch (this.tcapDialog.getState()) {
                 case InitialReceived:
-                    ApplicationContextNameImpl acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+                    ApplicationContextName acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
                             .createApplicationContextName(this.appCntx.getOID());
 
                     TCEndRequest te = this.mapProviderImpl.encodeTCEnd(this.getTcapDialog(), true, prearrangedEnd, acn,

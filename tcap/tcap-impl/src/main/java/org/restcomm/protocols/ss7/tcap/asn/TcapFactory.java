@@ -25,14 +25,21 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
 import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
@@ -48,51 +55,46 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
  */
 public final class TcapFactory {
 
-    public static DialogPortionImpl createDialogPortion() {
+    public static DialogPortion createDialogPortion() {
         return new DialogPortionImpl();
     }
 
-    public static DialogRequestAPDUImpl createDialogAPDURequest() {
+    public static DialogRequestAPDU createDialogAPDURequest() {
     	DialogRequestAPDUImpl request=new DialogRequestAPDUImpl();
     	request.setDoNotSendProtocolVersion(false);
     	return request;
     }
 
-    public static DialogResponseAPDUImpl createDialogAPDUResponse() {
+    public static DialogResponseAPDU createDialogAPDUResponse() {
     	DialogResponseAPDUImpl response=new DialogResponseAPDUImpl();
     	response.setDoNotSendProtocolVersion(false);
     	return response;
     }
 
-    public static DialogAbortAPDUImpl createDialogAPDUAbort() {
+    public static DialogAbortAPDU createDialogAPDUAbort() {
     	return new DialogAbortAPDUImpl();    	
     }
 
-    public static ProtocolVersionImpl createProtocolVersion() {
+    public static ProtocolVersion createProtocolVersion() {
         return new ProtocolVersionImpl();
     }
 
-    public static ApplicationContextNameImpl createApplicationContextName(List<Long> oid) {
+    public static ApplicationContextName createApplicationContextName(List<Long> oid) {
         ApplicationContextNameImpl acn = new ApplicationContextNameImpl();
-        acn.setValue(oid);
+        acn.setOid(oid);
         return acn;
     }
 
-    public static UserInformationImpl createUserInformation() {
+    public static UserInformation createUserInformation() {
         return new UserInformationImpl();
     }
 
-    public static ResultImpl createResult() {
+    public static Result createResult() {
         return new ResultImpl();
     }
 
-    public static ResultSourceDiagnosticImpl createResultSourceDiagnostic() {
+    public static ResultSourceDiagnostic createResultSourceDiagnostic() {
         return new ResultSourceDiagnosticImpl();
-    }
-
-    public static ASNAbortSource createAbortSource() {
-        ASNAbortSource as = new ASNAbortSource();
-        return as;
     }
 
     public static TCUniMessage createTCUniMessage() {
@@ -120,66 +122,54 @@ public final class TcapFactory {
         return tc;
     }
 
-    public static OperationCodeImpl createLocalOperationCode(Long value) {
+    public static OperationCode createLocalOperationCode(Long value) {
         OperationCodeImpl oc = new OperationCodeImpl();
         oc.setLocalOperationCode(value);
         return oc;
     }
 
-    public static OperationCodeImpl createGlobalOperationCode(List<Long> value) {
+    public static OperationCode createGlobalOperationCode(List<Long> value) {
     	OperationCodeImpl oc = new OperationCodeImpl();
     	oc.setGlobalOperationCode(value);
         return oc;
     }
 
-    public static ComponentImpl createComponentReject() {
-    	ComponentImpl component=new ComponentImpl();
-    	component.setReject(new RejectImpl());    	
-        return component;
+    public static Reject createComponentReject() {
+    	return new RejectImpl();
     }
 
-    public static ComponentImpl createComponentReturnResultLast() {
-    	ComponentImpl component=new ComponentImpl();
-    	component.setReturnResultLast(new ReturnResultLastImpl());    	
-        return component;
+    public static ReturnResultLast createComponentReturnResultLast() {
+    	return new ReturnResultLastImpl();
     }
 
-    public static ComponentImpl createComponentReturnResult() {
-    	ComponentImpl component=new ComponentImpl();
-    	component.setReturnResult(new ReturnResultImpl());    	
-        return component;
+    public static ReturnResult createComponentReturnResult() {
+    	return new ReturnResultImpl();
     }
 
-    public static ComponentImpl createComponentInvoke() {
-    	ComponentImpl component=new ComponentImpl();
-    	component.setInvoke(new InvokeImpl());    	
-        return component;
+    public static Invoke createComponentInvoke() {
+    	return new InvokeImpl();
     }
 
-    public static ComponentImpl createComponentInvoke(InvokeClass invokeClass) {
-    	ComponentImpl component=new ComponentImpl();
-    	component.setInvoke(new InvokeImpl(invokeClass));    	
-        return component;
+    public static Invoke createComponentInvoke(InvokeClass invokeClass) {
+    	return new InvokeImpl(invokeClass);
     }
 
-    public static ComponentImpl createComponentReturnError() {
-    	ComponentImpl component=new ComponentImpl();
-    	component.setReturnError(new ReturnErrorImpl());    	
-        return component;
+    public static ReturnError createComponentReturnError() {
+    	return new ReturnErrorImpl();
     }
 
-    public static ProblemImpl createProblem() {
+    public static Problem createProblem() {
         ProblemImpl p = new ProblemImpl();
         return p;
     }
 
-    public static ErrorCodeImpl createLocalErrorCode(Long value) {
+    public static ErrorCode createLocalErrorCode(Long value) {
         ErrorCodeImpl ec = new ErrorCodeImpl();
         ec.setLocalErrorCode(value);
         return ec;
     }
 
-    public static ErrorCodeImpl createGlobalErrorCode(List<Long> value) {
+    public static ErrorCode createGlobalErrorCode(List<Long> value) {
     	ErrorCodeImpl ec = new ErrorCodeImpl();
         ec.setGlobalErrorCode(value);
         return ec;

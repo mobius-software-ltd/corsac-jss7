@@ -26,8 +26,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,14 +33,17 @@ import java.util.List;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnErrorParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -131,10 +132,10 @@ public class ReturnErrorTest {
         ComponentImpl comp = (ComponentImpl)output;
 
         assertEquals(ComponentType.ReturnError, comp.getType(), "Wrong component Type");
-        ReturnErrorImpl re = comp.getReturnError();
+        ReturnError re = comp.getReturnError();
         assertEquals(new Long(5), re.getInvokeId(), "Wrong invoke ID");
         assertNotNull(re.getErrorCode(), "No error code.");
-        ErrorCodeImpl ec = re.getErrorCode();
+        ErrorCode ec = re.getErrorCode();
         assertEquals(ErrorCodeType.Local, ec.getErrorType(), "Wrong error code type.");
         long lec = ec.getLocalErrorCode();
         assertEquals(lec, 15, "wrong data content.");
@@ -178,36 +179,39 @@ public class ReturnErrorTest {
     @Test(groups = { "functional.encode" })
     public void testEncode() throws ASNException {
     	byte[] expected = this.getDataWithoutParameter();
-        ComponentImpl re = TcapFactory.createComponentReturnError();
-        re.getReturnError().setInvokeId(5l);
-        ErrorCodeImpl ec = TcapFactory.createLocalErrorCode(15L);
-        re.getReturnError().setErrorCode(ec);
-
-        ByteBuf buffer=parser.encode(re);
+        ReturnError re = TcapFactory.createComponentReturnError();
+        re.setInvokeId(5l);
+        re.setErrorCode(15L);
+        ComponentImpl comp=new ComponentImpl();
+        comp.setReturnError(re);
+        
+        ByteBuf buffer=parser.encode(comp);
         byte[] encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getDataWithParameter();
         re = TcapFactory.createComponentReturnError();
-        re.getReturnError().setInvokeId(5l);
-        ec = TcapFactory.createLocalErrorCode(15L);
-        re.getReturnError().setErrorCode(ec);
+        re.setInvokeId(5l);
+        re.setErrorCode(15L);
         
         TCBeginTestASN3 pm=new TCBeginTestASN3();
         pm.setValue(Unpooled.wrappedBuffer(getParameterData()));
-        re.getReturnError().setParameter(pm);
-
-        buffer=parser.encode(re);
+        re.setParameter(pm);
+        comp=new ComponentImpl();
+        comp.setReturnError(re);
+        
+        buffer=parser.encode(comp);
         encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));
 
         expected = this.getDataLongErrorCode();
         re = TcapFactory.createComponentReturnError();
-        re.getReturnError().setInvokeId(-1L);
-        ec = TcapFactory.createGlobalErrorCode(Arrays.asList(new Long[] { 1L, 0L, 22L, 33L }));
-        re.getReturnError().setErrorCode(ec);
-
-        buffer=parser.encode(re);
+        re.setInvokeId(-1L);
+        re.setErrorCode(Arrays.asList(new Long[] { 1L, 0L, 22L, 33L }));
+        comp=new ComponentImpl();
+        comp.setReturnError(re);
+        
+        buffer=parser.encode(comp);
         encodedData = buffer.array();
         assertTrue(Arrays.equals(expected, encodedData));        
     }

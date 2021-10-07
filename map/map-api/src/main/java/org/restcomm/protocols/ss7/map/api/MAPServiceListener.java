@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.map.api;
 
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  *
@@ -59,7 +59,7 @@ public interface MAPServiceListener {
      * @param isLocalOriginated true: local originated Reject (rejecting a bad incoming primitive by a local side) false: remote
      *        originated Reject (rejecting a bad outgoing primitive by a peer)
      */
-    void onRejectComponent(MAPDialog mapDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated);
+    void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated);
 
     /**
      * Invoked when no answer from the other peer for a long time - for sending the a reject for the Invoke

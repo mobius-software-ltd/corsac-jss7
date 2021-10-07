@@ -64,7 +64,7 @@ import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitchedCallListener {
 
@@ -241,7 +241,7 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     }
 
     @Override
-    public void onRejectComponent(CAPDialog capDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+    public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
         // TODO Auto-generated method stub
 
     }

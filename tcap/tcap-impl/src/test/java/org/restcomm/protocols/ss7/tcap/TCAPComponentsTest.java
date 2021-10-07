@@ -40,13 +40,16 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -153,9 +156,9 @@ public class TCAPComponentsTest extends SccpHarness {
                     switch (step) {
                         case 1:
                             assertEquals(ind.getComponents().size(), 1);
-                            ComponentImpl c = ind.getComponents().get(0);
-                            assertEquals(c.getType(), ComponentType.Reject);
-                            RejectImpl r = c.getReject();
+                            BaseComponent c = ind.getComponents().get(0);
+                            assertTrue(c instanceof Reject);
+                            Reject r = (Reject)c;
                             assertEquals((long) r.getInvokeId(), 1);
                             assertEquals(r.getProblem().getReturnResultProblemType(),
                                     ReturnResultProblemType.UnrecognizedInvokeID);
@@ -168,8 +171,8 @@ public class TCAPComponentsTest extends SccpHarness {
                         case 2:
                             assertEquals(ind.getComponents().size(), 1);
                             c = ind.getComponents().get(0);
-                            assertEquals(c.getType(), ComponentType.Reject);
-                            r = c.getReject();
+                            assertTrue(c instanceof Reject);
+                            r = (Reject)c;
                             assertEquals((long) r.getInvokeId(), 1);
                             assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
                             assertFalse(r.isLocalOriginated());
@@ -181,16 +184,16 @@ public class TCAPComponentsTest extends SccpHarness {
                         case 3:
                             assertEquals(ind.getComponents().size(), 2);
                             c = ind.getComponents().get(0);
-                            assertEquals(c.getType(), ComponentType.Reject);
-                            r = c.getReject();
+                            assertTrue(c instanceof Reject);
+                            r = (Reject)c;
                             assertEquals((long) r.getInvokeId(), 1);
                             assertEquals(r.getProblem().getReturnResultProblemType(),
                                     ReturnResultProblemType.UnrecognizedInvokeID);
                             assertTrue(r.isLocalOriginated());
 
                             c = ind.getComponents().get(1);
-                            assertEquals(c.getType(), ComponentType.Reject);
-                            r = c.getReject();
+                            assertTrue(c instanceof Reject);
+                            r = (Reject)c;
                             assertEquals((long) r.getInvokeId(), 2);
                             assertEquals(r.getProblem().getReturnErrorProblemType(),
                                     ReturnErrorProblemType.UnrecognizedInvokeID);
@@ -219,9 +222,9 @@ public class TCAPComponentsTest extends SccpHarness {
 
                 try {
                     assertEquals(ind.getComponents().size(), 1);
-                    ComponentImpl c = ind.getComponents().get(0);
-                    assertEquals(c.getType(), ComponentType.Reject);
-                    RejectImpl r = c.getReject();
+                    BaseComponent c = ind.getComponents().get(0);
+                    assertTrue(c instanceof Reject);
+                    Reject r = (Reject)c;
                     assertEquals((long) r.getInvokeId(), 2);
                     assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
                     assertFalse(r.isLocalOriginated());
@@ -265,17 +268,17 @@ public class TCAPComponentsTest extends SccpHarness {
                         case 1:
                             assertEquals(ind.getComponents().size(), 2);
 
-                            ComponentImpl c = ind.getComponents().get(0);
-                            assertEquals(c.getType(), ComponentType.Reject);
-                            RejectImpl r = c.getReject();
+                            BaseComponent c = ind.getComponents().get(0);
+                            assertTrue(c instanceof Reject);
+                            Reject r = (Reject)c;
                             assertEquals((long) r.getInvokeId(), 1);
                             assertEquals(r.getProblem().getReturnResultProblemType(),
                                     ReturnResultProblemType.UnrecognizedInvokeID);
                             assertFalse(r.isLocalOriginated());
 
                             c = ind.getComponents().get(1);
-                            assertEquals(c.getType(), ComponentType.Reject);
-                            r = c.getReject();
+                            assertTrue(c instanceof Reject);
+                            r = (Reject)c;
                             assertEquals((long) r.getInvokeId(), 1);
                             assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
                             assertTrue(r.isLocalOriginated());
@@ -299,8 +302,8 @@ public class TCAPComponentsTest extends SccpHarness {
                             assertEquals(ind.getComponents().size(), 2);
 
                             c = ind.getComponents().get(1);
-                            assertEquals(c.getType(), ComponentType.Reject);
-                            r = c.getReject();
+                            assertTrue(c instanceof Reject);
+                            r = (Reject)c;
                             assertEquals((long) r.getInvokeId(), 2);
                             assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
                             assertTrue(r.isLocalOriginated());
@@ -464,23 +467,23 @@ public class TCAPComponentsTest extends SccpHarness {
             procComponents(ind.getComponents());
         }
 
-        private void procComponents(List<ComponentImpl> compp) {
+        private void procComponents(List<BaseComponent> compp) {
             if (compp != null) {
-                for (ComponentImpl c : compp) {
+                for (BaseComponent c : compp) {
                     EventType et = null;
-                    if (c.getType() == ComponentType.Invoke) {
+                    if (c instanceof Invoke) {
                         et = EventType.Invoke;
                     }
-                    if (c.getType() == ComponentType.ReturnResult) {
+                    if (c instanceof ReturnResult) {
                         et = EventType.ReturnResult;
                     }
-                    if (c.getType() == ComponentType.ReturnResultLast) {
+                    if (c instanceof ReturnResultLast) {
                         et = EventType.ReturnResultLast;
                     }
-                    if (c.getType() == ComponentType.ReturnError) {
+                    if (c instanceof ReturnError) {
                         et = EventType.ReturnError;
                     }
-                    if (c.getType() == ComponentType.Reject) {
+                    if (c instanceof Reject) {
                         et = EventType.Reject;
                     }
 
@@ -491,7 +494,7 @@ public class TCAPComponentsTest extends SccpHarness {
         }
 
         public void addNewInvoke(Long invokeId, Long timout) throws Exception {
-            OperationCodeImpl oc = TcapFactory.createLocalOperationCode(10L);
+            OperationCode oc = TcapFactory.createLocalOperationCode(10L);
             
             // Parameter p1 = TcapFactory.createParameter();
             // p1.setTagClass(Tag.CLASS_UNIVERSAL);
@@ -534,7 +537,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
         public void addNewReturnResult(Long invokeId) throws Exception {
 
-            OperationCodeImpl oc = TcapFactory.createLocalOperationCode(10L);
+            OperationCode oc = TcapFactory.createLocalOperationCode(10L);
             
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnResult, null, sequence++);
             this.observerdEvents.add(te);
@@ -544,7 +547,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
         public void addNewReturnResultLast(Long invokeId) throws Exception {
 
-            OperationCodeImpl oc = TcapFactory.createLocalOperationCode(10L);
+            OperationCode oc = TcapFactory.createLocalOperationCode(10L);
             
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, sequence++);
             this.observerdEvents.add(te);
@@ -554,7 +557,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
         public void addNewReturnError(Long invokeId) throws Exception {
 
-            ErrorCodeImpl ec = TcapFactory.createLocalErrorCode(10L);
+            ErrorCode ec = TcapFactory.createLocalErrorCode(10L);
             
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnError, null, sequence++);
             this.observerdEvents.add(te);
@@ -576,23 +579,23 @@ public class TCAPComponentsTest extends SccpHarness {
             procComponents(ind.getComponents());
         }
 
-        private void procComponents(List<ComponentImpl> compp) {
+        private void procComponents(List<BaseComponent> compp) {
             if (compp != null) {
-                for (ComponentImpl c : compp) {
+                for (BaseComponent c : compp) {
                     EventType et = null;
-                    if (c.getType() == ComponentType.Invoke) {
+                    if (c instanceof Invoke) {
                         et = EventType.Invoke;
                     }
-                    if (c.getType() == ComponentType.ReturnResult) {
+                    if (c instanceof ReturnResult) {
                         et = EventType.ReturnResult;
                     }
-                    if (c.getType() == ComponentType.ReturnResultLast) {
+                    if (c instanceof ReturnResultLast) {
                         et = EventType.ReturnResultLast;
                     }
-                    if (c.getType() == ComponentType.ReturnError) {
+                    if (c instanceof ReturnError) {
                         et = EventType.ReturnError;
                     }
-                    if (c.getType() == ComponentType.Reject) {
+                    if (c instanceof Reject) {
                         et = EventType.Reject;
                     }
 

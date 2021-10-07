@@ -25,6 +25,8 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
+import java.util.List;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -49,7 +51,7 @@ public class ReturnResultInnerImpl {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCodeImpl getOperationCode() {
+    public OperationCode getOperationCode() {
     	return operationCode;
     }
 
@@ -68,11 +70,29 @@ public class ReturnResultInnerImpl {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.OperationCode)
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(OperationCodeImpl i) {
-    	operationCode=i;
+    public void setOperationCode(Long i) {    
+    	if(i==null)
+    		this.operationCode=null;
+    	else {
+    		this.operationCode=new OperationCodeImpl();
+    		this.operationCode.setLocalOperationCode(i);
+    	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(List<Long>)
+     */
+    public void setOperationCode(List<Long> i) {    
+    	if(i==null)
+    		this.operationCode=null;
+    	else {
+    		this.operationCode=new OperationCodeImpl();
+    		this.operationCode.setGlobalOperationCode(i);
+    	}
     }
 
     /*

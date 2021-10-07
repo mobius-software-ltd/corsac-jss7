@@ -57,12 +57,12 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.Ca
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancelLocationResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PurgeMSRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PurgeMSResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateGprsLocationRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateGprsLocationResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateLocationRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateLocationResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationRequest;
@@ -103,10 +103,10 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Inse
 import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeResponseImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 /**
  *
@@ -171,7 +171,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
                 List<Long> altOid = dialogApplicationContext.getOID();
                 altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -182,7 +182,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -195,7 +195,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
                 List<Long> altOid = dialogApplicationContext.getOID();
                 altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -206,7 +206,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -217,7 +217,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -228,7 +228,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -239,7 +239,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -252,7 +252,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 2) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -265,7 +265,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -280,7 +280,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -293,7 +293,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
             } else if (vers > 3) {
             	List<Long> altOid = dialogApplicationContext.getOID();
             	altOid.set(7,3L);
-                ApplicationContextNameImpl alt = TcapFactory.createApplicationContextName(altOid);
+                ApplicationContextName alt = TcapFactory.createApplicationContextName(altOid);
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect, alt);
             } else {
                 return new ServingCheckDataImpl(ServingCheckResult.AC_VersionIncorrect);
@@ -340,7 +340,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
     }
 
     @Override
-    public void processComponent(ComponentType compType, OperationCodeImpl oc, MAPMessage parameter, MAPDialog mapDialog,
+    public void processComponent(ComponentType compType, OperationCode oc, MAPMessage parameter, MAPDialog mapDialog,
             Long invokeId, Long linkedId) throws MAPParsingComponentException {
 
     	Long ocValue = oc.getLocalOperationCode();

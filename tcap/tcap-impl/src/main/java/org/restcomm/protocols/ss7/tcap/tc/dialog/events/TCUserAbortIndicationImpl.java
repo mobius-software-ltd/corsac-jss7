@@ -25,16 +25,16 @@ package org.restcomm.protocols.ss7.tcap.tc.dialog.events;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
-import org.restcomm.protocols.ss7.tcap.asn.ASNAbortSource;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnosticImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.AbortSourceType;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements TCUserAbortIndication {
-	private UserInformationImpl userInformation;
-    private ASNAbortSource abortSource;
-    private ApplicationContextNameImpl acn;
-    private ResultSourceDiagnosticImpl resultSourceDiagnostic;
+	private UserInformation userInformation;
+    private AbortSourceType abortSource;
+    private ApplicationContextName acn;
+    private ResultSourceDiagnostic resultSourceDiagnostic;
     private Boolean aareApdu = false;
     private Boolean abrtApdu = false;
 
@@ -54,7 +54,7 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
         return this.aareApdu;
     }
 
-    public void SetAareApdu() {
+    public void setAareApdu() {
         this.aareApdu = true;
     }
 
@@ -63,11 +63,11 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
 
     }
 
-    public void SetAbrtApdu() {
+    public void setAbrtApdu() {
         this.abrtApdu = true;
     }
 
-    public UserInformationImpl getUserInformation() {
+    public UserInformation getUserInformation() {
 
         return userInformation;
     }
@@ -75,35 +75,35 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
     /**
      * @param userInformation the userInformation to set
      */
-    public void setUserInformation(UserInformationImpl userInformation) {
+    public void setUserInformation(UserInformation userInformation) {
         this.userInformation = userInformation;
     }
 
     /**
      * @return the abortSource
      */
-    public ASNAbortSource getAbortSource() {
+    public AbortSourceType getAbortSource() {
         return abortSource;
     }
 
-    public void setAbortSource(ASNAbortSource abortSource) {
+    public void setAbortSource(AbortSourceType abortSource) {
         this.abortSource = abortSource;
 
     }
 
-    public ApplicationContextNameImpl getApplicationContextName() {
+    public ApplicationContextName getApplicationContextName() {
         return this.acn;
     }
 
-    public void setApplicationContextName(ApplicationContextNameImpl acn) {
+    public void setApplicationContextName(ApplicationContextName acn) {
         this.acn = acn;
     }
 
-    public ResultSourceDiagnosticImpl getResultSourceDiagnostic() {
+    public ResultSourceDiagnostic getResultSourceDiagnostic() {
         return this.resultSourceDiagnostic;
     }
 
-    public void setResultSourceDiagnostic(ResultSourceDiagnosticImpl resultSourceDiagnostic) {
+    public void setResultSourceDiagnostic(ResultSourceDiagnostic resultSourceDiagnostic) {
         this.resultSourceDiagnostic = resultSourceDiagnostic;
     }
 

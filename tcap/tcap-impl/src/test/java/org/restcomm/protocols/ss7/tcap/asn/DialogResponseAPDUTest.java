@@ -77,17 +77,17 @@ public class DialogResponseAPDUTest {
         assertTrue(output instanceof DialogResponseAPDUImpl);
         DialogResponseAPDUImpl d = (DialogResponseAPDUImpl)output;
         
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 21L, 2L }), d.getApplicationContextName().getValue());
-        ResultImpl r = d.getResult();
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 21L, 2L }), d.getApplicationContextName().getOid());
+        Result r = d.getResult();
         assertEquals(ResultType.Accepted, r.getResultType());
-        ResultSourceDiagnosticImpl diag = d.getResultSourceDiagnostic();
+        ResultSourceDiagnostic diag = d.getResultSourceDiagnostic();
         assertNotNull(diag.getDialogServiceUserType());
         assertEquals(DialogServiceUserType.Null, diag.getDialogServiceUserType());
-        UserInformationImpl ui = d.getUserInformation();
+        UserInformation ui = d.getUserInformation();
         assertNotNull(ui);
-        assertTrue(ui.getExternal().isValueObject());
-        assertTrue(ui.getExternal().getChild().getValue() instanceof DialogResponseAPDUASN);
-        assertTrue(((DialogResponseAPDUASN)ui.getExternal().getChild().getValue()).getLength(parser)==0);
+        assertTrue(ui.isValueObject());
+        assertTrue(ui.getChild() instanceof DialogResponseAPDUASN);
+        assertTrue(((DialogResponseAPDUASN)ui.getChild()).getLength(parser)==0);
         
         ByteBuf buffer=parser.encode(d);
         assertTrue(Arrays.equals(getData(), buffer.array()));
@@ -97,7 +97,7 @@ public class DialogResponseAPDUTest {
         d = (DialogResponseAPDUImpl)output;
         
         
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 25L, 2L }), d.getApplicationContextName().getValue());
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 25L, 2L }), d.getApplicationContextName().getOid());
         r = d.getResult();
         assertEquals(ResultType.RejectedPermanent, r.getResultType());
         diag = d.getResultSourceDiagnostic();
@@ -113,7 +113,7 @@ public class DialogResponseAPDUTest {
         assertTrue(output instanceof DialogResponseAPDUImpl);
         d = (DialogResponseAPDUImpl)output;
         
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 25L, 2L }), d.getApplicationContextName().getValue());
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 25L, 2L }), d.getApplicationContextName().getOid());
         r = d.getResult();
         assertEquals(ResultType.RejectedPermanent, r.getResultType());
         diag = d.getResultSourceDiagnostic();

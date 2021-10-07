@@ -26,8 +26,8 @@
 package org.restcomm.protocols.ss7.tcap.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
 /**
  * @author baranowb
@@ -37,12 +37,19 @@ public interface TCBeginIndication extends DialogIndication {
 
     // public Byte getQOS();
 
-    ApplicationContextNameImpl getApplicationContextName();
+    ApplicationContextName getApplicationContextName();
 
-    UserInformationImpl getUserInformation();
+    UserInformation getUserInformation();
 
     SccpAddress getDestinationAddress();
 
     SccpAddress getOriginatingAddress();
 
+    void setUserInformation(UserInformation acn);
+    
+    void setOriginatingAddress(SccpAddress dest);
+    
+    void setDestinationAddress(SccpAddress dest);
+    
+    void setApplicationContextName(ApplicationContextName acn);
 }

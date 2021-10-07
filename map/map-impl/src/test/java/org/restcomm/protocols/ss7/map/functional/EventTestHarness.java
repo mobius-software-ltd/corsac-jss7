@@ -1,5 +1,11 @@
 package org.restcomm.protocols.ss7.map.functional;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPDialogListener;
@@ -105,14 +111,8 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNo
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 /**
  *
@@ -151,7 +151,7 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
     }
 
     public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextNameImpl alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
+            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
         this.logger.debug("onDialogReject");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogReject, mapDialog, sequence++);
         this.observerdEvents.add(te);
@@ -200,7 +200,7 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
         this.observerdEvents.add(te);
     }
 
-    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, ProblemImpl problem, boolean isLocalOriginated) {
+    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
         this.logger.debug("onRejectComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.RejectComponent, mapDialog, sequence++);
         this.observerdEvents.add(te);

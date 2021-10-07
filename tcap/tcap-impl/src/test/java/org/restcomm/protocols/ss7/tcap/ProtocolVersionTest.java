@@ -43,9 +43,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.asn.ASNDialogPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDUImpl;
-import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersionImpl;
+import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersion;
 import org.restcomm.protocols.ss7.tcap.asn.TCBeginMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 import org.testng.annotations.AfterClass;
@@ -75,7 +76,7 @@ public class ProtocolVersionTest extends SccpHarness {
     private SccpAddress peer2Address;
     private Client client;
     private TestSccpListener sccpListener;
-    private ProtocolVersionImpl pv;
+    private ProtocolVersion pv;
 
     public ProtocolVersionTest() {
 
@@ -204,8 +205,8 @@ public class ProtocolVersionTest extends SccpHarness {
         	
             if(output!=null && output instanceof TCBeginMessage) {
             	TCBeginMessage tcb=(TCBeginMessage)output;
-            	if(tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDUImpl) {
-                            pv=((DialogRequestAPDUImpl)tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
+            	if(tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU) {
+                            pv=((DialogRequestAPDU)tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
             	} 
                         
             	System.out.println("DIALOG REQUEST:" + tcb.getDialogPortion().toString());
