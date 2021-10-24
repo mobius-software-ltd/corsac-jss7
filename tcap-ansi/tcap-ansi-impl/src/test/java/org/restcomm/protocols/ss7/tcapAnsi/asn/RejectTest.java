@@ -26,8 +26,9 @@ import static org.testng.Assert.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -75,7 +76,7 @@ public class RejectTest {
     	parser.loadClass(RejectImpl.class);
     	        
         // 1
-        RejectImpl rej = TcapFactory.createComponentReject();
+        Reject rej = TcapFactory.createComponentReject();
         rej.setCorrelationId(5L);
         rej.setProblem(RejectProblem.invokeIncorrectParameter);
 

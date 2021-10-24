@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCNoticeIndication;
@@ -66,7 +66,7 @@ public interface TCListener {
      *
      * @param tcInvokeRequest
      */
-    void onInvokeTimeout(InvokeImpl tcInvokeRequest);
+    void onInvokeTimeout(Invoke tcInvokeRequest);
 
     /**
      * Called once dialog times out. Once this method is called, dialog cant be used anymore.

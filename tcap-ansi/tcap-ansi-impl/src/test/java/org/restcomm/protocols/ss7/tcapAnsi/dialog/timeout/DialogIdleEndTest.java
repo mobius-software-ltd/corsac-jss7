@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.dialog.timeout;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,10 +37,10 @@ import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.TestEvent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -138,16 +138,16 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                    UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                    UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
                     uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
                     ASNBitString bs = new ASNBitString();
                     bs.setBit(0);
                     bs.setBit(3);
                     uie.setChild(bs);
                     uie.setIdentifier(_ACN_);
-                    ApplicationContextNameImpl _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
+                    ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
                     UserInformationImpl ui=new UserInformationImpl();
-                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));
+                    ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
                     sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
@@ -203,15 +203,15 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                    UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                    UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
                     ASNBitString bs = new ASNBitString();
                     bs.setBit(0);
                     bs.setBit(3);
                     uie.setChild(bs);
                     uie.setIdentifier(_ACN_);
-                    ApplicationContextNameImpl _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
+                    ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
                     UserInformationImpl ui=new UserInformationImpl();
-                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));
+                    ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
                     sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
@@ -259,15 +259,15 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                	UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                	UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
                     ASNBitString bs = new ASNBitString();
                     bs.setBit(0);
                     bs.setBit(3);
                     uie.setChild(bs);
                     uie.setIdentifier(_ACN_);
-                    ApplicationContextNameImpl _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
+                    ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
                     UserInformationImpl ui=new UserInformationImpl();
-                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));                    
+                    ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));                    
                     sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
@@ -327,15 +327,15 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                	UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                	UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
                     ASNBitString bs = new ASNBitString();
                     bs.setBit(0);
                     bs.setBit(3);
                     uie.setChild(bs);
                     uie.setIdentifier(_ACN_);
-                    ApplicationContextNameImpl _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
+                    ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
                     UserInformationImpl ui=new UserInformationImpl();
-                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));                    
+                    ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));                    
                     sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 
@@ -401,15 +401,15 @@ public class DialogIdleEndTest extends SccpHarness {
                 // send abort :)
                 try {
                     // UI is required...
-                	UserInformationExternalImpl uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
+                	UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
                     ASNBitString bs = new ASNBitString();
                     bs.setBit(0);
                     bs.setBit(3);
                     uie.setChild(bs);
                     uie.setIdentifier(_ACN_);
-                    ApplicationContextNameImpl _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
+                    ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
                     UserInformationImpl ui=new UserInformationImpl();
-                    ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));                    
+                    ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));                    
                     sendAbort(_acn, ui);
                 } catch (TCAPSendException e) {
 

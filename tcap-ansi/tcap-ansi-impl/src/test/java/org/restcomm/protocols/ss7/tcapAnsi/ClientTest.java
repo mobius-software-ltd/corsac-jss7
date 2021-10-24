@@ -35,11 +35,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCNoticeIndication;
@@ -51,6 +49,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseReques
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 
 /**
  * Simple example demonstrates how to use TCAP Stack
@@ -85,27 +84,27 @@ public class ClientTest implements TCListener {
         ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
 
         // create some INVOKE
-        InvokeNotLastImpl invoke = cpFactory.createTCInvokeRequestNotLast();
+        Invoke invoke = cpFactory.createTCInvokeRequestNotLast();
         invoke.setInvokeId(this.clientDialog.getNewInvokeId());
-        OperationCodeImpl oc = TcapFactory.createNationalOperationCode(12L);
+        OperationCode oc = TcapFactory.createNationalOperationCode(12L);
         invoke.setOperationCode(oc);
         // no parameter
         
-        ComponentImpl component=new ComponentImpl();
+        WrappedComponentImpl component=new WrappedComponentImpl();
         component.setInvoke(invoke);
         this.clientDialog.sendComponent(component);
         
-        ApplicationContextNameImpl acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(Arrays.asList(_ACN_));
+        ApplicationContext acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(Arrays.asList(_ACN_));
         // UI is optional!
         TCQueryRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createQuery(this.clientDialog, true);
-        tcbr.setApplicationContextName(acn);
+        tcbr.setApplicationContext(acn);
         this.clientDialog.send(tcbr);
     }
 
     public void onDialogReleased(Dialog d) {
     }
 
-    public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
+    public void onInvokeTimeout(Invoke tcInvokeRequest) {
     }
 
     public void onDialogTimeout(Dialog d) {

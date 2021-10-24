@@ -30,8 +30,8 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 public interface TCQueryMessage extends TCUnifiedMessage {
     boolean getDialogTermitationPermission();
 
-    ComponentPortionImpl getComponent();
+    ComponentPortion getComponent();
 
-    void setComponent(ComponentPortionImpl c);
+    void setComponent(ComponentPortion c);
 
 }

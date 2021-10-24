@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DialogIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 public abstract class DialogIndicationImpl implements DialogIndication {
 	private static final long serialVersionUID = 1L;
 
-	private ComponentPortionImpl components;
+	private ComponentPortion components;
     private Dialog dialog;
     private EventType type;
 
@@ -46,14 +46,14 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     /**
      * @return the components
      */
-    public ComponentPortionImpl getComponents() {
+    public ComponentPortion getComponents() {
         return components;
     }
 
     /**
      * @param components the components to set
      */
-    public void setComponents(ComponentPortionImpl components) {
+    public void setComponents(ComponentPortion components) {
         this.components = components;
     }
 

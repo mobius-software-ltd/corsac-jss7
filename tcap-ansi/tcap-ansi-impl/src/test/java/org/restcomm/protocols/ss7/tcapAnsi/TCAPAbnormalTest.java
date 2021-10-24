@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
-import static org.testng.Assert.*;
-import io.netty.buffer.Unpooled;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,19 +33,22 @@ import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationElementImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.Unpooled;
 
 /**
  * Test for abnormal situation processing
@@ -420,11 +423,11 @@ public class TCAPAbnormalTest extends SccpHarness {
         Thread.sleep(WAIT_TIME);
 
         UserInformationImpl ui=new UserInformationImpl();
-        UserInformationExternalImpl uie=new UserInformationExternalImpl();
+        UserInformationElementImpl uie=new UserInformationElementImpl();
         uie.setIdentifier(Arrays.asList(new Long[] { 1L, 2L, 3L }));
         uie.setChild(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
-        ui.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uie }));
-        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(Arrays.asList(new Long[] { 1L, 2L, 3L }));
+        ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
+        ApplicationContext ac = TcapFactory.createApplicationContext(Arrays.asList(new Long[] { 1L, 2L, 3L }));
         server.sendAbort(ac, ui);
         Thread.sleep(WAIT_TIME);
 
@@ -507,9 +510,9 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.startClientDialog();
 
         DialogImpl tcapDialog = client.getCurDialog();
-        InvokeNotLastImpl invoke = client.createNewInvoke();
+        Invoke invoke = client.createNewInvoke();
         invoke.setTimeout(INVOKE_WAIT_TIME);
-        ComponentImpl component=new ComponentImpl();
+        WrappedComponentImpl component=new WrappedComponentImpl();
         component.setInvoke(invoke);
         tcapDialog.sendComponent(component);
 
@@ -542,9 +545,9 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.startClientDialog();
 
         DialogImpl tcapDialog = client.getCurDialog();
-        InvokeNotLastImpl invoke = client.createNewInvoke();
+        Invoke invoke = client.createNewInvoke();
         invoke.setTimeout(_DIALOG_TIMEOUT * 2);
-        ComponentImpl component=new ComponentImpl();
+        WrappedComponentImpl component=new WrappedComponentImpl();
         component.setInvoke(invoke);
         tcapDialog.sendComponent(component);
 

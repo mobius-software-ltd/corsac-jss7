@@ -51,7 +51,7 @@ public class LMSIImpl extends ASNOctetString {
 
     @Override
     public String toString() {
-        return "LMSI [Data= " + this.printDataArr(getData()) + "]";
+        return "LMSI [Data= " + printDataArr(getData()) + "]";
     }
 
     @Override

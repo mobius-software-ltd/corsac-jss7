@@ -114,17 +114,17 @@ public class AuthenticationTripletImpl {
 
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(this.rand.printDataArr(getRand()));
+            sb.append(ASNOctetString.printDataArr(getRand()));
             sb.append("], ");
         }
         if (this.sres != null) {
             sb.append("sres=[");
-            sb.append(this.rand.printDataArr(getSres()));
+            sb.append(ASNOctetString.printDataArr(getSres()));
             sb.append("], ");
         }
         if (this.kc != null) {
             sb.append("kc=[");
-            sb.append(this.rand.printDataArr(getKc()));
+            sb.append(ASNOctetString.printDataArr(getKc()));
             sb.append("]");
         }
 

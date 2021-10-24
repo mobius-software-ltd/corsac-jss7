@@ -22,12 +22,10 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 
 /**
@@ -42,9 +40,9 @@ public interface ComponentPrimitiveFactory {
      *
      * @return return new instance of ({@link Invoke}
      */
-    InvokeNotLastImpl createTCInvokeRequestNotLast();
+    Invoke createTCInvokeRequestNotLast();
 
-    InvokeLastImpl createTCInvokeRequestLast();
+    Invoke createTCInvokeRequestLast();
 
     /**
      * <p>
@@ -60,15 +58,15 @@ public interface ComponentPrimitiveFactory {
      * @param invokeClass The Class of Operation
      * @return new instance of ({@link Invoke}
      */
-    InvokeNotLastImpl createTCInvokeRequestNotLast(InvokeClass invokeClass);
+    Invoke createTCInvokeRequestNotLast(InvokeClass invokeClass);
 
-    InvokeLastImpl createTCInvokeRequestLast(InvokeClass invokeClass);
+    Invoke createTCInvokeRequestLast(InvokeClass invokeClass);
 
-    RejectImpl createTCRejectRequest();
+    Reject createTCRejectRequest();
 
-    ReturnResultLastImpl createTCResultLastRequest();
+    Return createTCResultLastRequest();
 
-    ReturnResultNotLastImpl createTCResultNotLastRequest();
+    Return createTCResultNotLastRequest();
 
-    ReturnErrorImpl createTCReturnErrorRequest();
+    ReturnError createTCReturnErrorRequest();
 }

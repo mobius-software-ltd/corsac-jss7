@@ -29,15 +29,15 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 
 /**
  * @author baranowb
@@ -45,7 +45,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
  */
 public class Server extends EventTestHarness {
 
-    protected List<ComponentImpl> components;
+    protected List<WrappedComponent> components;
 
     /**
      * @param stack
@@ -66,22 +66,22 @@ public class Server extends EventTestHarness {
     @Override
     public void sendContinue(boolean addingInv) throws TCAPSendException, TCAPException {
 
-        List<ComponentImpl> comps = components;
+        List<WrappedComponent> comps = components;
         if (comps == null || comps.size() != 2) {
             throw new TCAPSendException("Bad comps!");
         }
-        ComponentImpl c = comps.get(0);
+        WrappedComponent c = comps.get(0);
         if (c.getType() != ComponentType.InvokeNotLast) {
             throw new TCAPSendException("Bad type: " + c.getType());
         }
         // lets kill this Invoke - sending ReturnResultLast
-        InvokeNotLastImpl invoke = c.getInvoke();
-        ReturnResultLastImpl rrlast = this.tcapProvider.getComponentPrimitiveFactory().createTCResultLastRequest();
+        Invoke invoke = c.getInvoke();
+        Return rrlast = this.tcapProvider.getComponentPrimitiveFactory().createTCResultLastRequest();
         rrlast.setCorrelationId(invoke.getInvokeId());
         // we need not set operationCode here because of no Parameter is sent and ReturnResultLast will not carry
         // ReturnResultLast value
         // rrlast.setOperationCode(invoke.getOperationCode());
-        ComponentImpl component=new ComponentImpl();
+        WrappedComponentImpl component=new WrappedComponentImpl();
         component.setReturnResultLast(rrlast);
         super.dialog.sendComponent(component);
 
@@ -91,14 +91,14 @@ public class Server extends EventTestHarness {
         }
 
         // lets kill this Invoke - sending Invoke with linkedId
-        InvokeLastImpl invokeLast = c.getInvokeLast();
-        InvokeNotLastImpl invoke2 = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast(InvokeClass.Class1);
+        Invoke invokeLast = c.getInvokeLast();
+        Invoke invoke2 = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast(InvokeClass.Class1);
         invoke2.setInvokeId(this.dialog.getNewInvokeId());
         invoke2.setCorrelationId(invokeLast.getInvokeId());
-        OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(14L);
+        OperationCode oc = TcapFactory.createPrivateOperationCode(14L);
         invoke2.setOperationCode(oc);
         // no parameter
-        component=new ComponentImpl();
+        component=new WrappedComponentImpl();
         component.setInvoke(invoke2);
         this.dialog.sendComponent(component);
 

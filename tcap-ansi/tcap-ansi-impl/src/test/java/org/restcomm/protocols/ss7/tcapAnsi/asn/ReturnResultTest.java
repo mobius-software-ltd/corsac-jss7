@@ -26,8 +26,9 @@ import static org.testng.Assert.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -83,7 +84,7 @@ public class ReturnResultTest {
     	parser.loadClass(ReturnResultNotLastImpl.class);
     	
         // 1
-        ReturnResultLastImpl rrl = TcapFactory.createComponentReturnResultLast();
+        Return rrl = TcapFactory.createComponentReturnResultLast();
         rrl.setCorrelationId(0L);
         ASNOctetString p=new ASNOctetString();
         p.setValue(Unpooled.wrappedBuffer(parData));
@@ -94,7 +95,7 @@ public class ReturnResultTest {
         UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
         // 2
-        ReturnResultNotLastImpl rrnl = TcapFactory.createComponentReturnResultNotLast();
+        Return rrnl = TcapFactory.createComponentReturnResultNotLast();
         rrnl.setCorrelationId(-1L);
         rrl.setSetParameter(null);
 

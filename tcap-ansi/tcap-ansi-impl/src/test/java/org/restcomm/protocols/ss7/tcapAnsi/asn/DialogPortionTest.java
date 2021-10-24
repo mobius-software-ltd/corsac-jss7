@@ -30,14 +30,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -70,13 +69,13 @@ public class DialogPortionTest {
         
     	assertNull(dp.getApplicationContext());
         assertTrue(dp.getProtocolVersion().isT1_114_2000Supported());
-        UserInformationImpl ui = dp.getUserInformation();
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), ui.getExternal().get(0).getObjectIdentifier());
-        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)ui.getExternal().get(0).getChild().getValue()).getValue());
+        UserInformation ui = dp.getUserInformation();
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), ui.getUserInformationElements().get(0).getObjectIdentifier());
+        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)ui.getUserInformationElements().get(0).getChild()).getValue());
 
-        SecurityContextNameImpl sc = dp.getSecurityContext();
+        SecurityContext sc = dp.getSecurityContext();
         assertEquals(sc.getInt(), new Long(10L));
-        ConfidentialityImpl con = dp.getConfidentiality();
+        Confidentiality con = dp.getConfidentiality();
         assertEquals((long) con.getIntegerConfidentialityId(), 20);
 
         // 2
@@ -99,12 +98,12 @@ public class DialogPortionTest {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(DialogPortionImpl.class);
         // 1
-        DialogPortionImpl dp = TcapFactory.createDialogPortion();
-        ProtocolVersionImpl pv = TcapFactory.createProtocolVersionFull();
+        DialogPortion dp = TcapFactory.createDialogPortion();
+        ProtocolVersion pv = TcapFactory.createProtocolVersionFull();
         dp.setProtocolVersion(pv);
-        UserInformationImpl ui = TcapFactory.createUserInformation();
-        List<UserInformationExternalImpl> uie = new ArrayList<UserInformationExternalImpl>(1);
-        UserInformationExternalImpl currElement=new UserInformationExternalImpl();
+        UserInformation ui = TcapFactory.createUserInformation();
+        List<UserInformationElement> uie = new ArrayList<UserInformationElement>(1);
+        UserInformationElementImpl currElement=new UserInformationElementImpl();
         currElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
         
         ASNOctetString innerValue=new ASNOctetString();
@@ -113,9 +112,9 @@ public class DialogPortionTest {
         childObject.setValue(innerValue);
         currElement.setChildAsObject(childObject);
         uie.add(currElement);
-        ui.setExternal(uie);
+        ui.setUserInformationElements(uie);
         dp.setUserInformation(ui);
-        SecurityContextNameImpl sc = new SecurityContextNameImpl();
+        SecurityContextImpl sc = new SecurityContextImpl();
         sc.setInt(10L);
         dp.setSecurityContext(sc);
         ConfidentialityImpl con = new ConfidentialityImpl();
@@ -127,9 +126,9 @@ public class DialogPortionTest {
 
         // 2
         dp = TcapFactory.createDialogPortion();
-        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(30);
+        ApplicationContext ac = TcapFactory.createApplicationContext(30);
         dp.setApplicationContext(ac);
-        SecurityContextNameImpl osc = new SecurityContextNameImpl();
+        SecurityContextImpl osc = new SecurityContextImpl();
         osc.setObj(Arrays.asList(new Long[] { 1L, 2L }));
         dp.setSecurityContext(osc);
         con = new ConfidentialityImpl();

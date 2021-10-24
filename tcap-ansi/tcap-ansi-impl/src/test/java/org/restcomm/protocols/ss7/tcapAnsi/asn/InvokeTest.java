@@ -22,20 +22,25 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ASNInvokeSetParameterImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNInvokeSetParameterImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -102,9 +107,9 @@ public class InvokeTest {
     	parser.loadClass(InvokeNotLastImpl.class);
     	parser.loadClass(InvokeLastImpl.class);
         // 1
-        InvokeImpl inv = TcapFactory.createComponentInvokeLast();
+        Invoke inv = TcapFactory.createComponentInvokeLast();
         inv.setInvokeId(0L);
-        OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(2357L);
+        OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
         inv.setOperationCode(oc);
         ASNInvokeSetParameterImpl p=new ASNInvokeSetParameterImpl();
         ASNOctetString innerValue=new ASNOctetString();
@@ -120,7 +125,7 @@ public class InvokeTest {
         inv = TcapFactory.createComponentInvokeNotLast();
         inv.setInvokeId(20L);
         inv.setCorrelationId(10L);
-        OperationCodeImpl noc = TcapFactory.createNationalOperationCode(-13L);
+        OperationCode noc = TcapFactory.createNationalOperationCode(-13L);
         inv.setOperationCode(noc);
         p=new ASNInvokeSetParameterImpl();
         inv.setSetParameter(p);

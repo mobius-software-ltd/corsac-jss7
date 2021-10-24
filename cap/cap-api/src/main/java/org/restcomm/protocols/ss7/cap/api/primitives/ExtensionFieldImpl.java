@@ -141,7 +141,7 @@ public class ExtensionFieldImpl {
         }
         if (this.data != null && this.data.getValue()!=null) {
             sb.append(", data=[");
-            sb.append(data.printDataArr(getData()));
+            sb.append(ASNOctetString.printDataArr(getData()));
             sb.append("]");
         }
         sb.append("]");

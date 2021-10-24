@@ -22,26 +22,29 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 @Test(groups = { "asn" })
 public class TcResponseTest {
@@ -70,9 +73,9 @@ public class TcResponseTest {
         assertEquals(tcm.getDestinationTransactionId(), trId);
         assertNull(tcm.getDialogPortion());
         assertEquals(tcm.getComponent().getComponents().size(), 1);
-        ComponentImpl cmp = tcm.getComponent().getComponents().get(0);
+        WrappedComponent cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.ReturnResultLast);
-        ReturnResultLastImpl rrl = cmp.getReturnResultLast();
+        Return rrl = cmp.getReturnResultLast();
         assertEquals((long) rrl.getCorrelationId(), 1);
         assertTrue(rrl.getParameter() instanceof ASNOctetString);
         UserInformationElementTest.byteBufEquals(((ASNOctetString)rrl.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
@@ -83,9 +86,9 @@ public class TcResponseTest {
         tcm = (TCResponseMessage)result.getResult();
 
         assertEquals(tcm.getDestinationTransactionId(), trId);
-        DialogPortionImpl dp = tcm.getDialogPortion();
+        DialogPortion dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
-        ApplicationContextNameImpl ac = dp.getApplicationContext();
+        ApplicationContext ac = dp.getApplicationContext();
         assertEquals(ac.getInt(), new Long(66L));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
@@ -100,9 +103,9 @@ public class TcResponseTest {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCResponseMessageImpl.class);
         // 1
-        List<ComponentImpl> cc = new ArrayList<ComponentImpl>(1);
-        ReturnResultLastImpl rrl = TcapFactory.createComponentReturnResultLast();
-        ComponentImpl component=new ComponentImpl();
+        List<WrappedComponent> cc = new ArrayList<WrappedComponent>(1);
+        Return rrl = TcapFactory.createComponentReturnResultLast();
+        WrappedComponentImpl component=new WrappedComponentImpl();
         component.setReturnResultLast(rrl);
         cc.add(component);
         rrl.setCorrelationId(1L);
@@ -124,8 +127,8 @@ public class TcResponseTest {
         tcm = TcapFactory.createTCResponseMessage();
         tcm.setDestinationTransactionId(trId);
 
-        DialogPortionImpl dp = TcapFactory.createDialogPortion();
-        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(66);
+        DialogPortion dp = TcapFactory.createDialogPortion();
+        ApplicationContext ac = TcapFactory.createApplicationContext(66);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 

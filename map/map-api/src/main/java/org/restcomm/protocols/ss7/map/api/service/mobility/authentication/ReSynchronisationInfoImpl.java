@@ -91,12 +91,12 @@ public class ReSynchronisationInfoImpl {
 
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(this.rand.printDataArr(getRand()));
+            sb.append(ASNOctetString.printDataArr(getRand()));
             sb.append("], ");
         }
         if (this.auts != null) {
             sb.append("auts=[");
-            sb.append(this.rand.printDataArr(getAuts()));
+            sb.append(ASNOctetString.printDataArr(getAuts()));
             sb.append("], ");
         }
 

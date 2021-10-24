@@ -75,7 +75,7 @@ public class ASNOctetString {
 		return value.readableBytes();
 	}
 	
-	public String printDataArr(byte[] arr) {
+	public static String printDataArr(byte[] arr) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         if (arr != null) {

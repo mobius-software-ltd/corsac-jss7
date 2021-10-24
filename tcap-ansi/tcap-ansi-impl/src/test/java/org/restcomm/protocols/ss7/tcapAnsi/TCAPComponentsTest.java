@@ -27,7 +27,6 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-import io.netty.buffer.Unpooled;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,24 +36,24 @@ import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ASNInvokeSetParameterImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.BaseComponent;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNInvokeSetParameterImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -66,6 +65,8 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+
+import io.netty.buffer.Unpooled;
 
 /**
  * Test for component processing
@@ -171,9 +172,9 @@ public class TCAPComponentsTest extends SccpHarness {
                     switch (step) {
                     case 1:
                         assertEquals(ind.getComponents().getComponents().size(), 1);
-                        ComponentImpl c = ind.getComponents().getComponents().get(0);
+                        WrappedComponent c = ind.getComponents().getComponents().get(0);
                         assertEquals(c.getType(), ComponentType.Reject);
-                        RejectImpl r = c.getReject();
+                        Reject r = c.getReject();
                         assertEquals((long) r.getCorrelationId(), 1);
                         assertEquals(r.getProblem(), RejectProblem.returnResultUnrecognisedCorrelationId);
                         assertTrue(r.isLocalOriginated());
@@ -234,9 +235,9 @@ public class TCAPComponentsTest extends SccpHarness {
 
                 try {
                     assertEquals(ind.getComponents().getComponents().size(), 1);
-                    ComponentImpl c = ind.getComponents().getComponents().get(0);
+                    WrappedComponent c = ind.getComponents().getComponents().get(0);
                     assertEquals(c.getType(), ComponentType.Reject);
-                    RejectImpl r = c.getReject();
+                    Reject r = c.getReject();
                     assertEquals((long) r.getCorrelationId(), 2);
                     assertEquals(r.getProblem(), RejectProblem.invokeDuplicateInvocation);
                     assertFalse(r.isLocalOriginated());
@@ -280,9 +281,9 @@ public class TCAPComponentsTest extends SccpHarness {
                     case 1:
                         assertEquals(ind.getComponents().getComponents().size(), 2);
 
-                        ComponentImpl c = ind.getComponents().getComponents().get(0);
+                        WrappedComponent c = ind.getComponents().getComponents().get(0);
                         assertEquals(c.getType(), ComponentType.Reject);
-                        RejectImpl r = c.getReject();
+                        Reject r = c.getReject();
                         assertEquals((long) r.getCorrelationId(), 1);
                         assertEquals(r.getProblem(), RejectProblem.returnResultUnrecognisedCorrelationId);
                         assertFalse(r.isLocalOriginated());
@@ -476,9 +477,9 @@ public class TCAPComponentsTest extends SccpHarness {
                 super.onTCResponse(ind);
 
                 assertEquals(ind.getComponents().getComponents().size(), 1);
-                ComponentImpl c = ind.getComponents().getComponents().get(0);
+                WrappedComponent c = ind.getComponents().getComponents().get(0);
                 assertEquals(c.getType(), ComponentType.Reject);
-                RejectImpl r = c.getReject();
+                Reject r = c.getReject();
                 assertNull(r.getCorrelationId());
                 
                 try {                
@@ -499,9 +500,9 @@ public class TCAPComponentsTest extends SccpHarness {
                 super.onTCQuery(ind);
 
                 assertEquals(ind.getComponents().getComponents().size(), 2);
-                ComponentImpl c = ind.getComponents().getComponents().get(0);
+                WrappedComponent c = ind.getComponents().getComponents().get(0);
                 assertEquals(c.getType(), ComponentType.Reject);
-                RejectImpl r = c.getReject();
+                Reject r = c.getReject();
                 assertNull(r.getCorrelationId());
                 
                 try {                
@@ -571,10 +572,11 @@ public class TCAPComponentsTest extends SccpHarness {
                 super.onTCResponse(ind);
 
                 assertEquals(ind.getComponents().getComponents().size(), 1);
-                ComponentImpl c = ind.getComponents().getComponents().get(0);
+                WrappedComponent c = ind.getComponents().getComponents().get(0);
                 assertEquals(c.getType(), ComponentType.Reject);
-                RejectImpl r = c.getReject();
-                assertEquals((long) r.getCorrelationId(), 1);
+                Reject r = c.getReject();
+                if(r!=null && r.getCorrelationId()!=null)
+                	assertEquals((long) r.getCorrelationId(), 1);
                 
                 try {
                 	assertEquals(r.getProblem(), RejectProblem.generalIncorrectComponentPortion);
@@ -594,9 +596,9 @@ public class TCAPComponentsTest extends SccpHarness {
                 super.onTCQuery(ind);
 
                 assertEquals(ind.getComponents().getComponents().size(), 2);
-                ComponentImpl c = ind.getComponents().getComponents().get(0);
+                WrappedComponent c = ind.getComponents().getComponents().get(0);
                 assertEquals(c.getType(), ComponentType.Reject);
-                RejectImpl r = c.getReject();
+                Reject r = c.getReject();
                 assertEquals((long) r.getCorrelationId(), 1);
                 
                 try {
@@ -638,7 +640,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
         InvokeLastImpl badInvoke=new BadComponentMistypedComponent();
         badInvoke.setCorrelationId(1L);
-        ComponentImpl badComp = new ComponentImpl();
+        WrappedComponentImpl badComp = new WrappedComponentImpl();
         badComp.setInvokeLast(badInvoke);
         client.dialog.sendComponent(badComp);
 
@@ -667,9 +669,9 @@ public class TCAPComponentsTest extends SccpHarness {
                 super.onTCResponse(ind);
 
                 assertEquals(ind.getComponents().getComponents().size(), 1);
-                ComponentImpl c = ind.getComponents().getComponents().get(0);
+                WrappedComponent c = ind.getComponents().getComponents().get(0);
                 assertEquals(c.getType(), ComponentType.Reject);
-                RejectImpl r = c.getReject();
+                Reject r = c.getReject();
                 assertNull(r.getCorrelationId());
                 
                 try {
@@ -690,9 +692,9 @@ public class TCAPComponentsTest extends SccpHarness {
                 super.onTCQuery(ind);
 
                 assertEquals(ind.getComponents().getComponents().size(), 2);
-                ComponentImpl c = ind.getComponents().getComponents().get(0);
+                WrappedComponent c = ind.getComponents().getComponents().get(0);
                 assertEquals(c.getType(), ComponentType.Reject);
-                RejectImpl r = c.getReject();
+                Reject r = c.getReject();
                 assertNull(r.getCorrelationId());
                 
                 try {
@@ -744,7 +746,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
         InvokeLastImpl badInvoke= new BadComponentBadlyStructuredComponent();
         badInvoke.setCorrelationId(1L);
-        ComponentImpl badComp=new ComponentImpl();
+        WrappedComponentImpl badComp=new WrappedComponentImpl();
         badComp.setInvokeLast(badInvoke);
         client.dialog.sendComponent(badComp);
 
@@ -790,9 +792,9 @@ public class TCAPComponentsTest extends SccpHarness {
             procComponents(ind.getComponents().getComponents());
         }
 
-        private void procComponents(List<ComponentImpl> compp) {
+        private void procComponents(List<WrappedComponent> compp) {
             if (compp != null) {
-                for (ComponentImpl c : compp) {
+                for (WrappedComponent c : compp) {
                     EventType et = null;
                     if (c.getType() == ComponentType.InvokeNotLast) {
                         et = EventType.InvokeNotLast;
@@ -821,7 +823,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
         public void addNewInvoke(Long invokeId, Long timout, boolean last) throws Exception {
 
-            InvokeImpl invoke;
+            Invoke invoke;
             if (last)
                 invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestLast();
             else
@@ -829,7 +831,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
             invoke.setInvokeId(invokeId);
 
-            OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(2357L);
+            OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
 //            oc.setNationalOperationCode(10L);
             invoke.setOperationCode(oc);
 
@@ -845,7 +847,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 te = TestEvent.createSentEvent(EventType.InvokeNotLast, null, sequence++);
             this.observerdEvents.add(te);
 
-            ComponentImpl component=new ComponentImpl();
+            WrappedComponentImpl component=new WrappedComponentImpl();
             if(last)
             	component.setInvokeLast((InvokeLastImpl)invoke);
             else
@@ -877,10 +879,10 @@ public class TCAPComponentsTest extends SccpHarness {
 
         public void addNewInvoke(Long invokeId, Long timout) throws Exception {
 
-            InvokeNotLastImpl invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
+            Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
             invoke.setInvokeId(invokeId);
 
-            OperationCodeImpl oc = TcapFactory.createNationalOperationCode(10L);
+            OperationCode oc = TcapFactory.createNationalOperationCode(10L);
             invoke.setOperationCode(oc);
 
             invoke.setTimeout(timout);
@@ -888,27 +890,27 @@ public class TCAPComponentsTest extends SccpHarness {
             TestEvent te = TestEvent.createSentEvent(EventType.InvokeNotLast, null, sequence++);
             this.observerdEvents.add(te);
 
-            ComponentImpl component=new ComponentImpl();
+            WrappedComponentImpl component=new WrappedComponentImpl();
             component.setInvoke(invoke);
             this.dialog.sendComponent(component);
         }
 
         public void addNewReject() throws Exception {
 
-            RejectImpl rej = this.tcapProvider.getComponentPrimitiveFactory().createTCRejectRequest();
+            Reject rej = this.tcapProvider.getComponentPrimitiveFactory().createTCRejectRequest();
             rej.setProblem(RejectProblem.returnErrorUnexpectedError);
 
             TestEvent te = TestEvent.createSentEvent(EventType.Reject, null, sequence++);
             this.observerdEvents.add(te);
 
-            ComponentImpl component=new ComponentImpl();
+            WrappedComponentImpl component=new WrappedComponentImpl();
             component.setReject(rej);
             this.dialog.sendComponent(component);
         }
 
         public void addNewReturnResult(Long invokeId) throws Exception {
 
-            ReturnResultNotLastImpl rr = this.tcapProvider.getComponentPrimitiveFactory().createTCResultNotLastRequest();
+            Return rr = this.tcapProvider.getComponentPrimitiveFactory().createTCResultNotLastRequest();
             rr.setCorrelationId(invokeId);
            
 //            oc.setNationalOperationCode(10L);
@@ -917,14 +919,14 @@ public class TCAPComponentsTest extends SccpHarness {
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnResult, null, sequence++);
             this.observerdEvents.add(te);
 
-            ComponentImpl component=new ComponentImpl();
+            WrappedComponentImpl component=new WrappedComponentImpl();
             component.setReturnResult(rr);
             this.dialog.sendComponent(component);
         }
 
         public void addNewReturnResultLast(Long invokeId) throws Exception {
 
-            ReturnResultLastImpl rr = this.tcapProvider.getComponentPrimitiveFactory().createTCResultLastRequest();
+            Return rr = this.tcapProvider.getComponentPrimitiveFactory().createTCResultLastRequest();
             rr.setCorrelationId(invokeId);
 
 //            OperationCode oc = TcapFactory.createOperationCode();
@@ -935,24 +937,24 @@ public class TCAPComponentsTest extends SccpHarness {
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, sequence++);
             this.observerdEvents.add(te);
 
-            ComponentImpl component=new ComponentImpl();
+            WrappedComponentImpl component=new WrappedComponentImpl();
             component.setReturnResultLast(rr);
             this.dialog.sendComponent(component);
         }
 
         public void addNewReturnError(Long invokeId) throws Exception {
 
-            ReturnErrorImpl err = this.tcapProvider.getComponentPrimitiveFactory().createTCReturnErrorRequest();
+            ReturnError err = this.tcapProvider.getComponentPrimitiveFactory().createTCReturnErrorRequest();
             err.setCorrelationId(invokeId);
 
-            ErrorCodeImpl ec = TcapFactory.createPrivateErrorCode(1L);           
+            ErrorCode ec = TcapFactory.createPrivateErrorCode(1L);           
 //            ec.setNationalErrorCode(10L);
             err.setErrorCode(ec);
 
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnError, null, sequence++);
             this.observerdEvents.add(te);
 
-            ComponentImpl component=new ComponentImpl();
+            WrappedComponentImpl component=new WrappedComponentImpl();
             component.setReturnError(err);
             this.dialog.sendComponent(component);
         }
@@ -971,9 +973,9 @@ public class TCAPComponentsTest extends SccpHarness {
             procComponents(ind.getComponents().getComponents());
         }
 
-        private void procComponents(List<ComponentImpl> compp) {
+        private void procComponents(List<WrappedComponent> compp) {
             if (compp != null) {
-                for (ComponentImpl c : compp) {
+                for (WrappedComponent c : compp) {
                     EventType et = null;
                     if (c.getType() == ComponentType.InvokeNotLast) {
                         et = EventType.InvokeNotLast;
@@ -1005,11 +1007,11 @@ public class TCAPComponentsTest extends SccpHarness {
      * A bad component with UnrecognizedComponent (unrecognized component tag)
      *
      */
-    class BadComponentUnrecognizedComponentWrapper extends ComponentImpl {
+    class BadComponentUnrecognizedComponentWrapper extends WrappedComponentImpl {
     	BadComponentUnrecognizedComponent badComponent;
     	
     	@Override
-    	public BaseComponent getExistingComponent() {
+    	public Component getExistingComponent() {
     		return badComponent;
     	}
     }
@@ -1049,7 +1051,7 @@ public class TCAPComponentsTest extends SccpHarness {
     	private ASNInteger unexpectedParam=new ASNInteger();
 		public BadComponentMistypedComponent() {
             this.setInvokeId(1l);
-            OperationCodeImpl oc=TcapFactory.createNationalOperationCode(20L);            
+            OperationCode oc=TcapFactory.createNationalOperationCode(20L);            
             this.setOperationCode(oc);
         }
     }
@@ -1060,7 +1062,7 @@ public class TCAPComponentsTest extends SccpHarness {
      */
     class BadComponentBadlyStructuredComponent extends InvokeLastImpl {
 		public BadComponentBadlyStructuredComponent() {
-			OperationCodeImpl oc=TcapFactory.createNationalOperationCode(20L);            
+			OperationCode oc=TcapFactory.createNationalOperationCode(20L);            
             this.setOperationCode(oc);
         }
 		

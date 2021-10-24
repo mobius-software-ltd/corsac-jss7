@@ -22,28 +22,31 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 @Test(groups = { "asn" })
 public class TcConversationTest {
@@ -74,9 +77,9 @@ public class TcConversationTest {
         assertEquals(tcm.getDestinationTransactionId(), trIdD);
         assertNull(tcm.getDialogPortion());
         assertEquals(tcm.getComponent().getComponents().size(), 1);
-        ComponentImpl cmp = tcm.getComponent().getComponents().get(0);
+        WrappedComponent cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.InvokeLast);
-        InvokeImpl inv = cmp.getInvokeLast();
+        Invoke inv = cmp.getInvokeLast();
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
@@ -94,9 +97,9 @@ public class TcConversationTest {
         assertFalse(tcm.getDialogTermitationPermission());
         assertEquals(tcm.getOriginatingTransactionId(), trIdO);
         assertEquals(tcm.getDestinationTransactionId(), trIdD);
-        DialogPortionImpl dp = tcm.getDialogPortion();
+        DialogPortion dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
-        ApplicationContextNameImpl ac = dp.getApplicationContext();
+        ApplicationContext ac = dp.getApplicationContext();
         assertEquals(ac.getInt(), new Long(66l));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
@@ -113,14 +116,14 @@ public class TcConversationTest {
     	parser.loadClass(TCConversationMessageImplWithPerm.class);
     	
     	// 1
-        List<ComponentImpl> cc = new ArrayList<ComponentImpl>(1);
-        InvokeLastImpl inv = TcapFactory.createComponentInvokeLast();
+        List<WrappedComponent> cc = new ArrayList<WrappedComponent>(1);
+        Invoke inv = TcapFactory.createComponentInvokeLast();
         
-        ComponentImpl component=new ComponentImpl();
+        WrappedComponentImpl component=new WrappedComponentImpl();
         component.setInvokeLast(inv);
         cc.add(component);
         inv.setInvokeId(0L);
-        OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(2357L);
+        OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
         inv.setOperationCode(oc);
         ASNOctetString innerValue=new ASNOctetString();
         innerValue.setValue(Unpooled.wrappedBuffer(parData));        
@@ -143,8 +146,8 @@ public class TcConversationTest {
         tcm.setOriginatingTransactionId(trIdO);
         tcm.setDestinationTransactionId(trIdD);
 
-        DialogPortionImpl dp = TcapFactory.createDialogPortion();
-        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(66);
+        DialogPortion dp = TcapFactory.createDialogPortion();
+        ApplicationContext ac = TcapFactory.createApplicationContext(66);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 

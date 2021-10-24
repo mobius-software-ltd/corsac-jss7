@@ -22,17 +22,15 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
 import org.testng.annotations.Test;
@@ -40,6 +38,9 @@ import org.testng.annotations.Test;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -81,9 +82,9 @@ public class TcAbortTest {
         tcm = (TCAbortMessageImpl)result.getResult();
 
         assertEquals(tcm.getDestinationTransactionId(), trId);
-        assertNull(tcm.getUserAbortInformation().getExternal());
+        assertNull(tcm.getUserAbortInformation().getUserInformationElements());
         assertNull(tcm.getPAbortCause());
-        DialogPortionImpl dp = tcm.getDialogPortion();
+        DialogPortion dp = tcm.getDialogPortion();
         assertEquals(dp.getApplicationContext().getInt(), new Long(111L));
 
         // 3
@@ -95,9 +96,9 @@ public class TcAbortTest {
         assertNull(tcm.getPAbortCause());
         assertNull(tcm.getDialogPortion());
 
-        UserInformationImpl uie = tcm.getUserAbortInformation();
-        assertTrue(uie.getExternal().get(0).isIDObjectIdentifier());
-        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), uie.getExternal().get(0).getObjectIdentifier());
+        UserInformation uie = tcm.getUserAbortInformation();
+        assertTrue(uie.getUserInformationElements().get(0).isIDObjectIdentifier());
+        assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), uie.getUserInformationElements().get(0).getObjectIdentifier());
     }
 
     @Test(groups = { "functional.encode" })
@@ -117,8 +118,8 @@ public class TcAbortTest {
         // 2
         tcm = TcapFactory.createTCAbortMessage();
         tcm.setDestinationTransactionId(trId);
-        DialogPortionImpl dp = TcapFactory.createDialogPortion();
-        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(111);
+        DialogPortion dp = TcapFactory.createDialogPortion();
+        ApplicationContext ac = TcapFactory.createApplicationContext(111);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 
@@ -129,7 +130,7 @@ public class TcAbortTest {
         // 3
         tcm = TcapFactory.createTCAbortMessage();
         tcm.setDestinationTransactionId(trId);
-        UserInformationExternalImpl uai = new UserInformationExternalImpl();
+        UserInformationElementImpl uai = new UserInformationElementImpl();
         uai.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
         ASNOctetString innerValue=new ASNOctetString();
@@ -140,7 +141,7 @@ public class TcAbortTest {
         uai.setChildAsObject(value);
         
         UserInformationImpl abortInfo=new UserInformationImpl();
-        abortInfo.setExternal(Arrays.asList(new UserInformationExternalImpl[] { uai }));
+        abortInfo.setUserInformationElements(Arrays.asList(new UserInformationElementImpl[] { uai }));
         tcm.setUserAbortInformation(abortInfo);
 
         buffer=parser.encode(tcm);

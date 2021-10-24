@@ -22,8 +22,11 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 
 /**
  * @author amit bhayani
@@ -31,7 +34,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
  */
 public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 	private TransactionID transactionId=new TransactionID();
-    private DialogPortionImpl dp;
+	
+	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=25,constructed=true,index=-1,defaultImplementation = DialogPortionImpl.class)
+	private DialogPortion dp;
 
     /**
      *
@@ -66,7 +71,7 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage#getDialogPortion ()
      */
-    public DialogPortionImpl getDialogPortion() {
+    public DialogPortion getDialogPortion() {
         return this.dp;
     }
 
@@ -76,7 +81,7 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage#setDialogPortion
      * (org.restcomm.protocols.ss7.tcap.asn.DialogPortion)
      */
-    public void setDialogPortion(DialogPortionImpl dp) {
+    public void setDialogPortion(DialogPortion dp) {
         this.dp = dp;
     }
 

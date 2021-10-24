@@ -30,9 +30,7 @@ import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -60,8 +58,8 @@ public class UserInformationTest {
         assertTrue(result.getResult() instanceof UserInformationImpl);
         UserInformationImpl userInformation = (UserInformationImpl)result.getResult();
         
-        assertEquals(userInformation.getExternal().size(), 1);
-        UserInformationExternalImpl userInformationElement = userInformation.getExternal().get(0);
+        assertEquals(userInformation.getUserInformationElements().size(), 1);
+        UserInformationElement userInformationElement = userInformation.getUserInformationElements().get(0);
 
         assertTrue(userInformationElement.isIDObjectIdentifier());
 
@@ -70,7 +68,7 @@ public class UserInformationTest {
         assertFalse(userInformationElement.isIDIndirect());
 
         assertTrue(userInformationElement.isValueObject());
-        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)userInformationElement.getChild().getValue()).getValue());
+        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)userInformationElement.getChild()).getValue());
     }
 
     @Test(groups = { "functional.encode" })
@@ -78,18 +76,15 @@ public class UserInformationTest {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(UserInformationImpl.class);
     	
-        UserInformationExternalImpl userInformationElement = new UserInformationExternalImpl();
+        UserInformationElementImpl userInformationElement = new UserInformationElementImpl();
         userInformationElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
         ASNOctetString value=new ASNOctetString();
         value.setValue(Unpooled.wrappedBuffer(dataValue));
-        
-        ASNUserInformationObjectImpl userObj=new ASNUserInformationObjectImpl();
-        userObj.setValue(value);
-        userInformationElement.setChildAsObject(userObj);
+        userInformationElement.setChildAsObject(value);
         
         UserInformationImpl userInformation = new UserInformationImpl();
-        userInformation.setExternal(Arrays.asList(new UserInformationExternalImpl[] { userInformationElement }));
+        userInformation.setUserInformationElements(Arrays.asList(new UserInformationElementImpl[] { userInformationElement }));
 
         ByteBuf output=parser.encode(userInformation);
         assertTrue(UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(data), output));

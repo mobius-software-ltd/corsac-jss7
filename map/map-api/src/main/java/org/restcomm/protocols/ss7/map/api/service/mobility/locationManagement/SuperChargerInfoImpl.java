@@ -99,7 +99,7 @@ public class SuperChargerInfoImpl {
             sb.append("sendSubscriberData, ");
         if (subscriberDataStored != null && subscriberDataStored.getValue()!=null) {
             sb.append("subscriberDataStored=[");
-            sb.append(subscriberDataStored.printDataArr(getSubscriberDataStored()));
+            sb.append(ASNOctetString.printDataArr(getSubscriberDataStored()));
             sb.append("], ");
         }
 

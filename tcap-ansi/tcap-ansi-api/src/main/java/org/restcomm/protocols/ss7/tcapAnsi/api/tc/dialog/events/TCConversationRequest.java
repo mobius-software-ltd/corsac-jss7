@@ -23,10 +23,10 @@
 package org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
 
 public interface TCConversationRequest extends DialogRequest {
 
@@ -44,20 +44,20 @@ public interface TCConversationRequest extends DialogRequest {
 
     void setDialogTermitationPermission(boolean perm);
 
-    ApplicationContextNameImpl getApplicationContextName();
+    ApplicationContext getApplicationContext();
 
-    void setApplicationContextName(ApplicationContextNameImpl acn);
+    void setApplicationContext(ApplicationContext acn);
 
-    UserInformationImpl getUserInformation();
+    UserInformation getUserInformation();
 
-    void setUserInformation(UserInformationImpl acn);
+    void setUserInformation(UserInformation acn);
 
-    SecurityContextNameImpl getSecurityContext();
+    SecurityContext getSecurityContext();
 
-    void setSecurityContext(SecurityContextNameImpl val);
+    void setSecurityContext(SecurityContext val);
 
-    ConfidentialityImpl getConfidentiality();
+    Confidentiality getConfidentiality();
 
-    void setConfidentiality(ConfidentialityImpl val);
+    void setConfidentiality(Confidentiality val);
 
 }

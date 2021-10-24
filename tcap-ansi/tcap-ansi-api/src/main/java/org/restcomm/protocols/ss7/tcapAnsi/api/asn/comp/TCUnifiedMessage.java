@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 
 /**
  * @author amit bhayani
@@ -39,9 +39,9 @@ public interface TCUnifiedMessage {
     
     public boolean isDialogPortionExists();
     
-    DialogPortionImpl getDialogPortion();
+    DialogPortion getDialogPortion();
 
-    void setDialogPortion(DialogPortionImpl dp);
+    void setDialogPortion(DialogPortion dp);
     
     boolean validate();
 }

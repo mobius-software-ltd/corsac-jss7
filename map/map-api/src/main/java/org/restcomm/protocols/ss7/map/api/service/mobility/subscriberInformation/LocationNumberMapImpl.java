@@ -95,7 +95,7 @@ public class LocationNumberMapImpl extends ASNOctetString {
                 sb.append(this.getLocationNumber().toString());
             } catch (MAPException e) {
                 sb.append("data=");
-                sb.append(this.printDataArr(data));
+                sb.append(printDataArr(data));
                 sb.append("\n");
             }
         }

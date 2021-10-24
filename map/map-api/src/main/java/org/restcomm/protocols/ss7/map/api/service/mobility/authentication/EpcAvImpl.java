@@ -144,22 +144,22 @@ public class EpcAvImpl {
 
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(this.rand.printDataArr(getRand()));
+            sb.append(ASNOctetString.printDataArr(getRand()));
             sb.append("], ");
         }
         if (this.xres != null) {
             sb.append("xres=[");
-            sb.append(this.rand.printDataArr(getXres()));
+            sb.append(ASNOctetString.printDataArr(getXres()));
             sb.append("], ");
         }
         if (this.autn != null) {
             sb.append("autn=[");
-            sb.append(this.rand.printDataArr(getAutn()));
+            sb.append(ASNOctetString.printDataArr(getAutn()));
             sb.append("]");
         }
         if (this.kasme != null) {
             sb.append("kasme=[");
-            sb.append(this.rand.printDataArr(getKasme()));
+            sb.append(ASNOctetString.printDataArr(getKasme()));
             sb.append("]");
         }
         if (this.extensionContainer != null) {

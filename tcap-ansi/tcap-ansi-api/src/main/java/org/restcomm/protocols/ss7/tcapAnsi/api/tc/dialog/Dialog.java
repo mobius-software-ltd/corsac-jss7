@@ -27,11 +27,12 @@ import java.io.Serializable;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseRequest;
@@ -61,9 +62,9 @@ public interface Dialog extends Serializable {
      */
     Long getRemoteDialogId();
 
-    ProtocolVersionImpl getProtocolVersion();
+    ProtocolVersion getProtocolVersion();
 
-    void setProtocolVersion(ProtocolVersionImpl protocolVersion);
+    void setProtocolVersion(ProtocolVersion protocolVersion);
 
     /**
      * Gets local sccp address
@@ -105,14 +106,14 @@ public interface Dialog extends Serializable {
      *
      * @return the acn
      */
-    ApplicationContextNameImpl getApplicationContextName();
+    ApplicationContext getApplicationContextName();
 
     /**
      * Last sent/received UI
      *
      * @return the ui
      */
-    UserInformationImpl getUserInformation();
+    UserInformation getUserInformation();
 
     /**
      * returns new, unique for this dialog, invocation id to be used in TC_INVOKE. If there is no free invoke id, it returns
@@ -171,7 +172,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendComponent(ComponentImpl componentRequest) throws TCAPSendException;
+    void sendComponent(WrappedComponent componentRequest) throws TCAPSendException;
 
     /**
      * If a TCAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this
@@ -186,7 +187,7 @@ public interface Dialog extends Serializable {
      *
      * @param invokeId.
      */
-    InvokeImpl getInvoke(Long correlationId);
+    Invoke getInvoke(Long correlationId);
     
     /**
      * Send initial primitive for Structured dialog.
@@ -312,7 +313,7 @@ public interface Dialog extends Serializable {
      */
     void setUserObject(Object userObject);
     
-    void operationEnded(InvokeImpl tcInvokeRequestImpl);
+    void operationEnded(Invoke tcInvokeRequestImpl);
     
-    void operationTimedOut(InvokeImpl invoke);
+    void operationTimedOut(Invoke invoke);
 }

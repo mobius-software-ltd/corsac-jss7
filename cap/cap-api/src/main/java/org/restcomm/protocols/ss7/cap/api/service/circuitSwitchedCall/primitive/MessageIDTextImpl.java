@@ -94,7 +94,7 @@ public class MessageIDTextImpl {
         byte[] data=this.getAttributes();
         if (data != null) {
             sb.append(", attributes=");
-            sb.append(attributes.printDataArr(data));
+            sb.append(ASNOctetString.printDataArr(data));
         }
 
         sb.append("]");

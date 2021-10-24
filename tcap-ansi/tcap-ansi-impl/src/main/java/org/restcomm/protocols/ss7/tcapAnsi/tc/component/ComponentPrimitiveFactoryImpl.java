@@ -24,12 +24,10 @@ package org.restcomm.protocols.ss7.tcapAnsi.tc.component;
 
 import org.restcomm.protocols.ss7.tcapAnsi.TCAPProviderImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 
@@ -50,16 +48,16 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory#createTCInvokeRequest()
      */
-    public InvokeNotLastImpl createTCInvokeRequestNotLast() {
+    public Invoke createTCInvokeRequestNotLast() {
 
-    	InvokeNotLastImpl t = TcapFactory.createComponentInvokeNotLast();
+    	Invoke t = TcapFactory.createComponentInvokeNotLast();
         t.setProvider(provider);
         return t;
     }
 
-    public InvokeLastImpl createTCInvokeRequestLast() {
+    public Invoke createTCInvokeRequestLast() {
 
-    	InvokeLastImpl t = TcapFactory.createComponentInvokeLast();
+    	Invoke t = TcapFactory.createComponentInvokeLast();
         t.setProvider(provider);
         return t;
     }
@@ -69,16 +67,16 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCInvokeRequest()
      */
-    public InvokeNotLastImpl createTCInvokeRequestNotLast(InvokeClass invokeClass) {
+    public Invoke createTCInvokeRequestNotLast(InvokeClass invokeClass) {
 
-    	InvokeNotLastImpl t = TcapFactory.createComponentInvokeNotLast(invokeClass);
+    	Invoke t = TcapFactory.createComponentInvokeNotLast(invokeClass);
         t.setProvider(provider);
         return t;
     }
 
-    public InvokeLastImpl createTCInvokeRequestLast(InvokeClass invokeClass) {
+    public Invoke createTCInvokeRequestLast(InvokeClass invokeClass) {
 
-    	InvokeLastImpl t = TcapFactory.createComponentInvokeLast(invokeClass);
+    	Invoke t = TcapFactory.createComponentInvokeLast(invokeClass);
         t.setProvider(provider);
         return t;
     }
@@ -88,12 +86,12 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCRejectRequest()
      */
-    public RejectImpl createTCRejectRequest() {
+    public Reject createTCRejectRequest() {
 
         return TcapFactory.createComponentReject();
     }
 
-    public ReturnErrorImpl createTCReturnErrorRequest() {
+    public ReturnError createTCReturnErrorRequest() {
 
         return TcapFactory.createComponentReturnError();
     }
@@ -103,13 +101,13 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
      *
      * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCResultRequest(boolean)
      */
-    public ReturnResultLastImpl createTCResultLastRequest() {
+    public Return createTCResultLastRequest() {
 
         return TcapFactory.createComponentReturnResultLast();
 
     }
 
-    public ReturnResultNotLastImpl createTCResultNotLastRequest() {
+    public Return createTCResultNotLastRequest() {
 
         return TcapFactory.createComponentReturnResultNotLast();
     }

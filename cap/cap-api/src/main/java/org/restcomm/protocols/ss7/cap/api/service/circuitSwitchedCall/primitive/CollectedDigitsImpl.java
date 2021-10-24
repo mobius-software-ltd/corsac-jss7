@@ -244,17 +244,17 @@ public class CollectedDigitsImpl {
         sb.append(this.maximumNbOfDigits);
         if (this.endOfReplyDigit != null) {
             sb.append(", endOfReplyDigit=[");
-            sb.append(this.endOfReplyDigit.printDataArr(this.getEndOfReplyDigit()));
+            sb.append(ASNOctetString.printDataArr(this.getEndOfReplyDigit()));
             sb.append("]");
         }
         if (this.cancelDigit != null) {
             sb.append(", cancelDigit=[");
-            sb.append(this.cancelDigit.printDataArr(this.getCancelDigit()));
+            sb.append(ASNOctetString.printDataArr(this.getCancelDigit()));
             sb.append("]");
         }
         if (this.startDigit != null) {
             sb.append(", startDigit=[");
-            sb.append(this.startDigit.printDataArr(this.getStartDigit()));
+            sb.append(ASNOctetString.printDataArr(this.getStartDigit()));
             sb.append("]");
         }
         if (this.firstDigitTimeOut != null) {

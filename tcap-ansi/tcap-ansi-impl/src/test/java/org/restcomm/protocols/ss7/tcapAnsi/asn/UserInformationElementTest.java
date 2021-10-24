@@ -30,8 +30,6 @@ import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ASNUserInformationObjectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -48,44 +46,41 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 @Test(groups = { "asn" })
 public class UserInformationElementTest {
 
-    private byte[] data = new byte[] { 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 4, 5, 3, 4, 5, 6, 7 };
+    private byte[] data = new byte[] { 40, 20, 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 4, 5, 3, 4, 5, 6, 7 };
 
     private byte[] dataValue = new byte[] { 3, 4, 5, 6, 7 };
 
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.loadClass(UserInformationExternalImpl.class);
+    	parser.loadClass(UserInformationElementImpl.class);
     	
     	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
-    	assertTrue(result.getResult() instanceof UserInformationExternalImpl);
-    	UserInformationExternalImpl userInformationElement = (UserInformationExternalImpl)result.getResult();
+    	assertTrue(result.getResult() instanceof UserInformationElementImpl);
+    	UserInformationElementImpl userInformationElement = (UserInformationElementImpl)result.getResult();
         assertTrue(userInformationElement.isIDObjectIdentifier());
         assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), userInformationElement.getObjectIdentifier());
 
         assertFalse(userInformationElement.isIDIndirect());
         assertTrue(userInformationElement.isValueObject());
-        assertTrue(UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)userInformationElement.getChild().getValue()).getValue()));
+        assertTrue(UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)userInformationElement.getChild()).getValue()));
     }
 
     @Test(groups = { "functional.encode" })
     public void testUserInformationEncode() throws ASNException {
     	ASNParser parser=new ASNParser();
-    	parser.loadClass(UserInformationExternalImpl.class);
+    	parser.loadClass(UserInformationElementImpl.class);
     	
-    	UserInformationExternalImpl userInformationElement = new UserInformationExternalImpl();
+    	UserInformationElementImpl userInformationElement = new UserInformationElementImpl();
 
         userInformationElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
                 
-        ASNUserInformationObjectImpl userObj=new ASNUserInformationObjectImpl();
         ASNOctetString octetString=new ASNOctetString();
         octetString.setValue(Unpooled.wrappedBuffer(dataValue));
-        userObj.setValue(octetString);
-        userInformationElement.setChildAsObject(userObj);        
+        userInformationElement.setChildAsObject(octetString);        
         
         ByteBuf userInfData=parser.encode(userInformationElement);
-        assertTrue(UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(data), userInfData));
-
+        assertTrue(UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(data), userInfData));        
     }
 
 	public static Boolean byteBufEquals(ByteBuf value1,ByteBuf value2) {

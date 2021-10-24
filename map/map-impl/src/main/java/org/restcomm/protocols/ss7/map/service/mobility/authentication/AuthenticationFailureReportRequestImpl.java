@@ -202,7 +202,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
         }
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(this.rand.printDataArr(getRand()));
+            sb.append(ASNOctetString.printDataArr(getRand()));
             sb.append("], ");
         }
         if (this.vlrNumber != null) {

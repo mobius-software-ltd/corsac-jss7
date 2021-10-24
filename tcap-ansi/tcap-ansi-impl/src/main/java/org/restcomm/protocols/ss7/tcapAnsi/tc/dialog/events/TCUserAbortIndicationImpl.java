@@ -23,21 +23,21 @@
 package org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ConfidentialityImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.Confidentiality;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 
 public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements TCUserAbortIndication {
 	private static final long serialVersionUID = 1L;
 
-	private UserInformationImpl userInformation;
-    private ApplicationContextNameImpl acn;
-    private SecurityContextNameImpl securityContext;
-    private ConfidentialityImpl confidentiality;
-    private UserInformationImpl userAbortInformation;
+	private UserInformation userInformation;
+    private ApplicationContext ac;
+    private SecurityContext securityContext;
+    private Confidentiality confidentiality;
+    private UserInformation userAbortInformation;
     private SccpAddress originatingAddress;
 
 
@@ -45,7 +45,7 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
         super(EventType.Abort);
     }
 
-    public UserInformationImpl getUserInformation() {
+    public UserInformation getUserInformation() {
 
         return userInformation;
     }
@@ -53,42 +53,42 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
     /**
      * @param userInformation the userInformation to set
      */
-    public void setUserInformation(UserInformationImpl userInformation) {
+    public void setUserInformation(UserInformation userInformation) {
         this.userInformation = userInformation;
     }
 
-    public ApplicationContextNameImpl getApplicationContextName() {
-        return this.acn;
+    public ApplicationContext getApplicationContext() {
+        return this.ac;
     }
 
-    public void setApplicationContextName(ApplicationContextNameImpl acn) {
-        this.acn = acn;
+    public void setApplicationContextName(ApplicationContext ac) {
+        this.ac = ac;
     }
 
     @Override
-    public SecurityContextNameImpl getSecurityContext() {
+    public SecurityContext getSecurityContext() {
         return securityContext;
     }
 
-    public void setSecurityContext(SecurityContextNameImpl val) {
+    public void setSecurityContext(SecurityContext val) {
         securityContext = val;
     }
 
     @Override
-    public ConfidentialityImpl getConfidentiality() {
+    public Confidentiality getConfidentiality() {
         return confidentiality;
     }
 
-    public void setConfidentiality(ConfidentialityImpl val) {
+    public void setConfidentiality(Confidentiality val) {
         confidentiality = val;
     }
 
     @Override
-    public UserInformationImpl getUserAbortInformation() {
+    public UserInformation getUserAbortInformation() {
         return userAbortInformation;
     }
 
-    public void setUserAbortInformation(UserInformationImpl val) {
+    public void setUserAbortInformation(UserInformation val) {
         userAbortInformation = val;
     }
 

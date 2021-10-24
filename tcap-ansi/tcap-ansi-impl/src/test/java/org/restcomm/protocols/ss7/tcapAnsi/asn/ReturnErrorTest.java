@@ -22,17 +22,20 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -68,9 +71,9 @@ public class ReturnErrorTest {
     	parser.loadClass(ReturnErrorImpl.class);
     	
         // 1
-        ReturnErrorImpl re = TcapFactory.createComponentReturnError();
+        ReturnError re = TcapFactory.createComponentReturnError();
         re.setCorrelationId(5L);
-        ErrorCodeImpl ec = TcapFactory.createPrivateErrorCode(14L);
+        ErrorCode ec = TcapFactory.createPrivateErrorCode(14L);
         re.setErrorCode(ec);
         ASNOctetString p=new ASNOctetString();
         p.setValue(Unpooled.wrappedBuffer(parData));

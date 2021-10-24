@@ -22,11 +22,13 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -36,14 +38,17 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=1,constructed=true,lengthIndefinite=false)
 public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessage {
-	private ComponentPortionImpl component;
+	
+	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,index=-1,defaultImplementation = ComponentPortionImpl.class)
+	private ComponentPortion component;
 
+    
     /*
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage#getComponent()
      */
-    public ComponentPortionImpl getComponent() {
+    public ComponentPortion getComponent() {
 
         return component;
     }
@@ -54,7 +59,7 @@ public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessa
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage#setComponent(org
      * .mobicents.protocols.ss7.tcap.asn.comp.Component[])
      */
-    public void setComponent(ComponentPortionImpl c) {
+    public void setComponent(ComponentPortion c) {
         this.component = c;
 
     }
@@ -71,7 +76,7 @@ public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessa
         if (this.component != null && this.component.getComponents()!=null && this.component.getComponents().size() > 0) {
             sb.append("Components=[");
             int i1 = 0;
-            for (ComponentImpl comp : this.component.getComponents()) {
+            for (WrappedComponent comp : this.component.getComponents()) {
                 if (i1 == 0)
                     i1 = 1;
                 else

@@ -127,7 +127,7 @@ public class ChargingCharacteristicsImpl extends ASNOctetString {
 
             StringBuilder sb = new StringBuilder();
             sb.append("ChargingCharacteristics [Data= ");
-            sb.append(this.printDataArr(getData()));
+            sb.append(printDataArr(getData()));
 
             if (normalCharging) {
                 sb.append(", normalCharging");

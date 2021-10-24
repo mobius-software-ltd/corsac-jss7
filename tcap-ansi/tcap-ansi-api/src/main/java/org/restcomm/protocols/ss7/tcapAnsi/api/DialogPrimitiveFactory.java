@@ -28,14 +28,20 @@ package org.restcomm.protocols.ss7.tcapAnsi.api;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCPAbortIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortRequest;
 
 /**
@@ -55,14 +61,26 @@ public interface DialogPrimitiveFactory {
 
     TCUserAbortRequest createUAbort(Dialog d);
 
+    TCQueryIndication createQueryIndication(Dialog d, boolean dialogTermitationPermission);
+    
+    TCConversationIndication createConversationIndication(Dialog d, boolean dialogTermitationPermission);
+    
+    TCResponseIndication createResponseIndication(Dialog d);
+    
+    TCUserAbortIndication createUAbortIndication(Dialog d);
+
+    TCPAbortIndication createPAbortIndication(Dialog d);
+    	
+    TCUniIndication createUniIndication(Dialog d);
+    
     TCUniRequest createUni(Dialog d);
 
-    ApplicationContextNameImpl createApplicationContext(List<Long> val);
+    ApplicationContext createApplicationContext(List<Long> val);
 
-    ApplicationContextNameImpl createApplicationContext(long val);
+    ApplicationContext createApplicationContext(long val);
 
-    UserInformationImpl createUserInformation();
+    UserInformation createUserInformation();
 
-    UserInformationExternalImpl createUserInformationElement();
+    UserInformationElement createUserInformationElement();
 
 }

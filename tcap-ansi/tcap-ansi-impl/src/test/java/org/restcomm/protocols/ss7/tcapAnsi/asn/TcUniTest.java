@@ -22,28 +22,31 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -71,9 +74,9 @@ public class TcUniTest {
 
         assertNull(tcm.getDialogPortion());
         assertEquals(tcm.getComponent().getComponents().size(), 1);
-        ComponentImpl cmp = tcm.getComponent().getComponents().get(0);
+        WrappedComponent cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.InvokeLast);
-        InvokeImpl inv = cmp.getInvokeLast();
+        Invoke inv = cmp.getInvokeLast();
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
@@ -97,9 +100,9 @@ public class TcUniTest {
         assertTrue(inv.getParameter() instanceof ASNOctetString);
         UserInformationElementTest.byteBufEquals(((ASNOctetString)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
-        DialogPortionImpl dp = tcm.getDialogPortion();
+        DialogPortion dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
-        ApplicationContextNameImpl ac = dp.getApplicationContext();
+        ApplicationContext ac = dp.getApplicationContext();
         assertEquals(ac.getInt(), new Long(66L));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
@@ -112,13 +115,13 @@ public class TcUniTest {
     	parser.loadClass(TCUniMessageImpl.class);
     	        
         // 1
-        List<ComponentImpl> cc = new ArrayList<ComponentImpl>(1);
-        InvokeNotLastImpl inv = TcapFactory.createComponentInvokeNotLast();
-        ComponentImpl component=new ComponentImpl();
+        List<WrappedComponent> cc = new ArrayList<WrappedComponent>(1);
+        Invoke inv = TcapFactory.createComponentInvokeNotLast();
+        WrappedComponentImpl component=new WrappedComponentImpl();
         component.setInvoke(inv);
         cc.add(component);
         inv.setInvokeId(0L);
-        OperationCodeImpl oc = TcapFactory.createPrivateOperationCode(2357L);        
+        OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);        
         inv.setOperationCode(oc);
         ASNOctetString p = new ASNOctetString();
         p.setValue(Unpooled.wrappedBuffer(parData));
@@ -137,8 +140,8 @@ public class TcUniTest {
         tcm = TcapFactory.createTCUniMessage();
         tcm.setComponent(cp);
 
-        DialogPortionImpl dp = TcapFactory.createDialogPortion();
-        ApplicationContextNameImpl ac = TcapFactory.createApplicationContext(66);
+        DialogPortion dp = TcapFactory.createDialogPortion();
+        ApplicationContext ac = TcapFactory.createApplicationContext(66);
         dp.setApplicationContext(ac);
         tcm.setDialogPortion(dp);
 

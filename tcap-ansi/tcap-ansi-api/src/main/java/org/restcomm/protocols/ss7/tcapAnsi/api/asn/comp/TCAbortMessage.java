@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
 
 /**
  *
@@ -48,7 +48,7 @@ public interface TCAbortMessage extends TCUnifiedMessage {
 
     void setPAbortCause(PAbortCause t);
 
-    UserInformationImpl getUserAbortInformation();
+    UserInformation getUserAbortInformation();
 
-    void setUserAbortInformation(UserInformationImpl uai);
+    void setUserAbortInformation(UserInformation uai);
 }

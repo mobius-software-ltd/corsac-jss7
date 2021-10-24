@@ -22,7 +22,9 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +33,8 @@ import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCNoticeIndication;
@@ -42,6 +43,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryIndicatio
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -166,7 +169,7 @@ public class TCAPFunctionalTest extends SccpHarness {
         assertNotNull(server.dialog.getRemoteDialogId());
 
         EventTestHarness.waitFor(WAIT_TIME);
-        ComponentImpl component=new ComponentImpl();
+        WrappedComponentImpl component=new WrappedComponentImpl();
         component.setInvoke(client.createNewInvoke());
         client.dialog.sendComponent(component);
         client.sendEnd(false);
@@ -223,8 +226,8 @@ public class TCAPFunctionalTest extends SccpHarness {
         @Override
         public void onTCConversation(TCConversationIndication ind) {
             assertEquals(ind.getComponents().getComponents().size(), 2);
-            ReturnResultLastImpl rrl = ind.getComponents().getComponents().get(0).getReturnResultLast();
-            InvokeImpl inv = (InvokeImpl) ind.getComponents().getComponents().get(1).getExistingComponent();
+            Return rrl = ind.getComponents().getComponents().get(0).getReturnResultLast();
+            Invoke inv = (InvokeImpl) ind.getComponents().getComponents().get(1).getExistingComponent();
 
             // operationCode is not sent via ReturnResultLast because it does not contain a Parameter
             // so operationCode is taken from a sent Invoke
@@ -237,7 +240,7 @@ public class TCAPFunctionalTest extends SccpHarness {
             assertEquals((long) inv.getCorrelationId(), 1);
 
             // we should see operationCode of the second sent Invoke
-            InvokeImpl linkedInv = inv.getCorrelationInvoke();
+            Invoke linkedInv = inv.getCorrelationInvoke();
             assertEquals(linkedInv.getOperationCode().getPrivateOperationCode(), new Long(13L));
         }
 
@@ -272,7 +275,7 @@ public class TCAPFunctionalTest extends SccpHarness {
         }
 
         @Override
-        public void onInvokeTimeout(InvokeImpl tcInvokeRequest) {
+        public void onInvokeTimeout(Invoke tcInvokeRequest) {
             // TODO Auto-generated method stub
 
         }

@@ -156,27 +156,27 @@ public class AuthenticationQuintupletImpl {
 
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(this.rand.printDataArr(getRand()));
+            sb.append(ASNOctetString.printDataArr(getRand()));
             sb.append("], ");
         }
         if (this.xres != null) {
             sb.append("xres=[");
-            sb.append(this.xres.printDataArr(getXres()));
+            sb.append(ASNOctetString.printDataArr(getXres()));
             sb.append("], ");
         }
         if (this.ck != null) {
             sb.append("ck=[");
-            sb.append(this.ck.printDataArr(getCk()));
+            sb.append(ASNOctetString.printDataArr(getCk()));
             sb.append("], ");
         }
         if (this.ik != null) {
             sb.append("ik=[");
-            sb.append(this.ik.printDataArr(getIk()));
+            sb.append(ASNOctetString.printDataArr(getIk()));
             sb.append("], ");
         }
         if (this.autn != null) {
             sb.append("autn=[");
-            sb.append(this.ik.printDataArr(getAutn()));
+            sb.append(ASNOctetString.printDataArr(getAutn()));
             sb.append("]");
         }
 

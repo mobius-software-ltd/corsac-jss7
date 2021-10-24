@@ -24,25 +24,37 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContextNameImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationExternalImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.InvokeNotLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnErrorImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultLastImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnResultNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCNoticeIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ErrorCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.OperationCodeImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 
 /**
  * @author baranowb
@@ -52,38 +64,50 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
  */
 public final class TcapFactory {
 
-    public static ProtocolVersionImpl createProtocolVersionFull() {
+    public static ProtocolVersion createProtocolVersionFull() {
         return new ProtocolVersionImpl();
     }
 
-    public static ProtocolVersionImpl createProtocolVersionEmpty() {
+    public static ProtocolVersion createProtocolVersionEmpty() {
         ProtocolVersionImpl pv = new ProtocolVersionImpl();
         pv.setT1_114_1996Supported(false);
         pv.setT1_114_2000Supported(false);
         return pv;
     }
 
-    public static ApplicationContextNameImpl createApplicationContext(List<Long> oid) {
-    	ApplicationContextNameImpl acn = new ApplicationContextNameImpl();
+    public static ApplicationContext createApplicationContext(List<Long> oid) {
+    	ApplicationContextImpl acn = new ApplicationContextImpl();
         acn.setObj(oid);
         return acn;
     }
 
-    public static ApplicationContextNameImpl createApplicationContext(long val) {
-        ApplicationContextNameImpl acn = new ApplicationContextNameImpl();
+    public static ApplicationContext createApplicationContext(long val) {
+        ApplicationContextImpl acn = new ApplicationContextImpl();
         acn.setInt(val);
         return acn;
     }
 
-    public static UserInformationImpl createUserInformation() {
+    public static SecurityContext createSecurityContext(List<Long> oid) {
+    	SecurityContextImpl acn = new SecurityContextImpl();
+        acn.setObj(oid);
+        return acn;
+    }
+
+    public static SecurityContext createSecurityContext(long val) {
+    	SecurityContextImpl acn = new SecurityContextImpl();
+        acn.setInt(val);
+        return acn;
+    }
+
+    public static UserInformation createUserInformation() {
         return new UserInformationImpl();
     }
 
-    public static UserInformationExternalImpl createUserInformationElement() {
-        return new UserInformationExternalImpl();
+    public static UserInformationElement createUserInformationElement() {
+        return new UserInformationElementImpl();
     }
 
-    public static DialogPortionImpl createDialogPortion() {
+    public static DialogPortion createDialogPortion() {
         return new DialogPortionImpl();
     }
 
@@ -121,61 +145,75 @@ public final class TcapFactory {
         
         return tc;
     }
+    
+    public static TCNoticeIndication createTCNoticeIndMessage() {
+        return new TCNoticeIndicationImpl();
+    }
 
-    public static OperationCodeImpl createPrivateOperationCode(Long value) {
+    public static OperationCode createPrivateOperationCode(Long value) {
     	OperationCodeImpl oc = new OperationCodeImpl();
     	oc.setPrivateOperationCode(value);
         return oc;
     }
 
-    public static OperationCodeImpl createNationalOperationCode(Long value) {
+    public static OperationCode createNationalOperationCode(Long value) {
     	OperationCodeImpl oc = new OperationCodeImpl();
     	oc.setNationalOperationCode(value);
         return oc;
     }
 
-    public static RejectImpl createComponentReject() {
+    public static ComponentPortion createComponentPortion() {
+
+        return new ComponentPortionImpl();
+    }
+
+    public static WrappedComponent createWrappedComponent() {
+
+        return new WrappedComponentImpl();
+    }
+
+    public static Reject createComponentReject() {
 
         return new RejectImpl();
     }
 
-    public static ReturnResultLastImpl createComponentReturnResultLast() {
+    public static Return createComponentReturnResultLast() {
 
         return new ReturnResultLastImpl();
     }
 
-    public static ReturnResultNotLastImpl createComponentReturnResultNotLast() {
+    public static Return createComponentReturnResultNotLast() {
 
         return new ReturnResultNotLastImpl();
     }
 
-    public static InvokeLastImpl createComponentInvokeLast() {
+    public static Invoke createComponentInvokeLast() {
         return new InvokeLastImpl();
     }
 
-    public static InvokeNotLastImpl createComponentInvokeNotLast() {
+    public static Invoke createComponentInvokeNotLast() {
         return new InvokeNotLastImpl();
     }
     
-    public static InvokeLastImpl createComponentInvokeLast(InvokeClass invokeClass) {
+    public static Invoke createComponentInvokeLast(InvokeClass invokeClass) {
         return new InvokeLastImpl(invokeClass);
     }
 
-    public static InvokeNotLastImpl createComponentInvokeNotLast(InvokeClass invokeClass) {
+    public static Invoke createComponentInvokeNotLast(InvokeClass invokeClass) {
         return new InvokeNotLastImpl(invokeClass);
     }
     
-    public static ReturnErrorImpl createComponentReturnError() {
+    public static ReturnError createComponentReturnError() {
         return new ReturnErrorImpl();
     }
 
-    public static ErrorCodeImpl createPrivateErrorCode(Long value) {
+    public static ErrorCode createPrivateErrorCode(Long value) {
     	ErrorCodeImpl ec = new ErrorCodeImpl();
     	ec.setPrivateErrorCode(value);
     	return ec;
     }
 
-    public static ErrorCodeImpl createNationalErrorCode(Long value) {
+    public static ErrorCode createNationalErrorCode(Long value) {
     	ErrorCodeImpl ec = new ErrorCodeImpl();
     	ec.setNationalErrorCode(value);
     	return ec;

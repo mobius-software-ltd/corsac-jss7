@@ -34,4 +34,5 @@ public interface TCPAbortIndication extends DialogIndication {
 
     PAbortCause getPAbortCause();
 
+    void setPAbortCause(PAbortCause t);
 }

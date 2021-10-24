@@ -25,10 +25,10 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ASNPAbortCauseType;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNPAbortCauseType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -44,8 +44,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortMessage {
 	private ASNPAbortCauseType pAbortCause;
 	
-	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=24,constructed=true,index=-1)
-    private UserInformationImpl userAbortInformation;
+	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=24,constructed=true,index=-1,defaultImplementation = UserInformationImpl.class)
+    private UserInformation userAbortInformation;
 
     @Override
     public PAbortCause getPAbortCause() throws ParseException {
@@ -62,12 +62,12 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
     }
 
     @Override
-    public UserInformationImpl getUserAbortInformation() {
+    public UserInformation getUserAbortInformation() {
     	return userAbortInformation;
     }
 
     @Override
-    public void setUserAbortInformation(UserInformationImpl uai) {
+    public void setUserAbortInformation(UserInformation uai) {
         userAbortInformation = uai;
     }
 
