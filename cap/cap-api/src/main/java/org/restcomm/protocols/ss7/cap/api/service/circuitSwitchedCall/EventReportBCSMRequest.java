@@ -25,8 +25,8 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 
 /**
 <code>
@@ -66,9 +66,9 @@ public interface EventReportBCSMRequest extends CircuitSwitchedCallMessage {
 
     EventSpecificInformationBCSMImpl getEventSpecificInformationBCSM();
 
-    ReceivingLegIDImpl getLegID();
+    LegType getLegID();
 
-    MiscCallInfoImpl getMiscCallInfo();
+    MiscCallInfo getMiscCallInfo();
 
     CAPExtensionsImpl getExtensions();
 

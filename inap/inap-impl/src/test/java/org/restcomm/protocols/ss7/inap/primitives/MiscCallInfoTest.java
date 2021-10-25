@@ -32,7 +32,6 @@ import io.netty.buffer.Unpooled;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoDpAssignment;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
 import org.testng.annotations.Test;
 

@@ -49,7 +49,7 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilitiesImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
@@ -411,14 +411,14 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addEventReportGPRSRequest(GPRSEventType gprsEventType, MiscCallInfoImpl miscGPRSInfo,
+    public Long addEventReportGPRSRequest(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
             GPRSEventSpecificInformationImpl gprsEventSpecificInformation, PDPIDImpl pdpID) throws CAPException {
 
         return addEventReportGPRSRequest(_Timer_Default, gprsEventType, miscGPRSInfo, gprsEventSpecificInformation, pdpID);
     }
 
     @Override
-    public Long addEventReportGPRSRequest(int customInvokeTimeout, GPRSEventType gprsEventType, MiscCallInfoImpl miscGPRSInfo,
+    public Long addEventReportGPRSRequest(int customInvokeTimeout, GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
             GPRSEventSpecificInformationImpl gprsEventSpecificInformation, PDPIDImpl pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF

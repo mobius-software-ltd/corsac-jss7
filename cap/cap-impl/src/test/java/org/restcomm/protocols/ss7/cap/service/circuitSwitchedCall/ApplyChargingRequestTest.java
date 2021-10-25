@@ -33,7 +33,6 @@ import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -82,7 +81,7 @@ public class ApplyChargingRequestTest {
         assertNull(elem.getAChBillingChargingCharacteristics().getExtensions());
         assertFalse(elem.getAChBillingChargingCharacteristics().getReleaseIfdurationExceeded());
         assertNull(elem.getAChBillingChargingCharacteristics().getTariffSwitchInterval());
-        assertEquals(elem.getPartyToCharge().getSendingSideID(), LegType.leg1);
+        assertEquals(elem.getPartyToCharge(), LegType.leg1);
         assertNull(elem.getExtensions());
         assertNull(elem.getAChChargingAddress());
 
@@ -98,7 +97,7 @@ public class ApplyChargingRequestTest {
         assertNull(elem.getAChBillingChargingCharacteristics().getExtensions());
         assertFalse(elem.getAChBillingChargingCharacteristics().getReleaseIfdurationExceeded());
         assertNull(elem.getAChBillingChargingCharacteristics().getTariffSwitchInterval());
-        assertEquals(elem.getPartyToCharge().getSendingSideID(), LegType.leg1);
+        assertEquals(elem.getPartyToCharge(), LegType.leg1);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         assertNull(elem.getAChChargingAddress());
 
@@ -130,9 +129,7 @@ public class ApplyChargingRequestTest {
         // tariffSwitchInterval,
         // AudibleIndicator audibleIndicator, CAPExtensions extensions, boolean
         // isCAPVersion3orLater
-        SendingLegIDImpl partyToCharge = new SendingLegIDImpl(LegType.leg1);
-
-        ApplyChargingRequestImpl elem = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, partyToCharge, null,
+        ApplyChargingRequestImpl elem = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, LegType.leg1, null,
                 null);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
@@ -144,7 +141,7 @@ public class ApplyChargingRequestTest {
         // CAPExtensions extensions, AChChargingAddress aChChargingAddress
 
 
-        elem = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, partyToCharge,
+        elem = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, LegType.leg1,
                 CAPExtensionsTest.createTestCAPExtensions(), null);
         rawData = this.getData2();
         buffer=parser.encode(elem);

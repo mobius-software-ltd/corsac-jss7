@@ -29,9 +29,8 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -63,7 +62,7 @@ public class SplitLegRequestTest {
         assertTrue(result.getResult() instanceof SplitLegRequestImpl);
         
         SplitLegRequestImpl elem = (SplitLegRequestImpl)result.getResult();                
-        assertTrue(elem.getLegToBeSplit().getSendingLegID().getSendingSideID().equals(LegType.leg1));
+        assertTrue(elem.getLegToBeSplit().getSendingSideID().equals(LegType.leg1));
         assertEquals(elem.getNewCallSegment(), new Integer(1));
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
     }
@@ -73,7 +72,7 @@ public class SplitLegRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(SplitLegRequestImpl.class);
     	
-        LegIDImpl legIDToMove = new LegIDImpl(null,new SendingLegIDImpl(LegType.leg1));
+        LegIDImpl legIDToMove = new LegIDImpl(null,LegType.leg1);
 
         SplitLegRequestImpl elem = new SplitLegRequestImpl(legIDToMove, 1, CAPExtensionsTest.createTestCAPExtensions());
         byte[] rawData = this.getData();

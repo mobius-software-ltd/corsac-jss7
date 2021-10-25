@@ -74,9 +74,9 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPReque
 import org.restcomm.protocols.ss7.cap.service.gprs.InitialDpGprsRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
@@ -249,11 +249,10 @@ public class Client extends EventTestHarness {
         causeIndicators.setCauseValue(CauseIndicators._CV_ALL_CLEAR);
         CauseCapImpl releaseCause = this.capParameterFactory.createCauseCap(causeIndicators);
         ODisconnectSpecificInfoImpl oDisconnectSpecificInfo = this.capParameterFactory.createODisconnectSpecificInfo(releaseCause);
-        ReceivingLegIDImpl legID = this.capParameterFactory.createReceivingLegID(LegType.leg1);
-        MiscCallInfoImpl miscCallInfo = this.inapParameterFactory.createMiscCallInfo(MiscCallInfoMessageType.notification, null);
+        MiscCallInfo miscCallInfo = this.inapParameterFactory.createMiscCallInfo(MiscCallInfoMessageType.notification, null);
         EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = this.capParameterFactory
                 .createEventSpecificInformationBCSM(oDisconnectSpecificInfo);
-        clientCscDialog.addEventReportBCSMRequest(EventTypeBCSM.oDisconnect, eventSpecificInformationBCSM, legID, miscCallInfo,
+        clientCscDialog.addEventReportBCSMRequest(EventTypeBCSM.oDisconnect, eventSpecificInformationBCSM, LegType.leg1, miscCallInfo,
                 null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportBCSMRequest, null, sequence++));
@@ -449,11 +448,11 @@ public class Client extends EventTestHarness {
         ev = ind.getBCSMEventList().get(4);
         assertEquals(ev.getEventTypeBCSM(), EventTypeBCSM.oDisconnect);
         assertEquals(ev.getMonitorMode(), MonitorMode.notifyAndContinue);
-        assertEquals(ev.getLegID().getSendingLegID().getSendingSideID(), LegType.leg1);
+        assertEquals(ev.getLegID().getSendingSideID(), LegType.leg1);
         ev = ind.getBCSMEventList().get(5);
         assertEquals(ev.getEventTypeBCSM(), EventTypeBCSM.oDisconnect);
         assertEquals(ev.getMonitorMode(), MonitorMode.interrupted);
-        assertEquals(ev.getLegID().getSendingLegID().getSendingSideID(), LegType.leg2);
+        assertEquals(ev.getLegID().getSendingSideID(), LegType.leg2);
         ev = ind.getBCSMEventList().get(6);
         assertEquals(ev.getEventTypeBCSM(), EventTypeBCSM.oAbandon);
         assertEquals(ev.getMonitorMode(), MonitorMode.notifyAndContinue);

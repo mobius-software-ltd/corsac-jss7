@@ -39,9 +39,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
@@ -111,7 +111,7 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
 
     CallingPartyNumberCapImpl getCallingPartyNumber();
 
-    CallingPartysCategoryInapImpl getCallingPartysCategory();
+    CallingPartysCategoryInap getCallingPartysCategory();
 
     CGEncountered getCGEncountered();
 
@@ -123,7 +123,7 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
 
     CAPExtensionsImpl getExtensions();
 
-    HighLayerCompatibilityInapImpl getHighLayerCompatibility();
+    HighLayerCompatibilityInap getHighLayerCompatibility();
 
     /**
      * Use Digits.getGenericNumber() for AdditionalCallingPartyNumber
@@ -138,7 +138,7 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
 
     RedirectingPartyIDCapImpl getRedirectingPartyID();
 
-    RedirectionInformationInapImpl getRedirectionInformation();
+    RedirectionInformationInap getRedirectionInformation();
 
     CauseCapImpl getCause();
 

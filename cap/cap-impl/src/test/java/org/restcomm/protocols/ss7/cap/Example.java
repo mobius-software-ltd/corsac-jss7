@@ -8,9 +8,8 @@ import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
@@ -86,11 +85,10 @@ public class Example {
         // sending oAnswer in 5 sec
         Thread.sleep(5000);
         OAnswerSpecificInfoImpl oAnswerSpecificInfo = client.getCAPProvider().getCAPParameterFactory()
-                .createOAnswerSpecificInfo(null, false, false, null, null, null);
-        ReceivingLegIDImpl legID = client.getCAPProvider().getCAPParameterFactory().createReceivingLegID(LegType.leg2);
-        MiscCallInfoImpl miscCallInfo = client.getCAPProvider().getINAPParameterFactory()
+                .createOAnswerSpecificInfo(null, false, false, null, null, null);        
+        MiscCallInfo miscCallInfo = client.getCAPProvider().getINAPParameterFactory()
                 .createMiscCallInfo(MiscCallInfoMessageType.notification, null);
-        client.sendEventReportBCSM_OAnswer(oAnswerSpecificInfo, legID, miscCallInfo);
+        client.sendEventReportBCSM_OAnswer(oAnswerSpecificInfo, LegType.leg2, miscCallInfo);
 
         // sending oDisconnect in 20 sec
         Thread.sleep(20000);
@@ -101,10 +99,9 @@ public class Example {
         CauseCapImpl releaseCause = client.getCAPProvider().getCAPParameterFactory().createCauseCap(causeIndicators);
         ODisconnectSpecificInfoImpl oDisconnectSpecificInfo = client.getCAPProvider().getCAPParameterFactory()
                 .createODisconnectSpecificInfo(releaseCause);
-        legID = client.getCAPProvider().getCAPParameterFactory().createReceivingLegID(LegType.leg1);
         miscCallInfo = client.getCAPProvider().getINAPParameterFactory()
                 .createMiscCallInfo(MiscCallInfoMessageType.notification, null);
-        client.sendEventReportBCSM_ODisconnect(oDisconnectSpecificInfo, legID, miscCallInfo);
+        client.sendEventReportBCSM_ODisconnect(oDisconnectSpecificInfo, LegType.leg1, miscCallInfo);
 
         // wait for answer
         Thread.sleep(600000);

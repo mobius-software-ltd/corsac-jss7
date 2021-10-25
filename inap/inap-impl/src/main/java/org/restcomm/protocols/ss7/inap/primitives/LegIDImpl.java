@@ -20,10 +20,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.primitives;
+package org.restcomm.protocols.ss7.inap.primitives;
+
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -32,54 +34,47 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
-public class MiscCallInfoImpl {
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-	private ASNMiscCallInfoMessageType messageType;
+public class LegIDImpl implements LegID {
+	private ReceivingLegIDImpl receivingLegID;
+    private SendingLegIDImpl sendingLegID;
+
+    public LegIDImpl() {
+    }
+
+    public LegIDImpl(LegType receivingLegID, LegType sendingLegID) {
+    	if(receivingLegID!=null)
+    		this.receivingLegID = new ReceivingLegIDImpl(receivingLegID);
+    	
+    	if(sendingLegID!=null)
+    	this.sendingLegID = new SendingLegIDImpl(sendingLegID);
+    }
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-	private ASNMiscCallInfoDpAssignment dpAssignment;
-
-    public MiscCallInfoImpl() {
-    }
-
-    public MiscCallInfoImpl(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment) {
-    	if(messageType!=null) {
-	        this.messageType = new ASNMiscCallInfoMessageType();
-	        this.messageType.setType(messageType);
-    	}
-    	
-    	if(dpAssignment!=null) {
-	        this.dpAssignment = new ASNMiscCallInfoDpAssignment();
-	        this.dpAssignment.setType(dpAssignment);
-    	}
-    }
-
-    public MiscCallInfoMessageType getMessageType() {
-    	if(this.messageType==null)
+    public LegType getReceivingSideID() {
+    	if(receivingLegID==null)
     		return null;
     	
-        return messageType.getType();
-    }
+		return receivingLegID.getReceivingSideID();
+	}
 
-    public MiscCallInfoDpAssignment getDpAssignment() {
-    	if(dpAssignment==null)
-    		return null;
-    	
-        return dpAssignment.getType();
-    }
+	public LegType getSendingSideID() {
+		if(sendingLegID==null)
+			return null;
+		
+		return sendingLegID.getSendingSideID();
+	}
 
-    @Override
+	@Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
         sb.append(" [");
-        if (this.messageType != null) {
-            sb.append("messageType=");
-            sb.append(messageType);
+        if (this.receivingLegID != null) {
+            sb.append("receivingLegID=");
+            sb.append(receivingLegID);
         }
-        if (this.dpAssignment != null) {
-            sb.append(", dpAssignment=");
-            sb.append(dpAssignment);
+        if (this.sendingLegID != null) {
+            sb.append(", sendingLegID=");
+            sb.append(sendingLegID);
         }
         sb.append("]");
 

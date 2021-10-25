@@ -32,7 +32,6 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformationImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -66,7 +65,7 @@ public class ApplyChargingReportRequestTest {
         assertTrue(result.getResult() instanceof ApplyChargingReportRequestImpl);
         
         ApplyChargingReportRequestImpl elem = (ApplyChargingReportRequestImpl)result.getResult();
-        assertEquals(elem.getTimeDurationChargingResult().getPartyToCharge().getReceivingSideID(), LegType.leg1);
+        assertEquals(elem.getTimeDurationChargingResult().getPartyToCharge(), LegType.leg1);
         assertEquals((int) elem.getTimeDurationChargingResult().getTimeInformation().getTimeIfNoTariffSwitch(), 26);
         assertFalse(elem.getTimeDurationChargingResult().getLegActive());
         assertFalse(elem.getTimeDurationChargingResult().getCallLegReleasedAtTcpExpiry());
@@ -79,9 +78,8 @@ public class ApplyChargingReportRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ApplyChargingReportRequestImpl.class);
     	
-        ReceivingLegIDImpl partyToCharge = new ReceivingLegIDImpl(LegType.leg1);
         TimeInformationImpl timeInformation = new TimeInformationImpl(26);
-        TimeDurationChargingResultImpl timeDurationChargingResult = new TimeDurationChargingResultImpl(partyToCharge,
+        TimeDurationChargingResultImpl timeDurationChargingResult = new TimeDurationChargingResultImpl(LegType.leg1,
                 timeInformation, false, false, null, null);
         // ReceivingSideID partyToCharge, TimeInformation timeInformation,
         // boolean legActive,

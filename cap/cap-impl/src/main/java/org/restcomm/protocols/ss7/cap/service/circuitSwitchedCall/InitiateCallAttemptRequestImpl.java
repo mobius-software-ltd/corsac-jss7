@@ -28,8 +28,8 @@ import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitiateCallAttemptRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
 
@@ -77,7 +77,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     public InitiateCallAttemptRequestImpl(DestinationRoutingAddressImpl destinationRoutingAddress,
-            CAPExtensionsImpl extensions, LegIDImpl legToBeCreated, Integer newCallSegment,
+            CAPExtensionsImpl extensions, LegID legToBeCreated, Integer newCallSegment,
             CallingPartyNumberCapImpl callingPartyNumber, CallReferenceNumberImpl callReferenceNumber,
             ISDNAddressStringImpl gsmSCFAddress, boolean suppressTCsi) {
         this.destinationRoutingAddress = destinationRoutingAddress;
@@ -162,7 +162,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     @Override
-    public LegIDImpl getLegToBeCreated() {    	
+    public LegID getLegToBeCreated() {    	
     	if(legToBeCreated==null)
     		return null;
     	

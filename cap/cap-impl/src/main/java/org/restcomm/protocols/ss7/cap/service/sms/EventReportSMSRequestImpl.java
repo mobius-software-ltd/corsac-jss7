@@ -29,7 +29,8 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.ASNEventTypeSMSI
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -50,14 +51,14 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
     private EventSpecificInformationSMSWrapperImpl eventSpecificInformationSMS;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private MiscCallInfoImpl miscCallInfo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = MiscCallInfoImpl.class)
+    private MiscCallInfo miscCallInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1)
     private CAPExtensionsImpl extensions;
 
     public EventReportSMSRequestImpl(EventTypeSMS eventTypeSMS,
-            EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfoImpl miscCallInfo, CAPExtensionsImpl extensions) {
+            EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPExtensionsImpl extensions) {
         super();
         
         if(eventTypeSMS!=null) {
@@ -90,7 +91,7 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
         return this.eventSpecificInformationSMS.getEventSpecificInformationSMS();
     }
 
-    public MiscCallInfoImpl getMiscCallInfo() {
+    public MiscCallInfo getMiscCallInfo() {
         return this.miscCallInfo;
     }
 

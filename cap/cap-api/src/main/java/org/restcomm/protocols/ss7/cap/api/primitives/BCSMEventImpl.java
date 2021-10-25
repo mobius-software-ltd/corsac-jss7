@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.cap.api.primitives;
 
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaWrapperImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -58,7 +58,7 @@ public class BCSMEventImpl {
     public BCSMEventImpl() {
     }
 
-    public BCSMEventImpl(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegIDImpl legID,
+    public BCSMEventImpl(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegID legID,
             DpSpecificCriteriaImpl dpSpecificCriteria, boolean automaticRearm) {
     	if(eventTypeBCSM!=null) {
     		this.eventTypeBCSM = new ASNEventTypeBCSMImpl();
@@ -94,7 +94,7 @@ public class BCSMEventImpl {
         return monitorMode.getType();
     }
 
-    public LegIDImpl getLegID() {
+    public LegID getLegID() {
     	if(legID==null)
     		return null;
     	
@@ -128,7 +128,7 @@ public class BCSMEventImpl {
         }
         if (this.legID != null && this.legID.getLegID()!=null) {
             sb.append(", legID=");
-            sb.append(legID.toString());
+            sb.append(legID.getLegID().toString());
         }
         if (this.dpSpecificCriteria != null && this.dpSpecificCriteria.getDpSpecificCriteria()!=null) {
             sb.append(", dpSpecificCriteria=");

@@ -27,7 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.testng.annotations.Test;

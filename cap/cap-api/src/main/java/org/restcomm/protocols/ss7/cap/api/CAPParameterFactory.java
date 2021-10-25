@@ -183,12 +183,10 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSche
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifierImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -237,7 +235,7 @@ public interface CAPParameterFactory {
 
     DpSpecificCriteriaImpl createDpSpecificCriteria(DpSpecificCriteriaAltImpl dpSpecificCriteriaAlt);
 
-    BCSMEventImpl createBCSMEvent(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegIDImpl legID,
+    BCSMEventImpl createBCSMEvent(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegID legID,
             DpSpecificCriteriaImpl dpSpecificCriteria, boolean automaticRearm);
 
     CalledPartyBCDNumberImpl createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlan numberingPlan,
@@ -261,10 +259,6 @@ public interface CAPParameterFactory {
     DateAndTimeImpl createDateAndTime(int year, int month, int day, int hour, int minute, int second);
 
     TimeAndTimezoneImpl createTimeAndTimezone(int year, int month, int day, int hour, int minute, int second, int timeZone);
-
-    SendingLegIDImpl createSendingLegID(LegType sendingSideID);
-
-    ReceivingLegIDImpl createReceivingLegID(LegType receivingSideID);
 
     BearerCapImpl createBearerCap(byte[] data);
 
@@ -376,7 +370,7 @@ public interface CAPParameterFactory {
 
     RequestedInformationImpl createRequestedInformation_ReleaseCause(CauseCapImpl releaseCauseValue);
 
-    TimeDurationChargingResultImpl createTimeDurationChargingResult(ReceivingLegIDImpl partyToCharge,
+    TimeDurationChargingResultImpl createTimeDurationChargingResult(LegType partyToCharge,
             TimeInformationImpl timeInformation, boolean legActive, boolean callLegReleasedAtTcpExpiry, CAPExtensionsImpl extensions,
             AChChargingAddressImpl aChChargingAddress);
 
@@ -396,7 +390,7 @@ public interface CAPParameterFactory {
             CalledPartyNumberCapImpl forwardingDestinationNumber, MSClassmark2Impl msClassmark2, IMEIImpl imei,
             SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities,
             BearerCapabilityImpl bearerCapability2, ExtBasicServiceCodeImpl extBasicServiceCode2,
-            HighLayerCompatibilityInapImpl highLayerCompatibility2, LowLayerCompatibilityImpl lowLayerCompatibility,
+            HighLayerCompatibilityInap highLayerCompatibility2, LowLayerCompatibilityImpl lowLayerCompatibility,
             LowLayerCompatibilityImpl lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUDataImpl uuData,
             boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed);
 
@@ -415,7 +409,7 @@ public interface CAPParameterFactory {
             boolean nonCUGCall, HoldTreatmentIndicator holdTreatmentIndicator, CwTreatmentIndicator cwTreatmentIndicator,
             EctTreatmentIndicator ectTreatmentIndicator);
 
-    FCIBCCCAMELSequence1Impl createFCIBCCCAMELsequence1(FreeFormatDataImpl freeFormatData, SendingLegIDImpl partyToCharge,
+    FCIBCCCAMELSequence1Impl createFCIBCCCAMELsequence1(FreeFormatDataImpl freeFormatData, LegType partyToCharge,
             AppendFreeFormatData appendFreeFormatData);
 
     CAMELSCIBillingChargingCharacteristicsAltImpl createCAMELSCIBillingChargingCharacteristicsAlt();
@@ -648,7 +642,7 @@ public interface CAPParameterFactory {
 
     LegOrCallSegmentImpl createLegOrCallSegment(Integer callSegmentID);
 
-    LegOrCallSegmentImpl createLegOrCallSegment(LegIDImpl legID);
+    LegOrCallSegmentImpl createLegOrCallSegment(LegID legID);
 
     ChargeIndicatorImpl createChargeIndicator(int data);
 
@@ -742,7 +736,7 @@ public interface CAPParameterFactory {
 
     AudibleIndicatorImpl createAudibleIndicator(BurstListImpl burstList);
 
-    AChChargingAddressImpl createAChChargingAddress(LegIDImpl legID);
+    AChChargingAddressImpl createAChChargingAddress(LegID legID);
 
     AChChargingAddressImpl createAChChargingAddress(int srfConnection);
 

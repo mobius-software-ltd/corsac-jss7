@@ -1,6 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.primitives;
+package org.restcomm.protocols.ss7.inap.primitives;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -30,42 +30,18 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
-public class LegIDImpl {
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
+public class ReceivingLegIDWrapperImpl {
 	private ReceivingLegIDImpl receivingLegID;
-    private SendingLegIDImpl sendingLegID;
 
-    public LegIDImpl() {
+    public ReceivingLegIDWrapperImpl() {
     }
 
-    public LegIDImpl(ReceivingLegIDImpl receivingLegID, SendingLegIDImpl sendingLegID) {
-    	this.receivingLegID=receivingLegID;
-    	this.sendingLegID=sendingLegID;
+    public ReceivingLegIDWrapperImpl(ReceivingLegIDImpl receivingLegID) {
+        this.receivingLegID = receivingLegID;
     }
-    
+
     public ReceivingLegIDImpl getReceivingLegID() {
-		return receivingLegID;
-	}
-
-	public SendingLegIDImpl getSendingLegID() {
-		return sendingLegID;
-	}
-
-	@Override
-    public String toString() {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(" [");
-        if (this.receivingLegID != null) {
-            sb.append("receivingLegID=");
-            sb.append(receivingLegID);
-        }
-        if (this.sendingLegID != null) {
-            sb.append(", sendingLegID=");
-            sb.append(sendingLegID);
-        }
-        sb.append("]");
-
-        return sb.toString();
+    	return receivingLegID;
     }
 }

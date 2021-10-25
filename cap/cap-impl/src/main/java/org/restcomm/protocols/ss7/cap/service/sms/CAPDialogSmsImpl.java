@@ -45,7 +45,7 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSche
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifierImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
@@ -101,7 +101,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
 
     @Override
     public Long addEventReportSMSRequest(EventTypeSMS eventTypeSMS,
-            EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfoImpl miscCallInfo, CAPExtensionsImpl extensions)
+            EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPExtensionsImpl extensions)
             throws CAPException {
         return this.addEventReportSMSRequest(_Timer_Default, eventTypeSMS, eventSpecificInformationSMS, miscCallInfo,
                 extensions);
@@ -109,7 +109,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
 
     @Override
     public Long addEventReportSMSRequest(int customInvokeTimeout, EventTypeSMS eventTypeSMS,
-            EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfoImpl miscCallInfo, CAPExtensionsImpl extensions)
+            EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPExtensionsImpl extensions)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)

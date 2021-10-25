@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.primitives;
 
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,7 +46,7 @@ public class AChChargingAddressImpl {
     public AChChargingAddressImpl() {
     }
 
-    public AChChargingAddressImpl(LegIDImpl legID) {
+    public AChChargingAddressImpl(LegID legID) {
     	if(legID!=null)
     		this.legID = new LegIDWrapperImpl(legID);
     }
@@ -56,7 +56,7 @@ public class AChChargingAddressImpl {
         this.srfConnection.setValue(Long.valueOf(srfConnection));
     }
 
-    public LegIDImpl getLegID() {
+    public LegID getLegID() {
     	if(legID==null)
     		return null;
     	
@@ -76,9 +76,9 @@ public class AChChargingAddressImpl {
         StringBuilder sb = new StringBuilder();
         sb.append("AChChargingAddress [");
 
-        if (legID != null) {
+        if (legID != null && this.legID.getLegID()!=null) {
             sb.append("legID=[");
-            sb.append(legID);
+            sb.append(legID.getLegID().toString());
             sb.append("]");
         } else if (srfConnection != null && srfConnection.getValue()!=null && srfConnection.getValue()!=0) {
             sb.append("srfConnection=[");

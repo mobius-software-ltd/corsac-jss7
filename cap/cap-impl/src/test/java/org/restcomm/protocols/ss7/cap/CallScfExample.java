@@ -59,7 +59,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.Specialize
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
@@ -148,11 +148,11 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
                         ev = this.capProvider.getCAPParameterFactory().createBCSMEvent(EventTypeBCSM.oAnswer,
                                 MonitorMode.notifyAndContinue, null, null, false);
                         bcsmEventList.add(ev);
-                        LegIDImpl legId = this.capProvider.getINAPParameterFactory().createLegID(null, this.capProvider.getINAPParameterFactory().createSendingLegID(LegType.leg1));
+                        LegID legId = this.capProvider.getINAPParameterFactory().createLegID(null, LegType.leg1);
                         ev = this.capProvider.getCAPParameterFactory().createBCSMEvent(EventTypeBCSM.oDisconnect,
                                 MonitorMode.notifyAndContinue, legId, null, false);
                         bcsmEventList.add(ev);
-                        legId = this.capProvider.getINAPParameterFactory().createLegID(null, this.capProvider.getINAPParameterFactory().createSendingLegID(LegType.leg2));
+                        legId = this.capProvider.getINAPParameterFactory().createLegID(null, LegType.leg2);
                         ev = this.capProvider.getCAPParameterFactory().createBCSMEvent(EventTypeBCSM.oDisconnect,
                                 MonitorMode.interrupted, legId, null, false);
                         bcsmEventList.add(ev);

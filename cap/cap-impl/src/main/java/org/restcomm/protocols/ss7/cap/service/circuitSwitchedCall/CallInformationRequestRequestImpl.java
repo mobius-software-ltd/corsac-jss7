@@ -32,8 +32,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallInform
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ASNRequestedInformationTypeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationTypeWrapperImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -63,7 +64,7 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
     }
 
     public CallInformationRequestRequestImpl(List<RequestedInformationType> requestedInformationTypeList,
-            CAPExtensionsImpl extensions, SendingLegIDImpl legID) {
+            CAPExtensionsImpl extensions, LegType legID) {
     	
     	if(requestedInformationTypeList!=null) {
     		List<ASNRequestedInformationTypeImpl> typesList=new ArrayList<ASNRequestedInformationTypeImpl>();
@@ -78,7 +79,7 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
         this.extensions = extensions;
         
         if(legID!=null)
-        	this.legID = new SendingLegIDWrapperImpl(legID);
+        	this.legID = new SendingLegIDWrapperImpl(new SendingLegIDImpl(legID));
     }
 
     @Override
@@ -109,11 +110,11 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
     }
 
     @Override
-    public SendingLegIDImpl getLegID() {
-    	if(legID==null)
+    public LegType getLegID() {
+    	if(legID==null || legID.getSendingLegID()==null)
     		return null;
     	
-        return legID.getSendingLegID();
+        return legID.getSendingLegID().getSendingSideID();
     }
 
     @Override

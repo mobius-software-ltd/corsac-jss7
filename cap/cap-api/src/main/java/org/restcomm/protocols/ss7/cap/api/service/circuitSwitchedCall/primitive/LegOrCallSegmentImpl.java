@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
 
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -39,8 +40,8 @@ public class LegOrCallSegmentImpl {
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
     private ASNInteger callSegmentID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
-    private LegIDImpl legID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1, defaultImplementation = LegIDImpl.class)
+    private LegID legID;
 
     public LegOrCallSegmentImpl() {
     }
@@ -52,7 +53,7 @@ public class LegOrCallSegmentImpl {
     	}
     }
 
-    public LegOrCallSegmentImpl(LegIDImpl legID) {
+    public LegOrCallSegmentImpl(LegID legID) {
         this.legID = legID;
     }
 
@@ -85,7 +86,7 @@ public class LegOrCallSegmentImpl {
         return callSegmentID.getValue().intValue();
     }
 
-    public LegIDImpl getLegID() {
+    public LegID getLegID() {
         return legID;
     }
 }

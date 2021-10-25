@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.inap.isup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 import org.testng.annotations.Test;

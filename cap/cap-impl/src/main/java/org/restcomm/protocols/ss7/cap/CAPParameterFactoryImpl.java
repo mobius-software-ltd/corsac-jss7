@@ -187,12 +187,10 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdenti
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
 import org.restcomm.protocols.ss7.cap.dialog.CAPGprsReferenceNumberImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -264,7 +262,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public BCSMEventImpl createBCSMEvent(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegIDImpl legID,
+    public BCSMEventImpl createBCSMEvent(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegID legID,
             DpSpecificCriteriaImpl dpSpecificCriteria, boolean automaticRearm) {
         return new BCSMEventImpl(eventTypeBCSM, monitorMode, legID, dpSpecificCriteria, automaticRearm);
     }
@@ -318,16 +316,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     @Override
     public TimeAndTimezoneImpl createTimeAndTimezone(int year, int month, int day, int hour, int minute, int second, int timeZone) {
         return new TimeAndTimezoneImpl(year, month, day, hour, minute, second, timeZone);
-    }
-
-    @Override
-    public SendingLegIDImpl createSendingLegID(LegType sendingSideID) {
-        return new SendingLegIDImpl(sendingSideID);
-    }
-
-    @Override
-    public ReceivingLegIDImpl createReceivingLegID(LegType receivingSideID) {
-        return new ReceivingLegIDImpl(receivingSideID);
     }
 
     @Override
@@ -597,7 +585,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public TimeDurationChargingResultImpl createTimeDurationChargingResult(ReceivingLegIDImpl partyToCharge,
+    public TimeDurationChargingResultImpl createTimeDurationChargingResult(LegType partyToCharge,
             TimeInformationImpl timeInformation, boolean legActive, boolean callLegReleasedAtTcpExpiry, CAPExtensionsImpl extensions,
             AChChargingAddressImpl aChChargingAddress) {
         return new TimeDurationChargingResultImpl(partyToCharge, timeInformation, legActive, callLegReleasedAtTcpExpiry,
@@ -638,7 +626,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
             CalledPartyNumberCapImpl forwardingDestinationNumber, MSClassmark2Impl msClassmark2, IMEIImpl imei,
             SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities,
             BearerCapabilityImpl bearerCapability2, ExtBasicServiceCodeImpl extBasicServiceCode2,
-            HighLayerCompatibilityInapImpl highLayerCompatibility2, LowLayerCompatibilityImpl lowLayerCompatibility,
+            HighLayerCompatibilityInap highLayerCompatibility2, LowLayerCompatibilityImpl lowLayerCompatibility,
             LowLayerCompatibilityImpl lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUDataImpl uuData,
             boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed) {
         return new InitialDPArgExtensionImpl(gmscAddress, forwardingDestinationNumber, msClassmark2, imei,
@@ -680,7 +668,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public FCIBCCCAMELSequence1Impl createFCIBCCCAMELsequence1(FreeFormatDataImpl freeFormatData, SendingLegIDImpl partyToCharge,
+    public FCIBCCCAMELSequence1Impl createFCIBCCCAMELsequence1(FreeFormatDataImpl freeFormatData, LegType partyToCharge,
             AppendFreeFormatData appendFreeFormatData) {
         return new FCIBCCCAMELSequence1Impl(freeFormatData, partyToCharge, appendFreeFormatData);
     }
@@ -1238,7 +1226,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public LegOrCallSegmentImpl createLegOrCallSegment(LegIDImpl legID) {
+    public LegOrCallSegmentImpl createLegOrCallSegment(LegID legID) {
         return new LegOrCallSegmentImpl(legID);
     }
 
@@ -1469,7 +1457,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public AChChargingAddressImpl createAChChargingAddress(LegIDImpl legID) {
+    public AChChargingAddressImpl createAChChargingAddress(LegID legID) {
         return new AChChargingAddressImpl(legID);
     }
 

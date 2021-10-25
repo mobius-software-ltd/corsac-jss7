@@ -31,9 +31,8 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LegOrCallSegmentImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LegOrCallSegmentWrapperImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -80,8 +79,8 @@ public class LegOrCallSegmentTest {
         
         elem = (LegOrCallSegmentWrapperImpl)result.getResult(); 
         assertNull(elem.getLegOrCallSegment().getCallSegmentID());
-        assertNull(elem.getLegOrCallSegment().getLegID().getReceivingLegID());
-        assertEquals(elem.getLegOrCallSegment().getLegID().getSendingLegID().getSendingSideID(), LegType.leg3);
+        assertNull(elem.getLegOrCallSegment().getLegID().getReceivingSideID());
+        assertEquals(elem.getLegOrCallSegment().getLegID().getSendingSideID(), LegType.leg3);
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
@@ -97,7 +96,7 @@ public class LegOrCallSegmentTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        LegIDImpl legId = new LegIDImpl(null, new SendingLegIDImpl(LegType.leg3));
+        LegIDImpl legId = new LegIDImpl(null, LegType.leg3);
         elem = new LegOrCallSegmentImpl(legId);
         wrapper = new LegOrCallSegmentWrapperImpl(elem);
         rawData = this.getData2();

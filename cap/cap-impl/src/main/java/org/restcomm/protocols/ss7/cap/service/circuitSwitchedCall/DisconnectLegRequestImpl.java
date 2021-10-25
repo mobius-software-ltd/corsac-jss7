@@ -27,8 +27,9 @@ import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.DisconnectLegRequest;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -55,7 +56,7 @@ public class DisconnectLegRequestImpl extends CircuitSwitchedCallMessageImpl imp
     public DisconnectLegRequestImpl() {
     }
 
-    public DisconnectLegRequestImpl(LegIDImpl legToBeReleased, CauseCapImpl releaseCause, CAPExtensionsImpl extensions) {
+    public DisconnectLegRequestImpl(LegID legToBeReleased, CauseCapImpl releaseCause, CAPExtensionsImpl extensions) {
     	
     	if(legToBeReleased!=null)
     		this.legToBeReleased = new LegIDWrapperImpl(legToBeReleased);

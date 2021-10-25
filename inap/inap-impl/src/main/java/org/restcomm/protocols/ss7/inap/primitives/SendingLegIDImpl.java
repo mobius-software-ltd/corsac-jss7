@@ -1,8 +1,10 @@
-package org.restcomm.protocols.ss7.inap.api.primitives;
+package org.restcomm.protocols.ss7.inap.primitives;
+
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -30,17 +32,34 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
-public class ASNMiscCallInfoMessageType extends ASNInteger {
-	public void setType(MiscCallInfoMessageType t) {
-		if(t!=null)
-			setValue((long)t.getCode());
-	}
-	
-	public MiscCallInfoMessageType getType() {
-		Long realValue=getValue();
+public class SendingLegIDImpl extends ASNEnumerated {
+	public SendingLegIDImpl() {
+    }
+
+    public SendingLegIDImpl(LegType legID) {
+    	if(legID!=null)
+			setValue((long)legID.getCode());    
+    }
+
+    public LegType getSendingSideID() {
+    	Long realValue=getValue();
 		if(realValue==null)
 			return null;
 		
-		return MiscCallInfoMessageType.getInstance(realValue.intValue());
-	}
+		return LegType.getInstance(realValue.intValue());
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("LegID [");
+        if (this.getValue() != null) {
+            sb.append("sendingSideID=");
+            sb.append(getSendingSideID());
+        }
+        sb.append("]");
+
+        return sb.toString();
+    }
 }

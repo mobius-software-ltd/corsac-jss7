@@ -27,8 +27,9 @@ import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargingInformationRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -57,11 +58,11 @@ public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessa
     }
 
     public SendChargingInformationRequestImpl(SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics,
-            SendingLegIDImpl partyToCharge, CAPExtensionsImpl extensions) {
+    		LegType partyToCharge, CAPExtensionsImpl extensions) {
         this.sciBillingChargingCharacteristics = sciBillingChargingCharacteristics;
         
         if(partyToCharge!=null)
-        	this.partyToCharge = new SendingLegIDWrapperImpl(partyToCharge);
+        	this.partyToCharge = new SendingLegIDWrapperImpl(new SendingLegIDImpl(partyToCharge));
         
         this.extensions = extensions;
     }
@@ -82,11 +83,11 @@ public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessa
     }
 
     @Override
-    public SendingLegIDImpl getPartyToCharge() {
-    	if(partyToCharge==null)
+    public LegType getPartyToCharge() {
+    	if(partyToCharge==null || partyToCharge.getSendingLegID()==null)
     		return null;
     	
-        return partyToCharge.getSendingLegID();
+        return partyToCharge.getSendingLegID().getSendingSideID();
     }
 
     @Override

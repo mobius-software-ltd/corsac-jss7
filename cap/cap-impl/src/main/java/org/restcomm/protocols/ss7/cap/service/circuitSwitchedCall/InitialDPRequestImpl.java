@@ -45,9 +45,12 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
+import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
@@ -83,8 +86,8 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
     private CallingPartyNumberCapImpl callingPartyNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1)
-    private CallingPartysCategoryInapImpl callingPartysCategory;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1, defaultImplementation = CallingPartysCategoryInapImpl.class)
+    private CallingPartysCategoryInap callingPartysCategory;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1)
     private ASNCGEncounteredImpl cgEncountered;
@@ -101,8 +104,8 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = true,index = -1)
     private CAPExtensionsImpl extensions;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 23,constructed = false,index = -1)
-    private HighLayerCompatibilityInapImpl highLayerCompatibility;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 23,constructed = false,index = -1, defaultImplementation = HighLayerCompatibilityInapImpl.class)
+    private HighLayerCompatibilityInap highLayerCompatibility;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 25,constructed = false,index = -1)
     private DigitsImpl additionalCallingPartyNumber;
@@ -116,8 +119,8 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 29,constructed = false,index = -1)
     private RedirectingPartyIDCapImpl redirectingPartyID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1)
-    private RedirectionInformationInapImpl redirectionInformation;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1, defaultImplementation = RedirectionInformationInapImpl.class)
+    private RedirectionInformationInap redirectionInformation;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1)
     private CauseCapImpl cause;
@@ -174,12 +177,12 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     public InitialDPRequestImpl(int serviceKey, CalledPartyNumberCapImpl calledPartyNumber,
-            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInapImpl callingPartysCategory,
+            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
             CGEncountered cgEncountered, IPSSPCapabilitiesImpl IPSSPCapabilities, LocationNumberCapImpl locationNumber,
             OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions,
-            HighLayerCompatibilityInapImpl highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
+            HighLayerCompatibilityInap highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
             BearerCapabilityImpl bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCapImpl redirectingPartyID,
-            RedirectionInformationInapImpl redirectionInformation, CauseCapImpl cause,
+            RedirectionInformationInap redirectionInformation, CauseCapImpl cause,
             ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, CarrierImpl carrier, CUGIndexImpl cugIndex,
             CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, IMSIImpl imsi, SubscriberStateImpl subscriberState,
             LocationInformationImpl locationInformation, ExtBasicServiceCodeImpl extBasicServiceCode,
@@ -274,7 +277,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public CallingPartysCategoryInapImpl getCallingPartysCategory() {
+    public CallingPartysCategoryInap getCallingPartysCategory() {
         return callingPartysCategory;
     }
 
@@ -307,7 +310,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public HighLayerCompatibilityInapImpl getHighLayerCompatibility() {
+    public HighLayerCompatibilityInap getHighLayerCompatibility() {
         return highLayerCompatibility;
     }
 
@@ -341,7 +344,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public RedirectionInformationInapImpl getRedirectionInformation() {
+    public RedirectionInformationInap getRedirectionInformation() {
         return redirectionInformation;
     }
 

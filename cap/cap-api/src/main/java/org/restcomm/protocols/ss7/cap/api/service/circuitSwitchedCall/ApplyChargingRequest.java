@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 
 /**
  * <p>
@@ -64,7 +64,7 @@ public interface ApplyChargingRequest extends CircuitSwitchedCallMessage {
 
     CAMELAChBillingChargingCharacteristicsImpl getAChBillingChargingCharacteristics();
 
-    SendingLegIDImpl getPartyToCharge();
+    LegType getPartyToCharge();
 
     CAPExtensionsImpl getExtensions();
 

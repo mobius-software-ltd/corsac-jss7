@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.primitives;
+package org.restcomm.protocols.ss7.inap.primitives;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -31,17 +31,17 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class ReceivingLegIDWrapperImpl {
-	private ReceivingLegIDImpl receivingLegID;
+public class SendingLegIDWrapperImpl {
+	private SendingLegIDImpl sendingLegID;
 
-    public ReceivingLegIDWrapperImpl() {
+    public SendingLegIDWrapperImpl() {
     }
 
-    public ReceivingLegIDWrapperImpl(ReceivingLegIDImpl receivingLegID) {
-        this.receivingLegID = receivingLegID;
+    public SendingLegIDWrapperImpl(SendingLegIDImpl sendingLegID) {
+        this.sendingLegID = sendingLegID;
     }
 
-    public ReceivingLegIDImpl getReceivingLegID() {
-    	return receivingLegID;
+    public SendingLegIDImpl getSendingLegID() {
+    	return sendingLegID;
     }
 }

@@ -24,8 +24,9 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive
 
 import org.restcomm.protocols.ss7.cap.api.primitives.ASNAppendFreeFormatDataImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -50,11 +51,11 @@ public class FCIBCCCAMELSequence1Impl {
     public FCIBCCCAMELSequence1Impl() {
     }
 
-    public FCIBCCCAMELSequence1Impl(FreeFormatDataImpl freeFormatData, SendingLegIDImpl partyToCharge, AppendFreeFormatData appendFreeFormatData) {
+    public FCIBCCCAMELSequence1Impl(FreeFormatDataImpl freeFormatData, LegType partyToCharge, AppendFreeFormatData appendFreeFormatData) {
         this.freeFormatData = freeFormatData;
         
         if(partyToCharge!=null)
-        	this.partyToCharge = new SendingLegIDWrapperImpl(partyToCharge);
+        	this.partyToCharge = new SendingLegIDWrapperImpl(new SendingLegIDImpl(partyToCharge));
         
         if(appendFreeFormatData!=null) {
         	this.appendFreeFormatData = new ASNAppendFreeFormatDataImpl();
@@ -66,11 +67,11 @@ public class FCIBCCCAMELSequence1Impl {
         return freeFormatData;
     }
 
-    public SendingLegIDImpl getPartyToCharge() {
-    	if(partyToCharge==null)
+    public LegType getPartyToCharge() {
+    	if(partyToCharge==null || partyToCharge.getSendingLegID()==null)
     		return null;
     	
-        return partyToCharge.getSendingLegID();
+        return partyToCharge.getSendingLegID().getSendingSideID();
     }
 
     public AppendFreeFormatData getAppendFreeFormatData() {
@@ -91,9 +92,9 @@ public class FCIBCCCAMELSequence1Impl {
             sb.append(this.freeFormatData.toString());
             sb.append(", ");
         }
-        if (this.partyToCharge != null) {
+        if (this.partyToCharge != null && partyToCharge.getSendingLegID()!=null) {
             sb.append(", partyToCharge=");
-            sb.append(partyToCharge.toString());
+            sb.append(partyToCharge.getSendingLegID().toString());
         }
         if (this.appendFreeFormatData != null && this.appendFreeFormatData.getType()!=null) {
             sb.append(", appendFreeFormatData=");

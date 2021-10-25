@@ -20,12 +20,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.isup;
+package org.restcomm.protocols.ss7.inap.isup;
 
 import org.restcomm.protocols.ss7.inap.api.INAPException;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInformationImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
+import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -38,46 +39,45 @@ import io.netty.buffer.ByteBuf;
 
 /**
  *
- *
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x17,constructed=false,lengthIndefinite=false)
-public class HighLayerCompatibilityInapImpl {
-	private UserTeleserviceInformationImpl teleserviceInformation;
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x1E,constructed=false,lengthIndefinite=false)
+public class RedirectionInformationInapImpl implements RedirectionInformationInap {
+	private RedirectionInformationImpl redirectionInformation;
 
-    public HighLayerCompatibilityInapImpl() {
+    public RedirectionInformationInapImpl() {
     }
 
-    public HighLayerCompatibilityInapImpl(UserTeleserviceInformation highLayerCompatibility) throws INAPException {
-        setHighLayerCompatibility(highLayerCompatibility);
+    public RedirectionInformationInapImpl(RedirectionInformation redirectionInformation) throws INAPException {
+        setRedirectionInformation(redirectionInformation);
     }
 
-    public void setHighLayerCompatibility(UserTeleserviceInformation highLayerCompatibility) throws INAPException {
-        if (highLayerCompatibility == null)
-            throw new INAPException("The callingPartyCategory parameter must not be null");
+    public void setRedirectionInformation(RedirectionInformation redirectionInformation) throws INAPException {
+        if (redirectionInformation == null)
+            throw new INAPException("The redirectionInformation parameter must not be null");
         
-        this.teleserviceInformation = (UserTeleserviceInformationImpl) highLayerCompatibility;
+        this.redirectionInformation = (RedirectionInformationImpl) redirectionInformation;
     }
 
-    public UserTeleserviceInformation getHighLayerCompatibility() throws INAPException {
-        return teleserviceInformation;
+    public RedirectionInformation getRedirectionInformation() throws INAPException {
+        return redirectionInformation;
     }
     
     @ASNLength
-    public Integer getLength(ASNParser parser) {
+	public Integer getLength(ASNParser parser) {
 		return 2;
 	}
 	
 	@ASNEncode
 	public void encode(ASNParser parser, ByteBuf buffer) {
-		this.teleserviceInformation.encode(buffer);
+		this.redirectionInformation.encode(buffer);
 	}
 	
 	@ASNDecode
 	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		try {
-			this.teleserviceInformation=new UserTeleserviceInformationImpl(buffer);
+			this.redirectionInformation=new RedirectionInformationImpl(buffer);
 		} catch (ParameterException e) {
 			e.printStackTrace();
 		}
@@ -88,12 +88,12 @@ public class HighLayerCompatibilityInapImpl {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("HighLayerCompatibilityInap [");
+        sb.append("RedirectionInformationInap [");
 
         try {
-            UserTeleserviceInformation cpc = this.getHighLayerCompatibility();
+            RedirectionInformation ri = this.getRedirectionInformation();
             sb.append(", ");
-            sb.append(cpc.toString());
+            sb.append(ri.toString());
         } catch (INAPException e) {
         }
 

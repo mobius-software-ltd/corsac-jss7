@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 
 /**
  *
@@ -54,7 +54,7 @@ CallSegmentID {PARAMETERS-BOUND : bound} ::= INTEGER (1..127)
  */
 public interface SplitLegRequest extends CircuitSwitchedCallMessage {
 
-    LegIDImpl getLegToBeSplit();
+    LegID getLegToBeSplit();
 
     Integer getNewCallSegment();
 

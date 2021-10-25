@@ -60,8 +60,8 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.Specialize
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
@@ -117,8 +117,8 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
         this.cc.step = Step.initialDPSent;
     }
 
-    public void sendEventReportBCSM_OAnswer(OAnswerSpecificInfoImpl oAnswerSpecificInfo, ReceivingLegIDImpl legID,
-            MiscCallInfoImpl miscCallInfo) throws CAPException {
+    public void sendEventReportBCSM_OAnswer(OAnswerSpecificInfoImpl oAnswerSpecificInfo, LegType legID,
+            MiscCallInfo miscCallInfo) throws CAPException {
         if (currentCapDialog != null && this.cc != null) {
             EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = this.capProvider.getCAPParameterFactory()
                     .createEventSpecificInformationBCSM(oAnswerSpecificInfo);
@@ -129,8 +129,8 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
         }
     }
 
-    public void sendEventReportBCSM_ODisconnect(ODisconnectSpecificInfoImpl oDisconnectSpecificInfo, ReceivingLegIDImpl legID,
-            MiscCallInfoImpl miscCallInfo) throws CAPException {
+    public void sendEventReportBCSM_ODisconnect(ODisconnectSpecificInfoImpl oDisconnectSpecificInfo, LegType legID,
+            MiscCallInfo miscCallInfo) throws CAPException {
         if (currentCapDialog != null && this.cc != null) {
             EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = this.capProvider.getCAPParameterFactory()
                     .createEventSpecificInformationBCSM(oDisconnectSpecificInfo);

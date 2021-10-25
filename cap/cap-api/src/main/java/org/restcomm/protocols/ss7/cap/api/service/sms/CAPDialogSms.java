@@ -40,7 +40,7 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSche
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifierImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
@@ -62,11 +62,11 @@ public interface CAPDialogSms extends CAPDialog {
     Long addConnectSMSRequest(int customInvokeTimeout, SMSAddressStringImpl callingPartysNumber, CalledPartyBCDNumberImpl destinationSubscriberNumber,
             ISDNAddressStringImpl smscAddress, CAPExtensionsImpl extensions) throws CAPException;
 
-    Long addEventReportSMSRequest(EventTypeSMS eventTypeSMS, EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfoImpl miscCallInfo,
+    Long addEventReportSMSRequest(EventTypeSMS eventTypeSMS, EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfo miscCallInfo,
             CAPExtensionsImpl extensions) throws CAPException;
 
     Long addEventReportSMSRequest(int customInvokeTimeout, EventTypeSMS eventTypeSMS, EventSpecificInformationSMSImpl eventSpecificInformationSMS,
-            MiscCallInfoImpl miscCallInfo, CAPExtensionsImpl extensions) throws CAPException;
+            MiscCallInfo miscCallInfo, CAPExtensionsImpl extensions) throws CAPException;
 
     Long addFurnishChargingInformationSMSRequest(FCIBCCCAMELSequence1SMSImpl fciBCCCAMELsequence1) throws CAPException;
 

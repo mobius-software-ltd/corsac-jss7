@@ -26,8 +26,8 @@ import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.MoveLegRequest;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -51,7 +51,7 @@ public class MoveLegRequestImpl extends CircuitSwitchedCallMessageImpl implement
     public MoveLegRequestImpl() {
     }
 
-    public MoveLegRequestImpl(LegIDImpl legIDToMove, CAPExtensionsImpl extensions) {
+    public MoveLegRequestImpl(LegID legIDToMove, CAPExtensionsImpl extensions) {
     	
     	if(legIDToMove!=null)
     		this.legIDToMove = new LegIDWrapperImpl(legIDToMove);
@@ -68,7 +68,7 @@ public class MoveLegRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public LegIDImpl getLegIDToMove() {
+    public LegID getLegIDToMove() {
     	if(legIDToMove==null)
     		return null;
     	

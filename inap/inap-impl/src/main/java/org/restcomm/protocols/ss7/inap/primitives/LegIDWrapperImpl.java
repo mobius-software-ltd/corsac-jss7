@@ -20,9 +20,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.primitives;
+package org.restcomm.protocols.ss7.inap.primitives;
+
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -31,17 +34,23 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class SendingLegIDWrapperImpl {
-	private SendingLegIDImpl sendingLegID;
+public class LegIDWrapperImpl {
+	@ASNChoise
+	private LegIDImpl legID;
 
-    public SendingLegIDWrapperImpl() {
+    public LegIDWrapperImpl() {
     }
 
-    public SendingLegIDWrapperImpl(SendingLegIDImpl sendingLegID) {
-        this.sendingLegID = sendingLegID;
+    public LegIDWrapperImpl(LegID legID) {
+    	if(legID==null)
+    		this.legID=null;
+    	else if(legID instanceof LegIDImpl)
+    		this.legID=(LegIDImpl)legID;
+    	else
+    		this.legID = new LegIDImpl(legID.getReceivingSideID(), legID.getSendingSideID());    	
     }
 
-    public SendingLegIDImpl getSendingLegID() {
-    	return sendingLegID;
+    public LegIDImpl getLegID() {
+    	return legID;
     }
 }

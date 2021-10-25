@@ -33,7 +33,6 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -73,7 +72,7 @@ public class CallInformationRequestRequestTest {
         assertEquals(elem.getRequestedInformationTypeList().get(0), RequestedInformationType.callStopTime);
         assertEquals(elem.getRequestedInformationTypeList().get(1), RequestedInformationType.callConnectedElapsedTime);
         assertEquals(elem.getRequestedInformationTypeList().get(2), RequestedInformationType.releaseCause);
-        assertEquals(elem.getLegID().getSendingSideID(), LegType.leg2);
+        assertEquals(elem.getLegID(), LegType.leg2);
         assertNull(elem.getExtensions());
 
         rawData = this.getData2();
@@ -86,7 +85,7 @@ public class CallInformationRequestRequestTest {
         assertEquals(elem.getRequestedInformationTypeList().get(0), RequestedInformationType.callStopTime);
         assertEquals(elem.getRequestedInformationTypeList().get(1), RequestedInformationType.callConnectedElapsedTime);
         assertEquals(elem.getRequestedInformationTypeList().get(2), RequestedInformationType.releaseCause);
-        assertEquals(elem.getLegID().getSendingSideID(), LegType.leg2);
+        assertEquals(elem.getLegID(), LegType.leg2);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
     }
 
@@ -99,10 +98,8 @@ public class CallInformationRequestRequestTest {
         requestedInformationTypeList.add(RequestedInformationType.callStopTime);
         requestedInformationTypeList.add(RequestedInformationType.callConnectedElapsedTime);
         requestedInformationTypeList.add(RequestedInformationType.releaseCause);
-        SendingLegIDImpl legID = new SendingLegIDImpl(LegType.leg2);
-
         CallInformationRequestRequestImpl elem = new CallInformationRequestRequestImpl(requestedInformationTypeList, null,
-                legID);
+        		LegType.leg2);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -111,7 +108,7 @@ public class CallInformationRequestRequestTest {
         // ArrayList<RequestedInformationType> requestedInformationTypeList, CAPExtensions extensions, SendingSideID legID
 
         elem = new CallInformationRequestRequestImpl(requestedInformationTypeList, CAPExtensionsTest.createTestCAPExtensions(),
-                legID);
+        		LegType.leg2);
         rawData = this.getData2();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

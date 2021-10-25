@@ -34,7 +34,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformationImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -77,7 +76,7 @@ public class TimeDurationChargingResultTest {
         assertTrue(result.getResult() instanceof TimeDurationChargingResultImpl);
         
         TimeDurationChargingResultImpl elem = (TimeDurationChargingResultImpl)result.getResult();         
-        assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg1);
+        assertEquals(elem.getPartyToCharge(), LegType.leg1);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 26);
         assertFalse(elem.getLegActive());
         assertFalse(elem.getCallLegReleasedAtTcpExpiry());
@@ -91,7 +90,7 @@ public class TimeDurationChargingResultTest {
         assertTrue(result.getResult() instanceof TimeDurationChargingResultImpl);
         
         elem = (TimeDurationChargingResultImpl)result.getResult(); 
-        assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg2);
+        assertEquals(elem.getPartyToCharge(), LegType.leg2);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 55);
         assertTrue(elem.getLegActive());
         assertTrue(elem.getCallLegReleasedAtTcpExpiry());
@@ -105,7 +104,7 @@ public class TimeDurationChargingResultTest {
         assertTrue(result.getResult() instanceof TimeDurationChargingResultImpl);
         
         elem = (TimeDurationChargingResultImpl)result.getResult(); 
-        assertEquals(elem.getPartyToCharge().getReceivingSideID(), LegType.leg2);
+        assertEquals(elem.getPartyToCharge(), LegType.leg2);
         assertEquals((int) elem.getTimeInformation().getTimeIfNoTariffSwitch(), 55);
         assertFalse(elem.getLegActive());
         assertFalse(elem.getCallLegReleasedAtTcpExpiry());
@@ -118,9 +117,8 @@ public class TimeDurationChargingResultTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(TimeDurationChargingResultImpl.class);
     	
-        ReceivingLegIDImpl partyToCharge = new ReceivingLegIDImpl(LegType.leg1);
         TimeInformationImpl ti = new TimeInformationImpl(26);
-        TimeDurationChargingResultImpl elem = new TimeDurationChargingResultImpl(partyToCharge, ti, false, false, null, null);
+        TimeDurationChargingResultImpl elem = new TimeDurationChargingResultImpl(LegType.leg1, ti, false, false, null, null);
         // ReceivingSideID partyToCharge, TimeInformation timeInformation,
         // boolean legActive,
         // boolean callLegReleasedAtTcpExpiry, CAPExtensions extensions,
@@ -132,9 +130,8 @@ public class TimeDurationChargingResultTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        partyToCharge = new ReceivingLegIDImpl(LegType.leg2);
         ti = new TimeInformationImpl(55);
-        elem = new TimeDurationChargingResultImpl(partyToCharge, ti, true, true, CAPExtensionsTest.createTestCAPExtensions(),
+        elem = new TimeDurationChargingResultImpl(LegType.leg2, ti, true, true, CAPExtensionsTest.createTestCAPExtensions(),
                 null);
         // ReceivingSideID partyToCharge, TimeInformation timeInformation,
         // boolean legActive,
@@ -147,7 +144,7 @@ public class TimeDurationChargingResultTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         AChChargingAddressImpl aChChargingAddress = new AChChargingAddressImpl(13);
-        elem = new TimeDurationChargingResultImpl(partyToCharge, ti, false, false, null, aChChargingAddress);
+        elem = new TimeDurationChargingResultImpl(LegType.leg2, ti, false, false, null, aChChargingAddress);
         rawData = this.getData3();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

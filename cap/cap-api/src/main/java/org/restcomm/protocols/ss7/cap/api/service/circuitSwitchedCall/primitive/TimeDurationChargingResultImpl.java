@@ -25,8 +25,9 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -63,10 +64,10 @@ public class TimeDurationChargingResultImpl {
     public TimeDurationChargingResultImpl() {
     }
 
-    public TimeDurationChargingResultImpl(ReceivingLegIDImpl partyToCharge, TimeInformationImpl timeInformation, boolean legActive,
+    public TimeDurationChargingResultImpl(LegType partyToCharge, TimeInformationImpl timeInformation, boolean legActive,
             boolean callLegReleasedAtTcpExpiry, CAPExtensionsImpl extensions, AChChargingAddressImpl aChChargingAddress) {
         if(partyToCharge!=null)
-        	this.partyToCharge = new ReceivingLegIDWrapperImpl(partyToCharge);
+        	this.partyToCharge = new ReceivingLegIDWrapperImpl(new ReceivingLegIDImpl(partyToCharge));
         
         if(timeInformation!=null)
         	this.timeInformation = new TimeInformationWrapperImpl(timeInformation);
@@ -85,11 +86,11 @@ public class TimeDurationChargingResultImpl {
         	this.aChChargingAddress = new AChChargingAddressWrapperImpl(aChChargingAddress);
     }
 
-    public ReceivingLegIDImpl getPartyToCharge() {
-    	if(partyToCharge==null)
+    public LegType getPartyToCharge() {
+    	if(partyToCharge==null || partyToCharge.getReceivingLegID()==null)
     		return null;
     	
-        return partyToCharge.getReceivingLegID();
+        return partyToCharge.getReceivingLegID().getReceivingSideID();
     }
 
     public TimeInformationImpl getTimeInformation() {

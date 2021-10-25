@@ -39,8 +39,8 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
+import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;

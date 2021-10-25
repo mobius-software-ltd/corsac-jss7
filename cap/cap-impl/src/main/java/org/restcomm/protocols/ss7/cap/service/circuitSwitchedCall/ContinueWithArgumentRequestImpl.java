@@ -36,7 +36,8 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
+import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -63,8 +64,8 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1)
     private ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1)
-    private CallingPartysCategoryInapImpl callingPartysCategory;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1,defaultImplementation = CallingPartysCategoryInapImpl.class)
+    private CallingPartysCategoryInap callingPartysCategory;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = true,index = -1)
     private GenericNumberCapWrapperImpl genericNumbers;
@@ -101,7 +102,7 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
 
     public ContinueWithArgumentRequestImpl(AlertingPatternCapImpl alertingPattern, CAPExtensionsImpl extensions,
             ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
-            CallingPartysCategoryInapImpl callingPartysCategory, List<GenericNumberCapImpl> genericNumbers,
+            CallingPartysCategoryInap callingPartysCategory, List<GenericNumberCapImpl> genericNumbers,
             CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, LocationNumberCapImpl chargeNumber, CarrierImpl carrier,
             boolean suppressionOfAnnouncement, NAOliInfoImpl naOliInfo, boolean borInterrogationRequested,
             boolean suppressOCsi, ContinueWithArgumentArgExtensionImpl continueWithArgumentArgExtension) {
@@ -234,7 +235,7 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     }
 
     @Override
-    public CallingPartysCategoryInapImpl getCallingPartysCategory() {
+    public CallingPartysCategoryInap getCallingPartysCategory() {
         return this.callingPartysCategory;
     }
 

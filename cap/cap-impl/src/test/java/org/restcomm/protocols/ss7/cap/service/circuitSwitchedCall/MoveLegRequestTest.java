@@ -29,9 +29,8 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -64,7 +63,7 @@ public class MoveLegRequestTest {
         assertTrue(result.getResult() instanceof MoveLegRequestImpl);
         
         MoveLegRequestImpl elem = (MoveLegRequestImpl)result.getResult();        
-        assertEquals(elem.getLegIDToMove().getReceivingLegID().getReceivingSideID(), LegType.leg6);
+        assertEquals(elem.getLegIDToMove().getReceivingSideID(), LegType.leg6);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
     }
 
@@ -73,7 +72,7 @@ public class MoveLegRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(MoveLegRequestImpl.class);
     	
-        LegIDImpl legIDToMove = new LegIDImpl(new ReceivingLegIDImpl(LegType.leg6),null);
+        LegIDImpl legIDToMove = new LegIDImpl(LegType.leg6,null);
         MoveLegRequestImpl elem = new MoveLegRequestImpl(legIDToMove, CAPExtensionsTest.createTestCAPExtensions());
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);

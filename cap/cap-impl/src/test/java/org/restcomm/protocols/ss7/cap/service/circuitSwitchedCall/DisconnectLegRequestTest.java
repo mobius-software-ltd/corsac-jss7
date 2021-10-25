@@ -30,9 +30,8 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
@@ -67,7 +66,7 @@ public class DisconnectLegRequestTest {
         assertTrue(result.getResult() instanceof DisconnectLegRequestImpl);
         
         DisconnectLegRequestImpl elem = (DisconnectLegRequestImpl)result.getResult();        
-        assertEquals(elem.getLegToBeReleased().getReceivingLegID().getReceivingSideID(), LegType.leg6);
+        assertEquals(elem.getLegToBeReleased().getReceivingSideID(), LegType.leg6);
         CauseIndicators ci = elem.getReleaseCause().getCauseIndicators();
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getCauseValue(), 6);
@@ -79,7 +78,7 @@ public class DisconnectLegRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(DisconnectLegRequestImpl.class);
     	
-        LegIDImpl legToBeReleased = new LegIDImpl(new ReceivingLegIDImpl(LegType.leg6),null);
+        LegIDImpl legToBeReleased = new LegIDImpl(LegType.leg6,null);
         CauseIndicatorsImpl causeIndicators = new CauseIndicatorsImpl(0, 0, 0, 6, null);
         CauseCapImpl releaseCause = new CauseCapImpl(causeIndicators);
         DisconnectLegRequestImpl elem = new DisconnectLegRequestImpl(legToBeReleased, releaseCause, CAPExtensionsTest.createTestCAPExtensions());

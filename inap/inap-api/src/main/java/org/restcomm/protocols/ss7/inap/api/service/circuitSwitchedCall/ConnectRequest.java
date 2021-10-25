@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.inap.api.isup.BackwardGVNSInap;
 import org.restcomm.protocols.ss7.inap.api.isup.CallingPartyNumberInap;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
 import org.restcomm.protocols.ss7.inap.api.isup.Digits;
 import org.restcomm.protocols.ss7.inap.api.isup.ForwardCallIndicatorsInap;
 import org.restcomm.protocols.ss7.inap.api.isup.ForwardGVNSInap;
@@ -32,10 +32,10 @@ import org.restcomm.protocols.ss7.inap.api.isup.ISDNAccessRelatedInformationInap
 import org.restcomm.protocols.ss7.inap.api.isup.LocationNumberInap;
 import org.restcomm.protocols.ss7.inap.api.isup.OriginalCalledPartyIDInap;
 import org.restcomm.protocols.ss7.inap.api.isup.RedirectingPartyIDInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
 import org.restcomm.protocols.ss7.inap.api.primitives.BearerCapability;
 import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DisplayInformation;
@@ -170,11 +170,11 @@ public interface ConnectRequest {
 
     CallingPartyNumberInap getCallingPartyNumber();
 
-    CallingPartysCategoryInapImpl getCallingPartysCategory();
+    CallingPartysCategoryInap getCallingPartysCategory();
 
     RedirectingPartyIDInap getRedirectingPartyID();
 
-    RedirectionInformationInapImpl getRedirectionInformation();
+    RedirectionInformationInap getRedirectionInformation();
 
     DisplayInformation getDisplayInformation();
 
@@ -192,7 +192,7 @@ public interface ConnectRequest {
 
     Integer getCallSegmentID();
 
-    SendingLegIDImpl getLegToBeCreated();
+    LegType getLegToBeCreated();
 
     LocationNumberInap getLocationNumber();
 

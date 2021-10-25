@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive
 
 import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
 import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
+import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
@@ -80,8 +81,8 @@ public class InitialDPArgExtensionImpl {
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1)
     private ExtBasicServiceCodeWrapperImpl extBasicServiceCode2;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1)
-    private HighLayerCompatibilityInapImpl highLayerCompatibility2;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1, defaultImplementation = HighLayerCompatibilityInapImpl.class)
+    private HighLayerCompatibilityInap highLayerCompatibility2;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false,index = -1)
     private LowLayerCompatibilityImpl lowLayerCompatibility;
@@ -115,7 +116,7 @@ public class InitialDPArgExtensionImpl {
     public InitialDPArgExtensionImpl(ISDNAddressStringImpl gmscAddress, CalledPartyNumberCapImpl forwardingDestinationNumber,
             MSClassmark2Impl msClassmark2, IMEIImpl imei, SupportedCamelPhasesImpl supportedCamelPhases,
             OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities, BearerCapabilityImpl bearerCapability2,
-            ExtBasicServiceCodeImpl extBasicServiceCode2, HighLayerCompatibilityInapImpl highLayerCompatibility2,
+            ExtBasicServiceCodeImpl extBasicServiceCode2, HighLayerCompatibilityInap highLayerCompatibility2,
             LowLayerCompatibilityImpl lowLayerCompatibility, LowLayerCompatibilityImpl lowLayerCompatibility2,
             boolean enhancedDialledServicesAllowed, UUDataImpl uuData, boolean collectInformationAllowed,
             boolean releaseCallArgExtensionAllowed) {
@@ -208,7 +209,7 @@ public class InitialDPArgExtensionImpl {
         return extBasicServiceCode2.getExtBasicServiceCode();
     }
 
-    public HighLayerCompatibilityInapImpl getHighLayerCompatibility2() {
+    public HighLayerCompatibilityInap getHighLayerCompatibility2() {
         return highLayerCompatibility2;
     }
 

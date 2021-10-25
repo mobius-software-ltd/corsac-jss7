@@ -35,8 +35,8 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInf
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
+import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

@@ -29,7 +29,8 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecif
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationWrapperImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -47,8 +48,8 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
     private ASNGPRSEventTypeImpl gprsEventType;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
-    private MiscCallInfoImpl miscGPRSInfo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1, defaultImplementation = MiscCallInfoImpl.class)
+    private MiscCallInfo miscGPRSInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
     private GPRSEventSpecificInformationWrapperImpl gprsEventSpecificInformation;
@@ -59,7 +60,7 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
     public EventReportGPRSRequestImpl() {
     }
 
-    public EventReportGPRSRequestImpl(GPRSEventType gprsEventType, MiscCallInfoImpl miscGPRSInfo,
+    public EventReportGPRSRequestImpl(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
             GPRSEventSpecificInformationImpl gprsEventSpecificInformation, PDPIDImpl pdpID) {
         super();
         
@@ -85,7 +86,7 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
     }
 
     @Override
-    public MiscCallInfoImpl getMiscGPRSInfo() {
+    public MiscCallInfo getMiscGPRSInfo() {
         return this.miscGPRSInfo;
     }
 

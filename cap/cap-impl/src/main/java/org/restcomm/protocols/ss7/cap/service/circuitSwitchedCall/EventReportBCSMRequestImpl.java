@@ -30,9 +30,11 @@ import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.EventReportBCSMRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMWrapperImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -57,8 +59,8 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
     private ReceivingLegIDWrapperImpl legID;
 
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
-    private MiscCallInfoImpl miscCallInfo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1, defaultImplementation = MiscCallInfoImpl.class)
+    private MiscCallInfo miscCallInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
     private CAPExtensionsImpl extensions;
@@ -67,7 +69,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     }
 
     public EventReportBCSMRequestImpl(EventTypeBCSM eventTypeBCSM, EventSpecificInformationBCSMImpl eventSpecificInformationBCSM,
-            ReceivingLegIDImpl legID, MiscCallInfoImpl miscCallInfo, CAPExtensionsImpl extensions) {
+            LegType legID, MiscCallInfo miscCallInfo, CAPExtensionsImpl extensions) {
     	
     	if(eventTypeBCSM!=null) {
     		this.eventTypeBCSM = new ASNEventTypeBCSMImpl();
@@ -78,7 +80,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
         	this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMWrapperImpl(eventSpecificInformationBCSM);
         
         if(legID!=null)
-        	this.legID = new ReceivingLegIDWrapperImpl(legID);
+        	this.legID = new ReceivingLegIDWrapperImpl(new ReceivingLegIDImpl(legID));
         
         this.miscCallInfo = miscCallInfo;
         this.extensions = extensions;
@@ -111,15 +113,15 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     }
 
     @Override
-    public ReceivingLegIDImpl getLegID() {
-    	if(legID==null)
+    public LegType getLegID() {
+    	if(legID==null || legID.getReceivingLegID()==null)
     		return null;
     	
-        return legID.getReceivingLegID();
+        return legID.getReceivingLegID().getReceivingSideID();
     }
 
     @Override
-    public MiscCallInfoImpl getMiscCallInfo() {
+    public MiscCallInfo getMiscCallInfo() {
         return miscCallInfo;
     }
 

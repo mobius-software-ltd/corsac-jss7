@@ -30,8 +30,9 @@ import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallInformationReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationWrapperImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -59,7 +60,7 @@ public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessage
     }
 
     public CallInformationReportRequestImpl(List<RequestedInformationImpl> requestedInformationList, CAPExtensionsImpl extensions,
-            ReceivingLegIDImpl legID) {
+            LegType legID) {
     	
     	if(requestedInformationList!=null)
     		this.requestedInformationList = new RequestedInformationWrapperImpl(requestedInformationList);
@@ -67,7 +68,7 @@ public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessage
         this.extensions = extensions;
         
         if(legID!=null)
-        	this.legID = new ReceivingLegIDWrapperImpl(legID);
+        	this.legID = new ReceivingLegIDWrapperImpl(new ReceivingLegIDImpl(legID));
     }
 
     @Override
@@ -94,11 +95,11 @@ public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessage
     }
 
     @Override
-    public ReceivingLegIDImpl getLegID() {
-    	if(legID==null)
+    public LegType getLegID() {
+    	if(legID==null || legID.getReceivingLegID()==null)
     		return null;
     	
-        return legID.getReceivingLegID();
+        return legID.getReceivingLegID().getReceivingSideID();
     }
 
     @Override

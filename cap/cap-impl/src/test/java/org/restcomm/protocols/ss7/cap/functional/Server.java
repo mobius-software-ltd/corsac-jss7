@@ -45,9 +45,8 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.RequestReportBCSMEventRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.RequestReportGPRSEventRequestImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -115,11 +114,11 @@ public class Server extends EventTestHarness {
         bcsmEventList.add(ev);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oAnswer, MonitorMode.notifyAndContinue, null, null, false);
         bcsmEventList.add(ev);
-        LegIDImpl legId = this.inapParameterFactory.createLegID(null,new SendingLegIDImpl(LegType.leg1));
+        LegID legId = this.inapParameterFactory.createLegID(null,LegType.leg1);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oDisconnect, MonitorMode.notifyAndContinue, legId, null,
                 false);
         bcsmEventList.add(ev);
-        legId = this.inapParameterFactory.createLegID(null, new SendingLegIDImpl(LegType.leg2));
+        legId = this.inapParameterFactory.createLegID(null, LegType.leg2);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oDisconnect, MonitorMode.interrupted, legId, null, false);
         bcsmEventList.add(ev);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oAbandon, MonitorMode.notifyAndContinue, null, null, false);

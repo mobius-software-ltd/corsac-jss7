@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LowLayerCompatibilityImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInformationImpl;

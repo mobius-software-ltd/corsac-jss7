@@ -22,15 +22,17 @@
 
 package org.restcomm.protocols.ss7.cap.primitives;
 
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
+import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -65,7 +67,7 @@ public class AChChargingAddressTest {
         assertTrue(result.getResult() instanceof AChChargingAddressImpl);
         
         AChChargingAddressImpl elem = (AChChargingAddressImpl)result.getResult();
-        assertEquals(elem.getLegID().getReceivingLegID().getReceivingSideID(), LegType.leg2);
+        assertEquals(elem.getLegID().getReceivingSideID(), LegType.leg2);
         assertEquals(elem.getSrfConnection(), 0);
 
 
@@ -85,7 +87,7 @@ public class AChChargingAddressTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(AChChargingAddressImpl.class);
     	
-        LegIDImpl legID = new LegIDImpl(new ReceivingLegIDImpl(LegType.leg2), null);
+        LegIDImpl legID = new LegIDImpl(LegType.leg2, null);
         AChChargingAddressImpl elem = new AChChargingAddressImpl(legID);
 
         byte[] rawData = this.getData1();

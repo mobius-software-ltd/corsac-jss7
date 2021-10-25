@@ -35,9 +35,8 @@ import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
@@ -109,7 +108,7 @@ public class InitiateCallAttemptRequestTest {
         assertEquals(cpn.getCalledPartyNumber().getAddress(), "2224444");
         assertEquals(cpn.getCalledPartyNumber().getNatureOfAddressIndicator(), 1);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
-        assertEquals(elem.getLegToBeCreated().getReceivingLegID().getReceivingSideID(), LegType.leg6);
+        assertEquals(elem.getLegToBeCreated().getReceivingSideID(), LegType.leg6);
         assertEquals((int) elem.getNewCallSegment(), 15);
         assertEquals(elem.getCallingPartyNumber().getCallingPartyNumber().getAddress(), "01267");
         assertEquals(elem.getCallingPartyNumber().getCallingPartyNumber().getNatureOfAddressIndicator(), 2);
@@ -142,7 +141,7 @@ public class InitiateCallAttemptRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        LegIDImpl legToBeCreated = new LegIDImpl(new ReceivingLegIDImpl(LegType.leg6),null);
+        LegIDImpl legToBeCreated = new LegIDImpl(LegType.leg6,null);
         CallingPartyNumberImpl cpn2 = new CallingPartyNumberImpl(2, "01267", 0, 0, 0, 1);
 //        int natureOfAddresIndicator, String address, int numberingPlanIndicator,
 //        int numberIncompleteIndicator, int addressRepresentationREstrictedIndicator, int screeningIndicator

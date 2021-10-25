@@ -23,8 +23,9 @@ import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -52,7 +53,7 @@ public class SplitLegRequestImpl extends CircuitSwitchedCallMessageImpl implemen
     public SplitLegRequestImpl() {
     }
 
-    public SplitLegRequestImpl(LegIDImpl legIDToMove, Integer newCallSegment, CAPExtensionsImpl extensions) {
+    public SplitLegRequestImpl(LegID legIDToMove, Integer newCallSegment, CAPExtensionsImpl extensions) {
     	if(legIDToMove!=null)
     		this.legToBeSplit =  new LegIDWrapperImpl(legIDToMove);
     	

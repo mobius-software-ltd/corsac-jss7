@@ -32,7 +32,6 @@ import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -69,7 +68,7 @@ public class FurnishChargingInformationTest {
         
         FurnishChargingInformationRequestImpl elem = (FurnishChargingInformationRequestImpl)result.getResult();        
         assertTrue(Arrays.equals(elem.getFCIBCCCAMELsequence1().getFreeFormatData().getData(), this.getDataFFD()));
-        assertEquals(elem.getFCIBCCCAMELsequence1().getPartyToCharge().getSendingSideID(), LegType.leg2);
+        assertEquals(elem.getFCIBCCCAMELsequence1().getPartyToCharge(), LegType.leg2);
         assertEquals(elem.getFCIBCCCAMELsequence1().getAppendFreeFormatData(), AppendFreeFormatData.append);
     }
 
@@ -78,9 +77,8 @@ public class FurnishChargingInformationTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FurnishChargingInformationRequestImpl.class);
     	
-        SendingLegIDImpl partyToCharge = new SendingLegIDImpl(LegType.leg2);
         FreeFormatDataImpl ffd = new FreeFormatDataImpl(getDataFFD());
-        FCIBCCCAMELSequence1Impl fci = new FCIBCCCAMELSequence1Impl(ffd, partyToCharge, AppendFreeFormatData.append);
+        FCIBCCCAMELSequence1Impl fci = new FCIBCCCAMELSequence1Impl(ffd, LegType.leg2, AppendFreeFormatData.append);
         FurnishChargingInformationRequestImpl elem = new FurnishChargingInformationRequestImpl(fci);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);

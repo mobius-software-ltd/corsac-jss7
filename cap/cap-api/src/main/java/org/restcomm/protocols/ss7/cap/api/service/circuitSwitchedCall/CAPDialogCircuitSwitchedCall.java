@@ -66,13 +66,12 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
+import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
@@ -93,12 +92,12 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
 
     Long addInitialDPRequest(int serviceKey, CalledPartyNumberCapImpl calledPartyNumber,
-            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInapImpl callingPartysCategory,
+            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
             CGEncountered CGEncountered, IPSSPCapabilitiesImpl IPSSPCapabilities, LocationNumberCapImpl locationNumber,
             OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions,
-            HighLayerCompatibilityInapImpl highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
+            HighLayerCompatibilityInap highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
             BearerCapabilityImpl bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCapImpl redirectingPartyID,
-            RedirectionInformationInapImpl redirectionInformation, CauseCapImpl cause,
+            RedirectionInformationInap redirectionInformation, CauseCapImpl cause,
             ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, CarrierImpl carrier, CUGIndexImpl cugIndex,
             CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, IMSIImpl imsi, SubscriberStateImpl subscriberState,
             LocationInformationImpl locationInformation, ExtBasicServiceCodeImpl extBasicServiceCode,
@@ -107,12 +106,12 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             throws CAPException;
 
     Long addInitialDPRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberCapImpl calledPartyNumber,
-            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInapImpl callingPartysCategory,
+            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
             CGEncountered CGEncountered, IPSSPCapabilitiesImpl IPSSPCapabilities, LocationNumberCapImpl locationNumber,
             OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions,
-            HighLayerCompatibilityInapImpl highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
+            HighLayerCompatibilityInap highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
             BearerCapabilityImpl bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCapImpl redirectingPartyID,
-            RedirectionInformationInapImpl redirectionInformation, CauseCapImpl cause,
+            RedirectionInformationInap redirectionInformation, CauseCapImpl cause,
             ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, CarrierImpl carrier, CUGIndexImpl cugIndex,
             CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, IMSIImpl imsi, SubscriberStateImpl subscriberState,
             LocationInformationImpl locationInformation, ExtBasicServiceCodeImpl extBasicServiceCode,
@@ -126,40 +125,40 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             throws CAPException;
 
     Long addApplyChargingRequest(CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics,
-            SendingLegIDImpl partyToCharge, CAPExtensionsImpl extensions, AChChargingAddressImpl aChChargingAddress) throws CAPException;
+            LegType partyToCharge, CAPExtensionsImpl extensions, AChChargingAddressImpl aChChargingAddress) throws CAPException;
 
     Long addApplyChargingRequest(int customInvokeTimeout,
-            CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics, SendingLegIDImpl partyToCharge,
+            CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics, LegType partyToCharge,
             CAPExtensionsImpl extensions, AChChargingAddressImpl aChChargingAddress) throws CAPException;
 
     Long addCallInformationReportRequest(List<RequestedInformationImpl> requestedInformationList,
-            CAPExtensionsImpl extensions, ReceivingLegIDImpl legID) throws CAPException;
+            CAPExtensionsImpl extensions, LegType legID) throws CAPException;
 
     Long addCallInformationReportRequest(int customInvokeTimeout,
-            List<RequestedInformationImpl> requestedInformationList, CAPExtensionsImpl extensions, ReceivingLegIDImpl legID)
+            List<RequestedInformationImpl> requestedInformationList, CAPExtensionsImpl extensions, LegType legID)
             throws CAPException;
 
     Long addCallInformationRequestRequest(List<RequestedInformationType> requestedInformationTypeList,
-            CAPExtensionsImpl extensions, SendingLegIDImpl legID) throws CAPException;
+            CAPExtensionsImpl extensions, LegType legID) throws CAPException;
 
     Long addCallInformationRequestRequest(int customInvokeTimeout,
-            List<RequestedInformationType> requestedInformationTypeList, CAPExtensionsImpl extensions, SendingLegIDImpl legID)
+            List<RequestedInformationType> requestedInformationTypeList, CAPExtensionsImpl extensions, LegType legID)
             throws CAPException;
 
     Long addConnectRequest(DestinationRoutingAddressImpl destinationRoutingAddress, AlertingPatternCapImpl alertingPattern,
             OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions, CarrierImpl carrier,
-            CallingPartysCategoryInapImpl callingPartysCategory, RedirectingPartyIDCapImpl redirectingPartyID,
-            RedirectionInformationInapImpl redirectionInformation, List<GenericNumberCapImpl> genericNumbers,
+            CallingPartysCategoryInap callingPartysCategory, RedirectingPartyIDCapImpl redirectingPartyID,
+            RedirectionInformationInap redirectionInformation, List<GenericNumberCapImpl> genericNumbers,
             ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, LocationNumberCapImpl chargeNumber,
-            LegIDImpl legToBeConnected, CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
+            LegID legToBeConnected, CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
             boolean ocsIApplicable, NAOliInfoImpl naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) throws CAPException;
 
     Long addConnectRequest(int customInvokeTimeout, DestinationRoutingAddressImpl destinationRoutingAddress,
             AlertingPatternCapImpl alertingPattern, OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions,
-            CarrierImpl carrier, CallingPartysCategoryInapImpl callingPartysCategory, RedirectingPartyIDCapImpl redirectingPartyID,
-            RedirectionInformationInapImpl redirectionInformation, List<GenericNumberCapImpl> genericNumbers,
+            CarrierImpl carrier, CallingPartysCategoryInap callingPartysCategory, RedirectingPartyIDCapImpl redirectingPartyID,
+            RedirectionInformationInap redirectionInformation, List<GenericNumberCapImpl> genericNumbers,
             ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, LocationNumberCapImpl chargeNumber,
-            LegIDImpl legToBeConnected, CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
+            LegID legToBeConnected, CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
             boolean ocsIApplicable, NAOliInfoImpl naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) throws CAPException;
 
     Long addContinueRequest() throws CAPException;
@@ -167,11 +166,11 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
     Long addContinueRequest(int customInvokeTimeout) throws CAPException;
 
     Long addEventReportBCSMRequest(EventTypeBCSM eventTypeBCSM,
-            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM, ReceivingLegIDImpl legID, MiscCallInfoImpl miscCallInfo,
+            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM, LegType legID, MiscCallInfo miscCallInfo,
             CAPExtensionsImpl extensions) throws CAPException;
 
     Long addEventReportBCSMRequest(int customInvokeTimeout, EventTypeBCSM eventTypeBCSM,
-            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM, ReceivingLegIDImpl legID, MiscCallInfoImpl miscCallInfo,
+            EventSpecificInformationBCSMImpl eventSpecificInformationBCSM, LegType legID, MiscCallInfo miscCallInfo,
             CAPExtensionsImpl extensions) throws CAPException;
 
     Long addRequestReportBCSMEventRequest(List<BCSMEventImpl> bcsmEventList, CAPExtensionsImpl extensions)
@@ -230,11 +229,11 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             int customInvokeTimeout, Integer callSegmentID,
             CAPExtensionsImpl extensions) throws CAPException;
 
-    Long addDisconnectLegRequest(LegIDImpl logToBeReleased, CauseCapImpl releaseCause,
+    Long addDisconnectLegRequest(LegID logToBeReleased, CauseCapImpl releaseCause,
             CAPExtensionsImpl extensions) throws CAPException;
 
     Long addDisconnectLegRequest(int customInvokeTimeout,
-            LegIDImpl logToBeReleased, CauseCapImpl releaseCause,
+    		LegID logToBeReleased, CauseCapImpl releaseCause,
             CAPExtensionsImpl extensions) throws CAPException;
 
     void addDisconnectLegResponse(long invokeId) throws CAPException;
@@ -259,10 +258,10 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             throws CAPException;
 
     Long addSendChargingInformationRequest(SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics,
-            SendingLegIDImpl partyToCharge, CAPExtensionsImpl extensions) throws CAPException;
+    		LegType partyToCharge, CAPExtensionsImpl extensions) throws CAPException;
 
     Long addSendChargingInformationRequest(int customInvokeTimeout,
-            SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics, SendingLegIDImpl partyToCharge,
+            SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics, LegType partyToCharge,
             CAPExtensionsImpl extensions) throws CAPException;
 
     Long addSpecializedResourceReportRequest_CapV23(Long linkedId) throws CAPException;
@@ -309,7 +308,7 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
 
     Long addInitiateCallAttemptRequest(
             DestinationRoutingAddressImpl destinationRoutingAddress,
-            CAPExtensionsImpl extensions, LegIDImpl legToBeCreated,
+            CAPExtensionsImpl extensions, LegID legToBeCreated,
             Integer newCallSegment, CallingPartyNumberCapImpl callingPartyNumber,
             CallReferenceNumberImpl callReferenceNumber,
             ISDNAddressStringImpl gsmSCFAddress, boolean suppressTCsi)
@@ -317,7 +316,7 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
 
     Long addInitiateCallAttemptRequest(int customInvokeTimeout,
             DestinationRoutingAddressImpl destinationRoutingAddress,
-            CAPExtensionsImpl extensions, LegIDImpl legToBeCreated,
+            CAPExtensionsImpl extensions, LegID legToBeCreated,
             Integer newCallSegment, CallingPartyNumberCapImpl callingPartyNumber,
             CallReferenceNumberImpl callReferenceNumber,
             ISDNAddressStringImpl gsmSCFAddress, boolean suppressTCsi)
@@ -332,7 +331,7 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
     Long addContinueWithArgumentRequest(AlertingPatternCapImpl alertingPattern,
             CAPExtensionsImpl extensions,
             ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
-            CallingPartysCategoryInapImpl callingPartysCategory,
+            CallingPartysCategoryInap callingPartysCategory,
             List<GenericNumberCapImpl> genericNumbers,
             CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess,
             LocationNumberCapImpl chargeNumber, CarrierImpl carrier,
@@ -344,7 +343,7 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
     Long addContinueWithArgumentRequest(int customInvokeTimeout,
             AlertingPatternCapImpl alertingPattern, CAPExtensionsImpl extensions,
             ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
-            CallingPartysCategoryInapImpl callingPartysCategory,
+            CallingPartysCategoryInap callingPartysCategory,
             List<GenericNumberCapImpl> genericNumbers,
             CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess,
             LocationNumberCapImpl chargeNumber, CarrierImpl carrier,
@@ -353,10 +352,10 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             ContinueWithArgumentArgExtensionImpl continueWithArgumentArgExtension)
             throws CAPException;
 
-    Long addMoveLegRequest(LegIDImpl logIDToMove, CAPExtensionsImpl extensions)
+    Long addMoveLegRequest(LegID logIDToMove, CAPExtensionsImpl extensions)
             throws CAPException;
 
-    Long addMoveLegRequest(int customInvokeTimeout, LegIDImpl logIDToMove,
+    Long addMoveLegRequest(int customInvokeTimeout, LegID logIDToMove,
             CAPExtensionsImpl extensions) throws CAPException;
 
     void addMoveLegResponse(long invokeId) throws CAPException;
@@ -365,9 +364,9 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
 
     Long addCollectInformationRequest(int customInvokeTimeout) throws CAPException;
 
-    Long addSplitLegRequest(LegIDImpl legIDToSplit, Integer newCallSegmentId, CAPExtensionsImpl extensions) throws CAPException;
+    Long addSplitLegRequest(LegID legIDToSplit, Integer newCallSegmentId, CAPExtensionsImpl extensions) throws CAPException;
 
-    Long addSplitLegRequest(int customInvokeTimeout, LegIDImpl legIDToSplit, Integer newCallSegmentId,
+    Long addSplitLegRequest(int customInvokeTimeout, LegID legIDToSplit, Integer newCallSegmentId,
             CAPExtensionsImpl extensions) throws CAPException;
 
     void addSplitLegResponse(long invokeId) throws CAPException;

@@ -45,11 +45,10 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
@@ -205,7 +204,7 @@ public class ConnectRequestTest {
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
         
         ByteBuf buffer=Unpooled.buffer();
-        elem.getRedirectionInformation().encode(parser,buffer);
+        ((RedirectionInformationInapImpl)elem.getRedirectionInformation()).encode(parser,buffer);
         assertNotNull(buffer);
         byte[] data = new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -253,7 +252,7 @@ public class ConnectRequestTest {
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getForwardServiceInteractionInd().getConferenceTreatmentIndicator(),
                 ConferenceTreatmentIndicator.rejectConferenceRequest);
         assertEquals(elem.getChargeNumber().getLocationNumber().getAddress(), "0000077777");
-        assertEquals(elem.getLegToBeConnected().getSendingLegID().getSendingSideID(), LegType.leg5);
+        assertEquals(elem.getLegToBeConnected().getSendingSideID(), LegType.leg5);
         assertEquals(elem.getCUGInterlock().getData(), getCUGInterlockData());
         assertTrue(elem.getCugOutgoingAccess());
         assertTrue(elem.getBorInterrogationRequested());
@@ -316,7 +315,7 @@ public class ConnectRequestTest {
         locationNumber.setNatureOfAddresIndicator(LocationNumber._NAI_INTERNATIONAL_NUMBER);
         locationNumber.setAddress("0000077777");
         LocationNumberCapImpl chargeNumber = new LocationNumberCapImpl(locationNumber);
-        LegIDImpl legToBeConnected = new LegIDImpl(null,new SendingLegIDImpl(LegType.leg5));
+        LegIDImpl legToBeConnected = new LegIDImpl(null,LegType.leg5);
         CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getCUGInterlockData());
         elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, carrier, null, null, null, null, serviceInteractionIndicatorsTwo,
                 chargeNumber, legToBeConnected, cugInterlock, true, false, false, null, true, true);

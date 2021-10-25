@@ -49,9 +49,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
+import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
@@ -193,7 +193,7 @@ public class InitialDPRequestTest {
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
         
         ByteBuf value=Unpooled.buffer();
-        elem.getRedirectionInformation().encode(parser,value);
+        ((RedirectionInformationInapImpl)elem.getRedirectionInformation()).encode(parser,value);
         assertNotNull(value);
         byte[] data = new byte[value.readableBytes()];
         value.readBytes(data);
@@ -241,7 +241,7 @@ public class InitialDPRequestTest {
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
         
         value=Unpooled.buffer();
-        elem.getRedirectionInformation().encode(parser,value);
+        ((RedirectionInformationInapImpl)elem.getRedirectionInformation()).encode(parser,value);
         data = new byte[value.readableBytes()];
         value.readBytes(data);
         assertTrue(Arrays.equals(data, getRedirectionInformation()));
@@ -273,7 +273,7 @@ public class InitialDPRequestTest {
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         
         value=Unpooled.buffer();
-        elem.getHighLayerCompatibility().encode(parser,value);
+        ((HighLayerCompatibilityInapImpl)elem.getHighLayerCompatibility()).encode(parser,value);
         assertNotNull(value);
         data = new byte[value.readableBytes()];
         value.readBytes(data);

@@ -34,7 +34,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -70,7 +69,7 @@ public class SendChargingInformationRequestTest {
         SendChargingInformationRequestImpl elem = (SendChargingInformationRequestImpl)result.getResult();                
         this.testCAI_GSM0224(elem.getSCIBillingChargingCharacteristics().getAOCSubsequent().getCAI_GSM0224());
         assertEquals((int) elem.getSCIBillingChargingCharacteristics().getAOCSubsequent().getTariffSwitchInterval(), 100);
-        assertEquals(elem.getPartyToCharge().getSendingSideID(), LegType.leg2);
+        assertEquals(elem.getPartyToCharge(), LegType.leg2);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
     }
 
@@ -81,12 +80,11 @@ public class SendChargingInformationRequestTest {
     	
         CAI_GSM0224Impl gsm224 = new CAI_GSM0224Impl(1, 2, 3, null, null, null, null);
         AOCSubsequentImpl aocSubsequent = new AOCSubsequentImpl(gsm224, 100);
-        SendingLegIDImpl partyToCharge = new SendingLegIDImpl(LegType.leg2);
-
+        
         SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics = new SCIBillingChargingCharacteristicsImpl(
                 aocSubsequent);
         SendChargingInformationRequestImpl elem = new SendChargingInformationRequestImpl(sciBillingChargingCharacteristics,
-                partyToCharge, CAPExtensionsTest.createTestCAPExtensions());
+        		LegType.leg2, CAPExtensionsTest.createTestCAPExtensions());
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];

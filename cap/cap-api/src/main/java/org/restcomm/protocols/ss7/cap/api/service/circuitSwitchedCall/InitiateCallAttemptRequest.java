@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
 
@@ -68,7 +68,7 @@ public interface InitiateCallAttemptRequest extends CircuitSwitchedCallMessage {
 
     CAPExtensionsImpl getExtensions();
 
-    LegIDImpl getLegToBeCreated();
+    LegID getLegToBeCreated();
 
     Integer getNewCallSegment();
 

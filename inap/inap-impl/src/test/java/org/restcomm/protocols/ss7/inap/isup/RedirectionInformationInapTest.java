@@ -27,7 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.testng.annotations.Test;

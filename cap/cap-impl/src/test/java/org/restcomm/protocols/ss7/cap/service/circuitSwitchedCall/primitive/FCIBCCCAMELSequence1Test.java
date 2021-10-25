@@ -32,7 +32,6 @@ import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -69,7 +68,7 @@ public class FCIBCCCAMELSequence1Test {
         
         FCIBCCCAMELSequence1Impl elem = (FCIBCCCAMELSequence1Impl)result.getResult();        
         assertTrue(Arrays.equals(elem.getFreeFormatData().getData(), this.getDataFFD()));
-        assertEquals(elem.getPartyToCharge().getSendingSideID(), LegType.leg2);
+        assertEquals(elem.getPartyToCharge(), LegType.leg2);
         assertEquals(elem.getAppendFreeFormatData(), AppendFreeFormatData.append);
     }
 
@@ -78,9 +77,8 @@ public class FCIBCCCAMELSequence1Test {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FCIBCCCAMELSequence1Impl.class);
     	
-        SendingLegIDImpl partyToCharge = new SendingLegIDImpl(LegType.leg2);
         FreeFormatDataImpl ffd = new FreeFormatDataImpl(getDataFFD());
-        FCIBCCCAMELSequence1Impl elem = new FCIBCCCAMELSequence1Impl(ffd, partyToCharge, AppendFreeFormatData.append);
+        FCIBCCCAMELSequence1Impl elem = new FCIBCCCAMELSequence1Impl(ffd, LegType.leg2, AppendFreeFormatData.append);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];

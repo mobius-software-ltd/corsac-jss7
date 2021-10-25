@@ -1,4 +1,6 @@
-package org.restcomm.protocols.ss7.inap.api.primitives;
+package org.restcomm.protocols.ss7.inap.primitives;
+
+import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -29,18 +31,18 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 * @author yulian oifa
 *
 */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,lengthIndefinite=false)
-public class ASNMiscCallInfoDpAssignment extends ASNInteger {
-	public void setType(MiscCallInfoDpAssignment t) {
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
+public class ASNBothwayThroughConnectionIndImpl extends ASNInteger {
+	public void setType(BothwayThroughConnectionInd t) {
 		if(t!=null)
 			setValue((long)t.getCode());
 	}
 	
-	public MiscCallInfoDpAssignment getType() {
+	public BothwayThroughConnectionInd getType() {
 		Long realValue=getValue();
 		if(realValue==null)
 			return null;
 		
-		return MiscCallInfoDpAssignment.getInstance(realValue.intValue());
+		return BothwayThroughConnectionInd.getInstance(realValue.intValue());
 	}
 }

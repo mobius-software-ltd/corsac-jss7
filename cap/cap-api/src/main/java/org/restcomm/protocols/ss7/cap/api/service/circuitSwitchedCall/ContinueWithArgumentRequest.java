@@ -32,7 +32,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtensionImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 
 /**
@@ -82,7 +82,7 @@ public interface ContinueWithArgumentRequest extends CircuitSwitchedCallMessage 
 
     ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo();
 
-    CallingPartysCategoryInapImpl getCallingPartysCategory();
+    CallingPartysCategoryInap getCallingPartysCategory();
 
     List<GenericNumberCapImpl> getGenericNumbers();
 

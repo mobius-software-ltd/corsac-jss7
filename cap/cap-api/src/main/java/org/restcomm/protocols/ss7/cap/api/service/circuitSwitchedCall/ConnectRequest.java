@@ -34,9 +34,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInapImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
+import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
 
 /**
@@ -100,11 +100,11 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
 
     CarrierImpl getCarrier();
 
-    CallingPartysCategoryInapImpl getCallingPartysCategory();
+    CallingPartysCategoryInap getCallingPartysCategory();
 
     RedirectingPartyIDCapImpl getRedirectingPartyID();
 
-    RedirectionInformationInapImpl getRedirectionInformation();
+    RedirectionInformationInap getRedirectionInformation();
 
     List<GenericNumberCapImpl> getGenericNumbers();
 
@@ -112,7 +112,7 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
 
     LocationNumberCapImpl getChargeNumber();
 
-    LegIDImpl getLegToBeConnected();
+    LegID getLegToBeConnected();
 
     CUGInterlockImpl getCUGInterlock();
 

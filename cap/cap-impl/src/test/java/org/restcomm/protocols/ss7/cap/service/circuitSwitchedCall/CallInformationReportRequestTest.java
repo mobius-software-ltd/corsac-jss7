@@ -37,7 +37,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -96,7 +95,7 @@ public class CallInformationReportRequestTest {
         assertEquals(elem.getRequestedInformationList().get(2).getRequestedInformationType(),
                 RequestedInformationType.releaseCause);
         assertTrue(Arrays.equals(elem.getRequestedInformationList().get(2).getReleaseCauseValue().getData(), getDataInt1()));
-        assertEquals(elem.getLegID().getReceivingSideID(), LegType.leg2);
+        assertEquals(elem.getLegID(), LegType.leg2);
         assertNull(elem.getExtensions());
 
         rawData = this.getData2();
@@ -120,7 +119,7 @@ public class CallInformationReportRequestTest {
         assertEquals(elem.getRequestedInformationList().get(2).getRequestedInformationType(),
                 RequestedInformationType.releaseCause);
         assertTrue(Arrays.equals(elem.getRequestedInformationList().get(2).getReleaseCauseValue().getData(), getDataInt1()));
-        assertEquals(elem.getLegID().getReceivingSideID(), LegType.leg2);
+        assertEquals(elem.getLegID(), LegType.leg2);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
     }
 
@@ -138,9 +137,8 @@ public class CallInformationReportRequestTest {
         CauseCapImpl releaseCauseValue = new CauseCapImpl(getDataInt1());
         ri = new RequestedInformationImpl(releaseCauseValue);
         requestedInformationList.add(ri);
-        ReceivingLegIDImpl legID = new ReceivingLegIDImpl(LegType.leg2);
-
-        CallInformationReportRequestImpl elem = new CallInformationReportRequestImpl(requestedInformationList, null, legID);
+        
+        CallInformationReportRequestImpl elem = new CallInformationReportRequestImpl(requestedInformationList, null, LegType.leg2);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -148,7 +146,7 @@ public class CallInformationReportRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         elem = new CallInformationReportRequestImpl(requestedInformationList, CAPExtensionsTest.createTestCAPExtensions(),
-                legID);
+        		LegType.leg2);
         rawData = this.getData2();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

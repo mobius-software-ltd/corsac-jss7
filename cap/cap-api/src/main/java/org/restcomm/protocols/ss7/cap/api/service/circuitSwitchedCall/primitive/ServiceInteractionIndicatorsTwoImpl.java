@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
 
-import org.restcomm.protocols.ss7.inap.api.primitives.ASNBothwayThroughConnectionIndImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
+import org.restcomm.protocols.ss7.inap.primitives.ASNBothwayThroughConnectionIndImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

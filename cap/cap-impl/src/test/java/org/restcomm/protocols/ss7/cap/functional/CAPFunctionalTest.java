@@ -161,12 +161,11 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCauseImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CAPDialogCircuitSwitchedCallImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.inap.api.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -420,7 +419,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
 
                 byte[] freeFormatData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
                 assertTrue(Arrays.equals(ind.getFCIBCCCAMELsequence1().getFreeFormatData().getData(), freeFormatData));
-                assertEquals(ind.getFCIBCCCAMELsequence1().getPartyToCharge().getSendingSideID(), LegType.leg1);
+                assertEquals(ind.getFCIBCCCAMELsequence1().getPartyToCharge(), LegType.leg1);
                 assertEquals(ind.getFCIBCCCAMELsequence1().getAppendFreeFormatData(), AppendFreeFormatData.append);
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
@@ -433,7 +432,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 //we are sending V2 which does not have this property
                 assertFalse(ind.getAChBillingChargingCharacteristics().getReleaseIfdurationExceeded());
                 assertNull(ind.getAChBillingChargingCharacteristics().getTariffSwitchInterval());
-                assertEquals(ind.getPartyToCharge().getSendingSideID(), LegType.leg1);
+                assertEquals(ind.getPartyToCharge(), LegType.leg1);
                 assertNull(ind.getExtensions());
                 assertNull(ind.getAChChargingAddress());
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
@@ -491,7 +490,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 assertNull(ind.getSCIBillingChargingCharacteristics().getAOCBeforeAnswer().getAOCSubsequent());
                 assertNull(ind.getSCIBillingChargingCharacteristics().getAOCSubsequent());
                 assertNull(ind.getSCIBillingChargingCharacteristics().getAOCExtension());
-                assertEquals(ind.getPartyToCharge().getSendingSideID(), LegType.leg2);
+                assertEquals(ind.getPartyToCharge(), LegType.leg2);
                 assertNull(ind.getExtensions());
 
                 dialogStep = 1;
@@ -509,21 +508,19 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                         case 1: // after ConnectRequest
                             OAnswerSpecificInfoImpl oAnswerSpecificInfo = this.capParameterFactory.createOAnswerSpecificInfo(null,
                                     false, false, null, null, null);
-                            ReceivingLegIDImpl legID = this.capParameterFactory.createReceivingLegID(LegType.leg2);
-                            MiscCallInfoImpl miscCallInfo = this.inapParameterFactory.createMiscCallInfo(
+                            MiscCallInfo miscCallInfo = this.inapParameterFactory.createMiscCallInfo(
                                     MiscCallInfoMessageType.notification, null);
                             EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = this.capParameterFactory
                                     .createEventSpecificInformationBCSM(oAnswerSpecificInfo);
-                            dlg.addEventReportBCSMRequest(EventTypeBCSM.oAnswer, eventSpecificInformationBCSM, legID,
+                            dlg.addEventReportBCSMRequest(EventTypeBCSM.oAnswer, eventSpecificInformationBCSM, LegType.leg2,
                                     miscCallInfo, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportBCSMRequest, null,
                                     sequence++));
                             dlg.send();
 
-                            ReceivingLegIDImpl partyToCharge = this.capParameterFactory.createReceivingLegID(LegType.leg1);
                             TimeInformationImpl timeInformation = this.capParameterFactory.createTimeInformation(2000);
                             TimeDurationChargingResultImpl timeDurationChargingResult = this.capParameterFactory
-                                    .createTimeDurationChargingResult(partyToCharge, timeInformation, true, false, null, null);
+                                    .createTimeDurationChargingResult(LegType.leg1, timeInformation, true, false, null, null);
                             dlg.addApplyChargingReportRequest(timeDurationChargingResult);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ApplyChargingReportRequest, null,
                                     sequence++));
@@ -576,7 +573,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                     assertNull(ind.getEventSpecificInformationBCSM().getOAnswerSpecificInfo().getExtBasicServiceCode2());
                     assertFalse(ind.getEventSpecificInformationBCSM().getOAnswerSpecificInfo().getForwardedCall());
                     assertFalse(ind.getEventSpecificInformationBCSM().getOAnswerSpecificInfo().getOrCall());
-                    assertEquals(ind.getLegID().getReceivingSideID(), LegType.leg2);
+                    assertEquals(ind.getLegID(), LegType.leg2);
                     assertNull(ind.getExtensions());
                 } else {
                     try {
@@ -587,7 +584,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                         assertEquals(ci.getCauseValue(), CauseIndicators._CV_ALL_CLEAR);
                         assertEquals(ci.getCodingStandard(), CauseIndicators._CODING_STANDARD_ITUT);
                         assertEquals(ci.getLocation(), CauseIndicators._LOCATION_USER);
-                        assertEquals(ind.getLegID().getReceivingSideID(), LegType.leg1);
+                        assertEquals(ind.getLegID(), LegType.leg1);
                         assertEquals(ind.getMiscCallInfo().getMessageType(), MiscCallInfoMessageType.notification);
                         assertNull(ind.getMiscCallInfo().getDpAssignment());
                         assertNull(ind.getExtensions());
@@ -604,7 +601,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 super.onApplyChargingReportRequest(ind);
 
                 TimeDurationChargingResultImpl tdr = ind.getTimeDurationChargingResult();
-                assertEquals(tdr.getPartyToCharge().getReceivingSideID(), LegType.leg1);
+                assertEquals(tdr.getPartyToCharge(), LegType.leg1);
                 assertEquals((int) tdr.getTimeInformation().getTimeIfNoTariffSwitch(), 2000);
                 assertNull(tdr.getAChChargingAddress());
                 assertFalse(tdr.getCallLegReleasedAtTcpExpiry());
@@ -638,9 +635,8 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
 
                             byte[] freeFormatData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
                             FreeFormatDataImpl ffd = new FreeFormatDataImpl(freeFormatData);
-                            SendingLegIDImpl partyToCharge1 = this.capParameterFactory.createSendingLegID(LegType.leg1);
                             FCIBCCCAMELSequence1Impl FCIBCCCAMELsequence1 = this.capParameterFactory.createFCIBCCCAMELsequence1(
-                                    ffd, partyToCharge1, AppendFreeFormatData.append);
+                                    ffd, LegType.leg1, AppendFreeFormatData.append);
                             dlg.addFurnishChargingInformationRequest(FCIBCCCAMELsequence1);
                             dlg.send();
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.FurnishChargingInformationRequest,
@@ -656,8 +652,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             //Boolean tone, CAPExtensionsImpl extensions, Long tariffSwitchInterval
                             CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics = this.capParameterFactory
                                     .createCAMELAChBillingChargingCharacteristics(1000, null, null, null);
-                            SendingLegIDImpl partyToCharge = this.capParameterFactory.createSendingLegID(LegType.leg1);
-                            dlg.addApplyChargingRequest(aChBillingChargingCharacteristics, partyToCharge, null, null);
+                            dlg.addApplyChargingRequest(aChBillingChargingCharacteristics, LegType.leg1, null, null);
                             this.observerdEvents.add(TestEvent
                                     .createSentEvent(EventType.ApplyChargingRequest, null, sequence++));
 
@@ -699,8 +694,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             AOCBeforeAnswerImpl aocBeforeAnswer = this.capParameterFactory.createAOCBeforeAnswer(aocInitial, null);
                             SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics = this.capParameterFactory
                                     .createSCIBillingChargingCharacteristics(aocBeforeAnswer);
-                            SendingLegIDImpl partyToCharge2 = this.capParameterFactory.createSendingLegID(LegType.leg2);
-                            dlg.addSendChargingInformationRequest(sciBillingChargingCharacteristics, partyToCharge2, null);
+                            dlg.addSendChargingInformationRequest(sciBillingChargingCharacteristics, LegType.leg2, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendChargingInformationRequest, null,
                                     sequence++));
                             dlg.send();
@@ -4728,21 +4722,21 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     switch (dialogStep) {
                     case 1: // after InitiateCallAttemptResponse
-                        LegIDImpl logIDToSplit = this.inapParameterFactory.createLegID(new ReceivingLegIDImpl(LegType.leg1),null);
+                        LegID logIDToSplit = this.inapParameterFactory.createLegID(LegType.leg1,null);
                         dlg.addSplitLegRequest(logIDToSplit, 1, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SplitLegRequest, null, sequence++));
                         dlg.send();
                         break;
 
                     case 2: // after SplitLegResponse
-                        LegIDImpl logIDToMove = this.inapParameterFactory.createLegID(new ReceivingLegIDImpl(LegType.leg1),null);
+                        LegID logIDToMove = this.inapParameterFactory.createLegID(LegType.leg1,null);
                         dlg.addMoveLegRequest(logIDToMove, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.MoveLegRequest, null, sequence++));
                         dlg.send();
                         break;
 
                     case 3: // after MoveLegResponse
-                        LegIDImpl logToBeReleased = this.inapParameterFactory.createLegID(new ReceivingLegIDImpl(LegType.leg2),null);
+                        LegID logToBeReleased = this.inapParameterFactory.createLegID(LegType.leg2,null);
                         CauseIndicators causeIndicators = this.isupParameterFactory.createCauseIndicators();
                         causeIndicators.setCauseValue(3);
                         CauseCapImpl causeCap = this.capParameterFactory.createCauseCap(causeIndicators);
@@ -4791,7 +4785,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 super.onSplitLegRequest(ind);
 
                 invokeIdSplitLeg = ind.getInvokeId();
-                assertEquals(ind.getLegToBeSplit().getReceivingLegID().getReceivingSideID(), LegType.leg1);
+                assertEquals(ind.getLegToBeSplit().getReceivingSideID(), LegType.leg1);
 
                 dialogStep = 2;
             }
@@ -4801,7 +4795,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 super.onMoveLegRequest(ind);
 
                 invokeIdMoveLeg = ind.getInvokeId();
-                assertEquals(ind.getLegIDToMove().getReceivingLegID().getReceivingSideID(), LegType.leg1);
+                assertEquals(ind.getLegIDToMove().getReceivingSideID(), LegType.leg1);
 
                 dialogStep = 3;
             }
@@ -4812,7 +4806,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
                 try {
                     invokeIdDisconnectLeg = ind.getInvokeId();
-                    assertEquals(ind.getLegToBeReleased().getReceivingLegID().getReceivingSideID(), LegType.leg2);
+                    assertEquals(ind.getLegToBeReleased().getReceivingSideID(), LegType.leg2);
                     assertEquals(ind.getReleaseCause().getCauseIndicators().getCauseValue(), 3);
                 } catch (CAPException e) {
                     // TODO Auto-generated catch block

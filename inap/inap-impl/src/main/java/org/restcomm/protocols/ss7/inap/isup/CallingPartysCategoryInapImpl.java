@@ -20,9 +20,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.isup;
+package org.restcomm.protocols.ss7.inap.isup;
 
 import org.restcomm.protocols.ss7.inap.api.INAPException;
+import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
@@ -42,7 +43,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x05,constructed=false,lengthIndefinite=false)
-public class CallingPartysCategoryInapImpl {
+public class CallingPartysCategoryInapImpl implements CallingPartysCategoryInap {
 	private CallingPartyCategoryImpl category;
 
     public CallingPartysCategoryInapImpl() {
